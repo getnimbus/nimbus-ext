@@ -5,17 +5,6 @@
   import { shorterAddress } from "~/utils";
 
   import Loading from "~/components/Loading.svelte";
-  import { each } from "svelte/internal";
-
-  let darkMode = false;
-  isDarkMode.subscribe((value) => {
-    darkMode = value;
-  });
-
-  let userInfo = {};
-  user.subscribe((value) => {
-    userInfo = value;
-  });
 
   let formatDataLeaderboard = [];
   let currentUserRank;
@@ -30,7 +19,9 @@
     queryFn: () => handleDailyCheckin(),
     staleTime: Infinity,
     enabled:
-      Object.keys(userInfo).length !== 0 && $userPublicAddress.length !== 0,
+      $user &&
+      Object.keys($user).length !== 0 &&
+      $userPublicAddress.length !== 0,
     onError(err) {
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
@@ -176,7 +167,7 @@
     </div>
     <div
       class={`mx-auto xl:w-3/5 w-full min-h-[600px] border border_0000000d rounded-[10px] ${
-        darkMode ? "bg-[#131313]" : "bg-[#fff]"
+        $isDarkMode ? "bg-[#131313]" : "bg-[#fff]"
       }`}
     >
       <table class="table-auto w-full h-full">
@@ -193,7 +184,7 @@
             <th class="py-2 pl-6 font-medium">
               <div
                 class={`flex justify-start text-3xl font-normal w-4 ${
-                  !darkMode && "text-[#27326F]"
+                  !$isDarkMode && "text-[#27326F]"
                 }`}
               >
                 {formatDataLeaderboard[currentUserRank]?.rank || "N/A"}
@@ -270,17 +261,17 @@
                 <td
                   class={`py-2 pl-6 ${
                     item?.rank === formatDataLeaderboard[currentUserRank]?.rank
-                      ? darkMode
+                      ? $isDarkMode
                         ? "bg-[#000]"
                         : "bg-gray-100"
-                      : darkMode
+                      : $isDarkMode
                       ? "group-hover:bg-[#000]"
                       : "group-hover:bg-gray-100"
                   }`}
                 >
                   <div
                     class={`flex justify-start text-3xl font-normal w-4 ${
-                      !darkMode && "text-[#27326F]"
+                      !$isDarkMode && "text-[#27326F]"
                     }`}
                   >
                     {item?.rank || "N/A"}
@@ -290,10 +281,10 @@
                 <td
                   class={`py-2 ${
                     item?.rank === formatDataLeaderboard[currentUserRank]?.rank
-                      ? darkMode
+                      ? $isDarkMode
                         ? "bg-[#000]"
                         : "bg-gray-100"
-                      : darkMode
+                      : $isDarkMode
                       ? "group-hover:bg-[#000]"
                       : "group-hover:bg-gray-100"
                   }`}
@@ -308,10 +299,10 @@
                 <td
                   class={`py-2 pr-6 ${
                     item?.rank === formatDataLeaderboard[currentUserRank]?.rank
-                      ? darkMode
+                      ? $isDarkMode
                         ? "bg-[#000]"
                         : "bg-gray-100"
-                      : darkMode
+                      : $isDarkMode
                       ? "group-hover:bg-[#000]"
                       : "group-hover:bg-gray-100"
                   }`}

@@ -69,26 +69,6 @@
 
   const queryClient = useQueryClient();
 
-  let selectedWallet: string = "";
-  wallet.subscribe((value) => {
-    selectedWallet = value;
-  });
-
-  let selectedChain: string = "";
-  chain.subscribe((value) => {
-    selectedChain = value;
-  });
-
-  let typeWalletAddress: string = "";
-  typeWallet.subscribe((value) => {
-    typeWalletAddress = value;
-  });
-
-  let selectBundle = {};
-  selectedBundle.subscribe((value) => {
-    selectBundle = value;
-  });
-
   let enabledFetchAllData = false;
   let isErrorAllData = false;
   let isLoadingSync = false;
@@ -326,7 +306,7 @@
   const getVaults = async (address, chain) => {
     const response = await nimbus.get(
       `/v2/investment/${address}/vaults?chain=${
-        typeWalletAddress === "SOL" ? "SOL" : ""
+        $typeWallet === "SOL" ? "SOL" : ""
       }`
     );
     return response?.data;
@@ -420,8 +400,8 @@
 
   const getSync = async () => {
     try {
-      const response = await nimbus
-        .post(`/v2/address/${selectedWallet}/sync?chain=${selectedChain}`, {})
+      await nimbus
+        .post(`/v2/address/${$wallet}/sync?chain=${$chain}`, {})
         .then((response) => response);
     } catch (e) {
       console.error("e: ", e);
@@ -431,7 +411,7 @@
   const getSyncStatus = async () => {
     try {
       const response = await nimbus
-        .get(`/address/${selectedWallet}/sync-status?chain=${selectedChain}`)
+        .get(`/address/${$wallet}/sync-status?chain=${$chain}`)
         .then((response) => response);
       dataUpdatedTime = response?.data?.lastSync;
       return response;
@@ -534,7 +514,7 @@
     );
     dataOverviewBundlePieChart = data
       .map((item) => {
-        const selectAccount = selectBundle?.accounts.find(
+        const selectAccount = $selectedBundle?.accounts.find(
           (data) =>
             data?.id?.toLowerCase() === item?.owner?.toLowerCase() ||
             data?.value?.toLowerCase() === item?.owner?.toLowerCase()
@@ -572,10 +552,10 @@
 
   // query overview
   $: queryOverview = createQuery({
-    queryKey: ["overview", selectedWallet, selectedChain],
-    queryFn: () => getOverview(selectedWallet, selectedChain),
+    queryKey: ["overview", $wallet, $chain],
+    queryFn: () => getOverview($wallet, $chain),
     staleTime: Infinity,
-    enabled: enabledFetchAllData && selectedWallet.length !== 0,
+    enabled: enabledFetchAllData && $wallet.length !== 0,
   });
 
   $: {
@@ -597,25 +577,20 @@
 
   // query nft holding
   $: queryNftHolding = createQuery({
-    queryKey: ["nft-holding", selectedWallet, selectedChain],
-    queryFn: () => getHoldingNFT(selectedWallet, selectedChain),
+    queryKey: ["nft-holding", $wallet, $chain],
+    queryFn: () => getHoldingNFT($wallet, $chain),
     staleTime: Infinity,
-    enabled:
-      enabledFetchAllData &&
-      selectedWallet.length !== 0 &&
-      selectedChain !== "ALL",
+    enabled: enabledFetchAllData && $wallet.length !== 0 && $chain !== "ALL",
   });
 
   $: queryAllNftHolding = createQueries(
     chainListQueries.map((item) => {
       return {
-        queryKey: ["nft-holding", selectedWallet, selectedChain, item],
-        queryFn: () => getHoldingNFT(selectedWallet, item),
+        queryKey: ["nft-holding", $wallet, $chain, item],
+        queryFn: () => getHoldingNFT($wallet, item),
         staleTime: Infinity,
         enabled:
-          enabledFetchAllData &&
-          selectedWallet.length !== 0 &&
-          selectedChain === "ALL",
+          enabledFetchAllData && $wallet.length !== 0 && $chain === "ALL",
       };
     })
   );
@@ -641,34 +616,29 @@
 
   // query vaults token holding
   $: queryVaults = createQuery({
-    queryKey: ["vaults", selectedWallet, selectedChain],
-    queryFn: () => getVaults(selectedWallet, selectedChain),
+    queryKey: ["vaults", $wallet, $chain],
+    queryFn: () => getVaults($wallet, $chain),
     staleTime: Infinity,
-    enabled: enabledFetchAllData && selectedWallet.length !== 0,
+    enabled: enabledFetchAllData && $wallet.length !== 0,
     placeholderData: [],
   });
 
   // query token holding
   $: queryTokenHolding = createQuery({
-    queryKey: ["token-holding", selectedWallet, selectedChain],
-    queryFn: () => getHoldingToken(selectedWallet, selectedChain),
+    queryKey: ["token-holding", $wallet, $chain],
+    queryFn: () => getHoldingToken($wallet, $chain),
     staleTime: Infinity,
-    enabled:
-      enabledFetchAllData &&
-      selectedWallet.length !== 0 &&
-      selectedChain !== "ALL",
+    enabled: enabledFetchAllData && $wallet.length !== 0 && $chain !== "ALL",
   });
 
   $: queryAllTokenHolding = createQueries(
     chainListQueries.map((item) => {
       return {
-        queryKey: ["token-holding", selectedWallet, selectedChain, item],
-        queryFn: () => getHoldingToken(selectedWallet, item),
+        queryKey: ["token-holding", $wallet, $chain, item],
+        queryFn: () => getHoldingToken($wallet, item),
         staleTime: Infinity,
         enabled:
-          enabledFetchAllData &&
-          selectedWallet.length !== 0 &&
-          selectedChain === "ALL",
+          enabledFetchAllData && $wallet.length !== 0 && $chain === "ALL",
       };
     })
   );
@@ -694,17 +664,17 @@
 
   // query compare
   $: queryCompare = createQuery({
-    queryKey: ["compare", selectedWallet, selectedChain],
-    queryFn: () => getAnalyticCompare(selectedWallet),
+    queryKey: ["compare", $wallet, $chain],
+    queryFn: () => getAnalyticCompare($wallet),
     staleTime: Infinity,
-    // enabled: enabledFetchAllData && selectedWallet.length !== 0,
+    // enabled: enabledFetchAllData && $wallet.length !== 0,
     enabled: false,
   });
 
   onMount(() => {
     initWS();
     mixpanel.track("portfolio_page", {
-      address: selectedWallet,
+      address: $wallet,
     });
   });
 
@@ -720,8 +690,8 @@
   };
 
   $: {
-    if (selectedWallet || selectedChain) {
-      if (selectedWallet?.length !== 0 && selectedChain?.length !== 0) {
+    if ($wallet || $chain) {
+      if ($wallet?.length !== 0 && $chain?.length !== 0) {
         overviewDataPerformance = {
           performance: [],
           portfolioChart: [],
@@ -775,7 +745,7 @@
   }
 
   $: loading =
-    selectedChain === "ALL"
+    $chain === "ALL"
       ? $queryAllTokenHolding &&
         $queryAllTokenHolding.some((item) => item.isFetching === true) &&
         $queryAllTokenHolding &&
@@ -789,7 +759,7 @@
         $queryOverview.isFetching;
 
   $: chainListQueries =
-    typeWalletAddress?.length !== 0 && typeWalletAddress !== "EVM"
+    $typeWallet?.length !== 0 && $typeWallet !== "EVM"
       ? [chainList[0].value]
       : chainList.slice(1).map((item) => item.value);
 
@@ -889,7 +859,7 @@
                 {dataOverviewBundlePieChart}
               />
 
-              <!-- {#if typeWalletAddress === "EVM" || typeWalletAddress === "CEX" || typeWalletAddress === "BUNDLE"}
+              <!-- {#if $typeWallet === "EVM" || $typeWallet === "CEX" || $typeWallet === "BUNDLE"}
                 <RiskReturn
                   isLoading={$queryCompare.isFetching}
                   isError={$queryCompare.isError}
@@ -898,11 +868,11 @@
               {/if} -->
 
               <Holding
-                {selectedWallet}
-                isLoadingNFT={selectedChain === "ALL"
+                selectedWallet={$wallet}
+                isLoadingNFT={$chain === "ALL"
                   ? $queryAllNftHolding.some((item) => item.isFetching === true)
                   : $queryNftHolding.isFetching}
-                isLoadingToken={selectedChain === "ALL"
+                isLoadingToken={$chain === "ALL"
                   ? $queryAllTokenHolding.some(
                       (item) => item.isFetching === true
                     )
@@ -916,15 +886,15 @@
                 bind:totalAssets
               />
 
-              {#if typeWalletAddress !== "BTC"}
+              {#if $typeWallet !== "BTC"}
                 <ClosedTokenPosition
-                  {selectedWallet}
-                  isLoadingNFT={selectedChain === "ALL"
+                  selectedWallet={$wallet}
+                  isLoadingNFT={$chain === "ALL"
                     ? $queryAllNftHolding.some(
                         (item) => item.isFetching === true
                       )
                     : $queryNftHolding.isFetching}
-                  isLoadingToken={selectedChain === "ALL"
+                  isLoadingToken={$chain === "ALL"
                     ? $queryAllTokenHolding.some(
                         (item) => item.isFetching === true
                       )

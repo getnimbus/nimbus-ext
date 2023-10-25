@@ -27,7 +27,7 @@ yarn install
 yarn run dev
 ```
 
-Then after that, load the unpacked extension to the browser under `dist` foler
+Then after that, load the unpacked extension to the browser under `dist` folder
 
 #### Production
 

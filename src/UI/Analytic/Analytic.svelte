@@ -29,32 +29,12 @@
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  let darkMode = false;
-  isDarkMode.subscribe((value) => {
-    darkMode = value;
-  });
-
-  let selectedWallet: string = "";
-  wallet.subscribe((value) => {
-    selectedWallet = value;
-  });
-
-  let packageSelected = "";
-  selectedPackage.subscribe((value) => {
-    packageSelected = value;
-  });
-
-  let typeWalletAddress: string = "";
-  typeWallet.subscribe((value) => {
-    typeWalletAddress = value;
-  });
-
   let isShowSoon = false;
   let selectedTimeFrame: "7D" | "30D" | "3M" | "1Y" | "ALL" = "30D";
 
   $: {
-    if (selectedWallet) {
-      if (typeWalletAddress === "BTC" || packageSelected === "FREE") {
+    if ($wallet) {
+      if ($typeWallet === "BTC" || $selectedPackage === "FREE") {
         isShowSoon = true;
       } else {
         isShowSoon = false;
@@ -121,12 +101,15 @@
         </div>
 
         <div class="flex flex-col gap-7">
-          <CurrentStatus {packageSelected} {selectedTimeFrame} />
+          <CurrentStatus
+            packageSelected={$selectedPackage}
+            {selectedTimeFrame}
+          />
 
           <section class="overflow-hidden">
             <div
               class={`mx-auto max-w-c-1390 px-6 py-7 rounded-[20px] bg-gradient-to-t flex justify-between gap-10 ${
-                darkMode
+                $isDarkMode
                   ? "from-[#0f0f0f] to-[#222222]"
                   : "from-[#F8F9FF] to-[#DEE7FF]"
               }`}
@@ -137,9 +120,7 @@
               <div class="xl:w-[164px] w-[284px]">
                 <Button
                   on:click={() => {
-                    navigate(
-                      `/compare?address=${encodeURIComponent(selectedWallet)}`
-                    );
+                    navigate(`/compare?address=${encodeURIComponent($wallet)}`);
                     mixpanel.track("user_compare");
                   }}
                 >
@@ -159,21 +140,21 @@
 
           <ClosedHoldingToken />
 
-          <MoneyFlow {packageSelected} {selectedTimeFrame} />
+          <MoneyFlow packageSelected={$selectedPackage} {selectedTimeFrame} />
 
-          <PastPerformance {packageSelected} />
+          <PastPerformance packageSelected={$selectedPackage} />
 
           <!-- <Personality /> -->
         </div>
       </div>
 
-      {#if isShowSoon && selectedWallet !== "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0"}
+      {#if isShowSoon && $wallet !== "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0"}
         <div
           class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center gap-3 pt-62 ${
-            darkMode ? "bg-[#222222e6]" : "bg-white/90"
+            $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
           } z-10 backdrop-blur-md`}
         >
-          {#if packageSelected === "FREE"}
+          {#if $selectedPackage === "FREE"}
             <div class="flex flex-col items-center gap-1">
               <div class="text-lg font-medium">
                 Use Nimbus at its full potential
@@ -188,7 +169,7 @@
               >
             </div>
           {/if}
-          {#if packageSelected !== "FREE" && typeWalletAddress === "BTC"}
+          {#if $selectedPackage !== "FREE" && $typeWallet === "BTC"}
             <div class="text-lg">Coming soon 🚀</div>
           {/if}
         </div>

@@ -21,12 +21,7 @@
   import Logo from "~/assets/logo-1.svg";
   import LogoWhite from "~/assets/logo-white.svg";
 
-  let darkMode = false;
-  isDarkMode.subscribe((value) => {
-    darkMode = value;
-  });
-
-  $: theme = darkMode ? "dark" : "white";
+  $: theme = $isDarkMode ? "dark" : "white";
 </script>
 
 <div class="flex flex-col gap-4">
@@ -81,7 +76,7 @@
             class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 top-2/3 left-1/2 pointer-events-none"
           >
             <img
-              src={darkMode ? LogoWhite : Logo}
+              src={$isDarkMode ? LogoWhite : Logo}
               alt=""
               width="140"
               height="140"
@@ -128,7 +123,7 @@
             class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 top-2/3 left-1/2 pointer-events-none"
           >
             <img
-              src={darkMode ? LogoWhite : Logo}
+              src={$isDarkMode ? LogoWhite : Logo}
               alt=""
               width="140"
               height="140"

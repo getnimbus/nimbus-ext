@@ -38,21 +38,6 @@
     value: 1,
   };
 
-  let darkMode = false;
-  isDarkMode.subscribe((value) => {
-    darkMode = value;
-  });
-
-  let selectedChain: string = "";
-  chain.subscribe((value) => {
-    selectedChain = value;
-  });
-
-  let typeWalletAddress: string = "";
-  typeWallet.subscribe((value) => {
-    typeWalletAddress = value;
-  });
-
   const MultipleLang = {
     token_position: i18n("newtabPage.token_position", "Closed Positions"),
     token: i18n("newtabPage.token", "Tokens"),
@@ -296,11 +281,17 @@
     }
   }
 
-  $: colspan = typeWalletAddress !== "EVM" ? 5 : 4;
+  $: colspan =
+    $typeWallet === "SOL" ||
+    $typeWallet === "EVM" ||
+    $typeWallet === "BUNDLE" ||
+    $typeWallet === "CEX"
+      ? 5
+      : 4;
 
   $: {
-    if (selectedWallet || selectedChain) {
-      if (selectedWallet?.length !== 0 && selectedChain?.length !== 0) {
+    if (selectedWallet || $chain) {
+      if (selectedWallet?.length !== 0 && $chain?.length !== 0) {
         sumAllTokens = 0;
         sumNFT = 0;
         formatData = [];
@@ -315,12 +306,12 @@
 
 <div
   class={`flex flex-col gap-6 rounded-[20px] p-6 ${
-    darkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
+    $isDarkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
   }`}
 >
   <ErrorBoundary>
     <div class="flex items-end gap-3">
-      {#if typeWalletAddress !== "EVM"}
+      {#if $typeWallet !== "EVM"}
         <div class="xl:text-2xl text-4xl font-medium">
           {MultipleLang.token_position}
         </div>
@@ -349,7 +340,7 @@
               ? sumAllTokens >= 0
                 ? "text-[#00A878]"
                 : "text-red-500"
-              : darkMode
+              : $isDarkMode
               ? "text-white"
               : "text-black"
           }`}
@@ -378,7 +369,7 @@
 
         <div
           class={`rounded-[10px] xl:overflow-visible overflow-x-auto h-full ${
-            darkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
+            $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
           }`}
         >
           <table class="table-auto xl:w-full w-[1400px] h-full">
@@ -407,14 +398,15 @@
                   <div
                     class="text-right xl:text-xs text-xl uppercase font-medium"
                   >
-                    Average Cost
+                    Avg Cost
                   </div>
                 </th>
                 <th
                   class={`py-3 ${
-                    typeWalletAddress === "SOL" ||
-                    typeWalletAddress === "EVM" ||
-                    typeWalletAddress === "BUNDLE"
+                    $typeWallet === "SOL" ||
+                    $typeWallet === "EVM" ||
+                    $typeWallet === "BUNDLE" ||
+                    $typeWallet === "CEX"
                       ? ""
                       : "pr-3 rounded-tr-[10px]"
                   }`}
@@ -425,13 +417,13 @@
                     ROI
                   </div>
                 </th>
-                {#if typeWalletAddress === "SOL" || typeWalletAddress === "EVM" || typeWalletAddress === "BUNDLE"}
-                  <th class="py-3 xl:w-12 w-32 rounded-tr-[10px]" />
+                {#if $typeWallet === "SOL" || $typeWallet === "EVM" || $typeWallet === "BUNDLE" || $typeWallet === "CEX"}
+                  <th class="py-3 xl:w-14 w-32 rounded-tr-[10px]" />
                 {/if}
               </tr>
             </thead>
 
-            {#if selectedChain === "ALL"}
+            {#if $chain === "ALL"}
               <tbody>
                 {#if filteredHoldingDataToken && filteredHoldingDataToken.length === 0 && !isLoadingToken}
                   <tr>
@@ -468,7 +460,7 @@
               {/if}
             {/if}
 
-            {#if selectedChain !== "ALL"}
+            {#if $chain !== "ALL"}
               {#if isLoadingToken}
                 <tbody>
                   <tr>
@@ -514,7 +506,7 @@
     </div>
 
     <!-- nft holding table -->
-    <!-- {#if typeWalletAddress === "BTC"}
+    <!-- {#if $typeWallet === "BTC"}
       <div class="flex flex-col gap-2">
         <div class="flex justify-between items-center">
           <div class="xl:text-xl text-3xl font-medium">
@@ -556,10 +548,10 @@
                     class="text-right xl:text-xs text-xl uppercase font-medium"
                   >
                     <TooltipTitle
-                      tooltipText={typeWalletAddress === "BTC"
+                      tooltipText={$typeWallet === "BTC"
                         ? "The Floor price from Magic Eden marketplace. "
                         : "The Floor price of last 24h, if there is no volume, the floor price is 0"}
-                      link={typeWalletAddress === "BTC"
+                      link={$typeWallet === "BTC"
                         ? "https://magiceden.io/ordinals"
                         : ""}
                     >
@@ -583,7 +575,7 @@
                 </th>
                 <th
                   class={`py-3 pr-3 ${
-                    typeWalletAddress === "BTC" ? "" : "rounded-tr-[10px]"
+                    $typeWallet === "BTC" ? "" : "rounded-tr-[10px]"
                   }`}
                 >
                   <div
@@ -596,7 +588,7 @@
                     </TooltipTitle>
                   </div>
                 </th>
-                {#if typeWalletAddress === "BTC"}
+                {#if $typeWallet === "BTC"}
                   <th class="py-3 w-10 rounded-tr-[10px]" />
                 {/if}
               </tr>

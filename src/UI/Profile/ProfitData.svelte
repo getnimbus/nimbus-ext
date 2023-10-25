@@ -17,6 +17,20 @@
   let totalToken = 0;
   let realizedProfit = 0;
 
+  const getTradingStats = async (address) => {
+    const response: any = await nimbus.get(
+      `/v2/analysis/${address}/trading-stats`
+    );
+    return response?.data;
+  };
+
+  const getHoldingToken = async (address) => {
+    const response = await nimbus
+      .get(`/v2/address/${address}/holding?chain=ALL`)
+      .then((response) => response.data);
+    return response;
+  };
+
   const formatDataHoldingToken = (dataTokenHolding) => {
     const formatData = dataTokenHolding
       .map((item) => {
@@ -26,7 +40,6 @@
             Number(item?.amount) * Number(item?.price?.price || item?.rate),
         };
       })
-      .filter((item) => item?.profit?.realizedProfit)
       .sort((a, b) => {
         if (a.value < b.value) {
           return 1;
@@ -40,14 +53,7 @@
     balance = formatData.reduce((prev, item) => prev + item.value, 0);
 
     const format30D = formatData
-      .filter((item) => {
-        const date = dayjs(item?.last_transferred_at);
-        const thirtyDaysInMilliseconds = 30 * 24 * 60 * 60 * 1000;
-        return (
-          thirtyDaysInMilliseconds - dayjs(dayjs()).diff(date, "millisecond") >
-          0
-        );
-      })
+      .filter((item) => item?.profit?.realizedProfit)
       .map((item) => {
         return {
           ...item,
@@ -69,18 +75,32 @@
     totalToken = format30D.length;
   };
 
-  const getTradingStats = async (address) => {
-    const response: any = await nimbus.get(
-      `/v2/analysis/${address}/trading-stats`
+  const formatDataTradingStats = (data) => {
+    const tradingStatsMeta = data?.metadata.filter(
+      (item) => dayjs().subtract(30, "day").valueOf() < item.lastTrade * 1000
     );
-    return response?.data;
-  };
 
-  const getHoldingToken = async (address) => {
-    const response = await nimbus
-      .get(`/v2/address/${address}/holding?chain=ALL`)
-      .then((response) => response.data);
-    return response;
+    unRealizedProfit = tradingStatsMeta?.reduce(
+      (prev, item) => prev + Number(item.unrealizedProfit),
+      0
+    );
+
+    realizedProfit = tradingStatsMeta.reduce(
+      (prev, item) => prev + Number(item.realizedProfit),
+      0
+    );
+
+    totalCost = tradingStatsMeta?.reduce(
+      (prev, item) => prev + Number(item.cost),
+      0
+    );
+
+    if (unRealizedProfit === 0 && realizedProfit === 0) {
+      set30DayPnl = 0;
+    } else {
+      set30DayPnl =
+        ((unRealizedProfit + realizedProfit - totalCost) / totalCost) * 100;
+    }
   };
 
   $: queryTradingStats = createQuery({
@@ -109,32 +129,12 @@
   }
 
   $: {
-    if (!$queryTradingStats.isError && $queryTradingStats?.data !== undefined) {
-      const tradingStatsMeta = $queryTradingStats?.data?.metadata.filter(
-        (item) => item.startTrade < 2592000000
-      );
-
-      unRealizedProfit = tradingStatsMeta?.reduce(
-        (prev, item) => prev + Number(item.unrealizedProfit),
-        0
-      );
-
-      realizedProfit = tradingStatsMeta.reduce(
-        (prev, item) => prev + Number(item.realizedProfit),
-        0
-      );
-
-      totalCost = tradingStatsMeta?.reduce(
-        (prev, item) => prev + Number(item.cost),
-        0
-      );
-
-      if (unRealizedProfit === 0 && realizedProfit === 0) {
-        set30DayPnl = 0;
-      } else {
-        set30DayPnl =
-          (unRealizedProfit + realizedProfit - totalCost) / totalCost;
-      }
+    if (
+      !$queryTradingStats.isError &&
+      $queryTradingStats.data &&
+      $queryTradingStats?.data !== undefined
+    ) {
+      formatDataTradingStats($queryTradingStats.data);
     }
   }
 </script>
@@ -147,7 +147,9 @@
   {:else}
     <div class="grid xl:grid-cols-6 grid-cols-3 gap-5">
       <div class="flex flex-col gap-2 justify-between">
-        <div class="text-xl xl:text-xs font-medium text_00000099">Balance</div>
+        <div class="text-xl xl:text-xs font-medium text_00000099">
+          Portfolio Value
+        </div>
         <div class="xl:text-base text-lg">
           <TooltipNumber number={balance} type="value" />
         </div>

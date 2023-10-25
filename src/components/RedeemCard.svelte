@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { isDarkMode, user, userPublicAddress } from "~/store";
+  import { isDarkMode } from "~/store";
 
   export let isRedeem = false;
   export let redeemData;
@@ -9,22 +9,17 @@
   import Copy from "~/components/Copy.svelte";
 
   import Crown from "~/assets/crown.svg";
-
-  let darkMode = false;
-  isDarkMode.subscribe((value) => {
-    darkMode = value;
-  });
 </script>
 
 <div
   class={`py-[16px] w-[438px] min-h-[280px] rounded-[16px] border border_0000000d flex flex-col gap-[30px] ${
-    darkMode ? "bg-[#212121]" : "bg-white"
+    $isDarkMode ? "bg-[#212121]" : "bg-white"
   }`}
 >
   <div class="px-[16px] flex items-center gap-[47px]">
     <div
       class={`flex-[0.6] rounded-2xl p-2 flex items-center justify-center ${
-        darkMode ? "bg-gray-200" : "bg-white"
+        $isDarkMode ? "bg-gray-200" : "bg-white"
       }`}
     >
       <img src={redeemData?.logo} alt="" class="w-20 h-20 object-contain" />
@@ -49,12 +44,12 @@
   <div class="relative border-b-2 border-dashed">
     <div
       class={`w-4 h-10 rounded-l-none rounded-full absolute -left-[1px] -bottom-5 border-r border-t border-b border_0000000d ${
-        darkMode ? "bg-[#161616]" : "bg-[#fff]"
+        $isDarkMode ? "bg-[#161616]" : "bg-[#fff]"
       }`}
     />
     <div
       class={`w-4 h-10 rounded-r-none rounded-full absolute -right-[1px] -bottom-5 border-l border-t border-b border_0000000d ${
-        darkMode ? "bg-[#161616]" : "bg-[#fff]"
+        $isDarkMode ? "bg-[#161616]" : "bg-[#fff]"
       } `}
     />
   </div>
@@ -71,6 +66,7 @@
             <div class="flex items-center gap-1">
               <img
                 src="https://raw.githubusercontent.com/getnimbus/nimbus-ext/c43eb2dd7d132a2686c32939ea36b0e97055abc7/src/assets/Gold4.svg"
+                alt=""
                 class="w-[28px] h-[28px]"
               />
               <div class="text-white xl:text-lg text-2xl font-medium">
@@ -89,6 +85,7 @@
             <div class="flex items-center gap-1">
               <img
                 src="https://raw.githubusercontent.com/getnimbus/nimbus-ext/c43eb2dd7d132a2686c32939ea36b0e97055abc7/src/assets/Gold4.svg"
+                alt=""
                 class="w-[28px] h-[28px]"
               />
               <div class="text-white xl:text-lg text-2xl font-medium">

@@ -20,16 +20,6 @@
 
   const navigate = useNavigate();
 
-  let typeWalletAddress = "";
-  typeWallet.subscribe((value) => {
-    typeWalletAddress = value;
-  });
-
-  let darkMode = false;
-  isDarkMode.subscribe((value) => {
-    darkMode = value;
-  });
-
   let showTooltipListNFT = false;
   let isShowTooltipName = false;
 
@@ -74,7 +64,7 @@
 >
   <td
     class={`pl-3 py-3 xl:static xl:bg-transparent sticky left-0 z-10 w-[220px] ${
-      darkMode
+      $isDarkMode
         ? "bg-[#131313] group-hover:bg-[#000]"
         : "bg-white group-hover:bg-gray-100"
     }`}
@@ -98,7 +88,7 @@
           </div>
         {/if}
       </div>
-      {#if typeWalletAddress === "EVM" || typeWalletAddress === "BUNDLE"}
+      {#if $typeWallet === "EVM" || $typeWallet === "BUNDLE"}
         <img
           src={detectedChain(data.nativeToken.symbol)}
           alt=""
@@ -112,7 +102,7 @@
 
   <td
     class={`py-3 xl:static xl:bg-transparent sticky left-[220px] z-10 w-[200px] ${
-      darkMode
+      $isDarkMode
         ? "bg-[#131313] group-hover:bg-[#000]"
         : "bg-white group-hover:bg-gray-100"
     }`}
@@ -190,7 +180,7 @@
 
   <td
     class={`py-3 ${
-      darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
+      $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
     <div
@@ -211,7 +201,7 @@
 
   <td
     class={`py-3 ${
-      darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
+      $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
     <div
@@ -231,7 +221,7 @@
 
   <td
     class={`py-3 ${
-      darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
+      $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
     <div
@@ -252,7 +242,7 @@
 
   <td
     class={`py-3 pr-3 ${
-      darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
+      $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
     <div
@@ -340,8 +330,8 @@
           <Copy
             address={data?.tokens[0]?.contractAddress}
             isShorten
-            iconColor={`${darkMode ? "#fff" : "#000"}`}
-            color={`${darkMode ? "#fff" : "#000"}`}
+            iconColor={`${$isDarkMode ? "#fff" : "#000"}`}
+            color={`${$isDarkMode ? "#fff" : "#000"}`}
           />
         </div>
       </div>

@@ -21,16 +21,6 @@
     "https://raw.githubusercontent.com/getnimbus/nimbus-ext/feat/daily-checking/src/assets/dailycheckin/3rd.png",
   ];
 
-  let darkMode = false;
-  isDarkMode.subscribe((value) => {
-    darkMode = value;
-  });
-
-  let userInfo = {};
-  user.subscribe((value) => {
-    userInfo = value;
-  });
-
   let selectedType: "collectGMPoint" | "history" = "collectGMPoint";
   let openScreenSuccess: boolean = false;
   let isLoadingCheckin: boolean = false;
@@ -81,7 +71,9 @@
     queryFn: () => handleRewards(),
     staleTime: Infinity,
     enabled:
-      Object.keys(userInfo).length !== 0 && $userPublicAddress.length !== 0,
+      $user &&
+      Object.keys($user).length !== 0 &&
+      $userPublicAddress.length !== 0,
     onError(err) {
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
@@ -93,7 +85,9 @@
     queryFn: () => handleDailyCheckin(),
     staleTime: Infinity,
     enabled:
-      Object.keys(userInfo).length !== 0 && $userPublicAddress.length !== 0,
+      $user &&
+      Object.keys($user).length !== 0 &&
+      $userPublicAddress.length !== 0,
     onError(err) {
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
@@ -223,13 +217,13 @@
                   {#each $queryDailyCheckin?.data?.pointStreak || [] as item, index}
                     <div
                       class={`flex flex-col gap-2 items-center filter rounded-lg py-8 transform scale-95 transition-all ${
-                        selectedCheckinIndex > index && darkMode
+                        selectedCheckinIndex > index && $isDarkMode
                           ? "grayscale bg-gray-700"
-                          : selectedCheckinIndex > index && !darkMode
+                          : selectedCheckinIndex > index && !$isDarkMode
                           ? "grayscale bg-gray-100"
                           : selectedCheckinIndex === index
                           ? "bg-black text-white scale-100 drop-shadow-lg"
-                          : darkMode
+                          : $isDarkMode
                           ? "bg-gray-700"
                           : "bg-gray-100"
                       }`}
@@ -295,14 +289,14 @@
             <div class="xl:text-lg text-xl font-medium">Checkin History</div>
             <div
               class={`border border_0000000d rounded-[10px] w-full max-h-[600px] overflow-y-auto ${
-                darkMode ? "bg-[#131313]" : "bg-[#fff]"
+                $isDarkMode ? "bg-[#131313]" : "bg-[#fff]"
               }`}
             >
               <table class="table-auto w-full h-full">
                 <thead>
                   <tr
                     class={`sticky top-0 ${
-                      darkMode ? "bg-gray-700" : "bg-gray-100"
+                      $isDarkMode ? "bg-gray-700" : "bg-gray-100"
                     } `}
                   >
                     <th class="py-2 pl-3 text-left font-medium">Date</th>

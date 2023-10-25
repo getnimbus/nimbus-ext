@@ -7,7 +7,7 @@
 
   import LoadingPremium from "~/components/LoadingPremium.svelte";
   import EChart from "~/components/EChart.svelte";
-  import ProgressBar from "~/components/ProgressBar.svelte";
+  import TooltipNumber from "~/components/TooltipNumber.svelte";
 
   import Logo from "~/assets/logo-1.svg";
   import LogoWhite from "~/assets/logo-white.svg";
@@ -15,21 +15,6 @@
   export let data;
   export let id;
   export let avgCost;
-
-  let selectedWallet: string = "";
-  wallet.subscribe((value) => {
-    selectedWallet = value;
-  });
-
-  let darkMode = false;
-  isDarkMode.subscribe((value) => {
-    darkMode = value;
-  });
-
-  let typeWalletAddress: string = "";
-  typeWallet.subscribe((value) => {
-    typeWalletAddress = value;
-  });
 
   let optionBar = {
     tooltip: {
@@ -39,13 +24,13 @@
         return `
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 260px;">
               <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
-                darkMode ? "white" : "black"
+                $isDarkMode ? "white" : "black"
               }">
                 $${formatPrice(params[0].axisValue)}
               </div>
               <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
                 <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
-                  darkMode ? "white" : "black"
+                  $isDarkMode ? "white" : "black"
                 }">
                   <span>${params[0]?.marker}</span>
                   Balance
@@ -53,7 +38,7 @@
 
                 <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right;">
                   <div style="margin-top: 4px; display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
-                    darkMode ? "white" : "black"
+                    $isDarkMode ? "white" : "black"
                   };">
                     ${formatPrice(params[0]?.value[1])}
                   </div>
@@ -62,14 +47,14 @@
 
               <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
                 <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
-                  darkMode ? "white" : "black"
+                  $isDarkMode ? "white" : "black"
                 }">
                   <div style="margin-top: 5px; display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background-color:#eab308;"></div>
                   Avg Price
                 </div>
                 <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right;">
                   <div style="margin-top: 4px; display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
-                    darkMode ? "white" : "black"
+                    $isDarkMode ? "white" : "black"
                   };">
                     $${formatPrice(avgCost)}
                   </div>
@@ -78,14 +63,14 @@
 
               <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
                 <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
-                  darkMode ? "white" : "black"
+                  $isDarkMode ? "white" : "black"
                 }">
                   <div style="margin-top: 5px; display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background-color:#1e96fc;"></div>
                   Current Price
                 </div>
                 <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right;">
                   <div style="margin-top: 4px; display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
-                    darkMode ? "white" : "black"
+                    $isDarkMode ? "white" : "black"
                   };">
                     $${formatPrice(data?.market_price)}
                   </div>
@@ -134,23 +119,23 @@
     series: [],
   };
 
-  const handleGetTradeHistoryAnalysis = async () => {
+  const handleGetTradeHistoryAnalysis = async (address) => {
     const response: any = await nimbus.get(
-      `/v2/address/${selectedWallet}/token/${data?.contractAddress}/trade-analysis?chain=${data?.chain}`
+      `/v2/address/${address}/token/${data?.contractAddress}/trade-analysis?chain=${data?.chain}`
     );
     return response?.data;
   };
 
   $: queryHistoryTokenDetailAnalysis = createQuery({
-    queryKey: ["trade-history-analysis", data, selectedWallet],
-    queryFn: () => handleGetTradeHistoryAnalysis(),
+    queryKey: ["trade-history-analysis", data, $wallet],
+    queryFn: () => handleGetTradeHistoryAnalysis($wallet),
     staleTime: Infinity,
     retry: false,
     enabled:
       data !== undefined &&
       Object.keys(data).length !== 0 &&
-      selectedWallet.length !== 0 &&
-      typeWalletAddress === "EVM",
+      $wallet.length !== 0 &&
+      $typeWallet === "EVM",
     onError(err) {
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
@@ -354,10 +339,10 @@
     }
   }
 
-  $: theme = darkMode ? "dark" : "white";
+  $: theme = $isDarkMode ? "dark" : "white";
 </script>
 
-<div class="flex flex-col">
+<div class="flex flex-col pb-10">
   {#if $queryHistoryTokenDetailAnalysis.isFetching}
     <div class="flex items-center justify-center h-[475px]">
       <LoadingPremium />
@@ -383,7 +368,7 @@
             class="opacity-40 absolute transform -translate-x-1/2 -translate-y-1/2 pointer-events-none top-1/2 left-1/2"
           >
             <img
-              src={darkMode ? LogoWhite : Logo}
+              src={$isDarkMode ? LogoWhite : Logo}
               alt=""
               width="140"
               height="140"
@@ -394,50 +379,58 @@
     </div>
   {/if}
 
-  <div class="flex flex-col gap-10">
-    <div class="flex flex-col">
+  <div class="flex flex-col gap-14">
+    <div class="flex flex-col gap-2">
       <div class="xl:text-lg text-xl">Win / Lose addresses</div>
-      <div class="px-10">
-        <ProgressBar
-          lowerIsBetter={false}
-          isProfitLoss={true}
-          leftLabel="0"
-          rightLabel={`${sumCount}`}
-          averageText={`${Math.round(sumCount / 2)}`}
-          progress={(sumCountWinHistoryTokenDetail / sumCount) * 100}
-          tooltipText={`${sumCountWinHistoryTokenDetail} addresses win`}
-          isDoubleMark
-          progressTwo={(sumCountLossHistoryTokenDetail / sumCount) * 100}
-          tooltipTextTwo={`${sumCountLossHistoryTokenDetail} addresses lose`}
-        />
+      <div
+        class="h-2 rounded-lg relative"
+        style={`background: linear-gradient(to right, rgb(37, 183, 112) ${
+          (sumCountWinHistoryTokenDetail / sumCount) * 100
+        }%, rgb(225, 64, 64) ${
+          (sumCountLossHistoryTokenDetail / sumCount) * 100
+        }%)`}
+      >
+        <div class="absolute top-5 left-0 xl:text-sm text-xl">
+          <TooltipNumber
+            number={(sumCountWinHistoryTokenDetail / sumCount) * 100}
+            type="percent"
+          />% Win
+        </div>
+        <div class="absolute top-5 right-0 xl:text-sm text-xl">
+          <TooltipNumber
+            number={(sumCountLossHistoryTokenDetail / sumCount) * 100}
+            type="percent"
+          />% Lose
+        </div>
       </div>
     </div>
 
-    <div class="flex flex-col">
+    <div class="flex flex-col gap-2">
       <div class="xl:text-lg text-xl">Profit / Loss</div>
-      <div class="px-10">
-        <ProgressBar
-          lowerIsBetter={false}
-          isProfitLoss={true}
-          leftLabel="$0"
-          rightLabel={`$${formatPrice(
-            Number(data?.market_price) * Number(sumTotalToken)
-          )}`}
-          averageText={`$${formatPrice(
-            (Number(data?.market_price) * Number(sumTotalToken)) / 2
-          )}`}
-          progress={(sumWinProfitHistoryTokenDetail /
-            (Number(data?.market_price) * Number(sumTotalToken))) *
-            100}
-          tooltipText={`Profit $${formatPrice(sumWinProfitHistoryTokenDetail)}`}
-          isDoubleMark
-          progressTwo={(sumLossProfitHistoryTokenDetail /
-            (Number(data?.market_price) * Number(sumTotalToken))) *
-            100}
-          tooltipTextTwo={`Loss $${formatPrice(
-            sumLossProfitHistoryTokenDetail
-          )}`}
-        />
+      <div
+        class="h-2 rounded-lg relative"
+        style={`background: linear-gradient(to right, rgb(37, 183, 112) ${
+          (sumCountWinHistoryTokenDetail / sumCount) * 100
+        }%, rgb(225, 64, 64) ${
+          (sumCountLossHistoryTokenDetail / sumCount) * 100
+        }%)`}
+      >
+        <div class="absolute top-5 left-0 xl:text-sm text-xl">
+          Profit <TooltipNumber
+            number={(sumWinProfitHistoryTokenDetail /
+              (Number(data?.market_price) * Number(sumTotalToken))) *
+              100}
+            type="value"
+          />
+        </div>
+        <div class="absolute top-5 right-0 xl:text-sm text-xl">
+          Loss <TooltipNumber
+            number={(sumLossProfitHistoryTokenDetail /
+              (Number(data?.market_price) * Number(sumTotalToken))) *
+              100}
+            type="value"
+          />
+        </div>
       </div>
     </div>
   </div>

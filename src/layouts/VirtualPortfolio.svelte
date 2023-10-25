@@ -23,16 +23,6 @@
 
   const navigate = useNavigate();
 
-  let selectedWallet: string = "";
-  wallet.subscribe((value) => {
-    selectedWallet = value;
-  });
-
-  let selectedChain: string = "";
-  chain.subscribe((value) => {
-    selectedChain = value;
-  });
-
   let listVirtualPortfolio = [];
   let selectedVirtualPortfolio = {};
 
@@ -50,7 +40,7 @@
   const virtualPortfolioList = async () => {
     try {
       const response = await nimbus.get(
-        `/address/${selectedWallet}/personalize/virtual-portflio`
+        `/address/${$wallet}/personalize/virtual-portflio`
       );
       if (response) {
         const virtualPortfolioNameList = Object.getOwnPropertyNames(
@@ -74,7 +64,7 @@
   };
 
   $: {
-    if (selectedWallet) {
+    if ($wallet) {
       virtualPortfolioList();
     }
   }
@@ -192,8 +182,8 @@
               on:click={() => {
                 navigate(
                   `/custom-virtual-portfolio?chain=${encodeURIComponent(
-                    selectedChain
-                  )}&address=${encodeURIComponent(selectedWallet)}`
+                    $chain
+                  )}&address=${encodeURIComponent($chain)}`
                 );
               }}
             >
