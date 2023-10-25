@@ -213,8 +213,19 @@
 <tr
   key={data?.symbol}
   class={`group transition-all ${
-    isOpenTokenInfoBundle ? ($isDarkMode ? "bg-[#000]" : "bg-gray-100") : ""
+    isOpenTokenInfoBundle ? (darkMode ? "bg-[#000]" : "bg-gray-100") : ""
   }`}
+  on:click={() => {
+    // if (clickable) {
+    //   navigate(
+    //     `/position-detail?id=${encodeURIComponent(
+    //       data.positionId
+    //     )}&type=${encodeURIComponent(
+    //       data.positionType
+    //     )}&address=${encodeURIComponent(selectedWallet)}`
+    //   );
+    // }
+  }}
   on:mouseover={() => {
     if ($user && Object.keys($user).length !== 0) {
       isShowReport = true;
@@ -720,7 +731,7 @@
     }`}
   >
     <div
-      class="flex items-center justify-end gap-1 text-2xl font-medium xl:text-sm"
+      class="flex items-center justify-end gap-1 text-2xl font-medium xl:text-sm view-token-detail1"
     >
       {#if ["BTC"].includes($typeWallet)}
         N/A
@@ -778,7 +789,7 @@
     } ${$isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"}`}
   >
     <div
-      class="flex items-center justify-end gap-1 text-2xl font-medium xl:text-sm"
+      class="flex items-center justify-end gap-1 text-2xl font-medium xl:text-sm view-token-detail2"
     >
       {#if ["BTC"].includes($typeWallet)}
         N/A
@@ -836,7 +847,7 @@
     >
       {#if $typeWallet === "BUNDLE"}
         <div
-          class="flex justify-center"
+          class="flex justify-center view-icon-detail"
           use:tooltip={{
             content: `<tooltip-detail text="Show bundles detail" />`,
             allowHTML: true,
@@ -885,7 +896,7 @@
 
       {#if $typeWallet === "EVM" || $typeWallet === "SOL" || $typeWallet === "BUNDLE" || $typeWallet === "CEX"}
         <div
-          class="flex justify-center cursor-pointer"
+          class="flex justify-center cursor-pointer view-icon-detail"
           on:click={() => {
             showSideTokenDetail = true;
             selectedTokenDetail = data;
