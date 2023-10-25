@@ -8,7 +8,7 @@
   export let listSelect;
   export let selected;
   export let type: "chain" | "wallet" | "lang" | "filter";
-  export let positionSelectList;
+  export let positionSelectList = "left-0";
 
   let open = false;
 
