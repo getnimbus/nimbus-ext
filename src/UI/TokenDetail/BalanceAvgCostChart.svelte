@@ -425,21 +425,17 @@
       >
         <div class="flex gap-1 absolute top-5 left-0 xl:text-sm text-xl w-max">
           Profit
-          <div class="flex">
-            {#if sumWinProfitHistoryTokenDetail < 0}-{/if}<TooltipNumber
-              number={Math.abs(sumWinProfitHistoryTokenDetail)}
-              type="value"
-            />
-          </div>
+          <TooltipNumber
+            number={Math.abs(sumWinProfitHistoryTokenDetail)}
+            type="value"
+          />
         </div>
         <div class="flex gap-1 absolute top-5 right-0 xl:text-sm text-xl">
           Loss
-          <div class="flex">
-            {#if sumLossProfitHistoryTokenDetail < 0}-{/if}<TooltipNumber
-              number={Math.abs(sumLossProfitHistoryTokenDetail)}
-              type="value"
-            />
-          </div>
+          <TooltipNumber
+            number={Math.abs(sumLossProfitHistoryTokenDetail)}
+            type="value"
+          />
         </div>
       </div>
     </div>
