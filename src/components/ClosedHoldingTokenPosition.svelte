@@ -1,6 +1,11 @@
 <script>
   import { typeWallet, isDarkMode, isHidePortfolio } from "~/store";
-  import { detectedChain, shorterName, handleImgError } from "~/utils";
+  import {
+    detectedChain,
+    shorterName,
+    handleImgError,
+    shorterAddress,
+  } from "~/utils";
   import CopyToClipboard from "svelte-copy-to-clipboard";
   import { wait } from "../entries/background/utils";
 
@@ -24,6 +29,7 @@
   let showSideTokenDetail = false;
   let selectedTokenDetail = {};
   let isCopied = false;
+  let isShowTooltipContractAddress = false;
 
   $: value = Number(data?.amount) * Number(data?.market_price);
 
@@ -635,7 +641,14 @@
                     isCopied = false;
                   }}
                 >
-                  <div class="cursor-pointer" on:click={copy}>
+                  <div
+                    class="cursor-pointer relative"
+                    on:mouseover={() => {
+                      isShowTooltipContractAddress = true;
+                    }}
+                    on:mouseleave={() => (isShowTooltipContractAddress = false)}
+                    on:click={copy}
+                  >
                     {#if isCopied}
                       <svg
                         width={20}
@@ -671,6 +684,19 @@
                           stroke-linejoin="round"
                         />
                       </svg>
+                    {/if}
+
+                    {#if isShowTooltipContractAddress}
+                      <div
+                        class="absolute left-1/2 transform -translate-x-1/2 -top-8"
+                        style="z-index: 2147483648;"
+                      >
+                        <tooltip-detail
+                          text={shorterAddress(
+                            selectedTokenDetail?.contractAddress
+                          )}
+                        />
+                      </div>
                     {/if}
                   </div>
                 </CopyToClipboard>

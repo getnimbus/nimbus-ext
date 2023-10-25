@@ -10,6 +10,7 @@
     isDarkMode,
     selectedBundle,
     triggerConnectWallet,
+    userPublicAddress,
   } from "~/store";
   import { i18n } from "~/lib/i18n";
   import dayjs from "dayjs";
@@ -22,6 +23,7 @@
     listLogoCEX,
     listProviderCEX,
     clickOutside,
+    driverObj,
   } from "~/utils";
   import mixpanel from "mixpanel-browser";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
@@ -53,6 +55,7 @@
   import FollowWhale from "~/assets/whale-tracking.gif";
   import Success from "~/assets/shield-done.svg";
   import Bundles from "~/assets/bundles.png";
+  // import "driver.js/dist/driver.css";
 
   const MultipleLang = {
     empty_wallet: i18n("newtabPage.empty-wallet", "No account added yet."),
@@ -835,7 +838,7 @@
       indexSelectedAddress = listAddress.indexOf(selectedAddress);
     }
   }
-
+  
   const handleSelectNextAddress = () => {
     if (indexSelectedAddress < listAddress.length - 1) {
       indexSelectedAddress = indexSelectedAddress + 1;
@@ -909,6 +912,7 @@
                 <Button
                   on:click={() => {
                     triggerConnectWallet.update((n) => (n = true));
+                    driverObj.destroy();
                   }}
                 >
                   <div class="text-2xl font-medium xl:text-base">
@@ -927,6 +931,7 @@
                     navigate(
                       `/?type=EVM&chain=ALL&address=0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0`
                     );
+                    driverObj.destroy();
                   }}
                 >
                   Try Demo account

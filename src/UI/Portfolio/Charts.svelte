@@ -696,7 +696,9 @@
 </script>
 
 <ErrorBoundary>
-  <div class="flex flex-col justify-between gap-6 xl:flex-row">
+  <div
+    class="flex flex-col justify-between gap-6 xl:flex-row view-the-pnl"
+  >
     <div
       class={`xl:w-1/2 w-full rounded-[20px] p-6 xl:block hidden ${
         $isDarkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"

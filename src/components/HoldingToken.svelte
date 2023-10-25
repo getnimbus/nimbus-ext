@@ -6,7 +6,12 @@
     selectedBundle,
     isHidePortfolio,
   } from "~/store";
-  import { detectedChain, shorterName, handleImgError } from "~/utils";
+  import {
+    detectedChain,
+    shorterName,
+    handleImgError,
+    shorterAddress,
+  } from "~/utils";
   import numeral from "numeral";
   import { Progressbar, Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
@@ -56,6 +61,7 @@
   let showSideTokenDetail = false;
   let selectedTokenDetail = {};
   let isCopied = false;
+  let isShowTooltipContractAddress = false;
 
   const trigger = () => {
     showToast = true;
@@ -213,8 +219,19 @@
 <tr
   key={data?.symbol}
   class={`group transition-all ${
-    isOpenTokenInfoBundle ? ($isDarkMode ? "bg-[#000]" : "bg-gray-100") : ""
+    isOpenTokenInfoBundle ? (darkMode ? "bg-[#000]" : "bg-gray-100") : ""
   }`}
+  on:click={() => {
+    // if (clickable) {
+    //   navigate(
+    //     `/position-detail?id=${encodeURIComponent(
+    //       data.positionId
+    //     )}&type=${encodeURIComponent(
+    //       data.positionType
+    //     )}&address=${encodeURIComponent(selectedWallet)}`
+    //   );
+    // }
+  }}
   on:mouseover={() => {
     if ($user && Object.keys($user).length !== 0) {
       isShowReport = true;
@@ -720,7 +737,7 @@
     }`}
   >
     <div
-      class="flex items-center justify-end gap-1 text-2xl font-medium xl:text-sm"
+      class="flex items-center justify-end gap-1 text-2xl font-medium xl:text-sm view-token-detail1"
     >
       {#if ["BTC"].includes($typeWallet)}
         N/A
@@ -778,7 +795,7 @@
     } ${$isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"}`}
   >
     <div
-      class="flex items-center justify-end gap-1 text-2xl font-medium xl:text-sm"
+      class="flex items-center justify-end gap-1 text-2xl font-medium xl:text-sm view-token-detail2"
     >
       {#if ["BTC"].includes($typeWallet)}
         N/A
@@ -836,7 +853,7 @@
     >
       {#if $typeWallet === "BUNDLE"}
         <div
-          class="flex justify-center"
+          class="flex justify-center view-icon-detail"
           use:tooltip={{
             content: `<tooltip-detail text="Show bundles detail" />`,
             allowHTML: true,
@@ -885,7 +902,7 @@
 
       {#if $typeWallet === "EVM" || $typeWallet === "SOL" || $typeWallet === "BUNDLE" || $typeWallet === "CEX"}
         <div
-          class="flex justify-center cursor-pointer"
+          class="flex justify-center cursor-pointer view-icon-detail"
           on:click={() => {
             showSideTokenDetail = true;
             selectedTokenDetail = data;
@@ -1484,7 +1501,14 @@
                     isCopied = false;
                   }}
                 >
-                  <div class="cursor-pointer" on:click={copy}>
+                  <div
+                    class="cursor-pointer relative"
+                    on:mouseover={() => {
+                      isShowTooltipContractAddress = true;
+                    }}
+                    on:mouseleave={() => (isShowTooltipContractAddress = false)}
+                    on:click={copy}
+                  >
                     {#if isCopied}
                       <svg
                         width={20}
@@ -1520,6 +1544,19 @@
                           stroke-linejoin="round"
                         />
                       </svg>
+                    {/if}
+
+                    {#if isShowTooltipContractAddress}
+                      <div
+                        class="absolute left-1/2 transform -translate-x-1/2 -top-8"
+                        style="z-index: 2147483648;"
+                      >
+                        <tooltip-detail
+                          text={shorterAddress(
+                            selectedTokenDetail?.contractAddress
+                          )}
+                        />
+                      </div>
                     {/if}
                   </div>
                 </CopyToClipboard>
