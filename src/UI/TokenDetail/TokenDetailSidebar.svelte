@@ -87,6 +87,11 @@
       );
     }
   }
+
+  $: colspan =
+    $typeWallet === "SOL" || $typeWallet === "EVM" || $typeWallet === "BUNDLE"
+      ? 5
+      : 4;
 </script>
 
 <ErrorBoundary>
@@ -278,19 +283,31 @@
                 </div>
               </th>
 
-              <th class="py-3 pr-3 rounded-tr-[10px]">
+              <th
+                class={`py-3 rounded-tr-[10px] ${
+                  $typeWallet === "SOL" ||
+                  $typeWallet === "EVM" ||
+                  $typeWallet === "BUNDLE"
+                    ? ""
+                    : "pr-3"
+                }`}
+              >
                 <div
                   class="text-right xl:text-xs text-xl uppercase font-medium"
                 >
                   Time
                 </div>
               </th>
+
+              {#if $typeWallet === "SOL" || $typeWallet === "EVM" || $typeWallet === "BUNDLE"}
+                <th class="py-3 w-10" />
+              {/if}
             </tr>
           </thead>
           {#if $queryHistoryTokenDetail.isFetching}
             <tbody>
               <tr>
-                <td colspan="4">
+                <td {colspan}>
                   <div
                     class="flex justify-center items-center h-full py-3 px-3"
                   >
@@ -303,7 +320,7 @@
             <tbody>
               {#if dataHistoryTokenDetail && dataHistoryTokenDetail?.length === 0}
                 <tr>
-                  <td colspan="4">
+                  <td {colspan}>
                     <div
                       class="flex justify-center items-center h-full py-3 px-3 xl:text-lg text-xl text-gray-400"
                     >
