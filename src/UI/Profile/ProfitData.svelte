@@ -101,12 +101,6 @@
       set30DayPnl =
         ((unRealizedProfit + realizedProfit - totalCost) / totalCost) * 100;
     }
-
-    // console.log({
-    //   unRealizedProfit,
-    //   realizedProfit,
-    //   totalCost,
-    // });
   };
 
   $: queryTradingStats = createQuery({
