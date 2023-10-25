@@ -6,7 +6,12 @@
     selectedBundle,
     isHidePortfolio,
   } from "~/store";
-  import { detectedChain, shorterName, handleImgError } from "~/utils";
+  import {
+    detectedChain,
+    shorterName,
+    handleImgError,
+    shorterAddress,
+  } from "~/utils";
   import numeral from "numeral";
   import { Progressbar, Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
@@ -32,7 +37,6 @@
   export let data;
   export let selectedWallet;
   export let sumAllTokens;
-  export let index;
 
   let isShowTooltipName = false;
   let isShowTooltipSymbol = false;
@@ -57,6 +61,7 @@
   let showSideTokenDetail = false;
   let selectedTokenDetail = {};
   let isCopied = false;
+  let isShowTooltipContractAddress = false;
 
   const trigger = () => {
     showToast = true;
@@ -214,7 +219,7 @@
 <tr
   key={data?.symbol}
   class={`group transition-all ${
-    isOpenTokenInfoBundle ? ($isDarkMode ? "bg-[#000]" : "bg-gray-100") : ""
+    isOpenTokenInfoBundle ? (darkMode ? "bg-[#000]" : "bg-gray-100") : ""
   }`}
   on:click={() => {
     // if (clickable) {
@@ -1496,7 +1501,14 @@
                     isCopied = false;
                   }}
                 >
-                  <div class="cursor-pointer" on:click={copy}>
+                  <div
+                    class="cursor-pointer relative"
+                    on:mouseover={() => {
+                      isShowTooltipContractAddress = true;
+                    }}
+                    on:mouseleave={() => (isShowTooltipContractAddress = false)}
+                    on:click={copy}
+                  >
                     {#if isCopied}
                       <svg
                         width={20}
@@ -1532,6 +1544,19 @@
                           stroke-linejoin="round"
                         />
                       </svg>
+                    {/if}
+
+                    {#if isShowTooltipContractAddress}
+                      <div
+                        class="absolute left-1/2 transform -translate-x-1/2 -top-8"
+                        style="z-index: 2147483648;"
+                      >
+                        <tooltip-detail
+                          text={shorterAddress(
+                            selectedTokenDetail?.contractAddress
+                          )}
+                        />
+                      </div>
                     {/if}
                   </div>
                 </CopyToClipboard>
