@@ -395,11 +395,7 @@
     }`}
   >
     <div class="xl:text-sm text-2xl text_00000099 font-medium flex justify-end">
-      $<TooltipNumber
-        number={data.profit.averageCost}
-        type="balance"
-        personalValue
-      />
+      $<TooltipNumber number={data.profit.averageCost} type="balance" />
     </div>
   </td>
 
@@ -423,7 +419,11 @@
               : "text_00000099"
           }`}
         >
-          <TooltipNumber number={Math.abs(realizedProfit)} type="value" />
+          <TooltipNumber
+            number={Math.abs(realizedProfit)}
+            type="value"
+            personalValue
+          />
         </div>
         <div class="flex items-center justify-end gap-1">
           <div

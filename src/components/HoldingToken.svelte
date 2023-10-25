@@ -703,14 +703,8 @@
     }`}
   >
     <div class="flex justify-end text-2xl font-medium xl:text-sm text_00000099">
-      ${#if $isHidePortfolio}
-        ******
-      {:else if data?.profit}
-        <TooltipNumber
-          number={data?.profit?.averageCost}
-          type="balance"
-          personalValue
-        />
+      ${#if data?.profit}
+        <TooltipNumber number={data?.profit?.averageCost} type="balance" />
       {:else}
         0
       {/if}
