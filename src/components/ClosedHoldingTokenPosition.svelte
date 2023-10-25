@@ -453,13 +453,13 @@
     </div>
   </td>
 
-  {#if $typeWallet === "SOL" || $typeWallet === "EVM" || $typeWallet === "BUNDLE"}
+  {#if $typeWallet === "SOL" || $typeWallet === "EVM" || $typeWallet === "BUNDLE" || $typeWallet === "CEX"}
     <td
-      class={`py-3 xl:w-12 w-32 h-full flex justify-center items-center xl:gap-3 gap-6 ${
+      class={`py-3 xl:w-14 w-32 h-full flex justify-center items-center xl:gap-3 gap-6 ${
         $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
       }`}
     >
-      {#if $typeWallet === "EVM" || $typeWallet === "SOL"}
+      {#if $typeWallet === "SOL" || $typeWallet === "EVM" || $typeWallet === "BUNDLE" || $typeWallet === "CEX"}
         <div
           class="flex justify-center cursor-pointer"
           on:click={() => {
