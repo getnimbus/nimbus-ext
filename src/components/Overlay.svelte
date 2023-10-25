@@ -37,7 +37,7 @@
 {#if isOpen}
   <div
     class="w-screen h-screen fixed top-0 left-0 flex overflow-y-auto justify-center items-center bg-[#000000cc]"
-    style="z-index: 2147483647;"
+    style="z-index: 9999999;"
     on:click={clickOutSideToClose ? handleClose : null}
   >
     <Motion
