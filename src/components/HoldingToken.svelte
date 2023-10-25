@@ -703,14 +703,8 @@
     }`}
   >
     <div class="flex justify-end text-2xl font-medium xl:text-sm text_00000099">
-      ${#if $isHidePortfolio}
-        ******
-      {:else if data?.profit}
-        <TooltipNumber
-          number={data?.profit?.averageCost}
-          type="balance"
-          personalValue
-        />
+      ${#if data?.profit}
+        <TooltipNumber number={data?.profit?.averageCost} type="balance" />
       {:else}
         0
       {/if}
@@ -831,9 +825,9 @@
     </div>
   </td>
 
-  {#if $typeWallet === "SOL" || $typeWallet === "EVM" || $typeWallet === "BUNDLE"}
+  {#if $typeWallet === "SOL" || $typeWallet === "EVM" || $typeWallet === "BUNDLE" || $typeWallet === "CEX"}
     <td
-      class={`py-3 xl:w-12 w-32 h-full flex justify-center items-center xl:gap-3 gap-6 ${
+      class={`py-3 xl:w-14 w-32 h-full flex justify-center items-center xl:gap-3 gap-6 ${
         $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
       }`}
     >
@@ -886,7 +880,7 @@
         </div>
       {/if}
 
-      {#if $typeWallet === "EVM" || $typeWallet === "SOL"}
+      {#if $typeWallet === "EVM" || $typeWallet === "SOL" || $typeWallet === "BUNDLE" || $typeWallet === "CEX"}
         <div
           class="flex justify-center cursor-pointer"
           on:click={() => {
