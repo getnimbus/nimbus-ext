@@ -155,7 +155,7 @@
           } else {
             return (
               `${value < 0 ? "-" : ""} $` +
-              numeral(Math.abs(value)).format("0.000000a")
+              numeral(Math.abs(value)).format("0.00a")
             );
           }
         },
