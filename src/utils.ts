@@ -2,6 +2,8 @@ import numeral from "numeral";
 import jwt_decode from "jwt-decode";
 import { nimbus } from "./lib/network";
 import { groupBy } from "lodash";
+import confetti from "canvas-confetti";
+import dayjs from "dayjs";
 
 import logo from "~/assets/bitcoin.png";
 import Bnb from "~/assets/bnb.png";
@@ -13,9 +15,8 @@ import Avax from "~/assets/avax.png";
 import Solana from "~/assets/solana.png";
 import Arbitrum from "~/assets/arbitrum.png";
 import Gnosis from "~/assets/gnosis.png";
-import Base from "~/assets/base.svg"
-import confetti from "canvas-confetti";
-import dayjs from "dayjs";
+import Base from "~/assets/base.svg";
+import Scroll from "~/assets/scroll.png";
 
 export const ETHAddressRegex = /(\b0x[a-fA-F0-9]{40}\b)/g
 export const ETHTrxRegex = /(\b0x[a-fA-F0-9]{64}\b)/g
@@ -302,6 +303,59 @@ export const getAddressContext = (address: string) => {
   return undefined;
 }
 
+export const chainList = [
+  {
+    logo: logo,
+    label: "All chains",
+    value: "ALL",
+  },
+  {
+    logo: Ethereum,
+    label: "Ethereum",
+    value: "ETH",
+  },
+  {
+    logo: Bnb,
+    label: "BNB",
+    value: "BNB",
+  },
+  {
+    logo: Matic,
+    label: "Polygon",
+    value: "MATIC",
+  },
+  {
+    logo: Optimism,
+    label: "Optimism",
+    value: "OP",
+  },
+  {
+    logo: Avax,
+    label: "Avalanche",
+    value: "AVAX",
+  },
+  {
+    logo: Arbitrum,
+    label: "Arbitrum",
+    value: "ARB",
+  },
+  {
+    logo: Base,
+    label: "Base",
+    value: "BASE",
+  },
+  {
+    logo: Scroll,
+    label: "Scroll",
+    value: "SCROLL",
+  },
+  {
+    logo: Gnosis,
+    label: "Gnosis",
+    value: "XDAI",
+  },
+];
+
 export const detectedChain = (type) => {
   let chain
   switch (type) {
@@ -328,6 +382,9 @@ export const detectedChain = (type) => {
       break;
     case "BASE":
       chain = Base
+      break;
+    case "SCROLL":
+      chain = Scroll
       break;
     case "SOL":
       chain = Solana
@@ -444,54 +501,6 @@ export const listLogoCEX = [
   "https://s2.coinmarketcap.com/static/img/exchanges/64x64/294.png",
   "https://s2.coinmarketcap.com/static/img/exchanges/64x64/70.png",
   "https://s2.coinmarketcap.com/static/img/exchanges/64x64/37.png",
-];
-
-export const chainList = [
-  {
-    logo: logo,
-    label: "All chains",
-    value: "ALL",
-  },
-  {
-    logo: Ethereum,
-    label: "Ethereum",
-    value: "ETH",
-  },
-  {
-    logo: Bnb,
-    label: "BNB",
-    value: "BNB",
-  },
-  {
-    logo: Matic,
-    label: "Polygon",
-    value: "MATIC",
-  },
-  {
-    logo: Optimism,
-    label: "Optimism",
-    value: "OP",
-  },
-  {
-    logo: Avax,
-    label: "Avalanche",
-    value: "AVAX",
-  },
-  {
-    logo: Arbitrum,
-    label: "Arbitrum",
-    value: "ARB",
-  },
-  {
-    logo: Base,
-    label: "Base",
-    value: "BASE",
-  },
-  {
-    logo: Gnosis,
-    label: "Gnosis",
-    value: "XDAI",
-  },
 ];
 
 export const showChatAnimationVariants = {
