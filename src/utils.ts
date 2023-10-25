@@ -384,7 +384,7 @@ export const detectedChain = (type) => {
       chain = Base
       break;
     case "SCROLL":
-      chain = Base
+      chain = Scroll
       break;
     case "SOL":
       chain = Solana
