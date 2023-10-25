@@ -2,6 +2,8 @@ import numeral from "numeral";
 import jwt_decode from "jwt-decode";
 import { nimbus } from "./lib/network";
 import { groupBy } from "lodash";
+import confetti from "canvas-confetti";
+import dayjs from "dayjs";
 
 import logo from "~/assets/bitcoin.png";
 import Bnb from "~/assets/bnb.png";
@@ -13,14 +15,8 @@ import Avax from "~/assets/avax.png";
 import Solana from "~/assets/solana.png";
 import Arbitrum from "~/assets/arbitrum.png";
 import Gnosis from "~/assets/gnosis.png";
-import Base from "~/assets/base.svg"
-import confetti from "canvas-confetti";
-import dayjs from "dayjs";
-import { driver } from "driver.js";
-import "driver.js/dist/driver.css";
-import { driver } from "driver.js";
-import "driver.js/dist/driver.css";
-import dayjs from "dayjs";
+import Base from "~/assets/base.svg";
+import Scroll from "~/assets/scroll.png";
 
 export const ETHAddressRegex = /(\b0x[a-fA-F0-9]{40}\b)/g
 export const ETHTrxRegex = /(\b0x[a-fA-F0-9]{64}\b)/g
@@ -307,44 +303,58 @@ export const getAddressContext = (address: string) => {
   return undefined;
 }
 
-export let explorerOnChain = (type, hash) => {
-  let linkTrx = ""
-  switch (type) {
-    case "ETH":
-      linkTrx = `https://etherscan.io/tx/${hash}`;
-      break;
-    case "XDAI":
-      linkTrx = `https://gnosisscan.io/tx/${hash}`;
-      break;
-    case "BNB":
-      linkTrx = `https://bscscan.com/tx/${hash}`;
-      break;
-    case "MATIC":
-      linkTrx = `https://polygonscan.com/tx/${hash}`;
-      break;
-    case "OP":
-      linkTrx = `https://optimistic.etherscan.io/tx/${hash}`;
-      break;
-    case "AVAX":
-      linkTrx = `https://snowtrace.io/tx/${hash}`;
-      break;
-    case "ARB":
-      linkTrx = `https://arbiscan.io/tx/${hash}`;
-      break;
-    case "BASE":
-      linkTrx = `https://basescan.org/tx/${hash}`
-      break;
-    case "SCROLL":
-      linkTrx = `https://blockscout.scroll.io/tx/${hash}`
-      break;
-    case "SOL":
-      linkTrx = `https://solscan.io/tx/${hash}`
-      break;
-    default:
-      linkTrx = ""
-  }
-  return linkTrx
-}
+export const chainList = [
+  {
+    logo: logo,
+    label: "All chains",
+    value: "ALL",
+  },
+  {
+    logo: Ethereum,
+    label: "Ethereum",
+    value: "ETH",
+  },
+  {
+    logo: Bnb,
+    label: "BNB",
+    value: "BNB",
+  },
+  {
+    logo: Matic,
+    label: "Polygon",
+    value: "MATIC",
+  },
+  {
+    logo: Optimism,
+    label: "Optimism",
+    value: "OP",
+  },
+  {
+    logo: Avax,
+    label: "Avalanche",
+    value: "AVAX",
+  },
+  {
+    logo: Arbitrum,
+    label: "Arbitrum",
+    value: "ARB",
+  },
+  {
+    logo: Base,
+    label: "Base",
+    value: "BASE",
+  },
+  {
+    logo: Scroll,
+    label: "Scroll",
+    value: "SCROLL",
+  },
+  {
+    logo: Gnosis,
+    label: "Gnosis",
+    value: "XDAI",
+  },
+];
 
 export const detectedChain = (type) => {
   let chain
@@ -373,6 +383,9 @@ export const detectedChain = (type) => {
     case "BASE":
       chain = Base
       break;
+    case "SCROLL":
+      chain = Base
+      break;
     case "SOL":
       chain = Solana
       break;
@@ -388,6 +401,12 @@ export const linkExplorer = (chain, hash) => {
     address: ""
   }
   switch (chain) {
+    case "BTC":
+      links = {
+        trx: `https://www.oklink.com/btc/tx/${hash}`,
+        address: `https://www.oklink.com/btc/address/${hash}`
+      }
+      break;
     case "ETH":
       links = {
         trx: `https://etherscan.io/tx/${hash}`,
@@ -428,12 +447,6 @@ export const linkExplorer = (chain, hash) => {
       links = {
         trx: `https://arbiscan.io/tx/${hash}`,
         address: `https://arbiscan.io/address/${hash}`,
-      }
-      break;
-    case "BTC":
-      links = {
-        trx: `https://www.oklink.com/btc/tx/${hash}`,
-        address: `https://www.oklink.com/btc/address/${hash}`
       }
       break;
     default:
@@ -488,54 +501,6 @@ export const listLogoCEX = [
   "https://s2.coinmarketcap.com/static/img/exchanges/64x64/294.png",
   "https://s2.coinmarketcap.com/static/img/exchanges/64x64/70.png",
   "https://s2.coinmarketcap.com/static/img/exchanges/64x64/37.png",
-];
-
-export const chainList = [
-  {
-    logo: logo,
-    label: "All chains",
-    value: "ALL",
-  },
-  {
-    logo: Ethereum,
-    label: "Ethereum",
-    value: "ETH",
-  },
-  {
-    logo: Bnb,
-    label: "BNB",
-    value: "BNB",
-  },
-  {
-    logo: Matic,
-    label: "Polygon",
-    value: "MATIC",
-  },
-  {
-    logo: Optimism,
-    label: "Optimism",
-    value: "OP",
-  },
-  {
-    logo: Avax,
-    label: "Avalanche",
-    value: "AVAX",
-  },
-  {
-    logo: Arbitrum,
-    label: "Arbitrum",
-    value: "ARB",
-  },
-  {
-    logo: Base,
-    label: "Base",
-    value: "BASE",
-  },
-  {
-    logo: Gnosis,
-    label: "Gnosis",
-    value: "XDAI",
-  },
 ];
 
 export const showChatAnimationVariants = {
@@ -1024,69 +989,6 @@ export const triggerFirework = () => {
     startVelocity: 45,
   });
 };
-
-
-export const driverObj = driver({
-  showProgress: true,
-  overlayColor: "#27326f",
-  onDestroyStarted: () => {
-    if (!driverObj.hasNextStep() || confirm("Are you sure?")) {
-      driverObj.destroy();
-    }
-  },
-  showButtons: ["next", "previous", "close"],
-  steps: [
-    // {
-    //   element: "#view-use-wallet-or-demo",
-    //   popover: {
-    //     title: "Introduce App",
-    //     description: "Add wallet or view Demo wallet",
-    //   },
-    // },
-    {
-      element: ".view-the-pnl",
-      popover: {
-        title: "Introduce App",
-        description: "Viewing the PnL for Token and NFT",
-      },
-    },
-    {
-      element: ".view-token-detail1",
-      popover: {
-        title: "Introduce App",
-        description: "View your token PnL",
-      },
-    },
-    {
-      element: ".view-token-detail2",
-      popover: {
-        title: "Introduce App",
-        description: "View your token PnL",
-      },
-    },
-    {
-      element: ".view-icon-detail",
-      popover: {
-        title: "Introduce App",
-        description: "Get the detail",
-      },
-    },
-    {
-      element: ".view-nft-detail",
-      popover: {
-        title: "Introduce App",
-        description: "View NFT detail",
-      },
-    },
-    // {
-    //   element: "#view-closed-positions",
-    //   popover: {
-    //     title: "Introduce App",
-    //     description: "View closed positions",
-    //   },
-    // },
-  ],
-});
 
 export const formatTransactionTime = (date: Date) => {
   if (dayjs().diff(date, 'days') >= 1) {

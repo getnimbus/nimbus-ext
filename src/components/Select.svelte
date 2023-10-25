@@ -85,17 +85,7 @@
               open = false;
             }
             if (type === "chain") {
-              if (
-                item.value !== "ALL" &&
-                item.value !== "ETH" &&
-                item.value !== "BTC" &&
-                item.value !== "BNB" &&
-                item.value !== "MATIC" &&
-                item.value !== "OP" &&
-                item.value !== "AVAX" &&
-                item.value !== "ARB" &&
-                item.value !== "BASE"
-              ) {
+              if (item.value === "XDAI") {
                 open = false;
               } else {
                 chain.update((n) => (n = item.value));
