@@ -384,11 +384,13 @@
       <div class="xl:text-lg text-xl">Win / Lose addresses</div>
       <div
         class="h-2 rounded-lg relative"
-        style={`background: linear-gradient(to right, rgb(37, 183, 112) ${
-          (sumCountWinHistoryTokenDetail / sumCount) * 100
-        }%, rgb(225, 64, 64) ${
-          (sumCountLossHistoryTokenDetail / sumCount) * 100
-        }%)`}
+        style={`background: linear-gradient(to right, #25b770 ${(
+          (sumCountWinHistoryTokenDetail / sumCount) *
+          100
+        ).toFixed(2)}%, #e14040 ${(
+          (sumCountLossHistoryTokenDetail / sumCount) *
+          100
+        ).toFixed(2)}%)`}
       >
         <div class="absolute top-5 left-0 xl:text-sm text-xl">
           <TooltipNumber
@@ -409,27 +411,33 @@
       <div class="xl:text-lg text-xl">Profit / Loss</div>
       <div
         class="h-2 rounded-lg relative"
-        style={`background: linear-gradient(to right, rgb(37, 183, 112) ${
-          (sumCountWinHistoryTokenDetail / sumCount) * 100
-        }%, rgb(225, 64, 64) ${
-          (sumCountLossHistoryTokenDetail / sumCount) * 100
-        }%)`}
+        style={`background: linear-gradient(to right, #25b770 ${Math.abs(
+          (sumWinProfitHistoryTokenDetail /
+            (Number(data?.market_price) * Number(sumTotalToken))) *
+            100
+        ).toFixed(2)}%, #e14040 ${Math.abs(
+          (sumLossProfitHistoryTokenDetail /
+            (Number(data?.market_price) * Number(sumTotalToken))) *
+            100
+        ).toFixed(2)}%)`}
       >
-        <div class="absolute top-5 left-0 xl:text-sm text-xl">
-          Profit <TooltipNumber
-            number={(sumWinProfitHistoryTokenDetail /
-              (Number(data?.market_price) * Number(sumTotalToken))) *
-              100}
-            type="value"
-          />
+        <div class="flex gap-1 absolute top-5 left-0 xl:text-sm text-xl w-max">
+          Profit
+          <div class="flex">
+            {#if sumWinProfitHistoryTokenDetail < 0}-{/if}<TooltipNumber
+              number={Math.abs(sumWinProfitHistoryTokenDetail)}
+              type="value"
+            />
+          </div>
         </div>
-        <div class="absolute top-5 right-0 xl:text-sm text-xl">
-          Loss <TooltipNumber
-            number={(sumLossProfitHistoryTokenDetail /
-              (Number(data?.market_price) * Number(sumTotalToken))) *
-              100}
-            type="value"
-          />
+        <div class="flex gap-1 absolute top-5 right-0 xl:text-sm text-xl">
+          Loss
+          <div class="flex">
+            {#if sumLossProfitHistoryTokenDetail < 0}-{/if}<TooltipNumber
+              number={Math.abs(sumLossProfitHistoryTokenDetail)}
+              type="value"
+            />
+          </div>
         </div>
       </div>
     </div>
