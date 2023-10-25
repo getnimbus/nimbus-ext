@@ -839,23 +839,23 @@
     }
   }
 
-  $: {
-    if (
-      !localStorage.getItem("view-use-wallet-or-demo-tour") &&
-      !$userPublicAddress
-    ) {
-      setTimeout(() => {
-        driverObj.highlight({
-          element: "#view-use-wallet-or-demo",
-          popover: {
-            title: "Introduce App",
-            description: "Add wallet or view Demo wallet",
-          },
-        });
-        localStorage.setItem("view-use-wallet-or-demo-tour", "true");
-      }, 1000);
-    }
-  }
+  // $: {
+  //   if (
+  //     !localStorage.getItem("view-use-wallet-or-demo-tour") &&
+  //     !$userPublicAddress
+  //   ) {
+  //     setTimeout(() => {
+  //       driverObj.highlight({
+  //         element: "#view-use-wallet-or-demo",
+  //         popover: {
+  //           title: "Introduce App",
+  //           description: "Add wallet or view Demo wallet",
+  //         },
+  //       });
+  //       localStorage.setItem("view-use-wallet-or-demo-tour", "true");
+  //     }, 1000);
+  //   }
+  // }
 
   const handleSelectNextAddress = () => {
     if (indexSelectedAddress < listAddress.length - 1) {
