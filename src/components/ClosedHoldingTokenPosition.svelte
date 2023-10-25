@@ -688,7 +688,7 @@
 
                     {#if isShowTooltipContractAddress}
                       <div
-                        class="absolute left-1/2 transform -translate-x-1/2 -top-8"
+                        class="absolute right-0 -top-8"
                         style="z-index: 2147483648;"
                       >
                         <tooltip-detail

@@ -388,7 +388,7 @@
           (sumCountWinHistoryTokenDetail / sumCount) *
           100
         ).toFixed(2)}%, #e14040 ${(
-          (sumCountLossHistoryTokenDetail / sumCount) *
+          (sumCountWinHistoryTokenDetail / sumCount) *
           100
         ).toFixed(2)}%)`}
       >
@@ -407,7 +407,7 @@
       </div>
     </div>
 
-    <!-- <div class="flex flex-col gap-2">
+    <div class="flex flex-col gap-2">
       <div class="xl:text-lg text-xl">Profit / Loss</div>
       <div
         class="h-2 rounded-lg relative"
@@ -417,7 +417,7 @@
               Math.abs(sumWinProfitHistoryTokenDetail))) *
             100
         ).toFixed(2)}%, #e14040 ${Math.abs(
-          (sumLossProfitHistoryTokenDetail /
+          (sumWinProfitHistoryTokenDetail /
             (Math.abs(sumLossProfitHistoryTokenDetail) +
               Math.abs(sumWinProfitHistoryTokenDetail))) *
             100
@@ -425,24 +425,20 @@
       >
         <div class="flex gap-1 absolute top-5 left-0 xl:text-sm text-xl w-max">
           Profit
-          <div class="flex">
-            {#if sumWinProfitHistoryTokenDetail < 0}-{/if}<TooltipNumber
-              number={Math.abs(sumWinProfitHistoryTokenDetail)}
-              type="value"
-            />
-          </div>
+          <TooltipNumber
+            number={Math.abs(sumWinProfitHistoryTokenDetail)}
+            type="value"
+          />
         </div>
         <div class="flex gap-1 absolute top-5 right-0 xl:text-sm text-xl">
           Loss
-          <div class="flex">
-            {#if sumLossProfitHistoryTokenDetail < 0}-{/if}<TooltipNumber
-              number={Math.abs(sumLossProfitHistoryTokenDetail)}
-              type="value"
-            />
-          </div>
+          <TooltipNumber
+            number={Math.abs(sumLossProfitHistoryTokenDetail)}
+            type="value"
+          />
         </div>
       </div>
-    </div> -->
+    </div>
   </div>
 </div>
 
