@@ -302,6 +302,45 @@ export const getAddressContext = (address: string) => {
   return undefined;
 }
 
+export let explorerOnChain = (type, hash) => {
+  let linkTrx = ""
+  switch (type) {
+    case "ETH":
+      linkTrx = `https://etherscan.io/tx/${hash}`;
+      break;
+    case "XDAI":
+      linkTrx = `https://gnosisscan.io/tx/${hash}`;
+      break;
+    case "BNB":
+      linkTrx = `https://bscscan.com/tx/${hash}`;
+      break;
+    case "MATIC":
+      linkTrx = `https://polygonscan.com/tx/${hash}`;
+      break;
+    case "OP":
+      linkTrx = `https://optimistic.etherscan.io/tx/${hash}`;
+      break;
+    case "AVAX":
+      linkTrx = `https://snowtrace.io/tx/${hash}`;
+      break;
+    case "ARB":
+      linkTrx = `https://arbiscan.io/tx/${hash}`;
+      break;
+    case "BASE":
+      linkTrx = `https://basescan.org/tx/${hash}`
+      break;
+    case "SCROLL":
+      linkTrx = `https://blockscout.scroll.io/tx/${hash}`
+      break;
+    case "SOL":
+      linkTrx = `https://solscan.io/tx/${hash}`
+      break;
+    default:
+      linkTrx = ""
+  }
+  return linkTrx
+}
+
 export const detectedChain = (type) => {
   let chain
   switch (type) {
@@ -344,12 +383,6 @@ export const linkExplorer = (chain, hash) => {
     address: ""
   }
   switch (chain) {
-    case "BTC":
-      links = {
-        trx: `https://www.oklink.com/btc/tx/${hash}`,
-        address: `https://www.oklink.com/btc/address/${hash}`
-      }
-      break;
     case "ETH":
       links = {
         trx: `https://etherscan.io/tx/${hash}`,
@@ -390,6 +423,12 @@ export const linkExplorer = (chain, hash) => {
       links = {
         trx: `https://arbiscan.io/tx/${hash}`,
         address: `https://arbiscan.io/address/${hash}`,
+      }
+      break;
+    case "BTC":
+      links = {
+        trx: `https://www.oklink.com/btc/tx/${hash}`,
+        address: `https://www.oklink.com/btc/address/${hash}`
       }
       break;
     default:
