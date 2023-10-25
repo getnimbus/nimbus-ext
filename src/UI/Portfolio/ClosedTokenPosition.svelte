@@ -281,7 +281,13 @@
     }
   }
 
-  $: colspan = $typeWallet !== "EVM" ? 5 : 4;
+  $: colspan =
+    $typeWallet === "SOL" ||
+    $typeWallet === "EVM" ||
+    $typeWallet === "BUNDLE" ||
+    $typeWallet === "CEX"
+      ? 5
+      : 4;
 
   $: {
     if (selectedWallet || $chain) {
@@ -392,14 +398,15 @@
                   <div
                     class="text-right xl:text-xs text-xl uppercase font-medium"
                   >
-                    Average Cost
+                    Avg Cost
                   </div>
                 </th>
                 <th
                   class={`py-3 ${
                     $typeWallet === "SOL" ||
                     $typeWallet === "EVM" ||
-                    $typeWallet === "BUNDLE"
+                    $typeWallet === "BUNDLE" ||
+                    $typeWallet === "CEX"
                       ? ""
                       : "pr-3 rounded-tr-[10px]"
                   }`}
@@ -410,8 +417,8 @@
                     ROI
                   </div>
                 </th>
-                {#if $typeWallet === "SOL" || $typeWallet === "EVM" || $typeWallet === "BUNDLE"}
-                  <th class="py-3 xl:w-12 w-32 rounded-tr-[10px]" />
+                {#if $typeWallet === "SOL" || $typeWallet === "EVM" || $typeWallet === "BUNDLE" || $typeWallet === "CEX"}
+                  <th class="py-3 xl:w-14 w-32 rounded-tr-[10px]" />
                 {/if}
               </tr>
             </thead>
