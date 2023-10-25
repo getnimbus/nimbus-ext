@@ -424,9 +424,11 @@
   :global(body) .driver-popover-footer {
     gap: 25px;
   }
+
   :global(body) .driver-popover-close-btn {
     width: 30px;
     height: 30px;
     font-size: 25px;
+    color: #6b7280;
   }
 </style>
