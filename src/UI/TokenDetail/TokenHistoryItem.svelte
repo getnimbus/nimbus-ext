@@ -67,7 +67,7 @@
   >
     <div class="xl:text-sm text-2xl text_00000099 font-medium flex justify-end">
       {#if data?.to_token_address?.toLowerCase() === contractAddress?.toLowerCase()}
-        {#if data?.to_price < 0.01}
+        {#if data?.to_price < 1}
           $<TooltipNumber number={data?.to_price} type="balance" />
         {:else}
           <TooltipNumber number={data?.to_price} type="value" />
@@ -75,7 +75,7 @@
       {/if}
 
       {#if data?.to_token_address?.toLowerCase() !== contractAddress?.toLowerCase()}
-        {#if data?.from_price < 0.01}
+        {#if data?.from_price < 1}
           $<TooltipNumber number={data?.from_price} type="balance" />
         {:else}
           <TooltipNumber number={data?.from_price} type="value" />
