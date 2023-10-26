@@ -193,10 +193,6 @@
 
   $: withinLast24Hours = dayjs().diff(dayjs(data?.last_transferred_at), "hour");
 
-  $: logo =
-    data.logo ||
-    "https://raw.githubusercontent.com/getnimbus/assets/main/token.png";
-
   $: formatDataBreakdown = (data?.breakdown || [])
     .map((item) => {
       const selectedAddress = $selectedBundle?.accounts.find(
@@ -298,7 +294,8 @@
       {/if}
       <div class="relative">
         <img
-          src={logo}
+          src={data.logo ||
+            "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"}
           alt=""
           width="30"
           height="30"
@@ -306,7 +303,7 @@
           on:error={(e) =>
             handleImgError(
               e,
-              logo,
+              data.logo,
               "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
             )}
         />
@@ -1014,7 +1011,8 @@
             <div class="py-2 pl-3 flex-1">
               <div class="flex items-center gap-3">
                 <img
-                  src={item?.logo}
+                  src={item?.logo ||
+                    "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"}
                   alt=""
                   class="rounded-full w-[30px] h-[30px]"
                   on:error={(e) =>
@@ -1153,7 +1151,8 @@
                 >
                   <div class="flex items-center gap-3">
                     <img
-                      src={item?.logo}
+                      src={item?.logo ||
+                        "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"}
                       alt=""
                       class="rounded-full w-[30px] h-[30px]"
                       on:error={(e) =>
@@ -1419,7 +1418,8 @@
           <div class="flex items-center gap-4">
             <div class="relative">
               <img
-                src={logo}
+                src={data.logo ||
+                  "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"}
                 alt=""
                 width="46"
                 height="46"
@@ -1427,7 +1427,7 @@
                 on:error={(e) =>
                   handleImgError(
                     e,
-                    logo,
+                    data.logo,
                     "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
                   )}
               />

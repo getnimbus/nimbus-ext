@@ -41,10 +41,6 @@
     Number(data?.avgCost) === 0
       ? 0
       : realizedProfit / Math.abs(Number(data?.avgCost));
-
-  $: logo =
-    data.logo ||
-    "https://raw.githubusercontent.com/getnimbus/assets/main/token.png";
 </script>
 
 <tr
@@ -77,7 +73,8 @@
     <div class="text-left flex items-center gap-3">
       <div class="relative">
         <img
-          src={logo}
+          src={data.logo ||
+            "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"}
           alt=""
           width="30"
           height="30"
@@ -85,7 +82,7 @@
           on:error={(e) =>
             handleImgError(
               e,
-              logo,
+              data.logo,
               "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
             )}
         />
@@ -559,7 +556,8 @@
           <div class="flex items-center gap-4">
             <div class="relative">
               <img
-                src={logo}
+                src={data.logo ||
+                  "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"}
                 alt=""
                 width="46"
                 height="46"
@@ -567,7 +565,7 @@
                 on:error={(e) =>
                   handleImgError(
                     e,
-                    logo,
+                    data.logo,
                     "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
                   )}
               />

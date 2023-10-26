@@ -203,7 +203,8 @@
                   >
                     <div class="flex items-center justify-start gap-3">
                       <img
-                        src={item.logoUrl}
+                        src={item?.logoUrl ||
+                          "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"}
                         alt=""
                         width="35"
                         height="35"
