@@ -50,7 +50,7 @@
                   $isDarkMode ? "white" : "black"
                 }">
                   <div style="margin-top: 5px; display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background-color:#eab308;"></div>
-                  Avg Price
+                  Avg Cost
                 </div>
                 <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right;">
                   <div style="margin-top: 4px; display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
@@ -388,7 +388,7 @@
           (sumCountWinHistoryTokenDetail / sumCount) *
           100
         ).toFixed(2)}%, #e14040 ${(
-          (sumCountLossHistoryTokenDetail / sumCount) *
+          (sumCountWinHistoryTokenDetail / sumCount) *
           100
         ).toFixed(2)}%)`}
       >
@@ -417,7 +417,7 @@
               Math.abs(sumWinProfitHistoryTokenDetail))) *
             100
         ).toFixed(2)}%, #e14040 ${Math.abs(
-          (sumLossProfitHistoryTokenDetail /
+          (sumWinProfitHistoryTokenDetail /
             (Math.abs(sumLossProfitHistoryTokenDetail) +
               Math.abs(sumWinProfitHistoryTokenDetail))) *
             100
@@ -425,21 +425,17 @@
       >
         <div class="flex gap-1 absolute top-5 left-0 xl:text-sm text-xl w-max">
           Profit
-          <div class="flex">
-            {#if sumWinProfitHistoryTokenDetail < 0}-{/if}<TooltipNumber
-              number={Math.abs(sumWinProfitHistoryTokenDetail)}
-              type="value"
-            />
-          </div>
+          <TooltipNumber
+            number={Math.abs(sumWinProfitHistoryTokenDetail)}
+            type="value"
+          />
         </div>
         <div class="flex gap-1 absolute top-5 right-0 xl:text-sm text-xl">
           Loss
-          <div class="flex">
-            {#if sumLossProfitHistoryTokenDetail < 0}-{/if}<TooltipNumber
-              number={Math.abs(sumLossProfitHistoryTokenDetail)}
-              type="value"
-            />
-          </div>
+          <TooltipNumber
+            number={Math.abs(sumLossProfitHistoryTokenDetail)}
+            type="value"
+          />
         </div>
       </div>
     </div>
