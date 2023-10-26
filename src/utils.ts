@@ -305,7 +305,7 @@ export const getAddressContext = (address: string) => {
   return undefined;
 };
 
-export let explorerOnChain = (type, hash) => {
+export const explorerOnChain = (type, hash) => {
   let linkTrx = ""
   switch (type) {
     case "ETH":
