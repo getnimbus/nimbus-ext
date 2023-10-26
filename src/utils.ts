@@ -1127,12 +1127,18 @@ export const handleImgError = async (e, image, defaultImage) => {
     })
       .then((r) => r.blob())
       .then((d) => {
-        e.target.src = window.URL.createObjectURL(d);
+        if (window.URL.createObjectURL(d) !== null) {
+          e.target.src = window.URL.createObjectURL(d);
+        }
       })
       .catch(() => {
-        e.target.src = defaultImage;
+        if (defaultImage !== null) {
+          e.target.src = defaultImage;
+        }
       });
   } else {
-    e.target.src = defaultImage;
+    if (defaultImage !== null) {
+      e.target.src = defaultImage;
+    }
   }
 };
