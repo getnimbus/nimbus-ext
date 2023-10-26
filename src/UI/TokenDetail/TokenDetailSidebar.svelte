@@ -226,9 +226,7 @@
         $isDarkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
       }`}
     >
-      <div class="xl:text-2xl text-4xl font-medium">
-        Market Balance / Avg Cost
-      </div>
+      <div class="xl:text-2xl text-4xl font-medium">Avg Cost distribution</div>
       <BalanceAvgCostChart
         {data}
         id={data?.name}
