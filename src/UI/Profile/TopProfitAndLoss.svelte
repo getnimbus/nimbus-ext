@@ -118,7 +118,8 @@
               <div class="flex items-center justify-between gap-2">
                 <div class="flex-1 flex items-center gap-2">
                   <img
-                    src={item.logo}
+                    src={item?.logo ||
+                      "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"}
                     alt=""
                     width="30"
                     height="30"
