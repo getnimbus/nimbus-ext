@@ -1121,23 +1121,19 @@ export const formatTransactionTime = (date: Date) => {
 
 export const handleImgError = async (e, image, defaultImage) => {
   e.target.onerror = null; // break loop
-  if (image.includes("https://api.center.dev")) {
-    fetch(image, {
-      headers: { "x-api-key": "lapis-fridge-d84f5377deca" },
-    })
-      .then((r) => r.blob())
-      .then((d) => {
-        if (window.URL.createObjectURL(d) !== null) {
-          e.target.src = window.URL.createObjectURL(d);
-        }
+  if (defaultImage !== null) {
+    if (image.includes("https://api.center.dev")) {
+      fetch(image, {
+        headers: { "x-api-key": "lapis-fridge-d84f5377deca" },
       })
-      .catch(() => {
-        if (defaultImage !== null) {
+        .then((r) => r.blob())
+        .then((d) => {
+          e.target.src = window.URL.createObjectURL(d);
+        })
+        .catch(() => {
           e.target.src = defaultImage;
-        }
-      });
-  } else {
-    if (defaultImage !== null) {
+        });
+    } else {
       e.target.src = defaultImage;
     }
   }
