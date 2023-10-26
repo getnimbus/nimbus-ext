@@ -18,6 +18,7 @@ import Solana from "~/assets/solana.png";
 import Arbitrum from "~/assets/arbitrum.png";
 import Gnosis from "~/assets/gnosis.png";
 import Base from "~/assets/base.svg";
+import Scroll from "~/assets/scroll.png";
 
 export const ETHAddressRegex = /(\b0x[a-fA-F0-9]{40}\b)/g;
 export const ETHTrxRegex = /(\b0x[a-fA-F0-9]{64}\b)/g;
@@ -304,7 +305,7 @@ export const getAddressContext = (address: string) => {
   return undefined;
 };
 
-export let explorerOnChain = (type, hash) => {
+export const explorerOnChain = (type, hash) => {
   let linkTrx = ""
   switch (type) {
     case "ETH":
@@ -343,6 +344,59 @@ export let explorerOnChain = (type, hash) => {
   return linkTrx
 }
 
+export const chainList = [
+  {
+    logo: logo,
+    label: "All chains",
+    value: "ALL",
+  },
+  {
+    logo: Ethereum,
+    label: "Ethereum",
+    value: "ETH",
+  },
+  {
+    logo: Bnb,
+    label: "BNB",
+    value: "BNB",
+  },
+  {
+    logo: Matic,
+    label: "Polygon",
+    value: "MATIC",
+  },
+  {
+    logo: Optimism,
+    label: "Optimism",
+    value: "OP",
+  },
+  {
+    logo: Avax,
+    label: "Avalanche",
+    value: "AVAX",
+  },
+  {
+    logo: Arbitrum,
+    label: "Arbitrum",
+    value: "ARB",
+  },
+  {
+    logo: Base,
+    label: "Base",
+    value: "BASE",
+  },
+  {
+    logo: Scroll,
+    label: "Scroll",
+    value: "SCROLL",
+  },
+  {
+    logo: Gnosis,
+    label: "Gnosis",
+    value: "XDAI",
+  },
+];
+
 export const detectedChain = (type) => {
   let chain;
   switch (type) {
@@ -369,6 +423,9 @@ export const detectedChain = (type) => {
       break;
     case "BASE":
       chain = Base;
+      break;
+    case "SCROLL":
+      chain = Scroll
       break;
     case "SOL":
       chain = Solana;
@@ -485,54 +542,6 @@ export const listLogoCEX = [
   "https://s2.coinmarketcap.com/static/img/exchanges/64x64/294.png",
   "https://s2.coinmarketcap.com/static/img/exchanges/64x64/70.png",
   "https://s2.coinmarketcap.com/static/img/exchanges/64x64/37.png",
-];
-
-export const chainList = [
-  {
-    logo: logo,
-    label: "All chains",
-    value: "ALL",
-  },
-  {
-    logo: Ethereum,
-    label: "Ethereum",
-    value: "ETH",
-  },
-  {
-    logo: Bnb,
-    label: "BNB",
-    value: "BNB",
-  },
-  {
-    logo: Matic,
-    label: "Polygon",
-    value: "MATIC",
-  },
-  {
-    logo: Optimism,
-    label: "Optimism",
-    value: "OP",
-  },
-  {
-    logo: Avax,
-    label: "Avalanche",
-    value: "AVAX",
-  },
-  {
-    logo: Arbitrum,
-    label: "Arbitrum",
-    value: "ARB",
-  },
-  {
-    logo: Base,
-    label: "Base",
-    value: "BASE",
-  },
-  {
-    logo: Gnosis,
-    label: "Gnosis",
-    value: "XDAI",
-  },
 ];
 
 export const showChatAnimationVariants = {
@@ -1112,18 +1121,22 @@ export const formatTransactionTime = (date: Date) => {
 
 export const handleImgError = async (e, image, defaultImage) => {
   e.target.onerror = null; // break loop
-  if (image.includes("https://api.center.dev")) {
-    fetch(image, {
-      headers: { "x-api-key": "lapis-fridge-d84f5377deca" },
-    })
-      .then((r) => r.blob())
-      .then((d) => {
-        e.target.src = window.URL.createObjectURL(d);
+  if (defaultImage !== null) {
+    if (image.includes("https://api.center.dev")) {
+      fetch(image, {
+        headers: { "x-api-key": "lapis-fridge-d84f5377deca" },
       })
-      .catch(() => {
-        e.target.src = defaultImage;
-      });
-  } else {
-    e.target.src = defaultImage;
+        .then((r) => r.blob())
+        .then((d) => {
+          if (d && window.URL.createObjectURL(d) !== null) {
+            e.target.src = window.URL.createObjectURL(d);
+          }
+        })
+        .catch(() => {
+          e.target.src = defaultImage;
+        });
+    } else {
+      e.target.src = defaultImage;
+    }
   }
 };
