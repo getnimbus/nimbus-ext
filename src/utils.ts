@@ -305,6 +305,45 @@ export const getAddressContext = (address: string) => {
   return undefined;
 };
 
+export const explorerOnChain = (type, hash) => {
+  let linkTrx = ""
+  switch (type) {
+    case "ETH":
+      linkTrx = `https://etherscan.io/tx/${hash}`;
+      break;
+    case "XDAI":
+      linkTrx = `https://gnosisscan.io/tx/${hash}`;
+      break;
+    case "BNB":
+      linkTrx = `https://bscscan.com/tx/${hash}`;
+      break;
+    case "MATIC":
+      linkTrx = `https://polygonscan.com/tx/${hash}`;
+      break;
+    case "OP":
+      linkTrx = `https://optimistic.etherscan.io/tx/${hash}`;
+      break;
+    case "AVAX":
+      linkTrx = `https://snowtrace.io/tx/${hash}`;
+      break;
+    case "ARB":
+      linkTrx = `https://arbiscan.io/tx/${hash}`;
+      break;
+    case "BASE":
+      linkTrx = `https://basescan.org/tx/${hash}`
+      break;
+    case "SCROLL":
+      linkTrx = `https://blockscout.scroll.io/tx/${hash}`
+      break;
+    case "SOL":
+      linkTrx = `https://solscan.io/tx/${hash}`
+      break;
+    default:
+      linkTrx = ""
+  }
+  return linkTrx
+}
+
 export const chainList = [
   {
     logo: logo,
