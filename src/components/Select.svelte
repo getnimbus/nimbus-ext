@@ -28,7 +28,7 @@
       listSelect.filter((item) => item.value === selected)) ||
     [];
 
-  const disabledChains = ["XDAI"];
+  const disabledChains = ["AURA", "LINEA"];
 </script>
 
 <div class="wrapper" use:clickOutside on:click_outside={() => (open = false)}>
@@ -85,7 +85,7 @@
               open = false;
             }
             if (type === "chain") {
-              if (item.value === "XDAI") {
+              if (item.value === "AURA" || item.value === "LINEA") {
                 open = false;
               } else {
                 chain.update((n) => (n = item.value));
