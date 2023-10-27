@@ -786,7 +786,10 @@
 
   <td
     class={`py-3 ${
-      $typeWallet === "SOL" || $typeWallet === "EVM" || $typeWallet === "BUNDLE"
+      $typeWallet === "SOL" ||
+      $typeWallet === "EVM" ||
+      $typeWallet === "BUNDLE" ||
+      $typeWallet === "CEX"
         ? ""
         : "pr-3"
     } ${$isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"}`}

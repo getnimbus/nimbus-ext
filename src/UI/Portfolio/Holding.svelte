@@ -488,7 +488,8 @@
                       class={`py-3 ${
                         $typeWallet === "SOL" ||
                         $typeWallet === "EVM" ||
-                        $typeWallet === "BUNDLE"
+                        $typeWallet === "BUNDLE" ||
+                        $typeWallet === "CEX"
                           ? ""
                           : "pr-3 rounded-tr-[10px]"
                       }`}
@@ -499,7 +500,7 @@
                         Unrealized PnL
                       </div>
                     </th>
-                    {#if $typeWallet === "SOL" || $typeWallet === "EVM" || $typeWallet === "BUNDLE"}
+                    {#if $typeWallet === "SOL" || $typeWallet === "EVM" || $typeWallet === "BUNDLE" || $typeWallet === "CEX"}
                       <th class="py-3 xl:w-12 w-32 rounded-tr-[10px]" />
                     {/if}
                   </tr>
