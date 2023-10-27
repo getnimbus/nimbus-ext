@@ -942,7 +942,7 @@
         </div>
       {/if}
     </div>
-    {#if $chain === "ZKSYNC"}
+    {#if $chain === "AURA" || $chain === "LINEA"}
       <div
         class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex items-center justify-center ${
           $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"

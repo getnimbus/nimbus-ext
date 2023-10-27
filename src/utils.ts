@@ -20,6 +20,8 @@ import Gnosis from "~/assets/gnosis.png";
 import Base from "~/assets/base.svg";
 import Scroll from "~/assets/scroll.png";
 import ZkSync from "~/assets/zksync.png";
+import Aura from "~/assets/aura.png";
+import Linea from "~/assets/linea.png";
 
 export const ETHAddressRegex = /(\b0x[a-fA-F0-9]{40}\b)/g;
 export const ETHTrxRegex = /(\b0x[a-fA-F0-9]{64}\b)/g;
@@ -400,7 +402,17 @@ export const chainList = [
     logo: ZkSync, 
     label: "ZkSync", 
     value: "ZKSYNC",
-  }
+  },
+  {
+    logo: Linea, 
+    label: "Linea", 
+    value: "LINEA",
+  },
+  {
+    logo: Aura, 
+    label: "Aura", 
+    value: "AURA",
+  },
 ];
 
 export const detectedChain = (type) => {
@@ -436,8 +448,14 @@ export const detectedChain = (type) => {
     case "SOL":
       chain = Solana;
       break;
-    case "SKSYNC":
+    case "ZKSYNC":
       chain = ZkSync;
+      break;
+    case "LINEA":
+      chain = Linea;
+      break;
+    case "AURA":
+      chain = Aura;
       break;
     default:
       chain = logo;

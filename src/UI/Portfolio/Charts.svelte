@@ -793,7 +793,7 @@
         $isDarkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
       }`}
     >
-      {#if $chain === "ZKSYNC" || $typeWallet === "BTC"}
+      {#if $chain === "AURA" || $chain === "LINEA" || $typeWallet === "BTC"}
         <div class="pl-4 text-4xl font-medium xl:text-2xl">
           {MultipleLang.performance}
         </div>
