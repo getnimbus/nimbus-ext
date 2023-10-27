@@ -19,6 +19,7 @@ import Arbitrum from "~/assets/arbitrum.png";
 import Gnosis from "~/assets/gnosis.png";
 import Base from "~/assets/base.svg";
 import Scroll from "~/assets/scroll.png";
+import ZkSync from "~/assets/zksync.png";
 
 export const ETHAddressRegex = /(\b0x[a-fA-F0-9]{40}\b)/g;
 export const ETHTrxRegex = /(\b0x[a-fA-F0-9]{64}\b)/g;
@@ -395,6 +396,11 @@ export const chainList = [
     label: "Gnosis",
     value: "XDAI",
   },
+  {
+    logo: ZkSync, 
+    label: "ZkSync", 
+    value: "ZKSYNC",
+  }
 ];
 
 export const detectedChain = (type) => {
@@ -429,6 +435,9 @@ export const detectedChain = (type) => {
       break;
     case "SOL":
       chain = Solana;
+      break;
+    case "SKSYNC":
+      chain = ZkSync;
       break;
     default:
       chain = logo;
