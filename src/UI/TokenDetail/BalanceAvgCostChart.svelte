@@ -33,7 +33,7 @@
                   $isDarkMode ? "white" : "black"
                 }">
                   <span>${params[0]?.marker}</span>
-                  Balance
+                  Amount
                 </div>
 
                 <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right;">
