@@ -264,18 +264,18 @@
       contractAddress.length !== 0 &&
       chainType !== undefined &&
       chainType.length !== 0 &&
-      $typeWallet === "EVM",
+      ($typeWallet === "EVM" || ($typeWallet === "BUNDLE" && chain !== "SOL")),
   });
 
   $: queryTokenPriceSol = createQuery({
-    queryKey: ["token-price-sol", contractAddress, chainType, time],
+    queryKey: ["token-price-sol", contractAddress, time],
     queryFn: () => handleGetTokenPriceSol(),
     staleTime: Infinity,
     retry: false,
     enabled:
       contractAddress !== undefined &&
       contractAddress.length !== 0 &&
-      $typeWallet === "SOL",
+      ($typeWallet === "SOL" || ($typeWallet === "BUNDLE" && chain === "SOL")),
   });
 
   $: {
