@@ -16,9 +16,6 @@
   let numberFormat = 0;
   let numberSize = "";
 
-  let hiddenValue = false;
-  isHidePortfolio.subscribe((value) => (hiddenValue = value));
-
   $: {
     const { number_format, number_size } = formatBigBalance(number);
     numberFormat = number_format;
@@ -47,7 +44,7 @@
   };
 </script>
 
-{#if personalValue && hiddenValue === true}
+{#if personalValue && $isHidePortfolio}
   <span class="w-max">*******</span>
 {:else if type === "percent"}
   <span class="w-max">

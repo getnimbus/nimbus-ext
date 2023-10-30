@@ -50,8 +50,8 @@ export default defineConfig(({ mode }) => {
     },
     define: {
       APP_TYPE: {
-        TYPE: 'EXT'
-      }
+        TYPE: "EXT",
+      },
     },
     build: {
       rollupOptions: {

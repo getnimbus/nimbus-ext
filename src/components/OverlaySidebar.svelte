@@ -1,12 +1,5 @@
 <script>
-  import { isDarkMode } from "~/store";
-
   export let isOpen;
-
-  let darkMode = false;
-  isDarkMode.subscribe((value) => {
-    darkMode = value;
-  });
 
   // Prevent layout flick
   $: if (isOpen) {

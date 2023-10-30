@@ -23,21 +23,6 @@
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import Loading from "~/components/Loading.svelte";
 
-  let darkMode = false;
-  isDarkMode.subscribe((value) => {
-    darkMode = value;
-  });
-
-  let selectedChain: string = "";
-  chain.subscribe((value) => {
-    selectedChain = value;
-  });
-
-  let typeWalletAddress: string = "";
-  typeWallet.subscribe((value) => {
-    typeWalletAddress = value;
-  });
-
   let filteredHoldingDataToken = [];
   let filteredHoldingDataNFT = [];
   let marketPriceToken;
@@ -337,11 +322,16 @@
   }
 
   $: colspan =
-    typeWalletAddress === "SOL" || typeWalletAddress === "EVM" ? 8 : 7;
+    $typeWallet === "SOL" ||
+    $typeWallet === "EVM" ||
+    $typeWallet === "BUNDLE" ||
+    $typeWallet === "CEX"
+      ? 8
+      : 7;
 
   $: {
-    if (selectedWallet || selectedChain) {
-      if (selectedWallet?.length !== 0 && selectedChain?.length !== 0) {
+    if (selectedWallet || $chain) {
+      if (selectedWallet?.length !== 0 && $chain?.length !== 0) {
         sumTokens = 0;
         sumAllTokens = 0;
         sumNFT = 0;
@@ -370,7 +360,7 @@
 
 <div
   class={`flex flex-col gap-6 rounded-[20px] p-6 ${
-    darkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
+    $isDarkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
   }`}
 >
   <ErrorBoundary>
@@ -432,7 +422,7 @@
 
         <div
           class={`rounded-[10px] xl:overflow-visible overflow-x-auto h-full ${
-            darkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
+            $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
           }`}
         >
           <table class="table-auto xl:w-full w-[1800px] h-full">
@@ -487,9 +477,10 @@
                 </th>
                 <th
                   class={`py-3 ${
-                    typeWalletAddress === "SOL" ||
-                    typeWalletAddress === "EVM" ||
-                    typeWalletAddress === "BUNDLE"
+                    $typeWallet === "SOL" ||
+                    $typeWallet === "EVM" ||
+                    $typeWallet === "BUNDLE" ||
+                    $typeWallet === "CEX"
                       ? ""
                       : "pr-3 rounded-tr-[10px]"
                   }`}
@@ -500,13 +491,13 @@
                     Unrealized PnL
                   </div>
                 </th>
-                {#if typeWalletAddress === "SOL" || typeWalletAddress === "EVM" || typeWalletAddress === "BUNDLE"}
-                  <th class="py-3 xl:w-12 w-32 rounded-tr-[10px]" />
+                {#if $typeWallet === "SOL" || $typeWallet === "EVM" || $typeWallet === "BUNDLE" || $typeWallet === "CEX"}
+                  <th class="py-3 xl:w-14 w-32 rounded-tr-[10px]" />
                 {/if}
               </tr>
             </thead>
 
-            {#if selectedChain === "ALL"}
+            {#if $chain === "ALL"}
               <tbody>
                 {#if filteredHoldingDataToken && filteredHoldingDataToken.length === 0 && !isLoadingToken}
                   <tr>
@@ -546,7 +537,7 @@
               {/if}
             {/if}
 
-            {#if selectedChain !== "ALL"}
+            {#if $chain !== "ALL"}
               {#if isLoadingToken}
                 <tbody>
                   <tr>
@@ -593,7 +584,7 @@
     </div>
 
     <!-- nft holding table -->
-    {#if typeWalletAddress !== "CEX"}
+    {#if $typeWallet !== "CEX"}
       <div class="flex flex-col gap-2">
         <div class="flex justify-between items-center">
           <div class="xl:text-xl text-3xl font-medium">
@@ -618,7 +609,7 @@
 
           <div
             class={`rounded-[10px] xl:overflow-visible overflow-x-auto h-full ${
-              darkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
+              $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
             }`}
           >
             <table class="table-auto xl:w-full w-[1400px] h-full">
@@ -687,7 +678,7 @@
                 </tr>
               </thead>
 
-              {#if selectedChain === "ALL"}
+              {#if $chain === "ALL"}
                 <tbody>
                   {#if filteredHoldingDataNFT && filteredHoldingDataNFT.length === 0 && !isLoadingNFT}
                     <tr>
@@ -723,7 +714,7 @@
                 {/if}
               {/if}
 
-              {#if selectedChain !== "ALL"}
+              {#if $chain !== "ALL"}
                 {#if isLoadingNFT}
                   <tbody>
                     <tr>

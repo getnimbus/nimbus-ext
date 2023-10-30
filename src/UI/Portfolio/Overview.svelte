@@ -42,16 +42,6 @@
     unrealizedProfit: i18n("newtabPage.unrealizedProfit", "Unrealized PnL"),
   };
 
-  let selectedWallet: string = "";
-  wallet.subscribe((value) => {
-    selectedWallet = value;
-  });
-
-  let typeWalletAddress: string = "";
-  typeWallet.subscribe((value) => {
-    typeWalletAddress = value;
-  });
-
   $: networth = totalAssets + totalPositions;
 
   $: totalProfit =
@@ -80,7 +70,7 @@
     changeLast24hNetWorth;
 
   $: last24hTotalProfitPercent =
-    typeWalletAddress === "SOL" || typeWalletAddress === "CEX"
+    $typeWallet === "SOL" || $typeWallet === "CEX"
       ? 0
       : getChangePercent(totalProfit, changeLast24hTotalProfit);
 </script>
@@ -99,7 +89,7 @@
         </div>
         <div
           class={`flex items-center gap-3 ${
-            typeWalletAddress === "BTC" ? "opacity-50" : ""
+            $typeWallet === "BTC" ? "opacity-50" : ""
           }`}
         >
           <div
@@ -148,9 +138,9 @@
         </div>
         <div
           class={`flex items-center gap-3 ${
-            typeWalletAddress === "BTC" ||
-            typeWalletAddress === "SOL" ||
-            typeWalletAddress === "CEX"
+            $typeWallet === "BTC" ||
+            $typeWallet === "SOL" ||
+            $typeWallet === "CEX"
               ? "opacity-50"
               : ""
           }`}
@@ -193,9 +183,9 @@
         </div>
         <!-- <div
           class={`flex items-center gap-3 ${
-            typeWalletAddress === "CEX" ||
-            typeWalletAddress === "BTC" ||
-            typeWalletAddress === "SOL"
+            $typeWallet === "CEX" ||
+            $typeWallet === "BTC" ||
+            $typeWallet === "SOL"
               ? "opacity-50"
               : ""
           }`}
@@ -238,9 +228,9 @@
         </div>
         <!-- <div
           class={`flex items-center gap-3 ${
-            typeWalletAddress === "CEX" ||
-            typeWalletAddress === "BTC" ||
-            typeWalletAddress === "SOL"
+            $typeWallet === "CEX" ||
+            $typeWallet === "BTC" ||
+            $typeWallet === "SOL"
               ? "opacity-50"
               : ""
           }`}

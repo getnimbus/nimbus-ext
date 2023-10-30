@@ -12,16 +12,6 @@
 
   import Logo from "~/assets/logo-1.svg";
 
-  let selectedWallet: string = "";
-  wallet.subscribe((value) => {
-    selectedWallet = value;
-  });
-
-  let selectedChain: string = "";
-  chain.subscribe((value) => {
-    selectedChain = value;
-  });
-
   let isEmpty = false;
   let isLoading = false;
   let chartData = [];
@@ -33,12 +23,12 @@
     try {
       const [holdingData, networthChart] = await Promise.all([
         sendMessage("getHoldingToken", {
-          address: selectedWallet,
-          chain: selectedChain,
+          address: $wallet,
+          chain: $chain,
         }),
         sendMessage("getNetworthAnalysis", {
-          address: selectedWallet,
-          chain: selectedChain,
+          address: $wallet,
+          chain: $chain,
         }),
       ]);
 
@@ -66,8 +56,8 @@
   };
 
   $: {
-    if (selectedWallet && selectedChain) {
-      if (selectedWallet?.length !== 0 && selectedChain?.length !== 0) {
+    if ($wallet && $chain) {
+      if ($wallet?.length !== 0 && $chain?.length !== 0) {
         getHoldingData();
       }
     }

@@ -338,7 +338,7 @@
     clearTimeout(timer);
     timer = setTimeout(() => {
       search = value;
-    }, 300);
+    }, 100);
   };
 
   const handleSetSearch = (value: string) => {

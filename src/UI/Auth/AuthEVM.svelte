@@ -31,41 +31,6 @@
 
   const wallets$ = onboard.state.select("wallets");
 
-  let userID = "";
-  userId.subscribe((value) => {
-    userID = value;
-  });
-
-  let isConnectWallet = false;
-  triggerConnectWallet.subscribe((value) => {
-    isConnectWallet = value;
-  });
-
-  let darkMode = false;
-  isDarkMode.subscribe((value) => {
-    darkMode = value;
-  });
-
-  let selectedWallet: string = "";
-  wallet.subscribe((value) => {
-    selectedWallet = value;
-  });
-
-  let selectedChain: string = "";
-  chain.subscribe((value) => {
-    selectedChain = value;
-  });
-
-  let typeWalletAddress: string = "";
-  typeWallet.subscribe((value) => {
-    typeWalletAddress = value;
-  });
-
-  let userInfo = {};
-  user.subscribe((value) => {
-    userInfo = value;
-  });
-
   let showPopover = false;
   let invitation = "";
 
@@ -240,7 +205,7 @@
   }
 
   $: {
-    if (isConnectWallet) {
+    if ($triggerConnectWallet) {
       connect();
       mixpanel.track("user_connect_wallet");
       triggerConnectWallet.update((n) => (n = false));
@@ -248,24 +213,20 @@
   }
 </script>
 
-{#if Object.keys(userInfo).length !== 0}
+{#if $user && Object.keys($user).length !== 0}
   <div class="relative">
     <div
       class="xl:block hidden xl:w-[40px] xl:h-[40px] w-16 h-16 rounded-full overflow-hidden cursor-pointer"
       on:click={() => (showPopover = !showPopover)}
     >
-      <img src={userInfo?.picture} alt="" class="object-cover w-full h-full" />
+      <img src={$user?.picture} alt="" class="object-cover w-full h-full" />
     </div>
 
     <div class="xl:hidden flex items-center gap-5">
       <div
         class="xl:w-[40px] xl:h-[40px] w-16 h-16 rounded-full overflow-hidden"
       >
-        <img
-          src={userInfo?.picture}
-          alt=""
-          class="object-cover w-full h-full"
-        />
+        <img src={$user?.picture} alt="" class="object-cover w-full h-full" />
       </div>
       <div
         class="text-3xl font-medium text-white"
@@ -302,7 +263,7 @@
           <Link to="upgrade">
             <div
               class={`flex items-center gap-1 text-2xl font-medium text-yellow-400 cursor-pointer xl:text-base rounded-md transition-all px-2 py-1 ${
-                darkMode ? "hover:bg-[#222222]" : "hover:bg-[#eff0f4]"
+                $isDarkMode ? "hover:bg-[#222222]" : "hover:bg-[#eff0f4]"
               }`}
             >
               Upgrade
@@ -325,10 +286,10 @@
         </div>
 
         <div on:click={() => (showPopover = false)}>
-          <Link to={`profile?id=${userID}`}>
+          <Link to={`profile?id=${$userId}`}>
             <div
               class={`text-2xl text_00000066 cursor-pointer xl:text-base rounded-md transition-all px-2 py-1 ${
-                darkMode ? "hover:bg-[#222222]" : "hover:bg-[#eff0f4]"
+                $isDarkMode ? "hover:bg-[#222222]" : "hover:bg-[#eff0f4]"
               }`}
             >
               My Profile
@@ -338,7 +299,7 @@
 
         <div
           class={`hidden text-2xl text_00000066 cursor-pointer xl:block xl:text-base rounded-md transition-all px-2 py-1 ${
-            darkMode ? "hover:bg-[#222222]" : "hover:bg-[#eff0f4]"
+            $isDarkMode ? "hover:bg-[#222222]" : "hover:bg-[#eff0f4]"
           }`}
           on:click={() => {
             isOpenModalSync = true;
@@ -353,7 +314,7 @@
           <Link to="invitation">
             <div
               class={`text-2xl text_00000066 cursor-pointer xl:text-base rounded-md transition-all px-2 py-1 ${
-                darkMode ? "hover:bg-[#222222]" : "hover:bg-[#eff0f4]"
+                $isDarkMode ? "hover:bg-[#222222]" : "hover:bg-[#eff0f4]"
               }`}
             >
               Invite
@@ -365,7 +326,7 @@
           <Link to="settings/?tab=accounts">
             <div
               class={`hidden text-2xl text_00000066 cursor-pointer xl:block xl:text-base rounded-md transition-all px-2 py-1 ${
-                darkMode ? "hover:bg-[#222222]" : "hover:bg-[#eff0f4]"
+                $isDarkMode ? "hover:bg-[#222222]" : "hover:bg-[#eff0f4]"
               }`}
             >
               Settings
@@ -375,7 +336,7 @@
 
         <div
           class={`text-2xl font-medium text-red-500 cursor-pointer xl:text-base rounded-md transition-all px-2 py-1 ${
-            darkMode ? "hover:bg-[#222222]" : "hover:bg-[#eff0f4]"
+            $isDarkMode ? "hover:bg-[#222222]" : "hover:bg-[#eff0f4]"
           }`}
           on:click={handleSignOut}
         >
@@ -449,7 +410,7 @@
       <div class="border-t-[1px] relative w-[57%]">
         <div
           class={`absolute xl:top-[-10px] top-[-14px] left-1/2 transform -translate-x-1/2 text-gray-400 text-xs px-2 ${
-            darkMode ? "bg-[#0f0f0f]" : "bg-white"
+            $isDarkMode ? "bg-[#0f0f0f]" : "bg-white"
           }`}
         >
           Or enter the code manually
@@ -481,7 +442,7 @@
                   data-name="Layer 1"
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 122.88 74.46"
-                  fill={darkMode ? "#fff" : "#000"}
+                  fill={$isDarkMode ? "#fff" : "#000"}
                   ><path
                     fill-rule="evenodd"
                     d="M1.87,47.2a6.33,6.33,0,1,1,8.92-9c8.88,8.85,17.53,17.66,26.53,26.45l-3.76,4.45-.35.37a6.33,6.33,0,0,1-8.95,0L1.87,47.2ZM30,43.55a6.33,6.33,0,1,1,8.82-9.07l25,24.38L111.64,2.29c5.37-6.35,15,1.84,9.66,8.18L69.07,72.22l-.3.33a6.33,6.33,0,0,1-8.95.12L30,43.55Zm28.76-4.21-.31.33-9.07-8.85L71.67,4.42c5.37-6.35,15,1.83,9.67,8.18L58.74,39.34Z"
@@ -497,13 +458,13 @@
                 >
                   <path
                     d="M8.1875 3.3125H10.6875V10.1875H3.8125V7.6875"
-                    stroke={darkMode ? "#fff" : "#000"}
+                    stroke={$isDarkMode ? "#fff" : "#000"}
                     stroke-linecap="round"
                     stroke-linejoin="round"
                   />
                   <path
                     d="M8.1875 0.8125H1.3125V7.6875H8.1875V0.8125Z"
-                    stroke={darkMode ? "#fff" : "#000"}
+                    stroke={$isDarkMode ? "#fff" : "#000"}
                     stroke-linecap="round"
                     stroke-linejoin="round"
                   />

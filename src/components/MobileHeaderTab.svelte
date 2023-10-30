@@ -26,44 +26,14 @@
   const absoluteMatch = useMatch("/:page");
   const queryClient = useQueryClient();
 
-  let darkMode = false;
-  isDarkMode.subscribe((value) => {
-    darkMode = value;
-  });
-
-  let userInfo = {};
-  user.subscribe((value) => {
-    userInfo = value;
-  });
-
-  let selectedWallet;
-  wallet.subscribe((value) => {
-    selectedWallet = value;
-  });
-
-  let selectedChain: string = "";
-  chain.subscribe((value) => {
-    selectedChain = value;
-  });
-
-  let typeWalletAddress: string = "";
-  typeWallet.subscribe((value) => {
-    typeWalletAddress = value;
-  });
-
-  let showHeaderMobile = false;
-  isShowHeaderMobile.subscribe((value) => {
-    showHeaderMobile = value;
-  });
-
   $: navActive = $absoluteMatch ? $absoluteMatch.params.page : "portfolio";
 </script>
 
 <div class="grid grid-cols-4 justify-center items-center pt-4 pb-8">
-  {#if selectedWallet === "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0"}
+  {#if $wallet === "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0"}
     <div
       class={`flex flex-col items-center gap-2 cursor-pointer hover:opacity-100 transition-all ${
-        darkMode
+        $isDarkMode
           ? navActive === "portfolio"
             ? "opacity-100"
             : "opacity-40"
@@ -75,7 +45,7 @@
         navActive = "portfolio";
         navigate(
           `/?type=EVM&chain=${
-            selectedChain || "All"
+            $chain || "All"
           }&address=0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0`
         );
       }}
@@ -116,7 +86,7 @@
     <div
       class={`flex flex-col items-center gap-2 cursor-pointer py-2 hover:opacity-100 transition-all
           ${
-            darkMode
+            $isDarkMode
               ? navActive === "analytic"
                 ? "opacity-100"
                 : "opacity-40"
@@ -129,7 +99,7 @@
         navActive = "analytic";
         navigate(
           `/analytic?type=EVM&chain=${
-            selectedChain || "All"
+            $chain || "All"
           }&address=0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0`
         );
       }}
@@ -173,12 +143,10 @@
       </span>
     </div>
   {:else}
-    <Link
-      to={`/?type=${typeWalletAddress}&chain=${selectedChain}&address=${selectedWallet}`}
-    >
+    <Link to={`/?type=${$typeWallet}&chain=${$chain}&address=${$wallet}`}>
       <div
         class={`flex flex-col items-center gap-2 cursor-pointer hover:opacity-100 transition-all ${
-          darkMode
+          $isDarkMode
             ? navActive === "portfolio"
               ? "opacity-100"
               : "opacity-40"
@@ -225,15 +193,11 @@
         </span>
       </div>
     </Link>
-    <Link
-      to={`${
-        userInfo && Object.keys(userInfo).length !== 0 ? "analytic" : "/"
-      }`}
-    >
+    <Link to={`${$user && Object.keys($user).length !== 0 ? "analytic" : "/"}`}>
       <div
         class={`flex flex-col items-center gap-2 cursor-pointer hover:opacity-100 transition-all
           ${
-            darkMode
+            $isDarkMode
               ? navActive === "analytic"
                 ? "opacity-100"
                 : "opacity-40"
@@ -243,7 +207,7 @@
           }
           `}
         on:click={() => {
-          if (userInfo && Object.keys(userInfo).length !== 0) {
+          if ($user && Object.keys($user).length !== 0) {
             navActive = "analytic";
             queryClient.invalidateQueries(["users-me"]);
           } else {
@@ -297,14 +261,12 @@
   {/if}
 
   <Link
-    to={`${
-      userInfo && Object.keys(userInfo).length !== 0 ? "transactions" : "/"
-    }`}
+    to={`${$user && Object.keys($user).length !== 0 ? "transactions" : "/"}`}
   >
     <div
       class={`flex flex-col items-center gap-2 cursor-pointer py-2 hover:opacity-100 transition-all
           ${
-            darkMode
+            $isDarkMode
               ? navActive === "transactions"
                 ? "opacity-100"
                 : "opacity-40"
@@ -314,7 +276,7 @@
           }
           `}
       on:click={() => {
-        if (userInfo && Object.keys(userInfo).length !== 0) {
+        if ($user && Object.keys($user).length !== 0) {
           navActive = "transactions";
           queryClient.invalidateQueries(["users-me"]);
         } else {
@@ -392,7 +354,7 @@
   <div
     class={`flex flex-col items-center gap-2 cursor-pointer py-2 hover:opacity-100 transition-all
           ${
-            darkMode
+            $isDarkMode
               ? navActive === "more"
                 ? "opacity-100"
                 : "opacity-40"
