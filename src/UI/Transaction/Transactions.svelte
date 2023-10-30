@@ -144,11 +144,13 @@
     label: "All",
     value: "all",
   };
+  $: selectedTypeValue = selectedType?.value; 
   let selectedCoin = {
     name: "All",
     logo: All,
     symbol: "all",
   };
+  $: selectedCoinValue = selectedCoin?.symbol;
   let searchValue = "";
   let timerSearchDebounce;
 
@@ -255,7 +257,7 @@
   };
 
   const handleLoadMore = (paginate: string) => {
-    getListTransactions(paginate, selectedType.value, selectedCoin.symbol);
+    getListTransactions(paginate, selectedTypeValue, selectedCoinValue);
   };
 
   $: {
@@ -268,7 +270,7 @@
         selectedChain?.length !== 0 &&
         typeWalletAddress !== "SOL"
       ) {
-        getListTransactions("", selectedType.value, selectedCoin.symbol);
+        getListTransactions("", selectedTypeValue, selectedCoinValue);
       }
     }
   }
