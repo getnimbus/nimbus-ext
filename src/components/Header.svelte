@@ -1058,6 +1058,7 @@
                 class="text-3xl font-semibold text-white cursor-pointer xl:text-base"
                 on:click={() => {
                   isOpenModalSync = true;
+                  isShowHeaderMobile.update((n) => (n = false));
                 }}
               >
                 Sync from Desktop
