@@ -308,45 +308,6 @@ export const getAddressContext = (address: string) => {
   return undefined;
 };
 
-export const explorerOnChain = (type, hash) => {
-  let linkTrx = ""
-  switch (type) {
-    case "ETH":
-      linkTrx = `https://etherscan.io/tx/${hash}`;
-      break;
-    case "XDAI":
-      linkTrx = `https://gnosisscan.io/tx/${hash}`;
-      break;
-    case "BNB":
-      linkTrx = `https://bscscan.com/tx/${hash}`;
-      break;
-    case "MATIC":
-      linkTrx = `https://polygonscan.com/tx/${hash}`;
-      break;
-    case "OP":
-      linkTrx = `https://optimistic.etherscan.io/tx/${hash}`;
-      break;
-    case "AVAX":
-      linkTrx = `https://snowtrace.io/tx/${hash}`;
-      break;
-    case "ARB":
-      linkTrx = `https://arbiscan.io/tx/${hash}`;
-      break;
-    case "BASE":
-      linkTrx = `https://basescan.org/tx/${hash}`
-      break;
-    case "SCROLL":
-      linkTrx = `https://blockscout.scroll.io/tx/${hash}`
-      break;
-    case "SOL":
-      linkTrx = `https://solscan.io/tx/${hash}`
-      break;
-    default:
-      linkTrx = ""
-  }
-  return linkTrx
-}
-
 export const chainList = [
   {
     logo: logo,
@@ -510,6 +471,42 @@ export const linkExplorer = (chain, hash) => {
         trx: `https://arbiscan.io/tx/${hash}`,
         address: `https://arbiscan.io/address/${hash}`,
       };
+      break;
+    case "BASE":
+      links = {
+        trx: `https://basescan.org/tx/${hash}`,
+        address: `https://basescan.org/address/${hash}`,
+      }
+      break;
+    case "SCROLL":
+      links = {
+        trx: `https://blockscout.scroll.io/tx/${hash}`,
+        address: `https://blockscout.scroll.io/address/${hash}`,
+      }
+      break;
+    case "XDAI":
+      links = {
+        trx: `https://gnosisscan.io/tx/${hash}`,
+        address: `https://gnosisscan.io/address/${hash}`,
+      }
+      break;
+    case "ZKSYNC":
+      links = {
+        trx: `https://explorer.zksync.io/tx/${hash}`,
+        address: `https://explorer.zksync.io/address/${hash}`,
+      }
+      break;
+    case "LINEA":
+      links = {
+        trx: `https://lineascan.build/tx/${hash}`,
+        address: `https://lineascan.build/address/${hash}`,
+      }
+      break;
+    case "SOL":
+      links = {
+        trx: `https://solscan.io/tx/${hash}`,
+        address: `https://solscan.io/address/${hash}`,
+      }
       break;
     case "BTC":
       links = {

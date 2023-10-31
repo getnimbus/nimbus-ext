@@ -57,6 +57,6 @@
   }
 
   #sidebar-token-detail {
-    overflow-y: scroll !important;
+    overflow-y: auto !important;
   }
 </style>

@@ -31,6 +31,8 @@
       window.removeEventListener("scroll", handleScroll);
     };
   });
+
+  $: console.log("typeWallet: ", $typeWallet);
 </script>
 
 <div>
@@ -117,7 +119,7 @@
                         alt=""
                         class="object-contain w-5 h-5"
                       />
-                      {#if $typeWallet === "DEX"}
+                      {#if $typeWallet === "EVM"}
                         <Copy
                           address={item?.transaction_hash}
                           textTooltip="Copy transaction to clipboard"
@@ -156,7 +158,7 @@
               >
                 {#if item?.detail?.from}
                   <div class="text-2xl w-max xl:text-sm">
-                    {#if $typeWallet === "DEX"}
+                    {#if $typeWallet === "EVM"}
                       <Copy
                         address={item?.detail?.from}
                         iconColor={`${$isDarkMode ? "#fff" : "#000"}`}
@@ -190,7 +192,7 @@
               >
                 {#if item?.detail?.to}
                   <div class="text-2xl w-max xl:text-sm">
-                    {#if $typeWallet === "DEX"}
+                    {#if $typeWallet === "EVM"}
                       <Copy
                         address={item?.detail?.to}
                         iconColor={`${$isDarkMode ? "#fff" : "#000"}`}
