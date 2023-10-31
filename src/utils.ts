@@ -476,43 +476,37 @@ export const linkExplorer = (chain, hash) => {
       links = {
         trx: `https://basescan.org/tx/${hash}`,
         address: `https://basescan.org/address/${hash}`,
-      }
+      };
       break;
     case "SCROLL":
       links = {
         trx: `https://blockscout.scroll.io/tx/${hash}`,
         address: `https://blockscout.scroll.io/address/${hash}`,
-      }
-      break;
-    case "XDAI":
-      links = {
-        trx: `https://gnosisscan.io/tx/${hash}`,
-        address: `https://gnosisscan.io/address/${hash}`,
-      }
+      };
       break;
     case "ZKSYNC":
       links = {
         trx: `https://explorer.zksync.io/tx/${hash}`,
         address: `https://explorer.zksync.io/address/${hash}`,
-      }
+      };
       break;
     case "LINEA":
       links = {
         trx: `https://lineascan.build/tx/${hash}`,
         address: `https://lineascan.build/address/${hash}`,
-      }
+      };
       break;
     case "SOL":
       links = {
         trx: `https://solscan.io/tx/${hash}`,
         address: `https://solscan.io/address/${hash}`,
-      }
+      };
       break;
     case "BTC":
       links = {
         trx: `https://www.oklink.com/btc/tx/${hash}`,
         address: `https://www.oklink.com/btc/address/${hash}`
-      }
+      };
       break;
     default:
       links = {
