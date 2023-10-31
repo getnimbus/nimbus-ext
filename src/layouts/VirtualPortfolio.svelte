@@ -203,7 +203,7 @@
         <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
           <OverviewCard title={MultipleLang.networth}>
             <div class="xl:text-3xl text-5xl flex">
-              $<CountUpNumber id="networth-virtual" number={0} type="balance" />
+              $<CountUpNumber number={0} type="balance" />
             </div>
             <div class="flex items-center gap-3 opacity-50">
               <div
@@ -216,11 +216,7 @@
                 {:else}
                   ↑
                 {/if}
-                <CountUpNumber
-                  id="networth_grouth"
-                  number={Math.abs(0)}
-                  type="percent"
-                />%
+                <CountUpNumber number={Math.abs(0)} type="percent" />%
               </div>
               <div class="text-[#00000066] xl:text-base text-2xl font-medium">
                 24h
@@ -233,11 +229,7 @@
               {#if {}.toString().toLowerCase().includes("e-")}
                 $<TooltipNumber number={0} type="balance" />
               {:else}
-                $<CountUpNumber
-                  id="claimable-virtual"
-                  number={0}
-                  type="balance"
-                />
+                $<CountUpNumber number={0} type="balance" />
               {/if}
             </div>
             <div class="flex items-center gap-3 opacity-50">
@@ -251,11 +243,7 @@
                 {:else}
                   ↑
                 {/if}
-                <CountUpNumber
-                  id="claimable_grouth"
-                  number={Math.abs(0)}
-                  type="percent"
-                />%
+                <CountUpNumber number={Math.abs(0)} type="percent" />%
               </div>
               <div class="text-[#00000066] xl:text-base text-2xl font-medium">
                 24h
@@ -267,7 +255,7 @@
         <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
           <OverviewCard title={MultipleLang.total_assets}>
             <div class="xl:text-3xl text-5xl flex">
-              $<CountUpNumber id="total_assets" number={0} type="balance" />
+              $<CountUpNumber number={0} type="balance" />
             </div>
             <div class="flex items-center gap-3 opacity-50">
               <div
@@ -280,11 +268,7 @@
                 {:else}
                   ↑
                 {/if}
-                <CountUpNumber
-                  id="total_assets_grouth"
-                  number={Math.abs(0)}
-                  type="percent"
-                />%
+                <CountUpNumber number={Math.abs(0)} type="percent" />%
               </div>
               <div class="text-[#00000066] xl:text-base text-2xl font-medium">
                 24h
@@ -297,11 +281,7 @@
               {#if {}.toString().toLowerCase().includes("e-")}
                 $<TooltipNumber number={0} type="balance" />
               {:else}
-                $<CountUpNumber
-                  id="total_positions"
-                  number={0}
-                  type="balance"
-                />
+                $<CountUpNumber number={0} type="balance" />
               {/if}
             </div>
             <div class="flex items-center gap-3 opacity-50">
@@ -315,11 +295,7 @@
                 {:else}
                   ↑
                 {/if}
-                <CountUpNumber
-                  id="total_positions_grouth"
-                  number={Math.abs(0)}
-                  type="percent"
-                />%
+                <CountUpNumber number={Math.abs(0)} type="percent" />%
               </div>
               <div class="text-[#00000066] xl:text-base text-2xl font-medium">
                 24h

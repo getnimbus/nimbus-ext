@@ -31,8 +31,6 @@
       window.removeEventListener("scroll", handleScroll);
     };
   });
-
-  $: console.log("typeWallet: ", $typeWallet);
 </script>
 
 <div>
