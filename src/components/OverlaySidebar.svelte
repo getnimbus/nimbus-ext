@@ -2,15 +2,17 @@
   export let isOpen;
 
   // Prevent layout flick
-  $: if (isOpen) {
-    document.body.style.overflow = "hidden";
-  } else {
-    document.body.style.overflow = "unset";
+  $: {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
   }
 </script>
 
 <div
-  class={`w-full h-full fixed top-0 left-0 flex overflow-y-auto justify-center items-center bg-[#000000cc] ${
+  class={`w-full h-full fixed top-0 left-0 bg-[#000000cc] ${
     isOpen
       ? "opacity-100 transform translate-x-[0px]"
       : "opacity-0 transform translate-x-[100vw]"
@@ -18,11 +20,12 @@
   style="z-index: 2147483647;"
 >
   <div
-    class={`fixed min-h-screen top-0 right-0 2xl:w-[40%] xl:w-[60%] w-[80%] sidebar sidebar-container ${
+    class={`h-full fixed top-0 right-0 2xl:w-[50%] xl:w-[70%] w-[80%] flex flex-col gap-6 p-6 sidebar sidebar-container ${
       isOpen
         ? "opacity-100 transform translate-x-[0px]"
         : "opacity-0 transform translate-x-[100vw]"
     }`}
+    id="sidebar-token-detail"
   >
     <slot />
   </div>
@@ -51,5 +54,9 @@
   }
   :global(body.dark) .sidebar-container {
     background: #0f0f0f;
+  }
+
+  #sidebar-token-detail {
+    overflow-y: auto !important;
   }
 </style>

@@ -312,35 +312,33 @@
 
 <!-- Sidebar NFT Detail -->
 <OverlaySidebar isOpen={showSideNftDetail}>
-  <div class="flex flex-col gap-6 p-6">
-    <div class="flex justify-between items-start">
-      <div
-        class="xl:text-5xl text-6xl text-gray-500 cursor-pointer"
-        on:click|stopPropagation={() => {
-          showSideNftDetail = false;
-        }}
-      >
-        &times;
+  <div class="flex justify-between items-start">
+    <div
+      class="xl:text-5xl text-6xl text-gray-500 cursor-pointer"
+      on:click|stopPropagation={() => {
+        showSideNftDetail = false;
+      }}
+    >
+      &times;
+    </div>
+    <div class="flex flex-col items-end">
+      <div class="xl:text-3xl text-4xl font-semibold">
+        {data?.collection?.name || "-"}
       </div>
-      <div class="flex flex-col items-end">
-        <div class="xl:text-3xl text-4xl font-semibold">
-          {data?.collection?.name || "-"}
-        </div>
-        <div class="text-3xl xl:text-xl">
-          <Copy
-            address={data?.tokens[0]?.contractAddress}
-            isShorten
-            iconColor={`${$isDarkMode ? "#fff" : "#000"}`}
-            color={`${$isDarkMode ? "#fff" : "#000"}`}
-          />
-        </div>
+      <div class="text-3xl xl:text-xl">
+        <Copy
+          address={data?.tokens[0]?.contractAddress}
+          isShorten
+          iconColor={`${$isDarkMode ? "#fff" : "#000"}`}
+          color={`${$isDarkMode ? "#fff" : "#000"}`}
+        />
       </div>
     </div>
-    <NftDetailSidebar
-      collectionId={data.collectionId}
-      addressWallet={selectedWallet}
-    />
   </div>
+  <NftDetailSidebar
+    collectionId={data.collectionId}
+    addressWallet={selectedWallet}
+  />
 </OverlaySidebar>
 
 <style windi:preflights:global windi:safelist:global>

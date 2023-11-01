@@ -110,10 +110,10 @@
         <div class="flex flex-col justify-between flex-1 gap-6 md:flex-row">
           <OverviewCard title={"Current Value"}>
             <div class="flex items-end gap-1 text-5xl xl:text-3xl">
-              <CountUpNumber id="current_liquidity" number={0} type="balance" />
+              <CountUpNumber number={0} type="balance" />
             </div>
             <div class="flex text-3xl xl:text-lg">
-              $<CountUpNumber id="test2" number={0} type="balance" />
+              $<CountUpNumber number={0} type="balance" />
             </div>
           </OverviewCard>
 
@@ -127,11 +127,7 @@
                 0 >= 0 ? "text-[#00A878]" : "text-red-500"
               }`}
             >
-              $<CountUpNumber
-                id="Profit&Loss"
-                number={Math.abs(0)}
-                type="balance"
-              />
+              $<CountUpNumber number={Math.abs(0)} type="balance" />
             </div>
             <div
               class={`xl:text-lg text-3xl flex ${
@@ -143,11 +139,7 @@
               {:else}
                 ↑
               {/if}
-              <CountUpNumber
-                id="Profit&LossPercent"
-                number={Math.abs(0) * 100}
-                type="percent"
-              />%
+              <CountUpNumber number={Math.abs(0) * 100} type="percent" />%
             </div>
           </OverviewCard>
         </div>
@@ -155,7 +147,7 @@
         <div class="flex flex-col justify-between flex-1 gap-6 md:flex-row">
           <OverviewCard title={"Unclaimed Fees"}>
             <div class="flex text-5xl xl:text-3xl">
-              $<CountUpNumber id="unclaimed_fees" number={0} type="balance" />
+              $<CountUpNumber number={0} type="balance" />
             </div>
           </OverviewCard>
 
@@ -165,11 +157,7 @@
                 0 >= 0 ? "text-[#00A878]" : "text-red-500"
               }`}
             >
-              $<CountUpNumber
-                id="yesterday_earning"
-                number={Math.abs(0)}
-                type="balance"
-              />
+              $<CountUpNumber number={Math.abs(0)} type="balance" />
             </div>
             <div
               class={`xl:text-lg text-3xl flex ${
@@ -181,11 +169,7 @@
               {:else}
                 ↑
               {/if}
-              <CountUpNumber
-                id="yesterday_earning_percent"
-                number={Math.abs(0) * 100}
-                type="percent"
-              />%
+              <CountUpNumber number={Math.abs(0) * 100} type="percent" />%
             </div>
           </OverviewCard>
         </div>

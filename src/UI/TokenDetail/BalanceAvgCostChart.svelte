@@ -135,7 +135,8 @@
       data !== undefined &&
       Object.keys(data).length !== 0 &&
       $wallet.length !== 0 &&
-      $typeWallet === "EVM",
+      ($typeWallet === "EVM" ||
+        ($typeWallet === "BUNDLE" && data?.chain !== "SOL")),
     onError(err) {
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));

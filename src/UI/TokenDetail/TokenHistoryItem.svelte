@@ -1,6 +1,6 @@
 <script lang="ts">
   import { isDarkMode, typeWallet } from "~/store";
-  import { detectedChain, explorerOnChain } from "~/utils";
+  import { detectedChain, linkExplorer } from "~/utils";
   import dayjs from "dayjs";
   import "dayjs/locale/en";
   import "dayjs/locale/vi";
@@ -107,7 +107,7 @@
       <div class="flex items-center justify-center">
         <a
           href={data.transaction_hash
-            ? explorerOnChain(data.chain, data.transaction_hash)
+            ? linkExplorer(data.chain, data.transaction_hash).trx
             : ""}
           target="_blank"
           class="cursor-pointer"
