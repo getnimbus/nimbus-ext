@@ -28,6 +28,9 @@
 
   import User from "~/assets/user.png";
   import Logo from "~/assets/logo-1.svg";
+  import Reload from "~/assets/reload-black.svg";
+  import ReloadWhite from "~/assets/reload-white.svg";
+  import Loading from "~/components/Loading.svelte";
 
   const wallets$ = onboard.state.select("wallets");
 
@@ -44,6 +47,7 @@
 
   let timeCountdown = 59;
   let timerCountdown;
+  let loading = false;
 
   onMount(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -159,6 +163,7 @@
   };
 
   const handleGetCodeSyncMobile = async () => {
+    loading = true;
     try {
       const res = await nimbus.get("/users/cross-login");
       if (res?.data) {
@@ -192,6 +197,8 @@
       clearTimeout(timer);
       clearInterval(timerCountdown);
       console.error("error: ", e);
+    } finally {
+      loading = false;
     }
   };
 
@@ -376,31 +383,60 @@
         More convenience in managing your portfolio on mobile devices
       </div>
     </div>
-    <div class="text-center text-sm">
-      The code is expired in {timeCountdown}s
+    <div class="flex flex-col gap-1 justify-center items-center">
+      <div class="text-sm">
+        The code is expired in {timeCountdown}s
+      </div>
+      <div class="flex items-center gap-2">
+        <div
+          class="cursor-pointer"
+          class:loading
+          on:click={() => {
+            syncMobileCode = undefined;
+            timeCountdown = 59;
+            clearTimeout(timer);
+            clearInterval(timerCountdown);
+            handleGetCodeSyncMobile();
+          }}
+        >
+          <img
+            src={$isDarkMode ? ReloadWhite : Reload}
+            alt=""
+            class="w-4 h-4 xl:w-3 xl:h-3"
+          />
+        </div>
+        <div class="text-sm">Generate new code</div>
+      </div>
     </div>
     <div class="flex justify-center items-center -mt-2">
       <div class="border rounded-xl overflow-hidden bg-white w-[57%]">
         <div class="bg-[#f3f4f6] py-2 px-4">
           <img src={Logo} alt="Logo" class="h-12 w-auto -ml-3" />
         </div>
-        <div class="flex justify-center">
-          {#if qrImageDataUrl !== undefined}
-            <img src={qrImageDataUrl} alt="QR Code" />
-          {:else}
-            <div class="flex flex-col items-center gap-1 text-sm py-30">
-              <div>Something wrong when generate QR code.</div>
-              <div
-                class="text-blue-500 cursor-pointer"
-                on:click={() => {
-                  handleGetCodeSyncMobile();
-                }}
-              >
-                Try again
+        {#if loading}
+          <div class="flex justify-center items-center h-60">
+            <Loading />
+          </div>
+        {:else}
+          <div class="flex justify-center">
+            {#if qrImageDataUrl !== undefined}
+              <img src={qrImageDataUrl} alt="QR Code" />
+            {:else}
+              <div class="flex flex-col items-center gap-1 text-sm py-30">
+                <div>Something wrong when generate QR code.</div>
+                <div
+                  class="text-blue-500 cursor-pointer"
+                  on:click={() => {
+                    handleGetCodeSyncMobile();
+                  }}
+                >
+                  Try again
+                </div>
               </div>
-            </div>
-          {/if}
-        </div>
+            {/if}
+          </div>
+        {/if}
+
         <div class="text-xs text-center font-medium text-[#9ca3af] px-4 pb-3">
           Investment in crypto more convenience with Nimbus
         </div>
@@ -428,7 +464,11 @@
         >
           <div class="flex items-center gap-2">
             <div class="flex-1 border rounded-lg py-2 px-3 text-base">
-              {syncMobileCode}
+              {#if loading}
+                -
+              {:else}
+                {syncMobileCode}
+              {/if}
             </div>
             <div
               class="cursor-pointer border w-max p-2 rounded-lg"
@@ -486,5 +526,21 @@
   :global(body.dark) .select_content {
     background: #131313;
     border: 0.5px solid #cdcdcd59;
+  }
+
+  .loading {
+    animation-name: loading;
+    animation-duration: 1.4s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+  }
+
+  @keyframes loading {
+    0% {
+      transform: rotate(0);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
   }
 </style>

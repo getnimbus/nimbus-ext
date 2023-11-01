@@ -126,14 +126,14 @@
     try {
       const res = await nimbus.put("/users/configs/alert-settings", payload);
       if (res && res?.data) {
-        selectedPercent = Number(res?.data?.alert_settings?.price?.value);
-        selectedSummary = res?.data?.alert_settings?.portfolioSummary?.value;
-        transaction = res?.data?.alert_settings?.transaction?.enabled;
-        filterSpamTrx = res?.data?.alert_settings?.transaction?.filterSpam;
-        if (Number(res?.data?.alert_settings?.price?.value) !== 0) {
+        selectedPercent = Number(res?.data?.alertSettings?.price?.value);
+        selectedSummary = res?.data?.alertSettings?.portfolioSummary?.value;
+        transaction = res?.data?.alertSettings?.transaction?.enabled;
+        filterSpamTrx = res?.data?.alertSettings?.transaction?.filterSpam;
+        if (Number(res?.data?.alertSettings?.price?.value) !== 0) {
           percent = true;
         }
-        if (res?.data?.alert_settings?.portfolioSummary?.value !== null) {
+        if (res?.data?.alertSettings?.portfolioSummary?.value !== null) {
           summary = true;
         }
 
@@ -168,23 +168,22 @@
     try {
       const res: any = await nimbus.get("/users/configs");
       userConfigs = {
-        filter_spam_tx_alert:
-          res?.data?.alert_settings?.transaction?.filterSpam,
-        price_alert: Number(res?.data?.alert_settings?.price?.value),
+        filter_spam_tx_alert: res?.data?.alertSettings?.transaction?.filterSpam,
+        price_alert: Number(res?.data?.alertSettings?.price?.value),
         summary_setting_alert:
-          res?.data?.alert_settings?.portfolioSummary?.value,
-        transaction_alert: res?.data?.alert_settings?.transaction?.enabled,
+          res?.data?.alertSettings?.portfolioSummary?.value,
+        transaction_alert: res?.data?.alertSettings?.transaction?.enabled,
       };
 
       if (res && res?.data) {
-        selectedPercent = Number(res?.data?.alert_settings?.price?.value);
-        selectedSummary = res?.data?.alert_settings?.portfolioSummary?.value;
-        transaction = res?.data?.alert_settings?.transaction?.enabled;
-        filterSpamTrx = res?.data?.alert_settings?.transaction?.filterSpam;
-        if (Number(res?.data?.alert_settings?.price?.value) !== 0) {
+        selectedPercent = Number(res?.data?.alertSettings?.price?.value);
+        selectedSummary = res?.data?.alertSettings?.portfolioSummary?.value;
+        transaction = res?.data?.alertSettings?.transaction?.enabled;
+        filterSpamTrx = res?.data?.alertSettings?.transaction?.filterSpam;
+        if (Number(res?.data?.alertSettings?.price?.value) !== 0) {
           percent = true;
         }
-        if (res?.data?.alert_settings?.portfolioSummary?.value !== null) {
+        if (res?.data?.alertSettings?.portfolioSummary?.value !== null) {
           summary = true;
         }
 
