@@ -6,14 +6,15 @@
   import { filterTokenValueType } from "~/utils";
   import { groupBy } from "lodash";
 
-  export let selectedTokenHolding;
-  export let selectedDataPieChart;
+  export let selectedWallet;
+  export let isLoadingNFT;
+  export let isLoadingToken;
   export let holdingTokenData;
   export let holdingNFTData;
-  export let isLoadingToken;
-  export let isLoadingNFT;
+  export let dataVaults;
+  export let selectedTokenHolding;
+  export let selectedDataPieChart;
   export let totalAssets;
-  export let selectedWallet;
 
   import Select from "~/components/Select.svelte";
   import HoldingToken from "~/components/HoldingToken.svelte";
@@ -84,63 +85,77 @@
   });
 
   $: {
-    if (selectedTokenHolding && holdingTokenData?.length !== 0) {
-      const filteredHoldingTokenData = holdingTokenData?.filter(
-        (item) => item?.cmc_id
-      );
+    if (!isLoadingToken) {
+      if (holdingTokenData?.length !== 0) {
+        const filteredHoldingTokenData = holdingTokenData?.filter(
+          (item) => item?.cmc_id
+        );
 
-      const filteredNullCmcHoldingTokenData = holdingTokenData?.filter(
-        (item) => item?.cmc_id === null
-      );
+        const filteredNullCmcHoldingTokenData = holdingTokenData?.filter(
+          (item) => item?.cmc_id === null
+        );
 
-      const groupFilteredNullCmcHoldingTokenData = groupBy(
-        filteredNullCmcHoldingTokenData,
-        "chain"
-      );
+        const groupFilteredNullCmcHoldingTokenData = groupBy(
+          filteredNullCmcHoldingTokenData,
+          "chain"
+        );
 
-      const chainList = Object.keys(groupFilteredNullCmcHoldingTokenData);
+        const chainList = Object.keys(groupFilteredNullCmcHoldingTokenData);
 
-      chainList.map((chain) => {
-        groupFilteredNullCmcHoldingTokenData[chain].map((item) => {
-          priceSubscribe([item?.contractAddress], true, chain, (data) => {
+        chainList.map((chain) => {
+          groupFilteredNullCmcHoldingTokenData[chain].map((item) => {
+            priceSubscribe([item?.contractAddress], true, chain, (data) => {
+              marketPriceToken = {
+                id: data.id,
+                market_price: data.price,
+              };
+            });
+          });
+        });
+
+        filteredHoldingTokenData?.map((item) => {
+          priceSubscribe([item?.cmc_id], false, "", (data) => {
             marketPriceToken = {
               id: data.id,
               market_price: data.price,
             };
           });
         });
-      });
 
-      filteredHoldingTokenData?.map((item) => {
-        priceSubscribe([item?.cmc_id], false, "", (data) => {
-          marketPriceToken = {
-            id: data.id,
-            market_price: data.price,
-          };
-        });
-      });
-
-      sumAllTokens = holdingTokenData?.reduce(
-        (prev, item) => prev + item.value,
-        0
-      );
+        sumAllTokens = holdingTokenData?.reduce(
+          (prev, item) => prev + item.value,
+          0
+        );
+      }
     }
-    if (holdingNFTData?.length !== 0) {
-      holdingNFTData
-        ?.filter((item) => item?.nativeToken?.cmcId)
-        ?.map((item) => {
-          priceSubscribe(
-            [Number(item?.nativeToken?.cmcId)],
-            false,
-            "",
-            (data) => {
-              marketPriceNFT = {
-                id: data.id,
-                market_price: data.price,
-              };
-            }
-          );
+    if (!isLoadingNFT) {
+      if (holdingNFTData?.length !== 0) {
+        let filteredFormatHoldingNFTData = [];
+        const symbolSet = new Set();
+        const formatHoldingNFTData = holdingNFTData
+          ?.filter((item) => item?.nativeToken?.cmcId)
+          ?.map((item) => {
+            return {
+              symbol: item.nativeToken.symbol,
+              cmcId: item.nativeToken.cmcId,
+            };
+          });
+        formatHoldingNFTData.forEach((item) => {
+          if (!symbolSet.has(item.symbol)) {
+            symbolSet.add(item.symbol);
+            filteredFormatHoldingNFTData.push(item);
+          }
         });
+
+        filteredFormatHoldingNFTData?.map((item) => {
+          priceSubscribe([Number(item?.cmcId)], false, "", (data) => {
+            marketPriceNFT = {
+              id: data.id,
+              market_price: data.price,
+            };
+          });
+        });
+      }
     }
   }
 
@@ -271,10 +286,28 @@
 
   $: {
     if (filterTokenType) {
+      const formatDataWithVault = formatData?.map((item) => {
+        try {
+          const regex = new RegExp(`(^${item?.symbol}|-${item?.symbol})`);
+          const filteredVaults = dataVaults?.filter((data) =>
+            data.name.match(regex)
+          );
+
+          return {
+            ...item,
+            vaults: filteredVaults,
+          };
+        } catch (error) {
+          return {
+            ...item,
+            vaults: [],
+          };
+        }
+      });
       if (filterTokenType.value === 0) {
-        filteredHoldingDataToken = formatData;
+        filteredHoldingDataToken = formatDataWithVault;
       } else {
-        filteredHoldingDataToken = formatData?.filter(
+        filteredHoldingDataToken = formatDataWithVault?.filter(
           (item) => item?.amount * item.market_price > filterTokenType.value
         );
       }
@@ -354,11 +387,6 @@
     ) {
       filteredHoldingDataToken = [];
       sumTokens = 0;
-    }
-  }
-
-  $: {
-    if (formatDataNFT && formatDataNFT.length === 0) {
     }
   }
 </script>
