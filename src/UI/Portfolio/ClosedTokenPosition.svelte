@@ -6,11 +6,11 @@
   import { filterTokenValueType } from "~/utils";
   import { groupBy } from "lodash";
 
+  export let selectedWallet;
+  export let isLoadingNFT;
+  export let isLoadingToken;
   export let holdingTokenData;
   export let holdingNFTData;
-  export let isLoadingToken;
-  export let isLoadingNFT;
-  export let selectedWallet;
 
   import ClosedHoldingTokenPosition from "~/components/ClosedHoldingTokenPosition.svelte";
   import HoldingNFT from "~/components/HoldingNFT.svelte";
@@ -74,61 +74,75 @@
   });
 
   // subscribe to ws
-  // $: {
-  //   if (holdingTokenData?.length !== 0) {
-  //     const filteredHoldingTokenData = holdingTokenData?.filter(
-  //       (item) => item?.cmc_id
-  //     );
+  $: {
+    if (!isLoadingToken) {
+      if (holdingTokenData?.length !== 0) {
+        const filteredHoldingTokenData = holdingTokenData?.filter(
+          (item) => item?.cmc_id
+        );
 
-  //     const filteredNullCmcHoldingTokenData = holdingTokenData?.filter(
-  //       (item) => item?.cmc_id === null
-  //     );
+        const filteredNullCmcHoldingTokenData = holdingTokenData?.filter(
+          (item) => item?.cmc_id === null
+        );
 
-  //     const groupFilteredNullCmcHoldingTokenData = groupBy(
-  //       filteredNullCmcHoldingTokenData,
-  //       "chain"
-  //     );
+        const groupFilteredNullCmcHoldingTokenData = groupBy(
+          filteredNullCmcHoldingTokenData,
+          "chain"
+        );
 
-  //     const chainList = Object.keys(groupFilteredNullCmcHoldingTokenData);
+        const chainList = Object.keys(groupFilteredNullCmcHoldingTokenData);
 
-  //     chainList.map((chain) => {
-  //       groupFilteredNullCmcHoldingTokenData[chain].map((item) => {
-  //         priceSubscribe([item?.contractAddress], true, chain, (data) => {
-  //           marketPriceToken = {
-  //             id: data.id,
-  //             market_price: data.price,
-  //           };
-  //         });
-  //       });
-  //     });
+        chainList.map((chain) => {
+          groupFilteredNullCmcHoldingTokenData[chain].map((item) => {
+            priceSubscribe([item?.contractAddress], true, chain, (data) => {
+              marketPriceToken = {
+                id: data.id,
+                market_price: data.price,
+              };
+            });
+          });
+        });
 
-  //     filteredHoldingTokenData?.map((item) => {
-  //       priceSubscribe([item?.cmc_id], false, "", (data) => {
-  //         marketPriceToken = {
-  //           id: data.id,
-  //           market_price: data.price,
-  //         };
-  //       });
-  //     });
-  //   }
-  //   if (holdingNFTData) {
-  //     holdingNFTData
-  //       ?.filter((item) => item?.nativeToken?.cmcId)
-  //       ?.map((item) => {
-  //         priceSubscribe(
-  //           [Number(item?.nativeToken?.cmcId)],
-  //           false,
-  //           "",
-  //           (data) => {
-  //             marketPriceNFT = {
-  //               id: data.id,
-  //               market_price: data.price,
-  //             };
-  //           }
-  //         );
-  //       });
-  //   }
-  // }
+        filteredHoldingTokenData?.map((item) => {
+          priceSubscribe([item?.cmc_id], false, "", (data) => {
+            marketPriceToken = {
+              id: data.id,
+              market_price: data.price,
+            };
+          });
+        });
+      }
+    }
+    if (!isLoadingNFT) {
+      if (holdingNFTData) {
+        let filteredFormatHoldingNFTData = [];
+        const symbolSet = new Set();
+        const formatHoldingNFTData = holdingNFTData
+          ?.filter((item) => item?.nativeToken?.cmcId)
+          ?.map((item) => {
+            return {
+              symbol: item.nativeToken.symbol,
+              cmcId: item.nativeToken.cmcId,
+            };
+          });
+        formatHoldingNFTData.forEach((item) => {
+          if (!symbolSet.has(item.symbol)) {
+            symbolSet.add(item.symbol);
+            filteredFormatHoldingNFTData.push(item);
+          }
+        });
+
+        filteredFormatHoldingNFTData?.map((item) => {
+          priceSubscribe([Number(item?.cmcId)], false, "", (data) => {
+            marketPriceNFT = {
+              id: data.id,
+              market_price: data.price,
+            };
+          });
+        });
+      }
+    }
+  }
 
   // format initial data
   $: {
