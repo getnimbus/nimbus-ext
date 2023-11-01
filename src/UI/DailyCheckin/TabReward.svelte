@@ -32,8 +32,8 @@
           campaignName: data?.campaignName,
         })
         .then(() => {
-          queryClient.invalidateQueries(["rewards"]);
-          queryClient.invalidateQueries(["daily-checkin"]);
+          queryClient.invalidateQueries([$userPublicAddress, "rewards"]);
+          queryClient.invalidateQueries([$userPublicAddress, "daily-checkin"]);
           selectedType = "yourGift";
         });
     } catch (e) {
