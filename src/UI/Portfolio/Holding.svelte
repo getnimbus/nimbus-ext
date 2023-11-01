@@ -411,7 +411,7 @@
         </a> -->
       </div>
 
-      <div class="flex flex-col gap-2">
+      <div class="flex flex-col gap-6">
         <!-- token holding table -->
         <div class="flex flex-col gap-2">
           <div class="flex justify-between items-center">
@@ -800,8 +800,8 @@
           </div>
         {/if}
       </div>
-    </div></ErrorBoundary
-  >
+    </div>
+  </ErrorBoundary>
 </div>
 
 <style>
