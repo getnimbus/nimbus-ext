@@ -357,7 +357,7 @@
         return 0;
       });
 
-    holdingTokenData = formatData;
+    holdingTokenData = formatData?.filter((item) => Number(item.amount) > 0);
 
     closedHoldingPosition = formatData
       ?.filter((item) => item?.profit?.realizedProfit)
@@ -672,15 +672,15 @@
   });
 
   onMount(() => {
-    initWS();
+    // initWS();
     mixpanel.track("portfolio_page", {
       address: $wallet,
     });
   });
 
-  onDestroy(() => {
-    disconnectWs();
-  });
+  // onDestroy(() => {
+  //   disconnectWs();
+  // });
 
   const handleSelectedTableTokenHolding = (data, selectDatPieChart) => {
     if (data.data && data.data.length !== 0) {
@@ -748,7 +748,7 @@
     $chain === "ALL"
       ? $queryAllTokenHolding &&
         $queryAllTokenHolding.some((item) => item.isFetching === true) &&
-        $queryAllTokenHolding &&
+        $queryAllNftHolding &&
         $queryAllNftHolding.some((item) => item.isFetching === true) &&
         $queryVaults.isFetching &&
         $queryOverview.isFetching
@@ -848,9 +848,7 @@
                 isLoadingBreakdownNfts={$queryAllNftHolding.some(
                   (item) => item.isFetching === true
                 )}
-                holdingTokenData={holdingTokenData?.filter(
-                  (item) => Number(item.amount) > 0
-                )}
+                {holdingTokenData}
                 {overviewDataPerformance}
                 {dataPieChartToken}
                 {dataPieChartNft}
@@ -877,9 +875,7 @@
                       (item) => item.isFetching === true
                     )
                   : $queryTokenHolding.isFetching}
-                holdingTokenData={holdingTokenData?.filter(
-                  (item) => Number(item.amount) > 0
-                )}
+                {holdingTokenData}
                 {selectedTokenHolding}
                 {selectedDataPieChart}
                 {holdingNFTData}

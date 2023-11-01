@@ -84,63 +84,67 @@
   });
 
   $: {
-    if (selectedTokenHolding && holdingTokenData?.length !== 0) {
-      const filteredHoldingTokenData = holdingTokenData?.filter(
-        (item) => item?.cmc_id
-      );
+    if (!isLoadingToken) {
+      if (holdingTokenData?.length !== 0) {
+        const filteredHoldingTokenData = holdingTokenData?.filter(
+          (item) => item?.cmc_id
+        );
 
-      const filteredNullCmcHoldingTokenData = holdingTokenData?.filter(
-        (item) => item?.cmc_id === null
-      );
+        const filteredNullCmcHoldingTokenData = holdingTokenData?.filter(
+          (item) => item?.cmc_id === null
+        );
 
-      const groupFilteredNullCmcHoldingTokenData = groupBy(
-        filteredNullCmcHoldingTokenData,
-        "chain"
-      );
+        const groupFilteredNullCmcHoldingTokenData = groupBy(
+          filteredNullCmcHoldingTokenData,
+          "chain"
+        );
 
-      const chainList = Object.keys(groupFilteredNullCmcHoldingTokenData);
+        const chainList = Object.keys(groupFilteredNullCmcHoldingTokenData);
 
-      chainList.map((chain) => {
-        groupFilteredNullCmcHoldingTokenData[chain].map((item) => {
-          priceSubscribe([item?.contractAddress], true, chain, (data) => {
+        chainList.map((chain) => {
+          groupFilteredNullCmcHoldingTokenData[chain].map((item) => {
+            priceSubscribe([item?.contractAddress], true, chain, (data) => {
+              marketPriceToken = {
+                id: data.id,
+                market_price: data.price,
+              };
+            });
+          });
+        });
+
+        filteredHoldingTokenData?.map((item) => {
+          priceSubscribe([item?.cmc_id], false, "", (data) => {
             marketPriceToken = {
               id: data.id,
               market_price: data.price,
             };
           });
         });
-      });
 
-      filteredHoldingTokenData?.map((item) => {
-        priceSubscribe([item?.cmc_id], false, "", (data) => {
-          marketPriceToken = {
-            id: data.id,
-            market_price: data.price,
-          };
-        });
-      });
-
-      sumAllTokens = holdingTokenData?.reduce(
-        (prev, item) => prev + item.value,
-        0
-      );
+        sumAllTokens = holdingTokenData?.reduce(
+          (prev, item) => prev + item.value,
+          0
+        );
+      }
     }
     if (holdingNFTData?.length !== 0) {
-      holdingNFTData
-        ?.filter((item) => item?.nativeToken?.cmcId)
-        ?.map((item) => {
-          priceSubscribe(
-            [Number(item?.nativeToken?.cmcId)],
-            false,
-            "",
-            (data) => {
-              marketPriceNFT = {
-                id: data.id,
-                market_price: data.price,
-              };
-            }
-          );
-        });
+      if (!isLoadingNFT) {
+        holdingNFTData
+          ?.filter((item) => item?.nativeToken?.cmcId) // TODO: Remove duplicate and subscribe again
+          ?.map((item) => {
+            priceSubscribe(
+              [Number(item?.nativeToken?.cmcId)],
+              false,
+              "",
+              (data) => {
+                marketPriceNFT = {
+                  id: data.id,
+                  market_price: data.price,
+                };
+              }
+            );
+          });
+      }
     }
   }
 
