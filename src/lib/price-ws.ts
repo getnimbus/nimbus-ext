@@ -36,7 +36,7 @@ export const priceSubscribe = (cmc_id: number[] | string[], isNullCmcId: boolean
       initWS(() => priceSubscribe(cmc_id, isNullCmcId, chain, callback));
     } else {
       if (isNullCmcId) {
-        socket.send(JSON.stringify({ "ids": cmc_id.join(','), "type": "mobula", "chain": chain }));
+        socket.send(JSON.stringify({ "ids": cmc_id.join(','), "type": chain === "ETH" ? "ethereum" : "mobula", "chain": chain }));
       } else {
         socket.send(JSON.stringify({ "ids": cmc_id.join(',') }));
       }

@@ -19,6 +19,9 @@ import Arbitrum from "~/assets/arbitrum.png";
 import Gnosis from "~/assets/gnosis.png";
 import Base from "~/assets/base.svg";
 import Scroll from "~/assets/scroll.png";
+import ZkSync from "~/assets/zksync.png";
+import Aura from "~/assets/aura.png";
+import Linea from "~/assets/linea.png";
 
 export const ETHAddressRegex = /(\b0x[a-fA-F0-9]{40}\b)/g;
 export const ETHTrxRegex = /(\b0x[a-fA-F0-9]{64}\b)/g;
@@ -305,45 +308,6 @@ export const getAddressContext = (address: string) => {
   return undefined;
 };
 
-export const explorerOnChain = (type, hash) => {
-  let linkTrx = ""
-  switch (type) {
-    case "ETH":
-      linkTrx = `https://etherscan.io/tx/${hash}`;
-      break;
-    case "XDAI":
-      linkTrx = `https://gnosisscan.io/tx/${hash}`;
-      break;
-    case "BNB":
-      linkTrx = `https://bscscan.com/tx/${hash}`;
-      break;
-    case "MATIC":
-      linkTrx = `https://polygonscan.com/tx/${hash}`;
-      break;
-    case "OP":
-      linkTrx = `https://optimistic.etherscan.io/tx/${hash}`;
-      break;
-    case "AVAX":
-      linkTrx = `https://snowtrace.io/tx/${hash}`;
-      break;
-    case "ARB":
-      linkTrx = `https://arbiscan.io/tx/${hash}`;
-      break;
-    case "BASE":
-      linkTrx = `https://basescan.org/tx/${hash}`
-      break;
-    case "SCROLL":
-      linkTrx = `https://blockscout.scroll.io/tx/${hash}`
-      break;
-    case "SOL":
-      linkTrx = `https://solscan.io/tx/${hash}`
-      break;
-    default:
-      linkTrx = ""
-  }
-  return linkTrx
-}
-
 export const chainList = [
   {
     logo: logo,
@@ -395,6 +359,21 @@ export const chainList = [
     label: "Gnosis",
     value: "XDAI",
   },
+  {
+    logo: ZkSync, 
+    label: "ZkSync", 
+    value: "ZKSYNC",
+  },
+  {
+    logo: Linea, 
+    label: "Linea", 
+    value: "LINEA",
+  },
+  {
+    logo: Aura, 
+    label: "Aura", 
+    value: "AURA",
+  },
 ];
 
 export const detectedChain = (type) => {
@@ -429,6 +408,15 @@ export const detectedChain = (type) => {
       break;
     case "SOL":
       chain = Solana;
+      break;
+    case "ZKSYNC":
+      chain = ZkSync;
+      break;
+    case "LINEA":
+      chain = Linea;
+      break;
+    case "AURA":
+      chain = Aura;
       break;
     default:
       chain = logo;
@@ -484,11 +472,41 @@ export const linkExplorer = (chain, hash) => {
         address: `https://arbiscan.io/address/${hash}`,
       };
       break;
+    case "BASE":
+      links = {
+        trx: `https://basescan.org/tx/${hash}`,
+        address: `https://basescan.org/address/${hash}`,
+      };
+      break;
+    case "SCROLL":
+      links = {
+        trx: `https://blockscout.scroll.io/tx/${hash}`,
+        address: `https://blockscout.scroll.io/address/${hash}`,
+      };
+      break;
+    case "ZKSYNC":
+      links = {
+        trx: `https://explorer.zksync.io/tx/${hash}`,
+        address: `https://explorer.zksync.io/address/${hash}`,
+      };
+      break;
+    case "LINEA":
+      links = {
+        trx: `https://lineascan.build/tx/${hash}`,
+        address: `https://lineascan.build/address/${hash}`,
+      };
+      break;
+    case "SOL":
+      links = {
+        trx: `https://solscan.io/tx/${hash}`,
+        address: `https://solscan.io/address/${hash}`,
+      };
+      break;
     case "BTC":
       links = {
         trx: `https://www.oklink.com/btc/tx/${hash}`,
         address: `https://www.oklink.com/btc/address/${hash}`
-      }
+      };
       break;
     default:
       links = {
@@ -1120,23 +1138,22 @@ export const formatTransactionTime = (date: Date) => {
 };
 
 export const handleImgError = async (e, image, defaultImage) => {
-  e.target.onerror = null; // break loop
-  if (defaultImage !== null) {
-    if (image.includes("https://api.center.dev")) {
-      fetch(image, {
-        headers: { "x-api-key": "lapis-fridge-d84f5377deca" },
-      })
-        .then((r) => r.blob())
-        .then((d) => {
-          if (d && window.URL.createObjectURL(d) !== null) {
-            e.target.src = window.URL.createObjectURL(d);
-          }
-        })
-        .catch(() => {
-          e.target.src = defaultImage;
-        });
-    } else {
-      e.target.src = defaultImage;
-    }
-  }
+  // if (defaultImage !== null) {
+  //   if (image.includes("https://api.center.dev")) {
+  //     fetch(image, {
+  //       headers: { "x-api-key": "lapis-fridge-d84f5377deca" },
+  //     })
+  //       .then((r) => r.blob())
+  //       .then((d) => {
+  //         if (d && window.URL.createObjectURL(d) !== null) {
+  //           e.target.src = window.URL.createObjectURL(d);
+  //         }
+  //       })
+  //       .catch(() => {
+  //         e.target.src = defaultImage;
+  //       });
+  //   } else {
+  //     e.target.src = defaultImage;
+  //   }
+  // }
 };
