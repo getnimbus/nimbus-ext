@@ -147,7 +147,7 @@
     <span class="font-bold">10% off lifetime</span> payments.
   </div>
 
-  <div class="flex items-center justify-center gap-2">
+  <!-- <div class="flex items-center justify-center gap-2">
     <AnimateSharedLayout>
       {#each typePackage as type}
         <div
@@ -176,9 +176,9 @@
         </div>
       {/each}
     </AnimateSharedLayout>
-  </div>
+  </div> -->
 
-  <div>
+  <div class="py-20 flex flex-col gap-20">
     <PricingTable />
   </div>
 
