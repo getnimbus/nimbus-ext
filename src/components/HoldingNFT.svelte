@@ -42,10 +42,14 @@
   );
 
   $: profitAndLoss =
-    totalCost === 0 ? 0 : data?.current_value - (totalCost || 0);
+    totalNativeTokenPrice === 0
+      ? 0
+      : data?.current_value - (totalNativeTokenPrice || 0);
 
   $: profitAndLossPercent =
-    Math.abs(totalCost || 0) === 0 ? 0 : profitAndLoss / Math.abs(totalCost);
+    totalNativeTokenPrice === 0
+      ? 0
+      : (profitAndLoss * data?.marketPrice) / Math.abs(totalCost);
 </script>
 
 <svelte:window on:keydown={closeSideNFTDetail} />
@@ -258,10 +262,7 @@
               : "text_00000099"
           }`}
         >
-          <TooltipNumber
-            number={Math.abs(profitAndLoss) / data?.marketPrice}
-            type="balance"
-          />
+          <TooltipNumber number={Math.abs(profitAndLoss)} type="balance" />
           <div>
             {data?.nativeToken?.symbol || ""}
           </div>
@@ -276,7 +277,10 @@
               : "text_00000099"
           }`}
         >
-          <TooltipNumber number={Math.abs(profitAndLoss)} type="value" />
+          <TooltipNumber
+            number={Math.abs(profitAndLoss) * data?.marketPrice}
+            type="value"
+          />
         </div>
 
         <div class="flex items-center justify-end gap-1">
