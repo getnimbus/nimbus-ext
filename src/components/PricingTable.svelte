@@ -32,7 +32,7 @@
     <thead>
       <tr class={`${$isDarkMode ? "bg-[#131313]" : "bg-gray-100"}`}>
         <th
-          class="uppercase font-medium text-left py-3 pl-3 rounded-tl-xl xl:w-[400px] w-[230px]"
+          class="uppercase font-medium text-left py-3 pl-3 rounded-tl-xl xl:w-[420px] w-[230px]"
         >
           plans
         </th>
@@ -195,7 +195,7 @@
           }`}
         >
           <th
-            class={`xl:w-[400px] w-[230px] xl:static sticky top-0 left-0 font-medium py-3 pl-3 rounded-tl-xl ${
+            class={`xl:w-[420px] w-[230px] xl:static sticky top-0 left-0 font-medium py-3 pl-3 rounded-tl-xl ${
               $isDarkMode ? "bg-[#161616]" : "bg-gray-100"
             }`}
           >
@@ -215,7 +215,7 @@
             on:mouseenter={() => (isHoverCompare = index)}
           >
             <td
-              class={`py-4 pl-3 xl:w-[450px] w-[230px] xl:static sticky top-0 left-0 z-50 text-base ${
+              class={`py-4 pl-3 xl:w-[420px] w-[230px] xl:static sticky top-0 left-0 z-50 text-base ${
                 isHoverCompare === index && !$isDarkMode
                   ? "bg-gray-100"
                   : isHoverCompare === index && $isDarkMode
