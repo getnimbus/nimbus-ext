@@ -178,7 +178,7 @@
     </AnimateSharedLayout>
   </div> -->
 
-  <div class="py-20 flex flex-col gap-20">
+  <div class="flex flex-col gap-20">
     <PricingTable />
   </div>
 
@@ -235,10 +235,10 @@
       <div class="xl:text-sm text-2xl text-gray-500">
         Your <span class="uppercase font-medium">{buyPackage}</span>
         Plan have
-        <span class="font-medium"
-          >{dateDiffInDays(new Date(), new Date(endDatePackage))} days left</span
-        >
-        . Do you really want to cancel? This process cannot revert
+        <span class="font-medium">
+          {dateDiffInDays(new Date(), new Date(endDatePackage))} days left.
+        </span>
+        Do you really want to cancel? This process cannot revert
       </div>
     </div>
     <div class="flex justify-end lg:gap-2 gap-6">

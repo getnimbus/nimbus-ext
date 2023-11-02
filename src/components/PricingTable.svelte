@@ -11,6 +11,8 @@
   let yearly = true;
   let isHoverCompare;
 
+  let typePrice: "free" | "explorer" | "alpha" = "free";
+
   const compareResult = (item: any) => {
     if (item.state === "available") {
       return "✅";
@@ -20,14 +22,10 @@
       return "⚠️";
     }
   };
-
-  const compareDescription = (item: any) => {
-    return item.description;
-  };
 </script>
 
-<!-- pricing table app -->
-<div class="rounded-[10px] border border_0000000d">
+<!-- pricing table app on pc -->
+<div class="lg:block hidden rounded-[10px] border border_0000000d">
   <table class="table-auto w-full">
     <thead>
       <tr class={`${$isDarkMode ? "bg-[#131313]" : "bg-gray-100"}`}>
@@ -74,7 +72,7 @@
               <div
                 class={`w-11 h-6 peer-focus:outline-none peer-focus:ring-4 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 ${
                   $isDarkMode
-                    ? "dark:peer-focus:ring-blue-800 dark:bg-gray-700 dark:border-gray-600"
+                    ? "peer-focus:ring-blue-800 bg-gray-700 border-gray-600"
                     : "peer-focus:ring-blue-300 after:border-gray-300 bg-gray-200 "
                 }`}
               />
@@ -128,7 +126,6 @@
                       content: getTooltipContent(
                         item.tippy.title,
                         item.tippy.content,
-                        // RealtimeVideo,
                         false,
                         $isDarkMode
                       ),
@@ -153,7 +150,7 @@
                 <span class="w-4 h-4">
                   {compareResult(item.content.free)}
                 </span>{" "}
-                {compareDescription(item.content.free)}
+                {item.content.free.description}
               </div>
             </td>
             <td class="py-4">
@@ -161,7 +158,7 @@
                 <span class="w-4 h-4">
                   {compareResult(item.content.explorer)}
                 </span>{" "}
-                {compareDescription(item.content.explorer)}
+                {item.content.explorer.description}
               </div>
             </td>
             <td class="py-4 px-3">
@@ -169,7 +166,160 @@
                 <span class="w-4 h-4">
                   {compareResult(item.content.alpha)}
                 </span>{" "}
-                {compareDescription(item.content.alpha)}
+                {item.content.alpha.description}
+              </div>
+            </td>
+          </tr>
+        {/if}
+      {/each}
+    </tbody>
+  </table>
+</div>
+
+<!-- pricing table app on mobile ver  -->
+<div class="lg:hidden flex flex-col items-center">
+  <div class="flex flex-col gap-5">
+    <div class="flex items-center justify-center gap-1">
+      <label class="relative inline-flex items-center cursor-pointer">
+        <input
+          type="checkbox"
+          value=""
+          class="sr-only peer"
+          checked={yearly}
+          on:click={() => (yearly = !yearly)}
+        />
+        <div
+          class={`w-11 h-6 peer-focus:outline-none peer-focus:ring-4 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 ${
+            $isDarkMode
+              ? "peer-focus:ring-blue-800 bg-gray-700 border-gray-600"
+              : "peer-focus:ring-blue-300 after:border-gray-300 bg-gray-200 "
+          }`}
+        />
+      </label>
+      <span class="ml-3 text-xl font-medium">
+        Annual Billing <span class="text-green-500">(Save 17%)</span>
+      </span>
+    </div>
+    <div class="flex gap-5">
+      <div
+        class={`uppercase py-3 px-4 text-2xl font-medium rounded-2xl ${
+          typePrice === "free" && "bg-blue-100 text-primaryN"
+        }`}
+        on:click={() => (typePrice = "free")}
+      >
+        free
+      </div>
+      <div
+        class={`uppercase py-3 px-4 text-2xl font-medium rounded-2xl ${
+          typePrice === "explorer" && "bg-blue-100 text-primaryN"
+        }`}
+        on:click={() => (typePrice = "explorer")}
+      >
+        explorer
+      </div>
+      <div
+        class={`uppercase py-3 px-4 text-2xl font-medium rounded-2xl ${
+          typePrice === "alpha" && "bg-blue-100 text-primaryN"
+        }`}
+        on:click={() => (typePrice = "alpha")}
+      >
+        alpha
+      </div>
+    </div>
+    <div class="flex items-center justify-center">
+      {#if typePrice === "free"}
+        <div class="flex flex-col gap-2 justify-center items-center p-5">
+          <div class="text-2xl font-medium uppercase">Free</div>
+          <span class="text-4xl font-semibold"> $0 </span>
+          <div class="text-lg">For those who starting to invest</div>
+        </div>
+      {:else if typePrice === "explorer"}
+        <div class="flex flex-col gap-2 justify-center items-center p-5">
+          <div class="text-2xl font-medium uppercase">
+            Explorer{" "}
+            {#if yearly}
+              <span
+                class="text-white px-2 py-1 font-normal text-lg ml-3 bg-[#10b981] rounded-lg"
+              >
+                S<span class="lowercase">ave</span> $1.75
+              </span>
+            {/if}
+          </div>
+          <div class="text-4xl font-medium">
+            {yearly ? "$8.25" : "$9.99"}{" "}
+            <span class="text-[#6b7380] text-lg font-medium"> /month </span>
+          </div>
+          <div class="text-lg">Boost your return and reduce your risk</div>
+        </div>
+      {:else if typePrice === "alpha"}
+        <div class="flex flex-col gap-2 justify-center items-center p-5">
+          <div class="text-2xl font-medium uppercase">
+            Alpha{" "}
+            {#if yearly}
+              <span
+                class="text-white px-2 py-1 font-normal text-lg ml-3 bg-[#10b981] rounded-lg"
+              >
+                S<span class="lowercase">ave</span> $17.5
+              </span>
+            {/if}
+          </div>
+          <div class="text-4xl font-medium">
+            {yearly ? "$82.5" : "$99.99"}{" "}
+            <span class="text-[#6b7380] text-lg font-medium"> /month </span>
+          </div>
+          <div class="text-lg">Enjoy all the features without any limited</div>
+        </div>
+      {/if}
+    </div>
+  </div>
+  <table class="w-full table-auto">
+    <tbody>
+      {#each nimbusPricingData as item}
+        {#if item.featureStatus === "main"}
+          <tr>
+            <td colspan="8" class="bg-gray-50 text-2xl font-medium py-6 px-3">
+              {item.title} 
+            </td>
+          </tr>
+        {:else if item.featureStatus === "part"}
+          <tr
+            class={`text-xl ${
+              $isDarkMode ? "hover:bg-[#000]" : "hover:bg-gray-100"
+            } `}
+          >
+            <td class="py-6 px-3">
+              <div>
+                {#if item.tippy.used}
+                  <div
+                    use:tooltip={{
+                      content: getTooltipContent(
+                        item.tippy.title,
+                        item.tippy.content,
+                        false,
+                        $isDarkMode
+                      ),
+                      allowHTML: true,
+                      placement: "top",
+                      interactive: true,
+                    }}
+                  >
+                    <span class="underline-dashed">
+                      {item.title}
+                    </span>
+                  </div>
+                {:else}
+                  <span>
+                    {item.title}
+                  </span>
+                {/if}
+              </div>
+            </td>
+            <td class="py-6 px-3 text-right">
+              <div>
+                {item.content.alpha.description}{" "}
+                <span class="w-4 h-4">
+                  {compareResult(item.content.alpha)}
+                </span>
               </div>
             </td>
           </tr>
@@ -180,11 +330,9 @@
 </div>
 
 <!-- compare table  -->
-<div>
-  <div class="flex flex-col">
-    <h2 class="xl:text-xl text-3xl font-medium w-full mb-4">
-      Compare with other apps
-    </h2>
+<div class="flex flex-col gap-4">
+  <div class="xl:text-xl text-3xl font-medium w-full">
+    Compare with other apps
   </div>
   <div class="w-full overflow-auto rounded-[10px] border border_0000000d">
     <table class="xl:w-full w-[1000px] table-auto rounded-2xl">
@@ -211,18 +359,16 @@
       <tbody on:mouseleave={() => (isHoverCompare = undefined)}>
         {#each nimbusCompareFeatureData as item, index}
           <tr
-            class={`${$isDarkMode ? "hover:bg-[#000]" : "hover:bg-gray-100"}`}
+            class={`group xl:text-base text-xl ${
+              $isDarkMode ? "hover:bg-[#000]" : "hover:bg-gray-100"
+            }`}
             on:mouseenter={() => (isHoverCompare = index)}
           >
             <td
-              class={`py-4 pl-3 xl:w-[420px] w-[230px] xl:static sticky top-0 left-0 z-50 text-base ${
-                isHoverCompare === index && !$isDarkMode
-                  ? "bg-gray-100"
-                  : isHoverCompare === index && $isDarkMode
-                  ? "bg-[#000]"
-                  : $isDarkMode
-                  ? "bg-[#161616]"
-                  : "bg-white"
+              class={`py-4 pl-3 xl:w-[420px] w-[230px] xl:static sticky top-0 left-0 z-50 ${
+                $isDarkMode
+                  ? "bg-[#161616] group-hover:bg-[#000]"
+                  : "bg-white group-hover:bg-gray-100"
               } `}
             >
               <div>
@@ -234,7 +380,7 @@
                 <span class="w-4 h-4">
                   {compareResult(item.content.nimbus)}
                 </span>{" "}
-                {compareDescription(item.content.nimbus)}
+                {item.content.nimbus.description}
               </div>
             </td>
             <td class="py-4">
@@ -242,7 +388,7 @@
                 <span class="w-4 h-4">
                   {compareResult(item.content.excel)}
                 </span>{" "}
-                {compareDescription(item.content.excel)}
+                {item.content.excel.description}
               </div>
             </td>
             <td class="py-4">
@@ -250,7 +396,7 @@
                 <span class="w-4 h-4">
                   {compareResult(item.content.coinstats)}
                 </span>{" "}
-                {compareDescription(item.content.coinstats)}
+                {item.content.coinstats.description}
               </div>
             </td>
             <td class="py-4">
@@ -258,7 +404,7 @@
                 <span class="w-4 h-4">
                   {compareResult(item.content.debank)}
                 </span>{" "}
-                {compareDescription(item.content.debank)}
+                {item.content.debank.description}
               </div>
             </td>
             <td class="py-4 px-3">
@@ -266,7 +412,7 @@
                 <span class="w-4 h-4">
                   {compareResult(item.content.nansen)}
                 </span>{" "}
-                {compareDescription(item.content.nansen)}
+                {item.content.nansen.description}
               </div>
             </td>
           </tr>
