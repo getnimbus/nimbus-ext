@@ -283,7 +283,7 @@ type ContentState = {
       tippy: {
         used: true,
         title:"Custom your token category to diversify your portfolio on your own way",
-        content:"~/assets/pricing/Custom-Allocation.mp4"
+        content: "~/assets/pricing/Custom-Allocation.mp4"
       },
       content: {
         free: {
