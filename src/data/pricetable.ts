@@ -33,7 +33,14 @@ type ContentState = {
     tippy: TippyContent;
     content: DetailContentPrice | "";
   }
-
+  
+  import RealtimeVideo from "~/assets/pricing/Realtime.mp4";
+  import CustomAllocation from "~/assets/pricing/Custom-Allocation.mp4";
+  import Risk from "~/assets/pricing/Risk.mp4";
+  import CorrelationsMatrix from "~/assets/pricing/Correlation-Matrix.mp4";
+  import YieldFarming from "~/assets/pricing/Yield-Farming.mp4";
+  import Rebalance from "~/assets/pricing/Rebalance.mp4"
+  
   
   
   export const nimbusPricingData: ComparePricing[] = [
@@ -53,7 +60,7 @@ type ContentState = {
       tippy: {
         used: true,
         title: "Get latest market information and real-time market update",
-        content: `~/assets/pricing/Realtime.mp4`,
+        content: RealtimeVideo,
       },
       content: {
         free: {
@@ -283,7 +290,7 @@ type ContentState = {
       tippy: {
         used: true,
         title:"Custom your token category to diversify your portfolio on your own way",
-        content: "~/assets/pricing/Custom-Allocation.mp4"
+        content:  CustomAllocation
       },
       content: {
         free: {
@@ -352,7 +359,7 @@ type ContentState = {
       tippy: {
         used: true,
         title: "Know what is your portfolio risk, in every single token you hold",
-        content: `~/assets/pricing/Risk.mp4`,
+        content: Risk
       },
       content: {
         free: {
@@ -375,7 +382,7 @@ type ContentState = {
       tippy: {
         used: true,
         title: "",
-        content: `~/assets/pricing/Correlation-Matrix.mp4`,
+        content: CorrelationsMatrix
       },
       content: {
         free: {
@@ -490,7 +497,7 @@ type ContentState = {
       tippy: {
         used: true,
         title: "Get up to 1000+ yield farming opportunities to boost your earning",
-        content: `~/assets/pricing/Yield-Farming.mp4`,
+        content: YieldFarming
       },
       content: {
         free: {
@@ -513,7 +520,7 @@ type ContentState = {
       tippy: {
         used: true,
         title: "We suggest you how to optimize your portfolio to minimize the risk while maximizing the return",
-        content: `~/assets/pricing/Rebalance.mp4`,
+        content: Rebalance
       },
       content: {
         free: {
@@ -707,7 +714,7 @@ export const nimbusCompareFeatureData: CompareFeature[] = [
       },
     },
     {
-      title: "Innvestment metrics(Risks, return, Sharpe ratio, ...)",
+      title: "Investment metrics(Risks, return, Sharpe ratio, ...)",
       content: {
         nimbus: {
           state: "available",

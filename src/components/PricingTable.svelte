@@ -6,11 +6,12 @@
   import tooltip from "~/entries/contentScript/views/tooltip";
   import { isDarkMode } from "~/store";
   import { getTooltipContent } from "~/utils";
+  // import RealtimeVideo from "~/assets/pricing/Realtime.mp4";
 
   let yearly = true;
   let isHoverCompare;
 
-  const compareResult = (item) => {
+  const compareResult = (item: any) => {
     if (item.state === "available") {
       return "✅";
     } else if (item.state === "unavailable") {
@@ -20,7 +21,7 @@
     }
   };
 
-  const compareDescription = (item) => {
+  const compareDescription = (item: any) => {
     return item.description;
   };
 </script>
@@ -127,6 +128,7 @@
                       content: getTooltipContent(
                         item.tippy.title,
                         item.tippy.content,
+                        // RealtimeVideo,
                         false,
                         $isDarkMode
                       ),
@@ -185,10 +187,7 @@
     </h2>
   </div>
   <div class="w-full overflow-auto rounded-[10px] border border_0000000d">
-    <table
-      class="xl:w-full w-[1000px] table-auto rounded-2xl"
-      on:mouseleave={() => (isHoverCompare = undefined)}
-    >
+    <table class="xl:w-full w-[1000px] table-auto rounded-2xl">
       <thead>
         <tr
           class={`text-left xl:text-base text-xl ${
@@ -197,7 +196,7 @@
         >
           <th
             class={`xl:w-[400px] w-[230px] xl:static sticky top-0 left-0 font-medium py-3 pl-3 rounded-tl-xl ${
-              $isDarkMode ? "bg-[#161616]" : "bg-white"
+              $isDarkMode ? "bg-[#161616]" : "bg-gray-100"
             }`}
           >
             #
@@ -209,7 +208,7 @@
           <th class="font-medium py-3 px-3 rounded-tr-xl">Nansen</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody on:mouseleave={() => (isHoverCompare = undefined)}>
         {#each nimbusCompareFeatureData as item, index}
           <tr
             class={`${$isDarkMode ? "hover:bg-[#000]" : "hover:bg-gray-100"}`}
