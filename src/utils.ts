@@ -308,6 +308,45 @@ export const getAddressContext = (address: string) => {
   return undefined;
 };
 
+export const explorerOnChain = (type, hash) => {
+  let linkTrx = "";
+  switch (type) {
+    case "ETH":
+      linkTrx = `https://etherscan.io/tx/${hash}`;
+      break;
+    case "XDAI":
+      linkTrx = `https://gnosisscan.io/tx/${hash}`;
+      break;
+    case "BNB":
+      linkTrx = `https://bscscan.com/tx/${hash}`;
+      break;
+    case "MATIC":
+      linkTrx = `https://polygonscan.com/tx/${hash}`;
+      break;
+    case "OP":
+      linkTrx = `https://optimistic.etherscan.io/tx/${hash}`;
+      break;
+    case "AVAX":
+      linkTrx = `https://snowtrace.io/tx/${hash}`;
+      break;
+    case "ARB":
+      linkTrx = `https://arbiscan.io/tx/${hash}`;
+      break;
+    case "BASE":
+      linkTrx = `https://basescan.org/tx/${hash}`;
+      break;
+    case "SCROLL":
+      linkTrx = `https://blockscout.scroll.io/tx/${hash}`;
+      break;
+    case "SOL":
+      linkTrx = `https://solscan.io/tx/${hash}`;
+      break;
+    default:
+      linkTrx = "";
+  }
+  return linkTrx;
+};
+
 export const chainList = [
   {
     logo: logo,
@@ -360,18 +399,18 @@ export const chainList = [
     value: "XDAI",
   },
   {
-    logo: ZkSync, 
-    label: "ZkSync", 
+    logo: ZkSync,
+    label: "ZkSync",
     value: "ZKSYNC",
   },
   {
-    logo: Linea, 
-    label: "Linea", 
+    logo: Linea,
+    label: "Linea",
     value: "LINEA",
   },
   {
-    logo: Aura, 
-    label: "Aura", 
+    logo: Aura,
+    label: "Aura",
     value: "AURA",
   },
 ];
@@ -404,7 +443,7 @@ export const detectedChain = (type) => {
       chain = Base;
       break;
     case "SCROLL":
-      chain = Scroll
+      chain = Scroll;
       break;
     case "SOL":
       chain = Solana;
@@ -505,7 +544,7 @@ export const linkExplorer = (chain, hash) => {
     case "BTC":
       links = {
         trx: `https://www.oklink.com/btc/tx/${hash}`,
-        address: `https://www.oklink.com/btc/address/${hash}`
+        address: `https://www.oklink.com/btc/address/${hash}`,
       };
       break;
     default:
@@ -586,9 +625,9 @@ export const exponentialToDecimal = (exponential: number) => {
       let i = 0;
       i <
       +exponentialSplitted[1] -
-      (exponentialSplitted[0].includes(".")
-        ? exponentialSplitted[0].split(".")[1].length
-        : 0);
+        (exponentialSplitted[0].includes(".")
+          ? exponentialSplitted[0].split(".")[1].length
+          : 0);
       i++
     ) {
       postfix += "0";
@@ -638,16 +677,16 @@ export const formatValue = (input: number) => {
   return numeral(input).format("0,0.00") === "NaN"
     ? formatNumberSmall(input)
     : input !== 0 && input > 0 && input < 0.01
-      ? "<$0.01"
-      : numeral(input).format("$0,0.00");
+    ? "<$0.01"
+    : numeral(input).format("$0,0.00");
 };
 
 export const formatCurrency = (input: number) => {
   return numeral(input).format("0,0.000000") === "NaN"
     ? formatNumberSmall(input)
     : input !== 0 && input > 0 && input < 0.01
-      ? numeral(input).format("0,0.000000")
-      : numeral(input).format("0,0.0000");
+    ? numeral(input).format("0,0.000000")
+    : numeral(input).format("0,0.0000");
 };
 
 export const formatBalance = (input: number) => {
@@ -958,14 +997,17 @@ export const getTooltipContent = (
   width?: string
 ) => {
   return `
-      <div style="padding: 8px; border-radius: 8px; background: ${darkMode ? "#0f0f0f" : "#000"
-    }; width: ${isMaxWidth ? "100%" : "560px"}; height: auto;">
-        ${text
-      ? `<div style="margin-bottom: 6px; font-size: 14px; line-height: 20px; color: #fff;">${text}</div>`
-      : ""
-    } 
-        <div style="border-radius: 6px; width: ${width ? width : "100%"
-    }; overflow: hidden">
+      <div style="padding: 8px; border-radius: 8px; background: ${
+        darkMode ? "#0f0f0f" : "#000"
+      }; width: ${isMaxWidth ? "100%" : "560px"}; height: auto;">
+        ${
+          text
+            ? `<div style="margin-bottom: 6px; font-size: 14px; line-height: 20px; color: #fff;">${text}</div>`
+            : ""
+        } 
+        <div style="border-radius: 6px; width: ${
+          width ? width : "100%"
+        }; overflow: hidden">
           <video autoplay muted playsinline disablepictureinpicture loop>
             <source type="video/mp4" src="${videoUrl}" />
           </video>
@@ -1138,7 +1180,8 @@ export const formatTransactionTime = (date: Date) => {
 };
 
 export const handleImgError = async (e, image, defaultImage) => {
-  // if (defaultImage !== null) {
+  // e.target.onerror = null; // break loop
+  // if (defaultImage) {
   //   if (image.includes("https://api.center.dev")) {
   //     fetch(image, {
   //       headers: { "x-api-key": "lapis-fridge-d84f5377deca" },
@@ -1153,7 +1196,8 @@ export const handleImgError = async (e, image, defaultImage) => {
   //         e.target.src = defaultImage;
   //       });
   //   } else {
-  //     e.target.src = defaultImage;
+  //     e.target.style.backgroundImage = defaultImage;
+  //     console.log("set default img", e.target, defaultImage);
   //   }
   // }
 };

@@ -550,6 +550,15 @@
       } else if (selectedType.value === "All") {
         optionPie = {
           ...optionPie,
+          legend: {
+            ...optionPie.legend,
+            formatter: function (name) {
+              const selected = tokenDataHolding.dataPie.find(
+                (item) => item.name.toLowerCase() === name.toLowerCase()
+              );
+              return selected?.symbol || name;
+            },
+          },
           series: [
             {
               ...optionPie.series[0],
