@@ -8869,6 +8869,11 @@ popmotion@^11.0.5:
     style-value-types "5.1.2"
     tslib "2.4.0"
 
+portfolio-allocation@^0.0.11:
+  version "0.0.11"
+  resolved "https://registry.yarnpkg.com/portfolio-allocation/-/portfolio-allocation-0.0.11.tgz#972e3780e89f81ab4fafd2de7a288045a212f487"
+  integrity sha512-iKxcb87K+YKNXicxk2cgvTMNnc+jvYaTfc+mE42d51yizLx8aKJGjGI0wGEWBM9dgbi9gTIJfoYCh+RKDUqpkw==
+
 postcss-import@^14.1.0:
   version "14.1.0"
   resolved "https://registry.yarnpkg.com/postcss-import/-/postcss-import-14.1.0.tgz#a7333ffe32f0b8795303ee9e40215dac922781f0"

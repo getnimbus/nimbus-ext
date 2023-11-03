@@ -23,6 +23,7 @@
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
   import mixpanel from "mixpanel-browser";
   import { Avatar } from "flowbite-svelte";
+  import PortfolioAllocation from "portfolio-allocation";
 
   import type { TokenData } from "~/types/HoldingTokenData";
 
@@ -126,6 +127,15 @@
     if (addressParams) {
       $wallet = addressParams;
     }
+
+    const test = PortfolioAllocation.riskBudgetingWeights(
+      [
+        [0.1, 0],
+        [0, 0.2],
+      ],
+      [0.25, 0.75]
+    );
+    console.log("test: ", test);
   });
 
   let selectedTypeAllocation = {

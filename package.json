@@ -79,6 +79,7 @@
     "mousetrap": "^1.6.5",
     "nanoid": "^4.0.2",
     "numeral": "^2.0.6",
+    "portfolio-allocation": "^0.0.11",
     "qrcode-generator": "^1.4.4",
     "sass": "^1.59.2",
     "svelte-copy-to-clipboard": "^0.2.5",
