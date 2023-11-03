@@ -155,7 +155,7 @@
           } else {
             return (
               `${value < 0 ? "-" : ""} $` +
-              numeral(Math.abs(value)).format("0.000000a")
+              numeral(Math.abs(value)).format("0.00a")
             );
           }
         },
@@ -264,18 +264,18 @@
       contractAddress.length !== 0 &&
       chainType !== undefined &&
       chainType.length !== 0 &&
-      $typeWallet === "EVM",
+      ($typeWallet === "EVM" || ($typeWallet === "BUNDLE" && chain !== "SOL")),
   });
 
   $: queryTokenPriceSol = createQuery({
-    queryKey: ["token-price-sol", contractAddress, chainType, time],
+    queryKey: ["token-price-sol", contractAddress, time],
     queryFn: () => handleGetTokenPriceSol(),
     staleTime: Infinity,
     retry: false,
     enabled:
       contractAddress !== undefined &&
       contractAddress.length !== 0 &&
-      $typeWallet === "SOL",
+      ($typeWallet === "SOL" || ($typeWallet === "BUNDLE" && chain === "SOL")),
   });
 
   $: {

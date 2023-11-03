@@ -80,12 +80,7 @@
     <div class="flex flex-col justify-between flex-1 gap-6 md:flex-row">
       <OverviewCard title={MultipleLang.networth}>
         <div class="flex text-5xl xl:text-3xl">
-          <CountUpNumber
-            id="networth"
-            number={networth}
-            type="value"
-            personalValue
-          />
+          <CountUpNumber number={networth} type="value" personalValue />
         </div>
         <div
           class={`flex items-center gap-3 ${
@@ -105,7 +100,6 @@
               ↑
             {/if}
             <CountUpNumber
-              id="networth_grouth"
               number={Math.abs(data?.overview?.networthChange)}
               type="percent"
             />%
@@ -129,10 +123,9 @@
               {/if}
             </span>
             <CountUpNumber
-              personalValue
-              id="claimable"
               number={Math.abs(totalProfit)}
               type="value"
+              personalValue
             />
           {/if}
         </div>
@@ -156,7 +149,6 @@
               ↑
             {/if}
             <CountUpNumber
-              id="claimable_grouth"
               number={Math.abs(last24hTotalProfitPercent)}
               type="percent"
             />%
@@ -175,10 +167,9 @@
             {/if}
           </span>
           <CountUpNumber
-            personalValue
-            id="total_assets"
             number={Math.abs(realizedProfit)}
             type="value"
+            personalValue
           />
         </div>
         <!-- <div
@@ -203,7 +194,6 @@
               ↑
             {/if}
             <CountUpNumber
-              id="total_assets_grouth"
               number={Math.abs(data?.overview?.cumulativeInflowChange)}
               type="percent"
             />%
@@ -220,10 +210,9 @@
             {/if}
           </span>
           <CountUpNumber
-            personalValue
-            id="total_positions"
             number={Math.abs(unrealizedProfit)}
             type="value"
+            personalValue
           />
         </div>
         <!-- <div
@@ -248,7 +237,6 @@
               ↑
             {/if}
             <CountUpNumber
-              id="total_positions_grouth"
               number={Math.abs(data?.overview.cumulativeOutflowChange)}
               type="percent"
             />%

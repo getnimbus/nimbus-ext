@@ -19,6 +19,7 @@
   import { showChangeLogAnimationVariants } from "~/utils";
   import { nimbus } from "~/lib/network";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
+  import * as browser from "webextension-polyfill";
   import Mousetrap from "mousetrap";
   import addGlobalBinds from "bind-mousetrap-global";
   addGlobalBinds(Mousetrap);
@@ -188,6 +189,15 @@
     chain.update((n) => (n = "ALL"));
     wallet.update((n) => (n = value));
     typeWallet.update((n) => (n = searchAccountType));
+
+    browser.storage.sync.set({
+      selectedWallet: value,
+    });
+    browser.storage.sync.set({ selectedChain: "ALL" });
+    browser.storage.sync.set({
+      typeWalletAddress: searchAccountType,
+    });
+
     if (searchAccountType === "EVM") {
       window.history.replaceState(
         null,
@@ -1058,6 +1068,7 @@
                 class="text-3xl font-semibold text-white cursor-pointer xl:text-base"
                 on:click={() => {
                   isOpenModalSync = true;
+                  isShowHeaderMobile.update((n) => (n = false));
                 }}
               >
                 Sync from Desktop

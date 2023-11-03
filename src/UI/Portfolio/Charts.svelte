@@ -696,7 +696,7 @@
 </script>
 
 <ErrorBoundary>
-  <div class="flex flex-col justify-between gap-6 xl:flex-row">
+  <div class="flex flex-col justify-between gap-6 xl:flex-row view-the-pnl">
     <div
       class={`xl:w-1/2 w-full rounded-[20px] p-6 xl:block hidden ${
         $isDarkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
@@ -793,7 +793,7 @@
         $isDarkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
       }`}
     >
-      {#if $chain === "XDAI" || $typeWallet === "BTC"}
+      {#if $chain === "AURA" || $typeWallet === "BTC"}
         <div class="pl-4 text-4xl font-medium xl:text-2xl">
           {MultipleLang.performance}
         </div>

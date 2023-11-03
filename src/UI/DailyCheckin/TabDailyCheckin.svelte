@@ -27,6 +27,7 @@
   let selectedCheckinIndex = 0;
   let selectedIndexRewards: number = 0;
   let isDisabledCheckin = false;
+  let listCheckinContainer;
 
   const queryClient = useQueryClient();
 
@@ -98,6 +99,18 @@
     if (!$queryDailyCheckin.isError && $queryDailyCheckin.data !== undefined) {
       selectedCheckinIndex = $queryDailyCheckin?.data?.steak;
       isDisabledCheckin = $queryDailyCheckin?.data?.checkinable;
+    }
+  }
+
+  $: {
+    if (
+      listCheckinContainer &&
+      listCheckinContainer.children[selectedCheckinIndex]
+    ) {
+      listCheckinContainer.children[selectedCheckinIndex].scrollIntoView({
+        behavior: "smooth",
+        block: "end",
+      });
     }
   }
 </script>
@@ -213,7 +226,10 @@
               </div>
             {:else}
               <div class="overflow-x-auto py-5">
-                <div class="grid grid-cols-7 gap-4 w-[1350px]">
+                <div
+                  class="grid grid-cols-7 gap-4 w-[1350px]"
+                  bind:this={listCheckinContainer}
+                >
                   {#each $queryDailyCheckin?.data?.pointStreak || [] as item, index}
                     <div
                       class={`flex flex-col gap-2 items-center filter rounded-lg py-8 transform scale-95 transition-all ${

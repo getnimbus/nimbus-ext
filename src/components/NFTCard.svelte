@@ -20,7 +20,7 @@
       : Number(floorPrice) - Number(data?.price);
 
   $: profitAndLossPercent =
-    Math.abs(Number(data?.price || 0)) === 0
+    Number(data?.price || 0) === 0
       ? 0
       : (profitAndLoss * marketPrice) / Math.abs(Number(data?.cost));
 </script>

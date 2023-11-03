@@ -7,7 +7,10 @@
     isHidePortfolio,
     wallet,
     user,
+    selectedPackage,
   } from "~/store";
+  import { filterAvgCostType } from "~/utils";
+  import { useNavigate } from "svelte-navigator";
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
@@ -16,11 +19,15 @@
   import TokenHistoryItem from "./TokenHistoryItem.svelte";
   import PriceChart from "./PriceChart.svelte";
   import BalanceAvgCostChart from "./BalanceAvgCostChart.svelte";
+  import Select from "~/components/Select.svelte";
+  import Button from "~/components/Button.svelte";
 
   import TrendUp from "~/assets/trend-up.svg";
   import TrendDown from "~/assets/trend-down.svg";
 
   export let data;
+
+  const navigate = useNavigate();
 
   $: realizedProfit = data?.profit?.realizedProfit
     ? Number(data?.profit?.realizedProfit)
@@ -68,6 +75,11 @@
   let buyHistoryTradeList = [];
   let dataHistoryTokenDetail = [];
 
+  let filterType = {
+    label: "ALL",
+    value: "ALL",
+  };
+
   $: {
     if (
       !$queryHistoryTokenDetail.isError &&
@@ -87,6 +99,11 @@
       );
     }
   }
+
+  $: colspan =
+    $typeWallet === "SOL" || $typeWallet === "EVM" || $typeWallet === "BUNDLE"
+      ? 5
+      : 4;
 </script>
 
 <ErrorBoundary>
@@ -221,14 +238,25 @@
         $isDarkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
       }`}
     >
-      <div class="xl:text-2xl text-4xl font-medium">
-        Market Balance / Avg Cost
+      <div class="flex justify-between items-center">
+        <div class="xl:text-2xl text-4xl font-medium">
+          Avg Cost distribution
+        </div>
+        <!-- <Select
+          type="lang"
+          positionSelectList="right-0"
+          listSelect={filterAvgCostType}
+          bind:selected={filterType}
+        /> -->
       </div>
+
       <BalanceAvgCostChart
         {data}
         id={data?.name}
         avgCost={data?.profit?.averageCost}
+        {filterType}
       />
+
       {#if $typeWallet !== "EVM" || ($typeWallet === "EVM" && data?.chain !== "ETH")}
         <div
           class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center gap-3 pt-62 ${
@@ -236,6 +264,28 @@
           } z-30 backdrop-blur-md`}
         >
           <div class="text-lg">Coming soon 🚀</div>
+        </div>
+      {/if}
+
+      {#if $selectedPackage === "FREE"}
+        <div
+          class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center justify-center gap-3 ${
+            $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
+          } z-30 backdrop-blur-md`}
+        >
+          <div class="flex flex-col items-center gap-1">
+            <div class="text-lg font-medium">
+              Use Nimbus at its full potential
+            </div>
+            <div class="text-base text-gray-500">
+              Upgrade to Premium to access Compare feature
+            </div>
+          </div>
+          <div class="mt-2 w-max">
+            <Button variant="premium" on:click={() => navigate("/upgrade")}
+              >Start 30-day Trial</Button
+            >
+          </div>
         </div>
       {/if}
     </div>
@@ -278,19 +328,31 @@
                 </div>
               </th>
 
-              <th class="py-3 pr-3 rounded-tr-[10px]">
+              <th
+                class={`py-3 rounded-tr-[10px] ${
+                  $typeWallet === "SOL" ||
+                  $typeWallet === "EVM" ||
+                  $typeWallet === "BUNDLE"
+                    ? ""
+                    : "pr-3"
+                }`}
+              >
                 <div
                   class="text-right xl:text-xs text-xl uppercase font-medium"
                 >
                   Time
                 </div>
               </th>
+
+              {#if $typeWallet === "SOL" || $typeWallet === "EVM" || $typeWallet === "BUNDLE"}
+                <th class="py-3 w-10" />
+              {/if}
             </tr>
           </thead>
           {#if $queryHistoryTokenDetail.isFetching}
             <tbody>
               <tr>
-                <td colspan="4">
+                <td {colspan}>
                   <div
                     class="flex justify-center items-center h-full py-3 px-3"
                   >
@@ -303,7 +365,7 @@
             <tbody>
               {#if dataHistoryTokenDetail && dataHistoryTokenDetail?.length === 0}
                 <tr>
-                  <td colspan="4">
+                  <td {colspan}>
                     <div
                       class="flex justify-center items-center h-full py-3 px-3 xl:text-lg text-xl text-gray-400"
                     >

@@ -443,7 +443,8 @@
                   <div class="flex items-center gap-2">
                     <div class="w-6 h-6 mx-auto rounded-full overflow-hidden">
                       <img
-                        src={item.logo}
+                        src={item.logo ||
+                          "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"}
                         alt=""
                         class="w-full h-full object-contain"
                         on:error={(e) =>
@@ -552,7 +553,8 @@
                               class="w-6 h-6 mx-auto rounded-full overflow-hidden"
                             >
                               <img
-                                src={item.value}
+                                src={item.value ||
+                                  "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"}
                                 alt="Coin Icon"
                                 class="w-full h-full object-contain"
                                 on:error={(e) =>
@@ -657,7 +659,8 @@
                   >
                     <div class="w-7 h-7 rounded-full overflow-hidden">
                       <img
-                        src={item.logo}
+                        src={item.logo ||
+                          "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"}
                         alt="Coin Icon"
                         class="w-full h-full object-contain"
                         on:error={(e) =>

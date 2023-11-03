@@ -5,16 +5,16 @@
   import relativeTime from "dayjs/plugin/relativeTime";
   dayjs.extend(relativeTime);
   import { groupBy, isEmpty, flatten } from "lodash";
-  import { onDestroy, onMount } from "svelte";
+  import { onMount } from "svelte";
   import { i18n } from "~/lib/i18n";
-  import { disconnectWs, initWS } from "~/lib/price-ws";
-  import { chainList } from "~/utils";
+  import { chainList, driverObj } from "~/utils";
   import { wait } from "../entries/background/utils";
   import {
     wallet,
     chain,
     typeWallet,
     selectedBundle,
+    userPublicAddress,
     triggerUpdateBundle,
   } from "~/store";
   import mixpanel from "mixpanel-browser";
@@ -318,27 +318,8 @@
     return response;
   };
 
-  const formatDataHoldingToken = (dataTokenHolding, dataVaults) => {
-    const formatDataTokenHolding = dataTokenHolding?.map((item) => {
-      try {
-        const regex = new RegExp(`(^${item?.symbol}|-${item?.symbol})`);
-        const filteredVaults = dataVaults?.filter((data) =>
-          data.name.match(regex)
-        );
-
-        return {
-          ...item,
-          vaults: filteredVaults,
-        };
-      } catch (error) {
-        return {
-          ...item,
-          vaults: [],
-        };
-      }
-    });
-
-    const formatData = formatDataTokenHolding
+  const formatDataHoldingToken = (data) => {
+    const formatData = data
       ?.map((item) => {
         return {
           ...item,
@@ -356,7 +337,7 @@
         return 0;
       });
 
-    holdingTokenData = formatData;
+    holdingTokenData = formatData?.filter((item) => Number(item.amount) > 0);
 
     closedHoldingPosition = formatData
       ?.filter((item) => item?.profit?.realizedProfit)
@@ -650,14 +631,14 @@
           ?.map((item) => item.data)
       );
       if (allTokens && allTokens.length !== 0) {
-        formatDataHoldingToken(allTokens, $queryVaults.data);
+        formatDataHoldingToken(allTokens);
       }
     }
   }
 
   $: {
     if (!$queryTokenHolding.isError && $queryTokenHolding.data !== undefined) {
-      formatDataHoldingToken($queryTokenHolding.data, $queryVaults.data);
+      formatDataHoldingToken($queryTokenHolding.data);
     }
   }
 
@@ -671,14 +652,9 @@
   });
 
   onMount(() => {
-    initWS();
     mixpanel.track("portfolio_page", {
       address: $wallet,
     });
-  });
-
-  onDestroy(() => {
-    disconnectWs();
   });
 
   const handleSelectedTableTokenHolding = (data, selectDatPieChart) => {
@@ -747,7 +723,7 @@
     $chain === "ALL"
       ? $queryAllTokenHolding &&
         $queryAllTokenHolding.some((item) => item.isFetching === true) &&
-        $queryAllTokenHolding &&
+        $queryAllNftHolding &&
         $queryAllNftHolding.some((item) => item.isFetching === true) &&
         $queryVaults.isFetching &&
         $queryOverview.isFetching
@@ -766,6 +742,13 @@
     if ($triggerUpdateBundle) {
       handleGetAllData("reload");
       triggerUpdateBundle.update((n) => (n = false));
+    }
+  }
+
+  $: {
+    if (!localStorage.getItem("view-portfolio-tour") && loading) {
+      driverObj.drive();
+      localStorage.setItem("view-portfolio-tour", "true");
     }
   }
 </script>
@@ -840,9 +823,7 @@
                 isLoadingBreakdownNfts={$queryAllNftHolding.some(
                   (item) => item.isFetching === true
                 )}
-                holdingTokenData={holdingTokenData?.filter(
-                  (item) => Number(item.amount) > 0
-                )}
+                {holdingTokenData}
                 {overviewDataPerformance}
                 {dataPieChartToken}
                 {dataPieChartNft}
@@ -869,12 +850,11 @@
                       (item) => item.isFetching === true
                     )
                   : $queryTokenHolding.isFetching}
-                holdingTokenData={holdingTokenData?.filter(
-                  (item) => Number(item.amount) > 0
-                )}
+                {holdingTokenData}
+                {holdingNFTData}
+                dataVaults={$queryVaults.data}
                 {selectedTokenHolding}
                 {selectedDataPieChart}
-                {holdingNFTData}
                 bind:totalAssets
               />
 
