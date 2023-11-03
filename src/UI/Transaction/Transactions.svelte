@@ -23,6 +23,29 @@
   import HistoricalTransactions from "./HistoricalTransactions.svelte";
   import CoinSelector from "~/components/CoinSelector.svelte";
 
+  const types = [
+    {
+      label: "All",
+      value: "all",
+    },
+    {
+      label: "Buy",
+      value: "buy",
+    },
+    {
+      label: "Swap",
+      value: "swap",
+    },
+    {
+      label: "Sell",
+      value: "sell",
+    },
+    {
+      label: "Unknown",
+      value: "unknown",
+    },
+  ];
+
   let isLoading = false;
   let data = [];
   let pageToken = "";
@@ -97,49 +120,19 @@
     },
   };
 
-  const types = [
-    {
-      label: "All",
-      value: "all",
-    },
-    {
-      label: "Buy",
-      value: "buy",
-    },
-    {
-      label: "Swap",
-      value: "swap",
-    },
-    {
-      label: "Sell",
-      value: "sell",
-    },
-    {
-      label: "Unknown",
-      value: "unknown",
-    },
-  ];
-
   let selectedType = {
     label: "All",
     value: "all",
   };
-  $: selectedTypeValue = selectedType?.value; 
+
   let selectedCoin = {
     name: "All",
     logo: All,
     symbol: "all",
   };
-  $: selectedCoinValue = selectedCoin?.symbol;
-  let searchValue = "";
-  let timerSearchDebounce;
 
-  const debounceSearch = (value) => {
-    clearTimeout(timerSearchDebounce);
-    timerSearchDebounce = setTimeout(() => {
-      searchValue = value;
-    }, 300);
-  };
+  $: selectedTypeValue = selectedType?.value;
+  $: selectedCoinValue = selectedCoin?.symbol;
 
   const getAnalyticHistorical = async (address, chain) => {
     const response: AnalyticHistoricalRes = await nimbus.get(
@@ -290,57 +283,14 @@
             <div class="xl:text-2xl text-4xl font-medium">
               Historical Transactions
             </div>
-            <div class="flex items-center justify-end gap-2">
-              <!-- <div class="flex items-center gap-1">
-                <AnimateSharedLayout>
-                  {#each typeTrx as type}
-                    <div
-                      class="relative cursor-pointer text-base font-medium py-1 px-3 rounded-[100px] transition-all"
-                      on:click={() => (selectedType = type.value)}
-                    >
-                      <div
-                        class={`relative z-20 ${
-                          selectedType === type.value && "text-white"
-                        }`}
-                      >
-                        {type.label}
-                      </div>
-                      {#if type.value === selectedType}
-                        <Motion
-                          let:motion
-                          layoutId="active-pill"
-                          transition={{ type: "spring", duration: 0.6 }}
-                        >
-                          <div
-                            class="absolute inset-0 rounded-[100px] bg-[#1E96FC] z-10"
-                            use:motion
-                          />
-                        </Motion>
-                      {/if}
-                    </div>
-                  {/each}
-                </AnimateSharedLayout>
-              </div>
-              <input
-                on:keyup={({ target: { value } }) => debounceSearch(value)}
-                on:keydown={(event) => {
-                  if (event.which == 13 || event.keyCode == 13) {
-                  }
-                }}
-                value={searchValue}
-                placeholder={"Filter by hash/token"}
-                type="text"
-                class="xl:w-[250px] w-full text-sm py-2 xl:px-3 px-2 rounded-[1000px] text_00000099 placeholder-[#00000099] border border-[#00000070] focus:outline-none focus:ring-0"
-              /> -->
+            <div class="flex items-center gap-4">
+              <CoinSelector bind:selected={selectedCoin} />
+              <Select
+                type="lang"
+                bind:selected={selectedType}
+                listSelect={types}
+              />
             </div>
-          </div>
-          <div class="flex mb-4 gap-4">
-            <CoinSelector bind:selected={selectedCoin} />
-            <Select
-              type="lang"
-              bind:selected={selectedType}
-              listSelect={types}
-            />
           </div>
           <HistoricalTransactions
             {isLoading}
