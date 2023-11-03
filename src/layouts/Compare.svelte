@@ -50,6 +50,74 @@
 
   const navigate = useNavigate();
 
+  const listAllocationTypes = [
+    {
+      label: "Equal weights",
+      value: "EW",
+    },
+    {
+      label: "Inverse volatility",
+      value: "IV",
+    },
+    {
+      label: "Equal risk contributions (ERC) and risk budgeting (RB)",
+      value: "ERC-RB",
+    },
+    {
+      label: "Equal risk bounding",
+      value: "ERB",
+    },
+    {
+      label: "Cluster risk parity",
+      value: "CRP",
+    },
+    {
+      label: "Most diversified portfolio",
+      value: "MDP",
+    },
+    {
+      label: "Minimum correlation algorithm",
+      value: "MCA",
+    },
+    {
+      label: "Mean-variance optimization",
+      value: "MVO",
+    },
+    {
+      label: "Global minimum variance",
+      value: "GMV",
+    },
+    {
+      label: "Proportional minimum variance algorithm",
+      value: "MVA",
+    },
+    {
+      label: "Minimax portfolio",
+      value: "MP",
+    },
+    {
+      label: "Random portfolio",
+      value: "RP",
+    },
+    {
+      label: "Maximum Sharpe ratio (MSR), a.k.a. (Lintner) tangency portfolio",
+      value: "MSR",
+    },
+    {
+      label: "Random subspace mean-variance optimization",
+      value: "RSO-MVO",
+    },
+    {
+      label:
+        "Minimum tracking error portfolio, a.k.a. index tracking portfolio",
+      value: "MTEP",
+    },
+    {
+      label: "Best constantly rebalanced portfolio",
+      value: "BCRP",
+    },
+  ];
+
   onMount(() => {
     mixpanel.track("user_compare");
     const urlParams = new URLSearchParams(window.location.search);
@@ -59,6 +127,11 @@
       $wallet = addressParams;
     }
   });
+
+  let selectedTypeAllocation = {
+    label: "Equal weights",
+    value: "EW",
+  };
 
   let showPopover = false;
 
@@ -1211,6 +1284,31 @@
                               >
                                 Get inspired from the whale list
                               </div>
+                            </div>
+                          </div>
+                          <div class="border-t-[1px] relative">
+                            <div
+                              class={`absolute xl:top-[-10px] top-[-14px] left-1/2 transform -translate-x-1/2 text-gray-400 ${
+                                $isDarkMode ? "bg-[#222222]" : "bg-white"
+                              } xl:text-sm text-xl px-2`}
+                            >
+                              Or
+                            </div>
+                          </div>
+                          <div
+                            class="grid grid-cols-3 items-center gap-4 min-h-[60px]"
+                          >
+                            <div class="col-span-2">
+                              <Select
+                                type="lang"
+                                bind:selected={selectedTypeAllocation}
+                                listSelect={listAllocationTypes}
+                              />
+                            </div>
+                            <div class="col-span-1">
+                              <Button disabled>
+                                <div class="text-2xl xl:text-base">Compare</div>
+                              </Button>
                             </div>
                           </div>
                         </div>

@@ -127,11 +127,11 @@
 <style>
   .wrapper {
     position: relative;
-    width: max-content;
+    width: auto;
   }
 
   .button {
-    width: max-content;
+    width: auto;
     border-radius: 1000px;
     padding: 8px 12px;
     display: flex;
