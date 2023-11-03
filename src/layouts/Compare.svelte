@@ -135,7 +135,6 @@
       ],
       [0.25, 0.75]
     );
-    console.log("test: ", test);
   });
 
   let selectedTypeAllocation = {
