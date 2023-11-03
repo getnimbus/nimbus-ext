@@ -193,6 +193,21 @@ export const typePackage = [
   },
 ];
 
+export const filterAvgCostType = [
+  {
+    label: "All",
+    value: "ALL"
+  },
+  {
+    label: "Smart money",
+    value: "SMART_MONEY"
+  },
+  {
+    label: "Fresh wallet",
+    value: "FRESH_WALLET"
+  }
+];
+
 export const filterTokenValueType = [
   {
     label: "None",
