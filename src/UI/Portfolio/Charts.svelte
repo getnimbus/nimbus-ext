@@ -806,7 +806,7 @@
         </div>
       {:else}
         <div class="flex justify-between mb-6">
-          {#if $typeWallet === "CEX" || $typeWallet === "SOL" || $selectedBundle?.accounts?.find((item) => item.type === "CEX") !== undefined}
+          {#if ($typeWallet === "EVM" && $chain === "SCROLL") || $typeWallet === "CEX" || $typeWallet === "SOL" || $selectedBundle?.accounts?.find((item) => item.type === "CEX") !== undefined}
             <TooltipTitle
               tooltipText="Due to privacy, the performance data can only get after 7 days you connect to Nimbus"
               type="warning"
