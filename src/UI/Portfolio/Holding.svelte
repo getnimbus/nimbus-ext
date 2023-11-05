@@ -260,10 +260,8 @@
         ) {
           return {
             ...item,
-            current_value:
-              item?.floorPrice *
-              marketPriceNFT.market_price *
-              item?.tokens?.length,
+            marketPrice: marketPriceNFT.market_price,
+            current_value: item?.floorPrice * item?.tokens?.length,
           };
         }
         return { ...item };

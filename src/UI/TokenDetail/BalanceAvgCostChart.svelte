@@ -1,7 +1,13 @@
 <script lang="ts">
   import { nimbus } from "~/lib/network";
   import { createQuery } from "@tanstack/svelte-query";
-  import { wallet, user, isDarkMode, typeWallet } from "~/store";
+  import {
+    wallet,
+    user,
+    isDarkMode,
+    typeWallet,
+    selectedPackage,
+  } from "~/store";
   import { autoFontSize } from "~/utils";
   import numeral from "numeral";
 
@@ -15,6 +21,7 @@
   export let data;
   export let id;
   export let avgCost;
+  export let filterType;
 
   let optionBar = {
     tooltip: {
@@ -132,6 +139,7 @@
     staleTime: Infinity,
     retry: false,
     enabled:
+      $selectedPackage !== "FREE" &&
       data !== undefined &&
       Object.keys(data).length !== 0 &&
       $wallet.length !== 0 &&

@@ -7,21 +7,24 @@ import dayjs from "dayjs";
 import { driver } from "driver.js";
 import "driver.js/dist/driver.css";
 
-import logo from "~/assets/bitcoin.png";
+import Solana from "~/assets/solana.png";
+import Aura from "~/assets/aura.png";
+import Bitcoin from "~/assets/bitcoin.png";
+
+import All from "~/assets/all.svg";
 import Bnb from "~/assets/bnb.png";
 import Ethereum from "~/assets/ethereum.png";
-import Bitcoin from "~/assets/bitcoin.png";
 import Matic from "~/assets/matic.png";
 import Optimism from "~/assets/optimism.png";
 import Avax from "~/assets/avax.png";
-import Solana from "~/assets/solana.png";
 import Arbitrum from "~/assets/arbitrum.png";
 import Gnosis from "~/assets/gnosis.png";
 import Base from "~/assets/base.svg";
 import Scroll from "~/assets/scroll.png";
 import ZkSync from "~/assets/zksync.png";
-import Aura from "~/assets/aura.png";
 import Linea from "~/assets/linea.png";
+import Cronos from "~/assets/cronos.png";
+import Mantle from "~/assets/mantle.png";
 
 export const ETHAddressRegex = /(\b0x[a-fA-F0-9]{40}\b)/g;
 export const ETHTrxRegex = /(\b0x[a-fA-F0-9]{64}\b)/g;
@@ -193,6 +196,21 @@ export const typePackage = [
   },
 ];
 
+export const filterAvgCostType = [
+  {
+    label: "All",
+    value: "ALL"
+  },
+  {
+    label: "Smart money",
+    value: "SMART_MONEY"
+  },
+  {
+    label: "Fresh wallet",
+    value: "FRESH_WALLET"
+  }
+];
+
 export const filterTokenValueType = [
   {
     label: "None",
@@ -308,48 +326,9 @@ export const getAddressContext = (address: string) => {
   return undefined;
 };
 
-export const explorerOnChain = (type, hash) => {
-  let linkTrx = "";
-  switch (type) {
-    case "ETH":
-      linkTrx = `https://etherscan.io/tx/${hash}`;
-      break;
-    case "XDAI":
-      linkTrx = `https://gnosisscan.io/tx/${hash}`;
-      break;
-    case "BNB":
-      linkTrx = `https://bscscan.com/tx/${hash}`;
-      break;
-    case "MATIC":
-      linkTrx = `https://polygonscan.com/tx/${hash}`;
-      break;
-    case "OP":
-      linkTrx = `https://optimistic.etherscan.io/tx/${hash}`;
-      break;
-    case "AVAX":
-      linkTrx = `https://snowtrace.io/tx/${hash}`;
-      break;
-    case "ARB":
-      linkTrx = `https://arbiscan.io/tx/${hash}`;
-      break;
-    case "BASE":
-      linkTrx = `https://basescan.org/tx/${hash}`;
-      break;
-    case "SCROLL":
-      linkTrx = `https://blockscout.scroll.io/tx/${hash}`;
-      break;
-    case "SOL":
-      linkTrx = `https://solscan.io/tx/${hash}`;
-      break;
-    default:
-      linkTrx = "";
-  }
-  return linkTrx;
-};
-
 export const chainList = [
   {
-    logo: logo,
+    logo: All,
     label: "All chains",
     value: "ALL",
   },
@@ -409,15 +388,29 @@ export const chainList = [
     value: "LINEA",
   },
   {
-    logo: Aura,
-    label: "Aura",
-    value: "AURA",
+    logo: Cronos,
+    label: "Cronos",
+    value: "CRONOS",
+  },
+  {
+    logo: Mantle,
+    label: "Mantle",
+    value: "MANTLE",
   },
 ];
 
 export const detectedChain = (type) => {
   let chain;
   switch (type) {
+    case "AURA":
+      chain = Aura;
+      break;
+    case "SOL":
+      chain = Solana;
+      break;
+    case "BTC":
+      chain = Bitcoin;
+      break;
     case "ETH":
       chain = Ethereum;
       break;
@@ -445,20 +438,20 @@ export const detectedChain = (type) => {
     case "SCROLL":
       chain = Scroll;
       break;
-    case "SOL":
-      chain = Solana;
-      break;
     case "ZKSYNC":
       chain = ZkSync;
       break;
     case "LINEA":
       chain = Linea;
       break;
-    case "AURA":
-      chain = Aura;
+    case "CRONOS":
+      chain = Cronos;
+      break;
+    case "MANTLE":
+      chain = Mantle;
       break;
     default:
-      chain = logo;
+      chain = All;
   }
   return chain;
 };
@@ -533,6 +526,18 @@ export const linkExplorer = (chain, hash) => {
       links = {
         trx: `https://lineascan.build/tx/${hash}`,
         address: `https://lineascan.build/address/${hash}`,
+      };
+      break;
+    case "CRONOS":
+      links = {
+        trx: `https://cronoscan.com/tx/${hash}`,
+        address: `https://cronoscan.com/address/${hash}`,
+      };
+      break;
+    case "MANTLE":
+      links = {
+        trx: `https://mantlescan.info/tx/${hash}`,
+        address: `https://mantlescan.info/address/${hash}`,
       };
       break;
     case "SOL":
