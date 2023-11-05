@@ -793,7 +793,7 @@
         $isDarkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
       }`}
     >
-      {#if $chain === "AURA" || $typeWallet === "BTC"}
+      {#if $typeWallet === "BTC"}
         <div class="pl-4 text-4xl font-medium xl:text-2xl">
           {MultipleLang.performance}
         </div>
@@ -806,7 +806,7 @@
         </div>
       {:else}
         <div class="flex justify-between mb-6">
-          {#if $typeWallet === "CEX" || $typeWallet === "SOL" || $selectedBundle?.accounts?.find((item) => item.type === "CEX") !== undefined}
+          {#if ($typeWallet === "EVM" && $chain === "SCROLL") || $typeWallet === "CEX" || $typeWallet === "SOL" || $selectedBundle?.accounts?.find((item) => item.type === "CEX") !== undefined}
             <TooltipTitle
               tooltipText="Due to privacy, the performance data can only get after 7 days you connect to Nimbus"
               type="warning"

@@ -19,6 +19,7 @@
   import { showChangeLogAnimationVariants } from "~/utils";
   import { nimbus } from "~/lib/network";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
+  import * as browser from "webextension-polyfill";
   import Mousetrap from "mousetrap";
   import addGlobalBinds from "bind-mousetrap-global";
   addGlobalBinds(Mousetrap);
@@ -46,10 +47,12 @@
   import Close from "~/assets/close-menu-bar.svg";
   import Chat from "~/assets/chat.svg";
   import User from "~/assets/user.png";
+  
   import All from "~/assets/all.svg";
+  import Bundles from "~/assets/bundles.png";
   import BitcoinLogo from "~/assets/bitcoin.png";
   import SolanaLogo from "~/assets/solana.png";
-  import Bundles from "~/assets/bundles.png";
+  import AuraLogo from "~/assets/aura.png";
 
   const MultipleLang = {
     portfolio: i18n("newtabPage.portfolio", "Portfolio"),
@@ -188,6 +191,15 @@
     chain.update((n) => (n = "ALL"));
     wallet.update((n) => (n = value));
     typeWallet.update((n) => (n = searchAccountType));
+
+    browser.storage.sync.set({
+      selectedWallet: value,
+    });
+    browser.storage.sync.set({ selectedChain: "ALL" });
+    browser.storage.sync.set({
+      typeWalletAddress: searchAccountType,
+    });
+
     if (searchAccountType === "EVM") {
       window.history.replaceState(
         null,

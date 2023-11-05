@@ -927,13 +927,17 @@
         </div>
       {:else}
         <div class="hidden text-3xl xl:text-base xl:block">
-          <Copy address={$wallet} iconColor="#000" color="#000" />
+          <Copy
+            address={$wallet}
+            iconColor={$isDarkMode ? "#fff" : "#000"}
+            color={$isDarkMode ? "#fff" : "#000"}
+          />
         </div>
         <div class="block text-3xl xl:text-base xl:hidden">
           <Copy
             address={$wallet}
-            iconColor="#000"
-            color="#000"
+            iconColor={$isDarkMode ? "#fff" : "#000"}
+            color={$isDarkMode ? "#fff" : "#000"}
             isShorten
             iconSize={24}
           />

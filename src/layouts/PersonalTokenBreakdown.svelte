@@ -386,41 +386,43 @@
   }
 
   $: {
-    if (holdingTokenData) {
-      const filteredHoldingTokenData = holdingTokenData?.filter(
-        (item) => item?.cmc_id
-      );
+    if (!$queryTokenHolding.isFetching) {
+      if (holdingTokenData?.length !== 0) {
+        const filteredHoldingTokenData = holdingTokenData?.filter(
+          (item) => item?.cmc_id
+        );
 
-      const filteredNullCmcHoldingTokenData = holdingTokenData?.filter(
-        (item) => item?.cmc_id === null
-      );
+        const filteredNullCmcHoldingTokenData = holdingTokenData?.filter(
+          (item) => item?.cmc_id === null
+        );
 
-      const groupFilteredNullCmcHoldingTokenData = groupBy(
-        filteredNullCmcHoldingTokenData,
-        "chain"
-      );
+        const groupFilteredNullCmcHoldingTokenData = groupBy(
+          filteredNullCmcHoldingTokenData,
+          "chain"
+        );
 
-      const chainList = Object.keys(groupFilteredNullCmcHoldingTokenData);
+        const chainList = Object.keys(groupFilteredNullCmcHoldingTokenData);
 
-      chainList.map((chain) => {
-        groupFilteredNullCmcHoldingTokenData[chain].map((item) => {
-          priceSubscribe([item?.contractAddress], true, chain, (data) => {
+        chainList.map((chain) => {
+          groupFilteredNullCmcHoldingTokenData[chain].map((item) => {
+            priceSubscribe([item?.contractAddress], true, chain, (data) => {
+              marketPriceToken = {
+                id: data.id,
+                market_price: data.price,
+              };
+            });
+          });
+        });
+
+        filteredHoldingTokenData?.map((item) => {
+          priceSubscribe([item?.cmc_id], false, "", (data) => {
             marketPriceToken = {
               id: data.id,
               market_price: data.price,
             };
           });
         });
-      });
-
-      filteredNullCmcHoldingTokenData?.map((item) => {
-        priceSubscribe([item?.contractAddress], true, "", (data) => {
-          marketPriceToken = {
-            id: data.id,
-            market_price: data.price,
-          };
-        });
-      });
+      }
     }
   }
 

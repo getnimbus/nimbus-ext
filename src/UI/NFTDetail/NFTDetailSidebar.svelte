@@ -92,10 +92,7 @@
       data = {
         ...data,
         marketPrice: marketPriceNFT.market_price,
-        current_value:
-          Number(data?.floorPrice) *
-          Number(marketPriceNFT.market_price) *
-          data?.tokens?.length,
+        current_value: Number(data?.floorPrice) * data?.tokens?.length,
       };
     }
   }
@@ -111,12 +108,14 @@
   );
 
   $: profitAndLoss =
-    totalCost === 0 ? 0 : Number(data?.current_value) - Number(totalCost || 0);
+    totalNativeTokenPrice === 0
+      ? 0
+      : Number(data?.current_value) - Number(totalNativeTokenPrice || 0);
 
   $: profitAndLossPercent =
-    Math.abs(Number(totalCost || 0)) === 0
+    totalNativeTokenPrice === 0
       ? 0
-      : profitAndLoss / Math.abs(Number(totalCost));
+      : (profitAndLoss * data?.marketPrice) / Math.abs(Number(totalCost));
 </script>
 
 <ErrorBoundary>
@@ -147,10 +146,7 @@
                 : ""
             }`}
           >
-            <TooltipNumber
-              number={Math.abs(profitAndLoss) / data?.marketPrice}
-              type="balance"
-            />
+            <TooltipNumber number={Math.abs(profitAndLoss)} type="balance" />
           </div>
           <span class="text-xl text-gray-500">
             {data?.nativeToken?.symbol || "-"}
