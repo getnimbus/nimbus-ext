@@ -49,13 +49,14 @@
 
   import Plus from "~/assets/plus.svg";
   import PlusBlack from "~/assets/plus-black.svg";
-  import All from "~/assets/all.svg";
-  import BitcoinLogo from "~/assets/bitcoin.png";
-  import SolanaLogo from "~/assets/solana.png";
   import FollowWhale from "~/assets/whale-tracking.gif";
   import Success from "~/assets/shield-done.svg";
+  
+  import All from "~/assets/all.svg";
   import Bundles from "~/assets/bundles.png";
-  // import "driver.js/dist/driver.css";
+  import BitcoinLogo from "~/assets/bitcoin.png";
+  import SolanaLogo from "~/assets/solana.png";
+  import AuraLogo from "~/assets/aura.png";
 
   const MultipleLang = {
     empty_wallet: i18n("newtabPage.empty-wallet", "No account added yet."),
@@ -838,7 +839,7 @@
       indexSelectedAddress = listAddress.indexOf(selectedAddress);
     }
   }
-  
+
   const handleSelectNextAddress = () => {
     if (indexSelectedAddress < listAddress.length - 1) {
       indexSelectedAddress = indexSelectedAddress + 1;
