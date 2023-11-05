@@ -307,10 +307,10 @@
               "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
             )}
         />
-        {#if ($typeWallet === "EVM" || $typeWallet === "BUNDLE") && data?.chain !== "CEX" && data?.chain !== "BTC"}
+        {#if ($typeWallet === "EVM" || $typeWallet === "BUNDLE") && data?.chain !== "CEX"}
           <div class="absolute -top-2 -right-1">
             <img
-              src={detectedChain(data.chain)}
+              src={detectedChain(data?.chain)}
               alt=""
               width="15"
               height="15"
@@ -1433,10 +1433,10 @@
                   "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
                 )}
             />
-            {#if ($typeWallet === "EVM" || $typeWallet === "BUNDLE") && selectedTokenDetail?.chain !== "CEX" && selectedTokenDetail?.chain !== "BTC"}
+            {#if ($typeWallet === "EVM" || $typeWallet === "BUNDLE") && selectedTokenDetail?.chain !== "CEX"}
               <div class="absolute -top-2 -right-1">
                 <img
-                  src={detectedChain(selectedTokenDetail.chain)}
+                  src={detectedChain(selectedTokenDetail?.chain)}
                   alt=""
                   width="26"
                   height="26"
