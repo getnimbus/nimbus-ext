@@ -215,7 +215,7 @@
 <tr
   key={data?.symbol}
   class={`group transition-all ${
-    isOpenTokenInfoBundle ? (darkMode ? "bg-[#000]" : "bg-gray-100") : ""
+    isOpenTokenInfoBundle ? ($isDarkMode ? "bg-[#000]" : "bg-gray-100") : ""
   }`}
   on:click={() => {
     // if (clickable) {
