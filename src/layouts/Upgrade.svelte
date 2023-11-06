@@ -40,6 +40,7 @@
 
   const handleSelectedPackage = (item) => {
     selectedPackage = item;
+    console.log("this is selectedPackage : ", item);
   };
 
   const handleBuy = async (chainValue: string) => {
@@ -136,11 +137,12 @@
               viewBox="0 0 14 14"
               fill="#1E96FC"
               xmlns="http://www.w3.org/2000/svg"
-              ><path
+            >
+              <path
                 d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
                 fill=""
-              /></svg
-            >
+              />
+            </svg>
           </div>
           Choose other Plan
         </div>

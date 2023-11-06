@@ -15,53 +15,51 @@
   import AppOverlay from "~/components/Overlay.svelte";
   import Error from "~/components/Error.svelte";
 
-  import YieldFarmingVideo from "~/assets/pricing/Yield-Farming.mp4";
-  import RealtimeVideo from "~/assets/pricing/Realtime.mp4";
-  import PricingTable from "~/components/PricingTable.svelte";
+  import PricingTable from "~/UI/PricePackage/PricingTable.svelte";
 
   export let selectedPackage = (item) => {};
 
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  let selectedTypePackage: "month" | "year" = "year";
-  let buyPackage = "Free";
-  let interval = "month";
-  let isNewUser = false;
-  let endDatePackage = "";
-  let isSubscription = false;
+  // let selectedTypePackage: "month" | "year" = "year";
+  // let buyPackage = "Free";
+  // let interval = "month";
+  // let isNewUser = false;
+  // let endDatePackage = "";
+  // let isSubscription = false;
   let isOpenConfirmCancel = false;
   let isLoadingCancel = false;
 
-  const getUserInfo = async () => {
-    const response: any = await nimbus.get("/users/me");
-    return response?.data;
-  };
+  // const getUserInfo = async () => {
+  //   const response: any = await nimbus.get("/users/me");
+  //   return response?.data;
+  // };
 
-  $: query = createQuery({
-    queryKey: ["users-me"],
-    queryFn: () => getUserInfo(),
-    staleTime: Infinity,
-    retry: false,
-    onError(err) {
-      localStorage.removeItem("evm_token");
-      user.update((n) => (n = {}));
-      wallet.update((n) => (n = ""));
-      chain.update((n) => (n = ""));
-      typeWallet.update((n) => (n = ""));
-      queryClient.invalidateQueries(["list-address"]);
-    },
-  });
+  // $: query = createQuery({
+  //   queryKey: ["users-me"],
+  //   queryFn: () => getUserInfo(),
+  //   staleTime: Infinity,
+  //   retry: false,
+  //   onError(err) {
+  //     localStorage.removeItem("evm_token");
+  //     user.update((n) => (n = {}));
+  //     wallet.update((n) => (n = ""));
+  //     chain.update((n) => (n = ""));
+  //     typeWallet.update((n) => (n = ""));
+  //     queryClient.invalidateQueries(["list-address"]);
+  //   },
+  // });
 
-  $: {
-    if (!$query.isError && $query.data !== undefined) {
-      buyPackage = $query.data.plan?.tier;
-      interval = $query.data.plan?.interval;
-      endDatePackage = $query.data.plan?.endDate;
-      isSubscription = $query.data.plan?.subscription;
-      isNewUser = $query.data.plan?.isNewUser;
-    }
-  }
+  // $: {
+  //   if (!$query.isError && $query.data !== undefined) {
+  //     buyPackage = $query.data.plan?.tier;
+  //     interval = $query.data.plan?.interval;
+  //     endDatePackage = $query.data.plan?.endDate;
+  //     isSubscription = $query.data.plan?.subscription;
+  //     isNewUser = $query.data.plan?.isNewUser;
+  //   }
+  // }
 
   const handleCancelSubscription = async () => {
     isLoadingCancel = true;
@@ -147,8 +145,8 @@
     <span class="font-bold">10% off lifetime</span> payments.
   </div>
 
-  <!-- <div class="flex items-center justify-center gap-2">
-    <AnimateSharedLayout>
+  <div class="flex items-center justify-center gap-2">
+    <!-- <AnimateSharedLayout>
       {#each typePackage as type}
         <div
           class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
@@ -175,11 +173,11 @@
           {/if}
         </div>
       {/each}
-    </AnimateSharedLayout>
-  </div> -->
+    </AnimateSharedLayout> -->
+  </div>
 
   <div class="flex flex-col gap-20">
-    <PricingTable />
+    <PricingTable {selectedPackage} />
   </div>
 
   <div class="flex flex-col gap-2 justify-center items-center">
@@ -224,7 +222,8 @@
 </div>
 
 <!-- Modal confirm cancel package -->
-<AppOverlay
+<!-- comment lại vì thấy những state trigger đoạn code này đã bị comment ở code cũ hết rồi -->
+<!-- <AppOverlay
   clickOutSideToClose
   isOpen={isOpenConfirmCancel}
   on:close={() => (isOpenConfirmCancel = false)}
@@ -263,7 +262,7 @@
       </div>
     </div>
   </div>
-</AppOverlay>
+</AppOverlay> -->
 
 {#if showToast}
   <div class="fixed top-3 right-3 w-full z-10">

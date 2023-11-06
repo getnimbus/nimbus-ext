@@ -1,17 +1,20 @@
 <script lang="ts">
-  import McdItem from "~/UI/PositionTable/TableItem/MCDItem.svelte";
+  import { createQuery, useQueryClient } from "@tanstack/svelte-query";
   import {
     nimbusCompareFeatureData,
     nimbusPricingData,
   } from "~/data/pricetable";
   import tooltip from "~/entries/contentScript/views/tooltip";
-  import { isDarkMode } from "~/store";
+  import { nimbus } from "~/lib/network";
+  import { chain, isDarkMode, typeWallet, user, wallet } from "~/store";
   import { getTooltipContent } from "~/utils";
-  // import RealtimeVideo from "~/assets/pricing/Realtime.mp4";
+  import Button from "../../components/Button.svelte";
 
-  let yearly = true;
-  let isHoverCompare;
+  export let selectedPackage = (item) => {};
 
+  const queryClient = useQueryClient();
+
+  let selectedTypePackage: "month" | "year" = "year";
   let typePrice: "free" | "explorer" | "alpha" = "free";
 
   const compareResult = (item: any) => {
@@ -53,7 +56,7 @@
         <th class="uppercase font-medium text-left py-3">free</th>
         <th class="uppercase font-medium text-left py-3">
           explorer
-          {#if yearly}
+          {#if selectedTypePackage === "year"}
             <span
               class="text-white px-2 py-1 font-normal text-sm xl:ml-3 ml-1 bg-[#10b981] rounded-lg"
             >
@@ -63,7 +66,7 @@
         </th>
         <th class="uppercase font-medium text-left py-3 px-3 rounded-tr-xl">
           alpha
-          {#if yearly}
+          {#if selectedTypePackage === "year"}
             <span
               class="text-white px-2 py-1 font-normal text-sm xl:ml-3 ml-1 bg-[#10b981] rounded-lg"
             >
@@ -82,8 +85,14 @@
                 type="checkbox"
                 value=""
                 class="sr-only peer"
-                checked={yearly}
-                on:click={() => (yearly = !yearly)}
+                checked={selectedTypePackage === "year"}
+                on:click={() => {
+                  if (selectedTypePackage === "year") {
+                    selectedTypePackage = "month";
+                  } else {
+                    selectedTypePackage = "year";
+                  }
+                }}
               />
               <div
                 class={`w-11 h-6 peer-focus:outline-none peer-focus:ring-4 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 ${
@@ -98,28 +107,92 @@
             </span>
           </div>
         </td>
-        <td class="py-3 pr-3">
+        <td class="py-3 pr-3 flex flex-col justify-start">
           <div class="flex flex-col gap-2">
             <span class="text-2xl font-semibold"> $0 </span>
-            For those who starting to invest
+            <span> For those who starting to invest </span>
           </div>
         </td>
         <td class="py-3 pr-3">
           <div class="flex flex-col gap-2">
             <span class="text-2xl font-semibold">
-              {yearly ? "$8.25" : "$9.99"}
+              {selectedTypePackage === "year" ? "$8.25" : "$9.99"}
               <span class="text-base font-medium text-[#6b7380]">/month</span>
             </span>
-            Boost your return and reduce your risk
+            <div>Boost your return and reduce your risk</div>
+            <div class="w-[170px]">
+              <Button
+                variant="primary"
+                on:click={() => {
+                  selectedPackage({
+                    plan: "Explorer",
+                    selectedTypePackage,
+                    price: selectedTypePackage === "year" ? "$8.25" : "$9.99",
+                    isNewUser: undefined,
+                  });
+
+                  console.log("this is work !!!");
+                }}
+              >
+                <div
+                  class="flex items-center gap-2 cursor-pointer xl:text-base text-sm"
+                >
+                  Upgrade
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 14 14"
+                    fill="white"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
+                      fill=""
+                    />
+                  </svg>
+                </div>
+              </Button>
+            </div>
           </div>
         </td>
         <td class="py-3 px-3">
           <div class="flex flex-col gap-2">
             <span class="text-2xl font-semibold">
-              {yearly ? "$82.5" : "$99.99"}
+              {selectedTypePackage === "year" ? "$82.5" : "$99.99"}
               <span class="text-base font-medium text-[#6b7380]">/month</span>
             </span>
-            Enjoy all the features without any limited
+            <div>Enjoy all the features without any limited</div>
+            <div class="w-[170px]">
+              <Button
+                variant="primary"
+                on:click={() => {
+                  selectedPackage({
+                    plan: "Professional",
+                    selectedTypePackage,
+                    price: selectedTypePackage === "year" ? "$82.5" : "$99.99",
+                    isNewUser: undefined,
+                  });
+                }}
+              >
+                <div
+                  class="flex items-center gap-2 cursor-pointer xl:text-base text-sm"
+                >
+                  Upgrade
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 14 14"
+                    fill="white"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
+                      fill=""
+                    />
+                  </svg>
+                </div>
+              </Button>
+            </div>
           </div>
         </td>
       </tr>
@@ -132,7 +205,7 @@
           </tr>
         {:else if item.featureStatus === "part"}
           <tr
-            class={`${$isDarkMode ? "hover:bg-[#000]" : "hover:bg-gray-100"} `}
+            class={`${$isDarkMode ? "hover:bg-[#000]" : "hover:bg-gray-100"}`}
           >
             <td class="py-4 pl-3">
               <div>
@@ -201,8 +274,14 @@
           type="checkbox"
           value=""
           class="sr-only peer"
-          checked={yearly}
-          on:click={() => (yearly = !yearly)}
+          checked={selectedTypePackage === "year"}
+          on:click={() => {
+            if (selectedTypePackage === "year") {
+              selectedTypePackage = "month";
+            } else {
+              selectedTypePackage = "year";
+            }
+          }}
         />
         <div
           class={`w-11 h-6 peer-focus:outline-none peer-focus:ring-4 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 ${
@@ -253,7 +332,7 @@
         <div class="flex flex-col gap-2 justify-center items-center p-5">
           <div class="text-2xl font-medium uppercase">
             Explorer{" "}
-            {#if yearly}
+            {#if selectedTypePackage === "year"}
               <span
                 class="text-white px-2 py-1 font-normal text-lg ml-3 bg-[#10b981] rounded-lg"
               >
@@ -262,7 +341,7 @@
             {/if}
           </div>
           <div class="text-4xl font-medium">
-            {yearly ? "$8.25" : "$9.99"}{" "}
+            {selectedTypePackage === "year" ? "$8.25" : "$9.99"}{" "}
             <span class="text-[#6b7380] text-lg font-medium"> /month </span>
           </div>
           <div class="text-lg">Boost your return and reduce your risk</div>
@@ -271,7 +350,7 @@
         <div class="flex flex-col gap-2 justify-center items-center p-5">
           <div class="text-2xl font-medium uppercase">
             Alpha{" "}
-            {#if yearly}
+            {#if selectedTypePackage === "year"}
               <span
                 class="text-white px-2 py-1 font-normal text-lg ml-3 bg-[#10b981] rounded-lg"
               >
@@ -280,7 +359,7 @@
             {/if}
           </div>
           <div class="text-4xl font-medium">
-            {yearly ? "$82.5" : "$99.99"}{" "}
+            {selectedTypePackage === "year" ? "$82.5" : "$99.99"}{" "}
             <span class="text-[#6b7380] text-lg font-medium"> /month </span>
           </div>
           <div class="text-lg">Enjoy all the features without any limited</div>
