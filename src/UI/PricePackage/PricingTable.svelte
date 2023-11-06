@@ -297,24 +297,36 @@
     </div>
     <div class="flex gap-5">
       <div
-        class={`uppercase py-3 px-4 text-2xl font-medium rounded-2xl ${
-          typePrice === "free" && "bg-blue-100 text-primaryN"
+        class={`uppercase py-3 px-4 text-2xl font-medium rounded-2xl cursor-pointer ${
+          typePrice === "free" && !$isDarkMode
+            ? "bg-blue-100 text-primaryN"
+            : typePrice === "free" && $isDarkMode
+            ? "bg-gray-500 text-white"
+            : "text-white"
         }`}
         on:click={() => (typePrice = "free")}
       >
         free
       </div>
       <div
-        class={`uppercase py-3 px-4 text-2xl font-medium rounded-2xl ${
-          typePrice === "explorer" && "bg-blue-100 text-primaryN"
+        class={`uppercase py-3 px-4 text-2xl font-medium rounded-2xl cursor-pointer ${
+          typePrice === "explorer" && !$isDarkMode
+            ? "bg-blue-100 text-primaryN"
+            : typePrice === "explorer" && $isDarkMode
+            ? "bg-gray-500 text-white"
+            : "text-white"
         }`}
         on:click={() => (typePrice = "explorer")}
       >
         explorer
       </div>
       <div
-        class={`uppercase py-3 px-4 text-2xl font-medium rounded-2xl ${
-          typePrice === "alpha" && "bg-blue-100 text-primaryN"
+        class={`uppercase py-3 px-4 text-2xl font-medium rounded-2xl cursor-pointer ${
+          typePrice === "alpha" && !$isDarkMode
+            ? "bg-blue-100 text-primaryN"
+            : typePrice === "alpha" && $isDarkMode
+            ? "bg-gray-500 text-white"
+            : "text-white"
         }`}
         on:click={() => (typePrice = "alpha")}
       >
@@ -372,7 +384,12 @@
       {#each nimbusPricingData as item}
         {#if item.featureStatus === "main"}
           <tr>
-            <td colspan="8" class="bg-gray-50 text-2xl font-medium py-6 px-3">
+            <td
+              colspan="8"
+              class={`text-2xl font-medium py-6 px-3 ${
+                $isDarkMode ? "bg-gray-700" : "bg-gray-50"
+              }`}
+            >
               {item.title}
             </td>
           </tr>
