@@ -425,7 +425,7 @@
     Compare with other apps
   </div>
   <div class="w-full overflow-auto rounded-[10px] border border_0000000d">
-    <table class="min-w-[1400px] table-auto rounded-2xl">
+    <table class="xl:w-full w-[1400px] table-auto rounded-2xl">
       <thead>
         <tr
           class={`text-left xl:text-base text-xl ${
@@ -433,7 +433,7 @@
           }`}
         >
           <th
-            class={`xl:w-[420px] w-[230px] xl:static sticky top-0 left-0 font-medium py-3 pl-3 rounded-tl-xl ${
+            class={`xl:static sticky top-0 left-0 font-medium py-3 pl-3 rounded-tl-xl ${
               $isDarkMode ? "bg-[#161616]" : "bg-gray-100"
             }`}
           >
@@ -446,16 +446,15 @@
           <th class="font-medium py-3 px-3 rounded-tr-xl">Nansen</th>
         </tr>
       </thead>
-      <tbody on:mouseleave={() => (isHoverCompare = undefined)}>
+      <tbody>
         {#each nimbusCompareFeatureData as item, index}
           <tr
             class={`group xl:text-base text-xl ${
               $isDarkMode ? "hover:bg-[#000]" : "hover:bg-gray-100"
             }`}
-            on:mouseenter={() => (isHoverCompare = index)}
           >
             <td
-              class={`py-4 pl-3 xl:w-auto w-[300px] xl:static sticky top-0 left-0 z-10 ${
+              class={`py-4 pl-3 xl:static sticky top-0 left-0 z-10 ${
                 $isDarkMode
                   ? "bg-[#161616] group-hover:bg-[#000]"
                   : "bg-white group-hover:bg-gray-100"
