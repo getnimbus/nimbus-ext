@@ -1,4 +1,5 @@
 <script lang="ts">
+  import McdItem from "~/UI/PositionTable/TableItem/MCDItem.svelte";
   import {
     nimbusCompareFeatureData,
     nimbusPricingData,
@@ -21,6 +22,21 @@
     } else {
       return "⚠️";
     }
+  };
+
+  $: handleDataHtml = (item: any) => {
+    const contentData =
+      typePrice === "free"
+        ? item.content.free
+        : typePrice === "explorer"
+        ? item.content.explorer
+        : item.content.alpha;
+    return `   <div>
+                ${contentData.description}
+                <span class="w-4 h-4 ml-2">
+                  ${compareResult(contentData)}
+                </span>
+              </div>`;
   };
 </script>
 
@@ -278,7 +294,7 @@
         {#if item.featureStatus === "main"}
           <tr>
             <td colspan="8" class="bg-gray-50 text-2xl font-medium py-6 px-3">
-              {item.title} 
+              {item.title}
             </td>
           </tr>
         {:else if item.featureStatus === "part"}
@@ -315,12 +331,7 @@
               </div>
             </td>
             <td class="py-6 px-3 text-right">
-              <div>
-                {item.content.alpha.description}{" "}
-                <span class="w-4 h-4">
-                  {compareResult(item.content.alpha)}
-                </span>
-              </div>
+              {@html handleDataHtml(item)}
             </td>
           </tr>
         {/if}
@@ -335,7 +346,7 @@
     Compare with other apps
   </div>
   <div class="w-full overflow-auto rounded-[10px] border border_0000000d">
-    <table class="xl:w-full w-[1000px] table-auto rounded-2xl">
+    <table class="min-w-[1400px] table-auto rounded-2xl">
       <thead>
         <tr
           class={`text-left xl:text-base text-xl ${
@@ -365,7 +376,7 @@
             on:mouseenter={() => (isHoverCompare = index)}
           >
             <td
-              class={`py-4 pl-3 xl:w-[420px] w-[230px] xl:static sticky top-0 left-0 z-50 ${
+              class={`py-4 pl-3 xl:w-auto w-[300px] xl:static sticky top-0 left-0 z-10 ${
                 $isDarkMode
                   ? "bg-[#161616] group-hover:bg-[#000]"
                   : "bg-white group-hover:bg-gray-100"
@@ -375,41 +386,41 @@
                 {item.title}
               </div>
             </td>
-            <td class="py-4">
+            <td class="py-4 w-[200px]">
               <div>
-                <span class="w-4 h-4">
+                <span class="w-4 h-4 mr-1">
                   {compareResult(item.content.nimbus)}
                 </span>{" "}
                 {item.content.nimbus.description}
               </div>
             </td>
-            <td class="py-4">
+            <td class="py-4 w-[200px]">
               <div>
-                <span class="w-4 h-4">
+                <span class="w-4 h-4 mr-1">
                   {compareResult(item.content.excel)}
                 </span>{" "}
                 {item.content.excel.description}
               </div>
             </td>
-            <td class="py-4">
+            <td class="py-4 w-[200px]">
               <div>
-                <span class="w-4 h-4">
+                <span class="w-4 h-4 mr-1">
                   {compareResult(item.content.coinstats)}
                 </span>{" "}
                 {item.content.coinstats.description}
               </div>
             </td>
-            <td class="py-4">
+            <td class="py-4 w-[200px]">
               <div>
-                <span class="w-4 h-4">
+                <span class="w-4 h-4 mr-1">
                   {compareResult(item.content.debank)}
                 </span>{" "}
                 {item.content.debank.description}
               </div>
             </td>
-            <td class="py-4 px-3">
+            <td class="py-4 w-[200px] px-3">
               <div>
-                <span class="w-4 h-4">
+                <span class="w-4 h-4 mr-1">
                   {compareResult(item.content.nansen)}
                 </span>{" "}
                 {item.content.nansen.description}

@@ -9,19 +9,7 @@ type ContentState = {
     debank: ContentState;
     nansen: ContentState;
   };
-  
-  type DetailContentPrice = {
-    free: ContentState;
-    explorer: ContentState;
-    alpha: ContentState;
-  };
-  
-  type TippyContent = {
-    used: boolean;
-    title: string;
-    content: string;
-  };
-  
+
   interface CompareFeature {
     title?: string;
     content: DetailContent | "";
@@ -30,9 +18,29 @@ type ContentState = {
   interface ComparePricing {
     title?: string;
     featureStatus: "main" | "part";
-    tippy: TippyContent;
-    content: DetailContentPrice | "";
+    tippy: {
+      used: boolean;
+      title: string;
+      content: string;
+    }
+    content: {
+      free: ContentState;
+      explorer: ContentState;
+      alpha: ContentState;
+    } | "";
   }
+  
+  // type DetailContentPrice = {
+  //   free: ContentState;
+  //   explorer: ContentState;
+  //   alpha: ContentState;
+  // };
+  
+  // type TippyContent = {
+  //   used: boolean;
+  //   title: string;
+  //   content: string;
+  // };
   
   import RealtimeVideo from "~/assets/pricing/Realtime.mp4";
   import CustomAllocation from "~/assets/pricing/Custom-Allocation.mp4";
@@ -40,8 +48,6 @@ type ContentState = {
   import CorrelationsMatrix from "~/assets/pricing/Correlation-Matrix.mp4";
   import YieldFarming from "~/assets/pricing/Yield-Farming.mp4";
   import Rebalance from "~/assets/pricing/Rebalance.mp4"
-  
-  
   
   export const nimbusPricingData: ComparePricing[] = [
     {
