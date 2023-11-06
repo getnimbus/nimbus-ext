@@ -234,71 +234,105 @@
             },
           ],
         };
-
-        sumCount = $queryHistoryTokenDetailAnalysis.data.reduce(
-          (prev, item) => prev + Number(item.count),
-          0
-        );
-
-        sumTotalToken = $queryHistoryTokenDetailAnalysis.data.reduce(
-          (prev, item) => prev + Number(item.totalToken),
-          0
-        );
-
-        // logic win
-        const winHistoryTokenDetail =
-          $queryHistoryTokenDetailAnalysis.data.filter(
-            (item) => item.price < data?.market_price
-          );
-
-        const formatWinHistoryTokenDetail = winHistoryTokenDetail.map(
-          (item) => {
-            return {
-              ...item,
-              valueProfit:
-                Number(data?.market_price) * Number(item.totalToken) -
-                Number(item.price) * Number(item.totalToken),
-            };
-          }
-        );
-
-        sumWinProfitHistoryTokenDetail = formatWinHistoryTokenDetail.reduce(
-          (prev, item) => prev + Number(item.valueProfit),
-          0
-        );
-
-        sumCountWinHistoryTokenDetail = winHistoryTokenDetail.reduce(
-          (prev, item) => prev + Number(item.count),
-          0
-        );
-
-        // logic lose
-        const lossHistoryTokenDetail =
-          $queryHistoryTokenDetailAnalysis.data.filter(
-            (item) => item.price > data?.market_price
-          );
-
-        const formatLossHistoryTokenDetail = lossHistoryTokenDetail.map(
-          (item) => {
-            return {
-              ...item,
-              valueProfit:
-                Number(data?.market_price) * Number(item.totalToken) -
-                Number(item.price) * Number(item.totalToken),
-            };
-          }
-        );
-
-        sumLossProfitHistoryTokenDetail = formatLossHistoryTokenDetail.reduce(
-          (prev, item) => prev + Number(item.valueProfit),
-          0
-        );
-
-        sumCountLossHistoryTokenDetail = lossHistoryTokenDetail.reduce(
-          (prev, item) => prev + Number(item.count),
-          0
-        );
+      } else {
+        optionBar = {
+          ...optionBar,
+          series: [
+            {
+              tooltip: {
+                show: true,
+              },
+              type: "bar",
+              itemStyle: {
+                color: "#27326F",
+                borderColor: "#27326F",
+              },
+              data: dataChart,
+              markLine: {
+                precision: 10,
+                symbol: ["none"],
+                data: [
+                  {
+                    name: "Current Price",
+                    label: "Current Price",
+                    xAxis: data?.market_price,
+                    lineStyle: {
+                      color: "#1e96fc",
+                      type: "solid",
+                      width: 2,
+                    },
+                  },
+                ],
+                label: {
+                  show: false,
+                },
+              },
+            },
+          ],
+        };
       }
+
+      sumCount = $queryHistoryTokenDetailAnalysis.data.reduce(
+        (prev, item) => prev + Number(item.count),
+        0
+      );
+
+      sumTotalToken = $queryHistoryTokenDetailAnalysis.data.reduce(
+        (prev, item) => prev + Number(item.totalToken),
+        0
+      );
+
+      // logic win
+      const winHistoryTokenDetail =
+        $queryHistoryTokenDetailAnalysis.data.filter(
+          (item) => Number(item.price) <= Number(data?.market_price)
+        );
+
+      const formatWinHistoryTokenDetail = winHistoryTokenDetail.map((item) => {
+        return {
+          ...item,
+          valueProfit:
+            Number(data?.market_price) * Number(item.totalToken) -
+            Number(item.price) * Number(item.totalToken),
+        };
+      });
+
+      sumWinProfitHistoryTokenDetail = formatWinHistoryTokenDetail.reduce(
+        (prev, item) => prev + Number(item.valueProfit),
+        0
+      );
+
+      sumCountWinHistoryTokenDetail = winHistoryTokenDetail.reduce(
+        (prev, item) => prev + Number(item.count),
+        0
+      );
+
+      // logic lose
+      const lossHistoryTokenDetail =
+        $queryHistoryTokenDetailAnalysis.data.filter(
+          (item) => Number(item.price) > Number(data?.market_price)
+        );
+
+      const formatLossHistoryTokenDetail = lossHistoryTokenDetail.map(
+        (item) => {
+          return {
+            ...item,
+            valueProfit:
+              Number(data?.market_price) * Number(item.totalToken) -
+              Number(item.price) * Number(item.totalToken),
+          };
+        }
+      );
+
+      sumLossProfitHistoryTokenDetail = formatLossHistoryTokenDetail.reduce(
+        (prev, item) => prev + Number(item.valueProfit),
+        0
+      );
+
+      sumCountLossHistoryTokenDetail = lossHistoryTokenDetail.reduce(
+        (prev, item) => prev + Number(item.count),
+        0
+      );
     } else {
       optionBar = {
         ...optionBar,
@@ -393,13 +427,17 @@
       <div class="xl:text-lg text-xl">Win / Lose addresses</div>
       <div
         class="h-2 rounded-lg relative"
-        style={`background: linear-gradient(to right, #25b770 ${(
-          (sumCountWinHistoryTokenDetail / sumCount) *
-          100
-        ).toFixed(2)}%, #e14040 ${(
-          (sumCountWinHistoryTokenDetail / sumCount) *
-          100
-        ).toFixed(2)}%)`}
+        style={`background: ${
+          sumCountWinHistoryTokenDetail === 0
+            ? "#00000066"
+            : `linear-gradient(to right, #25b770 ${(
+                (sumCountWinHistoryTokenDetail / sumCount) *
+                100
+              ).toFixed(2)}%, #e14040 ${(
+                (sumCountWinHistoryTokenDetail / sumCount) *
+                100
+              ).toFixed(2)}%)`
+        }`}
       >
         <div class="absolute top-5 left-0 xl:text-sm text-xl">
           <TooltipNumber
@@ -420,17 +458,21 @@
       <div class="xl:text-lg text-xl">Profit / Loss</div>
       <div
         class="h-2 rounded-lg relative"
-        style={`background: linear-gradient(to right, #25b770 ${Math.abs(
-          (sumWinProfitHistoryTokenDetail /
-            (Math.abs(sumLossProfitHistoryTokenDetail) +
-              Math.abs(sumWinProfitHistoryTokenDetail))) *
-            100
-        ).toFixed(2)}%, #e14040 ${Math.abs(
-          (sumWinProfitHistoryTokenDetail /
-            (Math.abs(sumLossProfitHistoryTokenDetail) +
-              Math.abs(sumWinProfitHistoryTokenDetail))) *
-            100
-        ).toFixed(2)}%)`}
+        style={`background: ${
+          sumWinProfitHistoryTokenDetail === 0
+            ? "#00000066"
+            : `linear-gradient(to right, #25b770 ${Math.abs(
+                (sumWinProfitHistoryTokenDetail /
+                  (Math.abs(sumLossProfitHistoryTokenDetail) +
+                    Math.abs(sumWinProfitHistoryTokenDetail))) *
+                  100
+              ).toFixed(2)}%, #e14040 ${Math.abs(
+                (sumWinProfitHistoryTokenDetail /
+                  (Math.abs(sumLossProfitHistoryTokenDetail) +
+                    Math.abs(sumWinProfitHistoryTokenDetail))) *
+                  100
+              ).toFixed(2)}%)`
+        }`}
       >
         <div class="flex gap-1 absolute top-5 left-0 xl:text-sm text-xl w-max">
           Profit
