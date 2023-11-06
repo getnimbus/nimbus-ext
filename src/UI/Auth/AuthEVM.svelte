@@ -249,7 +249,9 @@
 
 {#if $user && Object.keys($user).length !== 0}
   <div class="relative">
-    <div class="flex flex-col gap-1 items-center py-1 xl:block hidden">
+    <div
+      class="flex flex-col gap-1 items-center py-1 xl:block hidden relative xl:h-[50px] w-[50px]"
+    >
       <div
         class="xl:w-[40px] xl:h-[40px] w-16 h-16 rounded-full overflow-hidden cursor-pointer mx-auto"
         on:click={() => (showPopover = !showPopover)}
@@ -258,7 +260,7 @@
       </div>
       {#if buyPackage === "Explorer"}
         <div
-          class="text-[#ffb800] text-xs cursor-pointe flex items-center gap-1"
+          class="text-[#ffb800] text-xs cursor-pointe flex items-center gap-1 absolute bottom-0 -left-1 z-20"
         >
           Explorer
           <svg
@@ -279,7 +281,7 @@
       {/if}
       {#if buyPackage === "Professional"}
         <div
-          class="w-full text-[#ffb800] text-xs font-medium cursor-pointer text-center flex items-center gap-1"
+          class="w-full text-[#ffb800] text-xs font-medium cursor-pointer text-center flex items-center gap-1 absolute bottom-0 left-0 z-20"
         >
           Alpha
           <svg
