@@ -402,14 +402,17 @@ export const chainList = [
 export const detectedChain = (type) => {
   let chain;
   switch (type) {
+    case "BTC":
+      chain = Bitcoin;
+      break;
+    case "ALL":
+      chain = Bitcoin;
+      break;
     case "AURA":
       chain = Aura;
       break;
     case "SOL":
       chain = Solana;
-      break;
-    case "BTC":
-      chain = Bitcoin;
       break;
     case "ETH":
       chain = Ethereum;
@@ -450,8 +453,6 @@ export const detectedChain = (type) => {
     case "MANTLE":
       chain = Mantle;
       break;
-    default:
-      chain = All;
   }
   return chain;
 };
