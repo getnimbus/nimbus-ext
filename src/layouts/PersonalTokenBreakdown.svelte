@@ -414,7 +414,17 @@
           });
         });
 
-        filteredHoldingTokenData?.map((item) => {
+        let filteredData = [];
+        const symbolSet = new Set();
+
+        filteredHoldingTokenData.forEach((item) => {
+          if (!symbolSet.has(item.symbol)) {
+            symbolSet.add(item.symbol);
+            filteredData.push(item);
+          }
+        });
+
+        filteredData?.map((item) => {
           priceSubscribe([item?.cmc_id], false, "", (data) => {
             marketPriceToken = {
               id: data.id,

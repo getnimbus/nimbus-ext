@@ -22,8 +22,8 @@
 
   let filteredHoldingToken = true;
   let filteredHoldingDataToken = [];
+  let dataSubWS = [];
   let marketPriceToken;
-  let marketPriceNFT;
   let formatData = [];
   let formatDataNFT = [];
   let sumAllTokens = 0;
@@ -103,44 +103,36 @@
           });
         });
 
-        filteredHoldingTokenData?.map((item) => {
-          priceSubscribe([item?.cmc_id], false, "", (data) => {
-            marketPriceToken = {
-              id: data.id,
-              market_price: data.price,
-            };
-          });
+        dataSubWS = filteredHoldingTokenData.map((item) => {
+          return {
+            symbol: item.symbol,
+            cmcId: item.cmc_id,
+          };
         });
       }
     }
-    if (!isLoadingNFT) {
-      if (holdingNFTData) {
-        let filteredFormatHoldingNFTData = [];
-        const symbolSet = new Set();
-        const formatHoldingNFTData = holdingNFTData
-          ?.filter((item) => item?.nativeToken?.cmcId)
-          ?.map((item) => {
-            return {
-              symbol: item.nativeToken.symbol,
-              cmcId: item.nativeToken.cmcId,
-            };
-          });
-        formatHoldingNFTData.forEach((item) => {
-          if (!symbolSet.has(item.symbol)) {
-            symbolSet.add(item.symbol);
-            filteredFormatHoldingNFTData.push(item);
-          }
-        });
+  }
 
-        filteredFormatHoldingNFTData?.map((item) => {
-          priceSubscribe([Number(item?.cmcId)], false, "", (data) => {
-            marketPriceNFT = {
-              id: data.id,
-              market_price: data.price,
-            };
-          });
+  $: {
+    if (!isLoadingToken && dataSubWS && dataSubWS.length !== 0) {
+      let filteredData = [];
+      const symbolSet = new Set();
+
+      dataSubWS.forEach((item) => {
+        if (!symbolSet.has(item.symbol)) {
+          symbolSet.add(item.symbol);
+          filteredData.push(item);
+        }
+      });
+
+      filteredData?.map((item) => {
+        priceSubscribe([item?.cmcId], false, "", (data) => {
+          marketPriceToken = {
+            id: data.id,
+            market_price: data.price,
+          };
         });
-      }
+      });
     }
   }
 
@@ -238,31 +230,6 @@
         0
       );
     }
-    if (marketPriceNFT) {
-      const formatDataNFTWithMarketPrice = formatDataNFT.map((item) => {
-        if (
-          marketPriceNFT?.id.toString().toLowerCase() ===
-          item?.nativeToken?.cmcId.toString().toLowerCase()
-        ) {
-          return {
-            ...item,
-            market_price: marketPriceNFT.market_price,
-            current_value:
-              item?.floorPriceBTC * marketPriceNFT.market_price * item?.balance,
-          };
-        }
-        return { ...item };
-      });
-      formatDataNFT = formatDataNFTWithMarketPrice.sort((a, b) => {
-        if (a.current_value < b.current_value) {
-          return 1;
-        }
-        if (a.current_value > b.current_value) {
-          return -1;
-        }
-        return 0;
-      });
-    }
   }
 
   $: {
@@ -312,7 +279,6 @@
         formatDataNFT = [];
         filteredHoldingDataToken = [];
         marketPriceToken = undefined;
-        marketPriceNFT = undefined;
       }
     }
   }
