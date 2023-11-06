@@ -31,7 +31,10 @@
   import PlusBlack from "~/assets/plus-black.svg";
   import User from "~/assets/user.png";
   import Success from "~/assets/shield-done.svg";
+
+  import BitcoinLogo from "~/assets/bitcoin.png";
   import SolanaLogo from "~/assets/solana.png";
+  import AuraLogo from "~/assets/aura.png";
 
   const MultipleLang = {
     title: i18n("optionsPage.accounts-page-title", "Account Settings"),
@@ -149,6 +152,9 @@
   let isDisabled = false;
   let tooltipDisableAddBtn = "";
 
+  let groupedToBundles = true;
+  let selectYourWalletsBundle = [];
+
   let scrollContainer;
   let isScrollStart = true;
   let isScrollEnd = false;
@@ -265,12 +271,28 @@
         type: item.type,
         label: item.label,
         address: item.type === "CEX" ? item.id : item.accountId,
+        accounts:
+          item?.accounts?.map((account) => {
+            return {
+              id: account?.id,
+              type: account?.type,
+              label: account?.label,
+              value: account?.type === "CEX" ? account?.id : account?.accountId,
+            };
+          }) || [],
       };
     });
 
     listAddress = structWalletData;
     listAddressWithoutBundle = structWalletData.filter(
       (item) => item.type !== "BUNDLE"
+    );
+
+    const selectYourBundle = structWalletData.find(
+      (item) => item.type === "BUNDLE" && item.label === "Your wallets"
+    );
+    selectYourWalletsBundle = selectYourBundle?.accounts?.map(
+      (item) => item.value
     );
 
     if (listAddressWithoutBundle && listAddressWithoutBundle?.length === 1) {
@@ -323,6 +345,17 @@
         !Object.keys(errors).some((inputName) => errors[inputName]["required"])
       ) {
         Object.assign(data, { id: data.address });
+
+        if (groupedToBundles) {
+          await nimbus.put(
+            `/address/personalize/bundle?name=${"Your wallets"}`,
+            {
+              name: "Your wallets",
+              addresses: selectYourWalletsBundle.concat([data.address]),
+            }
+          );
+          queryClient.invalidateQueries(["list-bundle"]);
+        }
 
         const response = await nimbus.post("/accounts", {
           type: "DEX",
@@ -1519,17 +1552,15 @@
             target="_blank">Learn more</a
           >
         </div>
-        <div
-          class="flex items-center justify-center gap-6 my-3 text-2xl xl:text-base"
-        >
+        <div class="flex items-center justify-center gap-6 my-3">
           {#each listLogoCEX as logo}
-            <div
-              class="flex items-center justify-center w-10 h-10 overflow-hidden rounded-full xl:w-8 xl:h-8"
-            >
-              <img src={logo} alt="" class="object-contain w-full h-full" />
-            </div>
+            <img
+              src={logo}
+              alt=""
+              class="xl:w-8 xl:h-8 w-10 h-10 rounded-full"
+            />
           {/each}
-          <div class="text-gray-400">+22 More</div>
+          <div class="text-gray-400 text-2xl xl:text-base">+22 More</div>
         </div>
       </div>
       <div class="border-t-[1px] relative">
@@ -1607,20 +1638,34 @@
           </div>
         </div>
         <div
-          class="flex items-center justify-center gap-6 my-3 text-2xl xl:text-base"
+          class="flex items-center justify-end gap-2 text-[#666666] xl:mt-0 mt-3"
         >
-          {#each [{ logo: SolanaLogo, label: "Solana", value: "SOL" }].concat(chainList) as item}
-            <div
-              class="flex items-center justify-center w-10 h-10 overflow-hidden rounded-full xl:w-8 xl:h-8"
-            >
-              <img
-                src={item.logo}
-                alt=""
-                class="object-contain w-full h-full"
-              />
-            </div>
+          <div class="xl:text-sm text-2xl">Is it your wallet?</div>
+          <label class="switch">
+            <input type="checkbox" bind:checked={groupedToBundles} />
+            <span class="slider" />
+          </label>
+        </div>
+        <div class="xl:flex hidden items-center justify-center gap-6 my-3">
+          {#each [{ logo: SolanaLogo, label: "Solana", value: "SOL" }, { logo: BitcoinLogo, label: "Bitcoin", value: "BTC" }].concat(chainList.slice(1)) as item}
+            <img
+              src={item.logo}
+              alt=""
+              class="xl:w-8 xl:h-8 w-10 h-10 overflow-hidden rounded-full"
+            />
           {/each}
-          <div class="text-gray-400">More soon</div>
+        </div>
+        <div class="xl:hidden flex items-center justify-center gap-6 my-3">
+          {#each [{ logo: SolanaLogo, label: "Solana", value: "SOL" }, { logo: BitcoinLogo, label: "Bitcoin", value: "BTC" }].concat(chainList
+              .slice(1)
+              .slice(0, -7)) as item}
+            <img
+              src={item.logo}
+              alt=""
+              class="xl:w-8 xl:h-8 w-10 h-10 overflow-hidden rounded-full"
+            />
+          {/each}
+          <div class="text-gray-400 xl:text-base text-2xl">+7 More</div>
         </div>
         <div class="flex justify-end gap-6 lg:gap-2">
           <div class="lg:w-[120px] w-full">
@@ -1977,5 +2022,54 @@
     display: flex !important;
     justify-content: space-between !important;
     background: black !important;
+  }
+
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 20px;
+  }
+
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: 0.4s;
+    transition: 0.4s;
+    border-radius: 34px;
+  }
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 4px;
+    bottom: 2px;
+    background-color: white;
+    -webkit-transition: 0.4s;
+    transition: 0.4s;
+    border-radius: 50%;
+  }
+  input:checked + .slider {
+    background-color: #2196f3;
+  }
+  input:checked + .slider {
+    box-shadow: 0 0 1px #2196f3;
+  }
+  input:checked + .slider:before {
+    -webkit-transform: translateX(16px);
+    -ms-transform: translateX(16px);
+    transform: translateX(16px);
   }
 </style>

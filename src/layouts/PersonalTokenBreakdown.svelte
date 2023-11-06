@@ -414,8 +414,18 @@
           });
         });
 
-        filteredHoldingTokenData?.map((item) => {
-          priceSubscribe([item?.cmc_id], false, "", (data) => {
+        let filteredData = [];
+        const symbolSet = new Set();
+
+        filteredHoldingTokenData.forEach((item) => {
+          if (!symbolSet.has(item.symbol)) {
+            symbolSet.add(item.symbol);
+            filteredData.push(item);
+          }
+        });
+
+        filteredData?.map((item) => {
+          priceSubscribe([Number(item?.cmc_id)], false, "", (data) => {
             marketPriceToken = {
               id: data.id,
               market_price: data.price,
@@ -452,7 +462,7 @@
         ) {
           return {
             ...item,
-            market_price: marketPriceToken.market_price,
+            market_price: Number(marketPriceToken.market_price),
             value: Number(item?.amount) * Number(marketPriceToken.market_price),
           };
         }
@@ -1188,10 +1198,10 @@
                                       height="30"
                                       class="rounded-full"
                                     />
-                                    {#if $typeWallet === "EVM"}
+                                    {#if ($typeWallet === "EVM" || $typeWallet === "BUNDLE") && data?.chain !== "CEX"}
                                       <div class="absolute -top-2 -right-1">
                                         <img
-                                          src={detectedChain(data.chain)}
+                                          src={detectedChain(data?.chain)}
                                           alt=""
                                           width="15"
                                           height="15"
