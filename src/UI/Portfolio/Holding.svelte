@@ -26,8 +26,8 @@
 
   let filteredHoldingDataToken = [];
   let filteredHoldingDataNFT = [];
+  let dataSubWS = [];
   let marketPriceToken;
-  let marketPriceNFT;
   let formatData = [];
   let formatDataNFT = [];
   let sumTokens = 0;
@@ -84,6 +84,7 @@
     };
   });
 
+  // subscribe to ws
   $: {
     if (!isLoadingToken) {
       if (holdingTokenData?.length !== 0) {
@@ -113,13 +114,11 @@
           });
         });
 
-        filteredHoldingTokenData?.map((item) => {
-          priceSubscribe([item?.cmc_id], false, "", (data) => {
-            marketPriceToken = {
-              id: data.id,
-              market_price: data.price,
-            };
-          });
+        dataSubWS = filteredHoldingTokenData.map((item) => {
+          return {
+            symbol: item.symbol,
+            cmcId: item.cmc_id,
+          };
         });
 
         sumAllTokens = holdingTokenData?.reduce(
@@ -130,8 +129,6 @@
     }
     if (!isLoadingNFT) {
       if (holdingNFTData?.length !== 0) {
-        let filteredFormatHoldingNFTData = [];
-        const symbolSet = new Set();
         const formatHoldingNFTData = holdingNFTData
           ?.filter((item) => item?.nativeToken?.cmcId)
           ?.map((item) => {
@@ -140,25 +137,41 @@
               cmcId: item.nativeToken.cmcId,
             };
           });
-        formatHoldingNFTData.forEach((item) => {
-          if (!symbolSet.has(item.symbol)) {
-            symbolSet.add(item.symbol);
-            filteredFormatHoldingNFTData.push(item);
-          }
-        });
 
-        filteredFormatHoldingNFTData?.map((item) => {
-          priceSubscribe([Number(item?.cmcId)], false, "", (data) => {
-            marketPriceNFT = {
-              id: data.id,
-              market_price: data.price,
-            };
-          });
-        });
+        dataSubWS = dataSubWS.concat(formatHoldingNFTData);
       }
     }
   }
 
+  $: {
+    if (
+      !isLoadingNFT &&
+      !isLoadingToken &&
+      dataSubWS &&
+      dataSubWS.length !== 0
+    ) {
+      let filteredData = [];
+      const symbolSet = new Set();
+
+      dataSubWS.forEach((item) => {
+        if (!symbolSet.has(item.symbol)) {
+          symbolSet.add(item.symbol);
+          filteredData.push(item);
+        }
+      });
+
+      filteredData?.map((item) => {
+        priceSubscribe([Number(item?.cmcId)], false, "", (data) => {
+          marketPriceToken = {
+            id: data.id,
+            market_price: data.price,
+          };
+        });
+      });
+    }
+  }
+
+  // format initial data
   $: {
     if (
       selectedTokenHolding &&
@@ -212,8 +225,10 @@
     }
   }
 
+  // check market price and update price real-time
   $: {
     if (marketPriceToken) {
+      // update data token holding
       const formatDataWithMarketPrice = formatData.map((item) => {
         if (
           marketPriceToken?.id.toString().toLowerCase() ===
@@ -223,7 +238,7 @@
         ) {
           return {
             ...item,
-            market_price: marketPriceToken.market_price,
+            market_price: Number(marketPriceToken.market_price),
             value: Number(item?.amount) * Number(marketPriceToken.market_price),
           };
         }
@@ -251,21 +266,25 @@
         (prev, item) => prev + item.value,
         0
       );
-    }
-    if (marketPriceNFT) {
+
+      // update data nft holding
       const formatDataNFTWithMarketPrice = formatDataNFT.map((item) => {
         if (
-          marketPriceNFT?.id.toString().toLowerCase() ===
+          marketPriceToken?.id.toString().toLowerCase() ===
           item?.nativeToken?.cmcId.toString().toLowerCase()
         ) {
           return {
             ...item,
-            marketPrice: marketPriceNFT.market_price,
-            current_value: item?.floorPrice * item?.tokens?.length,
+            marketPrice: Number(marketPriceToken.market_price),
+            current_value:
+              item?.floorPrice *
+              Number(marketPriceToken.market_price) *
+              item?.tokens?.length,
           };
         }
         return { ...item };
       });
+
       formatDataNFT = formatDataNFTWithMarketPrice.sort((a, b) => {
         if (a.current_value < b.current_value) {
           return 1;
@@ -275,6 +294,7 @@
         }
         return 0;
       });
+
       sumNFT = formatDataNFTWithMarketPrice.reduce(
         (prev, item) => prev + item.current_value,
         0
@@ -371,7 +391,6 @@
         filteredHoldingDataToken = [];
         filteredHoldingDataNFT = [];
         marketPriceToken = undefined;
-        marketPriceNFT = undefined;
       }
     }
   }
