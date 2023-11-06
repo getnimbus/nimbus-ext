@@ -91,8 +91,8 @@
     if (marketPriceNFT && data) {
       data = {
         ...data,
-        marketPrice: marketPriceNFT.market_price,
-        current_value: Number(data?.floorPrice) * data?.tokens?.length,
+        marketPrice: Number(marketPriceNFT.market_price),
+        current_value: Number(data?.floorPrice) * Number(marketPriceNFT.market_price) * data?.tokens?.length,
       };
     }
   }

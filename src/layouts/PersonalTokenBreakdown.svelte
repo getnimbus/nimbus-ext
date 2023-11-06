@@ -425,7 +425,7 @@
         });
 
         filteredData?.map((item) => {
-          priceSubscribe([item?.cmc_id], false, "", (data) => {
+          priceSubscribe([Number(item?.cmc_id)], false, "", (data) => {
             marketPriceToken = {
               id: data.id,
               market_price: data.price,
@@ -462,7 +462,7 @@
         ) {
           return {
             ...item,
-            market_price: marketPriceToken.market_price,
+            market_price: Number(marketPriceToken.market_price),
             value: Number(item?.amount) * Number(marketPriceToken.market_price),
           };
         }

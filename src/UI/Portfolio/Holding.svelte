@@ -161,7 +161,7 @@
       });
 
       filteredData?.map((item) => {
-        priceSubscribe([item?.cmcId], false, "", (data) => {
+        priceSubscribe([Number(item?.cmcId)], false, "", (data) => {
           marketPriceToken = {
             id: data.id,
             market_price: data.price,
@@ -238,7 +238,7 @@
         ) {
           return {
             ...item,
-            market_price: marketPriceToken.market_price,
+            market_price: Number(marketPriceToken.market_price),
             value: Number(item?.amount) * Number(marketPriceToken.market_price),
           };
         }
@@ -275,8 +275,11 @@
         ) {
           return {
             ...item,
-            marketPrice: marketPriceToken.market_price,
-            current_value: item?.floorPrice * item?.tokens?.length,
+            marketPrice: Number(marketPriceToken.market_price),
+            current_value:
+              item?.floorPrice *
+              Number(marketPriceToken.market_price) *
+              item?.tokens?.length,
           };
         }
         return { ...item };
