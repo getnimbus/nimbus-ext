@@ -60,7 +60,7 @@
       "modal-edit-highlight-sub-title": "Việc thay đổi highlight tài khoản của bạn sẽ làm thay đổi highlight",
       "address-required": "Tài khoản là bắt buộc!",
       "label-required": "Tên là bắt buộc!",
-      "re-input-address": "Vui lòng điền lại tài khoản!",
+      "re-input-address": "Tài khoản không hợp lệ!",
       "duplicate-address": "Tài khoản đã được lưu!"
     },
     "settings-page-content": {

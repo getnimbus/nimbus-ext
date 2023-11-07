@@ -77,7 +77,7 @@
 
   let filterType = {
     label: "ALL",
-    value: "ALL",
+    value: "all",
   };
 
   $: {
@@ -242,20 +242,22 @@
         <div class="xl:text-2xl text-4xl font-medium">
           Avg Cost distribution
         </div>
-        <!-- <Select
+        <Select
           type="lang"
           positionSelectList="right-0"
           listSelect={filterAvgCostType}
           bind:selected={filterType}
-        /> -->
+        />
       </div>
 
-      <BalanceAvgCostChart
-        {data}
-        id={data?.name}
-        avgCost={data?.profit?.averageCost}
-        {filterType}
-      />
+      {#if data?.contractAddress !== "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"}
+        <BalanceAvgCostChart
+          {data}
+          id={data?.name}
+          avgCost={data?.profit?.averageCost}
+          {filterType}
+        />
+      {/if}
 
       {#if $typeWallet !== "EVM" || ($typeWallet === "EVM" && data?.chain !== "ETH")}
         <div
