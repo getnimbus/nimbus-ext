@@ -250,12 +250,14 @@
         /> -->
       </div>
 
-      <BalanceAvgCostChart
-        {data}
-        id={data?.name}
-        avgCost={data?.profit?.averageCost}
-        {filterType}
-      />
+      {#if data?.contractAddress !== "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"}
+        <BalanceAvgCostChart
+          {data}
+          id={data?.name}
+          avgCost={data?.profit?.averageCost}
+          {filterType}
+        />
+      {/if}
 
       {#if $typeWallet !== "EVM" || ($typeWallet === "EVM" && data?.chain !== "ETH")}
         <div
