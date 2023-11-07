@@ -19,44 +19,44 @@
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  // let selectedTypePackage: "month" | "year" = "year";
-  // let buyPackage = "Free";
-  // let interval = "month";
-  // let isNewUser = false;
-  // let endDatePackage = "";
-  // let isSubscription = false;
+  let selectedTypePackage: "month" | "year" = "year";
+  let buyPackage = "Free";
+  let interval = "month";
+  let isNewUser = false;
+  let endDatePackage = "";
+  let isSubscription = false;
   let isOpenConfirmCancel = false;
   let isLoadingCancel = false;
 
-  // const getUserInfo = async () => {
-  //   const response: any = await nimbus.get("/users/me");
-  //   return response?.data;
-  // };
+  const getUserInfo = async () => {
+    const response: any = await nimbus.get("/users/me");
+    return response?.data;
+  };
 
-  // $: query = createQuery({
-  //   queryKey: ["users-me"],
-  //   queryFn: () => getUserInfo(),
-  //   staleTime: Infinity,
-  //   retry: false,
-  //   onError(err) {
-  //     localStorage.removeItem("evm_token");
-  //     user.update((n) => (n = {}));
-  //     wallet.update((n) => (n = ""));
-  //     chain.update((n) => (n = ""));
-  //     typeWallet.update((n) => (n = ""));
-  //     queryClient.invalidateQueries(["list-address"]);
-  //   },
-  // });
+  $: query = createQuery({
+    queryKey: ["users-me"],
+    queryFn: () => getUserInfo(),
+    staleTime: Infinity,
+    retry: false,
+    onError(err) {
+      localStorage.removeItem("evm_token");
+      user.update((n) => (n = {}));
+      wallet.update((n) => (n = ""));
+      chain.update((n) => (n = ""));
+      typeWallet.update((n) => (n = ""));
+      queryClient.invalidateQueries(["list-address"]);
+    },
+  });
 
-  // $: {
-  //   if (!$query.isError && $query.data !== undefined) {
-  //     buyPackage = $query.data.plan?.tier;
-  //     interval = $query.data.plan?.interval;
-  //     endDatePackage = $query.data.plan?.endDate;
-  //     isSubscription = $query.data.plan?.subscription;
-  //     isNewUser = $query.data.plan?.isNewUser;
-  //   }
-  // }
+  $: {
+    if (!$query.isError && $query.data !== undefined) {
+      buyPackage = $query.data.plan?.tier;
+      interval = $query.data.plan?.interval;
+      endDatePackage = $query.data.plan?.endDate;
+      isSubscription = $query.data.plan?.subscription;
+      isNewUser = $query.data.plan?.isNewUser;
+    }
+  }
 
   const handleCancelSubscription = async () => {
     isLoadingCancel = true;
@@ -174,7 +174,7 @@
   </div>
 
   <div class="flex flex-col gap-20">
-    <PricingTable {selectedPackage} />
+    <PricingTable {selectedPackage} {interval} {buyPackage} />
   </div>
 
   <div class="flex flex-col gap-2 justify-center items-center">
