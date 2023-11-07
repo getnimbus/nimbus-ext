@@ -60,7 +60,7 @@
       "modal-edit-highlight-sub-title": "Edit your highlight account will make change the highlight",
       "address-required": "Account is required!",
       "label-required": "Label is required!",
-      "re-input-address": "Please enter your account again!",
+      "re-input-address": "Invalid address!",
       "duplicate-address": "This account is duplicated!"
     },
     "settings-page-content": {
