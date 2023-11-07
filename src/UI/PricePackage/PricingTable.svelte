@@ -339,7 +339,7 @@
     </div>
     <div class="flex items-center justify-center">
       {#if typePrice === "free"}
-        <div class="flex flex-col gap-2 justify-center items-center p-5">
+        <div class="flex flex-col gap-2 justify-center items-center p-5 pb-24">
           <div class="text-2xl font-medium uppercase">Free</div>
           <span class="text-4xl font-semibold"> $0 </span>
           <div class="text-lg">For those who starting to invest</div>
@@ -361,6 +361,35 @@
             <span class="text-[#6b7380] text-lg font-medium"> /month </span>
           </div>
           <div class="text-lg">Boost your return and reduce your risk</div>
+          <div class="w-[230px] h-12 mt-5">
+            <Button
+              variant="primary"
+              on:click={() => {
+                selectedPackage({
+                  plan: "Professional",
+                  selectedTypePackage,
+                  price: selectedTypePackage === "year" ? "$8.25" : "$9.99",
+                  isNewUser: undefined,
+                });
+              }}
+            >
+              <div class="flex items-center gap-2 cursor-pointer text-xl">
+                Upgrade
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 14 14"
+                  fill="white"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
+                    fill=""
+                  />
+                </svg>
+              </div>
+            </Button>
+          </div>
         </div>
       {:else if typePrice === "alpha"}
         <div class="flex flex-col gap-2 justify-center items-center p-5">
@@ -379,6 +408,35 @@
             <span class="text-[#6b7380] text-lg font-medium"> /month </span>
           </div>
           <div class="text-lg">Enjoy all the features without any limited</div>
+          <div class="w-[230px] h-12 mt-5">
+            <Button
+              variant="primary"
+              on:click={() => {
+                selectedPackage({
+                  plan: "Professional",
+                  selectedTypePackage,
+                  price: selectedTypePackage === "year" ? "$82.5" : "$99.99",
+                  isNewUser: undefined,
+                });
+              }}
+            >
+              <div class="flex items-center gap-2 cursor-pointer text-xl">
+                Upgrade
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 14 14"
+                  fill="white"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
+                    fill=""
+                  />
+                </svg>
+              </div>
+            </Button>
+          </div>
         </div>
       {/if}
     </div>
