@@ -154,14 +154,9 @@
   $: selectedTypePackage = checkedTypePackage ? "year" : "month";
 </script>
 
-<div class="flex flex-col xl:gap-4 gap-8 mt-3">
-  <div class="xl:text-xl text-3xl text-center mb-6">
-    Use Nimbus at its full potential. Tracking your portfolio, reduce risk,
-    maximize return.
-  </div>
-
+<div class="flex flex-col xl:gap-4 gap-8">
   <div
-    class="p-4 mb-4 text-2xl text-green-600 rounded-lg xl:text-base bg-green-50"
+    class="p-4 text-2xl text-green-600 rounded-lg xl:text-base bg-green-50"
     role="alert"
   >
     <span class="mr-2 xl:mr-1">⭐️</span> We're giving 1000 coupon codes
@@ -171,7 +166,7 @@
     <span class="font-bold">10% off lifetime</span> payments.
   </div>
 
-  <div class="flex flex-col gap-20">
+  <div class="flex flex-col gap-20 mt-4">
     <!-- Pricing Table PC -->
     <div class="xl:block hidden rounded-[10px] border border_0000000d">
       <table class="table-auto w-full">
@@ -540,7 +535,7 @@
     <CompareTable />
   </div>
 
-  <div class="flex flex-col gap-3 justify-center items-center">
+  <div class="flex flex-col gap-3 justify-center items-center mt-4">
     <div class="xl:text-base text-2xl font-normal">
       Enter your couple code to redeem exclusive access
     </div>
