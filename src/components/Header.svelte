@@ -47,7 +47,7 @@
   import Close from "~/assets/close-menu-bar.svg";
   import Chat from "~/assets/chat.svg";
   import User from "~/assets/user.png";
-  
+
   import All from "~/assets/all.svg";
   import Bundles from "~/assets/bundles.png";
   import BitcoinLogo from "~/assets/bitcoin.png";
@@ -773,7 +773,7 @@
       </div>
     </div>
 
-    <div class="flex flex-col justify-between h-full">
+    <div class="flex flex-col gap-4 justify-between h-full">
       <div class="flex flex-col gap-8">
         {#if $user && Object.keys($user).length !== 0}
           <div class="flex justify-between items-center px-4 text-white">
@@ -785,7 +785,7 @@
           </div>
         {/if}
 
-        <div class="flex flex-col gap-3">
+        <div class="flex flex-col gap-1">
           {#if $user && Object.keys($user).length !== 0}
             <div
               on:click={() => {
