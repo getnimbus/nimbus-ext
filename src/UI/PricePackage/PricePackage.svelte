@@ -148,7 +148,7 @@
   </div>
 
   <div class="flex items-center justify-center gap-2">
-    <AnimateSharedLayout>
+    <!-- <AnimateSharedLayout>
       {#each typePackage as type}
         <div
           class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
@@ -175,7 +175,7 @@
           {/if}
         </div>
       {/each}
-    </AnimateSharedLayout>
+    </AnimateSharedLayout> -->
   </div>
 
   <div class="flex flex-col gap-20">
