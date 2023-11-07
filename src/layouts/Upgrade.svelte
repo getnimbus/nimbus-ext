@@ -3,8 +3,8 @@
   import { isDarkMode } from "~/store";
 
   import PricePackage from "~/UI/PricePackage/PricePackage.svelte";
-  import Button from "~/components/Button.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
+  import Button from "~/components/Button.svelte";
   import Copy from "~/components/Copy.svelte";
 
   import Bnb from "~/assets/bnb.png";
@@ -40,7 +40,6 @@
 
   const handleSelectedPackage = (item) => {
     selectedPackage = item;
-    console.log("this is selectedPackage : ", item);
   };
 
   const handleBuy = async (chainValue: string) => {
@@ -76,7 +75,7 @@
     </div>
     {#if selectedPackage && Object.keys(selectedPackage).length !== 0}
       <div class="flex flex-col justify-center min-h-[70vh]">
-        <!-- remove me -->
+        <!-- manual payment -->
         <div class="xl:text-lg text-2xl mb-3">
           Please follow this payment steps:
         </div>

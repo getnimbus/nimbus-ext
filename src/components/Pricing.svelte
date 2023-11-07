@@ -1,7 +1,5 @@
 <script></script>
 
-<!-- old code in pricing page (copy and patse in pricePackage.svelte at 185 line below <Pricingtable /> component) -->
-
 <div class="grid grid-cols-1 gap-4 xl:grid-cols-3 xl:gap-7">
   <!-- Free -->
   <div class="flex flex-col gap-1">
