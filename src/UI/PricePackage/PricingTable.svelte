@@ -559,7 +559,7 @@
           }`}
         />
       </label>
-      <span class="ml-3 text-xl font-medium">
+      <span class="ml-3 text-2xl font-medium">
         Annual Billing <span class="text-green-500">(Save 17%)</span>
       </span>
     </div>
@@ -609,10 +609,11 @@
     </div>
     <div class="flex items-center justify-center">
       {#if typePrice === "free"}
-        <div class="flex flex-col gap-2 justify-center items-center p-5 pb-24">
+        <div class="flex flex-col gap-2 justify-center items-center p-5">
           <div class="text-2xl font-medium uppercase">Free</div>
           <span class="text-4xl font-semibold"> $0 </span>
           <div class="text-lg">For those who starting to invest</div>
+          <div class="h-20" />
         </div>
       {:else if typePrice === "explorer"}
         <div class="flex flex-col gap-2 justify-center items-center p-5">
@@ -630,38 +631,40 @@
             {selectedTypePackage === "year" ? "$8.25" : "$9.99"}{" "}
             <span class="text-[#6b7380] text-lg font-medium"> /month </span>
           </div>
-          <div class="text-lg">Boost your return and reduce your risk</div>
-          {#if (buyPackage === "Explorer" && interval === "year") || buyPackage === "Free" || buyPackage === "Professional"}
-            <div class="w-[230px] h-12 mt-5">
-              <Button
-                variant="primary"
-                on:click={() => {
-                  selectedPackage({
-                    plan: "Professional",
-                    selectedTypePackage,
-                    price: selectedTypePackage === "year" ? "$8.25" : "$9.99",
-                    isNewUser: undefined,
-                  });
-                }}
-              >
-                <div class="flex items-center gap-2 cursor-pointer text-xl">
-                  Upgrade
-                  <svg
-                    width="14"
-                    height="14"
-                    viewBox="0 0 14 14"
-                    fill="white"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
-                      fill=""
-                    />
-                  </svg>
-                </div>
-              </Button>
-            </div>
-          {/if}
+          <div class="text-xl">Boost your return and reduce your risk</div>
+          <div class="h-20">
+            {#if (buyPackage === "Explorer" && interval === "year") || buyPackage === "Free" || buyPackage === "Professional"}
+              <div class="w-[230px] h-12 mt-5">
+                <Button
+                  variant="primary"
+                  on:click={() => {
+                    selectedPackage({
+                      plan: "Professional",
+                      selectedTypePackage,
+                      price: selectedTypePackage === "year" ? "$8.25" : "$9.99",
+                      isNewUser: undefined,
+                    });
+                  }}
+                >
+                  <div class="flex items-center gap-2 cursor-pointer text-xl">
+                    Upgrade
+                    <svg
+                      width="14"
+                      height="14"
+                      viewBox="0 0 14 14"
+                      fill="white"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
+                        fill=""
+                      />
+                    </svg>
+                  </div>
+                </Button>
+              </div>
+            {/if}
+          </div>
 
           <!-- <div
               class={`flex justify-between items-center w-full mt-2 text-[#1E96FC] font-medium mt-5 xl:text-lg text-xl ${
@@ -793,38 +796,41 @@
             {selectedTypePackage === "year" ? "$82.5" : "$99.99"}{" "}
             <span class="text-[#6b7380] text-lg font-medium"> /month </span>
           </div>
-          <div class="text-lg">Enjoy all the features without any limited</div>
-          {#if (buyPackage === "Professional" && interval === "year") || buyPackage === "Free" || buyPackage === "Explorer"}
-            <div class="w-[230px] h-12 mt-5">
-              <Button
-                variant="primary"
-                on:click={() => {
-                  selectedPackage({
-                    plan: "Professional",
-                    selectedTypePackage,
-                    price: selectedTypePackage === "year" ? "$82.5" : "$99.99",
-                    isNewUser: undefined,
-                  });
-                }}
-              >
-                <div class="flex items-center gap-2 cursor-pointer text-xl">
-                  Upgrade
-                  <svg
-                    width="14"
-                    height="14"
-                    viewBox="0 0 14 14"
-                    fill="white"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
-                      fill=""
-                    />
-                  </svg>
-                </div>
-              </Button>
-            </div>
-          {/if}
+          <div class="text-xl">Enjoy all the features without any limited</div>
+          <div class="h-20">
+            {#if (buyPackage === "Professional" && interval === "year") || buyPackage === "Free" || buyPackage === "Explorer"}
+              <div class="w-[230px] h-12 mt-5">
+                <Button
+                  variant="primary"
+                  on:click={() => {
+                    selectedPackage({
+                      plan: "Professional",
+                      selectedTypePackage,
+                      price:
+                        selectedTypePackage === "year" ? "$82.5" : "$99.99",
+                      isNewUser: undefined,
+                    });
+                  }}
+                >
+                  <div class="flex items-center gap-2 cursor-pointer text-xl">
+                    Upgrade
+                    <svg
+                      width="14"
+                      height="14"
+                      viewBox="0 0 14 14"
+                      fill="white"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
+                        fill=""
+                      />
+                    </svg>
+                  </div>
+                </Button>
+              </div>
+            {/if}
+          </div>
           <!-- <div
                 class={`flex justify-between items-center w-full mt-2 text-[#1E96FC] font-medium mt-5 xl:text-lg text-xl ${
                   buyPackage === "Free" || buyPackage === "Explorer"
@@ -949,7 +955,7 @@
           <tr>
             <td
               colspan="8"
-              class={`text-2xl font-medium py-6 px-3 ${
+              class={`text-3xl font-medium py-6 px-3 ${
                 $isDarkMode ? "bg-gray-700" : "bg-gray-50"
               }`}
             >
@@ -958,7 +964,7 @@
           </tr>
         {:else if item.featureStatus === "part"}
           <tr
-            class={`text-xl ${
+            class={`text-2xl ${
               $isDarkMode ? "hover:bg-[#000]" : "hover:bg-gray-100"
             } `}
           >
@@ -1001,14 +1007,14 @@
 
 <!-- compare table  -->
 <div class="flex flex-col gap-4">
-  <div class="xl:text-xl text-3xl font-medium w-full">
+  <div class="xl:text-xl text-4xl font-medium w-full">
     Compare with other apps
   </div>
   <div class="w-full overflow-auto rounded-[10px] border border_0000000d">
     <table class="xl:w-full w-[1400px] table-auto rounded-2xl">
       <thead>
         <tr
-          class={`text-left xl:text-base text-xl ${
+          class={`text-left xl:text-base text-2xl ${
             $isDarkMode ? "bg-[#131313]" : "bg-gray-100"
           }`}
         >
@@ -1023,13 +1029,13 @@
           <th class="font-medium py-3">Excel</th>
           <th class="font-medium py-3">CoinStats</th>
           <th class="font-medium py-3">DeBank</th>
-          <th class="font-medium py-3 px-3 rounded-tr-xl">Nansen</th>
+          <th class="font-medium py-3 pr-3 rounded-tr-xl">Nansen</th>
         </tr>
       </thead>
       <tbody>
         {#each nimbusCompareFeatureData as item, index}
           <tr
-            class={`group xl:text-base text-xl ${
+            class={`group xl:text-base text-2xl ${
               $isDarkMode ? "hover:bg-[#000]" : "hover:bg-gray-100"
             }`}
           >
@@ -1044,7 +1050,7 @@
                 {item.title}
               </div>
             </td>
-            <td class="py-4 w-[200px]">
+            <td class="py-4 w-[200px] pr-3">
               <div>
                 <span class="w-4 h-4 mr-1">
                   {compareResult(item.content.nimbus)}
@@ -1052,7 +1058,7 @@
                 {item.content.nimbus.description}
               </div>
             </td>
-            <td class="py-4 w-[200px]">
+            <td class="py-4 w-[200px] pr-3">
               <div>
                 <span class="w-4 h-4 mr-1">
                   {compareResult(item.content.excel)}
@@ -1060,7 +1066,7 @@
                 {item.content.excel.description}
               </div>
             </td>
-            <td class="py-4 w-[200px]">
+            <td class="py-4 w-[200px] pr-3">
               <div>
                 <span class="w-4 h-4 mr-1">
                   {compareResult(item.content.coinstats)}
@@ -1068,7 +1074,7 @@
                 {item.content.coinstats.description}
               </div>
             </td>
-            <td class="py-4 w-[200px]">
+            <td class="py-4 w-[200px] pr-3">
               <div>
                 <span class="w-4 h-4 mr-1">
                   {compareResult(item.content.debank)}
@@ -1076,7 +1082,7 @@
                 {item.content.debank.description}
               </div>
             </td>
-            <td class="py-4 w-[200px] px-3">
+            <td class="py-4 w-[200px] pr-3">
               <div>
                 <span class="w-4 h-4 mr-1">
                   {compareResult(item.content.nansen)}
