@@ -51,23 +51,29 @@
                   </div>
                 </div>
               </div>
-
-              <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
-                <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
-                  $isDarkMode ? "white" : "black"
-                }">
-                  <div style="margin-top: 5px; display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background-color:#eab308;"></div>
-                  Avg Cost
-                </div>
-                <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right;">
-                  <div style="margin-top: 4px; display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
-                    $isDarkMode ? "white" : "black"
-                  };">
-                    $${formatPrice(avgCost)}
+              
+              ${
+                avgCost !== undefined
+                  ? `
+                  <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
+                    <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
+                      $isDarkMode ? "white" : "black"
+                    }">
+                      <div style="margin-top: 5px; display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background-color:#eab308;"></div>
+                      Avg Cost
+                    </div>
+                    <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right;">
+                      <div style="margin-top: 4px; display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
+                        $isDarkMode ? "white" : "black"
+                      };">
+                        $${formatPrice(avgCost)}
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-
+                `
+                  : ``
+              }
+              
               <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
                 <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
                   $isDarkMode ? "white" : "black"
