@@ -452,4 +452,28 @@
     -ms-transform: translateX(16px);
     transform: translateX(16px);
   }
+
+  @media screen and (max-width: 1280px) {
+    .switch {
+      width: 60px;
+      height: 30px;
+    }
+
+    .slider {
+      border-radius: 44px;
+    }
+
+    .slider:before {
+      height: 26px;
+      width: 26px;
+      left: 4px;
+      bottom: 2px;
+    }
+
+    input:checked + .slider:before {
+      -webkit-transform: translateX(26px);
+      -ms-transform: translateX(26px);
+      transform: translateX(26px);
+    }
+  }
 </style>

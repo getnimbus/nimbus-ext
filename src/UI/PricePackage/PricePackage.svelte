@@ -1,25 +1,23 @@
 <script lang="ts">
-  import { getTooltipContent, typePackage, dateDiffInDays } from "~/utils";
-  import { AnimateSharedLayout, Motion } from "svelte-motion";
+  import { getTooltipContent, dateDiffInDays } from "~/utils";
   import { nimbus } from "~/lib/network";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
   import { isDarkMode, user, wallet, chain, typeWallet } from "~/store";
   import { useNavigate } from "svelte-navigator";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
+  import { priceTable } from "~/UI/PricePackage/DataTable";
 
   import tooltip from "~/entries/contentScript/views/tooltip";
   import Button from "~/components/Button.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
-  import Error from "~/components/Error.svelte";
-  import PricingTable from "~/UI/PricePackage/PricingTable.svelte";
+  import CompareTable from "~/UI/PricePackage/CompareTable.svelte";
 
   export let selectedPackage = (item) => {};
 
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  let selectedTypePackage: "month" | "year" = "year";
   let buyPackage = "Free";
   let interval = "month";
   let isNewUser = false;
@@ -27,6 +25,27 @@
   let isSubscription = false;
   let isOpenConfirmCancel = false;
   let isLoadingCancel = false;
+
+  let isLoadingSubmitCoupleCode = false;
+  let code = "";
+
+  let toastMsg = "";
+  let isSuccessToast = false;
+  let counter = 3;
+  let showToast = false;
+
+  const trigger = () => {
+    showToast = true;
+    counter = 3;
+    timeout();
+  };
+
+  const timeout = () => {
+    if (--counter > 0) return setTimeout(timeout, 1000);
+    showToast = false;
+    toastMsg = "";
+    isSuccessToast = false;
+  };
 
   const getUserInfo = async () => {
     const response: any = await nimbus.get("/users/me");
@@ -71,27 +90,6 @@
     }
   };
 
-  let toastMsg = "";
-  let isSuccessToast = false;
-  let counter = 3;
-  let showToast = false;
-
-  const trigger = () => {
-    showToast = true;
-    counter = 3;
-    timeout();
-  };
-
-  const timeout = () => {
-    if (--counter > 0) return setTimeout(timeout, 1000);
-    showToast = false;
-    toastMsg = "";
-    isSuccessToast = false;
-  };
-
-  let isLoadingSubmitCoupleCode = false;
-  let code = "";
-
   const onSubmitCoupleCode = async (e) => {
     isLoadingSubmitCoupleCode = true;
     const formData = new FormData(e.target);
@@ -123,6 +121,37 @@
       trigger();
     }
   };
+
+  const compareResult = (item: any) => {
+    if (item.state === "available") {
+      return "✅";
+    } else if (item.state === "unavailable") {
+      return "⛔";
+    } else {
+      return "⚠️";
+    }
+  };
+
+  $: detailPackage = (item: any) => {
+    const contentData =
+      buyPackage === "Free"
+        ? item.content.free
+        : buyPackage === "Explorer"
+        ? item.content.explorer
+        : item.content.alpha;
+
+    return `
+      <div class="text-xl">
+        ${contentData.description}
+        <span class="w-4 h-4 ml-1">
+          ${compareResult(contentData)}
+        </span>
+      </div>
+    `;
+  };
+
+  let checkedTypePackage = true;
+  $: selectedTypePackage = checkedTypePackage ? "year" : "month";
 </script>
 
 <div class="flex flex-col xl:gap-4 gap-8 mt-3">
@@ -142,85 +171,416 @@
     <span class="font-bold">10% off lifetime</span> payments.
   </div>
 
-  <div class="flex items-center justify-center gap-2">
-    <!-- <AnimateSharedLayout>
-      {#each typePackage as type}
-        <div
-          class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
-          on:click={() => (selectedTypePackage = type.value)}
-        >
-          <div
-            class={`relative z-20 ${
-              selectedTypePackage === type.value && "text-white"
-            }`}
-          >
-            {type.label}
+  <div class="flex flex-col gap-20">
+    <!-- Pricing Table PC -->
+    <div class="xl:block hidden rounded-[10px] border border_0000000d">
+      <table class="table-auto w-full">
+        <thead>
+          <tr class="bg_f4f5f8">
+            <th class="py-3 pl-3 rounded-tl-[10px] w-[420px]">
+              <div class="text-left text-lg uppercase font-medium">Plans</div>
+            </th>
+
+            <th class="py-3 pr-3">
+              <div class="text-left text-lg uppercase font-medium">Free</div>
+            </th>
+
+            <th class="py-3 pr-3">
+              <div class="flex items-center gap-2">
+                <div class="text-lg uppercase font-medium">Explorer</div>
+                {#if selectedTypePackage === "year"}
+                  <div
+                    class="text-white font-normal text-sm px-2 py-1 bg-[#10b981] rounded-lg"
+                  >
+                    Save $17.5
+                  </div>
+                {:else}
+                  <div class="h-[28px]" />
+                {/if}
+              </div>
+            </th>
+
+            <th class="py-3 px-3 rounded-tr-[10px]">
+              <div class="flex items-center gap-2">
+                <div class="text-lg uppercase font-medium">Alpha</div>
+                {#if selectedTypePackage === "year"}
+                  <div
+                    class="text-white font-normal text-sm px-2 py-1 bg-[#10b981] rounded-lg"
+                  >
+                    Save $17.5
+                  </div>
+                {:else}
+                  <div class="h-[28px]" />
+                {/if}
+              </div>
+            </th>
+          </tr>
+
+          <tr class="bg_f4f5f8">
+            <td class="py-3 pl-3 w-[420px]">
+              <div class="flex items-center gap-3">
+                <label class="switch">
+                  <input type="checkbox" bind:checked={checkedTypePackage} />
+                  <span class="slider" />
+                </label>
+                <div class="text-base font-medium">
+                  Annual Billing <span class="text-green-500">(Save 17%)</span>
+                </div>
+              </div>
+            </td>
+
+            <td class="py-3 pr-3">
+              <div class="flex flex-col gap-2">
+                <div class="text-3xl font-semibold">$0</div>
+                <div class="text-base font-medium">
+                  For those who starting to invest
+                </div>
+              </div>
+            </td>
+
+            <td class="py-3 pr-3">
+              <div class="flex flex-col gap-2">
+                <div class="flex items-center gap-1 text-3xl font-semibold">
+                  {selectedTypePackage === "year" ? "$8.25" : "$9.99"}
+                  <div class="text-base font-medium text-[#6b7380]">/month</div>
+                </div>
+                <div class="text-base font-medium">
+                  Boost your return and reduce your risk
+                </div>
+              </div>
+            </td>
+
+            <td class="py-3 px-3">
+              <div class="flex flex-col gap-2">
+                <div class="flex items-center gap-1 text-3xl font-semibold">
+                  {selectedTypePackage === "year" ? "$82.5" : "$99.99"}
+                  <div class="text-base font-medium text-[#6b7380]">/month</div>
+                </div>
+                <div class="text-base font-medium">
+                  Enjoy all the features without any limited
+                </div>
+              </div>
+            </td>
+          </tr>
+        </thead>
+
+        <tbody>
+          {#each priceTable as item}
+            {#if item.featureStatus === "main"}
+              <tr class={`${$isDarkMode ? "bg-[#1C1C1C]" : "bg-gray-50"}`}>
+                <th colspan="8" class="py-3 pl-3">
+                  <div class="text-lg text-left font-medium">
+                    {item.title}
+                  </div>
+                </th>
+              </tr>
+            {/if}
+            {#if item.featureStatus === "part"}
+              <tr class="group transition-all">
+                <td
+                  class={`py-3 pl-3 ${
+                    $isDarkMode
+                      ? "group-hover:bg-[#000]"
+                      : "group-hover:bg-gray-100"
+                  }`}
+                >
+                  <div class="text-base w-max">
+                    {#if item.tippy.used}
+                      <div
+                        use:tooltip={{
+                          content: getTooltipContent(
+                            item.tippy.title,
+                            item.tippy.content,
+                            false,
+                            $isDarkMode
+                          ),
+                          allowHTML: true,
+                          placement: "top",
+                          interactive: true,
+                        }}
+                        class="underline-dashed"
+                      >
+                        {item.title}
+                      </div>
+                    {:else}
+                      {item.title}
+                    {/if}
+                  </div>
+                </td>
+
+                <td
+                  class={`py-3 ${
+                    $isDarkMode
+                      ? "group-hover:bg-[#000]"
+                      : "group-hover:bg-gray-100"
+                  }`}
+                >
+                  <div class="text-base">
+                    <span class="w-4 h-4 mr-1">
+                      {compareResult(item.content.free)}
+                    </span>{" "}
+                    {item.content.free.description}
+                  </div>
+                </td>
+
+                <td
+                  class={`py-3 ${
+                    $isDarkMode
+                      ? "group-hover:bg-[#000]"
+                      : "group-hover:bg-gray-100"
+                  }`}
+                >
+                  <div class="text-base">
+                    <span class="w-4 h-4 mr-1">
+                      {compareResult(item.content.explorer)}
+                    </span>{" "}
+                    {item.content.explorer.description}
+                  </div>
+                </td>
+
+                <td
+                  class={`py-3 pr-3 ${
+                    $isDarkMode
+                      ? "group-hover:bg-[#000]"
+                      : "group-hover:bg-gray-100"
+                  }`}
+                >
+                  <div class="text-base">
+                    <span class="w-4 h-4 mr-1">
+                      {compareResult(item.content.alpha)}
+                    </span>{" "}
+                    {item.content.alpha.description}
+                  </div>
+                </td>
+              </tr>
+            {/if}
+          {/each}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pricing Table Tablet/Mobile -->
+    <div class="xl:hidden flex flex-col items-center gap-8">
+      <div class="flex flex-col gap-8">
+        <div class="flex items-center justify-center gap-3">
+          <label class="switch">
+            <input type="checkbox" bind:checked={checkedTypePackage} />
+            <span class="slider" />
+          </label>
+          <div class="text-2xl font-medium">
+            Annual Billing <span class="text-green-500">(Save 17%)</span>
           </div>
-          {#if type.value === selectedTypePackage}
-            <Motion
-              let:motion
-              layoutId="active-pill"
-              transition={{ type: "spring", duration: 0.6 }}
-            >
-              <div
-                class="absolute inset-0 rounded-full bg-[#1E96FC] z-10"
-                use:motion
-              />
-            </Motion>
+        </div>
+
+        <div class="flex gap-5">
+          <div
+            class={`uppercase py-3 px-4 text-3xl font-medium rounded-2xl cursor-pointer ${
+              buyPackage === "Free" && !$isDarkMode
+                ? "bg-blue-100 text-primary"
+                : buyPackage === "Free" && $isDarkMode
+                ? "bg-gray-500 text-white"
+                : $isDarkMode
+                ? "text-white"
+                : "text-black"
+            }`}
+            on:click={() => {
+              buyPackage = "Free";
+            }}
+          >
+            Free
+          </div>
+
+          <div
+            class={`uppercase py-3 px-4 text-3xl font-medium rounded-2xl cursor-pointer ${
+              buyPackage === "Explorer" && !$isDarkMode
+                ? "bg-blue-100 text-primary"
+                : buyPackage === "Explorer" && $isDarkMode
+                ? "bg-gray-500 text-white"
+                : $isDarkMode
+                ? "text-white"
+                : "text-black"
+            }`}
+            on:click={() => {
+              buyPackage = "Explorer";
+            }}
+          >
+            Explorer
+          </div>
+
+          <div
+            class={`uppercase py-3 px-4 text-3xl font-medium rounded-2xl cursor-pointer ${
+              buyPackage === "Professional" && !$isDarkMode
+                ? "bg-blue-100 text-primary"
+                : buyPackage === "Professional" && $isDarkMode
+                ? "bg-gray-500 text-white"
+                : $isDarkMode
+                ? "text-white"
+                : "text-black"
+            }`}
+            on:click={() => {
+              buyPackage = "Professional";
+            }}
+          >
+            Alpha
+          </div>
+        </div>
+
+        <div class="flex items-center justify-center">
+          {#if buyPackage === "Free"}
+            <div class="flex flex-col gap-2 justify-center items-center">
+              <div class="text-2xl font-medium uppercase">Free</div>
+              <span class="text-5xl font-semibold">$0</span>
+              <div class="text-lg">For those who starting to invest</div>
+            </div>
+          {:else if buyPackage === "Explorer"}
+            <div class="flex flex-col gap-2 justify-center items-center">
+              <div class="text-2xl font-medium uppercase">
+                Explorer{" "}
+                {#if selectedTypePackage === "year"}
+                  <span
+                    class="text-white px-2 py-1 font-normal text-lg ml-3 bg-[#10b981] rounded-lg"
+                  >
+                    Save $1.75
+                  </span>
+                {/if}
+              </div>
+              <div class="text-5xl font-medium">
+                {selectedTypePackage === "year" ? "$8.25" : "$9.99"}{" "}
+                <span class="text-[#6b7380] text-lg font-medium"> /month </span>
+              </div>
+              <div class="text-xl">Boost your return and reduce your risk</div>
+            </div>
+          {:else if buyPackage === "Professional"}
+            <div class="flex flex-col gap-2 justify-center items-center">
+              <div class="text-2xl font-medium uppercase">
+                Alpha{" "}
+                {#if selectedTypePackage === "year"}
+                  <span
+                    class="text-white px-2 py-1 font-normal text-lg ml-3 bg-[#10b981] rounded-lg"
+                  >
+                    Save $17.5
+                  </span>
+                {/if}
+              </div>
+              <div class="text-5xl font-medium">
+                {selectedTypePackage === "year" ? "$82.5" : "$99.99"}{" "}
+                <span class="text-[#6b7380] text-lg font-medium"> /month </span>
+              </div>
+              <div class="text-xl">
+                Enjoy all the features without any limited
+              </div>
+            </div>
           {/if}
         </div>
-      {/each}
-    </AnimateSharedLayout> -->
+      </div>
+
+      <div class="w-full rounded-[10px] border border_0000000d">
+        <table class="w-full table-auto">
+          <tbody>
+            {#each priceTable as item}
+              {#if item.featureStatus === "main"}
+                <tr class={`${$isDarkMode ? "bg-[#1C1C1C]" : "bg-gray-50"}`}>
+                  <td colspan="8" class="py-4 px-3">
+                    <div class="text-2xl text-left font-medium">
+                      {item.title}
+                    </div>
+                  </td>
+                </tr>
+              {/if}
+              {#if item.featureStatus === "part"}
+                <tr class="group transition-all">
+                  <td
+                    class={`py-4 px-3 ${
+                      $isDarkMode
+                        ? "group-hover:bg-[#000]"
+                        : "group-hover:bg-gray-100"
+                    }`}
+                  >
+                    <div class="text-xl w-max">
+                      {#if item.tippy.used}
+                        <div
+                          use:tooltip={{
+                            content: getTooltipContent(
+                              item.tippy.title,
+                              item.tippy.content,
+                              false,
+                              $isDarkMode
+                            ),
+                            allowHTML: true,
+                            placement: "top",
+                            interactive: true,
+                          }}
+                          class="underline-dashed"
+                        >
+                          {item.title}
+                        </div>
+                      {:else}
+                        {item.title}
+                      {/if}
+                    </div>
+                  </td>
+
+                  <td
+                    class={`py-4 pr-6 flex justify-end ${
+                      $isDarkMode
+                        ? "group-hover:bg-[#000]"
+                        : "group-hover:bg-gray-100"
+                    }`}
+                  >
+                    {@html detailPackage(item)}
+                  </td>
+                </tr>
+              {/if}
+            {/each}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <CompareTable />
   </div>
 
-  <div class="flex flex-col gap-20">
-    <PricingTable {selectedPackage} {interval} {buyPackage} />
-  </div>
-
-  <div class="flex flex-col gap-2 justify-center items-center">
+  <div class="flex flex-col gap-3 justify-center items-center">
     <div class="xl:text-base text-2xl font-normal">
       Enter your couple code to redeem exclusive access
     </div>
-    <div>
-      <form
-        on:submit|preventDefault={onSubmitCoupleCode}
-        class="flex items-center gap-3"
+    <form
+      on:submit|preventDefault={onSubmitCoupleCode}
+      class="flex items-center gap-3"
+    >
+      <div
+        class={`input-2 input-border w-full xl:py-[6px] py-3 px-3 ${
+          code && !$isDarkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
+        }`}
       >
-        <div
-          class={`input-2 input-border w-full xl:py-[6px] py-3 px-3 ${
-            code && !$isDarkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
+        <input
+          type="text"
+          id="code"
+          name="code"
+          required
+          placeholder="Couple code"
+          value=""
+          class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
+            code && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
           }`}
+          on:keyup={({ target: { value } }) => (code = value)}
+        />
+      </div>
+      <div class="w-[120px]">
+        <Button
+          type="submit"
+          isLoading={isLoadingSubmitCoupleCode}
+          disabled={isLoadingSubmitCoupleCode}
         >
-          <input
-            type="text"
-            id="code"
-            name="code"
-            required
-            placeholder="Couple code"
-            value=""
-            class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
-              code && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
-            }`}
-            on:keyup={({ target: { value } }) => (code = value)}
-          />
-        </div>
-        <div class="w-[120px]">
-          <Button
-            type="submit"
-            isLoading={isLoadingSubmitCoupleCode}
-            disabled={isLoadingSubmitCoupleCode}
-          >
-            Apply
-          </Button>
-        </div>
-      </form>
-    </div>
+          Apply
+        </Button>
+      </div>
+    </form>
   </div>
 </div>
 
 <!-- Modal confirm cancel package -->
-<!-- comment lại vì thấy những state trigger đoạn code này đã bị comment ở code cũ hết rồi -->
-<!-- <AppOverlay
+<AppOverlay
   clickOutSideToClose
   isOpen={isOpenConfirmCancel}
   on:close={() => (isOpenConfirmCancel = false)}
@@ -259,7 +619,7 @@
       </div>
     </div>
   </div>
-</AppOverlay> -->
+</AppOverlay>
 
 {#if showToast}
   <div class="fixed top-3 right-3 w-full z-10">
@@ -309,4 +669,81 @@
 {/if}
 
 <style windi:preflights:global windi:safelist:global>
+  .underline-dashed {
+    text-decoration: underline 1.5px dotted;
+    text-underline-offset: 3px;
+  }
+
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 20px;
+  }
+
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: 0.4s;
+    transition: 0.4s;
+    border-radius: 34px;
+  }
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 4px;
+    bottom: 2px;
+    background-color: white;
+    -webkit-transition: 0.4s;
+    transition: 0.4s;
+    border-radius: 50%;
+  }
+  input:checked + .slider {
+    background-color: #2196f3;
+  }
+  input:checked + .slider {
+    box-shadow: 0 0 1px #2196f3;
+  }
+  input:checked + .slider:before {
+    -webkit-transform: translateX(16px);
+    -ms-transform: translateX(16px);
+    transform: translateX(16px);
+  }
+
+  @media screen and (max-width: 1280px) {
+    .switch {
+      width: 60px;
+      height: 30px;
+    }
+
+    .slider {
+      border-radius: 44px;
+    }
+
+    .slider:before {
+      height: 26px;
+      width: 26px;
+      left: 4px;
+      bottom: 2px;
+    }
+
+    input:checked + .slider:before {
+      -webkit-transform: translateX(26px);
+      -ms-transform: translateX(26px);
+      transform: translateX(26px);
+    }
+  }
 </style>
