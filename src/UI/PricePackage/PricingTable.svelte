@@ -158,37 +158,39 @@
               <span class="text-base font-medium text-[#6b7380]">/month</span>
             </span>
             <div>Boost your return and reduce your risk</div>
-            <div class="w-[170px]">
-              <Button
-                variant="primary"
-                on:click={() => {
-                  selectedPackage({
-                    plan: "Explorer",
-                    selectedTypePackage,
-                    price: selectedTypePackage === "year" ? "$8.25" : "$9.99",
-                    isNewUser: undefined,
-                  });
-                }}
-              >
-                <div
-                  class="flex items-center gap-2 cursor-pointer xl:text-base text-sm"
+            {#if (buyPackage === "Explorer" && interval === "year") || buyPackage === "Free" || buyPackage === "Professional"}
+              <div class="w-[170px]">
+                <Button
+                  variant="primary"
+                  on:click={() => {
+                    selectedPackage({
+                      plan: "Explorer",
+                      selectedTypePackage,
+                      price: selectedTypePackage === "year" ? "$8.25" : "$9.99",
+                      isNewUser: undefined,
+                    });
+                  }}
                 >
-                  Upgrade
-                  <svg
-                    width="14"
-                    height="14"
-                    viewBox="0 0 14 14"
-                    fill="white"
-                    xmlns="http://www.w3.org/2000/svg"
+                  <div
+                    class="flex items-center gap-2 cursor-pointer xl:text-base text-sm"
                   >
-                    <path
-                      d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
-                      fill=""
-                    />
-                  </svg>
-                </div>
-              </Button>
-            </div>
+                    Upgrade
+                    <svg
+                      width="14"
+                      height="14"
+                      viewBox="0 0 14 14"
+                      fill="white"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
+                        fill=""
+                      />
+                    </svg>
+                  </div>
+                </Button>
+              </div>
+            {/if}
 
             <!-- <div
               class={`flex justify-between items-center w-full mt-2 text-[#1E96FC] font-medium mt-5 xl:text-lg text-xl ${
@@ -312,37 +314,41 @@
               <span class="text-base font-medium text-[#6b7380]">/month</span>
             </span>
             <div>Enjoy all the features without any limited</div>
-            <div class="w-[170px]">
-              <Button
-                variant="primary"
-                on:click={() => {
-                  selectedPackage({
-                    plan: "Professional",
-                    selectedTypePackage,
-                    price: selectedTypePackage === "year" ? "$82.5" : "$99.99",
-                    isNewUser: undefined,
-                  });
-                }}
-              >
-                <div
-                  class="flex items-center gap-2 cursor-pointer xl:text-base text-sm"
+            {#if (buyPackage === "Professional" && interval === "year") || buyPackage === "Free" || buyPackage === "Explorer"}
+              <div class="w-[170px]">
+                <Button
+                  variant="primary"
+                  on:click={() => {
+                    selectedPackage({
+                      plan: "Professional",
+                      selectedTypePackage,
+                      price:
+                        selectedTypePackage === "year" ? "$82.5" : "$99.99",
+                      isNewUser: undefined,
+                    });
+                  }}
                 >
-                  Upgrade
-                  <svg
-                    width="14"
-                    height="14"
-                    viewBox="0 0 14 14"
-                    fill="white"
-                    xmlns="http://www.w3.org/2000/svg"
+                  <div
+                    class="flex items-center gap-2 cursor-pointer xl:text-base text-sm"
                   >
-                    <path
-                      d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
-                      fill=""
-                    />
-                  </svg>
-                </div>
-
-                <!-- <div
+                    Upgrade
+                    <svg
+                      width="14"
+                      height="14"
+                      viewBox="0 0 14 14"
+                      fill="white"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
+                        fill=""
+                      />
+                    </svg>
+                  </div>
+                </Button>
+              </div>
+            {/if}
+            <!-- <div
                 class={`flex justify-between items-center w-full mt-2 text-[#1E96FC] font-medium mt-5 xl:text-lg text-xl ${
                   buyPackage === "Free" || buyPackage === "Explorer"
                     ? "opacity-100"
@@ -406,8 +412,8 @@
                 {/if}
               </div> -->
 
-                <!-- remove me -->
-                <!-- <div class="font-medium mt-5 xl:text-lg text-xl">
+            <!-- remove me -->
+            <!-- <div class="font-medium mt-5 xl:text-lg text-xl">
                 {#if buyPackage === "Free" || (buyPackage === "Professional" && interval === "month")}
                   {#if buyPackage === "Free"}
                     <div
@@ -455,8 +461,6 @@
                   </div>
                 {/if}
               </div> -->
-              </Button>
-            </div>
           </div>
         </td>
       </tr>
@@ -627,35 +631,37 @@
             <span class="text-[#6b7380] text-lg font-medium"> /month </span>
           </div>
           <div class="text-lg">Boost your return and reduce your risk</div>
-          <div class="w-[230px] h-12 mt-5">
-            <Button
-              variant="primary"
-              on:click={() => {
-                selectedPackage({
-                  plan: "Professional",
-                  selectedTypePackage,
-                  price: selectedTypePackage === "year" ? "$8.25" : "$9.99",
-                  isNewUser: undefined,
-                });
-              }}
-            >
-              <div class="flex items-center gap-2 cursor-pointer text-xl">
-                Upgrade
-                <svg
-                  width="14"
-                  height="14"
-                  viewBox="0 0 14 14"
-                  fill="white"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
-                    fill=""
-                  />
-                </svg>
-              </div>
-            </Button>
-          </div>
+          {#if (buyPackage === "Explorer" && interval === "year") || buyPackage === "Free" || buyPackage === "Professional"}
+            <div class="w-[230px] h-12 mt-5">
+              <Button
+                variant="primary"
+                on:click={() => {
+                  selectedPackage({
+                    plan: "Professional",
+                    selectedTypePackage,
+                    price: selectedTypePackage === "year" ? "$8.25" : "$9.99",
+                    isNewUser: undefined,
+                  });
+                }}
+              >
+                <div class="flex items-center gap-2 cursor-pointer text-xl">
+                  Upgrade
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 14 14"
+                    fill="white"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
+                      fill=""
+                    />
+                  </svg>
+                </div>
+              </Button>
+            </div>
+          {/if}
 
           <!-- <div
               class={`flex justify-between items-center w-full mt-2 text-[#1E96FC] font-medium mt-5 xl:text-lg text-xl ${
@@ -788,35 +794,37 @@
             <span class="text-[#6b7380] text-lg font-medium"> /month </span>
           </div>
           <div class="text-lg">Enjoy all the features without any limited</div>
-          <div class="w-[230px] h-12 mt-5">
-            <Button
-              variant="primary"
-              on:click={() => {
-                selectedPackage({
-                  plan: "Professional",
-                  selectedTypePackage,
-                  price: selectedTypePackage === "year" ? "$82.5" : "$99.99",
-                  isNewUser: undefined,
-                });
-              }}
-            >
-              <div class="flex items-center gap-2 cursor-pointer text-xl">
-                Upgrade
-                <svg
-                  width="14"
-                  height="14"
-                  viewBox="0 0 14 14"
-                  fill="white"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
-                    fill=""
-                  />
-                </svg>
-              </div>
-            </Button>
-          </div>
+          {#if (buyPackage === "Professional" && interval === "year") || buyPackage === "Free" || buyPackage === "Explorer"}
+            <div class="w-[230px] h-12 mt-5">
+              <Button
+                variant="primary"
+                on:click={() => {
+                  selectedPackage({
+                    plan: "Professional",
+                    selectedTypePackage,
+                    price: selectedTypePackage === "year" ? "$82.5" : "$99.99",
+                    isNewUser: undefined,
+                  });
+                }}
+              >
+                <div class="flex items-center gap-2 cursor-pointer text-xl">
+                  Upgrade
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 14 14"
+                    fill="white"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
+                      fill=""
+                    />
+                  </svg>
+                </div>
+              </Button>
+            </div>
+          {/if}
           <!-- <div
                 class={`flex justify-between items-center w-full mt-2 text-[#1E96FC] font-medium mt-5 xl:text-lg text-xl ${
                   buyPackage === "Free" || buyPackage === "Explorer"
