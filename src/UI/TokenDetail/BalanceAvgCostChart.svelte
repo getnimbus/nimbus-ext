@@ -23,8 +23,6 @@
   export let avgCost;
   export let filterType;
 
-  $: console.log("data: ", data);
-
   let optionBar = {
     tooltip: {
       trigger: "axis",
