@@ -68,11 +68,18 @@
 
 <ErrorBoundary>
   <div
-    class="max-w-[2000px] m-auto xl:w-[90%] w-[90%] py-8 flex flex-col gap-2"
+    class="max-w-[2000px] m-auto xl:w-[90%] w-[90%] py-8 flex flex-col gap-10"
   >
-    <div class="xl:text-5xl text-7xl font-semibold text-center">
-      Upgrade Plan
+    <div class="flex flex-col gap-2 justify-center">
+      <div class="xl:text-5xl text-7xl font-semibold text-center">
+        Upgrade Plan
+      </div>
+      <div class="xl:text-xl text-3xl text-center">
+        Use Nimbus at its full potential. Tracking your portfolio, reduce risk,
+        maximize return.
+      </div>
     </div>
+
     {#if selectedPackage && Object.keys(selectedPackage).length !== 0}
       <div class="flex flex-col justify-center min-h-[70vh]">
         <!-- manual payment -->
