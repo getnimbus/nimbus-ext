@@ -9,15 +9,10 @@
   import { blur } from "svelte/transition";
 
   import tooltip from "~/entries/contentScript/views/tooltip";
-  import ExplorerPlan from "./ExplorerPlan.svelte";
-  import ProfessionalPlan from "./ProfessionalPlan.svelte";
   import Button from "~/components/Button.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
   import Error from "~/components/Error.svelte";
   import PricingTable from "~/UI/PricePackage/PricingTable.svelte";
-
-  import YieldFarmingVideo from "~/assets/pricing/Yield-Farming.mp4";
-  import RealtimeVideo from "~/assets/pricing/Realtime.mp4";
 
   export let selectedPackage = (item) => {};
 
