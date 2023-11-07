@@ -130,8 +130,6 @@
                     price: selectedTypePackage === "year" ? "$8.25" : "$9.99",
                     isNewUser: undefined,
                   });
-
-                  console.log("this is work !!!");
                 }}
               >
                 <div
@@ -302,7 +300,9 @@
             ? "bg-blue-100 text-primaryN"
             : typePrice === "free" && $isDarkMode
             ? "bg-gray-500 text-white"
-            : "text-white"
+            : $isDarkMode
+            ? "text-white"
+            : "text-black"
         }`}
         on:click={() => (typePrice = "free")}
       >
@@ -314,7 +314,9 @@
             ? "bg-blue-100 text-primaryN"
             : typePrice === "explorer" && $isDarkMode
             ? "bg-gray-500 text-white"
-            : "text-white"
+            : $isDarkMode
+            ? "text-white"
+            : "text-black"
         }`}
         on:click={() => (typePrice = "explorer")}
       >
@@ -326,7 +328,9 @@
             ? "bg-blue-100 text-primaryN"
             : typePrice === "alpha" && $isDarkMode
             ? "bg-gray-500 text-white"
-            : "text-white"
+            : $isDarkMode
+            ? "text-white"
+            : "text-black"
         }`}
         on:click={() => (typePrice = "alpha")}
       >
