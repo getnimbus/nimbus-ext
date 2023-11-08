@@ -260,7 +260,7 @@
       </div>
       {#if buyPackage !== "Free"}
         <div
-          class="cursor-pointer flex items-center gap-1 absolute -bottom-1 left-1/2 transform -translate-x-1/2 z-20 rounded px-1 bg-[#ffb800]"
+          class="cursor-pointer flex items-center gap-1 absolute -bottom-1 left-1/2 transform -translate-x-1/2 z-10 rounded px-1 bg-[#ffb800]"
         >
           <div class="text-white text-xs">
             {#if buyPackage === "Explorer"}

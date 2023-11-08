@@ -63,6 +63,8 @@
   let isCopied = false;
   let isShowTooltipContractAddress = false;
 
+  let reportReasonList = [];
+
   const trigger = () => {
     showToast = true;
     counter = 3;
@@ -127,7 +129,7 @@
         reason += "Scam Token, ";
       }
 
-      if (document.getElementById("outdated").checked === true) {
+      if (document.getElementById("outdated").checked) {
         reason += document.getElementById("reason").value;
       }
 
@@ -1283,7 +1285,11 @@
             !$isDarkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
           }`}
         >
-          <div class="xl:text-base text-2xl text-[#666666] font-medium">
+          <div
+            class={`xl:text-base text-2xl font-medium ${
+              $isDarkMode ? "text-gray-400" : "text-[#666666]"
+            }`}
+          >
             Chain
           </div>
           <input
@@ -1291,8 +1297,12 @@
             id="chain"
             name="chain"
             value={data.chain}
-            class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
+            class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal ${
               !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+            } ${
+              $isDarkMode
+                ? "text-white"
+                : "text-[#5E656B] placeholder-[#5E656B]"
             }`}
             disabled
           />
@@ -1303,7 +1313,11 @@
             !$isDarkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
           }`}
         >
-          <div class="xl:text-base text-2xl text-[#666666] font-medium">
+          <div
+            class={`xl:text-base text-2xl font-medium ${
+              $isDarkMode ? "text-gray-400" : "text-[#666666]"
+            }`}
+          >
             Contract Address
           </div>
           <input
@@ -1311,8 +1325,12 @@
             id="contract_address"
             name="contract_address"
             value={data.contractAddress}
-            class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
+            class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal ${
               !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+            } ${
+              $isDarkMode
+                ? "text-white"
+                : "text-[#5E656B] placeholder-[#5E656B]"
             }`}
             disabled
           />
@@ -1320,7 +1338,9 @@
 
         <div
           class={`flex flex-col gap-3 input-2 input-border w-full py-[8px] px-3 ${
-            $isDarkMode && "bg-transparent"
+            (reportReasonList.length !== 0 || isOldToken) && !$isDarkMode
+              ? "bg-[#F0F2F7]"
+              : "bg_fafafbff"
           }`}
         >
           <div class="xl:text-base text-2xl text-[#666666] font-medium">
@@ -1333,6 +1353,8 @@
                 type="checkbox"
                 name={item.id}
                 id={item.id}
+                value={item.id}
+                bind:group={reportReasonList}
                 class="cursor-pointer relative xl:w-4 xl:h-4 w-6 h-6 appearance-none rounded-[0.25rem] border outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white checked:focus:after:bg-transparent dark:border-neutral-600 dark:checked:border-primary dark:checked:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]"
               />
               <label
@@ -1351,7 +1373,7 @@
               id="outdated"
               class="cursor-pointer relative xl:w-4 xl:h-4 w-6 h-6 appearance-none rounded-[0.25rem] border outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white checked:focus:after:bg-transparent dark:border-neutral-600 dark:checked:border-primary dark:checked:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]"
               on:change={(e) => {
-                e.target.checked ? (isOldToken = true) : (isOldToken = false);
+                isOldToken = e.target.checked;
               }}
             />
             <label
@@ -1368,8 +1390,12 @@
               rows="5"
               id="reason"
               name="reason"
-              class={`mb-2 p-0 input-2 input-border w-full py-[6px] px-3 focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
+              class={`mb-2 p-0 input-2 input-border w-full py-[6px] px-3 focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal ${
                 !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+              } ${
+                $isDarkMode
+                  ? "text-white"
+                  : "text-[#5E656B] placeholder-[#5E656B]"
               }`}
             />
           {/if}

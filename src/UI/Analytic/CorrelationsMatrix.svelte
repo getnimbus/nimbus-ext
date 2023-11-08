@@ -622,8 +622,10 @@
           on:keyup={({ target: { value } }) => debounceSearch(value)}
           value={searchValue}
           placeholder={"Find by token name"}
-          class={`w-full p-0 border-none focus:outline-none focus:ring-0 xl:text-base text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
+          class={`w-full p-0 border-none focus:outline-none focus:ring-0 xl:text-base text-2xl font-normal ${
             searchValue && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+          } ${
+            $isDarkMode ? "text-white" : "text-[#5E656B] placeholder-[#5E656B]"
           }`}
         />
       </div>
@@ -697,5 +699,11 @@
   }
   :global(body.dark) .active:hover {
     background: #cdcdcd26;
+  }
+  :global(body) .bg_fafafbff {
+    background: #fafafbff;
+  }
+  :global(body.dark) .bg_fafafbff {
+    background: #212121;
   }
 </style>

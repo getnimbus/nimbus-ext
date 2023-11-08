@@ -2,6 +2,7 @@
   import { Toast } from "flowbite-svelte";
   import { nimbus } from "~/lib/network";
   import "flowbite/dist/flowbite.css";
+  import { isDarkMode } from "~/store";
 
   import Button from "~/components/Button.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
@@ -63,7 +64,7 @@
         <div class="flex flex-col gap-1 xl:min-w-md min-w-xl">
           <div
             class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
-              email ? "bg-[#F0F2F7]" : ""
+              email && !$isDarkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
             }`}
           >
             <input
@@ -73,8 +74,12 @@
               placeholder="Your email"
               required
               value=""
-              class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
-                email ? "bg-[#F0F2F7]" : ""
+              class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal ${
+                email && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+              } ${
+                $isDarkMode
+                  ? "text-white"
+                  : "text-[#5E656B] placeholder-[#5E656B]"
               }
               `}
               on:keyup={({ target: { value } }) => (email = value)}
@@ -138,4 +143,11 @@
   </div>
 {/if}
 
-<style windi:preflights:global windi:safelist:global></style>
+<style windi:preflights:global windi:safelist:global>
+  :global(body) .bg_fafafbff {
+    background: #fafafbff;
+  }
+  :global(body.dark) .bg_fafafbff {
+    background: #212121;
+  }
+</style>

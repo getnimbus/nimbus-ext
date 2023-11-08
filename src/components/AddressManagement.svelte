@@ -1631,7 +1631,11 @@
               class:input-border-error={errors.address &&
                 errors.address.required}
             >
-              <div class="xl:text-base text-2xl text-[#666666] font-medium">
+              <div
+                class={`xl:text-base text-2xl font-medium ${
+                  $isDarkMode ? "text-gray-400" : "text-[#666666]"
+                }`}
+              >
                 Address
               </div>
               <input
@@ -1640,9 +1644,13 @@
                 name="address"
                 placeholder={"Your wallet address"}
                 value=""
-                class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
+                class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal ${
                   address && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
-                } `}
+                } ${
+                  $isDarkMode
+                    ? "text-white"
+                    : "text-[#5E656B] placeholder-[#5E656B]"
+                }`}
                 on:keyup={({ target: { value } }) => (address = value)}
               />
             </div>
@@ -1659,7 +1667,11 @@
               }`}
               class:input-border-error={errors.label && errors.label.required}
             >
-              <div class="xl:text-base text-2xl text-[#666666] font-medium">
+              <div
+                class={`xl:text-base text-2xl font-medium ${
+                  $isDarkMode ? "text-gray-400" : "text-[#666666]"
+                }`}
+              >
                 {MultipleLang.content.modal_label_label}
               </div>
               <input
@@ -1668,8 +1680,12 @@
                 name="label"
                 placeholder={MultipleLang.content.modal_label_label}
                 value=""
-                class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
+                class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal ${
                   label && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+                } ${
+                  $isDarkMode
+                    ? "text-white"
+                    : "text-[#5E656B] placeholder-[#5E656B]"
                 }
               `}
                 on:keyup={({ target: { value } }) => (label = value)}
@@ -1957,6 +1973,13 @@
   :global(body.dark) .select_content {
     background: #131313;
     border: 0.5px solid #cdcdcd59;
+  }
+
+  :global(body) .bg_fafafbff {
+    background: #fafafbff;
+  }
+  :global(body.dark) .bg_fafafbff {
+    background: #212121;
   }
 
   .switch {
