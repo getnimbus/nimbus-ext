@@ -84,8 +84,10 @@
         value={searchValue}
         placeholder={"Filter by token name. Eg: ETH, UNI,..."}
         type="text"
-        class={`w-full p-0 border-none focus:outline-none focus:ring-0 xl:text-base text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
+        class={`w-full p-0 border-none focus:outline-none focus:ring-0 xl:text-base text-2xl font-normal ${
           searchValue && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+        } ${
+          $isDarkMode ? "text-white" : "text-[#5E656B] placeholder-[#5E656B]"
         }`}
       />
     </div>
@@ -258,4 +260,10 @@
 </div>
 
 <style windi:preflights:global windi:safelist:global>
+  :global(body) .bg_fafafbff {
+    background: #fafafbff;
+  }
+  :global(body.dark) .bg_fafafbff {
+    background: #212121;
+  }
 </style>

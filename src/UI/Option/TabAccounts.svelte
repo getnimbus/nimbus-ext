@@ -1168,14 +1168,22 @@
             nameBundle && !$isDarkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
           }`}
         >
-          <div class="xl:text-base text-2xl text-[#666666] font-medium">
+          <div
+            class={`xl:text-base text-2xl font-medium ${
+              $isDarkMode ? "text-gray-400" : "text-[#666666]"
+            }`}
+          >
             Bundle
           </div>
           <input
             type="text"
             placeholder="Your bundle name"
-            class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
+            class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal ${
               nameBundle && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+            } ${
+              $isDarkMode
+                ? "text-white"
+                : "text-[#5E656B] placeholder-[#5E656B]"
             }`}
             required
             disabled={selectedBundle?.name === "Your wallets" ? true : false}
@@ -1585,7 +1593,11 @@
               class:input-border-error={errors.address &&
                 errors.address.required}
             >
-              <div class="xl:text-base text-2xl text-[#666666] font-medium">
+              <div
+                class={`xl:text-base text-2xl font-medium ${
+                  $isDarkMode ? "text-gray-400" : "text-[#666666]"
+                }`}
+              >
                 Address
               </div>
               <input
@@ -1594,8 +1606,12 @@
                 name="address"
                 placeholder="Your wallet address"
                 value=""
-                class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
+                class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal ${
                   address && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+                } ${
+                  $isDarkMode
+                    ? "text-white"
+                    : "text-[#5E656B] placeholder-[#5E656B]"
                 }
               `}
                 on:keyup={({ target: { value } }) => (address = value)}
@@ -1614,7 +1630,11 @@
               }`}
               class:input-border-error={errors.label && errors.label.required}
             >
-              <div class="xl:text-base text-2xl text-[#666666] font-medium">
+              <div
+                class={`xl:text-base text-2xl font-medium ${
+                  $isDarkMode ? "text-gray-400" : "text-[#666666]"
+                }`}
+              >
                 {MultipleLang.content.modal_label_label}
               </div>
               <input
@@ -1623,8 +1643,12 @@
                 name="label"
                 placeholder={MultipleLang.content.modal_label_label}
                 value=""
-                class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
+                class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal ${
                   label && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+                } ${
+                  $isDarkMode
+                    ? "text-white"
+                    : "text-[#5E656B] placeholder-[#5E656B]"
                 }
               `}
                 on:keyup={({ target: { value } }) => (label = value)}
@@ -1716,7 +1740,11 @@
               address && !$isDarkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
             }`}
           >
-            <div class="xl:text-base text-2xl font-semibold text-[#666666]">
+            <div
+              class={`xl:text-base text-2xl font-semibold ${
+                $isDarkMode ? "text-gray-400" : "text-[#666666]"
+              }`}
+            >
               {MultipleLang.content.modal_address_label}
             </div>
             <input
@@ -1726,8 +1754,12 @@
               name="address"
               placeholder={MultipleLang.content.modal_address_label}
               value={address}
-              class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
+              class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal ${
                 address && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+              } ${
+                $isDarkMode
+                  ? "text-white"
+                  : "text-[#5E656B] placeholder-[#5E656B]"
               }`}
             />
           </div>
@@ -1740,7 +1772,11 @@
             class:input-border-error={errorsEdit.label &&
               errorsEdit.label.required}
           >
-            <div class="xl:text-base text-2xl font-semibold text-[#666666]">
+            <div
+              class={`xl:text-base text-2xl font-semibold ${
+                $isDarkMode ? "text-gray-400" : "text-[#666666]"
+              }`}
+            >
               {MultipleLang.content.modal_label_label}
             </div>
             <input
@@ -1749,8 +1785,12 @@
               name="label"
               placeholder={MultipleLang.content.modal_label_label}
               bind:value={label}
-              class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
+              class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal ${
                 label && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+              } ${
+                $isDarkMode
+                  ? "text-white"
+                  : "text-[#5E656B] placeholder-[#5E656B]"
               }`}
               on:keyup={({ target: { value } }) => (label = value)}
             />
@@ -1899,7 +1939,11 @@
           email && !$isDarkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
         }`}
       >
-        <div class="xl:text-base text-2xl text-[#666666] font-medium">
+        <div
+          class={`xl:text-base text-2xl font-medium ${
+            $isDarkMode ? "text-gray-400" : "text-[#666666]"
+          }`}
+        >
           Email
         </div>
         <input
@@ -1909,8 +1953,10 @@
           required
           placeholder="Your email"
           value=""
-          class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
+          class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal ${
             email && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+          } ${
+            $isDarkMode ? "text-white" : "text-[#5E656B] placeholder-[#5E656B]"
           }
               `}
           on:keyup={({ target: { value } }) => (email = value)}

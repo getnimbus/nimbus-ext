@@ -1285,7 +1285,11 @@
             !$isDarkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
           }`}
         >
-          <div class="xl:text-base text-2xl text-[#666666] font-medium">
+          <div
+            class={`xl:text-base text-2xl font-medium ${
+              $isDarkMode ? "text-gray-400" : "text-[#666666]"
+            }`}
+          >
             Chain
           </div>
           <input
@@ -1293,8 +1297,12 @@
             id="chain"
             name="chain"
             value={data.chain}
-            class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
+            class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal ${
               !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+            } ${
+              $isDarkMode
+                ? "text-white"
+                : "text-[#5E656B] placeholder-[#5E656B]"
             }`}
             disabled
           />
@@ -1305,7 +1313,11 @@
             !$isDarkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
           }`}
         >
-          <div class="xl:text-base text-2xl text-[#666666] font-medium">
+          <div
+            class={`xl:text-base text-2xl font-medium ${
+              $isDarkMode ? "text-gray-400" : "text-[#666666]"
+            }`}
+          >
             Contract Address
           </div>
           <input
@@ -1313,8 +1325,12 @@
             id="contract_address"
             name="contract_address"
             value={data.contractAddress}
-            class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
+            class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal ${
               !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+            } ${
+              $isDarkMode
+                ? "text-white"
+                : "text-[#5E656B] placeholder-[#5E656B]"
             }`}
             disabled
           />
@@ -1374,8 +1390,12 @@
               rows="5"
               id="reason"
               name="reason"
-              class={`mb-2 p-0 input-2 input-border w-full py-[6px] px-3 focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
+              class={`mb-2 p-0 input-2 input-border w-full py-[6px] px-3 focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal ${
                 !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+              } ${
+                $isDarkMode
+                  ? "text-white"
+                  : "text-[#5E656B] placeholder-[#5E656B]"
               }`}
             />
           {/if}
