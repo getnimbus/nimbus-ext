@@ -51,7 +51,7 @@
   import PlusBlack from "~/assets/plus-black.svg";
   import FollowWhale from "~/assets/whale-tracking.gif";
   import Success from "~/assets/shield-done.svg";
-  
+
   import All from "~/assets/all.svg";
   import Bundles from "~/assets/bundles.png";
   import BitcoinLogo from "~/assets/bitcoin.png";
@@ -1208,7 +1208,7 @@
 
               <!-- btn add address wallet -->
               <div
-                class="relative xl:w-max w-[260px] flex justify-end"
+                class="relative xl:w-max w-[270px] flex justify-end"
                 on:mouseenter={() => {
                   if (isDisabled || Object.keys($user).length === 0) {
                     showDisableAddWallet = true;
@@ -1598,17 +1598,15 @@
             target="_blank">Learn more</a
           >
         </div>
-        <div
-          class="flex items-center justify-center gap-6 my-3 xl:text-base text-2xl"
-        >
+        <div class="flex items-center justify-center gap-6 my-3">
           {#each listLogoCEX as logo}
-            <div
-              class="flex items-center justify-center xl:w-8 xl:h-8 w-10 h-10 overflow-hidden rounded-full"
-            >
-              <img src={logo} alt="" class="object-contain w-full h-full" />
-            </div>
+            <img
+              src={logo}
+              alt=""
+              class="xl:w-8 xl:h-8 w-10 h-10 rounded-full"
+            />
           {/each}
-          <div class="text-gray-400">+22 More</div>
+          <div class="text-gray-400 xl:text-base text-2xl">+22 More</div>
         </div>
       </div>
       <div class="border-t-[1px] relative">
@@ -1693,21 +1691,26 @@
             <span class="slider" />
           </label>
         </div>
-        <div
-          class="flex items-center justify-center gap-6 my-3 xl:text-base text-xl"
-        >
-          {#each [{ logo: SolanaLogo, label: "Solana", value: "SOL" }].concat(chainList) as item}
-            <div
-              class="flex items-center justify-center xl:w-8 xl:h-8 w-10 h-10 overflow-hidden rounded-full"
-            >
-              <img
-                src={item.logo}
-                alt=""
-                class="object-contain w-full h-full"
-              />
-            </div>
+        <div class="xl:flex hidden items-center justify-center gap-6 my-3">
+          {#each [{ logo: SolanaLogo, label: "Solana", value: "SOL" }, { logo: BitcoinLogo, label: "Bitcoin", value: "BTC" }].concat(chainList.slice(1)) as item}
+            <img
+              src={item.logo}
+              alt=""
+              class="xl:w-8 xl:h-8 w-10 h-10 overflow-hidden rounded-full"
+            />
           {/each}
-          <div class="text-gray-400">More soon</div>
+        </div>
+        <div class="xl:hidden flex items-center justify-center gap-6 my-3">
+          {#each [{ logo: SolanaLogo, label: "Solana", value: "SOL" }, { logo: BitcoinLogo, label: "Bitcoin", value: "BTC" }].concat(chainList
+              .slice(1)
+              .slice(0, -7)) as item}
+            <img
+              src={item.logo}
+              alt=""
+              class="xl:w-8 xl:h-8 w-10 h-10 overflow-hidden rounded-full"
+            />
+          {/each}
+          <div class="text-gray-400 xl:text-base text-2xl">+7 More</div>
         </div>
         <div class="flex justify-end gap-6 lg:gap-2">
           <div class="lg:w-[120px] w-full">
@@ -2003,5 +2006,29 @@
     -webkit-transform: translateX(16px);
     -ms-transform: translateX(16px);
     transform: translateX(16px);
+  }
+
+  @media screen and (max-width: 1280px) {
+    .switch {
+      width: 60px;
+      height: 30px;
+    }
+
+    .slider {
+      border-radius: 44px;
+    }
+
+    .slider:before {
+      height: 26px;
+      width: 26px;
+      left: 4px;
+      bottom: 2px;
+    }
+
+    input:checked + .slider:before {
+      -webkit-transform: translateX(26px);
+      -ms-transform: translateX(26px);
+      transform: translateX(26px);
+    }
   }
 </style>

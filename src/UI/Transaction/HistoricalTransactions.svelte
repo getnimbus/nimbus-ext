@@ -35,7 +35,7 @@
 
 <div>
   <div
-    class={`rounded-[10px] min-h-[400px] grid border border_0000000d xl:overflow-hidden overflow-x-auto h-full ${
+    class={`rounded-[10px] min-h-screen grid border border_0000000d xl:overflow-hidden overflow-x-auto h-full ${
       $isDarkMode ? "bg-[#131313]" : "bg-[#fff]"
     }`}
   >

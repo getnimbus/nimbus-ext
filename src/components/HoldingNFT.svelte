@@ -92,9 +92,9 @@
           </div>
         {/if}
       </div>
-      {#if $typeWallet === "EVM" || $typeWallet === "BUNDLE"}
+      {#if ($typeWallet === "EVM" || $typeWallet === "BUNDLE") && data?.nativeToken?.symbol !== "CEX"}
         <img
-          src={detectedChain(data.nativeToken.symbol)}
+          src={detectedChain(data?.nativeToken?.symbol)}
           alt=""
           width="20"
           height="20"
