@@ -3,8 +3,8 @@
   import { isDarkMode } from "~/store";
 
   import PricePackage from "~/UI/PricePackage/PricePackage.svelte";
-  import Button from "~/components/Button.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
+  import Button from "~/components/Button.svelte";
   import Copy from "~/components/Copy.svelte";
 
   import Bnb from "~/assets/bnb.png";
@@ -68,14 +68,21 @@
 
 <ErrorBoundary>
   <div
-    class="max-w-[2000px] m-auto xl:w-[90%] w-[90%] py-8 flex flex-col gap-2"
+    class="max-w-[2000px] m-auto xl:w-[90%] w-[90%] py-8 flex flex-col gap-10"
   >
-    <div class="xl:text-5xl text-7xl font-semibold text-center">
-      Upgrade Plan
+    <div class="flex flex-col gap-2 justify-center">
+      <div class="xl:text-5xl text-7xl font-semibold text-center">
+        Upgrade Plan
+      </div>
+      <div class="xl:text-xl text-3xl text-center">
+        Use Nimbus at its full potential. Tracking your portfolio, reduce risk,
+        maximize return.
+      </div>
     </div>
+
     {#if selectedPackage && Object.keys(selectedPackage).length !== 0}
       <div class="flex flex-col justify-center min-h-[70vh]">
-        <!-- remove me -->
+        <!-- manual payment -->
         <div class="xl:text-lg text-2xl mb-3">
           Please follow this payment steps:
         </div>
@@ -130,17 +137,34 @@
           }}
         >
           <div class="transform -rotate-180">
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 14 14"
-              fill="#1E96FC"
-              xmlns="http://www.w3.org/2000/svg"
-              ><path
-                d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
-                fill=""
-              /></svg
-            >
+            <div class="xl:block hidden">
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 14 14"
+                fill="#1E96FC"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
+                  fill=""
+                />
+              </svg>
+            </div>
+            <div class="xl:hidden block">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 14 14"
+                fill="#1E96FC"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
+                  fill=""
+                />
+              </svg>
+            </div>
           </div>
           Choose other Plan
         </div>
