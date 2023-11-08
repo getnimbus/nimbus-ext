@@ -1,6 +1,7 @@
 <script lang="ts">
   import { nimbus } from "~/lib/network";
   import { isDarkMode } from "~/store";
+  import Moralis from "moralis-v1/dist/moralis.min.js";
 
   import PricePackage from "~/UI/PricePackage/PricePackage.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
@@ -64,6 +65,10 @@
       isLoadingBuy = false;
     }
   };
+
+  const handleTransfers = async () => {
+    console.log("HELLO WORLD");
+  };
 </script>
 
 <ErrorBoundary>
@@ -79,6 +84,8 @@
         maximize return.
       </div>
     </div>
+
+    <div on:click={handleTransfers}>Test Transfer</div>
 
     {#if selectedPackage && Object.keys(selectedPackage).length !== 0}
       <div class="flex flex-col justify-center min-h-[70vh]">
