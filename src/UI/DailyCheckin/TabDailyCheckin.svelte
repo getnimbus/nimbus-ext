@@ -23,11 +23,15 @@
 
   let selectedType: "collectGMPoint" | "history" = "collectGMPoint";
   let openScreenSuccess: boolean = false;
+  let openScreenBonusScore: boolean = false;
   let isLoadingCheckin: boolean = false;
+  let isTriggerBonusScore: boolean = false;
   let selectedCheckinIndex = 0;
   let selectedIndexRewards: number = 0;
+  let bonusScore: number = 0;
   let isDisabledCheckin = false;
   let listCheckinContainer;
+  let waitCheckinSuccess: boolean = false;
 
   const queryClient = useQueryClient();
 
@@ -48,6 +52,17 @@
     triggerFirework();
     setTimeout(() => {
       openScreenSuccess = false;
+      waitCheckinSuccess = true;
+    }, 2000);
+  };
+
+  const triggerBonusScore = () => {
+    openScreenBonusScore = true;
+    triggerFirework();
+    setTimeout(() => {
+      openScreenBonusScore = false;
+      isTriggerBonusScore = false;
+      waitCheckinSuccess = false;
     }, 2000);
   };
 
@@ -58,6 +73,11 @@
       if (response?.data !== undefined) {
         triggerCheckinSuccess();
         isDisabledCheckin = true;
+        const responseBonusData = 50;
+        if (responseBonusData !== undefined) {
+          bonusScore = responseBonusData;
+          isTriggerBonusScore = true;
+        }
         queryClient.invalidateQueries([$userPublicAddress, "daily-checkin"]);
       }
     } catch (error) {
@@ -66,6 +86,11 @@
       isLoadingCheckin = false;
     }
   };
+
+  $: if (waitCheckinSuccess && isTriggerBonusScore) {
+    // wait for checkin success and triggerbonus available to trigger
+    triggerBonusScore();
+  }
 
   $: queryReward = createQuery({
     queryKey: [$userPublicAddress, "rewards"],
@@ -391,6 +416,31 @@
       />
       <div class="xl:text-2xl text-4xl text-white font-medium">
         +{$queryDailyCheckin?.data?.pointStreak[selectedIndexRewards]} GM Points
+      </div>
+    </div>
+  </div>
+{/if}
+
+{#if openScreenBonusScore}
+  <div
+    class="fixed h-screen w-screen top-0 left-0 z-[19] flex items-center justify-center bg-[#000000cc]"
+    on:click={() => {
+      setTimeout(() => {
+        openScreenBonusScore = false;
+      }, 500);
+    }}
+  >
+    <div class="flex flex-col items-center justify-center gap-10">
+      <div class="xl:text-2xl text-4xl text-white font-medium">
+        Congratulation!!!
+      </div>
+      <img
+        src="https://raw.githubusercontent.com/getnimbus/nimbus-ext/c43eb2dd7d132a2686c32939ea36b0e97055abc7/src/assets/Gold4.svg"
+        alt=""
+        class="w-40 h-40"
+      />
+      <div class="xl:text-2xl text-4xl text-white font-medium">
+        You have received {bonusScore} Bonus GM Points
       </div>
     </div>
   </div>
