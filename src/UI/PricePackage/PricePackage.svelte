@@ -225,35 +225,145 @@
             </td>
 
             <td class="py-3 pr-3">
-              <div class="flex flex-col gap-2">
-                <div class="text-3xl font-semibold">$0</div>
-                <div class="text-base font-medium">
-                  For those who starting to invest
+              <div class="flex flex-col gap-4">
+                <div class="flex flex-col gap-2">
+                  <div class="text-3xl font-semibold">$0</div>
+                  <div class="text-base font-medium">
+                    For those who starting to invest
+                  </div>
                 </div>
+                <div
+                  class={`text-center text-base font-medium text-[#1e96fc] ${
+                    buyPackage === "Free" ? "opacity-100" : "opacity-0"
+                  }`}
+                >
+                  Current Plan
+                </div>
+                <!-- <div
+                  class={`flex items-center gap-2 mt-2 text-[#1E96FC] font-medium mt-5 text-base ${
+                    buyPackage?.length !== 0 && buyPackage !== "Free"
+                      ? "opacity-100 cursor-pointer"
+                      : "opacity-0 cursor-default"
+                  }`}
+                  on:click={() => {
+                    if (
+                      buyPackage === "Explorer" ||
+                      buyPackage === "Professional"
+                    ) {
+                      console.log("downgrade to Free");
+                    }
+                  }}
+                >
+                  Downgrade
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 14 14"
+                    fill="#1E96FC"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
+                      fill=""
+                    />
+                  </svg>
+                </div> -->
               </div>
             </td>
 
             <td class="py-3 pr-3">
-              <div class="flex flex-col gap-2">
-                <div class="flex items-center gap-1 text-3xl font-semibold">
-                  {selectedTypePackage === "year" ? "$8.25" : "$9.99"}
-                  <div class="text-base font-medium text-[#6b7380]">/month</div>
+              <div class="flex flex-col gap-4">
+                <div class="flex flex-col gap-2">
+                  <div class="flex items-center gap-1 text-3xl font-semibold">
+                    {selectedTypePackage === "year" ? "$8.25" : "$9.99"}
+                    <div class="text-base font-medium text-[#6b7380]">
+                      /month
+                    </div>
+                  </div>
+                  <div class="text-base font-medium">
+                    Boost your return and reduce your risk
+                  </div>
                 </div>
-                <div class="text-base font-medium">
-                  Boost your return and reduce your risk
-                </div>
+
+                {#if selectedTypePackage === "month"}
+                  <div
+                    class={`text-base font-medium text-[#1e96fc] ${
+                      buyPackage === "Explorer" && interval === "month"
+                        ? "opacity-100"
+                        : "opacity-0"
+                    }`}
+                  >
+                    Current Plan have
+                    <span class="font-medium"
+                      >{dateDiffInDays(new Date(), new Date(endDatePackage))} days
+                      left</span
+                    >
+                  </div>
+                {/if}
+
+                {#if selectedTypePackage === "year"}
+                  <div
+                    class={`text-base font-medium text-[#1e96fc] ${
+                      buyPackage === "Explorer" && interval === "year"
+                        ? "opacity-100"
+                        : "opacity-0"
+                    }`}
+                  >
+                    Current Plan have
+                    <span class="font-medium"
+                      >{dateDiffInDays(new Date(), new Date(endDatePackage))} days
+                      left</span
+                    >
+                  </div>
+                {/if}
               </div>
             </td>
 
             <td class="py-3 px-3">
-              <div class="flex flex-col gap-2">
-                <div class="flex items-center gap-1 text-3xl font-semibold">
-                  {selectedTypePackage === "year" ? "$82.5" : "$99.99"}
-                  <div class="text-base font-medium text-[#6b7380]">/month</div>
+              <div class="flex flex-col gap-4">
+                <div class="flex flex-col gap-2">
+                  <div class="flex items-center gap-1 text-3xl font-semibold">
+                    {selectedTypePackage === "year" ? "$82.5" : "$99.99"}
+                    <div class="text-base font-medium text-[#6b7380]">
+                      /month
+                    </div>
+                  </div>
+                  <div class="text-base font-medium">
+                    Enjoy all the features without any limited
+                  </div>
                 </div>
-                <div class="text-base font-medium">
-                  Enjoy all the features without any limited
-                </div>
+
+                {#if selectedTypePackage === "month"}
+                  <div
+                    class={`text-base font-medium text-[#1e96fc] ${
+                      buyPackage === "Professional" && interval === "month"
+                        ? "opacity-100"
+                        : "opacity-0"
+                    }`}
+                  >
+                    Current Plan have
+                    <span class="font-medium"
+                      >{dateDiffInDays(new Date(), new Date(endDatePackage))} days
+                      left</span
+                    >
+                  </div>
+                {/if}
+
+                {#if selectedTypePackage === "year"}
+                  <div
+                    class={`text-base font-medium text-[#1e96fc] ${
+                      buyPackage === "Professional" && interval === "year"
+                        ? "opacity-100"
+                        : "opacity-0"
+                    }`}
+                  >
+                    Current Plan have
+                    <span class="font-medium"
+                      >{dateDiffInDays(new Date(), new Date(endDatePackage))} days
+                      left</span
+                    >
+                  </div>
+                {/if}
               </div>
             </td>
           </tr>
