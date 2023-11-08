@@ -18,6 +18,7 @@
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
+  let selectedPricePackage = "Free";
   let buyPackage = "Free";
   let interval = "month";
   let isNewUser = false;
@@ -33,6 +34,9 @@
   let isSuccessToast = false;
   let counter = 3;
   let showToast = false;
+
+  let checkedTypePackage = true;
+  $: selectedTypePackage = checkedTypePackage ? "year" : "month";
 
   const trigger = () => {
     showToast = true;
@@ -69,6 +73,7 @@
 
   $: {
     if (!$query.isError && $query.data !== undefined) {
+      selectedPricePackage = $query.data.plan?.tier;
       buyPackage = $query.data.plan?.tier;
       interval = $query.data.plan?.interval;
       endDatePackage = $query.data.plan?.endDate;
@@ -149,9 +154,6 @@
       </div>
     `;
   };
-
-  let checkedTypePackage = true;
-  $: selectedTypePackage = checkedTypePackage ? "year" : "month";
 </script>
 
 <div class="flex flex-col xl:gap-4 gap-8">
@@ -224,6 +226,7 @@
               </div>
             </td>
 
+            <!-- Free -->
             <td class="py-3 pr-3">
               <div class="flex flex-col gap-4">
                 <div class="flex flex-col gap-2">
@@ -232,45 +235,52 @@
                     For those who starting to invest
                   </div>
                 </div>
-                <div
-                  class={`text-center text-base font-medium text-[#1e96fc] ${
-                    buyPackage === "Free" ? "opacity-100" : "opacity-0"
-                  }`}
-                >
-                  Current Plan
-                </div>
-                <!-- <div
-                  class={`flex items-center gap-2 mt-2 text-[#1E96FC] font-medium mt-5 text-base ${
-                    buyPackage?.length !== 0 && buyPackage !== "Free"
-                      ? "opacity-100 cursor-pointer"
-                      : "opacity-0 cursor-default"
-                  }`}
-                  on:click={() => {
-                    if (
-                      buyPackage === "Explorer" ||
-                      buyPackage === "Professional"
-                    ) {
-                      console.log("downgrade to Free");
-                    }
-                  }}
-                >
-                  Downgrade
-                  <svg
-                    width="14"
-                    height="14"
-                    viewBox="0 0 14 14"
-                    fill="#1E96FC"
-                    xmlns="http://www.w3.org/2000/svg"
+                <div class="w-max min-h-[30px]">
+                  <div
+                    class={`text-center text-base font-medium text-[#1e96fc] ${
+                      buyPackage === "Free"
+                        ? "opacity-100 block"
+                        : "opacity-0 hidden"
+                    }`}
                   >
-                    <path
-                      d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
-                      fill=""
-                    />
-                  </svg>
-                </div> -->
+                    Current Plan
+                  </div>
+                  <!-- <div class="font-medium text-lg">
+                    <div
+                      class={`flex items-center gap-2 text-[#1E96FC] ${
+                        buyPackage?.length !== 0 && buyPackage !== "Free"
+                          ? "opacity-100 cursor-pointer"
+                          : "opacity-0 cursor-default"
+                      }`}
+                      on:click={() => {
+                        if (
+                          buyPackage === "Explorer" ||
+                          buyPackage === "Professional"
+                        ) {
+                          console.log("downgrade to Free");
+                        }
+                      }}
+                    >
+                      Downgrade
+                      <svg
+                        width="14"
+                        height="14"
+                        viewBox="0 0 14 14"
+                        fill="#1E96FC"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
+                          fill=""
+                        />
+                      </svg>
+                    </div>
+                  </div> -->
+                </div>
               </div>
             </td>
 
+            <!-- Explorer -->
             <td class="py-3 pr-3">
               <div class="flex flex-col gap-4">
                 <div class="flex flex-col gap-2">
@@ -285,40 +295,331 @@
                   </div>
                 </div>
 
-                {#if selectedTypePackage === "month"}
-                  <div
-                    class={`text-base font-medium text-[#1e96fc] ${
-                      buyPackage === "Explorer" && interval === "month"
-                        ? "opacity-100"
-                        : "opacity-0"
-                    }`}
-                  >
-                    Current Plan have
-                    <span class="font-medium"
-                      >{dateDiffInDays(new Date(), new Date(endDatePackage))} days
-                      left</span
+                <div class="w-max min-h-[30px]">
+                  {#if selectedTypePackage === "month"}
+                    <div
+                      class={`text-base font-medium text-[#1e96fc] ${
+                        buyPackage === "Explorer" && interval === "month"
+                          ? "opacity-100 block"
+                          : "opacity-0 hidden"
+                      }`}
                     >
-                  </div>
-                {/if}
+                      Current Plan have
+                      <span class="font-medium"
+                        >{dateDiffInDays(new Date(), new Date(endDatePackage))} days
+                        left</span
+                      >
+                    </div>
 
-                {#if selectedTypePackage === "year"}
-                  <div
-                    class={`text-base font-medium text-[#1e96fc] ${
-                      buyPackage === "Explorer" && interval === "year"
-                        ? "opacity-100"
-                        : "opacity-0"
-                    }`}
-                  >
-                    Current Plan have
-                    <span class="font-medium"
-                      >{dateDiffInDays(new Date(), new Date(endDatePackage))} days
-                      left</span
+                    <!-- <div
+                      class={`flex justify-between items-center text-[#1E96FC] font-medium text-lg ${
+                        buyPackage === "Free"
+                          ? "opacity-100"
+                          : buyPackage === "Explorer" && interval === "month"
+                          ? "opacity-0 cursor-default"
+                          : "opacity-100"
+                      }`}
                     >
-                  </div>
-                {/if}
+                      {#if (buyPackage === "Explorer" && interval === "year") || buyPackage === "Free" || buyPackage === "Professional"}
+                        <div
+                          class="flex items-center gap-2 cursor-pointer"
+                          on:click={() => {
+                            if (buyPackage === "Professional") {
+                              console.log("downgrade to Explorer");
+                            } else {
+                              selectedPackage({
+                                plan: "Explorer",
+                                selectedTypePackage,
+                                price: "$30",
+                                isNewUser: undefined,
+                              });
+                            }
+                          }}
+                        >
+                          {#if buyPackage === "Professional"}
+                            Downgrade
+                          {:else}
+                            Upgrade
+                          {/if}
+                          <svg
+                            width="14"
+                            height="14"
+                            viewBox="0 0 14 14"
+                            fill="#1E96FC"
+                            xmlns="http://www.w3.org/2000/svg"
+                            ><path
+                              d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
+                              fill=""
+                            /></svg
+                          >
+                        </div>
+                        {#if isNewUser}
+                          <div
+                            class="text-base font-normal underline cursor-pointer xl:text-sm"
+                            on:click={() => {
+                              if (buyPackage === "Professional") {
+                                console.log("downgrade to Explorer");
+                              } else {
+                                selectedPackage({
+                                  plan: "Explorer",
+                                  selectedTypePackage,
+                                  price: "$30",
+                                  isNewUser,
+                                });
+                              }
+                            }}
+                          >
+                            Or 30 days Trial
+                          </div>
+                        {/if}
+                      {/if}
+                    </div> -->
+
+                    <!-- remove me -->
+                    <!-- <div class="font-medium text-lg">
+                      {#if buyPackage === "Free" || (buyPackage === "Explorer" && interval === "month")}
+                        {#if buyPackage === "Free"}
+                          <div
+                            class="flex items-center gap-2 cursor-pointer text-[#1E96FC]"
+                            on:click={() => {
+                              selectedPackage({
+                                plan: "Explorer",
+                                selectedTypePackage,
+                                price: "$30",
+                                isNewUser: undefined,
+                              });
+                            }}
+                          >
+                            Upgrade
+                            <svg
+                              width="14"
+                              height="14"
+                              viewBox="0 0 14 14"
+                              fill="#1E96FC"
+                              xmlns="http://www.w3.org/2000/svg"
+                              ><path
+                                d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
+                                fill=""
+                              /></svg
+                            >
+                          </div>
+                        {:else}
+                          <div>
+                            {#if isSubscription}
+                              <div
+                                class="text-red-500 cursor-pointer"
+                                on:click={() => (isOpenConfirmCancel = true)}
+                              >
+                                Cancel
+                              </div>
+                            {/if}
+                          </div>
+                        {/if}
+                      {:else}
+                        <div class="opacity-0">
+                          {#if isSubscription}
+                            remove me
+                          {/if}
+                        </div>
+                      {/if}
+                    </div> -->
+
+                    <!-- remove me (flow manual) -->
+                    <div class="font-medium text-lg">
+                      {#if buyPackage === "Free"}
+                        <div
+                          class="flex items-center gap-2 cursor-pointer text-[#1E96FC]"
+                          on:click={() => {
+                            selectedPackage({
+                              plan: "Explorer",
+                              selectedTypePackage,
+                              price: "$9.99",
+                              isNewUser: undefined,
+                            });
+                          }}
+                        >
+                          Upgrade
+                          <svg
+                            width="14"
+                            height="14"
+                            viewBox="0 0 14 14"
+                            fill="#1E96FC"
+                            xmlns="http://www.w3.org/2000/svg"
+                            ><path
+                              d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
+                              fill=""
+                            /></svg
+                          >
+                        </div>
+                      {/if}
+                    </div>
+                  {/if}
+
+                  {#if selectedTypePackage === "year"}
+                    <div
+                      class={`text-base font-medium text-[#1e96fc] ${
+                        buyPackage === "Explorer" && interval === "year"
+                          ? "opacity-100 block"
+                          : "opacity-0 hidden"
+                      }`}
+                    >
+                      Current Plan have
+                      <span class="font-medium"
+                        >{dateDiffInDays(new Date(), new Date(endDatePackage))} days
+                        left</span
+                      >
+                    </div>
+
+                    <!-- <div
+                      class={`flex justify-between items-center text-[#1E96FC] font-medium text-lg ${
+                        buyPackage === "Free"
+                          ? "opacity-100"
+                          : buyPackage === "Explorer" && interval === "year"
+                          ? "opacity-0 cursor-default"
+                          : "opacity-100"
+                      }`}
+                    >
+                      {#if (buyPackage === "Explorer" && interval === "month") || buyPackage === "Free" || buyPackage === "Professional"}
+                        <div
+                          class="flex items-center gap-2 cursor-pointer"
+                          on:click={() => {
+                            if (buyPackage === "Professional") {
+                              console.log("downgrade to Explorer");
+                            } else {
+                              selectedPackage({
+                                plan: "Explorer",
+                                selectedTypePackage,
+                                price: "$25",
+                                isNewUser: undefined,
+                              });
+                            }
+                          }}
+                        >
+                          {#if buyPackage === "Professional"}
+                            Downgrade
+                          {:else}
+                            Upgrade
+                          {/if}
+                          <svg
+                            width="14"
+                            height="14"
+                            viewBox="0 0 14 14"
+                            fill="#1E96FC"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
+                              fill=""
+                            />
+                          </svg>
+                        </div>
+                        {#if isNewUser}
+                          <div
+                            class="text-base font-normal underline cursor-pointer xl:text-sm"
+                            on:click={() => {
+                              if (buyPackage === "Professional") {
+                                console.log("downgrade to Explorer");
+                              } else {
+                                selectedPackage({
+                                  plan: "Explorer",
+                                  selectedTypePackage,
+                                  price: "$25",
+                                  isNewUser,
+                                });
+                              }
+                            }}
+                          >
+                            Or 30 days Trial
+                          </div>
+                        {/if}
+                      {/if}
+                    </div> -->
+
+                    <!-- remove me -->
+                    <!-- <div class="font-medium text-lg">
+                      {#if buyPackage === "Free" || (buyPackage === "Explorer" && interval === "year")}
+                        {#if buyPackage === "Free"}
+                          <div
+                            class="flex items-center gap-2 cursor-pointer text-[#1E96FC]"
+                            on:click={() => {
+                              selectedPackage({
+                                plan: "Explorer",
+                                selectedTypePackage,
+                                price: "$25",
+                                isNewUser: undefined,
+                              });
+                            }}
+                          >
+                            Upgrade
+                            <svg
+                              width="14"
+                              height="14"
+                              viewBox="0 0 14 14"
+                              fill="#1E96FC"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
+                                fill=""
+                              />
+                            </svg>
+                          </div>
+                        {:else}
+                          <div>
+                            {#if isSubscription}
+                              <div
+                                class="text-red-500 cursor-pointer"
+                                on:click={() => (isOpenConfirmCancel = true)}
+                              >
+                                Cancel
+                              </div>
+                            {/if}
+                          </div>
+                        {/if}
+                      {:else}
+                        <div class="opacity-0">
+                          {#if isSubscription}
+                            remove me
+                          {/if}
+                        </div>
+                      {/if}
+                    </div> -->
+
+                    <!-- remove me (flow manual) -->
+                    <div class="font-medium text-lg">
+                      {#if buyPackage === "Free" || (buyPackage === "Explorer" && interval === "month") || (buyPackage === "Professional" && interval === "month")}
+                        <div
+                          class="flex items-center gap-2 cursor-pointer text-[#1E96FC]"
+                          on:click={() => {
+                            selectedPackage({
+                              plan: "Explorer",
+                              selectedTypePackage,
+                              price: "$8.25",
+                              isNewUser: undefined,
+                            });
+                          }}
+                        >
+                          Upgrade
+                          <svg
+                            width="14"
+                            height="14"
+                            viewBox="0 0 14 14"
+                            fill="#1E96FC"
+                            xmlns="http://www.w3.org/2000/svg"
+                            ><path
+                              d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
+                              fill=""
+                            /></svg
+                          >
+                        </div>
+                      {/if}
+                    </div>
+                  {/if}
+                </div>
               </div>
             </td>
 
+            <!-- Professional -->
             <td class="py-3 px-3">
               <div class="flex flex-col gap-4">
                 <div class="flex flex-col gap-2">
@@ -333,37 +634,322 @@
                   </div>
                 </div>
 
-                {#if selectedTypePackage === "month"}
-                  <div
-                    class={`text-base font-medium text-[#1e96fc] ${
-                      buyPackage === "Professional" && interval === "month"
-                        ? "opacity-100"
-                        : "opacity-0"
-                    }`}
-                  >
-                    Current Plan have
-                    <span class="font-medium"
-                      >{dateDiffInDays(new Date(), new Date(endDatePackage))} days
-                      left</span
+                <div class="w-max min-h-[30px]">
+                  {#if selectedTypePackage === "month"}
+                    <div
+                      class={`text-base font-medium text-[#1e96fc] ${
+                        buyPackage === "Professional" && interval === "month"
+                          ? "opacity-100 block"
+                          : "opacity-0 hidden"
+                      }`}
                     >
-                  </div>
-                {/if}
+                      Current Plan have
+                      <span class="font-medium"
+                        >{dateDiffInDays(new Date(), new Date(endDatePackage))} days
+                        left</span
+                      >
+                    </div>
 
-                {#if selectedTypePackage === "year"}
-                  <div
-                    class={`text-base font-medium text-[#1e96fc] ${
-                      buyPackage === "Professional" && interval === "year"
-                        ? "opacity-100"
-                        : "opacity-0"
-                    }`}
-                  >
-                    Current Plan have
-                    <span class="font-medium"
-                      >{dateDiffInDays(new Date(), new Date(endDatePackage))} days
-                      left</span
+                    <!-- <div
+                      class={`flex justify-between items-center text-[#1E96FC] font-medium text-lg ${
+                        buyPackage === "Free" || buyPackage === "Explorer"
+                          ? "opacity-100"
+                          : buyPackage === "Professional" &&
+                            interval === "month"
+                          ? "opacity-0 cursor-default"
+                          : "opacity-100"
+                      }`}
                     >
-                  </div>
-                {/if}
+                      {#if (buyPackage === "Professional" && interval === "year") || buyPackage === "Free" || buyPackage === "Explorer"}
+                        <div
+                          class="flex items-center gap-2 cursor-pointer"
+                          on:click={() => {
+                            if (
+                              buyPackage === "Professional" &&
+                              interval === "year"
+                            ) {
+                              console.log("downgrade to Professional");
+                              return;
+                            }
+                            selectedPackage({
+                              plan: "Professional",
+                              selectedTypePackage,
+                              price: "$99",
+                              isNewUser: undefined,
+                            });
+                          }}
+                        >
+                          {#if buyPackage === "Professional" && interval === "year"}
+                            Downgrade
+                          {:else}
+                            Upgrade
+                          {/if}
+                          <svg
+                            width="14"
+                            height="14"
+                            viewBox="0 0 14 14"
+                            fill="#1E96FC"
+                            xmlns="http://www.w3.org/2000/svg"
+                            ><path
+                              d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
+                              fill=""
+                            /></svg
+                          >
+                        </div>
+                        {#if isNewUser}
+                          <div
+                            class="text-base font-normal underline cursor-pointer xl:text-sm"
+                            on:click={() => {
+                              if (buyPackage === "Professional") {
+                                return;
+                              }
+                              selectedPackage({
+                                plan: "Professional",
+                                selectedTypePackage,
+                                price: "$99",
+                                isNewUser,
+                              });
+                            }}
+                          >
+                            Or 30 days Trial
+                          </div>
+                        {/if}
+                      {/if}
+                    </div> -->
+
+                    <!-- remove me -->
+                    <!-- <div class="font-medium text-lg">
+                      {#if buyPackage === "Free" || (buyPackage === "Professional" && interval === "month")}
+                        {#if buyPackage === "Free"}
+                          <div
+                            class="flex items-center gap-2 cursor-pointer text-[#1E96FC]"
+                            on:click={() => {
+                              selectedPackage({
+                                plan: "Professional",
+                                selectedTypePackage,
+                                price: "$99",
+                                isNewUser: undefined,
+                              });
+                            }}
+                          >
+                            Upgrade
+                            <svg
+                              width="14"
+                              height="14"
+                              viewBox="0 0 14 14"
+                              fill="#1E96FC"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
+                                fill=""
+                              />
+                            </svg>
+                          </div>
+                        {:else}
+                          <div>
+                            {#if isSubscription}
+                              <div
+                                class="text-red-500 cursor-pointer"
+                                on:click={() => (isOpenConfirmCancel = true)}
+                              >
+                                Cancel
+                              </div>
+                            {/if}
+                          </div>
+                        {/if}
+                      {:else}
+                        <div class="opacity-0">
+                          {#if isSubscription}
+                            remove me
+                          {/if}
+                        </div>
+                      {/if}
+                    </div> -->
+
+                    <!-- remove me (flow manual) -->
+                    <div class="font-medium text-lg">
+                      {#if buyPackage === "Free" || (buyPackage === "Explorer" && interval === "month")}
+                        <div
+                          class="flex items-center gap-2 cursor-pointer text-[#1E96FC]"
+                          on:click={() => {
+                            selectedPackage({
+                              plan: "Professional",
+                              selectedTypePackage,
+                              price: "$99",
+                              isNewUser: undefined,
+                            });
+                          }}
+                        >
+                          Upgrade
+                          <svg
+                            width="14"
+                            height="14"
+                            viewBox="0 0 14 14"
+                            fill="#1E96FC"
+                            xmlns="http://www.w3.org/2000/svg"
+                            ><path
+                              d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
+                              fill=""
+                            /></svg
+                          >
+                        </div>
+                      {/if}
+                    </div>
+                  {/if}
+
+                  {#if selectedTypePackage === "year"}
+                    <div
+                      class={`text-base font-medium text-[#1e96fc] ${
+                        buyPackage === "Professional" && interval === "year"
+                          ? "opacity-100 block"
+                          : "opacity-0 hidden"
+                      }`}
+                    >
+                      Current Plan have
+                      <span class="font-medium"
+                        >{dateDiffInDays(new Date(), new Date(endDatePackage))} days
+                        left</span
+                      >
+                    </div>
+
+                    <!-- <div
+                      class={`flex justify-between items-center text-[#1E96FC] font-medium text-lg ${
+                        buyPackage === "Free" || buyPackage === "Explorer"
+                          ? "opacity-100"
+                          : buyPackage === "Professional" && interval === "year"
+                          ? "opacity-0 cursor-default"
+                          : "opacity-100"
+                      }`}
+                    >
+                      {#if (buyPackage === "Professional" && interval === "month") || buyPackage === "Free" || buyPackage === "Explorer"}
+                        <div
+                          class="flex items-center gap-2 cursor-pointer"
+                          on:click={() => {
+                            selectedPackage({
+                              plan: "Professional",
+                              selectedTypePackage,
+                              price: "$82.5",
+                              isNewUser: undefined,
+                            });
+                          }}
+                        >
+                          Upgrade
+                          <svg
+                            width="14"
+                            height="14"
+                            viewBox="0 0 14 14"
+                            fill="#1E96FC"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
+                              fill=""
+                            />
+                          </svg>
+                        </div>
+                        {#if isNewUser}
+                          <div
+                            class="text-base font-normal underline cursor-pointer xl:text-sm"
+                            on:click={() => {
+                              if (buyPackage === "Professional") {
+                                return;
+                              }
+                              selectedPackage({
+                                plan: "Professional",
+                                selectedTypePackage,
+                                price: "$82.5",
+                                isNewUser,
+                              });
+                            }}
+                          >
+                            Or 30 days Trial
+                          </div>
+                        {/if}
+                      {/if}
+                    </div> -->
+
+                    <!-- remove me -->
+                    <!-- <div class="font-medium text-lg">
+                      {#if buyPackage === "Free" || (buyPackage === "Professional" && interval === "year")}
+                        {#if buyPackage === "Free"}
+                          <div
+                            class="flex items-center gap-2 cursor-pointer text-[#1E96FC]"
+                            on:click={() => {
+                              selectedPackage({
+                                plan: "Professional",
+                                selectedTypePackage,
+                                price: "$82.5",
+                                isNewUser: undefined,
+                              });
+                            }}
+                          >
+                            Upgrade
+                            <svg
+                              width="14"
+                              height="14"
+                              viewBox="0 0 14 14"
+                              fill="#1E96FC"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
+                                fill=""
+                              />
+                            </svg>
+                          </div>
+                        {:else}
+                          <div>
+                            {#if isSubscription}
+                              <div
+                                class="text-red-500 cursor-pointer"
+                                on:click={() => (isOpenConfirmCancel = true)}
+                              >
+                                Cancel
+                              </div>
+                            {/if}
+                          </div>
+                        {/if}
+                      {:else}
+                        <div class="opacity-0">
+                          {#if isSubscription}
+                            remove me
+                          {/if}
+                        </div>
+                      {/if}
+                    </div> -->
+
+                    <!-- remove me (flow manual) -->
+                    <div class="font-medium text-lg">
+                      {#if buyPackage === "Free" || (buyPackage === "Professional" && interval === "month") || (buyPackage === "Explorer" && interval === "month") || (buyPackage === "Explorer" && interval === "year")}
+                        <div
+                          class="flex items-center gap-2 cursor-pointer text-[#1E96FC]"
+                          on:click={() => {
+                            selectedPackage({
+                              plan: "Professional",
+                              selectedTypePackage,
+                              price: "$82.5",
+                              isNewUser: undefined,
+                            });
+                          }}
+                        >
+                          Upgrade
+                          <svg
+                            width="14"
+                            height="14"
+                            viewBox="0 0 14 14"
+                            fill="#1E96FC"
+                            xmlns="http://www.w3.org/2000/svg"
+                            ><path
+                              d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
+                              fill=""
+                            /></svg
+                          >
+                        </div>
+                      {/if}
+                    </div>
+                  {/if}
+                </div>
               </div>
             </td>
           </tr>
@@ -480,16 +1066,16 @@
         <div class="flex gap-5">
           <div
             class={`uppercase py-3 px-4 text-3xl font-medium rounded-2xl cursor-pointer ${
-              buyPackage === "Free" && !$isDarkMode
+              selectedPricePackage === "Free" && !$isDarkMode
                 ? "bg-blue-100 text-primary"
-                : buyPackage === "Free" && $isDarkMode
+                : selectedPricePackage === "Free" && $isDarkMode
                 ? "bg-gray-500 text-white"
                 : $isDarkMode
                 ? "text-white"
                 : "text-black"
             }`}
             on:click={() => {
-              buyPackage = "Free";
+              selectedPricePackage = "Free";
             }}
           >
             Free
@@ -497,16 +1083,16 @@
 
           <div
             class={`uppercase py-3 px-4 text-3xl font-medium rounded-2xl cursor-pointer ${
-              buyPackage === "Explorer" && !$isDarkMode
+              selectedPricePackage === "Explorer" && !$isDarkMode
                 ? "bg-blue-100 text-primary"
-                : buyPackage === "Explorer" && $isDarkMode
+                : selectedPricePackage === "Explorer" && $isDarkMode
                 ? "bg-gray-500 text-white"
                 : $isDarkMode
                 ? "text-white"
                 : "text-black"
             }`}
             on:click={() => {
-              buyPackage = "Explorer";
+              selectedPricePackage = "Explorer";
             }}
           >
             Explorer
@@ -514,16 +1100,16 @@
 
           <div
             class={`uppercase py-3 px-4 text-3xl font-medium rounded-2xl cursor-pointer ${
-              buyPackage === "Professional" && !$isDarkMode
+              selectedPricePackage === "Professional" && !$isDarkMode
                 ? "bg-blue-100 text-primary"
-                : buyPackage === "Professional" && $isDarkMode
+                : selectedPricePackage === "Professional" && $isDarkMode
                 ? "bg-gray-500 text-white"
                 : $isDarkMode
                 ? "text-white"
                 : "text-black"
             }`}
             on:click={() => {
-              buyPackage = "Professional";
+              selectedPricePackage = "Professional";
             }}
           >
             Alpha
@@ -531,48 +1117,742 @@
         </div>
 
         <div class="flex items-center justify-center">
-          {#if buyPackage === "Free"}
-            <div class="flex flex-col gap-2 justify-center items-center">
-              <div class="text-2xl font-medium uppercase">Free</div>
-              <span class="text-5xl font-semibold">$0</span>
-              <div class="text-lg">For those who starting to invest</div>
-            </div>
-          {:else if buyPackage === "Explorer"}
-            <div class="flex flex-col gap-2 justify-center items-center">
-              <div class="text-2xl font-medium uppercase">
-                Explorer{" "}
-                {#if selectedTypePackage === "year"}
-                  <span
-                    class="text-white px-2 py-1 font-normal text-lg ml-3 bg-[#10b981] rounded-lg"
+          {#if selectedPricePackage === "Free"}
+            <div class="flex flex-col gap-4">
+              <div class="flex flex-col gap-2 justify-center items-center">
+                <div class="text-2xl font-medium uppercase">Free</div>
+                <span class="text-5xl font-semibold">$0</span>
+                <div class="text-lg">For those who starting to invest</div>
+              </div>
+              <div class="flex justify-center min-h-[30px]">
+                <div
+                  class={`text-2xl font-medium text-[#1e96fc] ${
+                    buyPackage === "Free"
+                      ? "opacity-100 block"
+                      : "opacity-0 hidden"
+                  }`}
+                >
+                  Current Plan
+                </div>
+                <!-- <div class="font-medium text-2xl">
+                  <div
+                    class={`flex items-center gap-2 text-[#1E96FC] ${
+                      buyPackage?.length !== 0 && buyPackage !== "Free"
+                        ? "opacity-100 cursor-pointer"
+                        : "opacity-0 cursor-default"
+                    }`}
+                    on:click={() => {
+                      if (
+                        buyPackage === "Explorer" ||
+                        buyPackage === "Professional"
+                      ) {
+                        console.log("downgrade to Free");
+                      }
+                    }}
                   >
-                    Save $1.75
+                    Downgrade
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 14 14"
+                      fill="#1E96FC"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
+                        fill=""
+                      />
+                    </svg>
+                  </div>
+                </div> -->
+              </div>
+            </div>
+          {/if}
+
+          {#if selectedPricePackage === "Explorer"}
+            <div class="flex flex-col gap-4">
+              <div class="flex flex-col gap-2 justify-center items-center">
+                <div class="text-2xl font-medium uppercase">
+                  Explorer{" "}
+                  {#if selectedTypePackage === "year"}
+                    <span
+                      class="text-white px-2 py-1 font-normal text-lg ml-3 bg-[#10b981] rounded-lg"
+                    >
+                      Save $1.75
+                    </span>
+                  {/if}
+                </div>
+                <div class="text-5xl font-medium">
+                  {selectedTypePackage === "year" ? "$8.25" : "$9.99"}{" "}
+                  <span class="text-[#6b7380] text-lg font-medium">
+                    /month
                   </span>
+                </div>
+                <div class="text-xl">
+                  Boost your return and reduce your risk
+                </div>
+              </div>
+              <div class="flex justify-center min-h-[30px]">
+                {#if selectedTypePackage === "month"}
+                  <div
+                    class={`text-2xl font-medium text-[#1e96fc] ${
+                      buyPackage === "Explorer" && interval === "month"
+                        ? "opacity-100 block"
+                        : "opacity-0 hidden"
+                    }`}
+                  >
+                    Current Plan have
+                    <span class="font-medium"
+                      >{dateDiffInDays(new Date(), new Date(endDatePackage))} days
+                      left</span
+                    >
+                  </div>
+
+                  <!-- <div
+                    class={`flex justify-between items-center text-[#1E96FC] font-medium text-2xl ${
+                      buyPackage === "Free"
+                        ? "opacity-100"
+                        : buyPackage === "Explorer" && interval === "month"
+                        ? "opacity-0 cursor-default"
+                        : "opacity-100"
+                    }`}
+                  >
+                    {#if (buyPackage === "Explorer" && interval === "year") || buyPackage === "Free" || buyPackage === "Professional"}
+                      <div
+                        class="flex items-center gap-2 cursor-pointer"
+                        on:click={() => {
+                          if (buyPackage === "Professional") {
+                            console.log("downgrade to Explorer");
+                          } else {
+                            selectedPackage({
+                              plan: "Explorer",
+                              selectedTypePackage,
+                              price: "$30",
+                              isNewUser: undefined,
+                            });
+                          }
+                        }}
+                      >
+                        {#if buyPackage === "Professional"}
+                          Downgrade
+                        {:else}
+                          Upgrade
+                        {/if}
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 14 14"
+                          fill="#1E96FC"
+                          xmlns="http://www.w3.org/2000/svg"
+                          ><path
+                            d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
+                            fill=""
+                          /></svg
+                        >
+                      </div>
+                      {#if isNewUser}
+                        <div
+                          class="text-base font-normal underline cursor-pointer xl:text-sm"
+                          on:click={() => {
+                            if (buyPackage === "Professional") {
+                              console.log("downgrade to Explorer");
+                            } else {
+                              selectedPackage({
+                                plan: "Explorer",
+                                selectedTypePackage,
+                                price: "$30",
+                                isNewUser,
+                              });
+                            }
+                          }}
+                        >
+                          Or 30 days Trial
+                        </div>
+                      {/if}
+                    {/if}
+                  </div> -->
+
+                  <!-- remove me -->
+                  <!-- <div class="font-medium text-2xl">
+                    {#if buyPackage === "Free" || (buyPackage === "Explorer" && interval === "month")}
+                      {#if buyPackage === "Free"}
+                        <div
+                          class="flex items-center gap-2 cursor-pointer text-[#1E96FC]"
+                          on:click={() => {
+                            selectedPackage({
+                              plan: "Explorer",
+                              selectedTypePackage,
+                              price: "$30",
+                              isNewUser: undefined,
+                            });
+                          }}
+                        >
+                          Upgrade
+                          <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 14 14"
+                            fill="#1E96FC"
+                            xmlns="http://www.w3.org/2000/svg"
+                            ><path
+                              d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
+                              fill=""
+                            /></svg
+                          >
+                        </div>
+                      {:else}
+                        <div>
+                          {#if isSubscription}
+                            <div
+                              class="text-red-500 cursor-pointer"
+                              on:click={() => (isOpenConfirmCancel = true)}
+                            >
+                              Cancel
+                            </div>
+                          {/if}
+                        </div>
+                      {/if}
+                    {:else}
+                      <div class="opacity-0">
+                        {#if isSubscription}
+                          remove me
+                        {/if}
+                      </div>
+                    {/if}
+                  </div> -->
+
+                  <!-- remove me (flow manual) -->
+                  <div class="font-medium text-2xl">
+                    {#if buyPackage === "Free"}
+                      <div
+                        class="flex items-center gap-2 cursor-pointer text-[#1E96FC]"
+                        on:click={() => {
+                          selectedPackage({
+                            plan: "Explorer",
+                            selectedTypePackage,
+                            price: "$9.99",
+                            isNewUser: undefined,
+                          });
+                        }}
+                      >
+                        Upgrade
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 14 14"
+                          fill="#1E96FC"
+                          xmlns="http://www.w3.org/2000/svg"
+                          ><path
+                            d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
+                            fill=""
+                          /></svg
+                        >
+                      </div>
+                    {/if}
+                  </div>
+                {/if}
+
+                {#if selectedTypePackage === "year"}
+                  <div
+                    class={`text-2xl font-medium text-[#1e96fc] ${
+                      buyPackage === "Explorer" && interval === "year"
+                        ? "opacity-100 block"
+                        : "opacity-0 hidden"
+                    }`}
+                  >
+                    Current Plan have
+                    <span class="font-medium"
+                      >{dateDiffInDays(new Date(), new Date(endDatePackage))} days
+                      left</span
+                    >
+                  </div>
+
+                  <!-- <div
+                    class={`flex justify-between items-center text-[#1E96FC] font-medium text-2xl ${
+                      buyPackage === "Free"
+                        ? "opacity-100"
+                        : buyPackage === "Explorer" && interval === "year"
+                        ? "opacity-0 cursor-default"
+                        : "opacity-100"
+                    }`}
+                  >
+                    {#if (buyPackage === "Explorer" && interval === "month") || buyPackage === "Free" || buyPackage === "Professional"}
+                      <div
+                        class="flex items-center gap-2 cursor-pointer"
+                        on:click={() => {
+                          if (buyPackage === "Professional") {
+                            console.log("downgrade to Explorer");
+                          } else {
+                            selectedPackage({
+                              plan: "Explorer",
+                              selectedTypePackage,
+                              price: "$25",
+                              isNewUser: undefined,
+                            });
+                          }
+                        }}
+                      >
+                        {#if buyPackage === "Professional"}
+                          Downgrade
+                        {:else}
+                          Upgrade
+                        {/if}
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 14 14"
+                          fill="#1E96FC"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
+                            fill=""
+                          />
+                        </svg>
+                      </div>
+                      {#if isNewUser}
+                        <div
+                          class="text-base font-normal underline cursor-pointer xl:text-sm"
+                          on:click={() => {
+                            if (buyPackage === "Professional") {
+                              console.log("downgrade to Explorer");
+                            } else {
+                              selectedPackage({
+                                plan: "Explorer",
+                                selectedTypePackage,
+                                price: "$25",
+                                isNewUser,
+                              });
+                            }
+                          }}
+                        >
+                          Or 30 days Trial
+                        </div>
+                      {/if}
+                    {/if}
+                  </div> -->
+
+                  <!-- remove me -->
+                  <!-- <div class="font-medium text-2xl">
+                    {#if buyPackage === "Free" || (buyPackage === "Explorer" && interval === "year")}
+                      {#if buyPackage === "Free"}
+                        <div
+                          class="flex items-center gap-2 cursor-pointer text-[#1E96FC]"
+                          on:click={() => {
+                            selectedPackage({
+                              plan: "Explorer",
+                              selectedTypePackage,
+                              price: "$25",
+                              isNewUser: undefined,
+                            });
+                          }}
+                        >
+                          Upgrade
+                          <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 14 14"
+                            fill="#1E96FC"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
+                              fill=""
+                            />
+                          </svg>
+                        </div>
+                      {:else}
+                        <div>
+                          {#if isSubscription}
+                            <div
+                              class="text-red-500 cursor-pointer"
+                              on:click={() => (isOpenConfirmCancel = true)}
+                            >
+                              Cancel
+                            </div>
+                          {/if}
+                        </div>
+                      {/if}
+                    {:else}
+                      <div class="opacity-0">
+                        {#if isSubscription}
+                          remove me
+                        {/if}
+                      </div>
+                    {/if}
+                  </div> -->
+
+                  <!-- remove me (flow manual) -->
+                  <div class="font-medium text-2xl">
+                    {#if buyPackage === "Free" || (buyPackage === "Explorer" && interval === "month") || (buyPackage === "Professional" && interval === "month")}
+                      <div
+                        class="flex items-center gap-2 cursor-pointer text-[#1E96FC]"
+                        on:click={() => {
+                          selectedPackage({
+                            plan: "Explorer",
+                            selectedTypePackage,
+                            price: "$8.25",
+                            isNewUser: undefined,
+                          });
+                        }}
+                      >
+                        Upgrade
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 14 14"
+                          fill="#1E96FC"
+                          xmlns="http://www.w3.org/2000/svg"
+                          ><path
+                            d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
+                            fill=""
+                          /></svg
+                        >
+                      </div>
+                    {/if}
+                  </div>
                 {/if}
               </div>
-              <div class="text-5xl font-medium">
-                {selectedTypePackage === "year" ? "$8.25" : "$9.99"}{" "}
-                <span class="text-[#6b7380] text-lg font-medium"> /month </span>
-              </div>
-              <div class="text-xl">Boost your return and reduce your risk</div>
             </div>
-          {:else if buyPackage === "Professional"}
-            <div class="flex flex-col gap-2 justify-center items-center">
-              <div class="text-2xl font-medium uppercase">
-                Alpha{" "}
-                {#if selectedTypePackage === "year"}
-                  <span
-                    class="text-white px-2 py-1 font-normal text-lg ml-3 bg-[#10b981] rounded-lg"
-                  >
-                    Save $17.5
+          {/if}
+
+          {#if selectedPricePackage === "Professional"}
+            <div class="flex flex-col gap-4">
+              <div class="flex flex-col gap-2 justify-center items-center">
+                <div class="text-2xl font-medium uppercase">
+                  Alpha{" "}
+                  {#if selectedTypePackage === "year"}
+                    <span
+                      class="text-white px-2 py-1 font-normal text-lg ml-3 bg-[#10b981] rounded-lg"
+                    >
+                      Save $17.5
+                    </span>
+                  {/if}
+                </div>
+                <div class="text-5xl font-medium">
+                  {selectedTypePackage === "year" ? "$82.5" : "$99.99"}{" "}
+                  <span class="text-[#6b7380] text-lg font-medium">
+                    /month
                   </span>
+                </div>
+                <div class="text-xl">
+                  Enjoy all the features without any limited
+                </div>
+              </div>
+              <div class="flex justify-center min-h-[30px]">
+                {#if selectedTypePackage === "month"}
+                  <div
+                    class={`text-2xl font-medium text-[#1e96fc] ${
+                      buyPackage === "Professional" && interval === "month"
+                        ? "opacity-100 block"
+                        : "opacity-0 hidden"
+                    }`}
+                  >
+                    Current Plan have
+                    <span class="font-medium"
+                      >{dateDiffInDays(new Date(), new Date(endDatePackage))} days
+                      left</span
+                    >
+                  </div>
+
+                  <!-- <div
+                    class={`flex justify-between items-center text-[#1E96FC] font-medium text-2xl ${
+                      buyPackage === "Free" || buyPackage === "Explorer"
+                        ? "opacity-100"
+                        : buyPackage === "Professional" && interval === "month"
+                        ? "opacity-0 cursor-default"
+                        : "opacity-100"
+                    }`}
+                  >
+                    {#if (buyPackage === "Professional" && interval === "year") || buyPackage === "Free" || buyPackage === "Explorer"}
+                      <div
+                        class="flex items-center gap-2 cursor-pointer"
+                        on:click={() => {
+                          if (
+                            buyPackage === "Professional" &&
+                            interval === "year"
+                          ) {
+                            console.log("downgrade to Professional");
+                            return;
+                          }
+                          selectedPackage({
+                            plan: "Professional",
+                            selectedTypePackage,
+                            price: "$99",
+                            isNewUser: undefined,
+                          });
+                        }}
+                      >
+                        {#if buyPackage === "Professional" && interval === "year"}
+                          Downgrade
+                        {:else}
+                          Upgrade
+                        {/if}
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 14 14"
+                          fill="#1E96FC"
+                          xmlns="http://www.w3.org/2000/svg"
+                          ><path
+                            d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
+                            fill=""
+                          /></svg
+                        >
+                      </div>
+                      {#if isNewUser}
+                        <div
+                          class="text-base font-normal underline cursor-pointer xl:text-sm"
+                          on:click={() => {
+                            if (buyPackage === "Professional") {
+                              return;
+                            }
+                            selectedPackage({
+                              plan: "Professional",
+                              selectedTypePackage,
+                              price: "$99",
+                              isNewUser,
+                            });
+                          }}
+                        >
+                          Or 30 days Trial
+                        </div>
+                      {/if}
+                    {/if}
+                  </div> -->
+
+                  <!-- remove me -->
+                  <!-- <div class="font-medium text-2xl w-max">
+                    {#if buyPackage === "Free" || (buyPackage === "Professional" && interval === "month")}
+                      {#if buyPackage === "Free"}
+                        <div
+                          class="flex items-center gap-2 cursor-pointer text-[#1E96FC]"
+                          on:click={() => {
+                            selectedPackage({
+                              plan: "Professional",
+                              selectedTypePackage,
+                              price: "$99",
+                              isNewUser: undefined,
+                            });
+                          }}
+                        >
+                          Upgrade
+                          <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 14 14"
+                            fill="#1E96FC"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
+                              fill=""
+                            />
+                          </svg>
+                        </div>
+                      {:else}
+                        <div>
+                          {#if isSubscription}
+                            <div
+                              class="text-red-500 cursor-pointer"
+                              on:click={() => (isOpenConfirmCancel = true)}
+                            >
+                              Cancel
+                            </div>
+                          {/if}
+                        </div>
+                      {/if}
+                    {:else}
+                      <div class="opacity-0">
+                        {#if isSubscription}
+                          remove me
+                        {/if}
+                      </div>
+                    {/if}
+                  </div> -->
+
+                  <!-- remove me (flow manual) -->
+                  <div class="font-medium text-2xl w-max">
+                    {#if buyPackage === "Free" || (buyPackage === "Explorer" && interval === "month")}
+                      <div
+                        class="flex items-center gap-2 cursor-pointer text-[#1E96FC]"
+                        on:click={() => {
+                          selectedPackage({
+                            plan: "Professional",
+                            selectedTypePackage,
+                            price: "$99",
+                            isNewUser: undefined,
+                          });
+                        }}
+                      >
+                        Upgrade
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 14 14"
+                          fill="#1E96FC"
+                          xmlns="http://www.w3.org/2000/svg"
+                          ><path
+                            d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
+                            fill=""
+                          /></svg
+                        >
+                      </div>
+                    {/if}
+                  </div>
                 {/if}
-              </div>
-              <div class="text-5xl font-medium">
-                {selectedTypePackage === "year" ? "$82.5" : "$99.99"}{" "}
-                <span class="text-[#6b7380] text-lg font-medium"> /month </span>
-              </div>
-              <div class="text-xl">
-                Enjoy all the features without any limited
+
+                {#if selectedTypePackage === "year"}
+                  <div
+                    class={`text-2xl font-medium text-[#1e96fc] ${
+                      buyPackage === "Professional" && interval === "year"
+                        ? "opacity-100 block"
+                        : "opacity-0 hidden"
+                    }`}
+                  >
+                    Current Plan have
+                    <span class="font-medium"
+                      >{dateDiffInDays(new Date(), new Date(endDatePackage))} days
+                      left</span
+                    >
+                  </div>
+
+                  <!-- <div
+                    class={`flex justify-between items-center text-[#1E96FC] font-medium text-2xl ${
+                      buyPackage === "Free" || buyPackage === "Explorer"
+                        ? "opacity-100"
+                        : buyPackage === "Professional" && interval === "year"
+                        ? "opacity-0 cursor-default"
+                        : "opacity-100"
+                    }`}
+                  >
+                    {#if (buyPackage === "Professional" && interval === "month") || buyPackage === "Free" || buyPackage === "Explorer"}
+                      <div
+                        class="flex items-center gap-2 cursor-pointer"
+                        on:click={() => {
+                          selectedPackage({
+                            plan: "Professional",
+                            selectedTypePackage,
+                            price: "$82.5",
+                            isNewUser: undefined,
+                          });
+                        }}
+                      >
+                        Upgrade
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 14 14"
+                          fill="#1E96FC"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
+                            fill=""
+                          />
+                        </svg>
+                      </div>
+                      {#if isNewUser}
+                        <div
+                          class="text-base font-normal underline cursor-pointer xl:text-sm"
+                          on:click={() => {
+                            if (buyPackage === "Professional") {
+                              return;
+                            }
+                            selectedPackage({
+                              plan: "Professional",
+                              selectedTypePackage,
+                              price: "$82.5",
+                              isNewUser,
+                            });
+                          }}
+                        >
+                          Or 30 days Trial
+                        </div>
+                      {/if}
+                    {/if}
+                  </div> -->
+
+                  <!-- remove me -->
+                  <!-- <div class="font-medium text-2xl w-max">
+                    {#if buyPackage === "Free" || (buyPackage === "Professional" && interval === "year")}
+                      {#if buyPackage === "Free"}
+                        <div
+                          class="flex items-center gap-2 cursor-pointer text-[#1E96FC]"
+                          on:click={() => {
+                            selectedPackage({
+                              plan: "Professional",
+                              selectedTypePackage,
+                              price: "$82.5",
+                              isNewUser: undefined,
+                            });
+                          }}
+                        >
+                          Upgrade
+                          <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 14 14"
+                            fill="#1E96FC"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
+                              fill=""
+                            />
+                          </svg>
+                        </div>
+                      {:else}
+                        <div>
+                          {#if isSubscription}
+                            <div
+                              class="text-red-500 cursor-pointer"
+                              on:click={() => (isOpenConfirmCancel = true)}
+                            >
+                              Cancel
+                            </div>
+                          {/if}
+                        </div>
+                      {/if}
+                    {:else}
+                      <div class="opacity-0">
+                        {#if isSubscription}
+                          remove me
+                        {/if}
+                      </div>
+                    {/if}
+                  </div> -->
+
+                  <!-- remove me (flow manual) -->
+                  <div class="font-medium text-2xl w-max">
+                    {#if buyPackage === "Free" || (buyPackage === "Professional" && interval === "month") || (buyPackage === "Explorer" && interval === "month") || (buyPackage === "Explorer" && interval === "year")}
+                      <div
+                        class="flex items-center gap-2 cursor-pointer text-[#1E96FC]"
+                        on:click={() => {
+                          selectedPackage({
+                            plan: "Professional",
+                            selectedTypePackage,
+                            price: "$82.5",
+                            isNewUser: undefined,
+                          });
+                        }}
+                      >
+                        Upgrade
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 14 14"
+                          fill="#1E96FC"
+                          xmlns="http://www.w3.org/2000/svg"
+                          ><path
+                            d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
+                            fill=""
+                          /></svg
+                        >
+                      </div>
+                    {/if}
+                  </div>
+                {/if}
               </div>
             </div>
           {/if}
