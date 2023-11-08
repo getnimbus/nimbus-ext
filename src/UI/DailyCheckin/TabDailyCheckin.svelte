@@ -5,6 +5,7 @@
   import { isDarkMode, user, userPublicAddress } from "~/store";
   import { dailyCheckinTypePortfolio, triggerFirework } from "~/utils";
   import dayjs from "dayjs";
+  import { wait } from "~/entries/background/utils";
 
   import Button from "~/components/Button.svelte";
   import Loading from "~/components/Loading.svelte";
@@ -23,11 +24,15 @@
 
   let selectedType: "collectGMPoint" | "history" = "collectGMPoint";
   let openScreenSuccess: boolean = false;
+  let openScreenBonusScore: boolean = false;
   let isLoadingCheckin: boolean = false;
+  let isTriggerBonusScore: boolean = false;
   let selectedCheckinIndex = 0;
   let selectedIndexRewards: number = 0;
+  let bonusScore: number = 0;
   let isDisabledCheckin = false;
   let listCheckinContainer;
+  let waitCheckinSuccess: boolean = false;
 
   const queryClient = useQueryClient();
 
@@ -43,12 +48,21 @@
     return response.data;
   };
 
-  const triggerCheckinSuccess = () => {
+  const triggerCheckinSuccess = async () => {
     openScreenSuccess = true;
     triggerFirework();
-    setTimeout(() => {
-      openScreenSuccess = false;
-    }, 2000);
+    await wait(2000);
+    openScreenSuccess = false;
+    waitCheckinSuccess = true;
+  };
+
+  const triggerBonusScore = async () => {
+    openScreenBonusScore = true;
+    triggerFirework();
+    await wait(2000);
+    openScreenBonusScore = false;
+    isTriggerBonusScore = false;
+    waitCheckinSuccess = false;
   };
 
   const handleCheckin = async () => {
@@ -56,8 +70,12 @@
     try {
       const response = await nimbus.post(`/v2/checkin`, {});
       if (response?.data !== undefined) {
-        triggerCheckinSuccess();
         isDisabledCheckin = true;
+        triggerCheckinSuccess();
+        if (response?.data?.bonus !== undefined) {
+          bonusScore = response?.data?.bonus;
+          isTriggerBonusScore = true;
+        }
         queryClient.invalidateQueries([$userPublicAddress, "daily-checkin"]);
       }
     } catch (error) {
@@ -66,6 +84,12 @@
       isLoadingCheckin = false;
     }
   };
+
+  $: {
+    if (waitCheckinSuccess && isTriggerBonusScore) {
+      triggerBonusScore();
+    }
+  }
 
   $: queryReward = createQuery({
     queryKey: [$userPublicAddress, "rewards"],
@@ -391,6 +415,31 @@
       />
       <div class="xl:text-2xl text-4xl text-white font-medium">
         +{$queryDailyCheckin?.data?.pointStreak[selectedIndexRewards]} GM Points
+      </div>
+    </div>
+  </div>
+{/if}
+
+{#if openScreenBonusScore}
+  <div
+    class="fixed h-screen w-screen top-0 left-0 z-[19] flex items-center justify-center bg-[#000000cc]"
+    on:click={() => {
+      setTimeout(() => {
+        openScreenBonusScore = false;
+      }, 500);
+    }}
+  >
+    <div class="flex flex-col items-center justify-center gap-10">
+      <div class="xl:text-2xl text-4xl text-white font-medium">
+        Congratulation!!!
+      </div>
+      <img
+        src="https://raw.githubusercontent.com/getnimbus/nimbus-ext/c43eb2dd7d132a2686c32939ea36b0e97055abc7/src/assets/Gold4.svg"
+        alt=""
+        class="w-40 h-40"
+      />
+      <div class="xl:text-2xl text-4xl text-white font-medium">
+        You have received {bonusScore} Bonus GM Points
       </div>
     </div>
   </div>
