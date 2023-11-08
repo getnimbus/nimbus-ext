@@ -76,6 +76,7 @@
     "lottie-web": "^5.12.2",
     "mark.js": "^8.11.1",
     "mixpanel-browser": "^2.47.0",
+    "moralis-v1": "^1.13.0",
     "mousetrap": "^1.6.5",
     "nanoid": "^4.0.2",
     "numeral": "^2.0.6",

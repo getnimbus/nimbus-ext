@@ -139,9 +139,9 @@
 
   $: detailPackage = (item: any) => {
     const contentData =
-      buyPackage === "Free"
+      selectedPricePackage === "Free"
         ? item.content.free
-        : buyPackage === "Explorer"
+        : selectedPricePackage === "Explorer"
         ? item.content.explorer
         : item.content.alpha;
 
@@ -235,7 +235,7 @@
                     For those who starting to invest
                   </div>
                 </div>
-                <div class="w-max min-h-[30px]">
+                <div class="w-max flex items-center min-h-[30px]">
                   <div
                     class={`text-center text-base font-medium text-[#1e96fc] ${
                       buyPackage === "Free"
@@ -295,7 +295,7 @@
                   </div>
                 </div>
 
-                <div class="w-max min-h-[30px]">
+                <div class="w-max flex items-center min-h-[30px]">
                   {#if selectedTypePackage === "month"}
                     <div
                       class={`text-base font-medium text-[#1e96fc] ${
@@ -634,7 +634,7 @@
                   </div>
                 </div>
 
-                <div class="w-max min-h-[30px]">
+                <div class="w-max flex items-center min-h-[30px]">
                   {#if selectedTypePackage === "month"}
                     <div
                       class={`text-base font-medium text-[#1e96fc] ${
