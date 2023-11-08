@@ -185,17 +185,6 @@ export const typeClosedHoldingTokenChart = [
   },
 ];
 
-export const typePackage = [
-  {
-    label: "Monthly",
-    value: "month",
-  },
-  {
-    label: "Yearly (Save 17%)",
-    value: "year",
-  },
-];
-
 export const filterAvgCostType = [
   {
     label: "All",
