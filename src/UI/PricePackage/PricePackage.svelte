@@ -139,9 +139,9 @@
 
   $: detailPackage = (item: any) => {
     const contentData =
-      buyPackage === "Free"
+      selectedPricePackage === "Free"
         ? item.content.free
-        : buyPackage === "Explorer"
+        : selectedPricePackage === "Explorer"
         ? item.content.explorer
         : item.content.alpha;
 
