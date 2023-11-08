@@ -161,13 +161,23 @@
 <div class="flex flex-col gap-5">
   <div class="flex lg:flex-row flex-col justify-between gap-4">
     <div class="flex-1 flex flex-col gap-1 input-2 w-full p-4">
-      <div class="xl:text-base text-2xl text-[#666666] font-medium">
+      <div
+        class={`xl:text-base text-2xl font-medium ${
+          $isDarkMode ? "text-gray-400" : "text-[#666666]"
+        }`}
+      >
         Virtual portfolio name
       </div>
       <input
         type="text"
         placeholder="Your virtual portfolio name"
-        class="py-1 px-[6px] rounded-[3px] focus:outline-none focus:ring-0 xl:text-base text-lg font-normal text-[#5E656B] placeholder-[#5E656B]"
+        class={`py-1 px-[6px] rounded-[3px] focus:outline-none focus:ring-0 xl:text-base text-lg font-normal ${
+          virtualPortfolioName && !$isDarkMode
+            ? "bg-[#F0F2F7]"
+            : "bg-transparent"
+        } ${
+          $isDarkMode ? "text-white" : "text-[#5E656B] placeholder-[#5E656B]"
+        }`}
         style="border: 1px solid rgba(103, 113, 137, 0.3)"
         value={virtualPortfolioName}
         on:keyup={(e) => (virtualPortfolioName = e.target.value)}
@@ -208,7 +218,7 @@
         </div>
         <div
           class={`border focus:outline-none md:w-max w-full py-[6px] px-3 rounded-lg ${
-            searchValue ? "bg-[#F0F2F7]" : "bg-white"
+            searchValue && !$isDarkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
           }`}
         >
           <input
@@ -216,8 +226,12 @@
             value={searchValue}
             placeholder={"Find by token name"}
             type="text"
-            class={`w-full p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
-              searchValue ? "bg-[#F0F2F7]" : ""
+            class={`w-full p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal ${
+              searchValue && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+            } ${
+              $isDarkMode
+                ? "text-white"
+                : "text-[#5E656B] placeholder-[#5E656B]"
             }`}
           />
         </div>
@@ -464,7 +478,11 @@
                       });
                     }
                   }}
-                  class="w-max border-none focus:outline-none focus:ring-0 xl:text-xl text-3xl font-normal text-[#5E656B] placeholder-[#5E656B] text-center"
+                  class={`w-max border-none focus:outline-none focus:ring-0 xl:text-xl text-3xl font-normal text-center ${
+                    $isDarkMode
+                      ? "text-white"
+                      : "text-[#5E656B] placeholder-[#5E656B]"
+                  }`}
                 />
                 <div
                   class="flex-1 flex justify-center items-center xl:text-3xl text-5xl text-gray-500"
@@ -550,7 +568,14 @@
   </div>
 </div>
 
-<style>
+<style windi:preflights:global windi:safelist:global>
+  :global(body) .bg_fafafbff {
+    background: #fafafbff;
+  }
+  :global(body.dark) .bg_fafafbff {
+    background: #212121;
+  }
+
   :root {
     --date-input-width: 100%;
     --date-picker-background: white;

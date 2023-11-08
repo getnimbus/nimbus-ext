@@ -817,17 +817,25 @@
                   : "bg_fafafbff"
               }`}
             >
-              <div class="xl:text-base text-2xl text-[#666666] font-medium">
+              <div
+                class={`xl:text-base text-2xl font-medium ${
+                  $isDarkMode ? "text-gray-400" : "text-[#666666]"
+                }`}
+              >
                 Category
               </div>
               <input
                 type="text"
                 placeholder="Your category name"
                 required
-                class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
+                class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal ${
                   formData.category && !$isDarkMode
                     ? "bg-[#F0F2F7]"
                     : "bg-transparent"
+                } ${
+                  $isDarkMode
+                    ? "text-white"
+                    : "text-[#5E656B] placeholder-[#5E656B]"
                 }`}
                 bind:value={formData.category}
                 on:blur={() => {
@@ -854,10 +862,14 @@
                         <input
                           type="text"
                           placeholder="Your tag name"
-                          class={`flex-1 p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
+                          class={`flex-1 p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal ${
                             query && !$isDarkMode
                               ? "bg-[#F0F2F7]"
                               : "bg-transparent"
+                          } ${
+                            $isDarkMode
+                              ? "text-white"
+                              : "text-[#5E656B] placeholder-[#5E656B]"
                           }`}
                           on:focus={() => {
                             showSuggestListTag = true;
@@ -928,7 +940,11 @@
                                           <input
                                             type="text"
                                             placeholder="Your category name"
-                                            class={`bg-transparent p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] w-full`}
+                                            class={`bg-transparent p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal w-full ${
+                                              $isDarkMode
+                                                ? "text-white"
+                                                : "text-[#5E656B] placeholder-[#5E656B]"
+                                            }`}
                                             bind:value={tag}
                                             on:keyup={({ target: { value } }) =>
                                               (tag = value)}
@@ -1043,10 +1059,14 @@
                       bind:value={searchValue}
                       placeholder={"Find by token name"}
                       type="text"
-                      class={`w-full p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
+                      class={`w-full p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal ${
                         searchValue && !$isDarkMode
                           ? "bg-[#F0F2F7]"
                           : "bg-transparent"
+                      } ${
+                        $isDarkMode
+                          ? "text-white"
+                          : "text-[#5E656B] placeholder-[#5E656B]"
                       }`}
                     />
                   </div>

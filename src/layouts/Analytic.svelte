@@ -198,7 +198,11 @@
                 email && !$isDarkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
               }`}
             >
-              <div class="xl:text-base text-2xl text-[#666666] font-medium">
+              <div
+                class={`xl:text-base text-2xl text-[#666666] font-medium ${
+                  $isDarkMode ? "text-gray-400" : "text-[#666666]"
+                }`}
+              >
                 Email
               </div>
               <input
@@ -207,8 +211,12 @@
                 name="email"
                 placeholder="Your email"
                 value=""
-                class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
+                class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal ${
                   email && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+                } ${
+                  $isDarkMode
+                    ? "text-white"
+                    : "text-[#5E656B] placeholder-[#5E656B]"
                 }
               `}
                 on:keyup={({ target: { value } }) => (email = value)}
@@ -249,6 +257,13 @@
 </ErrorBoundary>
 
 <style windi:preflights:global windi:safelist:global>
+  :global(body) .bg_fafafbff {
+    background: #fafafbff;
+  }
+  :global(body.dark) .bg_fafafbff {
+    background: #212121;
+  }
+
   .input-border {
     border: 1px solid rgb(229, 231, 235);
   }
