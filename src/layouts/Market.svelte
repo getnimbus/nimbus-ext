@@ -3,6 +3,7 @@
   import { nimbus } from "~/lib/network";
   import { i18n } from "~/lib/i18n";
   import mixpanel from "mixpanel-browser";
+  import { isDarkMode } from "~/store";
 
   import Loading from "~/components/Loading.svelte";
   import MarketItem from "~/components/MarketItem.svelte";
@@ -104,7 +105,7 @@
         <div class="flex flex-1 gap-3">
           <div
             class={`flex-1 border focus:outline-none w-full py-[6px] px-3 rounded-lg ${
-              searchValue ? "bg-[#F0F2F7]" : "bg-white"
+              searchValue && !$isDarkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
             }`}
           >
             <input
@@ -117,14 +118,18 @@
               value={searchValue}
               placeholder={MultipleLang.market_search_symbol}
               type="text"
-              class={`w-full p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
-                searchValue ? "bg-[#F0F2F7]" : ""
+              class={`w-full p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal ${
+                searchValue && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+              } ${
+                $isDarkMode
+                  ? "text-white"
+                  : "text-[#5E656B] placeholder-[#5E656B]"
               }`}
             />
           </div>
           <div
             class={`flex-[0.7] border focus:outline-none w-full py-[6px] px-3 rounded-lg ${
-              amountValue ? "bg-[#F0F2F7]" : "bg-white"
+              amountValue && !$isDarkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
             }`}
           >
             <input
@@ -150,8 +155,12 @@
               step="0.01"
               autocorrect="off"
               autocomplete="off"
-              class={`w-full p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
-                amountValue ? "bg-[#F0F2F7]" : ""
+              class={`w-full p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal ${
+                amountValue && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+              } ${
+                $isDarkMode
+                  ? "text-white"
+                  : "text-[#5E656B] placeholder-[#5E656B]"
               }`}
             />
           </div>
@@ -231,4 +240,11 @@
   </div>
 </ErrorBoundary>
 
-<style></style>
+<style windi:preflights:global windi:safelist:global>
+  :global(body) .bg_fafafbff {
+    background: #fafafbff;
+  }
+  :global(body.dark) .bg_fafafbff {
+    background: #212121;
+  }
+</style>

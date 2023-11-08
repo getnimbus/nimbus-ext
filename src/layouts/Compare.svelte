@@ -1048,7 +1048,7 @@
             <div class="w-full mb-6 text-4xl font-medium xl:text-2xl">
               {MultipleLang.token_allocation}
             </div>
-            {#if $query.isFetching && $queryPersonalTag.isFetching}
+            {#if $query.isFetching}
               <div class="flex items-center justify-center h-[465px]">
                 <LoadingPremium />
               </div>
@@ -1259,10 +1259,14 @@
                                   value={search}
                                   placeholder={"Search address to compare"}
                                   type="text"
-                                  class={`w-full p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] h-full ${
+                                  class={`w-full p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal h-full ${
                                     searchCompare && !$isDarkMode
                                       ? "bg-[#F0F2F7]"
                                       : "bg-transparent"
+                                  } ${
+                                    $isDarkMode
+                                      ? "text-white"
+                                      : "text-[#5E656B] placeholder-[#5E656B]"
                                   }`}
                                 />
                               </div>
@@ -1560,5 +1564,12 @@
   :global(body.dark) .select_content {
     background: #131313;
     border: 0.5px solid #cdcdcd59;
+  }
+
+  :global(body) .bg_fafafbff {
+    background: #fafafbff;
+  }
+  :global(body.dark) .bg_fafafbff {
+    background: #212121;
   }
 </style>
