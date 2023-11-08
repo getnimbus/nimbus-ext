@@ -341,13 +341,14 @@
                     } `}
                   >
                     <th class="py-2 pl-3 text-left font-medium">Date</th>
+                    <th class="py-2 text-left font-medium">Type</th>
                     <th class="py-2 pr-3 text-right font-medium">Point</th>
                   </tr>
                 </thead>
                 {#if $queryDailyCheckin?.data === undefined}
                   <tbody>
                     <tr>
-                      <td colspan="2">
+                      <td colspan="3">
                         <div
                           class="flex items-center justify-center h-full px-3 py-4"
                         >
@@ -360,19 +361,28 @@
                   <tbody>
                     {#if $queryDailyCheckin?.data?.checkinLogs.length === 0}
                       <tr>
-                        <td class="text-center py-2" colspan="2"
-                          >You didn't checkin before</td
-                        >
+                        <td class="text-center py-2" colspan="3">
+                          You didn't checkin before
+                        </td>
                       </tr>
                     {/if}
-                    {#each $queryDailyCheckin?.data?.checkinLogs || [] as { point, createdAt }}
+                    {#each $queryDailyCheckin?.data?.checkinLogs || [] as { point, type, createdAt }}
                       <tr>
-                        <td class="py-2 pl-3 text-left"
-                          >{dayjs(createdAt).format("YYYY-MM-DD")}</td
+                        <td class="py-2 pl-3 text-left">
+                          {dayjs(createdAt).format("YYYY-MM-DD")}
+                        </td>
+                        <td class="py-2">{type}</td>
+                        <td
+                          class={`py-2 pr-3 text-right ${
+                            point > 0
+                              ? "text-green-500"
+                              : point < 0
+                              ? "text-red-500"
+                              : ""
+                          }`}
                         >
-                        <td class="py-2 pr-3 text-right text-green-500"
-                          >{point}</td
-                        >
+                          {point}
+                        </td>
                       </tr>
                     {/each}
                   </tbody>
