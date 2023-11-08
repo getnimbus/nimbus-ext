@@ -276,9 +276,17 @@
       <div class="flex flex-col xl:gap-3 gap-6">
         <div class="flex flex-col gap-1">
           <div
-            class="flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 bg-[#F0F2F7]"
+            class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
+              selectedHighlight.address && !$isDarkMode
+                ? "bg-[#F0F2F7]"
+                : "bg_fafafbff"
+            }`}
           >
-            <div class="xl:text-base text-2xl font-semibold text-gray-700">
+            <div
+              class={`xl:text-base text-2xl font-semibold ${
+                $isDarkMode ? "text-gray-400" : "text-[#666666]"
+              }`}
+            >
               {MultipleLang.content.modal_address_label}
             </div>
             <input
@@ -288,19 +296,31 @@
               placeholder={MultipleLang.content.modal_address_label}
               value={selectedHighlight.address}
               disabled
-              class="p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] bg-[#F0F2F7]"
+              class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal ${
+                selectedHighlight.address && !$isDarkMode
+                  ? "bg-[#F0F2F7]"
+                  : "bg-transparent"
+              } ${
+                $isDarkMode
+                  ? "text-white"
+                  : "text-[#5E656B] placeholder-[#5E656B]"
+              }`}
             />
           </div>
         </div>
         <div class="flex flex-col gap-1">
           <div
             class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
-              label ? "bg-[#F0F2F7]" : ""
+              label && !$isDarkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
             }`}
             class:input-border-error={errorsEdit.label &&
               errorsEdit.label.required}
           >
-            <div class="xl:text-base text-2xl font-semibold text-gray-700">
+            <div
+              class={`xl:text-base text-2xl font-semibold ${
+                $isDarkMode ? "text-gray-400" : "text-[#666666]"
+              }`}
+            >
               {MultipleLang.content.label_header_table}
             </div>
             <input
@@ -309,8 +329,12 @@
               name="label"
               placeholder={MultipleLang.content.label_header_table}
               bind:value={selectedHighlight.label}
-              class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
-                label ? "bg-[#F0F2F7]" : ""
+              class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal ${
+                label && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+              } ${
+                $isDarkMode
+                  ? "text-white"
+                  : "text-[#5E656B] placeholder-[#5E656B]"
               }`}
               on:keyup={({ target: { value } }) => (label = value)}
             />
@@ -384,7 +408,13 @@
   </div>
 </AppOverlay>
 
-<style>
+<style windi:preflights:global windi:safelist:global>
+  :global(body) .bg_fafafbff {
+    background: #fafafbff;
+  }
+  :global(body.dark) .bg_fafafbff {
+    background: #212121;
+  }
   :global(body) .bg_f4f5f8 {
     background: #f4f5f8;
   }

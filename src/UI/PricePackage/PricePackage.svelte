@@ -1945,8 +1945,10 @@
           required
           placeholder="Couple code"
           value=""
-          class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
+          class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal ${
             code && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+          } ${
+            $isDarkMode ? "text-white" : "text-[#5E656B] placeholder-[#5E656B]"
           }`}
           on:keyup={({ target: { value } }) => (code = value)}
         />
@@ -2054,6 +2056,13 @@
 {/if}
 
 <style windi:preflights:global windi:safelist:global>
+  :global(body) .bg_fafafbff {
+    background: #fafafbff;
+  }
+  :global(body.dark) .bg_fafafbff {
+    background: #212121;
+  }
+
   .underline-dashed {
     text-decoration: underline 1.5px dotted;
     text-underline-offset: 3px;
