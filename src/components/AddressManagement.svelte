@@ -1959,6 +1959,13 @@
     border: 0.5px solid #cdcdcd59;
   }
 
+  :global(body) .bg_fafafbff {
+    background: #fafafbff;
+  }
+  :global(body.dark) .bg_fafafbff {
+    background: #212121;
+  }
+
   .switch {
     position: relative;
     display: inline-block;
