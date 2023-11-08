@@ -5,6 +5,7 @@
   import { isDarkMode, user, userPublicAddress } from "~/store";
   import { dailyCheckinTypePortfolio, triggerFirework } from "~/utils";
   import dayjs from "dayjs";
+  import { wait } from "~/entries/background/utils";
 
   import Button from "~/components/Button.svelte";
   import Loading from "~/components/Loading.svelte";
@@ -47,23 +48,21 @@
     return response.data;
   };
 
-  const triggerCheckinSuccess = () => {
+  const triggerCheckinSuccess = async () => {
     openScreenSuccess = true;
     triggerFirework();
-    setTimeout(() => {
-      openScreenSuccess = false;
-      waitCheckinSuccess = true;
-    }, 2000);
+    await wait(2000);
+    openScreenSuccess = false;
+    waitCheckinSuccess = true;
   };
 
-  const triggerBonusScore = () => {
+  const triggerBonusScore = async () => {
     openScreenBonusScore = true;
     triggerFirework();
-    setTimeout(() => {
-      openScreenBonusScore = false;
-      isTriggerBonusScore = false;
-      waitCheckinSuccess = false;
-    }, 2000);
+    await wait(2000);
+    openScreenBonusScore = false;
+    isTriggerBonusScore = false;
+    waitCheckinSuccess = false;
   };
 
   const handleCheckin = async () => {
@@ -71,11 +70,10 @@
     try {
       const response = await nimbus.post(`/v2/checkin`, {});
       if (response?.data !== undefined) {
-        triggerCheckinSuccess();
         isDisabledCheckin = true;
-        const responseBonusData = 50;
-        if (responseBonusData !== undefined) {
-          bonusScore = responseBonusData;
+        triggerCheckinSuccess();
+        if (response?.data?.bonus !== undefined) {
+          bonusScore = response?.data?.bonus;
           isTriggerBonusScore = true;
         }
         queryClient.invalidateQueries([$userPublicAddress, "daily-checkin"]);
@@ -87,9 +85,10 @@
     }
   };
 
-  $: if (waitCheckinSuccess && isTriggerBonusScore) {
-    // wait for checkin success and triggerbonus available to trigger
-    triggerBonusScore();
+  $: {
+    if (waitCheckinSuccess && isTriggerBonusScore) {
+      triggerBonusScore();
+    }
   }
 
   $: queryReward = createQuery({
