@@ -205,15 +205,16 @@
         .map((item) => {
           return {
             ...item,
+            current_native_token: item?.floorPrice * item?.tokens?.length,
             current_value:
               item?.floorPrice * item?.marketPrice * item?.tokens?.length,
           };
         })
         .sort((a, b) => {
-          if (a.current_value < b.current_value) {
+          if (a.current_native_token < b.current_native_token) {
             return 1;
           }
-          if (a.current_value > b.current_value) {
+          if (a.current_native_token > b.current_native_token) {
             return -1;
           }
           return 0;
@@ -276,6 +277,7 @@
           return {
             ...item,
             marketPrice: Number(marketPriceToken.market_price),
+            current_native_token: item?.floorPrice * item?.tokens?.length,
             current_value:
               item?.floorPrice *
               Number(marketPriceToken.market_price) *
@@ -286,10 +288,10 @@
       });
 
       formatDataNFT = formatDataNFTWithMarketPrice.sort((a, b) => {
-        if (a.current_value < b.current_value) {
+        if (a.current_native_token < b.current_native_token) {
           return 1;
         }
-        if (a.current_value > b.current_value) {
+        if (a.current_native_token > b.current_native_token) {
           return -1;
         }
         return 0;

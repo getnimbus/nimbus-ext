@@ -1,17 +1,13 @@
 <script>
   import { typeWallet, isDarkMode, isHidePortfolio } from "~/store";
-  import {
-    detectedChain,
-    shorterName,
-    handleImgError,
-    shorterAddress,
-  } from "~/utils";
+  import { detectedChain, shorterName, shorterAddress } from "~/utils";
   import CopyToClipboard from "svelte-copy-to-clipboard";
   import { wait } from "../entries/background/utils";
 
   import "~/components/Tooltip.custom.svelte";
   import tooltip from "~/entries/contentScript/views/tooltip";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
+  import Image from "~/components/Image.svelte";
   import OverlaySidebar from "./OverlaySidebar.svelte";
   import TokenDetailSidebar from "~/UI/TokenDetail/TokenDetailSidebar.svelte";
 
@@ -72,20 +68,12 @@
   >
     <div class="text-left flex items-center gap-3">
       <div class="relative">
-        <img
-          src={data.logo ||
-            "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"}
-          alt=""
-          width="30"
-          height="30"
-          class="rounded-full"
-          on:error={(e) =>
-            handleImgError(
-              e,
-              data.logo,
-              "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
-            )}
-        />
+        <div class="rounded-full w-[30px] h-[30px] overflow-hidden">
+          <Image
+            logo={data.logo}
+            defaultLogo="https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
+          />
+        </div>
         {#if ($typeWallet === "EVM" || $typeWallet === "BUNDLE") && data?.chain !== "CEX"}
           <div class="absolute -top-2 -right-1">
             <img
@@ -554,20 +542,12 @@
       <div class="flex flex-col gap-2">
         <div class="flex items-center gap-4">
           <div class="relative">
-            <img
-              src={data.logo ||
-                "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"}
-              alt=""
-              width="46"
-              height="46"
-              class="rounded-full"
-              on:error={(e) =>
-                handleImgError(
-                  e,
-                  data.logo,
-                  "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
-                )}
-            />
+            <div class="rounded-full w-[46px] h-[46px] overflow-hidden">
+              <Image
+                logo={data.logo}
+                defaultLogo="https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
+              />
+            </div>
             {#if ($typeWallet === "EVM" || $typeWallet === "BUNDLE") && selectedTokenDetail?.chain !== "CEX"}
               <div class="absolute -top-2 -right-1">
                 <img

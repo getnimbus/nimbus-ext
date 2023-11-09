@@ -1,6 +1,6 @@
 <script lang="ts">
   import { useNavigate } from "svelte-navigator";
-  import { shorterName, detectedChain, handleImgError } from "~/utils";
+  import { shorterName, detectedChain } from "~/utils";
   import { typeWallet, isDarkMode } from "~/store";
   import mixpanel from "mixpanel-browser";
 
@@ -10,6 +10,7 @@
   import OverlaySidebar from "./OverlaySidebar.svelte";
   import NftDetailSidebar from "~/UI/NFTDetail/NFTDetailSidebar.svelte";
   import Copy from "~/components/Copy.svelte";
+  import Image from "~/components/Image.svelte";
 
   import TrendUp from "~/assets/trend-up.svg";
   import TrendDown from "~/assets/trend-down.svg";
@@ -44,7 +45,7 @@
   $: profitAndLoss =
     totalNativeTokenPrice === 0
       ? 0
-      : data?.current_value - (totalNativeTokenPrice || 0);
+      : data?.current_native_token - (totalNativeTokenPrice || 0);
 
   $: profitAndLossPercent =
     totalNativeTokenPrice === 0
@@ -119,34 +120,26 @@
       >
         {#if data?.tokens?.length > 5}
           {#each data?.tokens.slice(0, 4) as token, index}
-            <img
-              src={token?.imageUrl ||
-                "https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"}
-              on:error={(e) =>
-                handleImgError(
-                  e,
-                  token?.imageUrl,
-                  "https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"
-                )}
-              alt=""
+            <div
               class={`xl:w-9 xl:h-9 w-12 h-12 rounded-md border border-gray-300 overflow-hidden ${
                 index > 0 && "-ml-2"
               }`}
-            />
+            >
+              <Image
+                logo={token?.imageUrl}
+                defaultLogo="https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"
+              />
+            </div>
           {/each}
           <div class="relative xl:w-9 xl:h-9 w-12 h-12">
-            <img
-              src={data?.tokens[4].imageUrl ||
-                "https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"}
-              on:error={(e) =>
-                handleImgError(
-                  e,
-                  data?.tokens[4].imageUrl,
-                  "https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"
-                )}
-              alt=""
+            <div
               class="xl:w-9 xl:h-9 w-12 h-12 rounded-md border border-gray-300 overflow-hidden -ml-2"
-            />
+            >
+              <Image
+                logo={data?.tokens[4].imageUrl}
+                defaultLogo="https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"
+              />
+            </div>
             <div
               class="absolute top-0 -left-2 w-full h-full bg-[#00000066] text-white text-center flex justify-center items-center pb-2 rounded-md"
             >
@@ -162,20 +155,16 @@
           {/if}
         {:else}
           {#each data?.tokens as token, index}
-            <img
-              src={token?.imageUrl ||
-                "https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"}
-              on:error={(e) =>
-                handleImgError(
-                  e,
-                  token?.imageUrl,
-                  "https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"
-                )}
-              alt=""
+            <div
               class={`xl:w-9 xl:h-9 w-12 h-12 rounded-md border border-gray-300 overflow-hidden ${
                 index > 0 && "-ml-2"
               }`}
-            />
+            >
+              <Image
+                logo={token?.imageUrl}
+                defaultLogo="https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"
+              />
+            </div>
           {/each}
         {/if}
       </div>
@@ -233,14 +222,17 @@
     >
       <div class="w-max flex items-center gap-1">
         <TooltipNumber
-          number={Number(data?.current_value) / data?.marketPrice}
+          number={Number(data?.current_native_token)}
           type="balance"
         />
         <div>
           {data?.nativeToken?.symbol || ""}
         </div>
       </div>
-      <TooltipNumber number={data?.current_value} type="value" />
+      <TooltipNumber
+        number={Number(data?.current_native_token) * data?.marketPrice}
+        type="value"
+      />
     </div>
   </td>
 

@@ -3,8 +3,9 @@
   import dayjs from "dayjs";
   import { nimbus } from "~/lib/network";
   import { user } from "~/store";
-  import { shorterName, handleImgError } from "~/utils";
+  import { shorterName } from "~/utils";
 
+  import Image from "~/components/Image.svelte";
   import Loading from "~/components/Loading.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
 
@@ -117,20 +118,12 @@
             {#each top5ProfitToken as item}
               <div class="flex items-center justify-between gap-2">
                 <div class="flex-1 flex items-center gap-2">
-                  <img
-                    src={item?.logo ||
-                      "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"}
-                    alt=""
-                    width="30"
-                    height="30"
-                    on:error={(e) =>
-                      handleImgError(
-                        e,
-                        item?.logo,
-                        "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
-                      )}
-                    class="rounded-full"
-                  />
+                  <div class="w-[30px] h-[30px] object-contain overflow-hidden">
+                    <Image
+                      logo={item?.logo}
+                      defaultLogo="https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
+                    />
+                  </div>
                   <span class="flex flex-col">
                     <span class="text-lg xl:text-base font-medium">
                       {item.name}
@@ -173,19 +166,12 @@
             {#each top5LossToken as item}
               <div class="h-full flex items-center justify-between gap-2">
                 <div class="flex-1 flex items-center gap-2">
-                  <img
-                    src={item.logo}
-                    alt=""
-                    width="30"
-                    height="30"
-                    on:error={(e) =>
-                      handleImgError(
-                        e,
-                        item?.logo,
-                        "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
-                      )}
-                    class="rounded-full"
-                  />
+                  <div class="w-[30px] h-[30px] object-contain overflow-hidden">
+                    <Image
+                      logo={item?.logo}
+                      defaultLogo="https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
+                    />
+                  </div>
                   <span class="flex flex-col">
                     <span class="text-lg xl:text-base font-medium">
                       {item.name}

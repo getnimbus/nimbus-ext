@@ -46,6 +46,9 @@
 
       data = {
         ...selectedCollection,
+        current_native_value:
+          Number(selectedCollection?.floorPrice) *
+          selectedCollection?.tokens?.length,
         current_value:
           Number(selectedCollection?.floorPrice) *
           Number(selectedCollection?.marketPrice) *
@@ -92,7 +95,11 @@
       data = {
         ...data,
         marketPrice: Number(marketPriceNFT.market_price),
-        current_value: Number(data?.floorPrice) * Number(marketPriceNFT.market_price) * data?.tokens?.length,
+        current_native_value: Number(data?.floorPrice) * data?.tokens?.length,
+        current_value:
+          Number(data?.floorPrice) *
+          Number(marketPriceNFT.market_price) *
+          data?.tokens?.length,
       };
     }
   }
@@ -110,7 +117,7 @@
   $: profitAndLoss =
     totalNativeTokenPrice === 0
       ? 0
-      : Number(data?.current_value) - Number(totalNativeTokenPrice || 0);
+      : Number(data?.current_native_value) - Number(totalNativeTokenPrice || 0);
 
   $: profitAndLossPercent =
     totalNativeTokenPrice === 0
