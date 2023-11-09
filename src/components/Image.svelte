@@ -5,15 +5,11 @@
 
   export let logo;
   export let defaultLogo;
-  export let width = 30;
-  export let height = 30;
 </script>
 
 <img
-  src={logo}
+  src={logo || defaultLogo}
   alt=""
-  {width}
-  {height}
-  class="rounded-full"
+  class="w-full h-full"
   on:error={(e) => handleImgError(e, logo, defaultLogo)}
 />
