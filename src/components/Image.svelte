@@ -10,6 +10,6 @@
 <img
   src={logo || defaultLogo}
   alt=""
-  class="w-full h-full"
+  class="w-full h-full object-contain"
   on:error={(e) => handleImgError(e, logo, defaultLogo)}
 />
