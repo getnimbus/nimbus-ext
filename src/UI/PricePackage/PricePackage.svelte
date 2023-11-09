@@ -3,7 +3,6 @@
   import { nimbus } from "~/lib/network";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
   import { isDarkMode, user, wallet, chain, typeWallet } from "~/store";
-  import { useNavigate } from "svelte-navigator";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
   import { priceTable } from "~/UI/PricePackage/DataTable";
@@ -15,7 +14,6 @@
 
   export let selectedPackage = (item) => {};
 
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   let selectedPricePackage = "Free";
@@ -433,7 +431,7 @@
                             selectedPackage({
                               plan: "Explorer",
                               selectedTypePackage,
-                              price: "$9.99",
+                              price: 9.99,
                               isNewUser: undefined,
                             });
                           }}
@@ -594,7 +592,7 @@
                             selectedPackage({
                               plan: "Explorer",
                               selectedTypePackage,
-                              price: "$8.25",
+                              price: 8.25,
                               isNewUser: undefined,
                             });
                           }}
@@ -776,7 +774,7 @@
                             selectedPackage({
                               plan: "Professional",
                               selectedTypePackage,
-                              price: "$99",
+                              price: 99.99,
                               isNewUser: undefined,
                             });
                           }}
@@ -928,7 +926,7 @@
                             selectedPackage({
                               plan: "Professional",
                               selectedTypePackage,
-                              price: "$82.5",
+                              price: 82.5,
                               isNewUser: undefined,
                             });
                           }}
@@ -1330,7 +1328,7 @@
                           selectedPackage({
                             plan: "Explorer",
                             selectedTypePackage,
-                            price: "$9.99",
+                            price: 9.99,
                             isNewUser: undefined,
                           });
                         }}
@@ -1491,7 +1489,7 @@
                           selectedPackage({
                             plan: "Explorer",
                             selectedTypePackage,
-                            price: "$8.25",
+                            price: 8.25,
                             isNewUser: undefined,
                           });
                         }}
@@ -1680,7 +1678,7 @@
                           selectedPackage({
                             plan: "Professional",
                             selectedTypePackage,
-                            price: "$99",
+                            price: 99.99,
                             isNewUser: undefined,
                           });
                         }}
@@ -1832,7 +1830,7 @@
                           selectedPackage({
                             plan: "Professional",
                             selectedTypePackage,
-                            price: "$82.5",
+                            price: 82.5,
                             isNewUser: undefined,
                           });
                         }}

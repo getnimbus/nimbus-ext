@@ -4,6 +4,7 @@
   import { Link } from "svelte-navigator";
   import "flowbite/dist/flowbite.css";
   import { Toast } from "flowbite-svelte";
+  import { blur } from "svelte/transition";
   import { useNavigate } from "svelte-navigator";
   import { selectedPackage, user, wallet, chain, typeWallet } from "~/store";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";

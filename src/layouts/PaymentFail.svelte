@@ -3,6 +3,7 @@
   import { nimbus } from "~/lib/network";
   import "flowbite/dist/flowbite.css";
   import { isDarkMode } from "~/store";
+  import { blur } from "svelte/transition";
 
   import Button from "~/components/Button.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";

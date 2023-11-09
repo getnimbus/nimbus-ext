@@ -1,27 +1,35 @@
 <script lang="ts">
   import { nimbus } from "~/lib/network";
   import { isDarkMode } from "~/store";
+  import { Toast } from "flowbite-svelte";
+  import { blur } from "svelte/transition";
+  import { wagmiAbi } from "~/lib/viem-evm-abi";
+  import { publicClient } from "~/lib/viem-client";
+  import { mainnet } from "viem/chains";
 
   import PricePackage from "~/UI/PricePackage/PricePackage.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import Button from "~/components/Button.svelte";
   import Copy from "~/components/Copy.svelte";
 
-  import Bnb from "~/assets/bnb.png";
   import Ethereum from "~/assets/ethereum.png";
-  import Matic from "~/assets/matic.png";
   import Solana from "~/assets/solana.png";
+  import Bnb from "~/assets/bnb.png";
+  import Matic from "~/assets/matic.png";
+
+  const usdcAddress = "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48";
+  const receiveAddress = "0x6AedbE81435BBD67e2223eadd256992DC64fc90B";
 
   const listChain = [
     {
-      logo: Solana,
-      label: "Solana",
-      value: "sol",
+      logo: Ethereum,
+      label: "Ethereum",
+      value: "eth",
     },
     // {
-    //   logo: Ethereum,
-    //   label: "Ethereum",
-    //   value: "eth",
+    //   logo: Solana,
+    //   label: "Solana",
+    //   value: "sol",
     // },
     // {
     //   logo: Bnb,
@@ -35,6 +43,24 @@
     // },
   ];
 
+  let toastMsg = "";
+  let isSuccessToast = false;
+  let counter = 3;
+  let showToast = false;
+
+  const trigger = () => {
+    showToast = true;
+    counter = 3;
+    timeout();
+  };
+
+  const timeout = () => {
+    if (--counter > 0) return setTimeout(timeout, 1000);
+    showToast = false;
+    toastMsg = "";
+    isSuccessToast = false;
+  };
+
   let isLoadingBuy = false;
   let selectedPackage;
 
@@ -43,48 +69,59 @@
   };
 
   const handleBuy = async (chainValue: string) => {
+    const account = await publicClient.requestAddresses();
+
     const formatData = {
       plan: selectedPackage.plan,
       interval: selectedPackage.selectedTypePackage,
       chain: chainValue,
       isTrial: selectedPackage.isNewUser,
     };
+
     isLoadingBuy = true;
     try {
-      const response = await nimbus.post(
-        "/v2/payments/create-session",
-        formatData
-      );
-      if (response && response?.data) {
-        isLoadingBuy = false;
-        window.location.replace(response?.data?.url);
+      if (chainValue === "sol") {
+        const response = await nimbus.post(
+          "/v2/payments/create-session",
+          formatData
+        );
+        if (response && response?.data) {
+          window.location.replace(response?.data?.url);
+        }
+      }
+
+      if (chainValue === "eth") {
+        const price =
+          selectedPackage.selectedTypePackage === "year"
+            ? selectedPackage.price * 12
+            : selectedPackage.price;
+        console.log("price: ", price);
+
+        // Todo: update $ to usdc amount
+
+        publicClient
+          .writeContract({
+            address: usdcAddress,
+            account: account[0],
+            chain: mainnet,
+            abi: wagmiAbi,
+            functionName: "transfer",
+            args: [receiveAddress, BigInt(10 * 1000000)],
+          })
+          .catch((e) => {
+            console.error("error", e);
+            toastMsg =
+              "Transfer amount exceeds balance in your wallet. Please try again!";
+            isSuccessToast = false;
+            trigger();
+          });
       }
     } catch (e) {
       console.error(e);
       isLoadingBuy = false;
+    } finally {
+      isLoadingBuy = false;
     }
-  };
-
-  import { wagmiAbi } from "~/lib/viem-evm-abi";
-  import { publicClient } from "~/lib/viem-client";
-  import { mainnet } from "viem/chains";
-
-  const handleTriggerWallet = async () => {
-    const account = await publicClient.requestAddresses().catch((e) => {
-      console.log("error", e);
-    });
-
-    const usdcAddress = "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48";
-    const ceoAddress = "0x6AedbE81435BBD67e2223eadd256992DC64fc90B";
-
-    publicClient.writeContract({
-      address: usdcAddress,
-      account: account[0],
-      chain: mainnet,
-      abi: wagmiAbi,
-      functionName: "transfer",
-      args: [ceoAddress, BigInt(10 * 1000000)],
-    });
   };
 </script>
 
@@ -102,110 +139,25 @@
       </div>
     </div>
 
-    <div on:click={handleTriggerWallet}>Test trigger wallet</div>
-
     {#if selectedPackage && Object.keys(selectedPackage).length !== 0}
       <div class="flex flex-col justify-center min-h-[70vh]">
-        <!-- manual payment -->
-        <div class="xl:text-lg text-2xl mb-3">
-          Please follow this payment steps:
-        </div>
-        <ul class="xl:text-lg text-2xl flex flex-col gap-5">
-          <li>
-            <span class="xl:text-xl text-3xl font-medium">Step 1:</span> Send
-            <span class="xl:text-lg text-2xl font-medium"
-              >{selectedPackage.selectedTypePackage === "year"
-                ? selectedPackage.plan === "Professional"
-                  ? "$990"
-                  : "$99"
-                : selectedPackage.price}</span
-            >
-
-            USDT or USDC to this address
-            <span class="font-medium"
-              >0x6aedbe81435bbd67e2223eadd256992dc64fc90b
-            </span>on Ethereum, BNB or Polygon.
-          </li>
-
-          <li>
-            <span class="xl:text-xl text-3xl font-medium">Step 2:</span> After
-            transfer success, Dm TG
-            <a
-              href="https://t.me/thanhle27"
-              target="_blank"
-              class="font-medium text-[#1E96FC] hover:text-[#27326f]"
-              >@thanhle27</a
-            >
-            or send email to
-            <a
-              href="mailto:thanhle@getnimbus.io"
-              target="_blank"
-              class="font-medium text-[#1E96FC] hover:text-[#27326f]"
-              >thanhle@getnimbus.io</a
-            >
-            including your <span class="font-medium">wallet address</span> you
-            want to upgrade, the
-            <span class="font-medium">transaction hash</span>
-            and the <span class="font-medium">coupon code</span> you want to apply.
-          </li>
-
-          <li>
-            <span class="xl:text-xl text-3xl font-medium">Step 3:</span> We will
-            check and upgrade your account after we receive your information.
-          </li>
-        </ul>
-        <div
-          class="text-[#1E96FC] cursor-pointer flex items-center gap-2 mt-2 xl:text-base text-2xl mt-6"
-          on:click={() => {
-            selectedPackage = undefined;
-          }}
-        >
-          <div class="transform -rotate-180">
-            <div class="xl:block hidden">
-              <svg
-                width="14"
-                height="14"
-                viewBox="0 0 14 14"
-                fill="#1E96FC"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
-                  fill=""
-                />
-              </svg>
-            </div>
-            <div class="xl:hidden block">
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 14 14"
-                fill="#1E96FC"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
-                  fill=""
-                />
-              </svg>
-            </div>
-          </div>
-          Choose other Plan
-        </div>
-
-        <!-- <div class="flex flex-col items-center gap-1">
+        <div class="flex flex-col items-center gap-1">
           <div class="flex items-center gap-1 xl:text-lg text-xl">
-            You're going to upgrade to plan <span class="font-medium uppercase"
-              >{selectedPackage.plan}</span
+            You're going to upgrade to plan <span
+              class="font-semibold uppercase"
+              >{selectedPackage.plan === "Professional"
+                ? "Alpha"
+                : selectedPackage.plan}</span
             >
             with
             <span class="flex items-end gap-1 font-semibold">
-              <span>{selectedPackage.price}</span><span
-                class="xl:text-base text-lg text-gray-400 mb-[2px]">/month</span
-              >
+              {selectedPackage.selectedTypePackage === "year"
+                ? "$" + selectedPackage.price * 12 + " for 1 year"
+                : "$" + selectedPackage.price + " for 1 month"}
             </span>
           </div>
         </div>
+
         {#if selectedPackage.isNewUser}
           <div class="flex items-center justify-center gap-2 mt-2">
             Promotion Code:
@@ -219,6 +171,7 @@
             </span>
           </div>
         {/if}
+
         <div class="flex flex-col gap-3 items-center mt-5">
           <div class="my-3 xl:text-base text-lg">
             Choose your prefer payment method
@@ -257,16 +210,73 @@
             Choose other Plan
           </div>
         </div>
+
         <div class="text-center text-gray-500 xl:text-sm text-2xl mt-8">
-          If missing your prefer payment method, please contact Telegram
-          <strong>@thanhle27</strong> for support
-        </div> -->
+          If missing your prefer payment method<br /> please contact Telegram
+          <a
+            href="https://t.me/thanhle27"
+            target="_blank"
+            class="font-medium text-[#1E96FC] hover:underline">@thanhle27</a
+          >
+          or send email to
+          <a
+            href="mailto:thanhle@getnimbus.io"
+            target="_blank"
+            class="font-medium text-[#1E96FC] hover:underline"
+            >thanhle@getnimbus.io</a
+          > for support
+        </div>
       </div>
     {:else}
       <PricePackage selectedPackage={handleSelectedPackage} />
     {/if}
   </div>
 </ErrorBoundary>
+
+{#if showToast}
+  <div class="fixed top-3 right-3 w-full z-10">
+    <Toast
+      transition={blur}
+      params={{ amount: 10 }}
+      position="top-right"
+      color={isSuccessToast ? "green" : "red"}
+      bind:open={showToast}
+    >
+      <svelte:fragment slot="icon">
+        {#if isSuccessToast}
+          <svg
+            aria-hidden="true"
+            class="w-5 h-5"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+            ><path
+              fill-rule="evenodd"
+              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+              clip-rule="evenodd"
+            /></svg
+          >
+          <span class="sr-only">Check icon</span>
+        {:else}
+          <svg
+            aria-hidden="true"
+            class="w-5 h-5"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+            ><path
+              fill-rule="evenodd"
+              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+              clip-rule="evenodd"
+            /></svg
+          >
+          <span class="sr-only">Error icon</span>
+        {/if}
+      </svelte:fragment>
+      {toastMsg}
+    </Toast>
+  </div>
+{/if}
 
 <style windi:preflights:global windi:safelist:global>
 </style>
