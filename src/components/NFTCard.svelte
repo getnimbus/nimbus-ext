@@ -32,12 +32,10 @@
   }`}
 >
   <div class="rounded-[10px] overflow-hidden xl:h-[270px] h-[470px]">
-    <div class="w-full h-full object-contain">
-      <Image
-        logo={data?.imageUrl}
-        defaultLogo="https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"
-      />
-    </div>
+    <Image
+      logo={data?.imageUrl}
+      defaultLogo="https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"
+    />
   </div>
 
   <div class="flex flex-col xl:gap-2 gap-4">

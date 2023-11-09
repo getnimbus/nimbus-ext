@@ -442,12 +442,10 @@
                 >
                   <div class="flex items-center gap-2">
                     <div class="w-6 h-6 mx-auto rounded-full overflow-hidden">
-                      <div class="w-full h-full object-contain">
-                        <Image
-                          logo={item.logo}
-                          defaultLogo="https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
-                        />
-                      </div>
+                      <Image
+                        logo={item.logo}
+                        defaultLogo="https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
+                      />
                     </div>
                     <div class="text-2xl xl:text-base">
                       {item.name.toLocaleUpperCase()}
@@ -546,12 +544,10 @@
                             <div
                               class="w-6 h-6 mx-auto rounded-full overflow-hidden"
                             >
-                              <div class="w-full h-full object-contain">
-                                <Image
-                                  logo={item.value}
-                                  defaultLogo="https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
-                                />
-                              </div>
+                              <Image
+                                logo={item.value}
+                                defaultLogo="https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
+                              />
                             </div>
                           </td>
                         {:else}
@@ -648,12 +644,10 @@
                     on:click={handleSelectToken(item)}
                   >
                     <div class="w-7 h-7 rounded-full overflow-hidden">
-                      <div class="w-full h-full object-contain">
-                        <Image
-                          logo={item.logo}
-                          defaultLogo="https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
-                        />
-                      </div>
+                      <Image
+                        logo={item.logo}
+                        defaultLogo="https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
+                      />
                     </div>
                     <div class="xl:text-sm text-2xl">
                       {item.full_name}

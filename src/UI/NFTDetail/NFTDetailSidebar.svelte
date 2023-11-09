@@ -346,7 +346,7 @@
     {:else}
       <div>
         {#if selectedTypeDisplay === "grid"}
-          <div class="grid gid-cols-1 lg:grid-cols-2 gap-6">
+          <div class="grid grid-cols-1 xl:grid-cols-3 lg:grid-cols-2 gap-6">
             {#each tokens as item}
               <NftCard
                 data={item}

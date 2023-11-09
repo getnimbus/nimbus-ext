@@ -118,7 +118,7 @@
             {#each top5ProfitToken as item}
               <div class="flex items-center justify-between gap-2">
                 <div class="flex-1 flex items-center gap-2">
-                  <div class="w-[30px] h-[30px] object-contain overflow-hidden">
+                  <div class="w-[30px] h-[30px] overflow-hidden">
                     <Image
                       logo={item?.logo}
                       defaultLogo="https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
@@ -166,7 +166,7 @@
             {#each top5LossToken as item}
               <div class="h-full flex items-center justify-between gap-2">
                 <div class="flex-1 flex items-center gap-2">
-                  <div class="w-[30px] h-[30px] object-contain overflow-hidden">
+                  <div class="w-[30px] h-[30px] overflow-hidden">
                     <Image
                       logo={item?.logo}
                       defaultLogo="https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
