@@ -621,7 +621,7 @@
                           </td>
                         </tr>
                       {:else}
-                        {#each filteredHoldingDataToken as holding}
+                        {#each filteredHoldingDataToken as holding (holding.positionId)}
                           <HoldingToken
                             data={holding}
                             {selectedWallet}

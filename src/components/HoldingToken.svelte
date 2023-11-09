@@ -33,6 +33,7 @@
 
   import TrendUp from "~/assets/trend-up.svg";
   import TrendDown from "~/assets/trend-down.svg";
+  import TokenLogo from "./TokenLogo.svelte";
 
   export let data;
   export let selectedWallet;
@@ -295,19 +296,9 @@
         </div>
       {/if}
       <div class="relative">
-        <img
-          src={data.logo ||
-            "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"}
-          alt=""
-          width="30"
-          height="30"
-          class="rounded-full"
-          on:error={(e) =>
-            handleImgError(
-              e,
-              data.logo,
-              "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
-            )}
+        <TokenLogo
+          logo={data.logo}
+          defaultLogo="https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
         />
         {#if ($typeWallet === "EVM" || $typeWallet === "BUNDLE") && data?.chain !== "CEX"}
           <div class="absolute -top-2 -right-1">
@@ -1015,17 +1006,9 @@
           <div class="flex items-center">
             <div class="py-2 pl-3 flex-1">
               <div class="flex items-center gap-3">
-                <img
-                  src={item?.logo ||
-                    "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"}
-                  alt=""
-                  class="rounded-full w-[30px] h-[30px]"
-                  on:error={(e) =>
-                    handleImgError(
-                      e,
-                      item?.logo,
-                      "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
-                    )}
+                <TokenLogo
+                  logo={data.logo}
+                  defaultLogo="https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
                 />
                 <div class="flex flex-col items-start">
                   <div class="font-medium xl:text-sm text-xl text_00000099">
@@ -1155,17 +1138,9 @@
                   }`}
                 >
                   <div class="flex items-center gap-3">
-                    <img
-                      src={item?.logo ||
-                        "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"}
-                      alt=""
-                      class="rounded-full w-[30px] h-[30px]"
-                      on:error={(e) =>
-                        handleImgError(
-                          e,
-                          item?.logo,
-                          "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
-                        )}
+                    <TokenLogo
+                      logo={data.logo}
+                      defaultLogo="https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
                     />
                     <div class="flex flex-col items-start">
                       <div class="font-medium xl:text-sm text-xl text_00000099">
@@ -1445,19 +1420,9 @@
       <div class="flex flex-col gap-2">
         <div class="flex items-center gap-4">
           <div class="relative">
-            <img
-              src={data.logo ||
-                "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"}
-              alt=""
-              width="46"
-              height="46"
-              class="rounded-full"
-              on:error={(e) =>
-                handleImgError(
-                  e,
-                  data.logo,
-                  "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
-                )}
+            <TokenLogo
+              logo={data.logo}
+              defaultLogo="https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
             />
             {#if ($typeWallet === "EVM" || $typeWallet === "BUNDLE") && selectedTokenDetail?.chain !== "CEX"}
               <div class="absolute -top-2 -right-1">
