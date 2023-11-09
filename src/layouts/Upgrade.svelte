@@ -64,6 +64,28 @@
       isLoadingBuy = false;
     }
   };
+
+  import { wagmiAbi } from "~/lib/viem-evm-abi";
+  import { publicClient } from "~/lib/viem-client";
+  import { mainnet } from "viem/chains";
+
+  const handleTriggerWallet = async () => {
+    const account = await publicClient.requestAddresses().catch((e) => {
+      console.log("error", e);
+    });
+
+    const usdcAddress = "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48";
+    const ceoAddress = "0x6AedbE81435BBD67e2223eadd256992DC64fc90B";
+
+    publicClient.writeContract({
+      address: usdcAddress,
+      account: account[0],
+      chain: mainnet,
+      abi: wagmiAbi,
+      functionName: "transfer",
+      args: [ceoAddress, BigInt(10 * 1000000)],
+    });
+  };
 </script>
 
 <ErrorBoundary>
@@ -79,6 +101,8 @@
         maximize return.
       </div>
     </div>
+
+    <div on:click={handleTriggerWallet}>Test trigger wallet</div>
 
     {#if selectedPackage && Object.keys(selectedPackage).length !== 0}
       <div class="flex flex-col justify-center min-h-[70vh]">
