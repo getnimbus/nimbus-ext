@@ -768,8 +768,7 @@
                           data={holding}
                           {selectedWallet}
                           {index}
-                          lastIndex={filteredHoldingDataNFT.length - 1 ===
-                            index}
+                          lastIndex={filteredHoldingDataNFT.length - 1 == index}
                         />
                       {/each}
                     </tbody>
@@ -820,11 +819,11 @@
                         {:else}
                           {#each filteredHoldingDataNFT as holding, index}
                             <HoldingNFT
+                              lastIndex={filteredHoldingDataNFT.length - 1 ==
+                                index}
                               data={holding}
                               {selectedWallet}
                               {index}
-                              lastIndex={filteredHoldingDataNFT.length - 1 ===
-                                index}
                             />
                           {/each}
                         {/if}
