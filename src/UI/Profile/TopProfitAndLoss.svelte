@@ -9,6 +9,8 @@
   import Loading from "~/components/Loading.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
 
+  import defaultToken from "~/assets/defaultToken.png";
+
   export let selectedAddress;
 
   let closedHoldingPosition = [];
@@ -119,10 +121,7 @@
               <div class="flex items-center justify-between gap-2">
                 <div class="flex-1 flex items-center gap-2">
                   <div class="w-[30px] h-[30px] overflow-hidden">
-                    <Image
-                      logo={item?.logo}
-                      defaultLogo="https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
-                    />
+                    <Image logo={item?.logo} defaultLogo={defaultToken} />
                   </div>
                   <span class="flex flex-col">
                     <span class="text-lg xl:text-base font-medium">
@@ -167,10 +166,7 @@
               <div class="h-full flex items-center justify-between gap-2">
                 <div class="flex-1 flex items-center gap-2">
                   <div class="w-[30px] h-[30px] overflow-hidden">
-                    <Image
-                      logo={item?.logo}
-                      defaultLogo="https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
-                    />
+                    <Image logo={item?.logo} defaultLogo={defaultToken} />
                   </div>
                   <span class="flex flex-col">
                     <span class="text-lg xl:text-base font-medium">

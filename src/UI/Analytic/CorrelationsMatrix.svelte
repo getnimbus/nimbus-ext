@@ -26,6 +26,7 @@
   import Image from "~/components/Image.svelte";
 
   import All from "~/assets/all.svg";
+  import defaultToken from "~/assets/defaultToken.png";
 
   let listCoinPrice = [];
   let dataTokenHolding = [];
@@ -442,10 +443,7 @@
                 >
                   <div class="flex items-center gap-2">
                     <div class="w-6 h-6 mx-auto rounded-full overflow-hidden">
-                      <Image
-                        logo={item.logo}
-                        defaultLogo="https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
-                      />
+                      <Image logo={item.logo} defaultLogo={defaultToken} />
                     </div>
                     <div class="text-2xl xl:text-base">
                       {item.name.toLocaleUpperCase()}
@@ -546,7 +544,7 @@
                             >
                               <Image
                                 logo={item.value}
-                                defaultLogo="https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
+                                defaultLogo={defaultToken}
                               />
                             </div>
                           </td>
@@ -644,10 +642,7 @@
                     on:click={handleSelectToken(item)}
                   >
                     <div class="w-7 h-7 rounded-full overflow-hidden">
-                      <Image
-                        logo={item.logo}
-                        defaultLogo="https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
-                      />
+                      <Image logo={item.logo} defaultLogo={defaultToken} />
                     </div>
                     <div class="xl:text-sm text-2xl">
                       {item.full_name}

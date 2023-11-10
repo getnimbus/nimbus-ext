@@ -8,6 +8,8 @@
   import Loading from "~/components/Loading.svelte";
   import RedeemCard from "~/components/RedeemCard.svelte";
 
+  import goldImg from "~/assets/Gold4.svg";
+
   let selectedType: "redeemGift" | "yourGift" = "redeemGift";
 
   const queryClient = useQueryClient();
@@ -83,11 +85,7 @@
     <div
       class="py-2 px-3 min-w-[100px] rounded-full bg-[#27326F] flex justify-center items-center gap-2"
     >
-      <img
-        src="https://raw.githubusercontent.com/getnimbus/nimbus-ext/c43eb2dd7d132a2686c32939ea36b0e97055abc7/src/assets/Gold4.svg"
-        alt=""
-        class="w-8"
-      />
+      <img src={goldImg} alt="" class="w-8" />
       <div class="text-white xl:text-xl text-2xl font-medium">
         {$queryDailyCheckin?.data?.totalPoint || 0}
       </div>

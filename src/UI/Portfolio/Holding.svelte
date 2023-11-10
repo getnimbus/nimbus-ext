@@ -88,11 +88,17 @@
   $: {
     if (!isLoadingToken) {
       if (holdingTokenData?.length !== 0) {
-        const filteredHoldingTokenData = holdingTokenData?.filter(
+        const dataTokenHolding = holdingTokenData?.filter(
+          (item) =>
+            item?.price?.source === undefined ||
+            item?.price?.source !== "Modifed"
+        );
+
+        const filteredHoldingTokenData = dataTokenHolding?.filter(
           (item) => item?.cmc_id
         );
 
-        const filteredNullCmcHoldingTokenData = holdingTokenData?.filter(
+        const filteredNullCmcHoldingTokenData = dataTokenHolding?.filter(
           (item) => item?.cmc_id === null
         );
 
@@ -570,9 +576,11 @@
                         </td>
                       </tr>
                     {/if}
-                    {#each filteredHoldingDataToken as holding}
+                    {#each filteredHoldingDataToken as holding, index}
                       <HoldingToken
                         data={holding}
+                        lastIndex={filteredHoldingDataToken.length - 1 ===
+                          index}
                         {selectedWallet}
                         sumAllTokens={totalAssets - sumNFT}
                       />
@@ -623,9 +631,11 @@
                           </td>
                         </tr>
                       {:else}
-                        {#each filteredHoldingDataToken as holding (holding.positionId)}
+                        {#each filteredHoldingDataToken as holding, index (holding.positionId)}
                           <HoldingToken
                             data={holding}
+                            lastIndex={filteredHoldingDataToken.length - 1 ==
+                              index}
                             {selectedWallet}
                             sumAllTokens={totalAssets - sumNFT}
                           />

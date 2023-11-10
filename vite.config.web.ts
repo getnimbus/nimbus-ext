@@ -36,6 +36,10 @@ export default defineConfig(({ mode }) => {
             src: "public",
             dest: "",
           },
+          {
+            src: path.resolve(__dirname, "./src/assets/logo/"),
+            dest: "assets",
+          }
         ],
       }),
       VitePWA({
@@ -54,33 +58,33 @@ export default defineConfig(({ mode }) => {
           description: "https://getnimbus.io",
           icons: [
             {
-              src: "https://raw.githubusercontent.com/getnimbus/nimbus-ext/revert-105-revert-100-feat/mobile-app/src/assets/logo/512.png",
+              src: "assets/logo/512.png",
               type: "image/png",
               sizes: "512x512",
               purpose: "any",
             },
             {
-              src: "https://raw.githubusercontent.com/getnimbus/nimbus-ext/revert-105-revert-100-feat/mobile-app/src/assets/logo/256.png",
+              src: "assets/logo/256.png",
               type: "image/png",
               sizes: "256x256",
               purpose: "any",
             },
             {
-              src: "https://raw.githubusercontent.com/getnimbus/nimbus-ext/revert-105-revert-100-feat/mobile-app/src/assets/logo/144.png",
+              src: "assets/logo/144.png",
               type: "image/png",
               sizes: "144x144",
               purpose: "any",
             },
             {
-              src: "https://raw.githubusercontent.com/getnimbus/nimbus-ext/revert-105-revert-100-feat/mobile-app/src/assets/logo/48.png",
+              src: "assets/logo/128.png",
               type: "image/png",
-              sizes: "48x48",
+              sizes: "128x128",
               purpose: "any",
             },
             {
-              src: "https://raw.githubusercontent.com/getnimbus/nimbus-ext/revert-105-revert-100-feat/mobile-app/src/assets/logo/152.png",
+              src: "assets/logo/48.png",
               type: "image/png",
-              sizes: "152x152",
+              sizes: "48x48",
               purpose: "any",
             },
           ],

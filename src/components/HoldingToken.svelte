@@ -1,11 +1,5 @@
 <script lang="ts">
-  import {
-    typeWallet,
-    isDarkMode,
-    user,
-    selectedBundle,
-    isHidePortfolio,
-  } from "~/store";
+  import { typeWallet, isDarkMode, user, selectedBundle } from "~/store";
   import { detectedChain, shorterName, shorterAddress } from "~/utils";
   import numeral from "numeral";
   import { Progressbar, Toast } from "flowbite-svelte";
@@ -29,10 +23,12 @@
 
   import TrendUp from "~/assets/trend-up.svg";
   import TrendDown from "~/assets/trend-down.svg";
+  import defaultToken from "~/assets/defaultToken.png";
 
   export let data;
   export let selectedWallet;
   export let sumAllTokens;
+  export let lastIndex: boolean = false;
 
   let isShowTooltipName = false;
   let isShowTooltipSymbol = false;
@@ -215,17 +211,6 @@
   class={`group transition-all ${
     isOpenTokenInfoBundle ? ($isDarkMode ? "bg-[#000]" : "bg-gray-100") : ""
   }`}
-  on:click={() => {
-    // if (clickable) {
-    //   navigate(
-    //     `/position-detail?id=${encodeURIComponent(
-    //       data.positionId
-    //     )}&type=${encodeURIComponent(
-    //       data.positionType
-    //     )}&address=${encodeURIComponent(selectedWallet)}`
-    //   );
-    // }
-  }}
   on:mouseover={() => {
     if ($user && Object.keys($user).length !== 0) {
       isShowReport = true;
@@ -253,13 +238,15 @@
 >
   <td
     class={`pl-3 py-3 xl:static sticky left-0 z-9 w-[450px] ${
-      isOpenTokenInfoBundle
+      (isOpenTokenInfoBundle
         ? $isDarkMode
           ? "bg-[#000]"
           : "bg-gray-100"
         : $isDarkMode
         ? "bg-[#131313] group-hover:bg-[#000]"
-        : "bg-white group-hover:bg-gray-100"
+        : "bg-white group-hover:bg-gray-100") +
+      " " +
+      (lastIndex ? "rounded-bl-xl" : "")
     }`}
   >
     <div class="relative flex items-center gap-3 text-left">
@@ -292,10 +279,7 @@
       {/if}
       <div class="relative">
         <div class="rounded-full w-[30px] h-[30px] overflow-hidden">
-          <Image
-            logo={data.logo}
-            defaultLogo="https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
-          />
+          <Image logo={data.logo} defaultLogo={defaultToken} />
         </div>
         {#if ($typeWallet === "EVM" || $typeWallet === "BUNDLE") && data?.chain !== "CEX"}
           <div class="absolute -top-2 -right-1">
@@ -838,7 +822,9 @@
   {#if $typeWallet === "SOL" || $typeWallet === "EVM" || $typeWallet === "BUNDLE" || $typeWallet === "CEX"}
     <td
       class={`py-3 xl:w-14 w-32 h-full flex justify-center items-center xl:gap-3 gap-6 ${
-        $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
+        ($isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100") +
+        " " +
+        (lastIndex ? "rounded-br-xl" : "")
       }`}
     >
       {#if $typeWallet === "BUNDLE"}
@@ -1004,10 +990,7 @@
             <div class="py-2 pl-3 flex-1">
               <div class="flex items-center gap-3">
                 <div class="rounded-full w-[30px] h-[30px] overflow-hidden">
-                  <Image
-                    logo={data.logo}
-                    defaultLogo="https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
-                  />
+                  <Image logo={data.logo} defaultLogo={defaultToken} />
                 </div>
                 <div class="flex flex-col items-start">
                   <div class="font-medium xl:text-sm text-xl text_00000099">
@@ -1138,10 +1121,7 @@
                 >
                   <div class="flex items-center gap-3">
                     <div class="rounded-full w-[30px] h-[30px] overflow-hidden">
-                      <Image
-                        logo={data.logo}
-                        defaultLogo="https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
-                      />
+                      <Image logo={data.logo} defaultLogo={defaultToken} />
                     </div>
                     <div class="flex flex-col items-start">
                       <div class="font-medium xl:text-sm text-xl text_00000099">
@@ -1422,10 +1402,7 @@
         <div class="flex items-center gap-4">
           <div class="relative">
             <div class="rounded-full w-[46px] h-[46px] overflow-hidden">
-              <Image
-                logo={data.logo}
-                defaultLogo="https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
-              />
+              <Image logo={data.logo} defaultLogo={defaultToken} />
             </div>
             {#if ($typeWallet === "EVM" || $typeWallet === "BUNDLE") && selectedTokenDetail?.chain !== "CEX"}
               <div class="absolute -top-2 -right-1">
