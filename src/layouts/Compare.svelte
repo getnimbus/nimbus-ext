@@ -43,7 +43,7 @@
   import LeftArrowBlack from "~/assets/left-arrow-black.svg";
   import Logo from "~/assets/logo-1.svg";
   import LogoWhite from "~/assets/logo-white.svg";
-  import defaultToken from "~/assets/tokendefault.png"
+  import defaultToken from "~/assets/tokendefault.png";
 
   const MultipleLang = {
     token_allocation: i18n("newtabPage.token-allocation", "Token Allocation"),
@@ -379,7 +379,7 @@
 
     const dataPieChartOrderBreakdownToken = [
       {
-        logo: defaultToken
+        logo: defaultToken,
         name: "Other tokens",
         symbol: "",
         name_ratio: "Ratio",
