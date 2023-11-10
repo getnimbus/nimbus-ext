@@ -93,7 +93,6 @@
   </div>
 
   <div class="flex flex-col gap-10">
-    GM
     {#if $queryDailyCheckin.isFetching && $queryReward.isFetching}
       <div class="flex items-center justify-center h-full px-3 py-4">
         <Loading />

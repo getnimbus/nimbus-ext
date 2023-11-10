@@ -44,7 +44,7 @@
   import "~/components/Tooltip.custom.svelte";
 
   import Reload from "~/assets/reload.svg";
-  import defaultToken from "~/assets/tokendefault.png";
+  import defaultToken from "~/assets/defaultToken.png";
 
   const MultipleLang = {
     portfolio: i18n("newtabPage.portfolio", "Portfolio"),

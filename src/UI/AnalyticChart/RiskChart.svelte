@@ -41,7 +41,7 @@
   import VolatilityExplain from "~/assets/explain/volatility-explain.mp4";
   import SharpeRatioExplain from "~/assets/explain/sharpe-ratio-explain.mp4";
   import MaxDrawdownExplain from "~/assets/explain/max-drawdown-explain.mp4";
-  import defaultToken from "~/assets/tokendefault.png";
+  import defaultToken from "~/assets/defaultToken.png";
 
   export let selectedTimeFrame;
 

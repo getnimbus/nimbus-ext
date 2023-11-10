@@ -24,7 +24,7 @@
 
   import Select from "~/components/Select.svelte";
   import EChart from "~/components/EChart.svelte";
-  import defaultToken from "~/assets/tokendefault.png";
+  import defaultToken from "~/assets/defaultToken.png";
 
   const MultipleLang = {
     Balance: i18n("newtabPage.Balance", "Balance"),

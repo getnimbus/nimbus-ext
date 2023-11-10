@@ -9,7 +9,7 @@
   import Loading from "~/components/Loading.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
 
-  import defaultToken from "~/assets/tokendefault.png";
+  import defaultToken from "~/assets/defaultToken.png";
 
   export let selectedAddress;
 

@@ -36,7 +36,7 @@
   import TrendDown from "~/assets/trend-down.svg";
   import TrendUp from "~/assets/trend-up.svg";
   import SharpeRatioExplain from "~/assets/explain/sharpe-ratio-explain.mp4";
-  import defaultToken from "~/assets/tokendefault.png";
+  import defaultToken from "~/assets/defaultToken.png";
 
   export let selectedTimeFrame;
 

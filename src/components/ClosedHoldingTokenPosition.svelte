@@ -13,7 +13,7 @@
 
   import TrendUp from "~/assets/trend-up.svg";
   import TrendDown from "~/assets/trend-down.svg";
-  import defaultToken from "~/assets/tokendefault.png";
+  import defaultToken from "~/assets/defaultToken.png";
 
   export let data;
   export let selectedWallet;

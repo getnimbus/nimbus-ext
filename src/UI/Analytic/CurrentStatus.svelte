@@ -29,7 +29,7 @@
   import TrendUp from "~/assets/trend-up.svg";
   import Logo from "~/assets/logo-1.svg";
   import LogoWhite from "~/assets/logo-white.svg";
-  import defaultToken from "~/assets/tokendefault.png";
+  import defaultToken from "~/assets/defaultToken.png";
 
   export let packageSelected;
   export let selectedTimeFrame;
