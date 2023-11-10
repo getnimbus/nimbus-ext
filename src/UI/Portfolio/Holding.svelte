@@ -573,9 +573,8 @@
                     {#each filteredHoldingDataToken as holding, index}
                       <HoldingToken
                         data={holding}
-                        lastIndex={filteredHoldingDataToken.length - 1 === index
-                          ? true
-                          : false}
+                        lastIndex={filteredHoldingDataToken.length - 1 ===
+                          index}
                         {selectedWallet}
                         sumAllTokens={totalAssets - sumNFT}
                       />
@@ -630,9 +629,7 @@
                           <HoldingToken
                             data={holding}
                             lastIndex={filteredHoldingDataToken.length - 1 ==
-                            index
-                              ? true
-                              : false}
+                              index}
                             {selectedWallet}
                             sumAllTokens={totalAssets - sumNFT}
                           />
