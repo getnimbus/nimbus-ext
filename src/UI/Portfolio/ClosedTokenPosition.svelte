@@ -426,8 +426,12 @@
                     </td>
                   </tr>
                 {/if}
-                {#each filteredHoldingDataToken as holding}
-                  <ClosedHoldingTokenPosition data={holding} {selectedWallet} />
+                {#each filteredHoldingDataToken as holding, index}
+                  <ClosedHoldingTokenPosition
+                    data={holding}
+                    {selectedWallet}
+                    lastIndex={filteredHoldingDataToken.length - 1 == index}
+                  />
                 {/each}
               </tbody>
               {#if isLoadingToken}
@@ -475,10 +479,11 @@
                       </td>
                     </tr>
                   {:else}
-                    {#each filteredHoldingDataToken as holding}
+                    {#each filteredHoldingDataToken as holding, index}
                       <ClosedHoldingTokenPosition
                         data={holding}
                         {selectedWallet}
+                        lastIndex={filteredHoldingDataToken.length - 1 == index}
                       />
                     {/each}
                   {/if}

@@ -246,7 +246,7 @@
         ? "bg-[#131313] group-hover:bg-[#000]"
         : "bg-white group-hover:bg-gray-100") +
       " " +
-      (lastIndex ? "rounded-bl-xl" : "")
+      (lastIndex ? "rounded-bl-[10px]" : "")
     }`}
   >
     <div class="relative flex items-center gap-3 text-left">
@@ -824,7 +824,7 @@
       class={`py-3 xl:w-14 w-32 h-full flex justify-center items-center xl:gap-3 gap-6 ${
         ($isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100") +
         " " +
-        (lastIndex ? "rounded-br-xl" : "")
+        (lastIndex ? "rounded-br-[10px]" : "")
       }`}
     >
       {#if $typeWallet === "BUNDLE"}
