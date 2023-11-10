@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { isDarkMode, typeWallet, wallet } from "~/store";
+  import { isDarkMode } from "~/store";
   import { detectedChain, linkExplorer } from "~/utils";
   import dayjs from "dayjs";
   import "dayjs/locale/en";
@@ -10,8 +10,6 @@
   import TooltipNumber from "~/components/TooltipNumber.svelte";
 
   export let data;
-
-  $: console.log("data: ", data);
 
   $: withinLast24Hours = dayjs().diff(dayjs(data?.timestamp), "hour");
 </script>
@@ -34,8 +32,11 @@
       $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
-    <div class="xl:text-sm text-2xl font-medium flex justify-end">
-      hello world
+    <div
+      class="xl:text-sm text-2xl text_00000099 font-medium flex justify-end gap-1"
+    >
+      <TooltipNumber type="amount" number={Number(data?.price)} />{data?.chain} |
+      <TooltipNumber type="value" number={Number(data?.priceUst)} />
     </div>
   </td>
 
@@ -52,17 +53,6 @@
           ? "Sell"
           : "Buy"}
       </div>
-    </div>
-  </td>
-
-  <td
-    class={`py-3 ${
-      $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
-    }`}
-  >
-    <div class="xl:text-sm text-2xl text_00000099 font-medium flex justify-end">
-      {data?.price}
-      {data?.chain} | ${data?.priceUst}
     </div>
   </td>
 

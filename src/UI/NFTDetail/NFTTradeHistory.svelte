@@ -166,19 +166,13 @@
 
           <th class="py-3">
             <div class="text-right xl:text-xs text-xl uppercase font-medium">
-              Cost/Gain
+              Cost
             </div>
           </th>
 
           <th class="py-3">
             <div class="text-right xl:text-xs text-xl uppercase font-medium">
               Type
-            </div>
-          </th>
-
-          <th class="py-3">
-            <div class="text-right xl:text-xs text-xl uppercase font-medium">
-              Price
             </div>
           </th>
 
