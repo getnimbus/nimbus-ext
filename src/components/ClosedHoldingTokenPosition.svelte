@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
   import { typeWallet, isDarkMode, isHidePortfolio } from "~/store";
   import { detectedChain, shorterName, shorterAddress } from "~/utils";
   import CopyToClipboard from "svelte-copy-to-clipboard";
@@ -17,7 +17,6 @@
 
   export let data;
   export let selectedWallet;
-  export let lastIndex = false;
 
   let isShowTooltipName = false;
   let isShowTooltipSymbol = false;
@@ -63,13 +62,10 @@
 >
   <td
     class={`pl-3 py-3 xl:static xl:bg-transparent sticky left-0 z-9 w-[420px] ${
-      ($isDarkMode
+      $isDarkMode
         ? "bg-[#131313] group-hover:bg-[#000]"
-        : "bg-white group-hover:bg-gray-100") +
-      " " +
-      (lastIndex ? "rounded-bl-[10px]" : "")
+        : "bg-white group-hover:bg-gray-100"
     }`}
-    style={`${lastIndex ? "border-bottom-left-radius: 10px;" : ""}`}
   >
     <div class="text-left flex items-center gap-3">
       <div class="relative">
@@ -451,11 +447,9 @@
 
   {#if $typeWallet === "SOL" || $typeWallet === "EVM" || $typeWallet === "BUNDLE" || $typeWallet === "CEX"}
     <td
-      class={`py-3 xl:w-14 w-32 h-full flex justify-center items-center xl:gap-3 gap-6 rounded-xl ${
+      class={`py-3 xl:w-14 w-32 h-full flex justify-center items-center xl:gap-3 gap-6 ${
         $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
-        //
       }`}
-      style={`${lastIndex ? "border-bottom-right-radius: 10px;" : ""}`}
     >
       {#if $typeWallet === "SOL" || $typeWallet === "EVM" || $typeWallet === "BUNDLE" || $typeWallet === "CEX"}
         <div
