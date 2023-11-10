@@ -388,11 +388,17 @@
   $: {
     if (!$queryTokenHolding.isFetching) {
       if (holdingTokenData?.length !== 0) {
-        const filteredHoldingTokenData = holdingTokenData?.filter(
+        const dataTokenHolding = holdingTokenData?.filter(
+          (item) =>
+            item?.price?.source === undefined ||
+            item?.price?.source !== "Modifed"
+        );
+
+        const filteredHoldingTokenData = dataTokenHolding?.filter(
           (item) => item?.cmc_id
         );
 
-        const filteredNullCmcHoldingTokenData = holdingTokenData?.filter(
+        const filteredNullCmcHoldingTokenData = dataTokenHolding?.filter(
           (item) => item?.cmc_id === null
         );
 
