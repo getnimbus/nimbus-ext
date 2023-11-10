@@ -1,7 +1,7 @@
 <script lang="ts">
   import { createQuery } from "@tanstack/svelte-query";
   import { nimbus } from "~/lib/network";
-  import { user, isDarkMode, wallet } from "~/store";
+  import { isDarkMode, wallet } from "~/store";
 
   import Loading from "~/components/Loading.svelte";
   import NFTHistoryItem from "./NFTHistoryItem.svelte";
@@ -37,10 +37,6 @@
       selectedNftCollectionChain !== undefined &&
       selectedNftCollectionId !== undefined &&
       $wallet.length !== 0,
-    onError(err) {
-      localStorage.removeItem("evm_token");
-      user.update((n) => (n = {}));
-    },
   });
 
   $: {
