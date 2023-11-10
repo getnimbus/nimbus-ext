@@ -202,8 +202,6 @@
       };
     })
     .filter((item) => Number(item?.amount) !== 0);
-
-  $: console.log("this is last index : ", lastIndex);
 </script>
 
 <svelte:window on:keydown={closeSideTokenDetail} />
