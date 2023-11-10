@@ -65,6 +65,8 @@
 
   let isLoadingSubmitCoupleCode = false;
   let code = "";
+  let discountPercent = 0;
+  let coupleCode = "";
 
   const handleSelectedPackage = (item) => {
     selectedPackage = item;
@@ -87,8 +89,26 @@
         isSuccessToast = false;
       } else {
         console.log("response: ", response);
-        toastMsg = "Apply your couple code success!";
-        isSuccessToast = true;
+
+        if (response?.status === 1) {
+          coupleCode = response?.type;
+          toastMsg = response?.message;
+          isSuccessToast = true;
+
+          if (response?.type === "DISCOUNT") {
+            discountPercent = response.value;
+          }
+
+          if (response?.type === "TRIAL") {
+            //Todo: setup Trial flow
+          }
+        }
+
+        if (response?.status === 0) {
+          toastMsg =
+            "Your couple code not available. Please try another couple code!";
+          isSuccessToast = false;
+        }
       }
       isLoadingSubmitCoupleCode = false;
       trigger();
@@ -105,14 +125,17 @@
   const handleBuy = async (chainValue: string) => {
     const account = await publicClient.requestAddresses();
 
-    const formatData = {
+    const payload = {
       tier: selectedPackage.plan,
       interval: selectedPackage.selectedTypePackage,
       chain: chainValue,
       intervalCount: 1,
-      price: 0, // số tiền gốc
+      price:
+        selectedPackage.selectedTypePackage === "year"
+          ? selectedPackage.price * 12
+          : selectedPackage.price,
+      coupon: coupleCode,
       txHash: "0xabc",
-      coupon: "abcxyz123",
     };
 
     isLoadingBuy = true;
@@ -120,7 +143,7 @@
       // if (chainValue === "sol") {
       //   const response = await nimbus.post(
       //     "/v2/payments/create-session",
-      //     formatData
+      //     payload
       //   );
       //   if (response && response?.data) {
       //     window.location.replace(response?.data?.url);
@@ -128,11 +151,14 @@
       // }
 
       if (chainValue === "eth") {
-        const price =
+        let price =
           selectedPackage.selectedTypePackage === "year"
             ? selectedPackage.price * 12
             : selectedPackage.price;
-        console.log("price: ", price);
+
+        if (discountPercent !== 0) {
+          price = price - price * (discountPercent / 100);
+        }
 
         publicClient
           .writeContract({
@@ -141,9 +167,10 @@
             chain: mainnet,
             abi: wagmiAbi,
             functionName: "transfer",
-            args: [receiveAddress, BigInt(10 * 1000000)],
+            args: [receiveAddress, BigInt(price * 1000000)],
           })
           .then((res) => {
+            // Todo: get trx hash and send to DB to upgrade user Plan
             console.log("res: ", res);
           })
           .catch((e) => {
@@ -190,8 +217,22 @@
             with
             <span class="flex items-end gap-1 font-semibold">
               {selectedPackage.selectedTypePackage === "year"
-                ? "$" + selectedPackage.price * 12 + " for 1 year"
-                : "$" + selectedPackage.price + " for 1 month"}
+                ? "$" +
+                  `${
+                    discountPercent !== 0
+                      ? selectedPackage.price * 12 -
+                        selectedPackage.price * 12 * (discountPercent / 100)
+                      : selectedPackage.price * 12
+                  }` +
+                  " for 1 year"
+                : "$" +
+                  `${
+                    discountPercent !== 0
+                      ? selectedPackage.price -
+                        selectedPackage.price * (discountPercent / 100)
+                      : selectedPackage.price
+                  }` +
+                  " for 1 month"}
             </span>
           </div>
         </div>
