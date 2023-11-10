@@ -8,7 +8,6 @@ import sveltePreprocess from "svelte-preprocess";
 import AutoImport from "unplugin-auto-import/vite";
 import { viteStaticCopy } from "vite-plugin-static-copy";
 import { VitePWA } from "vite-plugin-pwa";
-import { A } from "flowbite-svelte";
 
 // https://vitejs.dev/config/
 /** @type {import('vite').UserConfig} */
