@@ -188,7 +188,11 @@ export const typeClosedHoldingTokenChart = [
 export const filterAvgCostType = [
   {
     label: "All",
-    value: "all"
+    value: "ALL",
+  },
+  {
+    label: "Smart money",
+    value: "SMART_MONEY",
   },
   // {
   //   label: "Smart money",
@@ -196,8 +200,8 @@ export const filterAvgCostType = [
   // },
   {
     label: "Fresh wallet",
-    value: "fresh"
-  }
+    value: "FRESH_WALLET",
+  },
 ];
 
 export const filterTokenValueType = [
