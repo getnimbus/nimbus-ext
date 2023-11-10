@@ -1,11 +1,5 @@
 <script lang="ts">
-  import {
-    typeWallet,
-    isDarkMode,
-    user,
-    selectedBundle,
-    isHidePortfolio,
-  } from "~/store";
+  import { typeWallet, isDarkMode, user, selectedBundle } from "~/store";
   import { detectedChain, shorterName, shorterAddress } from "~/utils";
   import numeral from "numeral";
   import { Progressbar, Toast } from "flowbite-svelte";
@@ -215,17 +209,6 @@
   class={`group transition-all ${
     isOpenTokenInfoBundle ? ($isDarkMode ? "bg-[#000]" : "bg-gray-100") : ""
   }`}
-  on:click={() => {
-    // if (clickable) {
-    //   navigate(
-    //     `/position-detail?id=${encodeURIComponent(
-    //       data.positionId
-    //     )}&type=${encodeURIComponent(
-    //       data.positionType
-    //     )}&address=${encodeURIComponent(selectedWallet)}`
-    //   );
-    // }
-  }}
   on:mouseover={() => {
     if ($user && Object.keys($user).length !== 0) {
       isShowReport = true;

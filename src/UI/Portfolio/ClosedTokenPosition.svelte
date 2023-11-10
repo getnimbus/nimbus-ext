@@ -424,7 +424,6 @@
                   <ClosedHoldingTokenPosition data={holding} {selectedWallet} />
                 {/each}
               </tbody>
-
               {#if isLoadingToken}
                 <tbody>
                   <tr>
