@@ -10,6 +10,8 @@
   import AppOverlay from "~/components/Overlay.svelte";
   import Loading from "~/components/Loading.svelte";
 
+  import defaultToken from "~/assets/tokendefault.png";
+
   const MultipleLang = {
     title: i18n("optionsPage.report-token-page-title", "Report Token Settings"),
     content: {
@@ -205,7 +207,7 @@
                       <div class="rounded-full overflow-hidden">
                         <Image
                           logo={item?.logoUrl}
-                          defaultLogo="https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
+                          defaultLogo={defaultToken}
                         />
                       </div>
                       <div class="xl:text-base text-2xl">

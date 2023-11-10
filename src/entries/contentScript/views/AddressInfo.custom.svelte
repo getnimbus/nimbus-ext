@@ -39,6 +39,7 @@
   // import CoinMarketCapIcon from "../assets/CoinMarketCap_logo.png";
   import CoinDefaultIcon from "../assets/coin-default.svg";
   import Edit from "../../../assets/edit.svg";
+  import defaultToken from "~/assets/tokendefault.png";
 
   export let address;
   export let popup: boolean = true;
@@ -254,7 +255,7 @@
 
           const dataPieChartOrderBreakdown = [
             {
-              logo: "https://raw.githubusercontent.com/getnimbus/assets/main/token.png",
+              logo: defaultToken,
               name: "Others",
               symbol: "Other tokens",
               name_ratio: "Ratio",

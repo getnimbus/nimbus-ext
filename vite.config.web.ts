@@ -8,6 +8,7 @@ import sveltePreprocess from "svelte-preprocess";
 import AutoImport from "unplugin-auto-import/vite";
 import { viteStaticCopy } from "vite-plugin-static-copy";
 import { VitePWA } from "vite-plugin-pwa";
+import { A } from "flowbite-svelte";
 
 // https://vitejs.dev/config/
 /** @type {import('vite').UserConfig} */
@@ -54,31 +55,31 @@ export default defineConfig(({ mode }) => {
           description: "https://getnimbus.io",
           icons: [
             {
-              src: "https://raw.githubusercontent.com/getnimbus/nimbus-ext/revert-105-revert-100-feat/mobile-app/src/assets/logo/512.png",
+              src: "/src/assets/logo/512.png",
               type: "image/png",
               sizes: "512x512",
               purpose: "any",
             },
             {
-              src: "https://raw.githubusercontent.com/getnimbus/nimbus-ext/revert-105-revert-100-feat/mobile-app/src/assets/logo/256.png",
+              src: "/src/assets/logo/256.png",
               type: "image/png",
               sizes: "256x256",
               purpose: "any",
             },
             {
-              src: "https://raw.githubusercontent.com/getnimbus/nimbus-ext/revert-105-revert-100-feat/mobile-app/src/assets/logo/144.png",
+              src: "/src/assets/logo/144.png",
               type: "image/png",
               sizes: "144x144",
               purpose: "any",
             },
             {
-              src: "https://raw.githubusercontent.com/getnimbus/nimbus-ext/revert-105-revert-100-feat/mobile-app/src/assets/logo/48.png",
+              src: "/src/assets/logo/48.png",
               type: "image/png",
               sizes: "48x48",
               purpose: "any",
             },
             {
-              src: "https://raw.githubusercontent.com/getnimbus/nimbus-ext/revert-105-revert-100-feat/mobile-app/src/assets/logo/152.png",
+              src: "/src/assets/logo/152.png",
               type: "image/png",
               sizes: "152x152",
               purpose: "any",
