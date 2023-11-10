@@ -10,7 +10,6 @@
   import PricePackage from "~/UI/PricePackage/PricePackage.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import Button from "~/components/Button.svelte";
-  import Copy from "~/components/Copy.svelte";
 
   import Ethereum from "~/assets/ethereum.png";
   import Solana from "~/assets/solana.png";
@@ -64,31 +63,69 @@
   let isLoadingBuy = false;
   let selectedPackage;
 
+  let isLoadingSubmitCoupleCode = false;
+  let code = "";
+
   const handleSelectedPackage = (item) => {
     selectedPackage = item;
+  };
+
+  const onSubmitCoupleCode = async (e) => {
+    isLoadingSubmitCoupleCode = true;
+    const formData = new FormData(e.target);
+    const data: any = {};
+    for (let field of formData) {
+      const [key, value] = field;
+      data[key] = value;
+    }
+    try {
+      const response = await nimbus.post("/v2/payments/redeem-code", {
+        code: data.code,
+      });
+      if (response?.error) {
+        toastMsg = response?.error;
+        isSuccessToast = false;
+      } else {
+        console.log("response: ", response);
+        toastMsg = "Apply your couple code success!";
+        isSuccessToast = true;
+      }
+      isLoadingSubmitCoupleCode = false;
+      trigger();
+    } catch (e) {
+      console.error(e);
+      isLoadingSubmitCoupleCode = false;
+      toastMsg =
+        "There are some error when apply your couple code. Please try again!";
+      isSuccessToast = false;
+      trigger();
+    }
   };
 
   const handleBuy = async (chainValue: string) => {
     const account = await publicClient.requestAddresses();
 
     const formatData = {
-      plan: selectedPackage.plan,
+      tier: selectedPackage.plan,
       interval: selectedPackage.selectedTypePackage,
       chain: chainValue,
-      isTrial: selectedPackage.isNewUser,
+      intervalCount: 1,
+      price: 0, // số tiền gốc
+      txHash: "0xabc",
+      coupon: "abcxyz123",
     };
 
     isLoadingBuy = true;
     try {
-      if (chainValue === "sol") {
-        const response = await nimbus.post(
-          "/v2/payments/create-session",
-          formatData
-        );
-        if (response && response?.data) {
-          window.location.replace(response?.data?.url);
-        }
-      }
+      // if (chainValue === "sol") {
+      //   const response = await nimbus.post(
+      //     "/v2/payments/create-session",
+      //     formatData
+      //   );
+      //   if (response && response?.data) {
+      //     window.location.replace(response?.data?.url);
+      //   }
+      // }
 
       if (chainValue === "eth") {
         const price =
@@ -96,8 +133,6 @@
             ? selectedPackage.price * 12
             : selectedPackage.price;
         console.log("price: ", price);
-
-        // Todo: update $ to usdc amount
 
         publicClient
           .writeContract({
@@ -107,6 +142,9 @@
             abi: wagmiAbi,
             functionName: "transfer",
             args: [receiveAddress, BigInt(10 * 1000000)],
+          })
+          .then((res) => {
+            console.log("res: ", res);
           })
           .catch((e) => {
             console.error("error", e);
@@ -142,7 +180,7 @@
     {#if selectedPackage && Object.keys(selectedPackage).length !== 0}
       <div class="flex flex-col justify-center min-h-[70vh]">
         <div class="flex flex-col items-center gap-1">
-          <div class="flex items-center gap-1 xl:text-lg text-xl">
+          <div class="flex items-center gap-1 xl:text-lg text-2xl">
             You're going to upgrade to plan <span
               class="font-semibold uppercase"
               >{selectedPackage.plan === "Professional"
@@ -158,22 +196,47 @@
           </div>
         </div>
 
-        {#if selectedPackage.isNewUser}
-          <div class="flex items-center justify-center gap-2 mt-2">
-            Promotion Code:
-            <span class="text-xl">
-              <Copy
-                address="TRIAL"
-                textTooltip="Copy coupon to clipboard"
-                iconColor={`${$isDarkMode ? "#fff" : "#000"}`}
-                color={`${$isDarkMode ? "#fff" : "#000"}`}
+        <div class="flex flex-col gap-3 justify-center items-center mt-2">
+          <form
+            on:submit|preventDefault={onSubmitCoupleCode}
+            class="flex items-center gap-3"
+          >
+            <div
+              class={`input-2 input-border w-full xl:py-[6px] py-3 px-3 ${
+                code && !$isDarkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
+              }`}
+            >
+              <input
+                type="text"
+                id="code"
+                name="code"
+                required
+                placeholder="Couple code"
+                value=""
+                class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal ${
+                  code && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+                } ${
+                  $isDarkMode
+                    ? "text-white"
+                    : "text-[#5E656B] placeholder-[#5E656B]"
+                }`}
+                on:keyup={({ target: { value } }) => (code = value)}
               />
-            </span>
-          </div>
-        {/if}
+            </div>
+            <div class="w-[120px]">
+              <Button
+                type="submit"
+                isLoading={isLoadingSubmitCoupleCode}
+                disabled={isLoadingSubmitCoupleCode}
+              >
+                Apply
+              </Button>
+            </div>
+          </form>
+        </div>
 
         <div class="flex flex-col gap-3 items-center mt-5">
-          <div class="my-3 xl:text-base text-lg">
+          <div class="my-3 xl:text-base text-2xl">
             Choose your prefer payment method
           </div>
           {#each listChain as chain}
@@ -183,7 +246,10 @@
                 isLoading={isLoadingBuy}
                 on:click={() => handleBuy(chain.value)}
               >
-                <img src={chain.logo} class="w-5 h-5 rounded-full" />
+                <img
+                  src={chain.logo}
+                  class="xl:w-5 xl:h-5 w-7 h-7 rounded-full"
+                />
                 {chain.label}</Button
               >
             </div>
@@ -195,23 +261,38 @@
             }}
           >
             <div class="transform -rotate-180">
-              <svg
-                width="14"
-                height="14"
-                viewBox="0 0 14 14"
-                fill="#1E96FC"
-                xmlns="http://www.w3.org/2000/svg"
-                ><path
-                  d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
-                  fill=""
-                /></svg
-              >
+              <div class="xl:block hidden">
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 14 14"
+                  fill="#1E96FC"
+                  xmlns="http://www.w3.org/2000/svg"
+                  ><path
+                    d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
+                    fill=""
+                  /></svg
+                >
+              </div>
+              <div class="xl:hidden block">
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 14 14"
+                  fill="#1E96FC"
+                  xmlns="http://www.w3.org/2000/svg"
+                  ><path
+                    d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
+                    fill=""
+                  /></svg
+                >
+              </div>
             </div>
             Choose other Plan
           </div>
         </div>
 
-        <div class="text-center text-gray-500 xl:text-sm text-2xl mt-8">
+        <div class="text-center text-gray-500 xl:text-sm text-xl mt-8">
           If missing your prefer payment method<br /> please contact Telegram
           <a
             href="https://t.me/thanhle27"
