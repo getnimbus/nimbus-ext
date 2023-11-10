@@ -32,6 +32,15 @@ export default defineConfig({
       "./src/**/*.{html,js,svelte}",
       "./node_modules/flowbite-svelte/**/*.{html,js,svelte,ts}",
     ],
+    extractors: [
+      {
+        extractor: (content) => {
+          return {classes: []};
+          return { classes: content.match(/[^<>"'`\s]*[^<>"'`\s:]/g) ?? [] }
+        },
+        extensions: ['svelte'],
+      },
+    ],
   },
   // include: ["./node_modules/flowbite-svelte/**/*.{html,js,svelte,ts}"],
   darkMode: "class",

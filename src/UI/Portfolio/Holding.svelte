@@ -408,6 +408,11 @@
       sumTokens = 0;
     }
   }
+
+  $: console.log(
+    "this is bal bla filteredHoldingDataNFT : ",
+    filteredHoldingDataNFT.length
+  );
 </script>
 
 <div
@@ -758,7 +763,13 @@
                         </tr>
                       {/if}
                       {#each filteredHoldingDataNFT as holding, index}
-                        <HoldingNFT data={holding} {selectedWallet} {index} />
+                        <HoldingNFT
+                          data={holding}
+                          {selectedWallet}
+                          {index}
+                          lastIndex={filteredHoldingDataNFT.length - 1 ===
+                            index}
+                        />
                       {/each}
                     </tbody>
                     {#if isLoadingNFT}
@@ -811,6 +822,8 @@
                               data={holding}
                               {selectedWallet}
                               {index}
+                              lastIndex={filteredHoldingDataNFT.length - 1 ===
+                                index}
                             />
                           {/each}
                         {/if}
