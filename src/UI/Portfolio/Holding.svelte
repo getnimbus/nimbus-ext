@@ -414,11 +414,6 @@
       sumTokens = 0;
     }
   }
-
-  $: console.log(
-    "this is bal bla filteredHoldingDataNFT : ",
-    filteredHoldingDataNFT.length
-  );
 </script>
 
 <div

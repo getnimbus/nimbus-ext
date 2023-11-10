@@ -52,8 +52,6 @@
     totalNativeTokenPrice === 0
       ? 0
       : (profitAndLoss * data?.marketPrice) / Math.abs(totalCost);
-
-  $: console.log("this is lastIndex : ", lastIndex);
 </script>
 
 <svelte:window on:keydown={closeSideNFTDetail} />
