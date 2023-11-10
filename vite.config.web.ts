@@ -8,6 +8,7 @@ import sveltePreprocess from "svelte-preprocess";
 import AutoImport from "unplugin-auto-import/vite";
 import { viteStaticCopy } from "vite-plugin-static-copy";
 import { VitePWA } from "vite-plugin-pwa";
+import { A } from "flowbite-svelte";
 
 // https://vitejs.dev/config/
 /** @type {import('vite').UserConfig} */
@@ -54,31 +55,31 @@ export default defineConfig(({ mode }) => {
           description: "https://getnimbus.io",
           icons: [
             {
-              src: "https://raw.githubusercontent.com/thanhlmm/landing/main/public/PWA/logo/512.png?token=GHSAT0AAAAAACGDWB6XLETBUX3GEXJUNPNMZKN2SMQ",
+              src: "/src/assets/logo/512.png",
               type: "image/png",
               sizes: "512x512",
               purpose: "any",
             },
             {
-              src: "https://raw.githubusercontent.com/thanhlmm/landing/main/public/PWA/logo/256.png?token=GHSAT0AAAAAACGDWB6XOASYL7KPMQCDRTOMZKN2TBQ",
+              src: "/src/assets/logo/256.png",
               type: "image/png",
               sizes: "256x256",
               purpose: "any",
             },
             {
-              src: "https://raw.githubusercontent.com/thanhlmm/landing/main/public/PWA/logo/144.png?token=GHSAT0AAAAAACGDWB6XVS4M3MGEO4RE4GV4ZKN2Y6A",
+              src: "/src/assets/logo/144.png",
               type: "image/png",
               sizes: "144x144",
               purpose: "any",
             },
             {
-              src: "https://raw.githubusercontent.com/thanhlmm/landing/main/public/PWA/logo/128.png?token=GHSAT0AAAAAACGDWB6WI3777X47JWKJOCDCZKN2TYQ",
+              src: "/src/assets/logo/48.png",
               type: "image/png",
               sizes: "128x128",
               purpose: "any",
             },
             {
-              src: "https://raw.githubusercontent.com/thanhlmm/landing/main/public/PWA/logo/48.png?token=GHSAT0AAAAAACGDWB6XY2SQELE4MIQ5ACOQZKN2SYA",
+              src: "/src/assets/logo/152.png",
               type: "image/png",
               sizes: "48x48",
               purpose: "any",
