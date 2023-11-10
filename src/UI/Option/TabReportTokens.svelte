@@ -10,11 +10,7 @@
   import AppOverlay from "~/components/Overlay.svelte";
   import Loading from "~/components/Loading.svelte";
 
-<<<<<<< HEAD
-  import defaultToken from "~/assets/tokendefault.png";
-=======
   import defaultToken from "~/assets/defaultToken.png";
->>>>>>> feat/nft-detail-trade-history
 
   const MultipleLang = {
     title: i18n("optionsPage.report-token-page-title", "Report Token Settings"),

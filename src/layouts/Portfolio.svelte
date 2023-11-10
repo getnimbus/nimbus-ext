@@ -44,11 +44,7 @@
   import "~/components/Tooltip.custom.svelte";
 
   import Reload from "~/assets/reload.svg";
-<<<<<<< HEAD
-  import defaultToken from "~/assets/tokendefault.png";
-=======
   import defaultToken from "~/assets/defaultToken.png";
->>>>>>> feat/nft-detail-trade-history
 
   const MultipleLang = {
     portfolio: i18n("newtabPage.portfolio", "Portfolio"),

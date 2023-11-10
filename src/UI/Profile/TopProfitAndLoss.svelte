@@ -9,11 +9,7 @@
   import Loading from "~/components/Loading.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
 
-<<<<<<< HEAD
-  import defaultToken from "~/assets/tokendefault.png";
-=======
   import defaultToken from "~/assets/defaultToken.png";
->>>>>>> feat/nft-detail-trade-history
 
   export let selectedAddress;
 

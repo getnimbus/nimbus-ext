@@ -13,11 +13,7 @@
 
   import TrendUp from "~/assets/trend-up.svg";
   import TrendDown from "~/assets/trend-down.svg";
-<<<<<<< HEAD
-  import defaultToken from "~/assets/tokendefault.png";
-=======
   import defaultToken from "~/assets/defaultToken.png";
->>>>>>> feat/nft-detail-trade-history
 
   export let data;
   export let selectedWallet;
