@@ -118,7 +118,7 @@
             $<TooltipNumber number={totalProfit} type="balance" personalValue />
           {:else}
             <span>
-              {#if totalProfit < 0}
+              {#if totalProfit < 0 && !$isHidePortfolio}
                 -
               {/if}
             </span>
@@ -162,7 +162,7 @@
       <OverviewCard title={MultipleLang.realizedProfit}>
         <div class="xl:text-3xl text-5xl flex">
           <span>
-            {#if realizedProfit < 0}
+            {#if realizedProfit < 0 && !$isHidePortfolio}
               -
             {/if}
           </span>
@@ -205,7 +205,7 @@
       <OverviewCard title={MultipleLang.unrealizedProfit}>
         <div class="xl:text-3xl text-5xl flex">
           <span>
-            {#if unrealizedProfit < 0}
+            {#if unrealizedProfit < 0 && !$isHidePortfolio}
               -
             {/if}
           </span>
