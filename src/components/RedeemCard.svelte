@@ -8,6 +8,8 @@
   import Button from "~/components/Button.svelte";
   import Copy from "~/components/Copy.svelte";
 
+  import goldImg from "~/assets/Gold4.svg";
+
   import Crown from "~/assets/crown.svg";
 </script>
 
@@ -65,11 +67,7 @@
           {#if redeemData?.remains === 0}
             <Button disabled>
               <div class="flex items-center gap-1">
-                <img
-                  src="https://raw.githubusercontent.com/getnimbus/nimbus-ext/c43eb2dd7d132a2686c32939ea36b0e97055abc7/src/assets/Gold4.svg"
-                  alt=""
-                  class="w-[28px] h-[28px]"
-                />
+                <img src={goldImg} alt="" class="w-[28px] h-[28px]" />
                 <div class="text-white xl:text-lg text-2xl font-medium">
                   {redeemData?.cost}
                 </div>
@@ -86,11 +84,7 @@
               }}
             >
               <div class="flex items-center gap-1">
-                <img
-                  src="https://raw.githubusercontent.com/getnimbus/nimbus-ext/c43eb2dd7d132a2686c32939ea36b0e97055abc7/src/assets/Gold4.svg"
-                  alt=""
-                  class="w-[28px] h-[28px]"
-                />
+                <img src={goldImg} alt="" class="w-[28px] h-[28px]" />
                 <div class="text-white xl:text-lg text-2xl font-medium">
                   {redeemData?.cost}
                 </div>
