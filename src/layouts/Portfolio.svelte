@@ -44,6 +44,7 @@
   import "~/components/Tooltip.custom.svelte";
 
   import Reload from "~/assets/reload.svg";
+  import defaultToken from "~/assets/tokendefault.png";
 
   const MultipleLang = {
     portfolio: i18n("newtabPage.portfolio", "Portfolio"),
@@ -256,7 +257,7 @@
 
     const dataPieChartOrderBreakdownToken = [
       {
-        logo: "https://raw.githubusercontent.com/getnimbus/assets/main/token.png",
+        logo: defaultToken,
         name: "Other tokens",
         symbol: "",
         name_ratio: "Ratio",
@@ -271,9 +272,7 @@
     const formatDataPieChartTopFiveToken = topFiveBreakdownToken?.map(
       (item) => {
         return {
-          logo:
-            item.logo ||
-            "https://raw.githubusercontent.com/getnimbus/assets/main/token.png",
+          logo: item.logo || defaultToken,
           name: item.name || item.symbol,
           symbol: item.symbol,
           name_ratio: "Ratio",

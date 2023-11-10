@@ -20,6 +20,7 @@
   import LogoWhite from "~/assets/logo-white.svg";
   import TrendDown from "~/assets/trend-down.svg";
   import TrendUp from "~/assets/trend-up.svg";
+  import defaultToken from "~/assets/tokendefault.png";
 
   export let selectedAddress;
 
@@ -42,8 +43,7 @@
           <div style="display: flex; flex-direction: column; gap: 12px; min-width: 400px;">
             <div style="display: flex; align-items: centers; gap: 4px">
               <img src=${
-                selectedItem?.logo ||
-                "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
+                selectedItem?.logo || defaultToken
               } alt="" width=20 height=20 style="border-radius: 100%" />
               <div style="margin-top: 2px; font-weight: 500; font-size: 16px; line-height: 19px; color: ${
                 $isDarkMode ? "white" : "black"
@@ -138,8 +138,7 @@
           <div style="display: flex; flex-direction: column; gap: 12px; min-width: 400px;">
             <div style="display: flex; align-items: centers; gap: 4px">
               <img src=${
-                selectedItem?.logo ||
-                "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
+                selectedItem?.logo || defaultToken
               } alt="" width=20 height=20 style="border-radius: 100%" />
               <div style="margin-top: 2px; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
                 $isDarkMode ? "white" : "black"

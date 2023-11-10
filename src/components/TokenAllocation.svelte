@@ -24,6 +24,7 @@
 
   import Select from "~/components/Select.svelte";
   import EChart from "~/components/EChart.svelte";
+  import defaultToken from "~/assets/tokendefault.png";
 
   const MultipleLang = {
     Balance: i18n("newtabPage.Balance", "Balance"),
@@ -42,11 +43,8 @@
         return `
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 220px;">
               <div style="display: flex; align-items: centers; gap: 4px">
-                <img src=${
-                  params?.data?.logo ||
-                  "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
-                }
-                onerror="this.onerror=null;this.src='https://raw.githubusercontent.com/getnimbus/assets/main/token.png';"
+                <img src=${params?.data?.logo || defaultToken}
+                onerror="this.onerror=null;this.src='${defaultToken}';"
                 alt="" width=20 height=20 style="border-radius: 100%" />
                 <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
                   $isDarkMode ? "white" : "black"

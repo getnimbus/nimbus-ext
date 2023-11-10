@@ -29,6 +29,7 @@
   import TrendUp from "~/assets/trend-up.svg";
   import Logo from "~/assets/logo-1.svg";
   import LogoWhite from "~/assets/logo-white.svg";
+  import defaultToken from "~/assets/tokendefault.png";
 
   export let packageSelected;
   export let selectedTimeFrame;
@@ -60,8 +61,7 @@
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 220px;">
               <div style="display: flex; align-items: centers; gap: 4px">
                 <img src=${
-                  params?.data?.logo ||
-                  "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
+                  params?.data?.logo || defaultToken
                 } alt="" width=20 height=20 style="border-radius: 100%" />
                 <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
                   $isDarkMode ? "white" : "black"
