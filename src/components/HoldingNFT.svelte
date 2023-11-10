@@ -57,7 +57,7 @@
 <svelte:window on:keydown={closeSideNFTDetail} />
 
 <tr
-  class={`group transition-all cursor-pointer rounded-xl ${
+  class={`group transition-all cursor-pointer ${
     index === 0 && "view-nft-detail"
   } `}
   on:click={() => {
