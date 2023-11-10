@@ -1,7 +1,7 @@
 <script lang="ts">
   import { nimbus } from "~/lib/network";
   import { priceSubscribe } from "~/lib/price-ws";
-  import { typeWallet, isDarkMode } from "~/store";
+  import { isDarkMode } from "~/store";
   import { createQuery } from "@tanstack/svelte-query";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
 
@@ -12,7 +12,10 @@
   import Loading from "~/components/Loading.svelte";
   import TooltipTitle from "~/components/TooltipTitle.svelte";
   import NftDetailItem from "./NFTDetailItem.svelte";
+  import NftTradeHistory from "./NFTTradeHistory.svelte";
 
+  export let selectedNftCollectionId;
+  export let selectedNftCollectionChain;
   export let collectionId;
   export let addressWallet;
 
@@ -413,13 +416,7 @@
     {/if}
   </div>
 
-  <div
-    class={`rounded-[20px] p-6 flex flex-col gap-4 ${
-      $isDarkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
-    }`}
-  >
-    hello world
-  </div>
+  <NftTradeHistory {selectedNftCollectionChain} {selectedNftCollectionId} />
 </ErrorBoundary>
 
 <style windi:preflights:global windi:safelist:global>
