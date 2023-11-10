@@ -6,6 +6,12 @@
 
   import Loading from "~/components/Loading.svelte";
 
+  import rank1 from "~/assets/dailycheckin/Rank1.svg";
+  import rank2 from "~/assets/dailycheckin/Rank2.svg";
+  import rank3 from "~/assets/dailycheckin/Rank3.svg";
+  import rankStatus from "~/assets/dailycheckin/Rankstatus.png";
+  import frameLeaderboard from "~/assets/dailycheckin/frameLeaderboard.png";
+
   let formatDataLeaderboard = [];
   let currentUserRank;
 
@@ -66,11 +72,7 @@
       <div class="xl:w-3/5 w-4/5 flex">
         <div class="flex-1 flex flex-col justify-end h-[350px]">
           <div class="h-[175px] w-full">
-            <img
-              src="https://raw.githubusercontent.com/getnimbus/nimbus-ext/eecd3ee46b098a2d8f4bb57c7c26dc8029d3304a/src/assets/dailycheckin/Rank2.svg"
-              alt=""
-              class="w-full h-full object-contain"
-            />
+            <img src={rank2} alt="" class="w-full h-full object-contain" />
           </div>
           <div class="flex flex-col justify-center items-center gap-1 -mt-1">
             <div class="xl:text-lg text-xl font-bold">
@@ -87,11 +89,7 @@
 
         <div class="flex-1">
           <div class="h-[205px] w-full">
-            <img
-              src="https://raw.githubusercontent.com/getnimbus/nimbus-ext/eecd3ee46b098a2d8f4bb57c7c26dc8029d3304a/src/assets/dailycheckin/Rank1.svg"
-              alt=""
-              class="w-full h-full object-contain"
-            />
+            <img src={rank1} alt="" class="w-full h-full object-contain" />
           </div>
           <div class="flex flex-col justify-center items-center gap-1 -mt-1">
             <div class="xl:text-lg text-xl font-bold">
@@ -108,11 +106,7 @@
 
         <div class="flex-1 flex flex-col justify-end h-[350px]">
           <div class="h-[175px] w-full">
-            <img
-              src="https://raw.githubusercontent.com/getnimbus/nimbus-ext/eecd3ee46b098a2d8f4bb57c7c26dc8029d3304a/src/assets/dailycheckin/Rank3.svg"
-              alt=""
-              class="w-full h-full object-contain"
-            />
+            <img src={rank3} alt="" class="w-full h-full object-contain" />
           </div>
           <div class="flex flex-col justify-center items-center gap-1 -mt-1">
             <div class="xl:text-lg text-xl font-bold">
@@ -130,20 +124,13 @@
       <div
         class="xl:w-3/5 w-full flex items-center justify-center -mt-10 -z-10"
       >
-        <img
-          src="https://raw.githubusercontent.com/getnimbus/nimbus-ext/feat/daily-checking/src/assets/dailycheckin/Rankstatus.png"
-          alt=""
-        />
+        <img src={rankStatus} alt="" />
       </div>
     </div>
     <div
       class="absolute -top-58 left-1/2 transform -translate-x-1/2 -z-20 xl:w-3/5 w-full h-full opacity-60"
     >
-      <img
-        src="https://raw.githubusercontent.com/getnimbus/nimbus-ext/feat/daily-checking/src/assets/dailycheckin/frameLeaderboard.png"
-        alt=""
-        class="w-full h-full object-contain"
-      />
+      <img src={frameLeaderboard} alt="" class="w-full h-full object-contain" />
     </div>
   </div>
 

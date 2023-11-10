@@ -53,6 +53,7 @@
   import BitcoinLogo from "~/assets/bitcoin.png";
   import SolanaLogo from "~/assets/solana.png";
   import AuraLogo from "~/assets/aura.png";
+  import goldImg from "~/assets/Gold4.svg";
 
   const MultipleLang = {
     portfolio: i18n("newtabPage.portfolio", "Portfolio"),
@@ -722,11 +723,7 @@
                 $isDarkMode ? "bg-[#212121]" : "bg-[#525B8C]"
               }`}
             >
-              <img
-                src="https://raw.githubusercontent.com/getnimbus/nimbus-ext/c43eb2dd7d132a2686c32939ea36b0e97055abc7/src/assets/Gold4.svg"
-                alt=""
-                class="w-[26px] h-[26px]"
-              />
+              <img src={goldImg} alt="" class="w-[26px] h-[26px]" />
             </div>
           </Link>
         </div>

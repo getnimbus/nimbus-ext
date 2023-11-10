@@ -10,17 +10,19 @@
   import Button from "~/components/Button.svelte";
   import Loading from "~/components/Loading.svelte";
 
-  const rankBackground = [
-    "https://raw.githubusercontent.com/getnimbus/nimbus-ext/feat/daily-checking/src/assets/dailycheckin/1stframe.png",
-    "https://raw.githubusercontent.com/getnimbus/nimbus-ext/feat/daily-checking/src/assets/dailycheckin/2ndframe.png",
-    "https://raw.githubusercontent.com/getnimbus/nimbus-ext/feat/daily-checking/src/assets/dailycheckin/3rdframe.png",
-  ];
+  import img1stframe from "~/assets/dailycheckin/1stframe.png";
+  import img2stframe from "~/assets/dailycheckin/2ndframe.png";
+  import img3stframe from "~/assets/dailycheckin/3rdframe.png";
 
-  const rank = [
-    "https://raw.githubusercontent.com/getnimbus/nimbus-ext/feat/daily-checking/src/assets/dailycheckin/1st.png",
-    "https://raw.githubusercontent.com/getnimbus/nimbus-ext/feat/daily-checking/src/assets/dailycheckin/2nd.png",
-    "https://raw.githubusercontent.com/getnimbus/nimbus-ext/feat/daily-checking/src/assets/dailycheckin/3rd.png",
-  ];
+  import rank1 from "~/assets/dailycheckin/1st.png";
+  import rank2 from "~/assets/dailycheckin/2nd.png";
+  import rank3 from "~/assets/dailycheckin/3rd.png";
+
+  import goldImg from "~/assets/Gold4.svg";
+
+  const rankBackground = [img1stframe, img2stframe, img3stframe];
+
+  const rank = [rank1, rank2, rank3];
 
   let selectedType: "collectGMPoint" | "history" = "collectGMPoint";
   let openScreenSuccess: boolean = false;
@@ -162,11 +164,7 @@
             <Loading />
           {:else}
             {$queryDailyCheckin?.data?.totalPoint || 0}
-            <img
-              src="https://raw.githubusercontent.com/getnimbus/nimbus-ext/c43eb2dd7d132a2686c32939ea36b0e97055abc7/src/assets/Gold4.svg"
-              alt=""
-              class="w-13"
-            />
+            <img src={goldImg} alt="" class="w-13" />
           {/if}
         </div>
       </div>
@@ -271,11 +269,7 @@
                       <div class="xl:text-lg text-xl font-medium">
                         Day {index + 1}
                       </div>
-                      <img
-                        src="https://raw.githubusercontent.com/getnimbus/nimbus-ext/c43eb2dd7d132a2686c32939ea36b0e97055abc7/src/assets/Gold4.svg"
-                        alt=""
-                        class="w-13"
-                      />
+                      <img src={goldImg} alt="" class="w-13" />
                       <div class="xl:text-2xl text-3xl font-medium">
                         + {item}
                       </div>
@@ -408,11 +402,7 @@
       <div class="xl:text-2xl text-4xl text-white font-medium">
         Received successfully
       </div>
-      <img
-        src="https://raw.githubusercontent.com/getnimbus/nimbus-ext/c43eb2dd7d132a2686c32939ea36b0e97055abc7/src/assets/Gold4.svg"
-        alt=""
-        class="w-40 h-40"
-      />
+      <img src={goldImg} alt="" class="w-40 h-40" />
       <div class="xl:text-2xl text-4xl text-white font-medium">
         +{$queryDailyCheckin?.data?.pointStreak[selectedIndexRewards]} GM Points
       </div>
@@ -433,11 +423,7 @@
       <div class="xl:text-2xl text-4xl text-white font-medium">
         Congratulation!!!
       </div>
-      <img
-        src="https://raw.githubusercontent.com/getnimbus/nimbus-ext/c43eb2dd7d132a2686c32939ea36b0e97055abc7/src/assets/Gold4.svg"
-        alt=""
-        class="w-40 h-40"
-      />
+      <img src={goldImg} alt="" class="w-40 h-40" />
       <div class="xl:text-2xl text-4xl text-white font-medium">
         You have received {bonusScore} Bonus GM Points
       </div>

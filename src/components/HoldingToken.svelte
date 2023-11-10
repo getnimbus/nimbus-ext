@@ -23,6 +23,7 @@
 
   import TrendUp from "~/assets/trend-up.svg";
   import TrendDown from "~/assets/trend-down.svg";
+  import defaultToken from "~/assets/defaultToken.png";
 
   export let data;
   export let selectedWallet;
@@ -275,10 +276,7 @@
       {/if}
       <div class="relative">
         <div class="rounded-full w-[30px] h-[30px] overflow-hidden">
-          <Image
-            logo={data.logo}
-            defaultLogo="https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
-          />
+          <Image logo={data.logo} defaultLogo={defaultToken} />
         </div>
         {#if ($typeWallet === "EVM" || $typeWallet === "BUNDLE") && data?.chain !== "CEX"}
           <div class="absolute -top-2 -right-1">
@@ -987,10 +985,7 @@
             <div class="py-2 pl-3 flex-1">
               <div class="flex items-center gap-3">
                 <div class="rounded-full w-[30px] h-[30px] overflow-hidden">
-                  <Image
-                    logo={data.logo}
-                    defaultLogo="https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
-                  />
+                  <Image logo={data.logo} defaultLogo={defaultToken} />
                 </div>
                 <div class="flex flex-col items-start">
                   <div class="font-medium xl:text-sm text-xl text_00000099">
@@ -1121,10 +1116,7 @@
                 >
                   <div class="flex items-center gap-3">
                     <div class="rounded-full w-[30px] h-[30px] overflow-hidden">
-                      <Image
-                        logo={data.logo}
-                        defaultLogo="https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
-                      />
+                      <Image logo={data.logo} defaultLogo={defaultToken} />
                     </div>
                     <div class="flex flex-col items-start">
                       <div class="font-medium xl:text-sm text-xl text_00000099">
@@ -1405,10 +1397,7 @@
         <div class="flex items-center gap-4">
           <div class="relative">
             <div class="rounded-full w-[46px] h-[46px] overflow-hidden">
-              <Image
-                logo={data.logo}
-                defaultLogo="https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
-              />
+              <Image logo={data.logo} defaultLogo={defaultToken} />
             </div>
             {#if ($typeWallet === "EVM" || $typeWallet === "BUNDLE") && selectedTokenDetail?.chain !== "CEX"}
               <div class="absolute -top-2 -right-1">
