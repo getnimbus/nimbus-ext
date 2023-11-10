@@ -26,6 +26,9 @@
 
   let showSideNftDetail = false;
 
+  let selectedNftCollectionId;
+  let selectedNftCollectionChain;
+
   const closeSideNFTDetail = (event) => {
     if (event.key === "Escape") {
       showSideNftDetail = false;
@@ -51,6 +54,13 @@
     totalNativeTokenPrice === 0
       ? 0
       : (profitAndLoss * data?.marketPrice) / Math.abs(totalCost);
+
+  $: {
+    if (!showSideNftDetail) {
+      selectedNftCollectionId = undefined;
+      selectedNftCollectionChain = undefined;
+    }
+  }
 </script>
 
 <svelte:window on:keydown={closeSideNFTDetail} />
@@ -61,6 +71,8 @@
   } `}
   on:click={() => {
     showSideNftDetail = true;
+    selectedNftCollectionId = data?.collectionId;
+    selectedNftCollectionChain = data?.nativeToken?.symbol;
     mixpanel.track("nft_detail_page", {
       address: selectedWallet,
       collection_type: data.collectionId,
@@ -332,6 +344,8 @@
     </div>
   </div>
   <NftDetailSidebar
+    {selectedNftCollectionId}
+    {selectedNftCollectionChain}
     collectionId={data.collectionId}
     addressWallet={selectedWallet}
   />

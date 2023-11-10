@@ -43,7 +43,11 @@
   import LeftArrowBlack from "~/assets/left-arrow-black.svg";
   import Logo from "~/assets/logo-1.svg";
   import LogoWhite from "~/assets/logo-white.svg";
+<<<<<<< HEAD
   import defaultToken from "~/assets/tokendefault.png";
+=======
+  import defaultToken from "~/assets/defaultToken.png";
+>>>>>>> feat/nft-detail-trade-history
 
   const MultipleLang = {
     token_allocation: i18n("newtabPage.token-allocation", "Token Allocation"),
@@ -788,7 +792,10 @@
       const dataPieChartOrderBreakdownToken = [
         {
           logo: defaultToken,
+<<<<<<< HEAD
           logo: defaultToken,
+=======
+>>>>>>> feat/nft-detail-trade-history
           name: "Other tokens",
           symbol: "",
           name_ratio: "Ratio",

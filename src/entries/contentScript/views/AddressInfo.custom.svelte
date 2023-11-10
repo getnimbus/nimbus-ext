@@ -39,7 +39,11 @@
   // import CoinMarketCapIcon from "../assets/CoinMarketCap_logo.png";
   import CoinDefaultIcon from "../assets/coin-default.svg";
   import Edit from "../../../assets/edit.svg";
+<<<<<<< HEAD
   import defaultToken from "~/assets/tokendefault.png";
+=======
+  import defaultToken from "~/assets/defaultToken.png";
+>>>>>>> feat/nft-detail-trade-history
 
   export let address;
   export let popup: boolean = true;

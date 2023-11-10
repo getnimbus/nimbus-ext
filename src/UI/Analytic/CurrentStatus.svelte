@@ -29,7 +29,11 @@
   import TrendUp from "~/assets/trend-up.svg";
   import Logo from "~/assets/logo-1.svg";
   import LogoWhite from "~/assets/logo-white.svg";
+<<<<<<< HEAD
   import defaultToken from "~/assets/tokendefault.png";
+=======
+  import defaultToken from "~/assets/defaultToken.png";
+>>>>>>> feat/nft-detail-trade-history
 
   export let packageSelected;
   export let selectedTimeFrame;

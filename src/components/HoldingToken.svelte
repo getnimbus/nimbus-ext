@@ -1,11 +1,5 @@
 <script lang="ts">
-  import {
-    typeWallet,
-    isDarkMode,
-    user,
-    selectedBundle,
-    isHidePortfolio,
-  } from "~/store";
+  import { typeWallet, isDarkMode, user, selectedBundle } from "~/store";
   import { detectedChain, shorterName, shorterAddress } from "~/utils";
   import numeral from "numeral";
   import { Progressbar, Toast } from "flowbite-svelte";
@@ -29,11 +23,16 @@
 
   import TrendUp from "~/assets/trend-up.svg";
   import TrendDown from "~/assets/trend-down.svg";
+<<<<<<< HEAD
   import defaultToken from "~/assets/tokendefault.png";
+=======
+  import defaultToken from "~/assets/defaultToken.png";
+>>>>>>> feat/nft-detail-trade-history
 
   export let data;
   export let selectedWallet;
   export let sumAllTokens;
+  export let lastIndex: boolean = false;
 
   let isShowTooltipName = false;
   let isShowTooltipSymbol = false;
@@ -216,17 +215,6 @@
   class={`group transition-all ${
     isOpenTokenInfoBundle ? ($isDarkMode ? "bg-[#000]" : "bg-gray-100") : ""
   }`}
-  on:click={() => {
-    // if (clickable) {
-    //   navigate(
-    //     `/position-detail?id=${encodeURIComponent(
-    //       data.positionId
-    //     )}&type=${encodeURIComponent(
-    //       data.positionType
-    //     )}&address=${encodeURIComponent(selectedWallet)}`
-    //   );
-    // }
-  }}
   on:mouseover={() => {
     if ($user && Object.keys($user).length !== 0) {
       isShowReport = true;
@@ -254,13 +242,15 @@
 >
   <td
     class={`pl-3 py-3 xl:static sticky left-0 z-9 w-[450px] ${
-      isOpenTokenInfoBundle
+      (isOpenTokenInfoBundle
         ? $isDarkMode
           ? "bg-[#000]"
           : "bg-gray-100"
         : $isDarkMode
         ? "bg-[#131313] group-hover:bg-[#000]"
-        : "bg-white group-hover:bg-gray-100"
+        : "bg-white group-hover:bg-gray-100") +
+      " " +
+      (lastIndex ? "rounded-bl-xl" : "")
     }`}
   >
     <div class="relative flex items-center gap-3 text-left">
@@ -836,7 +826,9 @@
   {#if $typeWallet === "SOL" || $typeWallet === "EVM" || $typeWallet === "BUNDLE" || $typeWallet === "CEX"}
     <td
       class={`py-3 xl:w-14 w-32 h-full flex justify-center items-center xl:gap-3 gap-6 ${
-        $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
+        ($isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100") +
+        " " +
+        (lastIndex ? "rounded-br-xl" : "")
       }`}
     >
       {#if $typeWallet === "BUNDLE"}

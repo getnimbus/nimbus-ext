@@ -36,7 +36,11 @@
   import TrendDown from "~/assets/trend-down.svg";
   import TrendUp from "~/assets/trend-up.svg";
   import SharpeRatioExplain from "~/assets/explain/sharpe-ratio-explain.mp4";
+<<<<<<< HEAD
   import defaultToken from "~/assets/tokendefault.png";
+=======
+  import defaultToken from "~/assets/defaultToken.png";
+>>>>>>> feat/nft-detail-trade-history
 
   export let selectedTimeFrame;
 

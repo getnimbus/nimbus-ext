@@ -26,7 +26,11 @@
   import Image from "~/components/Image.svelte";
 
   import All from "~/assets/all.svg";
+<<<<<<< HEAD
   import defaultToken from "~/assets/tokendefault.png";
+=======
+  import defaultToken from "~/assets/defaultToken.png";
+>>>>>>> feat/nft-detail-trade-history
 
   let listCoinPrice = [];
   let dataTokenHolding = [];
@@ -443,10 +447,14 @@
                 >
                   <div class="flex items-center gap-2">
                     <div class="w-6 h-6 mx-auto rounded-full overflow-hidden">
+<<<<<<< HEAD
                       <Image
                         logo={item.logo}
                         defaultLogo={defaultToken}
                       />
+=======
+                      <Image logo={item.logo} defaultLogo={defaultToken} />
+>>>>>>> feat/nft-detail-trade-history
                     </div>
                     <div class="text-2xl xl:text-base">
                       {item.name.toLocaleUpperCase()}
@@ -645,10 +653,14 @@
                     on:click={handleSelectToken(item)}
                   >
                     <div class="w-7 h-7 rounded-full overflow-hidden">
+<<<<<<< HEAD
                       <Image
                         logo={item.logo}
                         defaultLogo={defaultToken}
                       />
+=======
+                      <Image logo={item.logo} defaultLogo={defaultToken} />
+>>>>>>> feat/nft-detail-trade-history
                     </div>
                     <div class="xl:text-sm text-2xl">
                       {item.full_name}

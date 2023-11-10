@@ -29,7 +29,11 @@
   import LogoWhite from "~/assets/logo-white.svg";
   import TrendDown from "~/assets/trend-down.svg";
   import TrendUp from "~/assets/trend-up.svg";
+<<<<<<< HEAD
   import defaultToken from "~/assets/tokendefault.png";
+=======
+  import defaultToken from "~/assets/defaultToken.png";
+>>>>>>> feat/nft-detail-trade-history
 
   let closedHoldingPosition = [];
   let selectedTypeChart: "value" | "percent" = "value";
