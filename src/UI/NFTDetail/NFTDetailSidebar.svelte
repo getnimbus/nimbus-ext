@@ -412,6 +412,14 @@
       </div>
     {/if}
   </div>
+
+  <div
+    class={`rounded-[20px] p-6 flex flex-col gap-4 ${
+      $isDarkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
+    }`}
+  >
+    hello world
+  </div>
 </ErrorBoundary>
 
 <style windi:preflights:global windi:safelist:global>
