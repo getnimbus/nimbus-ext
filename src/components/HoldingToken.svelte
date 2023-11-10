@@ -28,6 +28,7 @@
   export let data;
   export let selectedWallet;
   export let sumAllTokens;
+  export let lastIndex: boolean = false;
 
   let isShowTooltipName = false;
   let isShowTooltipSymbol = false;
@@ -201,6 +202,8 @@
       };
     })
     .filter((item) => Number(item?.amount) !== 0);
+
+  $: console.log("this is last index : ", lastIndex);
 </script>
 
 <svelte:window on:keydown={closeSideTokenDetail} />
@@ -237,13 +240,15 @@
 >
   <td
     class={`pl-3 py-3 xl:static sticky left-0 z-9 w-[450px] ${
-      isOpenTokenInfoBundle
+      (isOpenTokenInfoBundle
         ? $isDarkMode
           ? "bg-[#000]"
           : "bg-gray-100"
         : $isDarkMode
         ? "bg-[#131313] group-hover:bg-[#000]"
-        : "bg-white group-hover:bg-gray-100"
+        : "bg-white group-hover:bg-gray-100") +
+      " " +
+      (lastIndex ? "rounded-bl-xl" : "")
     }`}
   >
     <div class="relative flex items-center gap-3 text-left">
@@ -819,7 +824,9 @@
   {#if $typeWallet === "SOL" || $typeWallet === "EVM" || $typeWallet === "BUNDLE" || $typeWallet === "CEX"}
     <td
       class={`py-3 xl:w-14 w-32 h-full flex justify-center items-center xl:gap-3 gap-6 ${
-        $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
+        ($isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100") +
+        " " +
+        (lastIndex ? "rounded-br-xl" : "")
       }`}
     >
       {#if $typeWallet === "BUNDLE"}

@@ -570,9 +570,11 @@
                         </td>
                       </tr>
                     {/if}
-                    {#each filteredHoldingDataToken as holding}
+                    {#each filteredHoldingDataToken as holding, index}
                       <HoldingToken
                         data={holding}
+                        lastIndex={filteredHoldingDataToken.length - 1 ===
+                          index}
                         {selectedWallet}
                         sumAllTokens={totalAssets - sumNFT}
                       />
@@ -623,9 +625,11 @@
                           </td>
                         </tr>
                       {:else}
-                        {#each filteredHoldingDataToken as holding (holding.positionId)}
+                        {#each filteredHoldingDataToken as holding, index (holding.positionId)}
                           <HoldingToken
                             data={holding}
+                            lastIndex={filteredHoldingDataToken.length - 1 ==
+                              index}
                             {selectedWallet}
                             sumAllTokens={totalAssets - sumNFT}
                           />
