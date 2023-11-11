@@ -35,17 +35,15 @@
   let isShowCMC = false;
   let isShowCoingecko = false;
   let isShowReport = false;
-  let isShowReportTable = false;
+
+  let showTableVaults = false;
   let selectedHighestVault;
   let selectedVaults;
-  let showTableVaults = false;
-  let isOldToken = false;
 
-  let toastMsg = "";
-  let isSuccessToast = false;
-  let counter = 3;
-  let showToast = false;
+  let isShowReportTable = false;
+  let isOldToken = false;
   let isLoadingReportTrashCoin = false;
+  let reportReasonList = [];
 
   let isOpenTokenInfoBundle = false;
   let showTokenInfoBundle = false;
@@ -55,7 +53,10 @@
   let isCopied = false;
   let isShowTooltipContractAddress = false;
 
-  let reportReasonList = [];
+  let toastMsg = "";
+  let isSuccessToast = false;
+  let counter = 3;
+  let showToast = false;
 
   const trigger = () => {
     showToast = true;
@@ -238,16 +239,15 @@
 >
   <td
     class={`pl-3 py-3 xl:static sticky left-0 z-9 w-[450px] ${
-      (isOpenTokenInfoBundle
+      isOpenTokenInfoBundle
         ? $isDarkMode
           ? "bg-[#000]"
           : "bg-gray-100"
         : $isDarkMode
         ? "bg-[#131313] group-hover:bg-[#000]"
-        : "bg-white group-hover:bg-gray-100") +
-      " " +
-      (lastIndex ? "rounded-bl-[10px]" : "")
+        : "bg-white group-hover:bg-gray-100"
     }`}
+    style={`${lastIndex ? "border-bottom-left-radius: 10px;" : ""}`}
   >
     <div class="relative flex items-center gap-3 text-left">
       <!-- icon report -->
@@ -822,10 +822,9 @@
   {#if $typeWallet === "SOL" || $typeWallet === "EVM" || $typeWallet === "BUNDLE" || $typeWallet === "CEX"}
     <td
       class={`py-3 xl:w-14 w-32 h-full flex justify-center items-center xl:gap-3 gap-6 ${
-        ($isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100") +
-        " " +
-        (lastIndex ? "rounded-br-xl" : "")
+        $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
       }`}
+      style={`${lastIndex ? "border-bottom-right-radius: 10px;" : ""}`}
     >
       {#if $typeWallet === "BUNDLE"}
         <div
