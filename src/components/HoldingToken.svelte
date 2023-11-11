@@ -216,7 +216,6 @@
     if ($user && Object.keys($user).length !== 0) {
       isShowReport = true;
     }
-
     if (data?.cmc_slug) {
       isShowCMC = true;
     }
@@ -228,7 +227,6 @@
     if ($user && Object.keys($user).length !== 0) {
       isShowReport = false;
     }
-
     if (data?.cmc_slug) {
       isShowCMC = false;
     }
@@ -253,7 +251,7 @@
       <!-- icon report -->
       {#if isShowReport}
         <div
-          class="absolute hidden w-5 cursor-pointer xl:-left-8 sm:-left-6 top-3 opacity-80 hover:opacity-60 xl:block"
+          class="hidden xl:block absolute w-5 cursor-pointer -left-8 top-3 opacity-80 hover:opacity-60"
           on:click={() => (isShowReportTable = true)}
         >
           <svg
@@ -312,13 +310,13 @@
                 <!-- icon report -->
                 {#if isShowReport}
                   <span
-                    class="flex items-center justify-center ml-3 opacity-80 hover:opacity-60 xl:hidden"
+                    class="xl:hidden flex items-center justify-center ml-3 opacity-80 hover:opacity-60"
                     on:click={() => (isShowReportTable = true)}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="16"
+                      width="26"
+                      height="26"
                       viewBox="0 0 24 24"
                     >
                       <g
