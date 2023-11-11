@@ -77,7 +77,7 @@
 
   let filterType = {
     label: "ALL",
-    value: "ALL",
+    value: "all",
   };
 
   $: {
@@ -242,12 +242,12 @@
         <div class="xl:text-2xl text-4xl font-medium">
           Avg Cost distribution
         </div>
-        <!-- <Select
+        <Select
           type="lang"
           positionSelectList="right-0"
           listSelect={filterAvgCostType}
           bind:selected={filterType}
-        /> -->
+        />
       </div>
 
       {#if data?.contractAddress !== "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"}
