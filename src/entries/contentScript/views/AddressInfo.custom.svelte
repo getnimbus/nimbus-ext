@@ -19,7 +19,6 @@
     shorterAddress,
     shorterName,
     typePieChart,
-    handleImgError,
   } from "~/utils";
   import { track } from "~/lib/data-tracking";
   import { nimbus } from "../../../lib/network";
@@ -32,6 +31,7 @@
   import "~/components/Tooltip.custom.svelte";
   import Copy from "~/components/Copy.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
+  import Image from "~/components/Image.svelte";
   import tooltip from "~/entries/contentScript/views/tooltip";
 
   import SmartContractIcon from "../assets/smart-contract.png";
@@ -39,6 +39,7 @@
   // import CoinMarketCapIcon from "../assets/CoinMarketCap_logo.png";
   import CoinDefaultIcon from "../assets/coin-default.svg";
   import Edit from "../../../assets/edit.svg";
+  import defaultToken from "~/assets/defaultToken.png";
 
   export let address;
   export let popup: boolean = true;
@@ -254,7 +255,7 @@
 
           const dataPieChartOrderBreakdown = [
             {
-              logo: "https://raw.githubusercontent.com/getnimbus/assets/main/token.png",
+              logo: defaultToken,
               name: "Others",
               symbol: "Other tokens",
               name_ratio: "Ratio",
@@ -759,34 +760,26 @@
                                 <div class="flex justify-start w-max">
                                   {#if item?.tokens.length > 5}
                                     {#each item?.tokens.slice(0, 5) as token, index}
-                                      <img
-                                        src={token?.imageUrl ||
-                                          "https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"}
-                                        on:error={(e) =>
-                                          handleImgError(
-                                            e,
-                                            token?.imageUrl,
-                                            "https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"
-                                          )}
-                                        alt=""
+                                      <div
                                         class={`w-6 h-6 rounded-md border border-gray-300 overflow-hidden ${
                                           index > 0 && "-ml-2"
                                         }`}
-                                      />
+                                      >
+                                        <Image
+                                          logo={token?.imageUrl}
+                                          defaultLogo="https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"
+                                        />
+                                      </div>
                                     {/each}
                                     <div class="relative w-6 h-6">
-                                      <img
-                                        src={item?.tokens[4].imageUrl ||
-                                          "https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"}
-                                        on:error={(e) =>
-                                          handleImgError(
-                                            e,
-                                            item?.tokens[4].imageUrl,
-                                            "https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"
-                                          )}
-                                        alt=""
+                                      <div
                                         class="w-6 h-6 rounded-md border border-gray-300 overflow-hidden -ml-2"
-                                      />
+                                      >
+                                        <Image
+                                          logo={item?.tokens[4].imageUrl}
+                                          defaultLogo="https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"
+                                        />
+                                      </div>
                                       <div
                                         class="absolute top-0 -left-2 w-6 h-6 bg-[#00000066] text-white text-center flex justify-center items-center pb-2 rounded-md"
                                       >
@@ -795,20 +788,16 @@
                                     </div>
                                   {:else}
                                     {#each item?.tokens as token, index}
-                                      <img
-                                        src={token?.imageUrl ||
-                                          "https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"}
-                                        on:error={(e) =>
-                                          handleImgError(
-                                            e,
-                                            token?.imageUrl,
-                                            "https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"
-                                          )}
-                                        alt=""
+                                      <div
                                         class={`w-6 h-6 rounded-md border border-gray-300 overflow-hidden ${
                                           index > 0 && "-ml-2"
                                         }`}
-                                      />
+                                      >
+                                        <Image
+                                          logo={token?.imageUrl}
+                                          defaultLogo="https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"
+                                        />
+                                      </div>
                                     {/each}
                                   {/if}
                                 </div>

@@ -12,7 +12,6 @@
     correlationsMatrixColor,
     equalizeArrayLengths,
     formatPercent,
-    handleImgError,
   } from "~/utils";
   import { nimbus } from "~/lib/network";
   import dayjs from "dayjs";
@@ -24,8 +23,10 @@
   import Loading from "~/components/Loading.svelte";
   import Button from "~/components/Button.svelte";
   import TooltipTitle from "~/components/TooltipTitle.svelte";
+  import Image from "~/components/Image.svelte";
 
   import All from "~/assets/all.svg";
+  import defaultToken from "~/assets/defaultToken.png";
 
   let listCoinPrice = [];
   let dataTokenHolding = [];
@@ -442,18 +443,7 @@
                 >
                   <div class="flex items-center gap-2">
                     <div class="w-6 h-6 mx-auto rounded-full overflow-hidden">
-                      <img
-                        src={item.logo ||
-                          "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"}
-                        alt=""
-                        class="w-full h-full object-contain"
-                        on:error={(e) =>
-                          handleImgError(
-                            e,
-                            item.logo,
-                            "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
-                          )}
-                      />
+                      <Image logo={item.logo} defaultLogo={defaultToken} />
                     </div>
                     <div class="text-2xl xl:text-base">
                       {item.name.toLocaleUpperCase()}
@@ -552,17 +542,9 @@
                             <div
                               class="w-6 h-6 mx-auto rounded-full overflow-hidden"
                             >
-                              <img
-                                src={item.value ||
-                                  "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"}
-                                alt="Coin Icon"
-                                class="w-full h-full object-contain"
-                                on:error={(e) =>
-                                  handleImgError(
-                                    e,
-                                    item.value,
-                                    "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
-                                  )}
+                              <Image
+                                logo={item.value}
+                                defaultLogo={defaultToken}
                               />
                             </div>
                           </td>
@@ -660,18 +642,7 @@
                     on:click={handleSelectToken(item)}
                   >
                     <div class="w-7 h-7 rounded-full overflow-hidden">
-                      <img
-                        src={item.logo ||
-                          "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"}
-                        alt="Coin Icon"
-                        class="w-full h-full object-contain"
-                        on:error={(e) =>
-                          handleImgError(
-                            e,
-                            item.logo,
-                            "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
-                          )}
-                      />
+                      <Image logo={item.logo} defaultLogo={defaultToken} />
                     </div>
                     <div class="xl:text-sm text-2xl">
                       {item.full_name}

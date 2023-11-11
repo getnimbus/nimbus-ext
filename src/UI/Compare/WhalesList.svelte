@@ -1,4 +1,5 @@
 <script lang="ts">
+  import LoadingPremium from "~/components/LoadingPremium.svelte";
   import TooltipTitle from "~/components/TooltipTitle.svelte";
   import WhaleItem from "./WhaleItem.svelte";
 
@@ -6,16 +7,17 @@
   export let data;
   export let copyAddress = (address) => {};
   export let closeModal = () => {};
+  export let isLoading;
 </script>
 
 <div
-  class={`border border_0000000d rounded-[10px] overflow-visible overflow-y-auto h-[563px] relative ${
+  class={`border border_0000000d rounded-[10px] overflow-x-auto overflow-y-auto h-[563px] relative ${
     darkMode ? "bg-[#131313]" : "bg-[#fff]"
   }`}
 >
-  <table class="table-auto xl:w-full w-[2800px]">
+  <table class="table-auto xl:w-full w-[2800px] h-full">
     <thead>
-      <tr class="bg_f4f5f8">
+      <tr class="bg_f4f5f8 sticky left-0 top-0 z-10">
         <th
           class="pl-3 py-3 rounded-tl-[10px] 2xl:w-[250px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8"
         >
@@ -81,23 +83,35 @@
         <th class="py-3 pr-3 rounded-tr-[10px]" />
       </tr>
     </thead>
-    <tbody>
-      {#if data && data?.length === 0}
+    {#if isLoading}
+      <tbody>
         <tr>
-          <td colspan="11">
-            <div
-              class="flex justify-center items-center py-4 px-3 text-lg text-gray-400"
-            >
-              Empty
+          <td colspan={11}>
+            <div class="flex justify-center items-center h-full py-3 px-3">
+              <LoadingPremium />
             </div>
           </td>
         </tr>
-      {:else}
-        {#each data as item}
-          <WhaleItem data={item} {copyAddress} {closeModal} />
-        {/each}
-      {/if}
-    </tbody>
+      </tbody>
+    {:else}
+      <tbody>
+        {#if data && data?.length === 0}
+          <tr>
+            <td colspan="11">
+              <div
+                class="h-full flex justify-center items-center py-4 px-3 text-gray-400 xl:text-lg text-xl"
+              >
+                Empty
+              </div>
+            </td>
+          </tr>
+        {:else}
+          {#each data as item}
+            <WhaleItem data={item} {copyAddress} {closeModal} />
+          {/each}
+        {/if}
+      </tbody>
+    {/if}
   </table>
 </div>
 
