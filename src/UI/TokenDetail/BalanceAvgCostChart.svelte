@@ -92,6 +92,10 @@
             </div>`;
       },
     },
+    grid: {
+      left: 70,
+      right: 70,
+    },
     toolbox: {
       right: "4%",
       feature: {
