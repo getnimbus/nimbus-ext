@@ -884,8 +884,6 @@
       selectedAddresses = [];
     }
   };
-
-  $: console.log("listAddressWithoutBundle: ", listAddressWithoutBundle);
 </script>
 
 <div class="flex flex-col gap-4">
