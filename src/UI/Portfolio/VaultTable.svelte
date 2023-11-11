@@ -132,15 +132,15 @@
     Yield farming opportunities
   </div>
   <div
-    class={`rounded-[10px] overflow-visible overflow-y-auto h-[563px] relative ${
+    class={`rounded-[10px] overflow-x-auto overflow-y-auto h-[563px] relative ${
       $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
     }`}
   >
-    <table class="table-auto xl:w-full w-[1200px]">
+    <table class="table-auto xl:w-full w-[1200px] h-full">
       <thead>
-        <tr class="bg_f4f5f8">
+        <tr class="bg_f4f5f8 sticky left-0 top-0 z-10">
           <th
-            class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8 w-[550px]"
+            class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 top-0 z-10 bg_f4f5f8 w-[550px]"
           >
             <div class="font-medium text-left uppercase xl:text-xs text-xl">
               Name
@@ -202,7 +202,7 @@
           <tr>
             <td colspan="5">
               <div
-                class="flex items-center justify-center px-3 py-3 text-gray-400 xl:text-lg text-xl"
+                class="h-full flex items-center justify-center px-3 py-3 text-gray-400 xl:text-lg text-xl"
               >
                 Empty
               </div>
