@@ -246,7 +246,7 @@
         ? "bg-[#131313] group-hover:bg-[#000]"
         : "bg-white group-hover:bg-gray-100") +
       " " +
-      (lastIndex ? "rounded-bl-xl" : "")
+      (lastIndex ? "rounded-bl-[10px]" : "")
     }`}
   >
     <div class="relative flex items-center gap-3 text-left">
