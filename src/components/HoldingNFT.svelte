@@ -118,9 +118,7 @@
         chain: document.getElementById("chain").value,
         contractAddress: document.getElementById("contract_address").value,
         reason: reason,
-        contractName: data.name,
-        contractTickerSymbol: data.symbol,
-        logoUrl: data.logo,
+        contractName: data.collection.name,
       };
       await nimbus.post("/holding-nft/trash/report", formData);
       isLoadingReportTrashNFT = false;
@@ -163,6 +161,8 @@
       selectedNftCollectionChain = undefined;
     }
   }
+
+  $: console.log("data: ", data);
 </script>
 
 <svelte:window on:keydown={closeSideNFTDetail} />
