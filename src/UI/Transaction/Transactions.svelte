@@ -282,11 +282,15 @@
               Historical Transactions
             </div>
             <div class="flex items-center gap-4">
-              <CoinSelector bind:selected={selectedCoin} />
+              <CoinSelector
+                bind:selected={selectedCoin}
+                positionSelectList="right-0"
+              />
               <Select
                 type="lang"
                 bind:selected={selectedType}
                 listSelect={types}
+                positionSelectList="right-0"
               />
             </div>
           </div>

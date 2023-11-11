@@ -18,6 +18,7 @@
   export let data;
   export let selectedWallet;
   export let index;
+  export let lastIndex: boolean = false;
 
   const navigate = useNavigate();
 
@@ -73,6 +74,7 @@
         ? "bg-[#131313] group-hover:bg-[#000]"
         : "bg-white group-hover:bg-gray-100"
     }`}
+    style={`${lastIndex ? "border-bottom-left-radius: 10px;" : ""}`}
   >
     <div class="relative flex flex-col gap-1">
       <div
@@ -240,6 +242,7 @@
     class={`py-3 pr-3 ${
       $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
+    style={`${lastIndex ? "border-bottom-right-radius: 10px;" : ""}`}
   >
     <div
       class="flex items-center justify-end gap-1 xl:text-sm text-2xl font-medium"

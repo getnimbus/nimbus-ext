@@ -764,7 +764,12 @@
                         </tr>
                       {/if}
                       {#each filteredHoldingDataNFT as holding, index}
-                        <HoldingNFT data={holding} {selectedWallet} {index} />
+                        <HoldingNFT
+                          data={holding}
+                          {selectedWallet}
+                          {index}
+                          lastIndex={filteredHoldingDataNFT.length - 1 == index}
+                        />
                       {/each}
                     </tbody>
                     {#if isLoadingNFT}
@@ -814,6 +819,8 @@
                         {:else}
                           {#each filteredHoldingDataNFT as holding, index}
                             <HoldingNFT
+                              lastIndex={filteredHoldingDataNFT.length - 1 ==
+                                index}
                               data={holding}
                               {selectedWallet}
                               {index}
