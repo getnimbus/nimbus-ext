@@ -9,15 +9,22 @@ icon: goal
 
 ## Networks
 
-| Name      | Logo                          | Holding | Risk & return analysis | Performance history |
-| --------- | ----------------------------- | ------- | ---------------------- | ------------------- |
-| Ethereum  | ![](/img/chains/ethereum.png) | ✅      | ✅                     | ✅                  |
-| Bitcoin   | ![](/img/chains/bitcoin.png)  | ✅      | ✅                     | ✅                  |
-| BNB chain | ![](/img/chains/bnb.png)      | ✅      | ✅                     | ✅                  |
-| Polygon   | ![](/img/chains/matic.png)    | ✅      | ✅                     | ✅                  |
-| Optimism  | ![](/img/chains/optimism.png) | ✅      | ✅                     | ✅                  |
-| Avalanche | ![](/img/chains/avax.png)     | ✅      | ✅                     | ✅                  |
-| Arbitrum  | ![](/img/chains/arbitrum.png) | ✅      | ✅                     | ✅                  |
+| Name      | Holding | Risk & return analysis | PnL            |
+| --------- | ------- | ---------------------- | -------------- |
+| Ethereum  | ✅      | ✅                     | ✅             |
+| Bitcoin   | ✅      | ✅                     | ✅             |
+| BNB chain | ✅      | ✅                     | ✅             |
+| Polygon   | ✅      | ✅                     | ✅             |
+| Optimism  | ✅      | ✅                     | ✅             |
+| Avalanche | ✅      | ✅                     | ✅             |
+| Arbitrum  | ✅      | ✅                     | ✅             |
+| Solana    | ✅      | ✅                     | ✅             |
+| Base      | ✅      | ✅                     | ✅             |
+| Linea     | ✅      | ✅                     | 🚧 Coming soon |
+| zkSync    | ✅      | ✅                     | 🚧 Coming soon |
+| Scroll    | ✅      | ✅                     | 🚧 Coming soon |
+| Cronos    | ✅      | ✅                     | 🚧 Coming soon |
+| Mantle    | ✅      | ✅                     | 🚧 Coming soon |
 
 ## Exchanges
 

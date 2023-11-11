@@ -1172,24 +1172,22 @@ export const formatTransactionTime = (date: Date) => {
 };
 
 export const handleImgError = async (e, image, defaultImage) => {
-  // e.target.onerror = null; // break loop
-  // if (defaultImage) {
-  //   if (image.includes("https://api.center.dev")) {
-  //     fetch(image, {
-  //       headers: { "x-api-key": "lapis-fridge-d84f5377deca" },
-  //     })
-  //       .then((r) => r.blob())
-  //       .then((d) => {
-  //         if (d && window.URL.createObjectURL(d) !== null) {
-  //           e.target.src = window.URL.createObjectURL(d);
-  //         }
-  //       })
-  //       .catch(() => {
-  //         e.target.src = defaultImage;
-  //       });
-  //   } else {
-  //     e.target.style.backgroundImage = defaultImage;
-  //     console.log("set default img", e.target, defaultImage);
-  //   }
-  // }
+  if (defaultImage) {
+    if (image.includes("https://api.center.dev")) {
+      fetch(image, {
+        headers: { "x-api-key": "lapis-fridge-d84f5377deca" },
+      })
+        .then((r) => r.blob())
+        .then((d) => {
+          if (d && window.URL.createObjectURL(d) !== null) {
+            e.target.src = window.URL.createObjectURL(d);
+          }
+        })
+        .catch(() => {
+          e.target.src = defaultImage;
+        });
+    } else {
+      e.target.src = defaultImage;
+    }
+  }
 };
