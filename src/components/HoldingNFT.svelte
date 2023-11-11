@@ -170,14 +170,14 @@
 <tr
   class={`group transition-all ${index === 0 && "view-nft-detail"}`}
   on:mouseover={() => {
-    // if ($user && Object.keys($user).length !== 0) {
-    //   isShowReport = true;
-    // }
+    if ($user && Object.keys($user).length !== 0) {
+      isShowReport = true;
+    }
   }}
   on:mouseleave={() => {
-    // if ($user && Object.keys($user).length !== 0) {
-    //   isShowReport = false;
-    // }
+    if ($user && Object.keys($user).length !== 0) {
+      isShowReport = false;
+    }
   }}
 >
   <td
