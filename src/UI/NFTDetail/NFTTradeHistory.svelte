@@ -57,13 +57,13 @@
 >
   <div class="xl:text-2xl text-4xl font-medium">History</div>
   <div
-    class={`rounded-[10px] xl:overflow-visible overflow-x-auto h-full ${
+    class={`rounded-[10px] overflow-x-auto overflow-y-auto h-[563px] relative ${
       $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
     }`}
   >
     <table class="table-auto xl:w-full w-[1400px] h-full">
       <thead>
-        <tr class="bg_f4f5f8">
+        <tr class="bg_f4f5f8 sticky left-0 top-0">
           <th
             class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8 w-[100px]"
           >
@@ -84,7 +84,7 @@
             </div>
           </th>
 
-          <th class="py-3 rounded-tr-[10px]">
+          <th class="py-3">
             <div class="text-right xl:text-xs text-xl uppercase font-medium">
               Time
             </div>

@@ -1230,7 +1230,7 @@
 
         <!-- Button Get re-balance action -->
         <div class="w-max">
-          {#if ($query.isFetching && $queryPersonalTag.isFetching) || searchCompare.length === 0}
+          {#if $query.isFetching || searchCompare.length === 0}
             <Button variant="disabled">
               <div class="flex items-center gap-1">
                 <div
@@ -1398,6 +1398,7 @@
     {/if}
   </div>
 
+  <!-- Compare result table -->
   <AppOverlay
     clickOutSideToClose
     isOpen={showCompareTable}
@@ -1415,6 +1416,7 @@
     </div>
   </AppOverlay>
 
+  <!-- Whales list suggest compare table -->
   <AppOverlay
     clickOutSideToClose
     isOpen={showCompareWhalesSuggest}
@@ -1424,18 +1426,13 @@
     }}
   >
     <div class="flex flex-col gap-2 mt-9">
-      {#if $querySimilar.isFetching}
-        <div class="mx-auto">
-          <LoadingPremium />
-        </div>
-      {:else}
-        <WhalesList
-          darkMode={$isDarkMode}
-          data={$querySimilar.data}
-          copyAddress={handleCopyAddress}
-          closeModal={handleCloseWhalesListModal}
-        />
-      {/if}
+      <WhalesList
+        darkMode={$isDarkMode}
+        data={$querySimilar.data}
+        copyAddress={handleCopyAddress}
+        closeModal={handleCloseWhalesListModal}
+        isLoading={$querySimilar.isFetching}
+      />
       <div class="mt-3 text-2xl text-right xl:text-base">
         <a
           class="text-blue-500 cursor-pointer"
