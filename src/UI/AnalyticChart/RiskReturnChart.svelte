@@ -36,6 +36,7 @@
   import TrendDown from "~/assets/trend-down.svg";
   import TrendUp from "~/assets/trend-up.svg";
   import SharpeRatioExplain from "~/assets/explain/sharpe-ratio-explain.mp4";
+  import defaultToken from "~/assets/defaultToken.png";
 
   export let selectedTimeFrame;
 
@@ -174,8 +175,7 @@
                           $isDarkMode ? "white" : "black"
                         }">
                             <img src=${
-                              item?.logo ||
-                              "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
+                              item?.logo || defaultToken
                             } alt="" width=20 height=20 style="border-radius: 100%" />
                             ${item?.name} ${
                       item?.symbol ? `(${item?.symbol})` : ""

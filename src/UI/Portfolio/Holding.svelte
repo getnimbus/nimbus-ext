@@ -88,11 +88,17 @@
   $: {
     if (!isLoadingToken) {
       if (holdingTokenData?.length !== 0) {
-        const filteredHoldingTokenData = holdingTokenData?.filter(
+        const dataTokenHolding = holdingTokenData?.filter(
+          (item) =>
+            item?.price?.source === undefined ||
+            item?.price?.source !== "Modifed"
+        );
+
+        const filteredHoldingTokenData = dataTokenHolding?.filter(
           (item) => item?.cmc_id
         );
 
-        const filteredNullCmcHoldingTokenData = holdingTokenData?.filter(
+        const filteredNullCmcHoldingTokenData = dataTokenHolding?.filter(
           (item) => item?.cmc_id === null
         );
 
@@ -205,15 +211,16 @@
         .map((item) => {
           return {
             ...item,
+            current_native_token: item?.floorPrice * item?.tokens?.length,
             current_value:
               item?.floorPrice * item?.marketPrice * item?.tokens?.length,
           };
         })
         .sort((a, b) => {
-          if (a.current_value < b.current_value) {
+          if (a.current_native_token < b.current_native_token) {
             return 1;
           }
-          if (a.current_value > b.current_value) {
+          if (a.current_native_token > b.current_native_token) {
             return -1;
           }
           return 0;
@@ -276,6 +283,7 @@
           return {
             ...item,
             marketPrice: Number(marketPriceToken.market_price),
+            current_native_token: item?.floorPrice * item?.tokens?.length,
             current_value:
               item?.floorPrice *
               Number(marketPriceToken.market_price) *
@@ -286,10 +294,10 @@
       });
 
       formatDataNFT = formatDataNFTWithMarketPrice.sort((a, b) => {
-        if (a.current_value < b.current_value) {
+        if (a.current_native_token < b.current_native_token) {
           return 1;
         }
-        if (a.current_value > b.current_value) {
+        if (a.current_native_token > b.current_native_token) {
           return -1;
         }
         return 0;
@@ -568,9 +576,11 @@
                         </td>
                       </tr>
                     {/if}
-                    {#each filteredHoldingDataToken as holding}
+                    {#each filteredHoldingDataToken as holding, index}
                       <HoldingToken
                         data={holding}
+                        lastIndex={filteredHoldingDataToken.length - 1 ===
+                          index}
                         {selectedWallet}
                         sumAllTokens={totalAssets - sumNFT}
                       />
@@ -621,9 +631,11 @@
                           </td>
                         </tr>
                       {:else}
-                        {#each filteredHoldingDataToken as holding}
+                        {#each filteredHoldingDataToken as holding, index (holding.positionId)}
                           <HoldingToken
                             data={holding}
+                            lastIndex={filteredHoldingDataToken.length - 1 ==
+                              index}
                             {selectedWallet}
                             sumAllTokens={totalAssets - sumNFT}
                           />
@@ -752,7 +764,12 @@
                         </tr>
                       {/if}
                       {#each filteredHoldingDataNFT as holding, index}
-                        <HoldingNFT data={holding} {selectedWallet} {index} />
+                        <HoldingNFT
+                          data={holding}
+                          {selectedWallet}
+                          {index}
+                          lastIndex={filteredHoldingDataNFT.length - 1 == index}
+                        />
                       {/each}
                     </tbody>
                     {#if isLoadingNFT}
@@ -802,6 +819,8 @@
                         {:else}
                           {#each filteredHoldingDataNFT as holding, index}
                             <HoldingNFT
+                              lastIndex={filteredHoldingDataNFT.length - 1 ==
+                                index}
                               data={holding}
                               {selectedWallet}
                               {index}

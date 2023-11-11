@@ -4,11 +4,13 @@
   import { nimbus } from "~/lib/network";
   import { Toast } from "flowbite-svelte";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
-  import { handleImgError } from "~/utils";
 
+  import Image from "~/components/Image.svelte";
   import Button from "~/components/Button.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
   import Loading from "~/components/Loading.svelte";
+
+  import defaultToken from "~/assets/defaultToken.png";
 
   const MultipleLang = {
     title: i18n("optionsPage.report-token-page-title", "Report Token Settings"),
@@ -202,20 +204,12 @@
                     }`}
                   >
                     <div class="flex items-center justify-start gap-3">
-                      <img
-                        src={item?.logoUrl ||
-                          "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"}
-                        alt=""
-                        width="35"
-                        height="35"
-                        class="rounded-full"
-                        on:error={(e) =>
-                          handleImgError(
-                            e,
-                            item?.logoUrl,
-                            "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
-                          )}
-                      />
+                      <div class="rounded-full overflow-hidden">
+                        <Image
+                          logo={item?.logoUrl}
+                          defaultLogo={defaultToken}
+                        />
+                      </div>
                       <div class="xl:text-base text-2xl">
                         {item.contractName}
                       </div>
