@@ -31,8 +31,7 @@
 
   let whalesData = [];
   let isLoading = false;
-  let tableHeader;
-  let isSticky = false;
+
   let pageValue = 0;
   let isOpenFilterModal = false;
   let filterParams = "";
@@ -57,14 +56,6 @@
   onMount(() => {
     mixpanel.track("market_page");
     getPublicPortfolio();
-    const handleScroll = () => {
-      const clientRectTokenHeader = tableHeader?.getBoundingClientRect();
-      isSticky = clientRectTokenHeader?.top <= 0;
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
   });
 
   const closeModal = () => {
@@ -141,15 +132,14 @@
     </div>
 
     <div
-      class={`min-h-screen rounded-[10px] border border_0000000d xl:overflow-hidden overflow-x-auto ${
+      class={`rounded-[10px] border border_0000000d xl:overflow-hidden overflow-x-auto ${
         $isDarkMode ? "bg-[#131313]" : "bg-[#fff]"
+      } ${
+        isLoading || (whalesData && whalesData?.length === 0) ? "h-screen" : ""
       }`}
     >
-      <table class="table-auto xl:w-full w-[2800px] min-h-screen">
-        <thead
-          class={isSticky ? "sticky top-0 z-10" : ""}
-          bind:this={tableHeader}
-        >
+      <table class="table-auto xl:w-full w-[2800px] h-full">
+        <thead>
           <tr class="bg_f4f5f8">
             <th
               class="pl-3 py-3 rounded-tl-[10px] 2xl:w-[250px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8"
@@ -257,7 +247,8 @@
         {/if}
       </table>
     </div>
-    <div class="flex justify-center gap-3">
+
+    <div class="flex justify-center gap-3 xl:-mt-4">
       <div class="w-[50px]">
         {#if pageValue === 0}
           <Button variant="disabled" disabled>

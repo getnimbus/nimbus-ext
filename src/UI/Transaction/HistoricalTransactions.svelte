@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { onMount } from "svelte";
   import dayjs from "dayjs";
   import "dayjs/locale/en";
   import "dayjs/locale/vi";
@@ -17,29 +16,19 @@
   export let isLoading;
   export let pageToken;
   export let loadMore = (pageToken) => {};
-
-  let tableHeader;
-  let isSticky = false;
-
-  onMount(() => {
-    const handleScroll = () => {
-      const clientRectTokenHeader = tableHeader?.getBoundingClientRect();
-      isSticky = clientRectTokenHeader?.top <= 0;
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  });
 </script>
 
 <div
-  class={`rounded-[10px] min-h-screen border border_0000000d xl:overflow-hidden overflow-x-auto h-full ${
+  class={`rounded-[10px] border border_0000000d xl:overflow-hidden overflow-x-auto ${
     $isDarkMode ? "bg-[#131313]" : "bg-[#fff]"
+  } ${
+    (isLoading && pageToken?.length === 0) || (data && data?.length === 0)
+      ? "h-screen"
+      : ""
   }`}
 >
   <table class="table-auto xl:w-full w-[1400px] h-full">
-    <thead class={isSticky ? "sticky top-0 z-10" : ""} bind:this={tableHeader}>
+    <thead>
       <tr class="bg_f4f5f8">
         <th
           class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky top-0 left-0 z-9 bg_f4f5f8"
@@ -72,7 +61,7 @@
         </th>
       </tr>
     </thead>
-    <tbody>
+    <tbody class="h-full">
       {#if isLoading && pageToken?.length === 0}
         <tr>
           <td colspan={5}>
