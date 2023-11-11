@@ -180,7 +180,7 @@
       stroke-width="16"
     /></svg
   >
-{:else if type === "Report Tokens"}
+{:else if type === "Reports"}
   <svg
     width="24"
     height="26"
