@@ -189,7 +189,7 @@
                   }`}
                 >
                   <div class="flex items-center justify-start gap-3">
-                    <div class="rounded-full overflow-hidden">
+                    <div class="w-6 h-6 rounded-full overflow-hidden">
                       <Image logo={item?.logoUrl} defaultLogo={defaultToken} />
                     </div>
                     <div class="xl:text-base text-2xl">
