@@ -824,7 +824,7 @@
       class={`py-3 xl:w-14 w-32 h-full flex justify-center items-center xl:gap-3 gap-6 ${
         ($isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100") +
         " " +
-        (lastIndex ? "rounded-br-[10px]" : "")
+        (lastIndex ? "rounded-br-xl" : "")
       }`}
     >
       {#if $typeWallet === "BUNDLE"}
