@@ -136,7 +136,11 @@
       $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
     }`}
   >
-    <table class="table-auto xl:w-full w-[1200px] h-full">
+    <table
+      class={`table-auto xl:w-full w-[1200px] ${
+        formatData && formatData.length === 0 ? "h-full" : ""
+      }`}
+    >
       <thead>
         <tr class="bg_f4f5f8 sticky left-0 top-0 z-10">
           <th

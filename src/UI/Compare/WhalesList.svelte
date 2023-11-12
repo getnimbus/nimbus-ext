@@ -15,7 +15,11 @@
     darkMode ? "bg-[#131313]" : "bg-[#fff]"
   }`}
 >
-  <table class="table-auto xl:w-full w-[2800px] h-full">
+  <table
+    class={`table-auto xl:w-full w-[2800px] ${
+      (data && data?.length === 0) || isLoading ? "h-full" : ""
+    }`}
+  >
     <thead>
       <tr class="bg_f4f5f8 sticky left-0 top-0 z-10">
         <th
