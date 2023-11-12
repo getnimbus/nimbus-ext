@@ -7,11 +7,15 @@
 
   export let data;
 
+  import "~/components/Tooltip.custom.svelte";
   import TooltipNumber from "./TooltipNumber.svelte";
   import Copy from "./Copy.svelte";
 
   import TrendUp from "~/assets/trend-up.svg";
   import TrendDown from "~/assets/trend-down.svg";
+
+  let isShowSymbol = false;
+  let selectedToken;
 </script>
 
 <tr class="group transition-all">
@@ -48,11 +52,31 @@
           ?.filter((item) => item.logo)
           .sort((a, b) => a.value - b.value)
           .slice(0, 5) || [] as token}
-          <img
-            class="w-[30px] h-[30px] border-2 border-white rounded-full bg-white"
-            src={token.logo}
-            alt=""
-          />
+          <div
+            class="relative"
+            on:mouseover={() => {
+              isShowSymbol = true;
+              selectedToken = token;
+            }}
+            on:mouseleave={() => {
+              isShowSymbol = false;
+              selectedToken = undefined;
+            }}
+          >
+            <img
+              class="w-[30px] h-[30px] border-2 border-white bg-white rounded-full"
+              src={token.logo}
+              alt=""
+            />
+            {#if isShowSymbol && selectedToken === token}
+              <div
+                class="absolute -top-8 left-1/2 transform -translate-x-1/2"
+                style="z-index: 2147483648;"
+              >
+                <tooltip-detail text={token.symbol.toUpperCase()} />
+              </div>
+            {/if}
+          </div>
         {/each}
         {#if data?.metadata?.length > 5}
           <div
