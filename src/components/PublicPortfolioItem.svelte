@@ -25,7 +25,7 @@
     <div class="text-left xl:text-sm text-2xl font-medium">
       <Copy
         address={data?.address}
-        textTooltip="Copy transaction to clipboard"
+        textTooltip="Copy address to clipboard"
         iconColor={$isDarkMode ? "#fff" : "#000"}
         color={$isDarkMode ? "#fff" : "#000"}
         isShorten={true}

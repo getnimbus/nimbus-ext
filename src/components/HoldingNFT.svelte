@@ -162,8 +162,6 @@
       selectedNftCollectionChain = undefined;
     }
   }
-
-  $: console.log("data: ", data);
 </script>
 
 <svelte:window on:keydown={closeSideNFTDetail} />
