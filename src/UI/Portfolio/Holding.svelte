@@ -687,7 +687,7 @@
                   >
                     <tr class="bg_f4f5f8">
                       <th
-                        class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8 w-[220px]"
+                        class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8 xl:w-[220px] w-[350px]"
                       >
                         <div
                           class="text-left xl:text-xs text-xl uppercase font-medium"
@@ -696,7 +696,7 @@
                         </div>
                       </th>
                       <th
-                        class="py-3 xl:static xl:bg-transparent sticky left-[220px] z-10 bg_f4f5f8 w-[160px]"
+                        class="py-3 xl:static xl:bg-transparent sticky left-[350px] z-10 bg_f4f5f8 w-[200px]"
                       >
                         <div
                           class="text-left xl:text-xs text-xl uppercase font-medium"
@@ -732,7 +732,7 @@
                           {MultipleLang.current_value}
                         </div>
                       </th>
-                      <th class="py-3 pr-3 rounded-tr-[10px]">
+                      <th class="py-3">
                         <div
                           class="text-right xl:text-xs text-xl uppercase font-medium"
                         >
@@ -743,6 +743,7 @@
                           </TooltipTitle>
                         </div>
                       </th>
+                      <th class="py-3 xl:w-12 w-32 rounded-tr-[10px]" />
                     </tr>
                   </thead>
 
@@ -750,7 +751,7 @@
                     <tbody>
                       {#if filteredHoldingDataNFT && filteredHoldingDataNFT.length === 0 && !isLoadingNFT}
                         <tr>
-                          <td colspan={6}>
+                          <td colspan={7}>
                             <div
                               class="flex justify-center items-center h-full py-3 px-3 xl:text-lg text-xl text-gray-400 view-nft-detail"
                             >
@@ -775,7 +776,7 @@
                     {#if isLoadingNFT}
                       <tbody>
                         <tr>
-                          <td colspan={6}>
+                          <td colspan={7}>
                             <div
                               class="flex justify-center items-center h-full py-3 px-3"
                             >
@@ -791,7 +792,7 @@
                     {#if isLoadingNFT}
                       <tbody>
                         <tr>
-                          <td colspan={6}>
+                          <td colspan={7}>
                             <div
                               class="flex justify-center items-center h-full py-3 px-3"
                             >
@@ -804,7 +805,7 @@
                       <tbody>
                         {#if filteredHoldingDataNFT && filteredHoldingDataNFT.length === 0}
                           <tr>
-                            <td colspan={6}>
+                            <td colspan={7}>
                               <div
                                 class="flex justify-center items-center h-full py-3 px-3 xl:text-lg text-xl text-gray-400 view-nft-detail"
                               >

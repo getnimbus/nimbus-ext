@@ -130,5 +130,5 @@
 </script>
 
 <div bind:clientWidth={width}>
-  <div {id} style="height: {height}px" />
+  <div {id} style="height: {height}px;" />
 </div>
