@@ -111,145 +111,143 @@
   };
 </script>
 
-<div class={`${$query.isLoading ? "h-[400px]" : ""}`}>
-  <div
-    class={`border border_0000000d rounded-[10px] overflow-x-auto h-full ${
-      $isDarkMode ? "bg-[#131313]" : "bg-[#fff]"
-    }`}
-  >
-    <table class="table-auto xl:w-full w-[1800px] h-full">
-      <thead>
-        <tr class="bg_f4f5f8">
-          <th class="py-3 pl-3">
-            <div class="text-xl font-semibold uppercase xl:text-xs text-left">
-              {MultipleLang.content.assets_header_table}
-            </div>
-          </th>
+<div
+  class={`border border_0000000d rounded-[10px] overflow-x-auto h-full ${
+    $isDarkMode ? "bg-[#131313]" : "bg-[#fff]"
+  }`}
+>
+  <table class="table-auto xl:w-full w-[1800px] h-full">
+    <thead>
+      <tr class="bg_f4f5f8">
+        <th class="py-3 pl-3">
+          <div class="text-xl font-semibold uppercase xl:text-xs text-left">
+            {MultipleLang.content.assets_header_table}
+          </div>
+        </th>
 
-          <th class="py-3">
-            <div class="text-xl font-semibold uppercase xl:text-xs text-left">
-              {MultipleLang.content.contract_address_header_table}
-            </div>
-          </th>
+        <th class="py-3">
+          <div class="text-xl font-semibold uppercase xl:text-xs text-left">
+            {MultipleLang.content.contract_address_header_table}
+          </div>
+        </th>
 
-          <th class="py-3">
-            <div class="text-xl font-semibold text-right uppercase xl:text-xs">
-              {MultipleLang.content.chain_header_table}
-            </div>
-          </th>
+        <th class="py-3">
+          <div class="text-xl font-semibold text-right uppercase xl:text-xs">
+            {MultipleLang.content.chain_header_table}
+          </div>
+        </th>
 
-          <th class="py-3 pr-3">
-            <div class="text-xl font-semibold text-right uppercase xl:text-xs">
-              {MultipleLang.content.action_header_table}
+        <th class="py-3 pr-3">
+          <div class="text-xl font-semibold text-right uppercase xl:text-xs">
+            {MultipleLang.content.action_header_table}
+          </div>
+        </th>
+      </tr>
+    </thead>
+
+    {#if $query.isError}
+      <tbody>
+        <tr>
+          <td colspan="4">
+            <div class="flex items-center justify-center h-full px-3 py-4">
+              Please connect wallet
             </div>
-          </th>
+          </td>
         </tr>
-      </thead>
+      </tbody>
+    {:else if $query.isLoading}
+      <tbody>
+        <tr>
+          <td colspan="4">
+            <div class="flex items-center justify-center h-full px-3 py-4">
+              <Loading />
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    {:else}
+      <tbody>
+        {#if ($query.data && $query.data.length === 0) || $query.isError}
+          <tr>
+            <td colspan="4">
+              <div
+                class="flex items-center justify-center h-full px-3 py-4 text-2xl xl:text-base"
+              >
+                No report nfts
+              </div>
+            </td>
+          </tr>
+        {:else}
+          {#each $query.data as item}
+            <tr class="group transition-all">
+              <td
+                class={`pl-3 py-3 ${
+                  $isDarkMode
+                    ? "group-hover:bg-[#000]"
+                    : "group-hover:bg-gray-100"
+                }`}
+              >
+                <div class="flex items-center justify-start gap-3">
+                  <div class="rounded-full overflow-hidden">
+                    <Image logo={item?.logoUrl} defaultLogo={defaultToken} />
+                  </div>
+                  <div class="xl:text-base text-2xl">
+                    {item.contractName}
+                  </div>
+                </div>
+              </td>
 
-      {#if $query.isError}
-        <tbody>
-          <tr>
-            <td colspan="4">
-              <div class="flex items-center justify-center h-full px-3 py-4">
-                Please connect wallet
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      {:else if $query.isLoading}
-        <tbody>
-          <tr>
-            <td colspan="4">
-              <div class="flex items-center justify-center h-full px-3 py-4">
-                <Loading />
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      {:else}
-        <tbody>
-          {#if ($query.data && $query.data.length === 0) || $query.isError}
-            <tr>
-              <td colspan="4">
+              <td
+                class={`py-3 ${
+                  $isDarkMode
+                    ? "group-hover:bg-[#000]"
+                    : "group-hover:bg-gray-100"
+                }`}
+              >
+                <div class="xl:text-base text-2xl text-left">
+                  {item.contractAddress}
+                </div>
+              </td>
+
+              <td
+                class={`py-3 ${
+                  $isDarkMode
+                    ? "group-hover:bg-[#000]"
+                    : "group-hover:bg-gray-100"
+                }`}
+              >
+                <div class="xl:text-base text-2xl text-right">
+                  {item.chain}
+                </div>
+              </td>
+
+              <td
+                class={`py-3 pr-3 ${
+                  $isDarkMode
+                    ? "group-hover:bg-[#000]"
+                    : "group-hover:bg-gray-100"
+                }`}
+              >
                 <div
-                  class="flex items-center justify-center h-full px-3 py-4 text-2xl xl:text-base"
+                  class="xl:text-base text-2xl font-semibold text-red-600 transition-all cursor-pointer hover:underline dark:text-red-500 text-right"
+                  on:click={() => {
+                    selectedItemDelete = {
+                      chain: item.chain,
+                      contractAddress: item.contractAddress,
+                      type: "nft",
+                    };
+                    isOpenConfirmDelete = true;
+                  }}
                 >
-                  No report nfts
+                  {MultipleLang.content.modal_delete}
                 </div>
               </td>
             </tr>
-          {:else}
-            {#each $query.data as item}
-              <tr class="group transition-all">
-                <td
-                  class={`pl-3 py-3 ${
-                    $isDarkMode
-                      ? "group-hover:bg-[#000]"
-                      : "group-hover:bg-gray-100"
-                  }`}
-                >
-                  <div class="flex items-center justify-start gap-3">
-                    <div class="rounded-full overflow-hidden">
-                      <Image logo={item?.logoUrl} defaultLogo={defaultToken} />
-                    </div>
-                    <div class="xl:text-base text-2xl">
-                      {item.contractName}
-                    </div>
-                  </div>
-                </td>
-
-                <td
-                  class={`py-3 ${
-                    $isDarkMode
-                      ? "group-hover:bg-[#000]"
-                      : "group-hover:bg-gray-100"
-                  }`}
-                >
-                  <div class="xl:text-base text-2xl text-left">
-                    {item.contractAddress}
-                  </div>
-                </td>
-
-                <td
-                  class={`py-3 ${
-                    $isDarkMode
-                      ? "group-hover:bg-[#000]"
-                      : "group-hover:bg-gray-100"
-                  }`}
-                >
-                  <div class="xl:text-base text-2xl text-right">
-                    {item.chain}
-                  </div>
-                </td>
-
-                <td
-                  class={`py-3 pr-3 ${
-                    $isDarkMode
-                      ? "group-hover:bg-[#000]"
-                      : "group-hover:bg-gray-100"
-                  }`}
-                >
-                  <div
-                    class="xl:text-base text-2xl font-semibold text-red-600 transition-all cursor-pointer hover:underline dark:text-red-500 text-right"
-                    on:click={() => {
-                      selectedItemDelete = {
-                        chain: item.chain,
-                        contractAddress: item.contractAddress,
-                        type: "nft",
-                      };
-                      isOpenConfirmDelete = true;
-                    }}
-                  >
-                    {MultipleLang.content.modal_delete}
-                  </div>
-                </td>
-              </tr>
-            {/each}
-          {/if}
-        </tbody>
-      {/if}
-    </table>
-  </div>
+          {/each}
+        {/if}
+      </tbody>
+    {/if}
+  </table>
 </div>
 
 <AppOverlay
