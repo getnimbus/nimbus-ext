@@ -35,17 +35,15 @@
   let isShowCMC = false;
   let isShowCoingecko = false;
   let isShowReport = false;
-  let isShowReportTable = false;
+
+  let showTableVaults = false;
   let selectedHighestVault;
   let selectedVaults;
-  let showTableVaults = false;
-  let isOldToken = false;
 
-  let toastMsg = "";
-  let isSuccessToast = false;
-  let counter = 3;
-  let showToast = false;
+  let isShowReportTable = false;
+  let isOldToken = false;
   let isLoadingReportTrashCoin = false;
+  let reportReasonList = [];
 
   let isOpenTokenInfoBundle = false;
   let showTokenInfoBundle = false;
@@ -55,7 +53,10 @@
   let isCopied = false;
   let isShowTooltipContractAddress = false;
 
-  let reportReasonList = [];
+  let toastMsg = "";
+  let isSuccessToast = false;
+  let counter = 3;
+  let showToast = false;
 
   const trigger = () => {
     showToast = true;
@@ -132,6 +133,7 @@
         contractName: data.name,
         contractTickerSymbol: data.symbol,
         logoUrl: data.logo,
+        type: "token",
       };
       await nimbus.post("/holding/trash/report", formData);
       isLoadingReportTrashCoin = false;
@@ -215,7 +217,6 @@
     if ($user && Object.keys($user).length !== 0) {
       isShowReport = true;
     }
-
     if (data?.cmc_slug) {
       isShowCMC = true;
     }
@@ -227,7 +228,6 @@
     if ($user && Object.keys($user).length !== 0) {
       isShowReport = false;
     }
-
     if (data?.cmc_slug) {
       isShowCMC = false;
     }
@@ -238,22 +238,21 @@
 >
   <td
     class={`pl-3 py-3 xl:static sticky left-0 z-9 w-[450px] ${
-      (isOpenTokenInfoBundle
+      isOpenTokenInfoBundle
         ? $isDarkMode
           ? "bg-[#000]"
           : "bg-gray-100"
         : $isDarkMode
         ? "bg-[#131313] group-hover:bg-[#000]"
-        : "bg-white group-hover:bg-gray-100") +
-      " " +
-      (lastIndex ? "rounded-bl-[10px]" : "")
+        : "bg-white group-hover:bg-gray-100"
     }`}
+    style={`${lastIndex ? "border-bottom-left-radius: 10px;" : ""}`}
   >
     <div class="relative flex items-center gap-3 text-left">
       <!-- icon report -->
       {#if isShowReport}
         <div
-          class="absolute hidden w-5 cursor-pointer xl:-left-8 sm:-left-6 top-3 opacity-80 hover:opacity-60 xl:block"
+          class="hidden xl:block absolute w-5 cursor-pointer -left-8 top-3 opacity-80 hover:opacity-60"
           on:click={() => (isShowReportTable = true)}
         >
           <svg
@@ -312,13 +311,13 @@
                 <!-- icon report -->
                 {#if isShowReport}
                   <span
-                    class="flex items-center justify-center ml-3 opacity-80 hover:opacity-60 xl:hidden"
+                    class="xl:hidden flex items-center justify-center ml-3 opacity-80 hover:opacity-60"
                     on:click={() => (isShowReportTable = true)}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="16"
+                      width="26"
+                      height="26"
                       viewBox="0 0 24 24"
                     >
                       <g
@@ -822,10 +821,9 @@
   {#if $typeWallet === "SOL" || $typeWallet === "EVM" || $typeWallet === "BUNDLE" || $typeWallet === "CEX"}
     <td
       class={`py-3 xl:w-14 w-32 h-full flex justify-center items-center xl:gap-3 gap-6 ${
-        ($isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100") +
-        " " +
-        (lastIndex ? "rounded-br-xl" : "")
+        $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
       }`}
+      style={`${lastIndex ? "border-bottom-right-radius: 10px;" : ""}`}
     >
       {#if $typeWallet === "BUNDLE"}
         <div

@@ -8,7 +8,7 @@
   import Mixpanel from "~/components/Mixpanel.svelte";
   import SidebarTabs from "~/UI/Option/SidebarTabs.svelte";
   import TabAccounts from "~/UI/Option/TabAccounts.svelte";
-  import TabReportTokens from "~/UI/Option/TabReportTokens.svelte";
+  import TabReports from "~/UI/Option/TabReports.svelte";
   import TabAlerts from "~/UI/Option/TabAlerts.svelte";
   import TabSettings from "~/UI/Option/TabSettings.svelte";
   import TabNotification from "~/UI/Option/TabNotification.svelte";
@@ -26,9 +26,9 @@
       type: "Alerts",
     },
     {
-      label: i18n("optionsPage.tab-title-report-token", "Report Tokens"),
-      value: "report-tokens",
-      type: "Report Tokens",
+      label: i18n("optionsPage.tab-title-report", "Reports"),
+      value: "reports",
+      type: "Reports",
     },
     // {
     //   label: i18n("optionsPage.tab-title-nft", "NFT"),
@@ -79,7 +79,8 @@
 </script>
 
 <ErrorBoundary>
-  <Mixpanel>
+  <Mixpanel
+    >1
     <div
       class="max-w-[2000px] xl:min-h-screen m-auto xl:w-[90%] w-[90%] py-8 grid xl:grid-cols-6 grid-cols-1 gap-6"
     >
@@ -95,8 +96,8 @@
           <TabNotification /> -->
         {:else if activeTabValue === "alerts"}
           <TabAlerts />
-        {:else if activeTabValue === "report-tokens"}
-          <TabReportTokens />
+        {:else if activeTabValue === "reports"}
+          <TabReports />
           <!-- {:else if activeTabValue === "settings"}
           <TabSettings /> -->
         {/if}
