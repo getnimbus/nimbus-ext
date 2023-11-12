@@ -49,16 +49,19 @@
           .sort((a, b) => a.value - b.value)
           .slice(0, 5) || [] as token}
           <img
-            class="w-[30px] h-[30px] border-2 border-white rounded-full bg-white dark:border-gray-800"
+            class="w-[30px] h-[30px] border-2 border-white rounded-full bg-white"
             src={token.logo}
             alt=""
           />
         {/each}
         {#if data?.metadata?.length > 5}
-          <span
-            class="flex items-center justify-center w-[30px] h-[30px] text-xs font-medium text-white bg-gray-700 border-2 border-white rounded-full hover:bg-gray-600 dark:border-gray-800"
-            >+{data?.metadata?.length - 5}
-          </span>
+          <div
+            class="flex items-center justify-center w-[30px] h-[30px] bg-gray-700 border-2 border-white rounded-full hover:bg-gray-600"
+          >
+            <div class="text-[10px] font-medium text-white">
+              +{data?.metadata?.length - 5}
+            </div>
+          </div>
         {/if}
       </div>
     </div>
@@ -188,12 +191,13 @@
     }`}
   >
     <div
-      class="xl:text-sm text-2xl text-right font-medium flex flex-col items-end gap-1"
+      class="xl:text-sm text-2xl text-right font-medium flex justify-end items-center"
     >
       <TooltipNumber
         number={Number(data?.volatility)}
         type={Number(data?.volatility) > 100 ? "balance" : "percent"}
       />
+      <span>%</span>
     </div>
   </td>
 
