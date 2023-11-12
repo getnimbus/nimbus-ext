@@ -5,12 +5,9 @@
   import { Toast } from "flowbite-svelte";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
 
-  import Image from "~/components/Image.svelte";
   import Button from "~/components/Button.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
   import Loading from "~/components/Loading.svelte";
-
-  import defaultToken from "~/assets/defaultToken.png";
 
   const MultipleLang = {
     content: {
@@ -20,11 +17,11 @@
       ),
       contract_address_header_table: i18n(
         "optionsPage.contract-address-tab-content.contract-address-header-table",
-        "Contract Address"
+        "Collection ID"
       ),
       assets_header_table: i18n(
         "optionsPage.assets-page-content.assets-header-table",
-        "Assets"
+        "Collection"
       ),
       action_header_table: i18n(
         "optionsPage.assets-page-content.action-header-table",
@@ -173,7 +170,7 @@
               <div
                 class="flex items-center justify-center h-full px-3 py-4 text-2xl xl:text-base"
               >
-                No report nfts
+                No report nft collection
               </div>
             </td>
           </tr>
@@ -187,13 +184,8 @@
                     : "group-hover:bg-gray-100"
                 }`}
               >
-                <div class="flex items-center justify-start gap-3">
-                  <div class="rounded-full overflow-hidden">
-                    <Image logo={item?.logoUrl} defaultLogo={defaultToken} />
-                  </div>
-                  <div class="xl:text-base text-2xl">
-                    {item.contractName}
-                  </div>
+                <div class="xl:text-base text-2xl">
+                  {item.contractName}
                 </div>
               </td>
 
