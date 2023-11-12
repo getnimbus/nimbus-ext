@@ -79,8 +79,7 @@
 </script>
 
 <ErrorBoundary>
-  <Mixpanel
-    >1
+  <Mixpanel>
     <div
       class="max-w-[2000px] xl:min-h-screen m-auto xl:w-[90%] w-[90%] py-8 grid xl:grid-cols-6 grid-cols-1 gap-6"
     >
