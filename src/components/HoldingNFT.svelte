@@ -44,15 +44,15 @@
   const reasonReport = [
     {
       id: "trash",
-      content: "This NFT is trash 🗑️",
+      content: "This NFT Collection is trash 🗑️",
     },
     {
       id: "scam",
-      content: "This NFT is the scam 🤬",
+      content: "This NFT Collection is the scam 🤬",
     },
     {
       id: "hate",
-      content: "I hate this NFT 😠",
+      content: "I hate this NFT Collection 😠",
     },
   ];
 
@@ -99,15 +99,15 @@
       let reason = "";
 
       if (document.getElementById("trash").checked) {
-        reason += "Trash Token, ";
+        reason += "Trash NFT Collection, ";
       }
 
       if (document.getElementById("hate").checked) {
-        reason += "Hate Token, ";
+        reason += "Hate NFT Collection, ";
       }
 
       if (document.getElementById("scam").checked) {
-        reason += "Scam Token, ";
+        reason += "Scam NFT Collection, ";
       }
 
       if (document.getElementById("outdated").checked) {
@@ -119,6 +119,7 @@
         contractAddress: document.getElementById("contract_address").value,
         reason: reason,
         contractName: data.collection.name,
+        type: "nft",
       };
       await nimbus.post("/holding-nft/trash/report", formData);
       isLoadingReportTrashNFT = false;
@@ -168,14 +169,14 @@
 <tr
   class={`group transition-all ${index === 0 && "view-nft-detail"}`}
   on:mouseover={() => {
-    // if ($user && Object.keys($user).length !== 0) {
-    //   isShowReport = true;
-    // }
+    if ($user && Object.keys($user).length !== 0) {
+      isShowReport = true;
+    }
   }}
   on:mouseleave={() => {
-    // if ($user && Object.keys($user).length !== 0) {
-    //   isShowReport = false;
-    // }
+    if ($user && Object.keys($user).length !== 0) {
+      isShowReport = false;
+    }
   }}
 >
   <td
@@ -525,7 +526,7 @@
   </td>
 </tr>
 
-<!-- Modal report spam/trash token  -->
+<!-- Modal report spam/trash nft  -->
 <AppOverlay
   clickOutSideToClose
   isOpen={isShowReportTable}
@@ -535,7 +536,7 @@
   }}
 >
   <div class="flex flex-col gap-4">
-    <div class="font-medium xl:title-3 title-1">Blacklist NFT</div>
+    <div class="font-medium xl:title-3 title-1">Blacklist NFT Collection</div>
     <form
       on:submit|preventDefault={handleReportTrashNFT}
       class="flex flex-col gap-10 xl:gap-3"
@@ -641,7 +642,7 @@
               for="outdated"
               class="xl:text-sm text-2xl font-normal text-[#5E656B] cursor-pointer"
             >
-              The NFT is outdate
+              The NFT Collection is outdate
             </label>
           </div>
 
@@ -769,4 +770,10 @@
 {/if}
 
 <style windi:preflights:global windi:safelist:global>
+  :global(body) .bg_fafafbff {
+    background: #fafafbff;
+  }
+  :global(body.dark) .bg_fafafbff {
+    background: #212121;
+  }
 </style>
