@@ -319,6 +319,73 @@
                 </div>
               {/if}
             </div>
+
+            <!-- <div class="flex flex-col gap-4 mt-5">
+              <div class="xl:text-lg text-xl font-medium">
+                Want more GM Point? Complete these tasks!
+              </div>
+              <div class="border-y-1 border_0000000d">
+                <div
+                  class="flex justify-between items-center gap-5 py-4 border-b-1 border_0000000d"
+                >
+                  <div class="flex-1 flex items-start gap-2">
+                    <img
+                      src="https://s2.coinmarketcap.com/static/cloud/img/loyalty-program/Flags_3D_1.svg"
+                      alt=""
+                      class="bg-yellow-200 rounded-lg mt-1"
+                    />
+                    <div class="flex-1 flex items-center">
+                      <div class="flex-1 flex flex-col">
+                        <div class="xl:text-base text-lg font-medium">
+                          Your First Check-In Adventure Mission!
+                        </div>
+                        <div class="xl:text-sm text-base text-gray-500">
+                          First-time time redeem
+                        </div>
+                      </div>
+                      <div class="flex justify-center items-center gap-1">
+                        <img src={goldImg} alt="" />
+                        <div class="xl:text-base text-lg font-medium">20</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="w-[170px]">
+                    <Button>
+                      <div class="py-1">Collect!</div>
+                    </Button>
+                  </div>
+                </div>
+                <div class="flex justify-between items-center gap-5 py-4">
+                  <div class="flex-1 flex items-start gap-2">
+                    <img
+                      src="https://s2.coinmarketcap.com/static/cloud/img/loyalty-program/Flags_3D_1.svg"
+                      alt=""
+                      class="bg-yellow-200 rounded-lg mt-1"
+                    />
+                    <div class="flex-1 flex items-center">
+                      <div class="flex-1 flex flex-col">
+                        <div class="xl:text-base text-lg font-medium">
+                          Share the Goodies: Spread the Wealth!
+                        </div>
+                        <div class="xl:text-sm text-base text-gray-500">
+                          Ref others connect the wallet to earn points (The
+                          connect wallet must have a balance > 10$)
+                        </div>
+                      </div>
+                      <div class="flex justify-center items-center gap-1">
+                        <img src={goldImg} alt="" />
+                        <div class="xl:text-base text-lg font-medium">20</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="w-[170px]">
+                    <Button>
+                      <div class="py-1">Collect!</div>
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div> -->
           {:else}
             <div class="xl:text-lg text-xl font-medium">Checkin History</div>
             <div
