@@ -25,7 +25,7 @@
     </div>
 
     <div class="flex flex-col gap-2">
-      <div class="xl:text-base text-2xl font-medium">NFT List</div>
+      <div class="xl:text-base text-2xl font-medium">NFT Collection List</div>
       <NFTs />
     </div>
   </div>
