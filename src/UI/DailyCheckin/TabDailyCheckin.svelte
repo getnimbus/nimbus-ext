@@ -320,67 +320,68 @@
               {/if}
             </div>
 
-            <!-- gm point optimize -->
-            <div class="flex flex-col gap-4">
+            <div class="flex flex-col gap-4 mt-5">
               <div class="xl:text-lg text-xl font-medium">
-                Collect your GM Points every day
+                Want more GM Point? Complete these tasks!
               </div>
-              <div class="py-1 border-y-2 border_0000000d">
-                <div class="flex justify-between items-center py-4">
-                  <div class="flex gap-2 items-center">
+              <div class="border-y-1 border_0000000d">
+                <div
+                  class="flex justify-between items-center gap-5 py-4 border-b-1 border_0000000d"
+                >
+                  <div class="flex-1 flex items-start gap-2">
                     <img
                       src="https://s2.coinmarketcap.com/static/cloud/img/loyalty-program/Flags_3D_1.svg"
                       alt=""
-                      class="bg-yellow-200 rounded-xl p-2"
+                      class="bg-yellow-200 rounded-lg mt-1"
                     />
-                    <div class="flex flex-col">
-                      <div class="font-medium">
-                        Share the Goodies: Spread the Wealth!
+                    <div class="flex-1 flex items-center">
+                      <div class="flex-1 flex flex-col">
+                        <div class="xl:text-base text-lg font-medium">
+                          Your First Check-In Adventure Mission!
+                        </div>
+                        <div class="xl:text-sm text-base text-gray-500">
+                          First-time time redeem
+                        </div>
                       </div>
-                      <div class="xl:text-base text-lg text-gray-500">
-                        Ref others connect the wallet to earn points (The
-                        connect wallet must have a balance > 10$)
+                      <div class="flex justify-center items-center gap-1">
+                        <img src={goldImg} alt="" />
+                        <div class="xl:text-base text-lg font-medium">20</div>
                       </div>
                     </div>
                   </div>
-                  <div class="flex gap-5 items-center">
-                    <div class="flex gap-1 items-center p-1 font-medium">
-                      <img src={goldImg} alt="" />
-                      <div>20</div>
-                    </div>
-                    <div class="w-[170px]">
-                      <Button>
-                        <div class="py-1">Collect!</div>
-                      </Button>
-                    </div>
+                  <div class="w-[170px]">
+                    <Button>
+                      <div class="py-1">Collect!</div>
+                    </Button>
                   </div>
                 </div>
-                <div class="flex justify-between items-center py-4">
-                  <div class="flex gap-2 items-center">
+                <div class="flex justify-between items-center gap-5 py-4">
+                  <div class="flex-1 flex items-start gap-2">
                     <img
                       src="https://s2.coinmarketcap.com/static/cloud/img/loyalty-program/Flags_3D_1.svg"
                       alt=""
-                      class="bg-yellow-200 rounded-xl p-2"
+                      class="bg-yellow-200 rounded-lg mt-1"
                     />
-                    <div class="flex flex-col">
-                      <div class="font-medium">
-                        Your First Check-In Adventure Mission!
+                    <div class="flex-1 flex items-center">
+                      <div class="flex-1 flex flex-col">
+                        <div class="xl:text-base text-lg font-medium">
+                          Share the Goodies: Spread the Wealth!
+                        </div>
+                        <div class="xl:text-sm text-base text-gray-500">
+                          Ref others connect the wallet to earn points (The
+                          connect wallet must have a balance > 10$)
+                        </div>
                       </div>
-                      <div class="xl:text-base text-lg text-gray-500">
-                        First-time time redeem
+                      <div class="flex justify-center items-center gap-1">
+                        <img src={goldImg} alt="" />
+                        <div class="xl:text-base text-lg font-medium">20</div>
                       </div>
                     </div>
                   </div>
-                  <div class="flex gap-5 items-center">
-                    <div class="flex gap-1 items-center p-1 font-medium">
-                      <img src={goldImg} alt="" />
-                      <div>10</div>
-                    </div>
-                    <div class="w-[170px]">
-                      <Button>
-                        <div class="py-1">Collect!</div>
-                      </Button>
-                    </div>
+                  <div class="w-[170px]">
+                    <Button>
+                      <div class="py-1">Collect!</div>
+                    </Button>
                   </div>
                 </div>
               </div>
