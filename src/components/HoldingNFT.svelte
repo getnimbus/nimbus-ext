@@ -770,4 +770,10 @@
 {/if}
 
 <style windi:preflights:global windi:safelist:global>
+  :global(body) .bg_fafafbff {
+    background: #fafafbff;
+  }
+  :global(body.dark) .bg_fafafbff {
+    background: #212121;
+  }
 </style>
