@@ -1,6 +1,6 @@
 {
-  "version": "3.0.3",
-  "created": "2023-08-25T15:11:56Z",
+  "version": "3.5.0",
+  "created": "2023-11-11T02:11:35Z",
   "files": [
     {
       "path": ".nojekyll"
@@ -56,6 +56,9 @@
     {
       "path": "metrics/average_cost/index.html",
       "old": true
+    },
+    {
+      "path": "metrics/correlation-matrix/index.html"
     },
     {
       "path": "metrics/holding_profit_loss/index.html",

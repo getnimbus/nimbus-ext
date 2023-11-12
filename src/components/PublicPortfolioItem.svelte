@@ -43,13 +43,13 @@
     <div
       class="xl:text-sm text-2xl text-red-500 font-medium flex flex-col justify-start gap-1"
     >
-      <div class="flex -space-x-4">
+      <div class="flex space-x-1">
         {#each data?.metadata
           ?.filter((item) => item.logo)
           .sort((a, b) => a.value - b.value)
           .slice(0, 5) || [] as token}
           <img
-            class="w-[30px] h-[30px] border-2 border-white rounded-full dark:border-gray-800"
+            class="w-[30px] h-[30px] border-2 border-white rounded-full bg-white dark:border-gray-800"
             src={token.logo}
             alt=""
           />
