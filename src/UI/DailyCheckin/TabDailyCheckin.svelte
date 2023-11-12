@@ -320,7 +320,7 @@
               {/if}
             </div>
 
-            <!-- <div class="flex flex-col gap-4 mt-5">
+            <div class="flex flex-col gap-4 mt-5">
               <div class="xl:text-lg text-xl font-medium">
                 Want more GM Point? Complete these tasks!
               </div>
@@ -385,7 +385,7 @@
                   </div>
                 </div>
               </div>
-            </div> -->
+            </div>
           {:else}
             <div class="xl:text-lg text-xl font-medium">Checkin History</div>
             <div
