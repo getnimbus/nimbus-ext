@@ -133,6 +133,7 @@
         contractName: data.name,
         contractTickerSymbol: data.symbol,
         logoUrl: data.logo,
+        type: "token",
       };
       await nimbus.post("/holding/trash/report", formData);
       isLoadingReportTrashCoin = false;
@@ -1075,7 +1076,13 @@
         $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
       }`}
     >
-      <table class="table-auto xl:w-full w-[1200px]">
+      <table
+        class={`table-auto xl:w-full w-[1200px] ${
+          formatDataBreakdown && formatDataBreakdown.length === 0
+            ? "h-full"
+            : ""
+        }`}
+      >
         <thead>
           <tr class="bg_f4f5f8 sticky left-0 top-0">
             <th class="pl-3 py-3 rounded-tl-[10px]">
