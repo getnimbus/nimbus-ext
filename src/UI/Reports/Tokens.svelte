@@ -74,7 +74,7 @@
   };
 
   const handleDataReportToken = async () => {
-    const response = await nimbus.get("/holding/trash");
+    const response = await nimbus.get("/holding/trash?type=token");
     return response.data;
   };
 
@@ -235,6 +235,7 @@
                       selectedItemDelete = {
                         chain: item.chain,
                         contractAddress: item.contractAddress,
+                        type: "token",
                       };
                       isOpenConfirmDelete = true;
                     }}

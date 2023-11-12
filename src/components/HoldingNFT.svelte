@@ -119,6 +119,7 @@
         contractAddress: document.getElementById("contract_address").value,
         reason: reason,
         contractName: data.collection.name,
+        type: "nft",
       };
       await nimbus.post("/holding-nft/trash/report", formData);
       isLoadingReportTrashNFT = false;

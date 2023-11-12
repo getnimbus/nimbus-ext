@@ -74,7 +74,7 @@
   };
 
   const handleDataReportToken = async () => {
-    const response = await nimbus.get("/holding-nft/trash");
+    const response = await nimbus.get("/holding-nft/trash?type=nft");
     return response.data;
   };
 
@@ -235,6 +235,7 @@
                       selectedItemDelete = {
                         chain: item.chain,
                         contractAddress: item.contractAddress,
+                        type: "nft",
                       };
                       isOpenConfirmDelete = true;
                     }}

@@ -133,6 +133,7 @@
         contractName: data.name,
         contractTickerSymbol: data.symbol,
         logoUrl: data.logo,
+        type: "token",
       };
       await nimbus.post("/holding/trash/report", formData);
       isLoadingReportTrashCoin = false;
