@@ -225,7 +225,6 @@
         number={Number(data?.sharpeRatio)}
         type={Number(data?.sharpeRatio) > 100 ? "balance" : "percent"}
       />
-      <span>%</span>
     </div>
   </td>
 

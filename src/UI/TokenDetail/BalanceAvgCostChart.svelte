@@ -92,6 +92,10 @@
             </div>`;
       },
     },
+    grid: {
+      left: 70,
+      right: 70,
+    },
     toolbox: {
       right: "4%",
       feature: {
@@ -132,16 +136,16 @@
     series: [],
   };
 
-  const handleGetTradeHistoryAnalysis = async (address) => {
+  const handleGetTradeHistoryAnalysis = async (address, filter) => {
     const response: any = await nimbus.get(
-      `/v2/address/${address}/token/${data?.contractAddress}/trade-analysis?chain=${data?.chain}`
+      `/v2/address/${address}/token/${data?.contractAddress}/trade-analysis?chain=${data?.chain}&type=${filter?.value}`
     );
     return response?.data;
   };
 
   $: queryHistoryTokenDetailAnalysis = createQuery({
-    queryKey: ["trade-history-analysis", data, $wallet],
-    queryFn: () => handleGetTradeHistoryAnalysis($wallet),
+    queryKey: ["trade-history-analysis", data, $wallet, filterType],
+    queryFn: () => handleGetTradeHistoryAnalysis($wallet, filterType),
     staleTime: Infinity,
     retry: false,
     enabled:
