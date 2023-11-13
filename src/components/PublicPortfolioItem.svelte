@@ -20,7 +20,7 @@
 
 <tr class="group transition-all">
   <td
-    class={`pl-3 py-4 2xl:w-[250px] xl:static xl:bg-transparent sticky left-0 z-9 ${
+    class={`pl-3 py-4 xl:static xl:bg-transparent sticky left-0 z-9 ${
       $isDarkMode
         ? "bg-[#131313] group-hover:bg-[#000]"
         : "bg-white group-hover:bg-gray-100"
@@ -64,7 +64,7 @@
             }}
           >
             <img
-              class="w-[30px] h-[30px] border-2 border-white bg-white rounded-full"
+              class="xl:w-[30px] xl:h-[30px] w-[50px] h-[50px] border-2 border-white bg-white rounded-full"
               src={token.logo}
               alt=""
             />
@@ -80,9 +80,9 @@
         {/each}
         {#if data?.metadata?.length > 5}
           <div
-            class="flex items-center justify-center w-[30px] h-[30px] bg-gray-700 border-2 border-white rounded-full hover:bg-gray-600"
+            class="flex items-center justify-center xl:w-[30px] xl:h-[30px] w-[50px] h-[50px] bg-gray-700 border-2 border-white rounded-full hover:bg-gray-600"
           >
-            <div class="text-[10px] font-medium text-white">
+            <div class="xl:text-[10px] text-lg font-medium text-white">
               +{data?.metadata?.length - 5}
             </div>
           </div>

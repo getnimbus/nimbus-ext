@@ -142,7 +142,7 @@
         <thead class="sticky top-0 z-10">
           <tr class="bg_f4f5f8">
             <th
-              class="pl-3 py-3 rounded-tl-[10px] 2xl:w-[250px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8"
+              class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8"
             >
               <div class="text-left xl:text-xs text-xl uppercase font-medium">
                 Address
