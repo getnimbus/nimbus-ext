@@ -307,7 +307,11 @@
     ) {
       chain.update((n) => (n = "ALL"));
 
-      if (typeParams === "BTC" || typeParams === "SOL") {
+      if (
+        typeParams === "BTC" ||
+        typeParams === "SOL" ||
+        typeParams === "ALGO"
+      ) {
         window.history.replaceState(
           null,
           "",
@@ -330,7 +334,11 @@
       if (typeParams === "EVM") {
         chain.update((n) => (n = "ALL"));
       }
-      if (typeParams === "BTC" || typeParams === "SOL") {
+      if (
+        typeParams === "BTC" ||
+        typeParams === "SOL" ||
+        typeParams === "ALGO"
+      ) {
         window.history.replaceState(
           null,
           "",
@@ -387,6 +395,17 @@
       if (selected.type === "SOL") {
         typeWallet.update((n) => (n = "SOL"));
         browser.storage.sync.set({ typeWalletAddress: "SOL" });
+        chain.update((n) => (n = "ALL"));
+        window.history.replaceState(
+          null,
+          "",
+          window.location.pathname + `?type=${$typeWallet}&address=${$wallet}`
+        );
+      }
+
+      if (selected.type === "ALGO") {
+        typeWallet.update((n) => (n = "ALGO"));
+        browser.storage.sync.set({ typeWalletAddress: "ALGO" });
         chain.update((n) => (n = "ALL"));
         window.history.replaceState(
           null,
@@ -585,7 +604,11 @@
               `?type=${searchAccountType}&chain=ALL&address=${dataFormat.value}`
           );
         }
-        if (searchAccountType === "BTC" || searchAccountType === "SOL") {
+        if (
+          searchAccountType === "BTC" ||
+          searchAccountType === "SOL" ||
+          searchAccountType === "ALGO"
+        ) {
           window.history.replaceState(
             null,
             "",
@@ -1715,7 +1738,7 @@
           </label>
         </div>
         <div class="xl:flex hidden items-center justify-center gap-6 my-3">
-          {#each [{ logo: SolanaLogo, label: "Solana", value: "SOL" }, { logo: BitcoinLogo, label: "Bitcoin", value: "BTC" }].concat(chainList.slice(1)) as item}
+          {#each [{ logo: SolanaLogo, label: "Solana", value: "SOL" }, { logo: AlgorandLogo, label: "Algorand", value: "ALGO" }, { logo: BitcoinLogo, label: "Bitcoin", value: "BTC" }].concat(chainList.slice(1)) as item}
             <img
               src={item.logo}
               alt=""
@@ -1724,7 +1747,7 @@
           {/each}
         </div>
         <div class="xl:hidden flex items-center justify-center gap-6 my-3">
-          {#each [{ logo: SolanaLogo, label: "Solana", value: "SOL" }, { logo: BitcoinLogo, label: "Bitcoin", value: "BTC" }].concat(chainList
+          {#each [{ logo: SolanaLogo, label: "Solana", value: "SOL" }, { logo: AlgorandLogo, label: "Algorand", value: "ALGO" }, { logo: BitcoinLogo, label: "Bitcoin", value: "BTC" }].concat(chainList
               .slice(1)
               .slice(0, -7)) as item}
             <img
