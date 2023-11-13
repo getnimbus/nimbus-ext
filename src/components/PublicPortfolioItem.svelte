@@ -7,16 +7,20 @@
 
   export let data;
 
+  import "~/components/Tooltip.custom.svelte";
   import TooltipNumber from "./TooltipNumber.svelte";
   import Copy from "./Copy.svelte";
 
   import TrendUp from "~/assets/trend-up.svg";
   import TrendDown from "~/assets/trend-down.svg";
+
+  let isShowSymbol = false;
+  let selectedToken;
 </script>
 
 <tr class="group transition-all">
   <td
-    class={`pl-3 py-4 2xl:w-[250px] xl:static xl:bg-transparent sticky left-0 z-9 ${
+    class={`pl-3 py-4 xl:static xl:bg-transparent sticky left-0 z-9 ${
       $isDarkMode
         ? "bg-[#131313] group-hover:bg-[#000]"
         : "bg-white group-hover:bg-gray-100"
@@ -43,22 +47,45 @@
     <div
       class="xl:text-sm text-2xl text-red-500 font-medium flex flex-col justify-start gap-1"
     >
-      <div class="flex -space-x-4">
+      <div class="flex space-x-1">
         {#each data?.metadata
           ?.filter((item) => item.logo)
           .sort((a, b) => a.value - b.value)
           .slice(0, 5) || [] as token}
-          <img
-            class="w-[30px] h-[30px] border-2 border-white rounded-full dark:border-gray-800"
-            src={token.logo}
-            alt=""
-          />
+          <div
+            class="relative"
+            on:mouseover={() => {
+              isShowSymbol = true;
+              selectedToken = token;
+            }}
+            on:mouseleave={() => {
+              isShowSymbol = false;
+              selectedToken = undefined;
+            }}
+          >
+            <img
+              class="xl:w-[30px] xl:h-[30px] w-[50px] h-[50px] border-2 border-white bg-white rounded-full"
+              src={token.logo}
+              alt=""
+            />
+            {#if isShowSymbol && selectedToken === token}
+              <div
+                class="absolute -top-8 left-1/2 transform -translate-x-1/2"
+                style="z-index: 2147483648;"
+              >
+                <tooltip-detail text={token.symbol.toUpperCase()} />
+              </div>
+            {/if}
+          </div>
         {/each}
         {#if data?.metadata?.length > 5}
-          <span
-            class="flex items-center justify-center w-[30px] h-[30px] text-xs font-medium text-white bg-gray-700 border-2 border-white rounded-full hover:bg-gray-600 dark:border-gray-800"
-            >+{data?.metadata?.length - 5}
-          </span>
+          <div
+            class="flex items-center justify-center xl:w-[30px] xl:h-[30px] w-[50px] h-[50px] bg-gray-700 border-2 border-white rounded-full hover:bg-gray-600"
+          >
+            <div class="xl:text-[10px] text-lg font-medium text-white">
+              +{data?.metadata?.length - 5}
+            </div>
+          </div>
         {/if}
       </div>
     </div>
@@ -188,12 +215,13 @@
     }`}
   >
     <div
-      class="xl:text-sm text-2xl text-right font-medium flex flex-col items-end gap-1"
+      class="xl:text-sm text-2xl text-right font-medium flex justify-end items-center"
     >
       <TooltipNumber
         number={Number(data?.volatility)}
         type={Number(data?.volatility) > 100 ? "balance" : "percent"}
       />
+      <span>%</span>
     </div>
   </td>
 

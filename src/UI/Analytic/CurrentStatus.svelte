@@ -896,7 +896,7 @@
       <div class="flex justify-start">
         {#if $typeWallet === "CEX" || $typeWallet === "SOL"}
           <TooltipTitle
-            tooltipText="Due to privacy, the performance data can only get after 7 days you connect to Nimbus"
+            tooltipText="The performance data can only get after 7 days you connect to Nimbus"
             type="warning"
           >
             <div class="pl-4 text-4xl font-medium xl:text-2xl">

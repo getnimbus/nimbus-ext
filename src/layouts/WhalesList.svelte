@@ -132,17 +132,17 @@
     </div>
 
     <div
-      class={`rounded-[10px] border border_0000000d xl:overflow-hidden overflow-x-auto ${
+      class={`rounded-[10px] border border_0000000d xl:overflow-visible overflow-x-auto ${
         $isDarkMode ? "bg-[#131313]" : "bg-[#fff]"
       } ${
         isLoading || (whalesData && whalesData?.length === 0) ? "h-screen" : ""
       }`}
     >
       <table class="table-auto xl:w-full w-[2800px] h-full">
-        <thead>
+        <thead class="sticky top-0 z-10">
           <tr class="bg_f4f5f8">
             <th
-              class="pl-3 py-3 rounded-tl-[10px] 2xl:w-[250px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8"
+              class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8"
             >
               <div class="text-left xl:text-xs text-xl uppercase font-medium">
                 Address
