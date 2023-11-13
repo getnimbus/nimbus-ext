@@ -137,7 +137,7 @@
         isLoading || (whalesData && whalesData?.length === 0) ? "h-screen" : ""
       }`}
     >
-      <table class="table-auto xl:w-full w-[2800px] h-full relative">
+      <table class="table-auto xl:w-full w-[2800px] h-full">
         <thead class="sticky top-0 z-10">
           <tr class="bg_f4f5f8">
             <th
