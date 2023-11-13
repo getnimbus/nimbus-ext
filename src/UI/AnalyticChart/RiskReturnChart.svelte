@@ -250,6 +250,7 @@
           ($typeWallet === "EVM" ||
             $typeWallet === "CEX" ||
             $typeWallet === "SOL" ||
+            $typeWallet === "ALGO" ||
             $typeWallet === "BUNDLE") &&
             $wallet.length !== 0 &&
             $selectedPackage !== "FREE"

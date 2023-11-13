@@ -302,10 +302,9 @@
 
   // token holding
   const getVaults = async (address, chain) => {
+    let type = $typeWallet === "SOL" || $typeWallet === "ALGO";
     const response = await nimbus.get(
-      `/v2/investment/${address}/vaults?chain=${
-        $typeWallet === "SOL" ? "SOL" : ""
-      }`
+      `/v2/investment/${address}/vaults?chain=${type ? $typeWallet : ""}`
     );
     return response?.data;
   };

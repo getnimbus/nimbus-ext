@@ -264,7 +264,9 @@
       contractAddress.length !== 0 &&
       chainType !== undefined &&
       chainType.length !== 0 &&
-      ($typeWallet === "EVM" || ($typeWallet === "BUNDLE" && chain !== "SOL")),
+      ($typeWallet === "EVM" ||
+        $typeWallet === "ALGO" ||
+        ($typeWallet === "BUNDLE" && chain !== "SOL")),
   });
 
   $: queryTokenPriceSol = createQuery({
