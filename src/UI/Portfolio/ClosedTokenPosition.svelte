@@ -291,7 +291,7 @@
 </script>
 
 <div
-  class={`flex flex-col gap-6 rounded-[20px] p-6 ${
+  class={`flex flex-col gap-6 rounded-[20px] p-6 relative ${
     $isDarkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
   }`}
 >
@@ -617,6 +617,16 @@
         </div>
       </div>
     {/if} -->
+
+    {#if $typeWallet === "CEX"}
+      <div
+        class={`absolute top-0 left-0 rounded-[20px] z-30 w-full h-full flex items-center justify-center ${
+          $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
+        } z-10 backdrop-blur-md`}
+      >
+        <div class="text-2xl xl:text-lg">Coming soon 🚀</div>
+      </div>
+    {/if}
   </ErrorBoundary>
 </div>
 
