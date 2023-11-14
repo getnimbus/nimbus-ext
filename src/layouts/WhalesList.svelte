@@ -29,7 +29,7 @@
     ),
   };
 
-  let whalesData = [];
+  let data = [];
   let isLoading = false;
 
   let pageValue = 0;
@@ -37,21 +37,43 @@
   let filterParams = "";
   let search = "";
 
+  let sortNetWorth = "default";
+  let sortChange1D = "default";
+  let sortChange7D = "default";
+  let sortChange30D = "default";
+  let sortChange1Y = "default";
+  let sortSharpeRatio = "default";
+  let sortMaxDrawDown = "default";
+  let sortVolatility = "default";
+
   const getPublicPortfolio = async () => {
     try {
       isLoading = true;
-      const res = await nimbus
+      data = await nimbus
         .get(
           `/market/portfolio/search?q=${filterParams}&token=${search}&page=${pageValue}`
         )
         .then((response) => response.data);
-      whalesData = res;
     } catch (e) {
       console.error("error: ", e);
     } finally {
       isLoading = false;
     }
   };
+
+  $: whalesData = data?.map((item) => {
+    return {
+      ...item,
+      change1D: Number(item.change24H || 0),
+      change7D: Number(item.change7D || 0),
+      change30D: Number(item.change30D || 0),
+      change1Y: Number(item.change1Y || 0),
+      networth: Number(item?.networth || 0),
+      drawDown: Number(item?.drawDown || 0),
+      volatility: Number(item?.volatility || 0),
+      sharpeRatio: Number(item?.sharpeRatio || 0),
+    };
+  });
 
   onMount(() => {
     mixpanel.track("market_page");
@@ -89,6 +111,358 @@
         .join(" AND ")
     );
     getPublicPortfolio();
+  };
+
+  const handleResetSort = () => {
+    whalesData = data?.map((item) => {
+      return {
+        ...item,
+        change1D: Number(item.change24H || 0),
+        change7D: Number(item.change7D || 0),
+        change30D: Number(item.change30D || 0),
+        change1Y: Number(item.change1Y || 0),
+        networth: Number(item?.networth || 0),
+        drawDown: Number(item?.drawDown || 0),
+        volatility: Number(item?.volatility || 0),
+        sharpeRatio: Number(item?.sharpeRatio || 0),
+      };
+    });
+  };
+
+  const toggleSortNetWorth = () => {
+    switch (sortNetWorth) {
+      case "default":
+        sortNetWorth = "ascend";
+        break;
+      case "ascend":
+        sortNetWorth = "descend";
+        break;
+      case "descend":
+        sortNetWorth = "default";
+        break;
+      default:
+        sortNetWorth = "default";
+    }
+
+    if (sortNetWorth === "ascend") {
+      whalesData = whalesData.sort((a, b) => {
+        if (a.networth > b.networth) {
+          return 1;
+        }
+        if (a.networth < b.networth) {
+          return -1;
+        }
+        return 0;
+      });
+    }
+    if (sortNetWorth === "descend") {
+      whalesData = whalesData.sort((a, b) => {
+        if (a.networth < b.networth) {
+          return 1;
+        }
+        if (a.networth > b.networth) {
+          return -1;
+        }
+        return 0;
+      });
+    }
+    if (sortNetWorth === "default") {
+      handleResetSort();
+    }
+  };
+
+  const toggleSortChange1D = () => {
+    switch (sortChange1D) {
+      case "default":
+        sortChange1D = "ascend";
+        break;
+      case "ascend":
+        sortChange1D = "descend";
+        break;
+      case "descend":
+        sortChange1D = "default";
+        break;
+      default:
+        sortChange1D = "default";
+    }
+
+    if (sortChange1D === "ascend") {
+      whalesData = whalesData.sort((a, b) => {
+        if (a.change1D > b.change1D) {
+          return 1;
+        }
+        if (a.change1D < b.change1D) {
+          return -1;
+        }
+        return 0;
+      });
+    }
+    if (sortChange1D === "descend") {
+      whalesData = whalesData.sort((a, b) => {
+        if (a.change1D < b.change1D) {
+          return 1;
+        }
+        if (a.change1D > b.change1D) {
+          return -1;
+        }
+        return 0;
+      });
+    }
+    if (sortChange1D === "default") {
+      handleResetSort();
+    }
+  };
+
+  const toggleSortChange7D = () => {
+    switch (sortChange7D) {
+      case "default":
+        sortChange7D = "ascend";
+        break;
+      case "ascend":
+        sortChange7D = "descend";
+        break;
+      case "descend":
+        sortChange7D = "default";
+        break;
+      default:
+        sortChange7D = "default";
+    }
+
+    if (sortChange7D === "ascend") {
+      whalesData = whalesData.sort((a, b) => {
+        if (a.change7D > b.change7D) {
+          return 1;
+        }
+        if (a.change7D < b.change7D) {
+          return -1;
+        }
+        return 0;
+      });
+    }
+    if (sortChange7D === "descend") {
+      whalesData = whalesData.sort((a, b) => {
+        if (a.change7D < b.change7D) {
+          return 1;
+        }
+        if (a.change7D > b.change7D) {
+          return -1;
+        }
+        return 0;
+      });
+    }
+    if (sortChange7D === "default") {
+      handleResetSort();
+    }
+  };
+
+  const toggleSortChange30D = () => {
+    switch (sortChange30D) {
+      case "default":
+        sortChange30D = "ascend";
+        break;
+      case "ascend":
+        sortChange30D = "descend";
+        break;
+      case "descend":
+        sortChange30D = "default";
+        break;
+      default:
+        sortChange30D = "default";
+    }
+
+    if (sortChange30D === "ascend") {
+      whalesData = whalesData.sort((a, b) => {
+        if (a.change30D > b.change30D) {
+          return 1;
+        }
+        if (a.change30D < b.change30D) {
+          return -1;
+        }
+        return 0;
+      });
+    }
+    if (sortChange30D === "descend") {
+      whalesData = whalesData.sort((a, b) => {
+        if (a.change30D < b.change30D) {
+          return 1;
+        }
+        if (a.change30D > b.change30D) {
+          return -1;
+        }
+        return 0;
+      });
+    }
+    if (sortChange30D === "default") {
+      handleResetSort();
+    }
+  };
+
+  const toggleSortChange1Y = () => {
+    switch (sortChange1Y) {
+      case "default":
+        sortChange1Y = "ascend";
+        break;
+      case "ascend":
+        sortChange1Y = "descend";
+        break;
+      case "descend":
+        sortChange1Y = "default";
+        break;
+      default:
+        sortChange1Y = "default";
+    }
+
+    if (sortChange1Y === "ascend") {
+      whalesData = whalesData.sort((a, b) => {
+        if (a.change1Y > b.change1Y) {
+          return 1;
+        }
+        if (a.change1Y < b.change1Y) {
+          return -1;
+        }
+        return 0;
+      });
+    }
+    if (sortChange1Y === "descend") {
+      whalesData = whalesData.sort((a, b) => {
+        if (a.change1Y < b.change1Y) {
+          return 1;
+        }
+        if (a.change1Y > b.change1Y) {
+          return -1;
+        }
+        return 0;
+      });
+    }
+    if (sortChange1Y === "default") {
+      handleResetSort();
+    }
+  };
+
+  const toggleSortMaxDrawDown = () => {
+    switch (sortMaxDrawDown) {
+      case "default":
+        sortMaxDrawDown = "ascend";
+        break;
+      case "ascend":
+        sortMaxDrawDown = "descend";
+        break;
+      case "descend":
+        sortMaxDrawDown = "default";
+        break;
+      default:
+        sortMaxDrawDown = "default";
+    }
+
+    if (sortMaxDrawDown === "ascend") {
+      whalesData = whalesData.sort((a, b) => {
+        if (a.drawDown > b.drawDown) {
+          return 1;
+        }
+        if (a.drawDown < b.drawDown) {
+          return -1;
+        }
+        return 0;
+      });
+    }
+    if (sortMaxDrawDown === "descend") {
+      whalesData = whalesData.sort((a, b) => {
+        if (a.drawDown < b.drawDown) {
+          return 1;
+        }
+        if (a.drawDown > b.drawDown) {
+          return -1;
+        }
+        return 0;
+      });
+    }
+    if (sortMaxDrawDown === "default") {
+      handleResetSort();
+    }
+  };
+
+  const toggleSortSharpeRatio = () => {
+    switch (sortSharpeRatio) {
+      case "default":
+        sortSharpeRatio = "ascend";
+        break;
+      case "ascend":
+        sortSharpeRatio = "descend";
+        break;
+      case "descend":
+        sortSharpeRatio = "default";
+        break;
+      default:
+        sortSharpeRatio = "default";
+    }
+
+    if (sortSharpeRatio === "ascend") {
+      whalesData = whalesData.sort((a, b) => {
+        if (a.sharpeRatio > b.sharpeRatio) {
+          return 1;
+        }
+        if (a.sharpeRatio < b.sharpeRatio) {
+          return -1;
+        }
+        return 0;
+      });
+    }
+    if (sortSharpeRatio === "descend") {
+      whalesData = whalesData.sort((a, b) => {
+        if (a.sharpeRatio < b.sharpeRatio) {
+          return 1;
+        }
+        if (a.sharpeRatio > b.sharpeRatio) {
+          return -1;
+        }
+        return 0;
+      });
+    }
+    if (sortSharpeRatio === "default") {
+      handleResetSort();
+    }
+  };
+
+  const toggleSortVolatility = () => {
+    switch (sortVolatility) {
+      case "default":
+        sortVolatility = "ascend";
+        break;
+      case "ascend":
+        sortVolatility = "descend";
+        break;
+      case "descend":
+        sortVolatility = "default";
+        break;
+      default:
+        sortVolatility = "default";
+    }
+
+    if (sortVolatility === "ascend") {
+      whalesData = whalesData.sort((a, b) => {
+        if (a.volatility > b.volatility) {
+          return 1;
+        }
+        if (a.volatility < b.volatility) {
+          return -1;
+        }
+        return 0;
+      });
+    }
+    if (sortVolatility === "descend") {
+      whalesData = whalesData.sort((a, b) => {
+        if (a.volatility < b.volatility) {
+          return 1;
+        }
+        if (a.volatility > b.volatility) {
+          return -1;
+        }
+        return 0;
+      });
+    }
+    if (sortVolatility === "default") {
+      handleResetSort();
+    }
   };
 </script>
 
@@ -154,58 +528,162 @@
               </div>
             </th>
             <th class="py-3">
-              <div class="text-right xl:text-xs text-xl uppercase font-medium">
+              <div
+                class="flex items-center justify-end xl:gap-2 gap-4 text-right xl:text-xs text-xl uppercase font-medium"
+              >
                 Net Worth
+                <div on:click={toggleSortNetWorth} class="cursor-pointer">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    height="1.2em"
+                    viewBox="0 0 320 512"
+                    fill={$isDarkMode ? "#fff" : "#000"}
+                    ><path
+                      d="M41 288h238c21.4 0 32.1 25.9 17 41L177 448c-9.4 9.4-24.6 9.4-33.9 0L24 329c-15.1-15.1-4.4-41 17-41zm255-105L177 64c-9.4-9.4-24.6-9.4-33.9 0L24 183c-15.1 15.1-4.4 41 17 41h238c21.4 0 32.1-25.9 17-41z"
+                    /></svg
+                  >
+                </div>
               </div>
             </th>
             <th class="py-3">
-              <div class="text-right xl:text-xs text-xl uppercase font-medium">
+              <div
+                class="flex items-center justify-end xl:gap-2 gap-4 text-right xl:text-xs text-xl uppercase font-medium"
+              >
                 1D
+                <div on:click={toggleSortChange1D} class="cursor-pointer">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    height="1.2em"
+                    viewBox="0 0 320 512"
+                    fill={$isDarkMode ? "#fff" : "#000"}
+                    ><path
+                      d="M41 288h238c21.4 0 32.1 25.9 17 41L177 448c-9.4 9.4-24.6 9.4-33.9 0L24 329c-15.1-15.1-4.4-41 17-41zm255-105L177 64c-9.4-9.4-24.6-9.4-33.9 0L24 183c-15.1 15.1-4.4 41 17 41h238c21.4 0 32.1-25.9 17-41z"
+                    /></svg
+                  >
+                </div>
               </div>
             </th>
             <th class="py-3">
-              <div class="text-right xl:text-xs text-xl uppercase font-medium">
+              <div
+                class="flex items-center justify-end xl:gap-2 gap-4 text-right xl:text-xs text-xl uppercase font-medium"
+              >
                 7D
+                <div on:click={toggleSortChange7D} class="cursor-pointer">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    height="1.2em"
+                    viewBox="0 0 320 512"
+                    fill={$isDarkMode ? "#fff" : "#000"}
+                    ><path
+                      d="M41 288h238c21.4 0 32.1 25.9 17 41L177 448c-9.4 9.4-24.6 9.4-33.9 0L24 329c-15.1-15.1-4.4-41 17-41zm255-105L177 64c-9.4-9.4-24.6-9.4-33.9 0L24 183c-15.1 15.1-4.4 41 17 41h238c21.4 0 32.1-25.9 17-41z"
+                    /></svg
+                  >
+                </div>
               </div>
             </th>
             <th class="py-3">
-              <div class="text-right xl:text-xs text-xl uppercase font-medium">
+              <div
+                class="flex items-center justify-end xl:gap-2 gap-4 text-right xl:text-xs text-xl uppercase font-medium"
+              >
                 30D
+                <div on:click={toggleSortChange30D} class="cursor-pointer">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    height="1.2em"
+                    viewBox="0 0 320 512"
+                    fill={$isDarkMode ? "#fff" : "#000"}
+                    ><path
+                      d="M41 288h238c21.4 0 32.1 25.9 17 41L177 448c-9.4 9.4-24.6 9.4-33.9 0L24 329c-15.1-15.1-4.4-41 17-41zm255-105L177 64c-9.4-9.4-24.6-9.4-33.9 0L24 183c-15.1 15.1-4.4 41 17 41h238c21.4 0 32.1-25.9 17-41z"
+                    /></svg
+                  >
+                </div>
               </div>
             </th>
             <th class="py-3">
-              <div class="text-right xl:text-xs text-xl uppercase font-medium">
+              <div
+                class="flex items-center justify-end xl:gap-2 gap-4 text-right xl:text-xs text-xl uppercase font-medium"
+              >
                 1Y
+                <div on:click={toggleSortChange1Y} class="cursor-pointer">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    height="1.2em"
+                    viewBox="0 0 320 512"
+                    fill={$isDarkMode ? "#fff" : "#000"}
+                    ><path
+                      d="M41 288h238c21.4 0 32.1 25.9 17 41L177 448c-9.4 9.4-24.6 9.4-33.9 0L24 329c-15.1-15.1-4.4-41 17-41zm255-105L177 64c-9.4-9.4-24.6-9.4-33.9 0L24 183c-15.1 15.1-4.4 41 17 41h238c21.4 0 32.1-25.9 17-41z"
+                    /></svg
+                  >
+                </div>
               </div>
             </th>
             <th class="py-3">
-              <div class="text-right xl:text-xs text-xl uppercase font-medium">
+              <div
+                class="flex items-center justify-end xl:gap-2 gap-4 text-right xl:text-xs text-xl uppercase font-medium"
+              >
                 <TooltipTitle
                   tooltipText={"Volatility measures the extent of price fluctuations for an asset over time."}
                   isBigIcon
                 >
                   Volatility
                 </TooltipTitle>
+                <div on:click={toggleSortVolatility} class="cursor-pointer">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    height="1.2em"
+                    viewBox="0 0 320 512"
+                    fill={$isDarkMode ? "#fff" : "#000"}
+                    ><path
+                      d="M41 288h238c21.4 0 32.1 25.9 17 41L177 448c-9.4 9.4-24.6 9.4-33.9 0L24 329c-15.1-15.1-4.4-41 17-41zm255-105L177 64c-9.4-9.4-24.6-9.4-33.9 0L24 183c-15.1 15.1-4.4 41 17 41h238c21.4 0 32.1-25.9 17-41z"
+                    /></svg
+                  >
+                </div>
               </div>
             </th>
             <th class="py-3">
-              <div class="text-right xl:text-xs text-xl uppercase font-medium">
+              <div
+                class="flex items-center justify-end xl:gap-2 gap-4 text-right xl:text-xs text-xl uppercase font-medium"
+              >
                 <TooltipTitle
                   tooltipText={"Max drawdown is the biggest loss experienced by an investment or portfolio."}
                   isBigIcon
                 >
                   Max drawdown
                 </TooltipTitle>
+                <div on:click={toggleSortMaxDrawDown} class="cursor-pointer">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    height="1.2em"
+                    viewBox="0 0 320 512"
+                    fill={$isDarkMode ? "#fff" : "#000"}
+                    ><path
+                      d="M41 288h238c21.4 0 32.1 25.9 17 41L177 448c-9.4 9.4-24.6 9.4-33.9 0L24 329c-15.1-15.1-4.4-41 17-41zm255-105L177 64c-9.4-9.4-24.6-9.4-33.9 0L24 183c-15.1 15.1-4.4 41 17 41h238c21.4 0 32.1-25.9 17-41z"
+                    /></svg
+                  >
+                </div>
               </div>
             </th>
             <th class="py-3">
-              <div class="text-right xl:text-xs text-xl uppercase font-medium">
+              <div
+                class="flex items-center justify-end xl:gap-2 gap-4 text-right xl:text-xs text-xl uppercase font-medium"
+              >
                 <TooltipTitle
                   tooltipText={"The Sharpe ratio measures how well an investment performs relative to its risk."}
                   isBigIcon
                 >
                   Sharpe ratio
                 </TooltipTitle>
+                <div on:click={toggleSortSharpeRatio} class="cursor-pointer">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    height="1.2em"
+                    viewBox="0 0 320 512"
+                    fill={$isDarkMode ? "#fff" : "#000"}
+                    ><path
+                      d="M41 288h238c21.4 0 32.1 25.9 17 41L177 448c-9.4 9.4-24.6 9.4-33.9 0L24 329c-15.1-15.1-4.4-41 17-41zm255-105L177 64c-9.4-9.4-24.6-9.4-33.9 0L24 183c-15.1 15.1-4.4 41 17 41h238c21.4 0 32.1-25.9 17-41z"
+                    /></svg
+                  >
+                </div>
               </div>
             </th>
             <th class="pr-3 py-3 rounded-tr-[10px]">
