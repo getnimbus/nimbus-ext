@@ -152,7 +152,7 @@
       : data?.current_native_token - (totalNativeTokenPrice || 0);
 
   $: profitAndLossPercent =
-    totalNativeTokenPrice === 0
+    profitAndLoss === 0
       ? 0
       : (profitAndLoss * data?.marketPrice) / Math.abs(totalCost);
 
