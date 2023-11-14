@@ -70,7 +70,7 @@
     changeLast24hNetWorth;
 
   $: last24hTotalProfitPercent =
-    $typeWallet === "SOL" || $typeWallet === "CEX"
+    $typeWallet === "SOL" || $typeWallet === "ALGO" || $typeWallet === "CEX"
       ? 0
       : getChangePercent(totalProfit, changeLast24hTotalProfit);
 </script>
@@ -133,6 +133,7 @@
           class={`flex items-center gap-3 ${
             $typeWallet === "BTC" ||
             $typeWallet === "SOL" ||
+            $typeWallet === "ALGO" ||
             $typeWallet === "CEX"
               ? "opacity-50"
               : ""
@@ -176,7 +177,8 @@
           class={`flex items-center gap-3 ${
             $typeWallet === "CEX" ||
             $typeWallet === "BTC" ||
-            $typeWallet === "SOL"
+            $typeWallet === "SOL" ||
+            $typeWallet === "ALGO"
               ? "opacity-50"
               : ""
           }`}
@@ -219,7 +221,8 @@
           class={`flex items-center gap-3 ${
             $typeWallet === "CEX" ||
             $typeWallet === "BTC" ||
-            $typeWallet === "SOL"
+            $typeWallet === "SOL" ||
+            $typeWallet === "ALGO"
               ? "opacity-50"
               : ""
           }`}
