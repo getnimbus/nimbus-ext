@@ -32,6 +32,7 @@
   import BitcoinLogo from "~/assets/bitcoin.png";
   import SolanaLogo from "~/assets/solana.png";
   import AuraLogo from "~/assets/aura.png";
+  import AlgorandLogo from "~/assets/algorand.png";
 
   let toastMsg = "";
   let isSuccessToast = false;
@@ -191,6 +192,9 @@
       }
       if (item?.type === "SOL") {
         logo = SolanaLogo;
+      }
+      if (item?.type === "ALGO") {
+        logo = AlgorandLogo;
       }
       return {
         id: item.id,
