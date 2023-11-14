@@ -14,6 +14,7 @@
   import { blur } from "svelte/transition";
   import { flatMap } from "lodash";
 
+  import ProfitData from "~/UI/Profile/ProfitData.svelte";
   import InviterQr from "~/UI/Profile/InviterQR.svelte";
   import Summary from "~/UI/Profile/Summary.svelte";
   import SocialMedia from "~/UI/Profile/SocialMedia.svelte";
@@ -27,7 +28,10 @@
 
   import User from "~/assets/user.png";
   import UpArrow from "~/assets/up-arrow.svg";
-  import ProfitData from "~/UI/Profile/ProfitData.svelte";
+  import All from "~/assets/all.svg";
+  import BitcoinLogo from "~/assets/bitcoin.png";
+  import SolanaLogo from "~/assets/solana.png";
+  import AuraLogo from "~/assets/aura.png";
 
   let toastMsg = "";
   let isSuccessToast = false;
@@ -181,11 +185,19 @@
 
   const formatDataListAddress = (data) => {
     listAddress = data.map((item) => {
+      let logo = All;
+      if (item?.type === "BTC") {
+        logo = BitcoinLogo;
+      }
+      if (item?.type === "SOL") {
+        logo = SolanaLogo;
+      }
       return {
         id: item.id,
         type: item.type,
         label: item.label,
         value: item.type === "CEX" ? item.id : item.accountId,
+        logo: item.type === "CEX" ? item.logo : logo,
       };
     });
   };
@@ -360,7 +372,7 @@
                 >
                   {#each listAddress as item}
                     <div
-                      class="flex flex-col cursor-pointer"
+                      class="cursor-pointer"
                       on:click={() => {
                         selectedAddress = item.value;
 
@@ -378,17 +390,26 @@
                         showPopover = false;
                       }}
                     >
-                      <div
-                        class="text-2xl xl:text-xs font-medium text_00000099"
-                      >
-                        {item.label}
-                      </div>
-                      <div
-                        class={`text-3xl xl:text-sm ${
-                          $isDarkMode ? "text-white" : "text-black"
-                        }`}
-                      >
-                        {shorterAddress(item?.value)}
+                      <div class="flex items-start gap-1">
+                        <img
+                          src={item.logo}
+                          alt=""
+                          class="w-5 h-5 xl:w-4 xl:h-4 rounded-full"
+                        />
+                        <div class="flex flex-col">
+                          <div
+                            class="text-2xl xl:text-xs font-medium text_00000099"
+                          >
+                            {item.label}
+                          </div>
+                          <div
+                            class={`text-3xl xl:text-sm ${
+                              $isDarkMode ? "text-white" : "text-black"
+                            }`}
+                          >
+                            {shorterAddress(item?.value)}
+                          </div>
+                        </div>
                       </div>
                     </div>
                   {/each}
