@@ -47,7 +47,48 @@
     <div
       class="xl:text-sm text-2xl text-red-500 font-medium flex flex-col justify-start gap-1"
     >
-      <div class="flex space-x-1">
+      <div class="xl:flex hidden space-x-1">
+        {#each data?.metadata
+          ?.filter((item) => item.logo)
+          .sort((a, b) => a.value - b.value)
+          .slice(0, 3) || [] as token}
+          <div
+            class="relative"
+            on:mouseover={() => {
+              isShowSymbol = true;
+              selectedToken = token;
+            }}
+            on:mouseleave={() => {
+              isShowSymbol = false;
+              selectedToken = undefined;
+            }}
+          >
+            <img
+              class="xl:w-[30px] xl:h-[30px] w-[50px] h-[50px] border-2 border-white bg-white rounded-full"
+              src={token.logo}
+              alt=""
+            />
+            {#if isShowSymbol && selectedToken === token}
+              <div
+                class="absolute -top-8 left-1/2 transform -translate-x-1/2"
+                style="z-index: 2147483648;"
+              >
+                <tooltip-detail text={token.symbol.toUpperCase()} />
+              </div>
+            {/if}
+          </div>
+        {/each}
+        {#if data?.metadata?.length > 3}
+          <div
+            class="flex items-center justify-center xl:w-[30px] xl:h-[30px] w-[50px] h-[50px] bg-gray-700 border-2 border-white rounded-full hover:bg-gray-600"
+          >
+            <div class="xl:text-[10px] text-lg font-medium text-white">
+              +{data?.metadata?.length - 3}
+            </div>
+          </div>
+        {/if}
+      </div>
+      <div class="xl:hidden flex space-x-1">
         {#each data?.metadata
           ?.filter((item) => item.logo)
           .sort((a, b) => a.value - b.value)
@@ -111,16 +152,16 @@
     >
       <div
         class={`flex items-center ${
-          data?.change24H >= 0 ? "text-[#00A878]" : "text-red-500"
+          data?.change1D >= 0 ? "text-[#00A878]" : "text-red-500"
         }`}
       >
         <TooltipNumber
-          number={Math.abs(Number(data?.change24H))}
-          type={Math.abs(Number(data?.change24H)) > 100 ? "balance" : "percent"}
+          number={Math.abs(Number(data?.change1D))}
+          type={Math.abs(Number(data?.change1D)) > 100 ? "balance" : "percent"}
         />
         <span>%</span>
         <img
-          src={data?.change24H >= 0 ? TrendUp : TrendDown}
+          src={data?.change1D >= 0 ? TrendUp : TrendDown}
           alt="trend"
           class="ml-1 mb-1 w-4 h-4"
         />
