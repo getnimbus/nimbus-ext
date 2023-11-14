@@ -163,7 +163,7 @@
             </div>
           {:else}
             {#each top5LossToken as item}
-              <div class="h-full flex items-center justify-between gap-2">
+              <div class="flex items-center justify-between gap-2">
                 <div class="flex-1 flex items-center gap-2">
                   <div class="w-[30px] h-[30px] overflow-hidden">
                     <Image logo={item?.logo} defaultLogo={defaultToken} />
