@@ -46,6 +46,8 @@
   let sortMaxDrawDown = "default";
   let sortVolatility = "default";
 
+  $: console.log("sortSharpeRatio: ", sortSharpeRatio);
+
   const getPublicPortfolio = async () => {
     try {
       isLoading = true;
@@ -113,21 +115,21 @@
     getPublicPortfolio();
   };
 
-  const handleResetSort = () => {
-    whalesData = data?.map((item) => {
-      return {
-        ...item,
-        change1D: Number(item.change24H || 0),
-        change7D: Number(item.change7D || 0),
-        change30D: Number(item.change30D || 0),
-        change1Y: Number(item.change1Y || 0),
-        networth: Number(item?.networth || 0),
-        drawDown: Number(item?.drawDown || 0),
-        volatility: Number(item?.volatility || 0),
-        sharpeRatio: Number(item?.sharpeRatio || 0),
-      };
-    });
-  };
+  // const handleResetSort = () => {
+  //   whalesData = data?.map((item) => {
+  //     return {
+  //       ...item,
+  //       change1D: Number(item.change24H || 0),
+  //       change7D: Number(item.change7D || 0),
+  //       change30D: Number(item.change30D || 0),
+  //       change1Y: Number(item.change1Y || 0),
+  //       networth: Number(item?.networth || 0),
+  //       drawDown: Number(item?.drawDown || 0),
+  //       volatility: Number(item?.volatility || 0),
+  //       sharpeRatio: Number(item?.sharpeRatio || 0),
+  //     };
+  //   });
+  // };
 
   const toggleSortNetWorth = () => {
     switch (sortNetWorth) {
@@ -144,31 +146,31 @@
         sortNetWorth = "default";
     }
 
-    if (sortNetWorth === "ascend") {
-      whalesData = whalesData.sort((a, b) => {
-        if (a.networth > b.networth) {
-          return 1;
-        }
-        if (a.networth < b.networth) {
-          return -1;
-        }
-        return 0;
-      });
-    }
-    if (sortNetWorth === "descend") {
-      whalesData = whalesData.sort((a, b) => {
-        if (a.networth < b.networth) {
-          return 1;
-        }
-        if (a.networth > b.networth) {
-          return -1;
-        }
-        return 0;
-      });
-    }
-    if (sortNetWorth === "default") {
-      handleResetSort();
-    }
+    // if (sortNetWorth === "ascend") {
+    //   whalesData = whalesData.sort((a, b) => {
+    //     if (a.networth > b.networth) {
+    //       return 1;
+    //     }
+    //     if (a.networth < b.networth) {
+    //       return -1;
+    //     }
+    //     return 0;
+    //   });
+    // }
+    // if (sortNetWorth === "descend") {
+    //   whalesData = whalesData.sort((a, b) => {
+    //     if (a.networth < b.networth) {
+    //       return 1;
+    //     }
+    //     if (a.networth > b.networth) {
+    //       return -1;
+    //     }
+    //     return 0;
+    //   });
+    // }
+    // if (sortNetWorth === "default") {
+    //   handleResetSort();
+    // }
   };
 
   const toggleSortChange1D = () => {
@@ -186,31 +188,31 @@
         sortChange1D = "default";
     }
 
-    if (sortChange1D === "ascend") {
-      whalesData = whalesData.sort((a, b) => {
-        if (a.change1D > b.change1D) {
-          return 1;
-        }
-        if (a.change1D < b.change1D) {
-          return -1;
-        }
-        return 0;
-      });
-    }
-    if (sortChange1D === "descend") {
-      whalesData = whalesData.sort((a, b) => {
-        if (a.change1D < b.change1D) {
-          return 1;
-        }
-        if (a.change1D > b.change1D) {
-          return -1;
-        }
-        return 0;
-      });
-    }
-    if (sortChange1D === "default") {
-      handleResetSort();
-    }
+    // if (sortChange1D === "ascend") {
+    //   whalesData = whalesData.sort((a, b) => {
+    //     if (a.change1D > b.change1D) {
+    //       return 1;
+    //     }
+    //     if (a.change1D < b.change1D) {
+    //       return -1;
+    //     }
+    //     return 0;
+    //   });
+    // }
+    // if (sortChange1D === "descend") {
+    //   whalesData = whalesData.sort((a, b) => {
+    //     if (a.change1D < b.change1D) {
+    //       return 1;
+    //     }
+    //     if (a.change1D > b.change1D) {
+    //       return -1;
+    //     }
+    //     return 0;
+    //   });
+    // }
+    // if (sortChange1D === "default") {
+    //   handleResetSort();
+    // }
   };
 
   const toggleSortChange7D = () => {
@@ -228,31 +230,31 @@
         sortChange7D = "default";
     }
 
-    if (sortChange7D === "ascend") {
-      whalesData = whalesData.sort((a, b) => {
-        if (a.change7D > b.change7D) {
-          return 1;
-        }
-        if (a.change7D < b.change7D) {
-          return -1;
-        }
-        return 0;
-      });
-    }
-    if (sortChange7D === "descend") {
-      whalesData = whalesData.sort((a, b) => {
-        if (a.change7D < b.change7D) {
-          return 1;
-        }
-        if (a.change7D > b.change7D) {
-          return -1;
-        }
-        return 0;
-      });
-    }
-    if (sortChange7D === "default") {
-      handleResetSort();
-    }
+    // if (sortChange7D === "ascend") {
+    //   whalesData = whalesData.sort((a, b) => {
+    //     if (a.change7D > b.change7D) {
+    //       return 1;
+    //     }
+    //     if (a.change7D < b.change7D) {
+    //       return -1;
+    //     }
+    //     return 0;
+    //   });
+    // }
+    // if (sortChange7D === "descend") {
+    //   whalesData = whalesData.sort((a, b) => {
+    //     if (a.change7D < b.change7D) {
+    //       return 1;
+    //     }
+    //     if (a.change7D > b.change7D) {
+    //       return -1;
+    //     }
+    //     return 0;
+    //   });
+    // }
+    // if (sortChange7D === "default") {
+    //   handleResetSort();
+    // }
   };
 
   const toggleSortChange30D = () => {
@@ -270,31 +272,31 @@
         sortChange30D = "default";
     }
 
-    if (sortChange30D === "ascend") {
-      whalesData = whalesData.sort((a, b) => {
-        if (a.change30D > b.change30D) {
-          return 1;
-        }
-        if (a.change30D < b.change30D) {
-          return -1;
-        }
-        return 0;
-      });
-    }
-    if (sortChange30D === "descend") {
-      whalesData = whalesData.sort((a, b) => {
-        if (a.change30D < b.change30D) {
-          return 1;
-        }
-        if (a.change30D > b.change30D) {
-          return -1;
-        }
-        return 0;
-      });
-    }
-    if (sortChange30D === "default") {
-      handleResetSort();
-    }
+    // if (sortChange30D === "ascend") {
+    //   whalesData = whalesData.sort((a, b) => {
+    //     if (a.change30D > b.change30D) {
+    //       return 1;
+    //     }
+    //     if (a.change30D < b.change30D) {
+    //       return -1;
+    //     }
+    //     return 0;
+    //   });
+    // }
+    // if (sortChange30D === "descend") {
+    //   whalesData = whalesData.sort((a, b) => {
+    //     if (a.change30D < b.change30D) {
+    //       return 1;
+    //     }
+    //     if (a.change30D > b.change30D) {
+    //       return -1;
+    //     }
+    //     return 0;
+    //   });
+    // }
+    // if (sortChange30D === "default") {
+    //   handleResetSort();
+    // }
   };
 
   const toggleSortChange1Y = () => {
@@ -312,31 +314,31 @@
         sortChange1Y = "default";
     }
 
-    if (sortChange1Y === "ascend") {
-      whalesData = whalesData.sort((a, b) => {
-        if (a.change1Y > b.change1Y) {
-          return 1;
-        }
-        if (a.change1Y < b.change1Y) {
-          return -1;
-        }
-        return 0;
-      });
-    }
-    if (sortChange1Y === "descend") {
-      whalesData = whalesData.sort((a, b) => {
-        if (a.change1Y < b.change1Y) {
-          return 1;
-        }
-        if (a.change1Y > b.change1Y) {
-          return -1;
-        }
-        return 0;
-      });
-    }
-    if (sortChange1Y === "default") {
-      handleResetSort();
-    }
+    // if (sortChange1Y === "ascend") {
+    //   whalesData = whalesData.sort((a, b) => {
+    //     if (a.change1Y > b.change1Y) {
+    //       return 1;
+    //     }
+    //     if (a.change1Y < b.change1Y) {
+    //       return -1;
+    //     }
+    //     return 0;
+    //   });
+    // }
+    // if (sortChange1Y === "descend") {
+    //   whalesData = whalesData.sort((a, b) => {
+    //     if (a.change1Y < b.change1Y) {
+    //       return 1;
+    //     }
+    //     if (a.change1Y > b.change1Y) {
+    //       return -1;
+    //     }
+    //     return 0;
+    //   });
+    // }
+    // if (sortChange1Y === "default") {
+    //   handleResetSort();
+    // }
   };
 
   const toggleSortMaxDrawDown = () => {
@@ -354,31 +356,31 @@
         sortMaxDrawDown = "default";
     }
 
-    if (sortMaxDrawDown === "ascend") {
-      whalesData = whalesData.sort((a, b) => {
-        if (a.drawDown > b.drawDown) {
-          return 1;
-        }
-        if (a.drawDown < b.drawDown) {
-          return -1;
-        }
-        return 0;
-      });
-    }
-    if (sortMaxDrawDown === "descend") {
-      whalesData = whalesData.sort((a, b) => {
-        if (a.drawDown < b.drawDown) {
-          return 1;
-        }
-        if (a.drawDown > b.drawDown) {
-          return -1;
-        }
-        return 0;
-      });
-    }
-    if (sortMaxDrawDown === "default") {
-      handleResetSort();
-    }
+    // if (sortMaxDrawDown === "ascend") {
+    //   whalesData = whalesData.sort((a, b) => {
+    //     if (a.drawDown > b.drawDown) {
+    //       return 1;
+    //     }
+    //     if (a.drawDown < b.drawDown) {
+    //       return -1;
+    //     }
+    //     return 0;
+    //   });
+    // }
+    // if (sortMaxDrawDown === "descend") {
+    //   whalesData = whalesData.sort((a, b) => {
+    //     if (a.drawDown < b.drawDown) {
+    //       return 1;
+    //     }
+    //     if (a.drawDown > b.drawDown) {
+    //       return -1;
+    //     }
+    //     return 0;
+    //   });
+    // }
+    // if (sortMaxDrawDown === "default") {
+    //   handleResetSort();
+    // }
   };
 
   const toggleSortSharpeRatio = () => {
@@ -396,31 +398,31 @@
         sortSharpeRatio = "default";
     }
 
-    if (sortSharpeRatio === "ascend") {
-      whalesData = whalesData.sort((a, b) => {
-        if (a.sharpeRatio > b.sharpeRatio) {
-          return 1;
-        }
-        if (a.sharpeRatio < b.sharpeRatio) {
-          return -1;
-        }
-        return 0;
-      });
-    }
-    if (sortSharpeRatio === "descend") {
-      whalesData = whalesData.sort((a, b) => {
-        if (a.sharpeRatio < b.sharpeRatio) {
-          return 1;
-        }
-        if (a.sharpeRatio > b.sharpeRatio) {
-          return -1;
-        }
-        return 0;
-      });
-    }
-    if (sortSharpeRatio === "default") {
-      handleResetSort();
-    }
+    // if (sortSharpeRatio === "ascend") {
+    //   whalesData = whalesData.sort((a, b) => {
+    //     if (a.sharpeRatio > b.sharpeRatio) {
+    //       return 1;
+    //     }
+    //     if (a.sharpeRatio < b.sharpeRatio) {
+    //       return -1;
+    //     }
+    //     return 0;
+    //   });
+    // }
+    // if (sortSharpeRatio === "descend") {
+    //   whalesData = whalesData.sort((a, b) => {
+    //     if (a.sharpeRatio < b.sharpeRatio) {
+    //       return 1;
+    //     }
+    //     if (a.sharpeRatio > b.sharpeRatio) {
+    //       return -1;
+    //     }
+    //     return 0;
+    //   });
+    // }
+    // if (sortSharpeRatio === "default") {
+    //   handleResetSort();
+    // }
   };
 
   const toggleSortVolatility = () => {
@@ -438,31 +440,31 @@
         sortVolatility = "default";
     }
 
-    if (sortVolatility === "ascend") {
-      whalesData = whalesData.sort((a, b) => {
-        if (a.volatility > b.volatility) {
-          return 1;
-        }
-        if (a.volatility < b.volatility) {
-          return -1;
-        }
-        return 0;
-      });
-    }
-    if (sortVolatility === "descend") {
-      whalesData = whalesData.sort((a, b) => {
-        if (a.volatility < b.volatility) {
-          return 1;
-        }
-        if (a.volatility > b.volatility) {
-          return -1;
-        }
-        return 0;
-      });
-    }
-    if (sortVolatility === "default") {
-      handleResetSort();
-    }
+    // if (sortVolatility === "ascend") {
+    //   whalesData = whalesData.sort((a, b) => {
+    //     if (a.volatility > b.volatility) {
+    //       return 1;
+    //     }
+    //     if (a.volatility < b.volatility) {
+    //       return -1;
+    //     }
+    //     return 0;
+    //   });
+    // }
+    // if (sortVolatility === "descend") {
+    //   whalesData = whalesData.sort((a, b) => {
+    //     if (a.volatility < b.volatility) {
+    //       return 1;
+    //     }
+    //     if (a.volatility > b.volatility) {
+    //       return -1;
+    //     }
+    //     return 0;
+    //   });
+    // }
+    // if (sortVolatility === "default") {
+    //   handleResetSort();
+    // }
   };
 </script>
 
