@@ -120,7 +120,7 @@
             {#each top5ProfitToken as item}
               <div class="flex items-center justify-between gap-2">
                 <div class="flex-1 flex items-center gap-2">
-                  <div class="w-[30px] h-[30px] overflow-hidden">
+                  <div class="w-[30px] h-[30px] overflow-hidden rounded-full">
                     <Image logo={item?.logo} defaultLogo={defaultToken} />
                   </div>
                   <span class="flex flex-col">
