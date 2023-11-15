@@ -296,7 +296,7 @@
         {/each}
       </div>
     </div>
-    <div class="flex flex-col gap-4">
+    <!-- <div class="flex flex-col gap-4">
       <div class="flex justify-between items-center gap-6">
         <div class="flex flex-col">
           <div class="xl:text-base text-2xl">Transaction notification</div>
@@ -331,7 +331,7 @@
           <span class="slider" />
         </label>
       </div>
-    </div>
+    </div> -->
 
     <div class="flex justify-start gap-6 lg:gap-2 mt-6">
       <div class="w-[120px]">
