@@ -11,5 +11,5 @@
   src={logo || defaultLogo}
   alt=""
   class="w-full h-full object-contain"
-  on:error={(e) => handleImgError(e, logo, defaultLogo)}
+  on:error={(e) => handleImgError(e, defaultLogo)}
 />
