@@ -74,7 +74,7 @@
 
   $: {
     if ($userId) {
-      link = `https://app.getnimbus.io/?invitation=${$userId}`;
+      link = `https://beta.getnimbus.io/?invitation=${$userId}`;
       qrcode.addData(link);
       qrcode.make();
       qrImageDataUrl = qrcode.createDataURL(6, 0);

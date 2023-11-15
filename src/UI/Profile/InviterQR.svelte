@@ -34,7 +34,7 @@
   $: {
     if (!$queryUserInfo.isError && $queryUserInfo.data !== undefined) {
       userAddress = $queryUserInfo.data?.publicAddress;
-      link = `https://app.getnimbus.io/?invitation=${$queryUserInfo?.data.id}`;
+      link = `https://beta.getnimbus.io/?invitation=${$queryUserInfo?.data.id}`;
       qrcode.addData(link);
       qrcode.make();
       qrImageDataUrl = qrcode.createDataURL(6, 0);
