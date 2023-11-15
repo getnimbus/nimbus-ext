@@ -29,7 +29,7 @@
     ),
   };
 
-  let data = [];
+  let whalesData = [];
   let isLoading = false;
 
   let pageValue = 0;
@@ -38,42 +38,42 @@
   let search = "";
 
   let sortNetWorth = "default";
+  let sortSharpeRatio = "default";
   let sortChange1D = "default";
   let sortChange7D = "default";
   let sortChange30D = "default";
   let sortChange1Y = "default";
-  let sortSharpeRatio = "default";
   let sortMaxDrawDown = "default";
   let sortVolatility = "default";
 
   const getPublicPortfolio = async () => {
     try {
       isLoading = true;
-      data = await nimbus
+      const res = await nimbus
         .get(
-          `/market/portfolio/search?q=${filterParams}&token=${search}&page=${pageValue}`
+          `/market/portfolio/search?q=${filterParams}&token=${search}&page=${pageValue}&sort=networth:${sortNetWorth},sharpeRatio:${sortSharpeRatio},change24H:${sortChange1D},change7D:${sortChange7D},change30D:${sortChange30D},change1Y:${sortChange1Y},drawDown:${sortMaxDrawDown},volatility:${sortVolatility}`
         )
         .then((response) => response.data);
+
+      whalesData = res?.map((item) => {
+        return {
+          ...item,
+          change1D: Number(item.change24H || 0),
+          change7D: Number(item.change7D || 0),
+          change30D: Number(item.change30D || 0),
+          change1Y: Number(item.change1Y || 0),
+          networth: Number(item?.networth || 0),
+          drawDown: Number(item?.drawDown || 0),
+          volatility: Number(item?.volatility || 0),
+          sharpeRatio: Number(item?.sharpeRatio || 0),
+        };
+      });
     } catch (e) {
       console.error("error: ", e);
     } finally {
       isLoading = false;
     }
   };
-
-  $: whalesData = data?.map((item) => {
-    return {
-      ...item,
-      change1D: Number(item.change24H || 0),
-      change7D: Number(item.change7D || 0),
-      change30D: Number(item.change30D || 0),
-      change1Y: Number(item.change1Y || 0),
-      networth: Number(item?.networth || 0),
-      drawDown: Number(item?.drawDown || 0),
-      volatility: Number(item?.volatility || 0),
-      sharpeRatio: Number(item?.sharpeRatio || 0),
-    };
-  });
 
   onMount(() => {
     mixpanel.track("market_page");
@@ -113,356 +113,140 @@
     getPublicPortfolio();
   };
 
-  const handleResetSort = () => {
-    whalesData = data?.map((item) => {
-      return {
-        ...item,
-        change1D: Number(item.change24H || 0),
-        change7D: Number(item.change7D || 0),
-        change30D: Number(item.change30D || 0),
-        change1Y: Number(item.change1Y || 0),
-        networth: Number(item?.networth || 0),
-        drawDown: Number(item?.drawDown || 0),
-        volatility: Number(item?.volatility || 0),
-        sharpeRatio: Number(item?.sharpeRatio || 0),
-      };
-    });
-  };
-
   const toggleSortNetWorth = () => {
     switch (sortNetWorth) {
       case "default":
-        sortNetWorth = "ascend";
+        sortNetWorth = "asc";
         break;
-      case "ascend":
-        sortNetWorth = "descend";
+      case "asc":
+        sortNetWorth = "desc";
         break;
-      case "descend":
+      case "desc":
         sortNetWorth = "default";
         break;
       default:
         sortNetWorth = "default";
     }
-
-    if (sortNetWorth === "ascend") {
-      whalesData = whalesData.sort((a, b) => {
-        if (a.networth > b.networth) {
-          return 1;
-        }
-        if (a.networth < b.networth) {
-          return -1;
-        }
-        return 0;
-      });
-    }
-    if (sortNetWorth === "descend") {
-      whalesData = whalesData.sort((a, b) => {
-        if (a.networth < b.networth) {
-          return 1;
-        }
-        if (a.networth > b.networth) {
-          return -1;
-        }
-        return 0;
-      });
-    }
-    if (sortNetWorth === "default") {
-      handleResetSort();
-    }
+    getPublicPortfolio();
   };
 
   const toggleSortChange1D = () => {
     switch (sortChange1D) {
       case "default":
-        sortChange1D = "ascend";
+        sortChange1D = "asc";
         break;
-      case "ascend":
-        sortChange1D = "descend";
+      case "asc":
+        sortChange1D = "desc";
         break;
-      case "descend":
+      case "desc":
         sortChange1D = "default";
         break;
       default:
         sortChange1D = "default";
     }
-
-    if (sortChange1D === "ascend") {
-      whalesData = whalesData.sort((a, b) => {
-        if (a.change1D > b.change1D) {
-          return 1;
-        }
-        if (a.change1D < b.change1D) {
-          return -1;
-        }
-        return 0;
-      });
-    }
-    if (sortChange1D === "descend") {
-      whalesData = whalesData.sort((a, b) => {
-        if (a.change1D < b.change1D) {
-          return 1;
-        }
-        if (a.change1D > b.change1D) {
-          return -1;
-        }
-        return 0;
-      });
-    }
-    if (sortChange1D === "default") {
-      handleResetSort();
-    }
+    getPublicPortfolio();
   };
 
   const toggleSortChange7D = () => {
     switch (sortChange7D) {
       case "default":
-        sortChange7D = "ascend";
+        sortChange7D = "asc";
         break;
-      case "ascend":
-        sortChange7D = "descend";
+      case "asc":
+        sortChange7D = "desc";
         break;
-      case "descend":
+      case "desc":
         sortChange7D = "default";
         break;
       default:
         sortChange7D = "default";
     }
-
-    if (sortChange7D === "ascend") {
-      whalesData = whalesData.sort((a, b) => {
-        if (a.change7D > b.change7D) {
-          return 1;
-        }
-        if (a.change7D < b.change7D) {
-          return -1;
-        }
-        return 0;
-      });
-    }
-    if (sortChange7D === "descend") {
-      whalesData = whalesData.sort((a, b) => {
-        if (a.change7D < b.change7D) {
-          return 1;
-        }
-        if (a.change7D > b.change7D) {
-          return -1;
-        }
-        return 0;
-      });
-    }
-    if (sortChange7D === "default") {
-      handleResetSort();
-    }
+    getPublicPortfolio();
   };
 
   const toggleSortChange30D = () => {
     switch (sortChange30D) {
       case "default":
-        sortChange30D = "ascend";
+        sortChange30D = "asc";
         break;
-      case "ascend":
-        sortChange30D = "descend";
+      case "asc":
+        sortChange30D = "desc";
         break;
-      case "descend":
+      case "desc":
         sortChange30D = "default";
         break;
       default:
         sortChange30D = "default";
     }
-
-    if (sortChange30D === "ascend") {
-      whalesData = whalesData.sort((a, b) => {
-        if (a.change30D > b.change30D) {
-          return 1;
-        }
-        if (a.change30D < b.change30D) {
-          return -1;
-        }
-        return 0;
-      });
-    }
-    if (sortChange30D === "descend") {
-      whalesData = whalesData.sort((a, b) => {
-        if (a.change30D < b.change30D) {
-          return 1;
-        }
-        if (a.change30D > b.change30D) {
-          return -1;
-        }
-        return 0;
-      });
-    }
-    if (sortChange30D === "default") {
-      handleResetSort();
-    }
+    getPublicPortfolio();
   };
 
   const toggleSortChange1Y = () => {
     switch (sortChange1Y) {
       case "default":
-        sortChange1Y = "ascend";
+        sortChange1Y = "asc";
         break;
-      case "ascend":
-        sortChange1Y = "descend";
+      case "asc":
+        sortChange1Y = "desc";
         break;
-      case "descend":
+      case "desc":
         sortChange1Y = "default";
         break;
       default:
         sortChange1Y = "default";
     }
-
-    if (sortChange1Y === "ascend") {
-      whalesData = whalesData.sort((a, b) => {
-        if (a.change1Y > b.change1Y) {
-          return 1;
-        }
-        if (a.change1Y < b.change1Y) {
-          return -1;
-        }
-        return 0;
-      });
-    }
-    if (sortChange1Y === "descend") {
-      whalesData = whalesData.sort((a, b) => {
-        if (a.change1Y < b.change1Y) {
-          return 1;
-        }
-        if (a.change1Y > b.change1Y) {
-          return -1;
-        }
-        return 0;
-      });
-    }
-    if (sortChange1Y === "default") {
-      handleResetSort();
-    }
+    getPublicPortfolio();
   };
 
   const toggleSortMaxDrawDown = () => {
     switch (sortMaxDrawDown) {
       case "default":
-        sortMaxDrawDown = "ascend";
+        sortMaxDrawDown = "asc";
         break;
-      case "ascend":
-        sortMaxDrawDown = "descend";
+      case "asc":
+        sortMaxDrawDown = "desc";
         break;
-      case "descend":
+      case "desc":
         sortMaxDrawDown = "default";
         break;
       default:
         sortMaxDrawDown = "default";
     }
-
-    if (sortMaxDrawDown === "ascend") {
-      whalesData = whalesData.sort((a, b) => {
-        if (a.drawDown > b.drawDown) {
-          return 1;
-        }
-        if (a.drawDown < b.drawDown) {
-          return -1;
-        }
-        return 0;
-      });
-    }
-    if (sortMaxDrawDown === "descend") {
-      whalesData = whalesData.sort((a, b) => {
-        if (a.drawDown < b.drawDown) {
-          return 1;
-        }
-        if (a.drawDown > b.drawDown) {
-          return -1;
-        }
-        return 0;
-      });
-    }
-    if (sortMaxDrawDown === "default") {
-      handleResetSort();
-    }
+    getPublicPortfolio();
   };
 
   const toggleSortSharpeRatio = () => {
     switch (sortSharpeRatio) {
       case "default":
-        sortSharpeRatio = "ascend";
+        sortSharpeRatio = "asc";
         break;
-      case "ascend":
-        sortSharpeRatio = "descend";
+      case "asc":
+        sortSharpeRatio = "desc";
         break;
-      case "descend":
+      case "desc":
         sortSharpeRatio = "default";
         break;
       default:
         sortSharpeRatio = "default";
     }
-
-    if (sortSharpeRatio === "ascend") {
-      whalesData = whalesData.sort((a, b) => {
-        if (a.sharpeRatio > b.sharpeRatio) {
-          return 1;
-        }
-        if (a.sharpeRatio < b.sharpeRatio) {
-          return -1;
-        }
-        return 0;
-      });
-    }
-    if (sortSharpeRatio === "descend") {
-      whalesData = whalesData.sort((a, b) => {
-        if (a.sharpeRatio < b.sharpeRatio) {
-          return 1;
-        }
-        if (a.sharpeRatio > b.sharpeRatio) {
-          return -1;
-        }
-        return 0;
-      });
-    }
-    if (sortSharpeRatio === "default") {
-      handleResetSort();
-    }
+    getPublicPortfolio();
   };
 
   const toggleSortVolatility = () => {
     switch (sortVolatility) {
       case "default":
-        sortVolatility = "ascend";
+        sortVolatility = "asc";
         break;
-      case "ascend":
-        sortVolatility = "descend";
+      case "asc":
+        sortVolatility = "desc";
         break;
-      case "descend":
+      case "desc":
         sortVolatility = "default";
         break;
       default:
         sortVolatility = "default";
     }
-
-    if (sortVolatility === "ascend") {
-      whalesData = whalesData.sort((a, b) => {
-        if (a.volatility > b.volatility) {
-          return 1;
-        }
-        if (a.volatility < b.volatility) {
-          return -1;
-        }
-        return 0;
-      });
-    }
-    if (sortVolatility === "descend") {
-      whalesData = whalesData.sort((a, b) => {
-        if (a.volatility < b.volatility) {
-          return 1;
-        }
-        if (a.volatility > b.volatility) {
-          return -1;
-        }
-        return 0;
-      });
-    }
-    if (sortVolatility === "default") {
-      handleResetSort();
-    }
+    getPublicPortfolio();
   };
 </script>
 
