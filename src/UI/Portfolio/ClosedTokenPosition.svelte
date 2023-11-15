@@ -270,6 +270,7 @@
 
   $: colspan =
     $typeWallet === "SOL" ||
+    $typeWallet === "ALGO" ||
     $typeWallet === "EVM" ||
     $typeWallet === "BUNDLE" ||
     $typeWallet === "CEX"
@@ -291,7 +292,7 @@
 </script>
 
 <div
-  class={`flex flex-col gap-6 rounded-[20px] p-6 ${
+  class={`flex flex-col gap-6 rounded-[20px] p-6 relative ${
     $isDarkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
   }`}
 >
@@ -390,6 +391,7 @@
                 <th
                   class={`py-3 ${
                     $typeWallet === "SOL" ||
+                    $typeWallet === "ALGO" ||
                     $typeWallet === "EVM" ||
                     $typeWallet === "BUNDLE" ||
                     $typeWallet === "CEX"
@@ -403,7 +405,7 @@
                     ROI
                   </div>
                 </th>
-                {#if $typeWallet === "SOL" || $typeWallet === "EVM" || $typeWallet === "BUNDLE" || $typeWallet === "CEX"}
+                {#if $typeWallet === "SOL" || $typeWallet === "ALGO" || $typeWallet === "EVM" || $typeWallet === "BUNDLE" || $typeWallet === "CEX"}
                   <th class="py-3 xl:w-14 w-32 rounded-tr-[10px]" />
                 {/if}
               </tr>
@@ -617,6 +619,16 @@
         </div>
       </div>
     {/if} -->
+
+    {#if $typeWallet === "CEX"}
+      <div
+        class={`absolute top-0 left-0 rounded-[20px] z-30 w-full h-full flex items-center justify-center ${
+          $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
+        } z-10 backdrop-blur-md`}
+      >
+        <div class="text-2xl xl:text-lg">Coming soon 🚀</div>
+      </div>
+    {/if}
   </ErrorBoundary>
 </div>
 

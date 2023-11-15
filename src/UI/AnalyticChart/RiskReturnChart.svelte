@@ -94,7 +94,7 @@
                   <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
                     $isDarkMode ? "white" : "black"
                   }">
-                    ${Number(params.value[0]).toFixed(2)}
+                    ${Number(params.value[0]).toFixed(2)}%
                   </div>
                 </div>
               </div>
@@ -108,8 +108,9 @@
       {
         type: "value",
         axisTick: { show: false },
-        name: "Risk",
+        name: "Volatility",
         axisLabel: {
+          formatter: "{value}%",
           fontSize: autoFontSize(),
         },
       },
@@ -249,6 +250,7 @@
           ($typeWallet === "EVM" ||
             $typeWallet === "CEX" ||
             $typeWallet === "SOL" ||
+            $typeWallet === "ALGO" ||
             $typeWallet === "BUNDLE") &&
             $wallet.length !== 0 &&
             $selectedPackage !== "FREE"
