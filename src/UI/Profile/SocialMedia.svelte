@@ -72,7 +72,8 @@
           <a
             target="_blank"
             href={linkHref + socialData?.username}
-            class="xl:text-base text-xl">Follow</a
+            class="xl:text-base text-xl"
+            >{typeSocialMedia === "Telegram" ? "Chat with me" : "Follow"}</a
           >
         </Button>
       {/if}
@@ -85,7 +86,9 @@
         </Button>
       {:else}
         <Button variant={typeSocialMedia} disabled>
-          <div class="xl:text-base text-xl">Follow</div>
+          <div class="xl:text-base text-xl">
+            {typeSocialMedia === "Telegram" ? "Chat with me" : "Follow"}
+          </div>
         </Button>
       {/if}
     </div>

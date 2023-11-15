@@ -25,6 +25,7 @@ import ZkSync from "~/assets/zksync.png";
 import Linea from "~/assets/linea.png";
 import Cronos from "~/assets/cronos.png";
 import Mantle from "~/assets/mantle.png";
+import Algorand from "~/assets/algorand.png";
 
 export const ETHAddressRegex = /(\b0x[a-fA-F0-9]{40}\b)/g;
 export const ETHTrxRegex = /(\b0x[a-fA-F0-9]{64}\b)/g;
@@ -403,6 +404,9 @@ export const detectedChain = (type) => {
     case "SOL":
       chain = Solana;
       break;
+    case "ALGO":
+      chain = Algorand;
+      break;
     case "ETH":
       chain = Ethereum;
       break;
@@ -534,6 +538,12 @@ export const linkExplorer = (chain, hash) => {
       links = {
         trx: `https://solscan.io/tx/${hash}`,
         address: `https://solscan.io/address/${hash}`,
+      };
+      break;
+    case "ALGO":
+      links = {
+        trx: `https://algoexplorer.io/tx/${hash}`,
+        address: `https://algoexplorer.io/address/${hash}`,
       };
       break;
     case "BTC":
@@ -1171,23 +1181,8 @@ export const formatTransactionTime = (date: Date) => {
   return dayjs(date).fromNow();
 };
 
-export const handleImgError = async (e, image, defaultImage) => {
+export const handleImgError = async (e, defaultImage) => {
   if (defaultImage) {
-    if (image.includes("https://api.center.dev")) {
-      fetch(image, {
-        headers: { "x-api-key": "lapis-fridge-d84f5377deca" },
-      })
-        .then((r) => r.blob())
-        .then((d) => {
-          if (d && window.URL.createObjectURL(d) !== null) {
-            e.target.src = window.URL.createObjectURL(d);
-          }
-        })
-        .catch(() => {
-          e.target.src = defaultImage;
-        });
-    } else {
-      e.target.src = defaultImage;
-    }
+    e.target.src = defaultImage;
   }
 };

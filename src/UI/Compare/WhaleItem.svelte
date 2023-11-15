@@ -154,7 +154,7 @@
     <div
       class="xl:text-sm text-2xl text-right font-medium flex flex-col items-end gap-1"
     >
-      {Number(data?.volatility).toFixed(2)}
+      {Number(data?.volatility).toFixed(2)}%
     </div>
   </td>
 

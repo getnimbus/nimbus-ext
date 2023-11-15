@@ -138,7 +138,11 @@ export const goplus = createAxiosInterface({
 
 export const mobula = createAxiosInterface({
   baseURL: "https://api.app-mobula.com/api",
-  getHeaderAuthorize: () => { },
+  getHeaderAuthorize: () => {
+    return {
+      Authorization: "fe18f8be-644a-45a8-ad05-b088a5e61764",
+    }
+  },
 });
 
 export const nimbusApi = createAxiosInterface({
