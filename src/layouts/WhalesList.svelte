@@ -13,6 +13,25 @@
   import FilterModal from "~/UI/WhalesList/FilterModal.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
 
+  const categories = [
+    {
+      label: "Recommended",
+      value: "RECOMMENDED",
+    },
+    {
+      label: "Recommended",
+      value: "RECOMMENDED",
+    },
+    {
+      label: "Recommended",
+      value: "RECOMMENDED",
+    },
+    {
+      label: "Recommended",
+      value: "RECOMMENDED",
+    },
+  ];
+
   const MultipleLang = {
     whale: i18n("newtabPage.whale", "Whale 🐳"),
     whales_page_title: i18n(
