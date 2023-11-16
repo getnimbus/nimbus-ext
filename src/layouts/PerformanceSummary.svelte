@@ -16,14 +16,6 @@
   <div
     class="max-w-[2000px] m-auto xl:w-[90%] w-[90%] py-8 flex flex-col gap-10"
   >
-    <div class="flex flex-col justify-center gap-2">
-      <div class="xl:text-5xl text-7xl font-medium">Performance Summary</div>
-      <div class="xl:text-xl text-3xl">
-        Explore the crypto trade journey—a concise snapshot of strategic
-        decisions, successful trades, and the dynamic landscape of
-        cryptocurrency management.
-      </div>
-    </div>
     <div
       class="w-full flex xl:flex-row flex-col rounded-xl py-10 px-10 gap-9 border-2 border_0000001a"
     >
@@ -45,9 +37,7 @@
         <InviterQr />
       </div>
       <div class="flex-1 flex flex-col gap-4">
-        <div class="xl:text-3xl text-4xl font-medium">
-          My Performance Summary
-        </div>
+        <div class="xl:text-3xl text-4xl font-medium">Performance Summary</div>
         <div class="grid xl:grid-cols-4 grid-cols-2 gap-6">
           <ProfitData selectedAddress={$userPublicAddress} />
 
