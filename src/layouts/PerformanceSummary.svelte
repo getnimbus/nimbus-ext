@@ -1,15 +1,14 @@
 <script lang="ts">
-  import { onMount } from "svelte";
-  import InviterQr from "~/UI/Profile/InviterQR.svelte";
-  import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import { isDarkMode, userPublicAddress } from "~/store";
-  import User from "~/assets/user.png";
   import { shorterAddress } from "~/utils";
 
-  // take in profile
+  import ErrorBoundary from "~/components/ErrorBoundary.svelte";
+  import InviterQr from "~/UI/Profile/InviterQR.svelte";
   import ClosedPositionChart from "~/UI/Profile/ClosedPositionChart.svelte";
   import TopProfitAndLoss from "~/UI/Profile/TopProfitAndLoss.svelte";
   import ProfitData from "~/UI/Profile/ProfitData.svelte";
+
+  import User from "~/assets/user.png";
 </script>
 
 <ErrorBoundary>
