@@ -3,9 +3,11 @@
   import { nimbus } from "~/lib/network";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
-  import { wallet, user } from "~/store";
 
+  import AppOverlay from "~/components/Overlay.svelte";
   import Button from "~/components/Button.svelte";
+
+  import FollowWhale from "~/assets/whale-tracking.gif";
 
   const percentList = [
     {
@@ -64,6 +66,8 @@
   let selectedSummary = "";
 
   let isLoadingSave = false;
+
+  let isOpenFollowWhaleModal = false;
 
   const trigger = () => {
     show = true;
@@ -201,10 +205,20 @@
 </script>
 
 <div class="flex flex-col gap-4">
-  <div class="flex flex-col gap-1 border-b-[1.5px] border_0000000d pb-4">
-    <div class="xl:title-3 title-1">Alert Settings</div>
-    <div class="xl:text-base text-xl text-gray-500">
-      Management your setup alerts
+  <div
+    class="flex justify-between items-end border-b-[1.5px] border_0000000d pb-4"
+  >
+    <div class="flex flex-col gap-1">
+      <div class="xl:title-3 title-1">Alert Settings</div>
+      <div class="xl:text-base text-xl text-gray-500">
+        Management your setup alerts
+      </div>
+    </div>
+    <div
+      class="xl:text-base text-xl text-blue-500 cursor-pointer hover:underline"
+      on:click={() => (isOpenFollowWhaleModal = true)}
+    >
+      How to start alerts on Telegram?
     </div>
   </div>
   <form
@@ -390,6 +404,28 @@
     </Toast>
   </div>
 {/if}
+
+<AppOverlay
+  clickOutSideToClose
+  isOpen={isOpenFollowWhaleModal}
+  on:close={() => (isOpenFollowWhaleModal = false)}
+>
+  <div class="flex flex-col gap-4">
+    <div class="flex flex-col gap-1">
+      <div class="xl:text-base text-2xl cursor-pointer hover:underline">
+        Go to <a
+          href="https://t.me/GetNimbusBot"
+          target="_blank"
+          class="text-blue-500">https://t.me/GetNimbusBot</a
+        >
+      </div>
+      <div class="xl:text-base text-2xl">Use the command as follow video</div>
+    </div>
+    <div class="xl:h-[350px] h-[650px]">
+      <img src={FollowWhale} alt="" class="w-full h-full object-contain" />
+    </div>
+  </div>
+</AppOverlay>
 
 <style>
   :global(body) .bg_fafafbff {

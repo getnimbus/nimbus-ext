@@ -474,7 +474,7 @@
               >
                 1Y
                 <div on:click={toggleSortChange1Y} class="cursor-pointer">
-                  {@html iconSorting(sortChange1Y)}
+                  {@html sortIcon(sortChange1Y)}
                 </div>
               </div>
             </th>
