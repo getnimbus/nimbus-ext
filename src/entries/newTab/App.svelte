@@ -211,6 +211,20 @@
             {/await}
           </Route>
 
+          <Route path="performance-summary">
+            {#await import("~/layouts/PerformanceSummary.svelte")}
+              <div class="flex items-center justify-center h-screen">
+                <Loading />
+              </div>
+            {:then { default: component }}
+              <svelte:component this={component} />
+            {:catch error}
+              <div class="flex items-center justify-center h-screen">
+                Something when wrong! Please reload your browser to try again
+              </div>
+            {/await}
+          </Route>
+
           <Route path="personal-token-breakdown">
             {#await import("~/layouts/PersonalTokenBreakdown.svelte")}
               <div class="flex items-center justify-center h-screen">
