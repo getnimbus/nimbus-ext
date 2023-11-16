@@ -11,7 +11,6 @@
   import TabReports from "~/UI/Option/TabReports.svelte";
   import TabAlerts from "~/UI/Option/TabAlerts.svelte";
   import TabSettings from "~/UI/Option/TabSettings.svelte";
-  import TabNotification from "~/UI/Option/TabNotification.svelte";
   import TabNft from "~/UI/Option/TabNFT.svelte";
 
   const listSideBar = [
@@ -34,11 +33,6 @@
     //   label: i18n("optionsPage.tab-title-nft", "NFT"),
     //   value: "nft",
     //   type: "NFT",
-    // },
-    // {
-    //   label: i18n("optionsPage.tab-title-notification", "Notification"),
-    //   value: "notification",
-    //   type: "Notification",
     // },
     // {
     //   label: i18n("optionsPage.tab-title-settings", "Settings"),
@@ -90,9 +84,7 @@
         {#if activeTabValue === "accounts"}
           <TabAccounts />
           <!-- {:else if activeTabValue === "nft"}
-          <TabNft />
-        {:else if activeTabValue === "notification"}
-          <TabNotification /> -->
+          <TabNft /> -->
         {:else if activeTabValue === "alerts"}
           <TabAlerts />
         {:else if activeTabValue === "reports"}
