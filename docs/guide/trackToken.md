@@ -27,7 +27,7 @@ To know how to track your token you like, follow these step 👇
 
 ![ ](/img/guidePost/tracktoken/step3D.png)
 
-## You can do the same flow as mobile version:
+## You can do the same flow as mobile version
 
 <div
   style="display: flex; gap: 20px; -webkit-box-pack: center; -ms-flex-pack: center; -webkit-justify-content: center; justify-content: center; -ms-flex-wrap: wrap; -webkit-flex-wrap: wrap; flex-wrap: wrap;"

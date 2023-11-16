@@ -752,7 +752,7 @@
 </script>
 
 <div
-  style="display: flex; gap: 10px; -webkit-box-pack: center; object-fit: contain; width: 400px;
+  style="display: flex; gap: 10px; -webkit-box-pack: center;margin-top: 20px; object-fit: contain; width: 400px;
 -ms-flex-pack: center;
 -webkit-justify-content: center;
 justify-content: center;   -ms-flex-wrap: wrap;
