@@ -2,42 +2,14 @@
   import { onMount } from "svelte";
   import InviterQr from "~/UI/Profile/InviterQR.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
-  import { i18n } from "~/lib/i18n";
   import { isDarkMode, userPublicAddress } from "~/store";
   import User from "~/assets/user.png";
   import { shorterAddress } from "~/utils";
-  import { nimbus } from "~/lib/network";
+
   // take in profile
   import ClosedPositionChart from "~/UI/Profile/ClosedPositionChart.svelte";
   import TopProfitAndLoss from "~/UI/Profile/TopProfitAndLoss.svelte";
   import ProfitData from "~/UI/Profile/ProfitData.svelte";
-
-  let userIdParams = "";
-  let selectedAddress = "";
-  let userProfile = {};
-
-  const getUserProfile = async (id) => {
-    try {
-      const response: any = await nimbus.get(`/users/${id}/profile`);
-      console.log("hello world dsada : ", id);
-      userProfile = response?.data;
-      // selectedAddress = userProfile?.profileAddress || $userPublicAddress;
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
-  onMount(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    let idParams = urlParams.get("id");
-    if (idParams) {
-      userIdParams = idParams;
-      getUserProfile(idParams);
-    }
-  });
-
-  $: console.log("this is bla bla : ", userProfile);
-  $: console.log("this i idParams : ", userIdParams);
 </script>
 
 <ErrorBoundary>
@@ -66,7 +38,7 @@
               $isDarkMode ? "text-white" : "text-black"
             }`}
           >
-            <!-- {shorterAddress(selectedAddress)} -->
+            {shorterAddress($userPublicAddress)}
           </div>
         </div>
 
@@ -77,11 +49,11 @@
           My Performance Summary
         </div>
         <div class="grid xl:grid-cols-4 grid-cols-2 gap-6">
-          <!-- <ProfitData {selectedAddress} />
+          <ProfitData selectedAddress={$userPublicAddress} />
 
-          <TopProfitAndLoss {selectedAddress} />
+          <TopProfitAndLoss selectedAddress={$userPublicAddress} />
 
-          <ClosedPositionChart {selectedAddress} /> -->
+          <ClosedPositionChart selectedAddress={$userPublicAddress} />
         </div>
       </div>
     </div>
