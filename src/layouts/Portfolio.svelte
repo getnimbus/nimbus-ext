@@ -751,31 +751,6 @@
   }
 </script>
 
-<div
-  style="display: flex; gap: 10px; -webkit-box-pack: center;margin-top: 20px; object-fit: contain; width: 400px;
--ms-flex-pack: center;
--webkit-justify-content: center;
-justify-content: center;   -ms-flex-wrap: wrap;
--webkit-flex-wrap: wrap;
-flex-wrap: wrap;"
->
-  <img
-    src="/assets/guidePost/tracktoken/step1M.jpeg"
-    alt=""
-    style="width: 300px; object-fit: contain; margin-"
-  />
-  <img
-    src="/assets/guidePost/tracktoken/step2M.jpeg"
-    alt=""
-    style="width: 300px; object-fit: contain;"
-  />
-  <img
-    src="/assets/guidePost/tracktoken/step3M.jpg"
-    alt=""
-    style="width: 300px; object-fit: contain;"
-  />
-</div>
-
 <AddressManagement title={MultipleLang.overview}>
   <span slot="reload">
     <div class="flex items-center gap-2 mb-1">
