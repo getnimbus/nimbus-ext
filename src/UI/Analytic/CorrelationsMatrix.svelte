@@ -12,7 +12,6 @@
     correlationsMatrixColor,
     equalizeArrayLengths,
     formatPercent,
-    handleImgError,
   } from "~/utils";
   import { nimbus } from "~/lib/network";
   import dayjs from "dayjs";
@@ -24,8 +23,10 @@
   import Loading from "~/components/Loading.svelte";
   import Button from "~/components/Button.svelte";
   import TooltipTitle from "~/components/TooltipTitle.svelte";
+  import Image from "~/components/Image.svelte";
 
   import All from "~/assets/all.svg";
+  import defaultToken from "~/assets/defaultToken.png";
 
   let listCoinPrice = [];
   let dataTokenHolding = [];
@@ -367,6 +368,7 @@
           ($typeWallet === "EVM" ||
             $typeWallet === "CEX" ||
             $typeWallet === "SOL" ||
+            $typeWallet === "ALGO" ||
             $typeWallet === "BUNDLE") &&
             $wallet.length !== 0 &&
             $selectedPackage !== "FREE"
@@ -442,17 +444,7 @@
                 >
                   <div class="flex items-center gap-2">
                     <div class="w-6 h-6 mx-auto rounded-full overflow-hidden">
-                      <img
-                        src={item.logo}
-                        alt=""
-                        class="w-full h-full object-contain"
-                        on:error={(e) =>
-                          handleImgError(
-                            e,
-                            item.logo,
-                            "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
-                          )}
-                      />
+                      <Image logo={item.logo} defaultLogo={defaultToken} />
                     </div>
                     <div class="text-2xl xl:text-base">
                       {item.name.toLocaleUpperCase()}
@@ -551,16 +543,9 @@
                             <div
                               class="w-6 h-6 mx-auto rounded-full overflow-hidden"
                             >
-                              <img
-                                src={item.value}
-                                alt="Coin Icon"
-                                class="w-full h-full object-contain"
-                                on:error={(e) =>
-                                  handleImgError(
-                                    e,
-                                    item.value,
-                                    "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
-                                  )}
+                              <Image
+                                logo={item.value}
+                                defaultLogo={defaultToken}
                               />
                             </div>
                           </td>
@@ -620,8 +605,10 @@
           on:keyup={({ target: { value } }) => debounceSearch(value)}
           value={searchValue}
           placeholder={"Find by token name"}
-          class={`w-full p-0 border-none focus:outline-none focus:ring-0 xl:text-base text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
+          class={`w-full p-0 border-none focus:outline-none focus:ring-0 xl:text-base text-2xl font-normal ${
             searchValue && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+          } ${
+            $isDarkMode ? "text-white" : "text-[#5E656B] placeholder-[#5E656B]"
           }`}
         />
       </div>
@@ -656,17 +643,7 @@
                     on:click={handleSelectToken(item)}
                   >
                     <div class="w-7 h-7 rounded-full overflow-hidden">
-                      <img
-                        src={item.logo}
-                        alt="Coin Icon"
-                        class="w-full h-full object-contain"
-                        on:error={(e) =>
-                          handleImgError(
-                            e,
-                            item.logo,
-                            "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
-                          )}
-                      />
+                      <Image logo={item.logo} defaultLogo={defaultToken} />
                     </div>
                     <div class="xl:text-sm text-2xl">
                       {item.full_name}
@@ -694,5 +671,11 @@
   }
   :global(body.dark) .active:hover {
     background: #cdcdcd26;
+  }
+  :global(body) .bg_fafafbff {
+    background: #fafafbff;
+  }
+  :global(body.dark) .bg_fafafbff {
+    background: #212121;
   }
 </style>

@@ -1,8 +1,9 @@
 <script lang="ts">
   import { typeWallet, isDarkMode } from "~/store";
-  import { shorterName, handleImgError } from "~/utils";
+  import { shorterName } from "~/utils";
 
   import TooltipNumber from "./TooltipNumber.svelte";
+  import Image from "./Image.svelte";
 
   import TrendUp from "~/assets/trend-up.svg";
   import TrendDown from "~/assets/trend-down.svg";
@@ -20,7 +21,7 @@
       : Number(floorPrice) - Number(data?.price);
 
   $: profitAndLossPercent =
-    Math.abs(Number(data?.price || 0)) === 0
+    Number(data?.price || 0) === 0
       ? 0
       : (profitAndLoss * marketPrice) / Math.abs(Number(data?.cost));
 </script>
@@ -31,17 +32,9 @@
   }`}
 >
   <div class="rounded-[10px] overflow-hidden xl:h-[270px] h-[470px]">
-    <img
-      src={data?.imageUrl ||
-        "https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"}
-      on:error={(e) =>
-        handleImgError(
-          e,
-          data?.imageUrl,
-          "https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"
-        )}
-      alt=""
-      class="w-full h-full object-contain"
+    <Image
+      logo={data?.imageUrl}
+      defaultLogo="https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"
     />
   </div>
 

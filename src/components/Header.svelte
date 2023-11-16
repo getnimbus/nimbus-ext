@@ -19,6 +19,7 @@
   import { showChangeLogAnimationVariants } from "~/utils";
   import { nimbus } from "~/lib/network";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
+  import * as browser from "webextension-polyfill";
   import Mousetrap from "mousetrap";
   import addGlobalBinds from "bind-mousetrap-global";
   addGlobalBinds(Mousetrap);
@@ -46,10 +47,14 @@
   import Close from "~/assets/close-menu-bar.svg";
   import Chat from "~/assets/chat.svg";
   import User from "~/assets/user.png";
+
   import All from "~/assets/all.svg";
+  import Bundles from "~/assets/bundles.png";
   import BitcoinLogo from "~/assets/bitcoin.png";
   import SolanaLogo from "~/assets/solana.png";
-  import Bundles from "~/assets/bundles.png";
+  import AuraLogo from "~/assets/aura.png";
+  import AlgorandLogo from "~/assets/algorand.png";
+  import goldImg from "~/assets/Gold4.svg";
 
   const MultipleLang = {
     portfolio: i18n("newtabPage.portfolio", "Portfolio"),
@@ -118,6 +123,9 @@
       if (item?.type === "SOL") {
         logo = SolanaLogo;
       }
+      if (item?.type === "ALGO") {
+        logo = AlgorandLogo;
+      }
       if (item?.type === "BUNDLE") {
         logo = Bundles;
       }
@@ -135,6 +143,9 @@
             }
             if (account?.type === "SOL") {
               logo = SolanaLogo;
+            }
+            if (account?.type === "ALGO") {
+              logo = AlgorandLogo;
             }
             return {
               id: account?.id,
@@ -188,6 +199,15 @@
     chain.update((n) => (n = "ALL"));
     wallet.update((n) => (n = value));
     typeWallet.update((n) => (n = searchAccountType));
+
+    browser.storage.sync.set({
+      selectedWallet: value,
+    });
+    browser.storage.sync.set({ selectedChain: "ALL" });
+    browser.storage.sync.set({
+      typeWalletAddress: searchAccountType,
+    });
+
     if (searchAccountType === "EVM") {
       window.history.replaceState(
         null,
@@ -196,7 +216,11 @@
           `?type=${searchAccountType}&chain=ALL&address=${value}`
       );
     }
-    if (searchAccountType === "BTC" || searchAccountType === "SOL") {
+    if (
+      searchAccountType === "BTC" ||
+      searchAccountType === "SOL" ||
+      searchAccountType === "ALGO"
+    ) {
       window.history.replaceState(
         null,
         "",
@@ -710,11 +734,7 @@
                 $isDarkMode ? "bg-[#212121]" : "bg-[#525B8C]"
               }`}
             >
-              <img
-                src="https://raw.githubusercontent.com/getnimbus/nimbus-ext/c43eb2dd7d132a2686c32939ea36b0e97055abc7/src/assets/Gold4.svg"
-                alt=""
-                class="w-[26px] h-[26px]"
-              />
+              <img src={goldImg} alt="" class="w-[26px] h-[26px]" />
             </div>
           </Link>
         </div>
@@ -761,7 +781,7 @@
       </div>
     </div>
 
-    <div class="flex flex-col justify-between h-full">
+    <div class="flex flex-col gap-4 justify-between h-full">
       <div class="flex flex-col gap-8">
         {#if $user && Object.keys($user).length !== 0}
           <div class="flex justify-between items-center px-4 text-white">
@@ -773,7 +793,7 @@
           </div>
         {/if}
 
-        <div class="flex flex-col gap-3">
+        <div class="flex flex-col gap-1">
           {#if $user && Object.keys($user).length !== 0}
             <div
               on:click={() => {
@@ -1058,6 +1078,7 @@
                 class="text-3xl font-semibold text-white cursor-pointer xl:text-base"
                 on:click={() => {
                   isOpenModalSync = true;
+                  isShowHeaderMobile.update((n) => (n = false));
                 }}
               >
                 Sync from Desktop
@@ -1162,7 +1183,11 @@
           }`}
           class:input-border-error={errors.code && errors.code.required}
         >
-          <div class="xl:text-base text-2xl text-[#666666] font-medium">
+          <div
+            class={`xl:text-base text-2xl font-medium ${
+              $isDarkMode ? "text-gray-400" : "text-[#666666]"
+            }`}
+          >
             Code
           </div>
           <input
@@ -1172,8 +1197,12 @@
             required
             placeholder="Your code"
             value=""
-            class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
+            class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal ${
               code && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+            } ${
+              $isDarkMode
+                ? "text-white"
+                : "text-[#5E656B] placeholder-[#5E656B]"
             }`}
             on:keyup={({ target: { value } }) => (code = value)}
           />
@@ -1366,7 +1395,7 @@
   </div>
 </AppOverlay>
 
-<style>
+<style windi:preflights:global windi:safelist:global>
   .mobile {
     height: 100vh;
     z-index: 2147483649;
@@ -1390,6 +1419,13 @@
   }
   :global(body.dark) .selected {
     background: #343434;
+  }
+
+  :global(body) .bg_fafafbff {
+    background: #fafafbff;
+  }
+  :global(body.dark) .bg_fafafbff {
+    background: #212121;
   }
 
   @supports (height: 100dvh) {

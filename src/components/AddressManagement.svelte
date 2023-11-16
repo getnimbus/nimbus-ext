@@ -49,13 +49,15 @@
 
   import Plus from "~/assets/plus.svg";
   import PlusBlack from "~/assets/plus-black.svg";
-  import All from "~/assets/all.svg";
-  import BitcoinLogo from "~/assets/bitcoin.png";
-  import SolanaLogo from "~/assets/solana.png";
   import FollowWhale from "~/assets/whale-tracking.gif";
   import Success from "~/assets/shield-done.svg";
+
+  import All from "~/assets/all.svg";
   import Bundles from "~/assets/bundles.png";
-  // import "driver.js/dist/driver.css";
+  import BitcoinLogo from "~/assets/bitcoin.png";
+  import SolanaLogo from "~/assets/solana.png";
+  import AuraLogo from "~/assets/aura.png";
+  import AlgorandLogo from "~/assets/algorand.png";
 
   const MultipleLang = {
     empty_wallet: i18n("newtabPage.empty-wallet", "No account added yet."),
@@ -305,7 +307,11 @@
     ) {
       chain.update((n) => (n = "ALL"));
 
-      if (typeParams === "BTC" || typeParams === "SOL") {
+      if (
+        typeParams === "BTC" ||
+        typeParams === "SOL" ||
+        typeParams === "ALGO"
+      ) {
         window.history.replaceState(
           null,
           "",
@@ -328,7 +334,11 @@
       if (typeParams === "EVM") {
         chain.update((n) => (n = "ALL"));
       }
-      if (typeParams === "BTC" || typeParams === "SOL") {
+      if (
+        typeParams === "BTC" ||
+        typeParams === "SOL" ||
+        typeParams === "ALGO"
+      ) {
         window.history.replaceState(
           null,
           "",
@@ -393,6 +403,17 @@
         );
       }
 
+      if (selected.type === "ALGO") {
+        typeWallet.update((n) => (n = "ALGO"));
+        browser.storage.sync.set({ typeWalletAddress: "ALGO" });
+        chain.update((n) => (n = "ALL"));
+        window.history.replaceState(
+          null,
+          "",
+          window.location.pathname + `?type=${$typeWallet}&address=${$wallet}`
+        );
+      }
+
       if (selected.type === "BTC") {
         typeWallet.update((n) => (n = "BTC"));
         browser.storage.sync.set({ typeWalletAddress: "BTC" });
@@ -415,6 +436,9 @@
       if (item?.type === "SOL") {
         logo = SolanaLogo;
       }
+      if (item?.type === "ALGO") {
+        logo = AlgorandLogo;
+      }
       if (item?.type === "BUNDLE") {
         logo = Bundles;
       }
@@ -432,6 +456,9 @@
             }
             if (account?.type === "SOL") {
               logo = SolanaLogo;
+            }
+            if (account?.type === "ALGO") {
+              logo = AlgorandLogo;
             }
             return {
               id: account?.id,
@@ -577,7 +604,11 @@
               `?type=${searchAccountType}&chain=ALL&address=${dataFormat.value}`
           );
         }
-        if (searchAccountType === "BTC" || searchAccountType === "SOL") {
+        if (
+          searchAccountType === "BTC" ||
+          searchAccountType === "SOL" ||
+          searchAccountType === "ALGO"
+        ) {
           window.history.replaceState(
             null,
             "",
@@ -838,7 +869,7 @@
       indexSelectedAddress = listAddress.indexOf(selectedAddress);
     }
   }
-  
+
   const handleSelectNextAddress = () => {
     if (indexSelectedAddress < listAddress.length - 1) {
       indexSelectedAddress = indexSelectedAddress + 1;
@@ -1207,7 +1238,7 @@
 
               <!-- btn add address wallet -->
               <div
-                class="relative xl:w-max w-[260px] flex justify-end"
+                class="relative xl:w-max w-[270px] flex justify-end"
                 on:mouseenter={() => {
                   if (isDisabled || Object.keys($user).length === 0) {
                     showDisableAddWallet = true;
@@ -1597,17 +1628,15 @@
             target="_blank">Learn more</a
           >
         </div>
-        <div
-          class="flex items-center justify-center gap-6 my-3 xl:text-base text-2xl"
-        >
+        <div class="flex items-center justify-center gap-6 my-3">
           {#each listLogoCEX as logo}
-            <div
-              class="flex items-center justify-center xl:w-8 xl:h-8 w-10 h-10 overflow-hidden rounded-full"
-            >
-              <img src={logo} alt="" class="object-contain w-full h-full" />
-            </div>
+            <img
+              src={logo}
+              alt=""
+              class="xl:w-8 xl:h-8 w-10 h-10 rounded-full"
+            />
           {/each}
-          <div class="text-gray-400">+22 More</div>
+          <div class="text-gray-400 xl:text-base text-2xl">+22 More</div>
         </div>
       </div>
       <div class="border-t-[1px] relative">
@@ -1632,7 +1661,11 @@
               class:input-border-error={errors.address &&
                 errors.address.required}
             >
-              <div class="xl:text-base text-2xl text-[#666666] font-medium">
+              <div
+                class={`xl:text-base text-2xl font-medium ${
+                  $isDarkMode ? "text-gray-400" : "text-[#666666]"
+                }`}
+              >
                 Address
               </div>
               <input
@@ -1641,9 +1674,13 @@
                 name="address"
                 placeholder={"Your wallet address"}
                 value=""
-                class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
+                class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal ${
                   address && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
-                } `}
+                } ${
+                  $isDarkMode
+                    ? "text-white"
+                    : "text-[#5E656B] placeholder-[#5E656B]"
+                }`}
                 on:keyup={({ target: { value } }) => (address = value)}
               />
             </div>
@@ -1660,7 +1697,11 @@
               }`}
               class:input-border-error={errors.label && errors.label.required}
             >
-              <div class="xl:text-base text-2xl text-[#666666] font-medium">
+              <div
+                class={`xl:text-base text-2xl font-medium ${
+                  $isDarkMode ? "text-gray-400" : "text-[#666666]"
+                }`}
+              >
                 {MultipleLang.content.modal_label_label}
               </div>
               <input
@@ -1669,8 +1710,12 @@
                 name="label"
                 placeholder={MultipleLang.content.modal_label_label}
                 value=""
-                class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
+                class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal ${
                   label && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+                } ${
+                  $isDarkMode
+                    ? "text-white"
+                    : "text-[#5E656B] placeholder-[#5E656B]"
                 }
               `}
                 on:keyup={({ target: { value } }) => (label = value)}
@@ -1692,21 +1737,26 @@
             <span class="slider" />
           </label>
         </div>
-        <div
-          class="flex items-center justify-center gap-6 my-3 xl:text-base text-xl"
-        >
-          {#each [{ logo: SolanaLogo, label: "Solana", value: "SOL" }].concat(chainList) as item}
-            <div
-              class="flex items-center justify-center xl:w-8 xl:h-8 w-10 h-10 overflow-hidden rounded-full"
-            >
-              <img
-                src={item.logo}
-                alt=""
-                class="object-contain w-full h-full"
-              />
-            </div>
+        <div class="xl:flex hidden items-center justify-center gap-6 my-3">
+          {#each [{ logo: SolanaLogo, label: "Solana", value: "SOL" }, { logo: AlgorandLogo, label: "Algorand", value: "ALGO" }, { logo: BitcoinLogo, label: "Bitcoin", value: "BTC" }].concat(chainList.slice(1)) as item}
+            <img
+              src={item.logo}
+              alt=""
+              class="xl:w-8 xl:h-8 w-10 h-10 overflow-hidden rounded-full"
+            />
           {/each}
-          <div class="text-gray-400">More soon</div>
+        </div>
+        <div class="xl:hidden flex items-center justify-center gap-6 my-3">
+          {#each [{ logo: SolanaLogo, label: "Solana", value: "SOL" }, { logo: AlgorandLogo, label: "Algorand", value: "ALGO" }, { logo: BitcoinLogo, label: "Bitcoin", value: "BTC" }].concat(chainList
+              .slice(1)
+              .slice(0, -7)) as item}
+            <img
+              src={item.logo}
+              alt=""
+              class="xl:w-8 xl:h-8 w-10 h-10 overflow-hidden rounded-full"
+            />
+          {/each}
+          <div class="text-gray-400 xl:text-base text-2xl">+7 More</div>
         </div>
         <div class="flex justify-end gap-6 lg:gap-2">
           <div class="lg:w-[120px] w-full">
@@ -1955,6 +2005,13 @@
     border: 0.5px solid #cdcdcd59;
   }
 
+  :global(body) .bg_fafafbff {
+    background: #fafafbff;
+  }
+  :global(body.dark) .bg_fafafbff {
+    background: #212121;
+  }
+
   .switch {
     position: relative;
     display: inline-block;
@@ -2002,5 +2059,29 @@
     -webkit-transform: translateX(16px);
     -ms-transform: translateX(16px);
     transform: translateX(16px);
+  }
+
+  @media screen and (max-width: 1280px) {
+    .switch {
+      width: 60px;
+      height: 30px;
+    }
+
+    .slider {
+      border-radius: 44px;
+    }
+
+    .slider:before {
+      height: 26px;
+      width: 26px;
+      left: 4px;
+      bottom: 2px;
+    }
+
+    input:checked + .slider:before {
+      -webkit-transform: translateX(26px);
+      -ms-transform: translateX(26px);
+      transform: translateX(26px);
+    }
   }
 </style>

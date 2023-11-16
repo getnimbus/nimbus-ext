@@ -15,11 +15,6 @@
   export let selected = null;
   export let positionSelectList = "left-0";
 
-  let darkMode = false;
-  isDarkMode.subscribe((value) => {
-    darkMode = value;
-  });
-
   const DEFAULT_COINS = [
     {
       name: "All",
@@ -103,17 +98,19 @@
     <div
       class={`select_content content group xl:max-h-[300px] xl:w-[200px] xl:min-w-[200px] xl:max-h-[310px] max-h-[380px] w-[300px] min-w-[300px] mt-2 ${positionSelectList}`}
     >
-      <div class={`flex items-center gap-2 mb-2 rounded-[1000px] px-4 ${
-            darkMode ? "bg-[#212121]" : "bg-[#eff0f4]"
-          }`}>
+      <div
+        class={`flex items-center gap-2 mb-2 rounded-[1000px] px-4 ${
+          $isDarkMode ? "bg-[#212121]" : "bg-[#eff0f4]"
+        }`}
+      >
         <img
-          src={darkMode ? Search : SearchBlack}
+          src={$isDarkMode ? Search : SearchBlack}
           alt=""
           class="xl:w-5 xl:h-5 w-9 h-9"
         />
         <input
           class={`flex-1 xl:py-2 py-3 xl:text-sm text-2xl max-w-[100px] border-none focus:outline-none focus:ring-0 ${
-            darkMode ? "bg-[#212121]" : "bg-[#eff0f4]"
+            $isDarkMode ? "bg-[#212121]" : "bg-[#eff0f4]"
           }`}
           placeholder="Search"
           on:keyup={({ target: { value } }) => debounceSearch(value)}

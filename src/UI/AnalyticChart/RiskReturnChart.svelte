@@ -36,6 +36,7 @@
   import TrendDown from "~/assets/trend-down.svg";
   import TrendUp from "~/assets/trend-up.svg";
   import SharpeRatioExplain from "~/assets/explain/sharpe-ratio-explain.mp4";
+  import defaultToken from "~/assets/defaultToken.png";
 
   export let selectedTimeFrame;
 
@@ -93,7 +94,7 @@
                   <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
                     $isDarkMode ? "white" : "black"
                   }">
-                    ${Number(params.value[0]).toFixed(2)}
+                    ${Number(params.value[0]).toFixed(2)}%
                   </div>
                 </div>
               </div>
@@ -107,8 +108,9 @@
       {
         type: "value",
         axisTick: { show: false },
-        name: "Risk",
+        name: "Volatility",
         axisLabel: {
+          formatter: "{value}%",
           fontSize: autoFontSize(),
         },
       },
@@ -174,8 +176,7 @@
                           $isDarkMode ? "white" : "black"
                         }">
                             <img src=${
-                              item?.logo ||
-                              "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
+                              item?.logo || defaultToken
                             } alt="" width=20 height=20 style="border-radius: 100%" />
                             ${item?.name} ${
                       item?.symbol ? `(${item?.symbol})` : ""
@@ -249,6 +250,7 @@
           ($typeWallet === "EVM" ||
             $typeWallet === "CEX" ||
             $typeWallet === "SOL" ||
+            $typeWallet === "ALGO" ||
             $typeWallet === "BUNDLE") &&
             $wallet.length !== 0 &&
             $selectedPackage !== "FREE"

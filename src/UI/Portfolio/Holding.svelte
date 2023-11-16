@@ -6,14 +6,15 @@
   import { filterTokenValueType } from "~/utils";
   import { groupBy } from "lodash";
 
-  export let selectedTokenHolding;
-  export let selectedDataPieChart;
+  export let selectedWallet;
+  export let isLoadingNFT;
+  export let isLoadingToken;
   export let holdingTokenData;
   export let holdingNFTData;
-  export let isLoadingToken;
-  export let isLoadingNFT;
+  export let dataVaults;
+  export let selectedTokenHolding;
+  export let selectedDataPieChart;
   export let totalAssets;
-  export let selectedWallet;
 
   import Select from "~/components/Select.svelte";
   import HoldingToken from "~/components/HoldingToken.svelte";
@@ -25,8 +26,8 @@
 
   let filteredHoldingDataToken = [];
   let filteredHoldingDataNFT = [];
+  let dataSubWS = [];
   let marketPriceToken;
-  let marketPriceNFT;
   let formatData = [];
   let formatDataNFT = [];
   let sumTokens = 0;
@@ -83,67 +84,100 @@
     };
   });
 
+  // subscribe to ws
   $: {
-    if (selectedTokenHolding && holdingTokenData?.length !== 0) {
-      const filteredHoldingTokenData = holdingTokenData?.filter(
-        (item) => item?.cmc_id
-      );
+    if (!isLoadingToken) {
+      if (holdingTokenData?.length !== 0) {
+        const dataTokenHolding = holdingTokenData?.filter(
+          (item) =>
+            item?.price?.source === undefined ||
+            item?.price?.source !== "Modifed"
+        );
 
-      const filteredNullCmcHoldingTokenData = holdingTokenData?.filter(
-        (item) => item?.cmc_id === null
-      );
+        const filteredHoldingTokenData = dataTokenHolding?.filter(
+          (item) => item?.cmc_id
+        );
 
-      const groupFilteredNullCmcHoldingTokenData = groupBy(
-        filteredNullCmcHoldingTokenData,
-        "chain"
-      );
+        const filteredNullCmcHoldingTokenData = dataTokenHolding?.filter(
+          (item) => item?.cmc_id === null
+        );
 
-      const chainList = Object.keys(groupFilteredNullCmcHoldingTokenData);
+        const groupFilteredNullCmcHoldingTokenData = groupBy(
+          filteredNullCmcHoldingTokenData,
+          "chain"
+        );
 
-      chainList.map((chain) => {
-        groupFilteredNullCmcHoldingTokenData[chain].map((item) => {
-          priceSubscribe([item?.contractAddress], true, chain, (data) => {
-            marketPriceToken = {
-              id: data.id,
-              market_price: data.price,
-            };
+        const chainList = Object.keys(groupFilteredNullCmcHoldingTokenData);
+
+        chainList.map((chain) => {
+          groupFilteredNullCmcHoldingTokenData[chain].map((item) => {
+            priceSubscribe([item?.contractAddress], true, chain, (data) => {
+              marketPriceToken = {
+                id: data.id,
+                market_price: data.price,
+              };
+            });
           });
         });
+
+        dataSubWS = filteredHoldingTokenData.map((item) => {
+          return {
+            symbol: item.symbol,
+            cmcId: item.cmc_id,
+          };
+        });
+
+        sumAllTokens = holdingTokenData?.reduce(
+          (prev, item) => prev + item.value,
+          0
+        );
+      }
+    }
+    if (!isLoadingNFT) {
+      if (holdingNFTData?.length !== 0) {
+        const formatHoldingNFTData = holdingNFTData
+          ?.filter((item) => item?.nativeToken?.cmcId)
+          ?.map((item) => {
+            return {
+              symbol: item.nativeToken.symbol,
+              cmcId: item.nativeToken.cmcId,
+            };
+          });
+
+        dataSubWS = dataSubWS.concat(formatHoldingNFTData);
+      }
+    }
+  }
+
+  $: {
+    if (
+      !isLoadingNFT &&
+      !isLoadingToken &&
+      dataSubWS &&
+      dataSubWS.length !== 0
+    ) {
+      let filteredData = [];
+      const symbolSet = new Set();
+
+      dataSubWS.forEach((item) => {
+        if (!symbolSet.has(item.symbol)) {
+          symbolSet.add(item.symbol);
+          filteredData.push(item);
+        }
       });
 
-      filteredHoldingTokenData?.map((item) => {
-        priceSubscribe([item?.cmc_id], false, "", (data) => {
+      filteredData?.map((item) => {
+        priceSubscribe([Number(item?.cmcId)], false, "", (data) => {
           marketPriceToken = {
             id: data.id,
             market_price: data.price,
           };
         });
       });
-
-      sumAllTokens = holdingTokenData?.reduce(
-        (prev, item) => prev + item.value,
-        0
-      );
-    }
-    if (holdingNFTData?.length !== 0) {
-      holdingNFTData
-        ?.filter((item) => item?.nativeToken?.cmcId)
-        ?.map((item) => {
-          priceSubscribe(
-            [Number(item?.nativeToken?.cmcId)],
-            false,
-            "",
-            (data) => {
-              marketPriceNFT = {
-                id: data.id,
-                market_price: data.price,
-              };
-            }
-          );
-        });
     }
   }
 
+  // format initial data
   $: {
     if (
       selectedTokenHolding &&
@@ -177,15 +211,16 @@
         .map((item) => {
           return {
             ...item,
+            current_native_token: item?.floorPrice * item?.tokens?.length,
             current_value:
               item?.floorPrice * item?.marketPrice * item?.tokens?.length,
           };
         })
         .sort((a, b) => {
-          if (a.current_value < b.current_value) {
+          if (a.current_native_token < b.current_native_token) {
             return 1;
           }
-          if (a.current_value > b.current_value) {
+          if (a.current_native_token > b.current_native_token) {
             return -1;
           }
           return 0;
@@ -197,8 +232,10 @@
     }
   }
 
+  // check market price and update price real-time
   $: {
     if (marketPriceToken) {
+      // update data token holding
       const formatDataWithMarketPrice = formatData.map((item) => {
         if (
           marketPriceToken?.id.toString().toLowerCase() ===
@@ -208,7 +245,7 @@
         ) {
           return {
             ...item,
-            market_price: marketPriceToken.market_price,
+            market_price: Number(marketPriceToken.market_price),
             value: Number(item?.amount) * Number(marketPriceToken.market_price),
           };
         }
@@ -236,32 +273,36 @@
         (prev, item) => prev + item.value,
         0
       );
-    }
-    if (marketPriceNFT) {
+
+      // update data nft holding
       const formatDataNFTWithMarketPrice = formatDataNFT.map((item) => {
         if (
-          marketPriceNFT?.id.toString().toLowerCase() ===
+          marketPriceToken?.id.toString().toLowerCase() ===
           item?.nativeToken?.cmcId.toString().toLowerCase()
         ) {
           return {
             ...item,
+            marketPrice: Number(marketPriceToken.market_price),
+            current_native_token: item?.floorPrice * item?.tokens?.length,
             current_value:
               item?.floorPrice *
-              marketPriceNFT.market_price *
+              Number(marketPriceToken.market_price) *
               item?.tokens?.length,
           };
         }
         return { ...item };
       });
+
       formatDataNFT = formatDataNFTWithMarketPrice.sort((a, b) => {
-        if (a.current_value < b.current_value) {
+        if (a.current_native_token < b.current_native_token) {
           return 1;
         }
-        if (a.current_value > b.current_value) {
+        if (a.current_native_token > b.current_native_token) {
           return -1;
         }
         return 0;
       });
+
       sumNFT = formatDataNFTWithMarketPrice.reduce(
         (prev, item) => prev + item.current_value,
         0
@@ -271,10 +312,28 @@
 
   $: {
     if (filterTokenType) {
+      const formatDataWithVault = formatData?.map((item) => {
+        try {
+          const regex = new RegExp(`(^${item?.symbol}|-${item?.symbol})`);
+          const filteredVaults = dataVaults?.filter((data) =>
+            data.name.match(regex)
+          );
+
+          return {
+            ...item,
+            vaults: filteredVaults,
+          };
+        } catch (error) {
+          return {
+            ...item,
+            vaults: [],
+          };
+        }
+      });
       if (filterTokenType.value === 0) {
-        filteredHoldingDataToken = formatData;
+        filteredHoldingDataToken = formatDataWithVault;
       } else {
-        filteredHoldingDataToken = formatData?.filter(
+        filteredHoldingDataToken = formatDataWithVault?.filter(
           (item) => item?.amount * item.market_price > filterTokenType.value
         );
       }
@@ -323,6 +382,7 @@
 
   $: colspan =
     $typeWallet === "SOL" ||
+    $typeWallet === "ALGO" ||
     $typeWallet === "EVM" ||
     $typeWallet === "BUNDLE" ||
     $typeWallet === "CEX"
@@ -340,7 +400,6 @@
         filteredHoldingDataToken = [];
         filteredHoldingDataNFT = [];
         marketPriceToken = undefined;
-        marketPriceNFT = undefined;
       }
     }
   }
@@ -354,11 +413,6 @@
     ) {
       filteredHoldingDataToken = [];
       sumTokens = 0;
-    }
-  }
-
-  $: {
-    if (formatDataNFT && formatDataNFT.length === 0) {
     }
   }
 </script>
@@ -383,7 +437,7 @@
         </a> -->
       </div>
 
-      <div class="flex flex-col gap-2">
+      <div class="flex flex-col gap-6">
         <!-- token holding table -->
         <div class="flex flex-col gap-2">
           <div class="flex justify-between items-center">
@@ -487,8 +541,10 @@
                     <th
                       class={`py-3 ${
                         $typeWallet === "SOL" ||
+                        $typeWallet === "ALGO" ||
                         $typeWallet === "EVM" ||
-                        $typeWallet === "BUNDLE"
+                        $typeWallet === "BUNDLE" ||
+                        $typeWallet === "CEX"
                           ? ""
                           : "pr-3 rounded-tr-[10px]"
                       }`}
@@ -499,7 +555,7 @@
                         Unrealized PnL
                       </div>
                     </th>
-                    {#if $typeWallet === "SOL" || $typeWallet === "EVM" || $typeWallet === "BUNDLE"}
+                    {#if $typeWallet === "SOL" || $typeWallet === "ALGO" || $typeWallet === "EVM" || $typeWallet === "BUNDLE" || $typeWallet === "CEX"}
                       <th class="py-3 xl:w-12 w-32 rounded-tr-[10px]" />
                     {/if}
                   </tr>
@@ -522,9 +578,11 @@
                         </td>
                       </tr>
                     {/if}
-                    {#each filteredHoldingDataToken as holding}
+                    {#each filteredHoldingDataToken as holding, index}
                       <HoldingToken
                         data={holding}
+                        lastIndex={filteredHoldingDataToken.length - 1 ===
+                          index}
                         {selectedWallet}
                         sumAllTokens={totalAssets - sumNFT}
                       />
@@ -575,9 +633,11 @@
                           </td>
                         </tr>
                       {:else}
-                        {#each filteredHoldingDataToken as holding}
+                        {#each filteredHoldingDataToken as holding, index (holding.positionId)}
                           <HoldingToken
                             data={holding}
+                            lastIndex={filteredHoldingDataToken.length - 1 ==
+                              index}
                             {selectedWallet}
                             sumAllTokens={totalAssets - sumNFT}
                           />
@@ -629,7 +689,7 @@
                   >
                     <tr class="bg_f4f5f8">
                       <th
-                        class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8 w-[220px]"
+                        class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8 xl:w-[220px] w-[350px]"
                       >
                         <div
                           class="text-left xl:text-xs text-xl uppercase font-medium"
@@ -638,7 +698,7 @@
                         </div>
                       </th>
                       <th
-                        class="py-3 xl:static xl:bg-transparent sticky left-[220px] z-10 bg_f4f5f8 w-[160px]"
+                        class="py-3 xl:static xl:bg-transparent sticky left-[350px] z-10 bg_f4f5f8 w-[200px]"
                       >
                         <div
                           class="text-left xl:text-xs text-xl uppercase font-medium"
@@ -674,7 +734,7 @@
                           {MultipleLang.current_value}
                         </div>
                       </th>
-                      <th class="py-3 pr-3 rounded-tr-[10px]">
+                      <th class="py-3">
                         <div
                           class="text-right xl:text-xs text-xl uppercase font-medium"
                         >
@@ -685,6 +745,7 @@
                           </TooltipTitle>
                         </div>
                       </th>
+                      <th class="py-3 xl:w-12 w-32 rounded-tr-[10px]" />
                     </tr>
                   </thead>
 
@@ -692,7 +753,7 @@
                     <tbody>
                       {#if filteredHoldingDataNFT && filteredHoldingDataNFT.length === 0 && !isLoadingNFT}
                         <tr>
-                          <td colspan={6}>
+                          <td colspan={7}>
                             <div
                               class="flex justify-center items-center h-full py-3 px-3 xl:text-lg text-xl text-gray-400 view-nft-detail"
                             >
@@ -706,13 +767,18 @@
                         </tr>
                       {/if}
                       {#each filteredHoldingDataNFT as holding, index}
-                        <HoldingNFT data={holding} {selectedWallet} {index} />
+                        <HoldingNFT
+                          data={holding}
+                          {selectedWallet}
+                          {index}
+                          lastIndex={filteredHoldingDataNFT.length - 1 == index}
+                        />
                       {/each}
                     </tbody>
                     {#if isLoadingNFT}
                       <tbody>
                         <tr>
-                          <td colspan={6}>
+                          <td colspan={7}>
                             <div
                               class="flex justify-center items-center h-full py-3 px-3"
                             >
@@ -728,7 +794,7 @@
                     {#if isLoadingNFT}
                       <tbody>
                         <tr>
-                          <td colspan={6}>
+                          <td colspan={7}>
                             <div
                               class="flex justify-center items-center h-full py-3 px-3"
                             >
@@ -741,7 +807,7 @@
                       <tbody>
                         {#if filteredHoldingDataNFT && filteredHoldingDataNFT.length === 0}
                           <tr>
-                            <td colspan={6}>
+                            <td colspan={7}>
                               <div
                                 class="flex justify-center items-center h-full py-3 px-3 xl:text-lg text-xl text-gray-400 view-nft-detail"
                               >
@@ -756,6 +822,8 @@
                         {:else}
                           {#each filteredHoldingDataNFT as holding, index}
                             <HoldingNFT
+                              lastIndex={filteredHoldingDataNFT.length - 1 ==
+                                index}
                               data={holding}
                               {selectedWallet}
                               {index}
@@ -771,8 +839,8 @@
           </div>
         {/if}
       </div>
-    </div></ErrorBoundary
-  >
+    </div>
+  </ErrorBoundary>
 </div>
 
 <style>

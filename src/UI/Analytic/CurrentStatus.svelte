@@ -29,6 +29,7 @@
   import TrendUp from "~/assets/trend-up.svg";
   import Logo from "~/assets/logo-1.svg";
   import LogoWhite from "~/assets/logo-white.svg";
+  import defaultToken from "~/assets/defaultToken.png";
 
   export let packageSelected;
   export let selectedTimeFrame;
@@ -60,8 +61,7 @@
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 220px;">
               <div style="display: flex; align-items: centers; gap: 4px">
                 <img src=${
-                  params?.data?.logo ||
-                  "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
+                  params?.data?.logo || defaultToken
                 } alt="" width=20 height=20 style="border-radius: 100%" />
                 <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
                   $isDarkMode ? "white" : "black"
@@ -716,6 +716,7 @@
           ($typeWallet === "EVM" ||
             $typeWallet === "CEX" ||
             $typeWallet === "SOL" ||
+            $typeWallet === "ALGO" ||
             $typeWallet === "BUNDLE") &&
             $wallet.length !== 0 &&
             packageSelected !== "FREE"
@@ -894,9 +895,9 @@
   >
     <div class="flex justify-between items-start mb-6">
       <div class="flex justify-start">
-        {#if $typeWallet === "CEX" || $typeWallet === "SOL"}
+        {#if $typeWallet === "CEX" || $typeWallet === "SOL" || $typeWallet === "ALGO"}
           <TooltipTitle
-            tooltipText="Due to privacy, the performance data can only get after 7 days you connect to Nimbus"
+            tooltipText="The performance data can only get after 7 days you connect to Nimbus"
             type="warning"
           >
             <div class="pl-4 text-4xl font-medium xl:text-2xl">
@@ -942,15 +943,6 @@
         </div>
       {/if}
     </div>
-    {#if $chain === "XDAI"}
-      <div
-        class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex items-center justify-center ${
-          $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
-        } z-30 backdrop-blur-md`}
-      >
-        <div class="text-2xl xl:text-lg">Coming soon 🚀</div>
-      </div>
-    {/if}
     {#if $queryCompare.isFetching}
       <div class="flex items-center justify-center h-[485px]">
         <LoadingPremium />

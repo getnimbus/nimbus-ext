@@ -1,7 +1,7 @@
 <script lang="ts">
   import { nimbus } from "~/lib/network";
   import { priceSubscribe } from "~/lib/price-ws";
-  import { typeWallet, isDarkMode } from "~/store";
+  import { isDarkMode } from "~/store";
   import { createQuery } from "@tanstack/svelte-query";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
 
@@ -12,7 +12,10 @@
   import Loading from "~/components/Loading.svelte";
   import TooltipTitle from "~/components/TooltipTitle.svelte";
   import NftDetailItem from "./NFTDetailItem.svelte";
+  import NftTradeHistory from "./NFTTradeHistory.svelte";
 
+  export let selectedNftCollectionId;
+  export let selectedNftCollectionChain;
   export let collectionId;
   export let addressWallet;
 
@@ -46,6 +49,9 @@
 
       data = {
         ...selectedCollection,
+        current_native_value:
+          Number(selectedCollection?.floorPrice) *
+          selectedCollection?.tokens?.length,
         current_value:
           Number(selectedCollection?.floorPrice) *
           Number(selectedCollection?.marketPrice) *
@@ -91,7 +97,8 @@
     if (marketPriceNFT && data) {
       data = {
         ...data,
-        marketPrice: marketPriceNFT.market_price,
+        marketPrice: Number(marketPriceNFT.market_price),
+        current_native_value: Number(data?.floorPrice) * data?.tokens?.length,
         current_value:
           Number(data?.floorPrice) *
           Number(marketPriceNFT.market_price) *
@@ -111,12 +118,14 @@
   );
 
   $: profitAndLoss =
-    totalCost === 0 ? 0 : Number(data?.current_value) - Number(totalCost || 0);
+    totalNativeTokenPrice === 0
+      ? 0
+      : Number(data?.current_native_value) - Number(totalNativeTokenPrice || 0);
 
   $: profitAndLossPercent =
-    Math.abs(Number(totalCost || 0)) === 0
+    totalNativeTokenPrice === 0
       ? 0
-      : profitAndLoss / Math.abs(Number(totalCost));
+      : (profitAndLoss * data?.marketPrice) / Math.abs(Number(totalCost));
 </script>
 
 <ErrorBoundary>
@@ -147,10 +156,7 @@
                 : ""
             }`}
           >
-            <TooltipNumber
-              number={Math.abs(profitAndLoss) / data?.marketPrice}
-              type="balance"
-            />
+            <TooltipNumber number={Math.abs(profitAndLoss)} type="balance" />
           </div>
           <span class="text-xl text-gray-500">
             {data?.nativeToken?.symbol || "-"}
@@ -343,7 +349,7 @@
     {:else}
       <div>
         {#if selectedTypeDisplay === "grid"}
-          <div class="grid gid-cols-1 lg:grid-cols-2 gap-6">
+          <div class="grid grid-cols-1 xl:grid-cols-3 lg:grid-cols-2 gap-6">
             {#each tokens as item}
               <NftCard
                 data={item}
@@ -409,6 +415,8 @@
       </div>
     {/if}
   </div>
+
+  <NftTradeHistory {selectedNftCollectionChain} {selectedNftCollectionId} />
 </ErrorBoundary>
 
 <style windi:preflights:global windi:safelist:global>

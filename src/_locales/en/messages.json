@@ -23,7 +23,7 @@
   "optionsPage": {
     "message": "Options page languages",
     "tab-title-accounts": "Accounts",
-    "tab-title-report-token": "Report Tokens",
+    "tab-title-report": "Reports",
     "tab-title-alerts": "Alerts",
     "tab-title-dashboard": "Dashboard",
     "tab-title-highlight": "Highlight",
@@ -32,7 +32,7 @@
     "tab-title-nft": "NFT",
     "nft-page-title": "My NFT",
     "accounts-page-title": "Account Settings",
-    "report-token-page-title": "Report Token Settings",
+    "report-page-title": "Report Settings",
     "dashboard-page-title": "Dashboard",
     "highlight-page-title": "Highlight",
     "notification-page-title": "Notification",
@@ -60,7 +60,7 @@
       "modal-edit-highlight-sub-title": "Edit your highlight account will make change the highlight",
       "address-required": "Account is required!",
       "label-required": "Label is required!",
-      "re-input-address": "Please enter your account again!",
+      "re-input-address": "Invalid address!",
       "duplicate-address": "This account is duplicated!"
     },
     "settings-page-content": {

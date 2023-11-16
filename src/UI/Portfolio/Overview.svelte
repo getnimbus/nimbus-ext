@@ -70,7 +70,7 @@
     changeLast24hNetWorth;
 
   $: last24hTotalProfitPercent =
-    $typeWallet === "SOL" || $typeWallet === "CEX"
+    $typeWallet === "SOL" || $typeWallet === "ALGO" || $typeWallet === "CEX"
       ? 0
       : getChangePercent(totalProfit, changeLast24hTotalProfit);
 </script>
@@ -80,12 +80,7 @@
     <div class="flex flex-col justify-between flex-1 gap-6 md:flex-row">
       <OverviewCard title={MultipleLang.networth}>
         <div class="flex text-5xl xl:text-3xl">
-          <CountUpNumber
-            id="networth"
-            number={networth}
-            type="value"
-            personalValue
-          />
+          <CountUpNumber number={networth} type="value" personalValue />
         </div>
         <div
           class={`flex items-center gap-3 ${
@@ -105,7 +100,6 @@
               ↑
             {/if}
             <CountUpNumber
-              id="networth_grouth"
               number={Math.abs(data?.overview?.networthChange)}
               type="percent"
             />%
@@ -124,15 +118,14 @@
             $<TooltipNumber number={totalProfit} type="balance" personalValue />
           {:else}
             <span>
-              {#if totalProfit < 0}
+              {#if totalProfit < 0 && !$isHidePortfolio}
                 -
               {/if}
             </span>
             <CountUpNumber
-              personalValue
-              id="claimable"
               number={Math.abs(totalProfit)}
               type="value"
+              personalValue
             />
           {/if}
         </div>
@@ -140,6 +133,7 @@
           class={`flex items-center gap-3 ${
             $typeWallet === "BTC" ||
             $typeWallet === "SOL" ||
+            $typeWallet === "ALGO" ||
             $typeWallet === "CEX"
               ? "opacity-50"
               : ""
@@ -156,7 +150,6 @@
               ↑
             {/if}
             <CountUpNumber
-              id="claimable_grouth"
               number={Math.abs(last24hTotalProfitPercent)}
               type="percent"
             />%
@@ -170,22 +163,22 @@
       <OverviewCard title={MultipleLang.realizedProfit}>
         <div class="xl:text-3xl text-5xl flex">
           <span>
-            {#if realizedProfit < 0}
+            {#if realizedProfit < 0 && !$isHidePortfolio}
               -
             {/if}
           </span>
           <CountUpNumber
-            personalValue
-            id="total_assets"
             number={Math.abs(realizedProfit)}
             type="value"
+            personalValue
           />
         </div>
         <!-- <div
           class={`flex items-center gap-3 ${
             $typeWallet === "CEX" ||
             $typeWallet === "BTC" ||
-            $typeWallet === "SOL"
+            $typeWallet === "SOL" ||
+            $typeWallet === "ALGO"
               ? "opacity-50"
               : ""
           }`}
@@ -203,7 +196,6 @@
               ↑
             {/if}
             <CountUpNumber
-              id="total_assets_grouth"
               number={Math.abs(data?.overview?.cumulativeInflowChange)}
               type="percent"
             />%
@@ -215,22 +207,22 @@
       <OverviewCard title={MultipleLang.unrealizedProfit}>
         <div class="xl:text-3xl text-5xl flex">
           <span>
-            {#if unrealizedProfit < 0}
+            {#if unrealizedProfit < 0 && !$isHidePortfolio}
               -
             {/if}
           </span>
           <CountUpNumber
-            personalValue
-            id="total_positions"
             number={Math.abs(unrealizedProfit)}
             type="value"
+            personalValue
           />
         </div>
         <!-- <div
           class={`flex items-center gap-3 ${
             $typeWallet === "CEX" ||
             $typeWallet === "BTC" ||
-            $typeWallet === "SOL"
+            $typeWallet === "SOL" ||
+            $typeWallet === "ALGO"
               ? "opacity-50"
               : ""
           }`}
@@ -248,7 +240,6 @@
               ↑
             {/if}
             <CountUpNumber
-              id="total_positions_grouth"
               number={Math.abs(data?.overview.cumulativeOutflowChange)}
               type="percent"
             />%

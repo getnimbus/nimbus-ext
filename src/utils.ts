@@ -7,17 +7,25 @@ import dayjs from "dayjs";
 import { driver } from "driver.js";
 import "driver.js/dist/driver.css";
 
-import logo from "~/assets/bitcoin.png";
+import Solana from "~/assets/solana.png";
+import Aura from "~/assets/aura.png";
+import Bitcoin from "~/assets/bitcoin.png";
+
+import All from "~/assets/all.svg";
 import Bnb from "~/assets/bnb.png";
 import Ethereum from "~/assets/ethereum.png";
-import Bitcoin from "~/assets/bitcoin.png";
 import Matic from "~/assets/matic.png";
 import Optimism from "~/assets/optimism.png";
 import Avax from "~/assets/avax.png";
-import Solana from "~/assets/solana.png";
 import Arbitrum from "~/assets/arbitrum.png";
 import Gnosis from "~/assets/gnosis.png";
 import Base from "~/assets/base.svg";
+import Scroll from "~/assets/scroll.png";
+import ZkSync from "~/assets/zksync.png";
+import Linea from "~/assets/linea.png";
+import Cronos from "~/assets/cronos.png";
+import Mantle from "~/assets/mantle.png";
+import Algorand from "~/assets/algorand.png";
 
 export const ETHAddressRegex = /(\b0x[a-fA-F0-9]{40}\b)/g;
 export const ETHTrxRegex = /(\b0x[a-fA-F0-9]{64}\b)/g;
@@ -178,15 +186,19 @@ export const typeClosedHoldingTokenChart = [
   },
 ];
 
-export const typePackage = [
+export const filterAvgCostType = [
   {
-    label: "Monthly",
-    value: "month",
+    label: "All",
+    value: "all"
   },
+  // {
+  //   label: "Smart money",
+  //   value: "smart"
+  // },
   {
-    label: "Yearly (Save 17%)",
-    value: "year",
-  },
+    label: "Fresh wallet",
+    value: "fresh"
+  }
 ];
 
 export const filterTokenValueType = [
@@ -304,48 +316,97 @@ export const getAddressContext = (address: string) => {
   return undefined;
 };
 
-export let explorerOnChain = (type, hash) => {
-  let linkTrx = ""
-  switch (type) {
-    case "ETH":
-      linkTrx = `https://etherscan.io/tx/${hash}`;
-      break;
-    case "XDAI":
-      linkTrx = `https://gnosisscan.io/tx/${hash}`;
-      break;
-    case "BNB":
-      linkTrx = `https://bscscan.com/tx/${hash}`;
-      break;
-    case "MATIC":
-      linkTrx = `https://polygonscan.com/tx/${hash}`;
-      break;
-    case "OP":
-      linkTrx = `https://optimistic.etherscan.io/tx/${hash}`;
-      break;
-    case "AVAX":
-      linkTrx = `https://snowtrace.io/tx/${hash}`;
-      break;
-    case "ARB":
-      linkTrx = `https://arbiscan.io/tx/${hash}`;
-      break;
-    case "BASE":
-      linkTrx = `https://basescan.org/tx/${hash}`
-      break;
-    case "SCROLL":
-      linkTrx = `https://blockscout.scroll.io/tx/${hash}`
-      break;
-    case "SOL":
-      linkTrx = `https://solscan.io/tx/${hash}`
-      break;
-    default:
-      linkTrx = ""
-  }
-  return linkTrx
-}
+export const chainList = [
+  {
+    logo: All,
+    label: "All chains",
+    value: "ALL",
+  },
+  {
+    logo: Ethereum,
+    label: "Ethereum",
+    value: "ETH",
+  },
+  {
+    logo: Bnb,
+    label: "BNB",
+    value: "BNB",
+  },
+  {
+    logo: Matic,
+    label: "Polygon",
+    value: "MATIC",
+  },
+  {
+    logo: Optimism,
+    label: "Optimism",
+    value: "OP",
+  },
+  {
+    logo: Avax,
+    label: "Avalanche",
+    value: "AVAX",
+  },
+  {
+    logo: Arbitrum,
+    label: "Arbitrum",
+    value: "ARB",
+  },
+  {
+    logo: Base,
+    label: "Base",
+    value: "BASE",
+  },
+  {
+    logo: Scroll,
+    label: "Scroll",
+    value: "SCROLL",
+  },
+  {
+    logo: Gnosis,
+    label: "Gnosis",
+    value: "XDAI",
+  },
+  {
+    logo: ZkSync,
+    label: "ZkSync",
+    value: "ZKSYNC",
+  },
+  {
+    logo: Linea,
+    label: "Linea",
+    value: "LINEA",
+  },
+  {
+    logo: Cronos,
+    label: "Cronos",
+    value: "CRONOS",
+  },
+  {
+    logo: Mantle,
+    label: "Mantle",
+    value: "MANTLE",
+  },
+];
 
 export const detectedChain = (type) => {
   let chain;
   switch (type) {
+    case "BTC":
+      chain = Bitcoin;
+      break;
+    case "ALL":
+      chain = Bitcoin;
+      break;
+    case "AURA":
+      chain = Aura;
+      break;
+    case "SOL":
+      chain = Solana;
+      break;
+    case "ALGO":
+      chain = Algorand;
+      break;
     case "ETH":
       chain = Ethereum;
       break;
@@ -370,11 +431,21 @@ export const detectedChain = (type) => {
     case "BASE":
       chain = Base;
       break;
-    case "SOL":
-      chain = Solana;
+    case "SCROLL":
+      chain = Scroll;
       break;
-    default:
-      chain = logo;
+    case "ZKSYNC":
+      chain = ZkSync;
+      break;
+    case "LINEA":
+      chain = Linea;
+      break;
+    case "CRONOS":
+      chain = Cronos;
+      break;
+    case "MANTLE":
+      chain = Mantle;
+      break;
   }
   return chain;
 };
@@ -427,11 +498,59 @@ export const linkExplorer = (chain, hash) => {
         address: `https://arbiscan.io/address/${hash}`,
       };
       break;
+    case "BASE":
+      links = {
+        trx: `https://basescan.org/tx/${hash}`,
+        address: `https://basescan.org/address/${hash}`,
+      };
+      break;
+    case "SCROLL":
+      links = {
+        trx: `https://blockscout.scroll.io/tx/${hash}`,
+        address: `https://blockscout.scroll.io/address/${hash}`,
+      };
+      break;
+    case "ZKSYNC":
+      links = {
+        trx: `https://explorer.zksync.io/tx/${hash}`,
+        address: `https://explorer.zksync.io/address/${hash}`,
+      };
+      break;
+    case "LINEA":
+      links = {
+        trx: `https://lineascan.build/tx/${hash}`,
+        address: `https://lineascan.build/address/${hash}`,
+      };
+      break;
+    case "CRONOS":
+      links = {
+        trx: `https://cronoscan.com/tx/${hash}`,
+        address: `https://cronoscan.com/address/${hash}`,
+      };
+      break;
+    case "MANTLE":
+      links = {
+        trx: `https://mantlescan.info/tx/${hash}`,
+        address: `https://mantlescan.info/address/${hash}`,
+      };
+      break;
+    case "SOL":
+      links = {
+        trx: `https://solscan.io/tx/${hash}`,
+        address: `https://solscan.io/address/${hash}`,
+      };
+      break;
+    case "ALGO":
+      links = {
+        trx: `https://algoexplorer.io/tx/${hash}`,
+        address: `https://algoexplorer.io/address/${hash}`,
+      };
+      break;
     case "BTC":
       links = {
         trx: `https://www.oklink.com/btc/tx/${hash}`,
-        address: `https://www.oklink.com/btc/address/${hash}`
-      }
+        address: `https://www.oklink.com/btc/address/${hash}`,
+      };
       break;
     default:
       links = {
@@ -485,54 +604,6 @@ export const listLogoCEX = [
   "https://s2.coinmarketcap.com/static/img/exchanges/64x64/294.png",
   "https://s2.coinmarketcap.com/static/img/exchanges/64x64/70.png",
   "https://s2.coinmarketcap.com/static/img/exchanges/64x64/37.png",
-];
-
-export const chainList = [
-  {
-    logo: logo,
-    label: "All chains",
-    value: "ALL",
-  },
-  {
-    logo: Ethereum,
-    label: "Ethereum",
-    value: "ETH",
-  },
-  {
-    logo: Bnb,
-    label: "BNB",
-    value: "BNB",
-  },
-  {
-    logo: Matic,
-    label: "Polygon",
-    value: "MATIC",
-  },
-  {
-    logo: Optimism,
-    label: "Optimism",
-    value: "OP",
-  },
-  {
-    logo: Avax,
-    label: "Avalanche",
-    value: "AVAX",
-  },
-  {
-    logo: Arbitrum,
-    label: "Arbitrum",
-    value: "ARB",
-  },
-  {
-    logo: Base,
-    label: "Base",
-    value: "BASE",
-  },
-  {
-    logo: Gnosis,
-    label: "Gnosis",
-    value: "XDAI",
-  },
 ];
 
 export const showChatAnimationVariants = {
@@ -1110,20 +1181,8 @@ export const formatTransactionTime = (date: Date) => {
   return dayjs(date).fromNow();
 };
 
-export const handleImgError = async (e, image, defaultImage) => {
-  e.target.onerror = null; // break loop
-  if (image.includes("https://api.center.dev")) {
-    fetch(image, {
-      headers: { "x-api-key": "lapis-fridge-d84f5377deca" },
-    })
-      .then((r) => r.blob())
-      .then((d) => {
-        e.target.src = window.URL.createObjectURL(d);
-      })
-      .catch(() => {
-        e.target.src = defaultImage;
-      });
-  } else {
+export const handleImgError = async (e, defaultImage) => {
+  if (defaultImage) {
     e.target.src = defaultImage;
   }
 };

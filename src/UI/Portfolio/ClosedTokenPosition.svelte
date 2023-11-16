@@ -6,11 +6,11 @@
   import { filterTokenValueType } from "~/utils";
   import { groupBy } from "lodash";
 
+  export let selectedWallet;
+  export let isLoadingNFT;
+  export let isLoadingToken;
   export let holdingTokenData;
   export let holdingNFTData;
-  export let isLoadingToken;
-  export let isLoadingNFT;
-  export let selectedWallet;
 
   import ClosedHoldingTokenPosition from "~/components/ClosedHoldingTokenPosition.svelte";
   import HoldingNFT from "~/components/HoldingNFT.svelte";
@@ -22,8 +22,8 @@
 
   let filteredHoldingToken = true;
   let filteredHoldingDataToken = [];
+  let dataSubWS = [];
   let marketPriceToken;
-  let marketPriceNFT;
   let formatData = [];
   let formatDataNFT = [];
   let sumAllTokens = 0;
@@ -75,58 +75,70 @@
 
   // subscribe to ws
   $: {
-    if (holdingTokenData?.length !== 0) {
-      const filteredHoldingTokenData = holdingTokenData?.filter(
-        (item) => item?.cmc_id
-      );
+    if (!isLoadingToken) {
+      if (holdingTokenData?.length !== 0) {
+        const dataTokenHolding = holdingTokenData?.filter(
+          (item) =>
+            item?.price?.source === undefined ||
+            item?.price?.source !== "Modifed"
+        );
 
-      const filteredNullCmcHoldingTokenData = holdingTokenData?.filter(
-        (item) => item?.cmc_id === null
-      );
+        const filteredHoldingTokenData = dataTokenHolding?.filter(
+          (item) => item?.cmc_id
+        );
 
-      const groupFilteredNullCmcHoldingTokenData = groupBy(
-        filteredNullCmcHoldingTokenData,
-        "chain"
-      );
+        const filteredNullCmcHoldingTokenData = dataTokenHolding?.filter(
+          (item) => item?.cmc_id === null
+        );
 
-      const chainList = Object.keys(groupFilteredNullCmcHoldingTokenData);
+        const groupFilteredNullCmcHoldingTokenData = groupBy(
+          filteredNullCmcHoldingTokenData,
+          "chain"
+        );
 
-      chainList.map((chain) => {
-        groupFilteredNullCmcHoldingTokenData[chain].map((item) => {
-          priceSubscribe([item?.contractAddress], true, chain, (data) => {
-            marketPriceToken = {
-              id: data.id,
-              market_price: data.price,
-            };
+        const chainList = Object.keys(groupFilteredNullCmcHoldingTokenData);
+
+        chainList.map((chain) => {
+          groupFilteredNullCmcHoldingTokenData[chain].map((item) => {
+            priceSubscribe([item?.contractAddress], true, chain, (data) => {
+              marketPriceToken = {
+                id: data.id,
+                market_price: data.price,
+              };
+            });
           });
         });
+
+        dataSubWS = filteredHoldingTokenData.map((item) => {
+          return {
+            symbol: item.symbol,
+            cmcId: item.cmc_id,
+          };
+        });
+      }
+    }
+  }
+
+  $: {
+    if (!isLoadingToken && dataSubWS && dataSubWS.length !== 0) {
+      let filteredData = [];
+      const symbolSet = new Set();
+
+      dataSubWS.forEach((item) => {
+        if (!symbolSet.has(item.symbol)) {
+          symbolSet.add(item.symbol);
+          filteredData.push(item);
+        }
       });
 
-      filteredHoldingTokenData?.map((item) => {
-        priceSubscribe([item?.cmc_id], false, "", (data) => {
+      filteredData?.map((item) => {
+        priceSubscribe([Number(item?.cmcId)], false, "", (data) => {
           marketPriceToken = {
             id: data.id,
             market_price: data.price,
           };
         });
       });
-    }
-    if (holdingNFTData) {
-      holdingNFTData
-        ?.filter((item) => item?.nativeToken?.cmcId)
-        ?.map((item) => {
-          priceSubscribe(
-            [Number(item?.nativeToken?.cmcId)],
-            false,
-            "",
-            (data) => {
-              marketPriceNFT = {
-                id: data.id,
-                market_price: data.price,
-              };
-            }
-          );
-        });
     }
   }
 
@@ -198,7 +210,7 @@
         ) {
           return {
             ...item,
-            market_price: marketPriceToken.market_price,
+            market_price: Number(marketPriceToken.market_price),
             value: Number(item?.amount) * Number(marketPriceToken.market_price),
           };
         }
@@ -223,31 +235,6 @@
         (prev, item) => prev + Number(item?.profit.realizedProfit),
         0
       );
-    }
-    if (marketPriceNFT) {
-      const formatDataNFTWithMarketPrice = formatDataNFT.map((item) => {
-        if (
-          marketPriceNFT?.id.toString().toLowerCase() ===
-          item?.nativeToken?.cmcId.toString().toLowerCase()
-        ) {
-          return {
-            ...item,
-            market_price: marketPriceNFT.market_price,
-            current_value:
-              item?.floorPriceBTC * marketPriceNFT.market_price * item?.balance,
-          };
-        }
-        return { ...item };
-      });
-      formatDataNFT = formatDataNFTWithMarketPrice.sort((a, b) => {
-        if (a.current_value < b.current_value) {
-          return 1;
-        }
-        if (a.current_value > b.current_value) {
-          return -1;
-        }
-        return 0;
-      });
     }
   }
 
@@ -283,6 +270,7 @@
 
   $: colspan =
     $typeWallet === "SOL" ||
+    $typeWallet === "ALGO" ||
     $typeWallet === "EVM" ||
     $typeWallet === "BUNDLE" ||
     $typeWallet === "CEX"
@@ -298,14 +286,13 @@
         formatDataNFT = [];
         filteredHoldingDataToken = [];
         marketPriceToken = undefined;
-        marketPriceNFT = undefined;
       }
     }
   }
 </script>
 
 <div
-  class={`flex flex-col gap-6 rounded-[20px] p-6 ${
+  class={`flex flex-col gap-6 rounded-[20px] p-6 relative ${
     $isDarkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
   }`}
 >
@@ -404,6 +391,7 @@
                 <th
                   class={`py-3 ${
                     $typeWallet === "SOL" ||
+                    $typeWallet === "ALGO" ||
                     $typeWallet === "EVM" ||
                     $typeWallet === "BUNDLE" ||
                     $typeWallet === "CEX"
@@ -417,7 +405,7 @@
                     ROI
                   </div>
                 </th>
-                {#if $typeWallet === "SOL" || $typeWallet === "EVM" || $typeWallet === "BUNDLE" || $typeWallet === "CEX"}
+                {#if $typeWallet === "SOL" || $typeWallet === "ALGO" || $typeWallet === "EVM" || $typeWallet === "BUNDLE" || $typeWallet === "CEX"}
                   <th class="py-3 xl:w-14 w-32 rounded-tr-[10px]" />
                 {/if}
               </tr>
@@ -440,11 +428,14 @@
                     </td>
                   </tr>
                 {/if}
-                {#each filteredHoldingDataToken as holding}
-                  <ClosedHoldingTokenPosition data={holding} {selectedWallet} />
+                {#each filteredHoldingDataToken as holding, index}
+                  <ClosedHoldingTokenPosition
+                    lastIndex={filteredHoldingDataToken.length - 1 === index}
+                    data={holding}
+                    {selectedWallet}
+                  />
                 {/each}
               </tbody>
-
               {#if isLoadingToken}
                 <tbody>
                   <tr>
@@ -490,8 +481,10 @@
                       </td>
                     </tr>
                   {:else}
-                    {#each filteredHoldingDataToken as holding}
+                    {#each filteredHoldingDataToken as holding, index}
                       <ClosedHoldingTokenPosition
+                        lastIndex={filteredHoldingDataToken.length - 1 ===
+                          index}
                         data={holding}
                         {selectedWallet}
                       />
@@ -626,6 +619,16 @@
         </div>
       </div>
     {/if} -->
+
+    {#if $typeWallet === "CEX"}
+      <div
+        class={`absolute top-0 left-0 rounded-[20px] z-30 w-full h-full flex items-center justify-center ${
+          $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
+        } z-10 backdrop-blur-md`}
+      >
+        <div class="text-2xl xl:text-lg">Coming soon 🚀</div>
+      </div>
+    {/if}
   </ErrorBoundary>
 </div>
 

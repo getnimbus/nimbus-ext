@@ -1,7 +1,13 @@
 <script lang="ts">
   import { nimbus } from "~/lib/network";
   import { createQuery } from "@tanstack/svelte-query";
-  import { wallet, user, isDarkMode, typeWallet } from "~/store";
+  import {
+    wallet,
+    user,
+    isDarkMode,
+    typeWallet,
+    selectedPackage,
+  } from "~/store";
   import { autoFontSize } from "~/utils";
   import numeral from "numeral";
 
@@ -15,6 +21,7 @@
   export let data;
   export let id;
   export let avgCost;
+  export let filterType;
 
   let optionBar = {
     tooltip: {
@@ -33,7 +40,7 @@
                   $isDarkMode ? "white" : "black"
                 }">
                   <span>${params[0]?.marker}</span>
-                  Balance
+                  Amount
                 </div>
 
                 <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right;">
@@ -44,23 +51,29 @@
                   </div>
                 </div>
               </div>
-
-              <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
-                <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
-                  $isDarkMode ? "white" : "black"
-                }">
-                  <div style="margin-top: 5px; display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background-color:#eab308;"></div>
-                  Avg Cost
-                </div>
-                <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right;">
-                  <div style="margin-top: 4px; display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
-                    $isDarkMode ? "white" : "black"
-                  };">
-                    $${formatPrice(avgCost)}
+              
+              ${
+                avgCost !== undefined
+                  ? `
+                  <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
+                    <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
+                      $isDarkMode ? "white" : "black"
+                    }">
+                      <div style="margin-top: 5px; display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background-color:#eab308;"></div>
+                      Avg Cost
+                    </div>
+                    <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right;">
+                      <div style="margin-top: 4px; display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
+                        $isDarkMode ? "white" : "black"
+                      };">
+                        $${formatPrice(avgCost)}
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-
+                `
+                  : ``
+              }
+              
               <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
                 <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
                   $isDarkMode ? "white" : "black"
@@ -78,6 +91,10 @@
               </div>
             </div>`;
       },
+    },
+    grid: {
+      left: 70,
+      right: 70,
     },
     toolbox: {
       right: "4%",
@@ -119,23 +136,27 @@
     series: [],
   };
 
-  const handleGetTradeHistoryAnalysis = async (address) => {
+  const handleGetTradeHistoryAnalysis = async (address, filter) => {
     const response: any = await nimbus.get(
-      `/v2/address/${address}/token/${data?.contractAddress}/trade-analysis?chain=${data?.chain}`
+      `/v2/address/${address}/token/${data?.contractAddress}/trade-analysis?chain=${data?.chain}&type=${filter?.value}`
     );
     return response?.data;
   };
 
   $: queryHistoryTokenDetailAnalysis = createQuery({
-    queryKey: ["trade-history-analysis", data, $wallet],
-    queryFn: () => handleGetTradeHistoryAnalysis($wallet),
+    queryKey: ["trade-history-analysis", data, $wallet, filterType],
+    queryFn: () => handleGetTradeHistoryAnalysis($wallet, filterType),
     staleTime: Infinity,
     retry: false,
     enabled:
+      $selectedPackage !== "FREE" &&
       data !== undefined &&
       Object.keys(data).length !== 0 &&
       $wallet.length !== 0 &&
-      $typeWallet === "EVM",
+      ($typeWallet === "EVM" ||
+        ($typeWallet === "BUNDLE" &&
+          data?.chain !== "SOL" &&
+          data?.chain === "ALGO")),
     onError(err) {
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
@@ -225,71 +246,105 @@
             },
           ],
         };
-
-        sumCount = $queryHistoryTokenDetailAnalysis.data.reduce(
-          (prev, item) => prev + Number(item.count),
-          0
-        );
-
-        sumTotalToken = $queryHistoryTokenDetailAnalysis.data.reduce(
-          (prev, item) => prev + Number(item.totalToken),
-          0
-        );
-
-        // logic win
-        const winHistoryTokenDetail =
-          $queryHistoryTokenDetailAnalysis.data.filter(
-            (item) => item.price < data?.market_price
-          );
-
-        const formatWinHistoryTokenDetail = winHistoryTokenDetail.map(
-          (item) => {
-            return {
-              ...item,
-              valueProfit:
-                Number(data?.market_price) * Number(item.totalToken) -
-                Number(item.price) * Number(item.totalToken),
-            };
-          }
-        );
-
-        sumWinProfitHistoryTokenDetail = formatWinHistoryTokenDetail.reduce(
-          (prev, item) => prev + Number(item.valueProfit),
-          0
-        );
-
-        sumCountWinHistoryTokenDetail = winHistoryTokenDetail.reduce(
-          (prev, item) => prev + Number(item.count),
-          0
-        );
-
-        // logic lose
-        const lossHistoryTokenDetail =
-          $queryHistoryTokenDetailAnalysis.data.filter(
-            (item) => item.price > data?.market_price
-          );
-
-        const formatLossHistoryTokenDetail = lossHistoryTokenDetail.map(
-          (item) => {
-            return {
-              ...item,
-              valueProfit:
-                Number(data?.market_price) * Number(item.totalToken) -
-                Number(item.price) * Number(item.totalToken),
-            };
-          }
-        );
-
-        sumLossProfitHistoryTokenDetail = formatLossHistoryTokenDetail.reduce(
-          (prev, item) => prev + Number(item.valueProfit),
-          0
-        );
-
-        sumCountLossHistoryTokenDetail = lossHistoryTokenDetail.reduce(
-          (prev, item) => prev + Number(item.count),
-          0
-        );
+      } else {
+        optionBar = {
+          ...optionBar,
+          series: [
+            {
+              tooltip: {
+                show: true,
+              },
+              type: "bar",
+              itemStyle: {
+                color: "#27326F",
+                borderColor: "#27326F",
+              },
+              data: dataChart,
+              markLine: {
+                precision: 10,
+                symbol: ["none"],
+                data: [
+                  {
+                    name: "Current Price",
+                    label: "Current Price",
+                    xAxis: data?.market_price,
+                    lineStyle: {
+                      color: "#1e96fc",
+                      type: "solid",
+                      width: 2,
+                    },
+                  },
+                ],
+                label: {
+                  show: false,
+                },
+              },
+            },
+          ],
+        };
       }
+
+      sumCount = $queryHistoryTokenDetailAnalysis.data.reduce(
+        (prev, item) => prev + Number(item.count),
+        0
+      );
+
+      sumTotalToken = $queryHistoryTokenDetailAnalysis.data.reduce(
+        (prev, item) => prev + Number(item.totalToken),
+        0
+      );
+
+      // logic win
+      const winHistoryTokenDetail =
+        $queryHistoryTokenDetailAnalysis.data.filter(
+          (item) => Number(item.price) <= Number(data?.market_price)
+        );
+
+      const formatWinHistoryTokenDetail = winHistoryTokenDetail.map((item) => {
+        return {
+          ...item,
+          valueProfit:
+            Number(data?.market_price) * Number(item.totalToken) -
+            Number(item.price) * Number(item.totalToken),
+        };
+      });
+
+      sumWinProfitHistoryTokenDetail = formatWinHistoryTokenDetail.reduce(
+        (prev, item) => prev + Number(item.valueProfit),
+        0
+      );
+
+      sumCountWinHistoryTokenDetail = winHistoryTokenDetail.reduce(
+        (prev, item) => prev + Number(item.count),
+        0
+      );
+
+      // logic lose
+      const lossHistoryTokenDetail =
+        $queryHistoryTokenDetailAnalysis.data.filter(
+          (item) => Number(item.price) > Number(data?.market_price)
+        );
+
+      const formatLossHistoryTokenDetail = lossHistoryTokenDetail.map(
+        (item) => {
+          return {
+            ...item,
+            valueProfit:
+              Number(data?.market_price) * Number(item.totalToken) -
+              Number(item.price) * Number(item.totalToken),
+          };
+        }
+      );
+
+      sumLossProfitHistoryTokenDetail = formatLossHistoryTokenDetail.reduce(
+        (prev, item) => prev + Number(item.valueProfit),
+        0
+      );
+
+      sumCountLossHistoryTokenDetail = lossHistoryTokenDetail.reduce(
+        (prev, item) => prev + Number(item.count),
+        0
+      );
     } else {
       optionBar = {
         ...optionBar,
@@ -384,13 +439,17 @@
       <div class="xl:text-lg text-xl">Win / Lose addresses</div>
       <div
         class="h-2 rounded-lg relative"
-        style={`background: linear-gradient(to right, #25b770 ${(
-          (sumCountWinHistoryTokenDetail / sumCount) *
-          100
-        ).toFixed(2)}%, #e14040 ${(
-          (sumCountWinHistoryTokenDetail / sumCount) *
-          100
-        ).toFixed(2)}%)`}
+        style={`background: ${
+          sumCountWinHistoryTokenDetail === 0
+            ? "#00000066"
+            : `linear-gradient(to right, #25b770 ${(
+                (sumCountWinHistoryTokenDetail / sumCount) *
+                100
+              ).toFixed(2)}%, #e14040 ${(
+                (sumCountWinHistoryTokenDetail / sumCount) *
+                100
+              ).toFixed(2)}%)`
+        }`}
       >
         <div class="absolute top-5 left-0 xl:text-sm text-xl">
           <TooltipNumber
@@ -411,17 +470,21 @@
       <div class="xl:text-lg text-xl">Profit / Loss</div>
       <div
         class="h-2 rounded-lg relative"
-        style={`background: linear-gradient(to right, #25b770 ${Math.abs(
-          (sumWinProfitHistoryTokenDetail /
-            (Math.abs(sumLossProfitHistoryTokenDetail) +
-              Math.abs(sumWinProfitHistoryTokenDetail))) *
-            100
-        ).toFixed(2)}%, #e14040 ${Math.abs(
-          (sumWinProfitHistoryTokenDetail /
-            (Math.abs(sumLossProfitHistoryTokenDetail) +
-              Math.abs(sumWinProfitHistoryTokenDetail))) *
-            100
-        ).toFixed(2)}%)`}
+        style={`background: ${
+          sumWinProfitHistoryTokenDetail === 0
+            ? "#00000066"
+            : `linear-gradient(to right, #25b770 ${Math.abs(
+                (sumWinProfitHistoryTokenDetail /
+                  (Math.abs(sumLossProfitHistoryTokenDetail) +
+                    Math.abs(sumWinProfitHistoryTokenDetail))) *
+                  100
+              ).toFixed(2)}%, #e14040 ${Math.abs(
+                (sumWinProfitHistoryTokenDetail /
+                  (Math.abs(sumLossProfitHistoryTokenDetail) +
+                    Math.abs(sumWinProfitHistoryTokenDetail))) *
+                  100
+              ).toFixed(2)}%)`
+        }`}
       >
         <div class="flex gap-1 absolute top-5 left-0 xl:text-sm text-xl w-max">
           Profit

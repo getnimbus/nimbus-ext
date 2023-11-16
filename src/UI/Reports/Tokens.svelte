@@ -1,17 +1,18 @@
-<script>
+<script lang="ts">
   import { i18n } from "~/lib/i18n";
   import { isDarkMode, user } from "~/store";
   import { nimbus } from "~/lib/network";
   import { Toast } from "flowbite-svelte";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
-  import { handleImgError } from "~/utils";
 
+  import Image from "~/components/Image.svelte";
   import Button from "~/components/Button.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
   import Loading from "~/components/Loading.svelte";
 
+  import defaultToken from "~/assets/defaultToken.png";
+
   const MultipleLang = {
-    title: i18n("optionsPage.report-token-page-title", "Report Token Settings"),
     content: {
       chain_header_table: i18n(
         "optionsPage.token-tab-content.chain-header-table",
@@ -73,7 +74,7 @@
   };
 
   const handleDataReportToken = async () => {
-    const response = await nimbus.get("/holding/trash");
+    const response = await nimbus.get("/holding/trash?type=token");
     return response.data;
   };
 
@@ -110,169 +111,143 @@
   };
 </script>
 
-<div class="flex flex-col gap-4">
-  <div class="flex flex-col gap-1 border-b-[1.5px] border_0000000d pb-4">
-    <div class="xl:title-3 title-1">
-      {MultipleLang.title}
-    </div>
-    <div class="xl:text-base text-xl text-gray-500">
-      Management your report spam or trash tokens
-    </div>
-  </div>
+<div
+  class={`border border_0000000d rounded-[10px] overflow-x-auto h-full ${
+    $isDarkMode ? "bg-[#131313]" : "bg-[#fff]"
+  }`}
+>
+  <table class="table-auto xl:w-full w-[1800px] h-full">
+    <thead>
+      <tr class="bg_f4f5f8">
+        <th class="py-3 pl-3">
+          <div class="text-xl font-semibold uppercase xl:text-xs text-left">
+            {MultipleLang.content.assets_header_table}
+          </div>
+        </th>
 
-  <div class={`${$query.isLoading ? "h-[400px]" : ""}`}>
-    <div
-      class={`border border_0000000d rounded-[10px] overflow-x-auto h-full ${
-        $isDarkMode ? "bg-[#131313]" : "bg-[#fff]"
-      }`}
-    >
-      <table class="table-auto xl:w-full w-[1800px] h-full">
-        <thead>
-          <tr class="bg_f4f5f8">
-            <th class="py-3 pl-3">
-              <div class="text-xl font-semibold uppercase xl:text-xs text-left">
-                {MultipleLang.content.assets_header_table}
-              </div>
-            </th>
+        <th class="py-3">
+          <div class="text-xl font-semibold uppercase xl:text-xs text-left">
+            {MultipleLang.content.contract_address_header_table}
+          </div>
+        </th>
 
-            <th class="py-3">
-              <div class="text-xl font-semibold uppercase xl:text-xs text-left">
-                {MultipleLang.content.contract_address_header_table}
-              </div>
-            </th>
+        <th class="py-3">
+          <div class="text-xl font-semibold text-right uppercase xl:text-xs">
+            {MultipleLang.content.chain_header_table}
+          </div>
+        </th>
 
-            <th class="py-3">
+        <th class="py-3 pr-3">
+          <div class="text-xl font-semibold text-right uppercase xl:text-xs">
+            {MultipleLang.content.action_header_table}
+          </div>
+        </th>
+      </tr>
+    </thead>
+
+    {#if $query.isError}
+      <tbody>
+        <tr>
+          <td colspan="4">
+            <div class="flex items-center justify-center h-full px-3 py-4">
+              Please connect wallet
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    {:else if $query.isLoading}
+      <tbody>
+        <tr>
+          <td colspan="4">
+            <div class="flex items-center justify-center h-full px-3 py-4">
+              <Loading />
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    {:else}
+      <tbody>
+        {#if ($query.data && $query.data.length === 0) || $query.isError}
+          <tr>
+            <td colspan="4">
               <div
-                class="text-xl font-semibold text-right uppercase xl:text-xs"
+                class="flex items-center justify-center h-full px-3 py-4 text-2xl xl:text-base"
               >
-                {MultipleLang.content.chain_header_table}
+                No report tokens
               </div>
-            </th>
-
-            <th class="py-3 pr-3">
-              <div
-                class="text-xl font-semibold text-right uppercase xl:text-xs"
-              >
-                {MultipleLang.content.action_header_table}
-              </div>
-            </th>
+            </td>
           </tr>
-        </thead>
-
-        {#if $query.isError}
-          <tbody>
-            <tr>
-              <td colspan="4">
-                <div class="flex items-center justify-center h-full px-3 py-4">
-                  Please connect wallet
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        {:else if $query.isLoading}
-          <tbody>
-            <tr>
-              <td colspan="4">
-                <div class="flex items-center justify-center h-full px-3 py-4">
-                  <Loading />
-                </div>
-              </td>
-            </tr>
-          </tbody>
         {:else}
-          <tbody>
-            {#if ($query.data && $query.data.length === 0) || $query.isError}
-              <tr>
-                <td colspan="4">
-                  <div
-                    class="flex items-center justify-center h-full px-3 py-4 text-2xl xl:text-base"
-                  >
-                    No report tokens
+          {#each $query.data as item}
+            <tr class="group transition-all">
+              <td
+                class={`pl-3 py-3 ${
+                  $isDarkMode
+                    ? "group-hover:bg-[#000]"
+                    : "group-hover:bg-gray-100"
+                }`}
+              >
+                <div class="flex items-center justify-start gap-3">
+                  <div class="w-6 h-6 rounded-full overflow-hidden">
+                    <Image logo={item?.logoUrl} defaultLogo={defaultToken} />
                   </div>
-                </td>
-              </tr>
-            {:else}
-              {#each $query.data as item}
-                <tr class="group transition-all">
-                  <td
-                    class={`pl-3 py-3 ${
-                      $isDarkMode
-                        ? "group-hover:bg-[#000]"
-                        : "group-hover:bg-gray-100"
-                    }`}
-                  >
-                    <div class="flex items-center justify-start gap-3">
-                      <img
-                        src={item.logoUrl}
-                        alt=""
-                        width="35"
-                        height="35"
-                        class="rounded-full"
-                        on:error={(e) =>
-                          handleImgError(
-                            e,
-                            item?.logoUrl,
-                            "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
-                          )}
-                      />
-                      <div class="xl:text-base text-2xl">
-                        {item.contractName}
-                      </div>
-                    </div>
-                  </td>
+                  <div class="xl:text-base text-2xl">
+                    {item.contractName}
+                  </div>
+                </div>
+              </td>
 
-                  <td
-                    class={`py-3 ${
-                      $isDarkMode
-                        ? "group-hover:bg-[#000]"
-                        : "group-hover:bg-gray-100"
-                    }`}
-                  >
-                    <div class="xl:text-base text-2xl text-left">
-                      {item.contractAddress}
-                    </div>
-                  </td>
+              <td
+                class={`py-3 ${
+                  $isDarkMode
+                    ? "group-hover:bg-[#000]"
+                    : "group-hover:bg-gray-100"
+                }`}
+              >
+                <div class="xl:text-base text-2xl text-left">
+                  {item.contractAddress}
+                </div>
+              </td>
 
-                  <td
-                    class={`py-3 ${
-                      $isDarkMode
-                        ? "group-hover:bg-[#000]"
-                        : "group-hover:bg-gray-100"
-                    }`}
-                  >
-                    <div class="xl:text-base text-2xl text-right">
-                      {item.chain}
-                    </div>
-                  </td>
+              <td
+                class={`py-3 ${
+                  $isDarkMode
+                    ? "group-hover:bg-[#000]"
+                    : "group-hover:bg-gray-100"
+                }`}
+              >
+                <div class="xl:text-base text-2xl text-right">
+                  {item.chain}
+                </div>
+              </td>
 
-                  <td
-                    class={`py-3 pr-3 ${
-                      $isDarkMode
-                        ? "group-hover:bg-[#000]"
-                        : "group-hover:bg-gray-100"
-                    }`}
-                  >
-                    <div
-                      class="xl:text-base text-2xl font-semibold text-red-600 transition-all cursor-pointer hover:underline dark:text-red-500 text-right"
-                      on:click={() => {
-                        selectedItemDelete = {
-                          chain: item.chain,
-                          contractAddress: item.contractAddress,
-                        };
-                        isOpenConfirmDelete = true;
-                      }}
-                    >
-                      {MultipleLang.content.modal_delete}
-                    </div>
-                  </td>
-                </tr>
-              {/each}
-            {/if}
-          </tbody>
+              <td
+                class={`py-3 pr-3 ${
+                  $isDarkMode
+                    ? "group-hover:bg-[#000]"
+                    : "group-hover:bg-gray-100"
+                }`}
+              >
+                <div
+                  class="xl:text-base text-2xl font-semibold text-red-600 transition-all cursor-pointer hover:underline dark:text-red-500 text-right"
+                  on:click={() => {
+                    selectedItemDelete = {
+                      chain: item.chain,
+                      contractAddress: item.contractAddress,
+                      type: "token",
+                    };
+                    isOpenConfirmDelete = true;
+                  }}
+                >
+                  {MultipleLang.content.modal_delete}
+                </div>
+              </td>
+            </tr>
+          {/each}
         {/if}
-      </table>
-    </div>
-  </div>
+      </tbody>
+    {/if}
+  </table>
 </div>
 
 <AppOverlay

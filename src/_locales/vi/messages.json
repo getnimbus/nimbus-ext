@@ -23,7 +23,7 @@
   "optionsPage": {
     "message": "Options page languages",
     "tab-title-accounts": "Tài khoản",
-    "tab-title-report-token": "Báo cáo tokens",
+    "tab-title-report": "Báo cáo",
     "tab-title-alerts": "Cảnh báo",
     "tab-title-dashboard": "Bảng điều khiển",
     "tab-title-highlight": "Highlight",
@@ -32,7 +32,7 @@
     "tab-title-nft": "NFT",
     "nft-page-title": "NFT của tôi",
     "accounts-page-title": "Cài đặt tài khoản",
-    "report-token-page-title": "Cài đặt báo cáo token",
+    "report-page-title": "Cài đặt báo cáo",
     "dashboard-page-title": "Bảng điều khiển",
     "highlight-page-title": "Điểm nổi bật",
     "notification-page-title": "Thông báo",
@@ -60,7 +60,7 @@
       "modal-edit-highlight-sub-title": "Việc thay đổi highlight tài khoản của bạn sẽ làm thay đổi highlight",
       "address-required": "Tài khoản là bắt buộc!",
       "label-required": "Tên là bắt buộc!",
-      "re-input-address": "Vui lòng điền lại tài khoản!",
+      "re-input-address": "Tài khoản không hợp lệ!",
       "duplicate-address": "Tài khoản đã được lưu!"
     },
     "settings-page-content": {

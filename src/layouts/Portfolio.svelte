@@ -5,9 +5,8 @@
   import relativeTime from "dayjs/plugin/relativeTime";
   dayjs.extend(relativeTime);
   import { groupBy, isEmpty, flatten } from "lodash";
-  import { onDestroy, onMount } from "svelte";
+  import { onMount } from "svelte";
   import { i18n } from "~/lib/i18n";
-  import { disconnectWs, initWS } from "~/lib/price-ws";
   import { chainList, driverObj } from "~/utils";
   import { wait } from "../entries/background/utils";
   import {
@@ -45,6 +44,7 @@
   import "~/components/Tooltip.custom.svelte";
 
   import Reload from "~/assets/reload.svg";
+  import defaultToken from "~/assets/defaultToken.png";
 
   const MultipleLang = {
     portfolio: i18n("newtabPage.portfolio", "Portfolio"),
@@ -257,7 +257,7 @@
 
     const dataPieChartOrderBreakdownToken = [
       {
-        logo: "https://raw.githubusercontent.com/getnimbus/assets/main/token.png",
+        logo: defaultToken,
         name: "Other tokens",
         symbol: "",
         name_ratio: "Ratio",
@@ -272,9 +272,7 @@
     const formatDataPieChartTopFiveToken = topFiveBreakdownToken?.map(
       (item) => {
         return {
-          logo:
-            item.logo ||
-            "https://raw.githubusercontent.com/getnimbus/assets/main/token.png",
+          logo: item.logo || defaultToken,
           name: item.name || item.symbol,
           symbol: item.symbol,
           name_ratio: "Ratio",
@@ -304,10 +302,9 @@
 
   // token holding
   const getVaults = async (address, chain) => {
+    let type = $typeWallet === "SOL" || $typeWallet === "ALGO";
     const response = await nimbus.get(
-      `/v2/investment/${address}/vaults?chain=${
-        $typeWallet === "SOL" ? "SOL" : ""
-      }`
+      `/v2/investment/${address}/vaults?chain=${type ? $typeWallet : ""}`
     );
     return response?.data;
   };
@@ -319,27 +316,8 @@
     return response;
   };
 
-  const formatDataHoldingToken = (dataTokenHolding, dataVaults) => {
-    const formatDataTokenHolding = dataTokenHolding?.map((item) => {
-      try {
-        const regex = new RegExp(`(^${item?.symbol}|-${item?.symbol})`);
-        const filteredVaults = dataVaults?.filter((data) =>
-          data.name.match(regex)
-        );
-
-        return {
-          ...item,
-          vaults: filteredVaults,
-        };
-      } catch (error) {
-        return {
-          ...item,
-          vaults: [],
-        };
-      }
-    });
-
-    const formatData = formatDataTokenHolding
+  const formatDataHoldingToken = (data) => {
+    const formatData = data
       ?.map((item) => {
         return {
           ...item,
@@ -357,7 +335,7 @@
         return 0;
       });
 
-    holdingTokenData = formatData;
+    holdingTokenData = formatData?.filter((item) => Number(item.amount) > 0);
 
     closedHoldingPosition = formatData
       ?.filter((item) => item?.profit?.realizedProfit)
@@ -651,14 +629,14 @@
           ?.map((item) => item.data)
       );
       if (allTokens && allTokens.length !== 0) {
-        formatDataHoldingToken(allTokens, $queryVaults.data);
+        formatDataHoldingToken(allTokens);
       }
     }
   }
 
   $: {
     if (!$queryTokenHolding.isError && $queryTokenHolding.data !== undefined) {
-      formatDataHoldingToken($queryTokenHolding.data, $queryVaults.data);
+      formatDataHoldingToken($queryTokenHolding.data);
     }
   }
 
@@ -672,14 +650,9 @@
   });
 
   onMount(() => {
-    initWS();
     mixpanel.track("portfolio_page", {
       address: $wallet,
     });
-  });
-
-  onDestroy(() => {
-    disconnectWs();
   });
 
   const handleSelectedTableTokenHolding = (data, selectDatPieChart) => {
@@ -748,7 +721,7 @@
     $chain === "ALL"
       ? $queryAllTokenHolding &&
         $queryAllTokenHolding.some((item) => item.isFetching === true) &&
-        $queryAllTokenHolding &&
+        $queryAllNftHolding &&
         $queryAllNftHolding.some((item) => item.isFetching === true) &&
         $queryVaults.isFetching &&
         $queryOverview.isFetching
@@ -848,9 +821,7 @@
                 isLoadingBreakdownNfts={$queryAllNftHolding.some(
                   (item) => item.isFetching === true
                 )}
-                holdingTokenData={holdingTokenData?.filter(
-                  (item) => Number(item.amount) > 0
-                )}
+                {holdingTokenData}
                 {overviewDataPerformance}
                 {dataPieChartToken}
                 {dataPieChartNft}
@@ -877,12 +848,11 @@
                       (item) => item.isFetching === true
                     )
                   : $queryTokenHolding.isFetching}
-                holdingTokenData={holdingTokenData?.filter(
-                  (item) => Number(item.amount) > 0
-                )}
+                {holdingTokenData}
+                {holdingNFTData}
+                dataVaults={$queryVaults.data}
                 {selectedTokenHolding}
                 {selectedDataPieChart}
-                {holdingNFTData}
                 bind:totalAssets
               />
 

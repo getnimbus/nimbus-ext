@@ -31,7 +31,12 @@
   import PlusBlack from "~/assets/plus-black.svg";
   import User from "~/assets/user.png";
   import Success from "~/assets/shield-done.svg";
+
+  import All from "~/assets/all.svg";
+  import BitcoinLogo from "~/assets/bitcoin.png";
   import SolanaLogo from "~/assets/solana.png";
+  import AuraLogo from "~/assets/aura.png";
+  import AlgorandLogo from "~/assets/algorand.png";
 
   const MultipleLang = {
     title: i18n("optionsPage.accounts-page-title", "Account Settings"),
@@ -149,6 +154,9 @@
   let isDisabled = false;
   let tooltipDisableAddBtn = "";
 
+  let groupedToBundles = true;
+  let selectYourWalletsBundle = [];
+
   let scrollContainer;
   let isScrollStart = true;
   let isScrollEnd = false;
@@ -259,18 +267,45 @@
 
   const formatDataListAddress = (data) => {
     const structWalletData = data.map((item) => {
+      let logo = All;
+      if (item?.type === "BTC") {
+        logo = BitcoinLogo;
+      }
+      if (item?.type === "SOL") {
+        logo = SolanaLogo;
+      }
+      if (item?.type === "ALGO") {
+        logo = AlgorandLogo;
+      }
       return {
         position: item.position,
         id: item.id,
         type: item.type,
         label: item.label,
+        logo: item.type === "CEX" ? item.logo : logo,
         address: item.type === "CEX" ? item.id : item.accountId,
+        accounts:
+          item?.accounts?.map((account) => {
+            return {
+              id: account?.id,
+              type: account?.type,
+              label: account?.label,
+              value: account?.type === "CEX" ? account?.id : account?.accountId,
+            };
+          }) || [],
       };
     });
 
     listAddress = structWalletData;
     listAddressWithoutBundle = structWalletData.filter(
       (item) => item.type !== "BUNDLE"
+    );
+
+    const selectYourBundle = structWalletData.find(
+      (item) => item.type === "BUNDLE" && item.label === "Your wallets"
+    );
+    selectYourWalletsBundle = selectYourBundle?.accounts?.map(
+      (item) => item.value
     );
 
     if (listAddressWithoutBundle && listAddressWithoutBundle?.length === 1) {
@@ -323,6 +358,17 @@
         !Object.keys(errors).some((inputName) => errors[inputName]["required"])
       ) {
         Object.assign(data, { id: data.address });
+
+        if (groupedToBundles) {
+          await nimbus.put(
+            `/address/personalize/bundle?name=${"Your wallets"}`,
+            {
+              name: "Your wallets",
+              addresses: selectYourWalletsBundle.concat([data.address]),
+            }
+          );
+          queryClient.invalidateQueries(["list-bundle"]);
+        }
 
         const response = await nimbus.post("/accounts", {
           type: "DEX",
@@ -1135,14 +1181,22 @@
             nameBundle && !$isDarkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
           }`}
         >
-          <div class="xl:text-base text-2xl text-[#666666] font-medium">
+          <div
+            class={`xl:text-base text-2xl font-medium ${
+              $isDarkMode ? "text-gray-400" : "text-[#666666]"
+            }`}
+          >
             Bundle
           </div>
           <input
             type="text"
             placeholder="Your bundle name"
-            class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
+            class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal ${
               nameBundle && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+            } ${
+              $isDarkMode
+                ? "text-white"
+                : "text-[#5E656B] placeholder-[#5E656B]"
             }`}
             required
             disabled={selectedBundle?.name === "Your wallets" ? true : false}
@@ -1230,7 +1284,14 @@
                                 class="cursor-pointer relative w-5 h-5 appearance-none rounded-[0.25rem] border outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white checked:focus:after:bg-transparent dark:border-neutral-600 dark:checked:border-primary dark:checked:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]"
                               />
                             </div>
-                            {item.label}
+                            <div class="flex items-center gap-2">
+                              <img
+                                src={item.logo}
+                                alt=""
+                                class="w-5 h-5 xl:w-4 xl:h-4 rounded-full"
+                              />
+                              {item.label}
+                            </div>
                           </div>
                         </td>
 
@@ -1423,7 +1484,14 @@
                               fill="#9ca3af"
                             />
                           </svg>
-                          {item.label}
+                          <div class="flex items-center gap-2">
+                            <img
+                              src={item.logo}
+                              alt=""
+                              class="w-5 h-5 xl:w-4 xl:h-4 rounded-full"
+                            />
+                            {item.label}
+                          </div>
                         </div>
                       </td>
 
@@ -1435,7 +1503,7 @@
                         }`}
                       >
                         <div
-                          class="text_27326F w-max px-3 py-1 rounded-[5px] xl:text-base text-2xl"
+                          class="bg-[#6AC7F533] text_27326F w-max px-3 py-1 rounded-[5px] xl:text-base text-2xl"
                         >
                           <Copy
                             address={item.address}
@@ -1519,17 +1587,15 @@
             target="_blank">Learn more</a
           >
         </div>
-        <div
-          class="flex items-center justify-center gap-6 my-3 text-2xl xl:text-base"
-        >
+        <div class="flex items-center justify-center gap-6 my-3">
           {#each listLogoCEX as logo}
-            <div
-              class="flex items-center justify-center w-10 h-10 overflow-hidden rounded-full xl:w-8 xl:h-8"
-            >
-              <img src={logo} alt="" class="object-contain w-full h-full" />
-            </div>
+            <img
+              src={logo}
+              alt=""
+              class="xl:w-8 xl:h-8 w-10 h-10 rounded-full"
+            />
           {/each}
-          <div class="text-gray-400">+22 More</div>
+          <div class="text-gray-400 text-2xl xl:text-base">+22 More</div>
         </div>
       </div>
       <div class="border-t-[1px] relative">
@@ -1554,7 +1620,11 @@
               class:input-border-error={errors.address &&
                 errors.address.required}
             >
-              <div class="xl:text-base text-2xl text-[#666666] font-medium">
+              <div
+                class={`xl:text-base text-2xl font-medium ${
+                  $isDarkMode ? "text-gray-400" : "text-[#666666]"
+                }`}
+              >
                 Address
               </div>
               <input
@@ -1563,8 +1633,12 @@
                 name="address"
                 placeholder="Your wallet address"
                 value=""
-                class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
+                class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal ${
                   address && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+                } ${
+                  $isDarkMode
+                    ? "text-white"
+                    : "text-[#5E656B] placeholder-[#5E656B]"
                 }
               `}
                 on:keyup={({ target: { value } }) => (address = value)}
@@ -1583,7 +1657,11 @@
               }`}
               class:input-border-error={errors.label && errors.label.required}
             >
-              <div class="xl:text-base text-2xl text-[#666666] font-medium">
+              <div
+                class={`xl:text-base text-2xl font-medium ${
+                  $isDarkMode ? "text-gray-400" : "text-[#666666]"
+                }`}
+              >
                 {MultipleLang.content.modal_label_label}
               </div>
               <input
@@ -1592,8 +1670,12 @@
                 name="label"
                 placeholder={MultipleLang.content.modal_label_label}
                 value=""
-                class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
+                class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal ${
                   label && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+                } ${
+                  $isDarkMode
+                    ? "text-white"
+                    : "text-[#5E656B] placeholder-[#5E656B]"
                 }
               `}
                 on:keyup={({ target: { value } }) => (label = value)}
@@ -1607,20 +1689,34 @@
           </div>
         </div>
         <div
-          class="flex items-center justify-center gap-6 my-3 text-2xl xl:text-base"
+          class="flex items-center justify-end gap-2 text-[#666666] xl:mt-0 mt-3"
         >
-          {#each [{ logo: SolanaLogo, label: "Solana", value: "SOL" }].concat(chainList) as item}
-            <div
-              class="flex items-center justify-center w-10 h-10 overflow-hidden rounded-full xl:w-8 xl:h-8"
-            >
-              <img
-                src={item.logo}
-                alt=""
-                class="object-contain w-full h-full"
-              />
-            </div>
+          <div class="xl:text-sm text-2xl">Is it your wallet?</div>
+          <label class="switch">
+            <input type="checkbox" bind:checked={groupedToBundles} />
+            <span class="slider" />
+          </label>
+        </div>
+        <div class="xl:flex hidden items-center justify-center gap-6 my-3">
+          {#each [{ logo: SolanaLogo, label: "Solana", value: "SOL" }, { logo: AlgorandLogo, label: "Algorand", value: "ALGO" }, { logo: BitcoinLogo, label: "Bitcoin", value: "BTC" }].concat(chainList.slice(1)) as item}
+            <img
+              src={item.logo}
+              alt=""
+              class="xl:w-8 xl:h-8 w-10 h-10 overflow-hidden rounded-full"
+            />
           {/each}
-          <div class="text-gray-400">More soon</div>
+        </div>
+        <div class="xl:hidden flex items-center justify-center gap-6 my-3">
+          {#each [{ logo: SolanaLogo, label: "Solana", value: "SOL" }, { logo: AlgorandLogo, label: "Algorand", value: "ALGO" }, { logo: BitcoinLogo, label: "Bitcoin", value: "BTC" }].concat(chainList
+              .slice(1)
+              .slice(0, -7)) as item}
+            <img
+              src={item.logo}
+              alt=""
+              class="xl:w-8 xl:h-8 w-10 h-10 overflow-hidden rounded-full"
+            />
+          {/each}
+          <div class="text-gray-400 xl:text-base text-2xl">+7 More</div>
         </div>
         <div class="flex justify-end gap-6 lg:gap-2">
           <div class="lg:w-[120px] w-full">
@@ -1671,7 +1767,11 @@
               address && !$isDarkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
             }`}
           >
-            <div class="xl:text-base text-2xl font-semibold text-[#666666]">
+            <div
+              class={`xl:text-base text-2xl font-semibold ${
+                $isDarkMode ? "text-gray-400" : "text-[#666666]"
+              }`}
+            >
               {MultipleLang.content.modal_address_label}
             </div>
             <input
@@ -1681,8 +1781,12 @@
               name="address"
               placeholder={MultipleLang.content.modal_address_label}
               value={address}
-              class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
+              class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal ${
                 address && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+              } ${
+                $isDarkMode
+                  ? "text-white"
+                  : "text-[#5E656B] placeholder-[#5E656B]"
               }`}
             />
           </div>
@@ -1695,7 +1799,11 @@
             class:input-border-error={errorsEdit.label &&
               errorsEdit.label.required}
           >
-            <div class="xl:text-base text-2xl font-semibold text-[#666666]">
+            <div
+              class={`xl:text-base text-2xl font-semibold ${
+                $isDarkMode ? "text-gray-400" : "text-[#666666]"
+              }`}
+            >
               {MultipleLang.content.modal_label_label}
             </div>
             <input
@@ -1704,8 +1812,12 @@
               name="label"
               placeholder={MultipleLang.content.modal_label_label}
               bind:value={label}
-              class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
+              class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal ${
                 label && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+              } ${
+                $isDarkMode
+                  ? "text-white"
+                  : "text-[#5E656B] placeholder-[#5E656B]"
               }`}
               on:keyup={({ target: { value } }) => (label = value)}
             />
@@ -1854,7 +1966,11 @@
           email && !$isDarkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
         }`}
       >
-        <div class="xl:text-base text-2xl text-[#666666] font-medium">
+        <div
+          class={`xl:text-base text-2xl font-medium ${
+            $isDarkMode ? "text-gray-400" : "text-[#666666]"
+          }`}
+        >
           Email
         </div>
         <input
@@ -1864,8 +1980,10 @@
           required
           placeholder="Your email"
           value=""
-          class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
+          class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal ${
             email && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+          } ${
+            $isDarkMode ? "text-white" : "text-[#5E656B] placeholder-[#5E656B]"
           }
               `}
           on:keyup={({ target: { value } }) => (email = value)}
@@ -1977,5 +2095,78 @@
     display: flex !important;
     justify-content: space-between !important;
     background: black !important;
+  }
+
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 20px;
+  }
+
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: 0.4s;
+    transition: 0.4s;
+    border-radius: 34px;
+  }
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 4px;
+    bottom: 2px;
+    background-color: white;
+    -webkit-transition: 0.4s;
+    transition: 0.4s;
+    border-radius: 50%;
+  }
+  input:checked + .slider {
+    background-color: #2196f3;
+  }
+  input:checked + .slider {
+    box-shadow: 0 0 1px #2196f3;
+  }
+  input:checked + .slider:before {
+    -webkit-transform: translateX(16px);
+    -ms-transform: translateX(16px);
+    transform: translateX(16px);
+  }
+
+  @media screen and (max-width: 1280px) {
+    .switch {
+      width: 60px;
+      height: 30px;
+    }
+
+    .slider {
+      border-radius: 44px;
+    }
+
+    .slider:before {
+      height: 26px;
+      width: 26px;
+      left: 4px;
+      bottom: 2px;
+    }
+
+    input:checked + .slider:before {
+      -webkit-transform: translateX(26px);
+      -ms-transform: translateX(26px);
+      transform: translateX(26px);
+    }
   }
 </style>

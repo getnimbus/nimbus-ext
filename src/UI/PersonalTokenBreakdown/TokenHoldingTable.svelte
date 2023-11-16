@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { onMount } from "svelte";
   import { detectedChain, shorterName } from "~/utils";
   import { i18n } from "~/lib/i18n";
   import { isDarkMode, typeWallet } from "~/store";
@@ -25,22 +24,9 @@
     empty: i18n("newtabPage.empty", "Empty"),
   };
 
-  let tableTokenHeader;
-  let isStickyTableToken = false;
   let isShowTooltipName = false;
   let isShowTooltipSymbol = false;
   let selectedHover = "";
-
-  onMount(() => {
-    const handleScroll = () => {
-      const clientRectTokenHeader = tableTokenHeader?.getBoundingClientRect();
-      isStickyTableToken = clientRectTokenHeader?.top <= 0;
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  });
 </script>
 
 <div class={`${isLoadingToken ? "h-[400px]" : ""}`}>
@@ -50,10 +36,7 @@
     }`}
   >
     <table class="table-auto xl:w-full w-[1400px] h-full">
-      <thead
-        class={isStickyTableToken ? "sticky top-0 z-10" : ""}
-        bind:this={tableTokenHeader}
-      >
+      <thead>
         <tr class="bg_f4f5f8">
           <th
             class="rounded-tl-[10px] py-3 pl-3 xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8 xl:w-[230px] w-[280px]"
@@ -145,10 +128,10 @@
                         height="30"
                         class="rounded-full"
                       />
-                      {#if $typeWallet === "EVM"}
+                      {#if ($typeWallet === "EVM" || $typeWallet === "BUNDLE") && data?.chain !== "CEX"}
                         <div class="absolute -top-2 -right-1">
                           <img
-                            src={detectedChain(data.chain)}
+                            src={detectedChain(data?.chain)}
                             alt=""
                             width="15"
                             height="15"

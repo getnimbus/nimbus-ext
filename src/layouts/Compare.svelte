@@ -43,6 +43,7 @@
   import LeftArrowBlack from "~/assets/left-arrow-black.svg";
   import Logo from "~/assets/logo-1.svg";
   import LogoWhite from "~/assets/logo-white.svg";
+  import defaultToken from "~/assets/defaultToken.png";
 
   const MultipleLang = {
     token_allocation: i18n("newtabPage.token-allocation", "Token Allocation"),
@@ -378,7 +379,7 @@
 
     const dataPieChartOrderBreakdownToken = [
       {
-        logo: "https://raw.githubusercontent.com/getnimbus/assets/main/token.png",
+        logo: defaultToken,
         name: "Other tokens",
         symbol: "",
         name_ratio: "Ratio",
@@ -786,7 +787,7 @@
 
       const dataPieChartOrderBreakdownToken = [
         {
-          logo: "https://raw.githubusercontent.com/getnimbus/assets/main/token.png",
+          logo: defaultToken,
           name: "Other tokens",
           symbol: "",
           name_ratio: "Ratio",
@@ -927,13 +928,17 @@
         </div>
       {:else}
         <div class="hidden text-3xl xl:text-base xl:block">
-          <Copy address={$wallet} iconColor="#000" color="#000" />
+          <Copy
+            address={$wallet}
+            iconColor={$isDarkMode ? "#fff" : "#000"}
+            color={$isDarkMode ? "#fff" : "#000"}
+          />
         </div>
         <div class="block text-3xl xl:text-base xl:hidden">
           <Copy
             address={$wallet}
-            iconColor="#000"
-            color="#000"
+            iconColor={$isDarkMode ? "#fff" : "#000"}
+            color={$isDarkMode ? "#fff" : "#000"}
             isShorten
             iconSize={24}
           />
@@ -961,7 +966,7 @@
             <div class="w-full mb-6 text-4xl font-medium xl:text-2xl">
               {MultipleLang.token_allocation}
             </div>
-            {#if $query.isFetching && $queryPersonalTag.isFetching}
+            {#if $query.isFetching}
               <div class="flex items-center justify-center h-[465px]">
                 <LoadingPremium />
               </div>
@@ -1172,10 +1177,14 @@
                                   value={search}
                                   placeholder={"Search address to compare"}
                                   type="text"
-                                  class={`w-full p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] h-full ${
+                                  class={`w-full p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal h-full ${
                                     searchCompare && !$isDarkMode
                                       ? "bg-[#F0F2F7]"
                                       : "bg-transparent"
+                                  } ${
+                                    $isDarkMode
+                                      ? "text-white"
+                                      : "text-[#5E656B] placeholder-[#5E656B]"
                                   }`}
                                 />
                               </div>
@@ -1221,7 +1230,7 @@
 
         <!-- Button Get re-balance action -->
         <div class="w-max">
-          {#if ($query.isFetching && $queryPersonalTag.isFetching) || searchCompare.length === 0}
+          {#if $query.isFetching || searchCompare.length === 0}
             <Button variant="disabled">
               <div class="flex items-center gap-1">
                 <div
@@ -1389,6 +1398,7 @@
     {/if}
   </div>
 
+  <!-- Compare result table -->
   <AppOverlay
     clickOutSideToClose
     isOpen={showCompareTable}
@@ -1406,6 +1416,7 @@
     </div>
   </AppOverlay>
 
+  <!-- Whales list suggest compare table -->
   <AppOverlay
     clickOutSideToClose
     isOpen={showCompareWhalesSuggest}
@@ -1415,18 +1426,13 @@
     }}
   >
     <div class="flex flex-col gap-2 mt-9">
-      {#if $querySimilar.isFetching}
-        <div class="mx-auto">
-          <LoadingPremium />
-        </div>
-      {:else}
-        <WhalesList
-          darkMode={$isDarkMode}
-          data={$querySimilar.data}
-          copyAddress={handleCopyAddress}
-          closeModal={handleCloseWhalesListModal}
-        />
-      {/if}
+      <WhalesList
+        darkMode={$isDarkMode}
+        data={$querySimilar.data}
+        copyAddress={handleCopyAddress}
+        closeModal={handleCloseWhalesListModal}
+        isLoading={$querySimilar.isFetching}
+      />
       <div class="mt-3 text-2xl text-right xl:text-base">
         <a
           class="text-blue-500 cursor-pointer"
@@ -1448,5 +1454,12 @@
   :global(body.dark) .select_content {
     background: #131313;
     border: 0.5px solid #cdcdcd59;
+  }
+
+  :global(body) .bg_fafafbff {
+    background: #fafafbff;
+  }
+  :global(body.dark) .bg_fafafbff {
+    background: #212121;
   }
 </style>

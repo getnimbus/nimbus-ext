@@ -10,6 +10,8 @@
   import numeral from "numeral";
   import { i18n } from "~/lib/i18n";
   import {
+    formatValue,
+    formatPercent,
     formatBalance,
     formatCurrency,
     getAddressContext,
@@ -17,7 +19,6 @@
     shorterAddress,
     shorterName,
     typePieChart,
-    handleImgError,
   } from "~/utils";
   import { track } from "~/lib/data-tracking";
   import { nimbus } from "../../../lib/network";
@@ -30,6 +31,7 @@
   import "~/components/Tooltip.custom.svelte";
   import Copy from "~/components/Copy.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
+  import Image from "~/components/Image.svelte";
   import tooltip from "~/entries/contentScript/views/tooltip";
 
   import SmartContractIcon from "../assets/smart-contract.png";
@@ -37,6 +39,7 @@
   // import CoinMarketCapIcon from "../assets/CoinMarketCap_logo.png";
   import CoinDefaultIcon from "../assets/coin-default.svg";
   import Edit from "../../../assets/edit.svg";
+  import defaultToken from "~/assets/defaultToken.png";
 
   export let address;
   export let popup: boolean = true;
@@ -70,7 +73,6 @@
   let openShowCategoryList = false;
   let selectedTokenAllocation: "token" | "chain" = "token";
   let selectedType: "token" | "nft" = "token";
-  let showTooltipListNFT = false;
   let chart;
   let chartContainer;
   let option = {
@@ -83,33 +85,40 @@
         return `
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 190px;">
               <div style="display: flex; align-items: centers; gap: 4px">
-                <img src=${
-                  params.data.logo
-                } alt="" width=20 height=20 style="border-radius: 100%" /> 
+                <img src=${params.data.logo} 
+                  alt="" 
+                  width=20 height=20 
+                  style="border-radius: 100%" 
+                /> 
                 <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
                   ${params.name} (${params.data.symbol})
                 </div>
               </div>
+
               <div style="display: flex; align-items: centers; justify-content: space-between; gap: 4px">
                 <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: black;">
                   ${MultipleLang[params.data.name_balance]}
                 </div>
                 <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: rgba(0, 0, 0, 0.7);">
-                  ${formatCurrency(params.data.value_balance)}</div>
+                  ${formatBalance(params.data.value_balance)}
+                </div>
               </div>
+
               <div style="display: flex; align-items: centers; justify-content: space-between; gap: 4px">
                 <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: black;">
                   ${MultipleLang[params.data.name_value]}
                 </div>
                 <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: rgba(0, 0, 0, 0.7);">
-                  $${formatCurrency(params.data.value_value)}</div>
+                  ${formatValue(params.data.value_value)}
+                </div>
               </div>
+
               <div style="display: flex; align-items: centers; justify-content: space-between; gap: 4px">
                 <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: black;">
                   ${MultipleLang[params.data.name_ratio]}
                 </div>
                 <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: rgba(0, 0, 0, 0.7);">
-                  ${formatCurrency(params.value)}%
+                  ${formatPercent(params.value)}%
                 </div>
               </div>
             </div>`;
@@ -246,7 +255,7 @@
 
           const dataPieChartOrderBreakdown = [
             {
-              logo: "https://raw.githubusercontent.com/getnimbus/assets/main/token.png",
+              logo: defaultToken,
               name: "Others",
               symbol: "Other tokens",
               name_ratio: "Ratio",
@@ -705,12 +714,19 @@
                             on:click={() => {
                               if (getAddressContext(address)?.type === "EVM") {
                                 window.open(
-                                  `https://app.getnimbus.io/?chain=ALL&address=${address}`,
+                                  `https://app.getnimbus.io/?type=EVM&chain=ALL&address=${address}`,
                                   "_blank"
                                 );
-                              } else {
+                              }
+                              if (getAddressContext(address)?.type === "SOL") {
                                 window.open(
-                                  `https://app.getnimbus.io/?address=${address}`,
+                                  `https://app.getnimbus.io/?type=SOL&address=${address}`,
+                                  "_blank"
+                                );
+                              }
+                              if (getAddressContext(address)?.type === "BTC") {
+                                window.open(
+                                  `https://app.getnimbus.io/?type=BTC&address=${address}`,
                                   "_blank"
                                 );
                               }
@@ -741,77 +757,47 @@
 
                             <td class="pr-4 py-2">
                               <div class="relative">
-                                <div
-                                  class="flex justify-start w-max"
-                                  on:mouseenter={() =>
-                                    (showTooltipListNFT = true)}
-                                  on:mouseleave={() =>
-                                    (showTooltipListNFT = false)}
-                                >
+                                <div class="flex justify-start w-max">
                                   {#if item?.tokens.length > 5}
                                     {#each item?.tokens.slice(0, 5) as token, index}
-                                      <img
-                                        src={token?.imageUrl ||
-                                          "https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"}
-                                        on:error={(e) =>
-                                          handleImgError(
-                                            e,
-                                            token?.imageUrl,
-                                            "https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"
-                                          )}
-                                        alt=""
+                                      <div
                                         class={`w-6 h-6 rounded-md border border-gray-300 overflow-hidden ${
                                           index > 0 && "-ml-2"
                                         }`}
-                                      />
+                                      >
+                                        <Image
+                                          logo={token?.imageUrl}
+                                          defaultLogo="https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"
+                                        />
+                                      </div>
                                     {/each}
-                                    <div
-                                      class="relative xl:w-9 xl:h-9 w-12 h-12"
-                                    >
-                                      <img
-                                        src={data?.tokens[4].imageUrl ||
-                                          "https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"}
-                                        on:error={(e) =>
-                                          handleImgError(
-                                            e,
-                                            data?.tokens[4].imageUrl,
-                                            "https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"
-                                          )}
-                                        alt=""
-                                        class="w-6 h-6 rounded-md border border-gray-300 overflow-hidden -ml-2"
-                                      />
+                                    <div class="relative w-6 h-6">
                                       <div
-                                        class="absolute top-0 -left-2 w-full h-full bg-[#00000066] text-white text-center flex justify-center items-center pb-2 rounded-md"
+                                        class="w-6 h-6 rounded-md border border-gray-300 overflow-hidden -ml-2"
+                                      >
+                                        <Image
+                                          logo={item?.tokens[4].imageUrl}
+                                          defaultLogo="https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"
+                                        />
+                                      </div>
+                                      <div
+                                        class="absolute top-0 -left-2 w-6 h-6 bg-[#00000066] text-white text-center flex justify-center items-center pb-2 rounded-md"
                                       >
                                         ...
                                       </div>
                                     </div>
-                                    {#if showTooltipListNFT && item?.tokens?.length > 5}
-                                      <div
-                                        class="absolute -top-7 left-0"
-                                        style="z-index: 2147483648;"
-                                      >
-                                        <tooltip-detail
-                                          text={`${item?.tokens?.length} NFTs on collection ${item?.collectionName}`}
-                                        />
-                                      </div>
-                                    {/if}
                                   {:else}
                                     {#each item?.tokens as token, index}
-                                      <img
-                                        src={token?.imageUrl ||
-                                          "https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"}
-                                        on:error={(e) =>
-                                          handleImgError(
-                                            e,
-                                            token?.imageUrl,
-                                            "https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"
-                                          )}
-                                        alt=""
+                                      <div
                                         class={`w-6 h-6 rounded-md border border-gray-300 overflow-hidden ${
                                           index > 0 && "-ml-2"
                                         }`}
-                                      />
+                                      >
+                                        <Image
+                                          logo={token?.imageUrl}
+                                          defaultLogo="https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"
+                                        />
+                                      </div>
                                     {/each}
                                   {/if}
                                 </div>
@@ -829,12 +815,19 @@
                         on:click={() => {
                           if (getAddressContext(address)?.type === "EVM") {
                             window.open(
-                              `https://app.getnimbus.io/?chain=ALL&address=${address}`,
+                              `https://app.getnimbus.io/?type=EVM&chain=ALL&address=${address}`,
                               "_blank"
                             );
-                          } else {
+                          }
+                          if (getAddressContext(address)?.type === "SOL") {
                             window.open(
-                              `https://app.getnimbus.io/?address=${address}`,
+                              `https://app.getnimbus.io/?type=SOL&address=${address}`,
+                              "_blank"
+                            );
+                          }
+                          if (getAddressContext(address)?.type === "BTC") {
+                            window.open(
+                              `https://app.getnimbus.io/?type=BTC&address=${address}`,
                               "_blank"
                             );
                           }

@@ -29,6 +29,7 @@
   import LogoWhite from "~/assets/logo-white.svg";
   import TrendDown from "~/assets/trend-down.svg";
   import TrendUp from "~/assets/trend-up.svg";
+  import defaultToken from "~/assets/defaultToken.png";
 
   let closedHoldingPosition = [];
   let selectedTypeChart: "value" | "percent" = "value";
@@ -49,8 +50,7 @@
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 400px;">
               <div style="display: flex; align-items: centers; gap: 4px">
                   <img src=${
-                    selectedItem?.logo ||
-                    "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
+                    selectedItem?.logo || defaultToken
                   } alt="" width=20 height=20 style="border-radius: 100%" />
                   <div style="margin-top: 2px; font-weight: 500; font-size: 16px; line-height: 19px; color: ${
                     $isDarkMode ? "white" : "black"
@@ -145,8 +145,7 @@
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 400px;">
               <div style="display: flex; align-items: centers; gap: 4px">
                 <img src=${
-                  selectedItem?.logo ||
-                  "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
+                  selectedItem?.logo || defaultToken
                 } alt="" width=20 height=20 style="border-radius: 100%" />
                 <div style="margin-top: 2px; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
                   $isDarkMode ? "white" : "black"
@@ -393,6 +392,7 @@
           ($typeWallet === "EVM" ||
             $typeWallet === "CEX" ||
             $typeWallet === "SOL" ||
+            $typeWallet === "ALGO" ||
             $typeWallet === "BUNDLE") &&
             $wallet.length !== 0 &&
             $selectedPackage !== "FREE"
@@ -495,7 +495,7 @@
           {/if}
         </div>
       {/if}
-      {#if $typeWallet === "CEX" || $typeWallet === "SOL"}
+      {#if $typeWallet === "CEX"}
         <div
           class={`absolute top-0 left-0 rounded-[20px] z-30 w-full h-full flex items-center justify-center ${
             $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
@@ -591,7 +591,7 @@
           {/if}
         </div>
       {/if}
-      {#if $typeWallet === "CEX" || $typeWallet === "SOL"}
+      {#if $typeWallet === "CEX"}
         <div
           class={`absolute top-0 left-0 rounded-[20px] z-30 w-full h-full flex items-center justify-center ${
             $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
