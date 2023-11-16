@@ -6,13 +6,12 @@
     isDarkMode,
     typeWallet,
     triggerUpdateBundle,
-    user,
-    chain,
+    userId,
   } from "~/store";
   import { Link, useNavigate } from "svelte-navigator";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import mixpanel from "mixpanel-browser";
-  import { createQuery, useQueryClient } from "@tanstack/svelte-query";
+  import { useQueryClient } from "@tanstack/svelte-query";
 
   import AddressManagement from "~/components/AddressManagement.svelte";
   import Button from "~/components/Button.svelte";
@@ -25,60 +24,12 @@
   import CorrelationsMatrix from "./CorrelationsMatrix.svelte";
   import ClosedHoldingToken from "./ClosedHoldingToken.svelte";
   import Personality from "./Personality.svelte";
-  import tooltip from "~/entries/contentScript/views/tooltip";
-  import { Li } from "flowbite-svelte";
-  import { nimbus } from "~/lib/network";
 
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   let isShowSoon = false;
   let selectedTimeFrame: "7D" | "30D" | "3M" | "1Y" | "ALL" = "30D";
-
-  let userID = "";
-
-  const getUserInfo = async () => {
-    const response: any = await nimbus.get("/users/me");
-    return response?.data;
-  };
-
-  $: queryUserInfo = createQuery({
-    queryKey: ["users-me"],
-    queryFn: () => getUserInfo(),
-    staleTime: Infinity,
-    retry: false,
-    onError(err) {
-      localStorage.removeItem("evm_token");
-      user.update((n) => (n = {}));
-      wallet.update((n) => (n = ""));
-      chain.update((n) => (n = ""));
-      typeWallet.update((n) => (n = ""));
-      queryClient.invalidateQueries(["list-address"]);
-    },
-  });
-
-  let demo = "";
-  let userProfile = {};
-
-  $: {
-    if (!$queryUserInfo.isError && $queryUserInfo.data !== undefined) {
-      localStorage.setItem("evm_address", $queryUserInfo.data.publicAddress);
-      userID = $queryUserInfo.data.id;
-      // const getUserProfile = async (id) => {
-      //   try {
-      //     const response: any = await nimbus.get(`/users/${id}/profile`);
-      //     userProfile = response?.data;
-      //     demo = userProfile?.profileAddress;
-      //   } catch (e) {
-      //     console.error(e);
-      //   }
-      // };
-      // getUserProfile(userID);
-      console.log("user id info : ", $queryUserInfo.data);
-    }
-  }
-
-  // $: console.log("this is bla bla : ", demo);
 
   $: {
     if ($wallet) {
@@ -110,13 +61,11 @@
     <div class="max-w-[2000px] m-auto -mt-32 xl:w-[90%] w-[90%] relative">
       <div class="analytic_container rounded-[20px] xl:p-8 p-6 space-y-4">
         <div class="flex justify-between items-center">
-          <div>
-            <Link to={`/performance-summary?id=${userID}`}>
-              <Button>
-                <div class="w-full xl:w-[230px]">Performance Summary</div>
-              </Button>
-            </Link>
-          </div>
+          <Link to={`/performance-summary?id=${$userId}`}>
+            <Button>
+              <div class="w-full xl:w-[230px]">Performance Summary</div>
+            </Button>
+          </Link>
           <div class="flex items-center justify-end gap-1">
             <div class="mr-1 xl:text-base text-2xl">Timeframe</div>
             <AnimateSharedLayout>
