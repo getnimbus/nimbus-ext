@@ -28,7 +28,9 @@
 
   import User from "~/assets/user.png";
   import UpArrow from "~/assets/up-arrow.svg";
+
   import All from "~/assets/all.svg";
+  import Bundles from "~/assets/bundles.png";
   import BitcoinLogo from "~/assets/bitcoin.png";
   import SolanaLogo from "~/assets/solana.png";
   import AuraLogo from "~/assets/aura.png";
@@ -187,6 +189,9 @@
   const formatDataListAddress = (data) => {
     listAddress = data.map((item) => {
       let logo = All;
+      if (item?.type === "BUNDLE") {
+        logo = Bundles;
+      }
       if (item?.type === "BTC") {
         logo = BitcoinLogo;
       }
