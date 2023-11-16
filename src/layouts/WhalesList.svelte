@@ -20,15 +20,15 @@
     },
     {
       label: "Recommended",
-      value: "RECOMMENDED",
+      value: "VENTURES_CAPITAL",
     },
     {
       label: "Recommended",
-      value: "RECOMMENDED",
+      value: "SMART_MONEY",
     },
     {
       label: "Recommended",
-      value: "RECOMMENDED",
+      value: "HAND_PICKED",
     },
   ];
 
