@@ -326,8 +326,10 @@
               <Button
                 type="submit"
                 isLoading={isLoadingSaveProfile}
-                disabled={isLoadingSaveProfile}>Save</Button
+                disabled={isLoadingSaveProfile}
               >
+                Save
+              </Button>
             </div>
           {:else}
             <div class="xl:w-[160px] w-[220px]">
