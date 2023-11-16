@@ -12,6 +12,8 @@
   import Button from "~/components/Button.svelte";
   import FilterModal from "~/UI/WhalesList/FilterModal.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
+  import { AnimateSharedLayout, Motion } from "svelte-motion";
+  import WhalesCategoriesIcon from "~/components/WhalesCategoriesIcon.svelte";
 
   const categories = [
     {
@@ -19,18 +21,24 @@
       value: "RECOMMENDED",
     },
     {
-      label: "Recommended",
+      label: "Ventures Capital",
       value: "VENTURES_CAPITAL",
     },
     {
-      label: "Recommended",
+      label: "Smart money",
       value: "SMART_MONEY",
     },
     {
-      label: "Recommended",
+      label: "Hand-picked",
       value: "HAND_PICKED",
     },
   ];
+
+  let selectedType:
+    | "RECOMMENDED"
+    | "VENTURES_CAPITAL"
+    | "SMART_MONEY"
+    | "HAND_PICKED" = "RECOMMENDED";
 
   const MultipleLang = {
     whale: i18n("newtabPage.whale", "Whale 🐳"),
@@ -424,7 +432,37 @@
         </Button>
       </div>
     </div>
-
+    <div class="flex items-center gap-2 px-3 mx-auto">
+      <AnimateSharedLayout>
+        {#each categories as type}
+          <div
+            class="relative cursor-pointer xl:text-base text-xl font-medium py-2 px-3 rounded-xl transition-all"
+            on:click={() => (selectedType = type.value)}
+          >
+            <div
+              class={`relative z-[19] flex items-center gap-2 ${
+                selectedType === type.value && "text-white"
+              }`}
+            >
+              <WhalesCategoriesIcon typeCategory={type.value} />
+              {type.label}
+            </div>
+            {#if type.value === selectedType}
+              <Motion
+                let:motion
+                layoutId="active-pill"
+                transition={{ type: "spring", duration: 0.6 }}
+              >
+                <div
+                  class="absolute inset-0 rounded-full bg-[#1E96FC] -z-10"
+                  use:motion
+                />
+              </Motion>
+            {/if}
+          </div>
+        {/each}
+      </AnimateSharedLayout>
+    </div>
     <div
       class={`rounded-[10px] border border_0000000d xl:overflow-visible overflow-x-auto ${
         $isDarkMode ? "bg-[#131313]" : "bg-[#fff]"
