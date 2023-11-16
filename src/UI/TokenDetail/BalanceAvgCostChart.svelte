@@ -53,7 +53,7 @@
               </div>
               
               ${
-                avgCost !== undefined
+                avgCost
                   ? `
                   <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
                     <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
@@ -200,7 +200,7 @@
         return [item?.price, item?.totalToken];
       });
 
-      if (avgCost !== undefined) {
+      if (avgCost) {
         optionBar = {
           ...optionBar,
           series: [
