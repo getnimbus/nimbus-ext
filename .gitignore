@@ -10,5 +10,4 @@ web-build
 # Sentry Auth Token
 .env.sentry-build-plugin
 
-dev-dist
 .env
