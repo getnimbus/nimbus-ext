@@ -44,6 +44,7 @@
   import Logo from "~/assets/logo-1.svg";
   import LogoWhite from "~/assets/logo-white.svg";
   import defaultToken from "~/assets/defaultToken.png";
+  import { isError } from "ethers";
 
   const MultipleLang = {
     token_allocation: i18n("newtabPage.token-allocation", "Token Allocation"),
@@ -1428,7 +1429,7 @@
     <div class="flex flex-col gap-2 mt-9">
       <WhalesList
         darkMode={$isDarkMode}
-        data={$querySimilar.data}
+        data={$querySimilar.isError ? [] : $querySimilar.data}
         copyAddress={handleCopyAddress}
         closeModal={handleCloseWhalesListModal}
         isLoading={$querySimilar.isFetching}

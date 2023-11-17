@@ -82,7 +82,7 @@
       <input
         on:keyup={({ target: { value } }) => debounceSearch(value)}
         value={searchValue}
-        placeholder={"Filter by token name. Eg: ETH, UNI,..."}
+        placeholder={"Filter by token symbol. Eg: ETH, UNI,..."}
         type="text"
         class={`w-full p-0 border-none focus:outline-none focus:ring-0 xl:text-base text-2xl font-normal ${
           searchValue && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"

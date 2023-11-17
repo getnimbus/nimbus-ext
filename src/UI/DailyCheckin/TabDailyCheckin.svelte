@@ -39,6 +39,21 @@
 
   const queryClient = useQueryClient();
 
+  const nameTypeCheckin = (
+    type: "QUEST" | "CHECK_IN" | "REDEEM" | "BONUS 5%"
+  ) => {
+    switch (type) {
+      case "QUEST":
+        return "Quest";
+      case "CHECK_IN":
+        return "Check in";
+      case "REDEEM":
+        return "Redeem";
+      case "BONUS 5%":
+        return "Bonus 5%";
+    }
+  };
+
   const handleDailyCheckin = async () => {
     const response = await nimbus.get(`/v2/checkin/${$userPublicAddress}`);
     return response.data;
@@ -385,8 +400,8 @@
                     <th class="py-2 pr-3 text-right font-medium">Point</th>
                   </tr>
                 </thead>
-                {#if $queryDailyCheckin?.data === undefined}
-                  <tbody>
+                <tbody>
+                  {#if $queryDailyCheckin?.data === undefined}
                     <tr>
                       <td colspan="3">
                         <div
@@ -396,9 +411,7 @@
                         </div>
                       </td>
                     </tr>
-                  </tbody>
-                {:else}
-                  <tbody>
+                  {:else}
                     {#if $queryDailyCheckin?.data?.checkinLogs.length === 0}
                       <tr>
                         <td class="text-center py-2" colspan="3">
@@ -411,7 +424,7 @@
                         <td class="py-2 pl-3 text-left">
                           {dayjs(createdAt).format("YYYY-MM-DD")}
                         </td>
-                        <td class="py-2">{type}</td>
+                        <td class="py-2">{nameTypeCheckin(type)}</td>
                         <td
                           class={`py-2 pr-3 text-right ${
                             point > 0
@@ -425,8 +438,8 @@
                         </td>
                       </tr>
                     {/each}
-                  </tbody>
-                {/if}
+                  {/if}
+                </tbody>
               </table>
             </div>
           {/if}
