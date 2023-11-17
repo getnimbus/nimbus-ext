@@ -166,7 +166,7 @@
     </div>
   </div>
 
-  {#if $queryDailyCheckin.isLoading && $queryReward.isLoading}
+  {#if $queryDailyCheckin.isFetching && $queryReward.isFetching}
     <div class="flex items-center justify-center h-screen">
       <Loading />
     </div>
@@ -396,7 +396,7 @@
                     } `}
                   >
                     <th class="py-2 pl-3 text-left font-medium">Date</th>
-                    <th class="py-2 text-left font-medium"> Type </th>
+                    <th class="py-2 text-left font-medium">Type</th>
                     <th class="py-2 pr-3 text-right font-medium">Point</th>
                   </tr>
                 </thead>
