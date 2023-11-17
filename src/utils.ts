@@ -97,7 +97,7 @@ export const sharpeRatioFilter = [
 ];
 
 
-export const categories = [
+export const whaleCategories = [
   {
     label: "Recommended",
     value: "RECOMMENDED",

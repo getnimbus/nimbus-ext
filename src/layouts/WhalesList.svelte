@@ -4,6 +4,8 @@
   import { i18n } from "~/lib/i18n";
   import mixpanel from "mixpanel-browser";
   import { isDarkMode, user } from "~/store";
+  import { whaleCategories } from "~/utils";
+  import { AnimateSharedLayout, Motion } from "svelte-motion";
 
   import Loading from "~/components/Loading.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
@@ -12,15 +14,7 @@
   import Button from "~/components/Button.svelte";
   import FilterModal from "~/UI/WhalesList/FilterModal.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
-  import { AnimateSharedLayout, Motion } from "svelte-motion";
   import WhalesCategoriesIcon from "~/components/WhalesCategoriesIcon.svelte";
-  import { categories } from "~/utils";
-
-  let selectedType:
-    | "RECOMMENDED"
-    | "VENTURES_CAPITAL"
-    | "SMART_MONEY"
-    | "HAND_PICKED" = "VENTURES_CAPITAL";
 
   const MultipleLang = {
     whale: i18n("newtabPage.whale", "Whale 🐳"),
@@ -55,6 +49,13 @@
   let sortChange1Y = "default";
   let sortMaxDrawDown = "default";
   let sortVolatility = "default";
+
+  let selectedType:
+    | "RECOMMENDED"
+    | "VENTURES_CAPITAL"
+    | "SMART_MONEY"
+    | "HAND_PICKED"
+    | "" = "";
 
   const getPublicPortfolio = async () => {
     try {
@@ -376,18 +377,15 @@
                   </svg>`;
   };
 
-  $: if (Object.keys($user).length === 0) {
-    listCategories = categories.slice(1, categories.length);
-    selectedType === "VENTURES_CAPITAL";
-  } else {
-    listCategories = categories;
-    // selectedType === "RECOMMENDED";
-  }
+  $: listCategories =
+    Object.keys($user).length === 0
+      ? whaleCategories.slice(1, whaleCategories.length)
+      : whaleCategories;
 </script>
 
 <ErrorBoundary>
   <div
-    class="max-w-[2000px] m-auto xl:w-[90%] w-[90%] py-8 flex flex-col xl:gap-10 gap-6"
+    class="max-w-[2000px] m-auto xl:w-[90%] w-[90%] py-8 flex flex-col gap-6"
   >
     <div class="flex justify-between items-end">
       <div class="flex flex-col gap-2">
@@ -423,7 +421,8 @@
         </Button>
       </div>
     </div>
-    <div class="flex items-center gap-2 px-3 mx-auto">
+
+    <div class="flex items-center gap-2">
       <AnimateSharedLayout>
         {#each listCategories as type}
           <div
@@ -454,6 +453,7 @@
         {/each}
       </AnimateSharedLayout>
     </div>
+
     <div
       class={`rounded-[10px] border border_0000000d xl:overflow-visible overflow-x-auto ${
         $isDarkMode ? "bg-[#131313]" : "bg-[#fff]"
