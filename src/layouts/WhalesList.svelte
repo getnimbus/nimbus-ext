@@ -3,7 +3,7 @@
   import { nimbus } from "~/lib/network";
   import { i18n } from "~/lib/i18n";
   import mixpanel from "mixpanel-browser";
-  import { isDarkMode } from "~/store";
+  import { isDarkMode, user } from "~/store";
 
   import Loading from "~/components/Loading.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
@@ -14,31 +14,13 @@
   import AppOverlay from "~/components/Overlay.svelte";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import WhalesCategoriesIcon from "~/components/WhalesCategoriesIcon.svelte";
-
-  const categories = [
-    {
-      label: "Recommended",
-      value: "RECOMMENDED",
-    },
-    {
-      label: "Ventures Capital",
-      value: "VENTURES_CAPITAL",
-    },
-    {
-      label: "Smart money",
-      value: "SMART_MONEY",
-    },
-    {
-      label: "Hand-picked",
-      value: "HAND_PICKED",
-    },
-  ];
+  import { categories } from "~/utils";
 
   let selectedType:
     | "RECOMMENDED"
     | "VENTURES_CAPITAL"
     | "SMART_MONEY"
-    | "HAND_PICKED" = "RECOMMENDED";
+    | "HAND_PICKED" = "VENTURES_CAPITAL";
 
   const MultipleLang = {
     whale: i18n("newtabPage.whale", "Whale 🐳"),
@@ -63,6 +45,7 @@
   let isOpenFilterModal = false;
   let filterParams = "";
   let search = "";
+  let listCategories;
 
   let sortNetWorth = "default";
   let sortSharpeRatio = "default";
@@ -392,6 +375,14 @@
                     </g>
                   </svg>`;
   };
+
+  $: if (Object.keys($user).length === 0) {
+    listCategories = categories.slice(1, categories.length);
+    selectedType === "VENTURES_CAPITAL";
+  } else {
+    listCategories = categories;
+    // selectedType === "RECOMMENDED";
+  }
 </script>
 
 <ErrorBoundary>
@@ -434,7 +425,7 @@
     </div>
     <div class="flex items-center gap-2 px-3 mx-auto">
       <AnimateSharedLayout>
-        {#each categories as type}
+        {#each listCategories as type}
           <div
             class="relative cursor-pointer xl:text-base text-xl font-medium py-2 px-3 rounded-xl transition-all"
             on:click={() => (selectedType = type.value)}
