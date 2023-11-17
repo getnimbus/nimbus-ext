@@ -156,12 +156,12 @@
       value1.type === typeHistoryType &&
       value2.type !== typeHistoryType
     ) {
-      return 1;
+      return -1;
     } else if (
       value1.type !== typeHistoryType &&
       value2.type === typeHistoryType
     ) {
-      return -1;
+      return 1;
     } else {
       return value1.type.localeCompare(value2.type);
     }
