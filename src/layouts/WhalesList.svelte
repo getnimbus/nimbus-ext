@@ -3,9 +3,10 @@
   import { nimbus } from "~/lib/network";
   import { i18n } from "~/lib/i18n";
   import mixpanel from "mixpanel-browser";
-  import { isDarkMode, user } from "~/store";
+  import { isDarkMode, user, userPublicAddress } from "~/store";
   import { whaleCategories } from "~/utils";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
+  import { createQuery } from "@tanstack/svelte-query";
 
   import Loading from "~/components/Loading.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
@@ -56,13 +57,31 @@
     | "SMART_MONEY"
     | "HAND_PICKED"
     | "" = "";
+  let selectedCategoryId = "";
+
+  const getPublicPortfolioCategories = async (category) => {
+    const response = await nimbus.get(
+      `/market/portfolio/categories?category=${category}`
+    );
+    return response.data;
+  };
+
+  $: query = createQuery({
+    queryKey: ["whale-categories", selectedType],
+    queryFn: () => getPublicPortfolioCategories(selectedType),
+    staleTime: Infinity,
+    retry: false,
+    enabled: selectedType.length !== 0 && selectedType !== "RECOMMENDED",
+  });
+
+  $: console.log("query: ", $query);
 
   const getPublicPortfolio = async () => {
     try {
       isLoading = true;
       const res = await nimbus
         .get(
-          `/market/portfolio/search?q=${filterParams}&token=${search}&page=${pageValue}&sort=networth:${sortNetWorth},sharpeRatio:${sortSharpeRatio},change24H:${sortChange1D},change7D:${sortChange7D},change30D:${sortChange30D},change1Y:${sortChange1Y},drawDown:${sortMaxDrawDown},volatility:${sortVolatility}`
+          `/market/portfolio/search?q=${filterParams}&token=${search}&page=${pageValue}&sort=networth:${sortNetWorth},sharpeRatio:${sortSharpeRatio},change24H:${sortChange1D},change7D:${sortChange7D},change30D:${sortChange30D},change1Y:${sortChange1Y},drawDown:${sortMaxDrawDown},volatility:${sortVolatility}&category=${selectedType}&address=${$userPublicAddress}`
         )
         .then((response) => response.data);
 
@@ -381,6 +400,16 @@
     Object.keys($user).length === 0
       ? whaleCategories.slice(1, whaleCategories.length)
       : whaleCategories;
+
+  $: {
+    if (selectedType && selectedType.length !== 0) {
+      if (selectedType === "RECOMMENDED") {
+        getPublicPortfolio();
+      }
+    } else {
+      getPublicPortfolio();
+    }
+  }
 </script>
 
 <ErrorBoundary>
@@ -427,7 +456,13 @@
         {#each listCategories as type}
           <div
             class="relative cursor-pointer xl:text-base text-xl font-medium py-2 px-3 rounded-xl transition-all"
-            on:click={() => (selectedType = type.value)}
+            on:click={() => {
+              if (selectedType.length !== 0 && selectedType === type.value) {
+                selectedType = "";
+              } else {
+                selectedType = type.value;
+              }
+            }}
           >
             <div
               class={`relative z-[19] flex items-center gap-2 ${
