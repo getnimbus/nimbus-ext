@@ -23,22 +23,22 @@
     {
       logo: Ethereum,
       label: "Ethereum",
-      value: "eth",
+      value: "ETH",
     },
     // {
     //   logo: Solana,
     //   label: "Solana",
-    //   value: "sol",
+    //   value: "SOL",
     // },
     // {
     //   logo: Bnb,
     //   label: "Binance",
-    //   value: "bsc",
+    //   value: "BSC",
     // },
     // {
     //   logo: Matic,
     //   label: "Polygon",
-    //   value: "pol",
+    //   value: "POL",
     // },
   ];
 
@@ -81,18 +81,15 @@
       data[key] = value;
     }
     try {
-      const response = await nimbus.post("/v2/payments/redeem-code", {
+      const response = await nimbus.post("/v3/payments/check-coupon", {
         code: data.code,
       });
       if (response?.error) {
         toastMsg = response?.error;
         isSuccessToast = false;
       } else {
-        console.log("response: ", response);
-
         if (response?.status === 1) {
           coupleCode = response?.type;
-          toastMsg = response?.message;
           isSuccessToast = true;
 
           if (response?.type === "DISCOUNT") {
@@ -105,10 +102,10 @@
         }
 
         if (response?.status === 0) {
-          toastMsg =
-            "Your couple code not available. Please try another couple code!";
           isSuccessToast = false;
         }
+
+        toastMsg = response?.message;
       }
       isLoadingSubmitCoupleCode = false;
       trigger();
@@ -126,21 +123,23 @@
     const account = await publicClient.requestAddresses();
 
     const payload = {
-      tier: selectedPackage.plan,
       interval: selectedPackage.selectedTypePackage,
-      chain: chainValue,
       intervalCount: 1,
       price:
         selectedPackage.selectedTypePackage === "year"
           ? selectedPackage.price * 12
           : selectedPackage.price,
-      coupon: coupleCode,
-      txHash: "0xabc",
+
+      txHash: "",
+      code: coupleCode,
+      plan: selectedPackage.plan,
+      currency: "USDT",
+      chain: chainValue,
     };
 
     isLoadingBuy = true;
     try {
-      // if (chainValue === "sol") {
+      // if (chainValue === "SOL") {
       //   const response = await nimbus.post(
       //     "/v2/payments/create-session",
       //     payload
@@ -150,7 +149,7 @@
       //   }
       // }
 
-      if (chainValue === "eth") {
+      if (chainValue === "ETH") {
         let price =
           selectedPackage.selectedTypePackage === "year"
             ? selectedPackage.price * 12
@@ -169,9 +168,14 @@
             functionName: "transfer",
             args: [receiveAddress, BigInt(price * 1000000)],
           })
-          .then((res) => {
+          .then(async (res) => {
             // Todo: get trx hash and send to DB to upgrade user Plan
             console.log("res: ", res);
+            const response = await nimbus.post("/v3/payments/create-session", {
+              ...payload,
+              txHash: res,
+            });
+            console.log("response: ", response);
           })
           .catch((e) => {
             console.error("error", e);
