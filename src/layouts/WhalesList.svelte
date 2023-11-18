@@ -58,30 +58,30 @@
     | "HAND_PICKED"
     | "" = "";
   let selectedCategoryId = "";
+  let categoriesPageValue = 0;
 
-  const getPublicPortfolioCategories = async (category) => {
+  const getPublicPortfolioCategories = async (category, page) => {
     const response = await nimbus.get(
-      `/market/portfolio/categories?category=${category}`
+      `/market/portfolio/categories?category=${category}&page=${page}`
     );
     return response.data;
   };
 
   $: query = createQuery({
-    queryKey: ["whale-categories", selectedType],
-    queryFn: () => getPublicPortfolioCategories(selectedType),
+    queryKey: ["whale-categories", selectedType, categoriesPageValue],
+    queryFn: () =>
+      getPublicPortfolioCategories(selectedType, categoriesPageValue),
     staleTime: Infinity,
     retry: false,
     enabled: selectedType.length !== 0 && selectedType !== "RECOMMENDED",
   });
-
-  $: console.log("query: ", $query);
 
   const getPublicPortfolio = async () => {
     try {
       isLoading = true;
       const res = await nimbus
         .get(
-          `/market/portfolio/search?q=${filterParams}&token=${search}&page=${pageValue}&sort=networth:${sortNetWorth},sharpeRatio:${sortSharpeRatio},change24H:${sortChange1D},change7D:${sortChange7D},change30D:${sortChange30D},change1Y:${sortChange1Y},drawDown:${sortMaxDrawDown},volatility:${sortVolatility}&category=${selectedType}&address=${$userPublicAddress}`
+          `/market/portfolio/search?q=${filterParams}&token=${search}&page=${pageValue}&sort=networth:${sortNetWorth},sharpeRatio:${sortSharpeRatio},change24H:${sortChange1D},change7D:${sortChange7D},change30D:${sortChange30D},change1Y:${sortChange1Y},drawDown:${sortMaxDrawDown},volatility:${sortVolatility}&category=${selectedType}&category_id=${selectedCategoryId}&address=${$userPublicAddress}`
         )
         .then((response) => response.data);
 
@@ -402,14 +402,12 @@
       : whaleCategories;
 
   $: {
-    if (selectedType && selectedType.length !== 0) {
-      if (selectedType === "RECOMMENDED") {
-        getPublicPortfolio();
-      }
-    } else {
-      getPublicPortfolio();
+    if (selectedType.length !== 0 && selectedType === "RECOMMENDED") {
+      selectedCategoryId = "";
     }
   }
+
+  $: console.log("categoriesPageValue: ", categoriesPageValue);
 </script>
 
 <ErrorBoundary>
@@ -462,6 +460,7 @@
               } else {
                 selectedType = type.value;
               }
+              getPublicPortfolio();
             }}
           >
             <div
@@ -488,6 +487,70 @@
         {/each}
       </AnimateSharedLayout>
     </div>
+
+    {#if selectedType.length !== 0 && selectedType !== "RECOMMENDED"}
+      {#if $query.isFetching}
+        <div class="flex items-center justify-center h-[300px]">
+          <Loading />
+        </div>
+      {:else}
+        <div class="flex flex-col gap-6">
+          <div class="grid grid-cols-3 grid-rows-2 gap-6">
+            {#each $query.data || [] as item}
+              <div
+                class={`rounded-[10px] border border_0000000d p-3 cursor-pointer flex flex-col gap-2 ${
+                  $isDarkMode ? "bg-[#131313]" : "bg-[#fff]"
+                }`}
+                on:click={() => {
+                  selectedCategoryId = item?.id;
+                  getPublicPortfolio();
+                }}
+              >
+                <div class="flex flex-col gap-1">
+                  <div class="xl:text-lg text-xl font-medium">{item?.name}</div>
+                  <div class="xl:text-base text-lg">{item?.description}</div>
+                </div>
+                <div class="xl:text-sm text-base text-gray-400">
+                  {item?.address?.length} wallets
+                </div>
+              </div>
+            {/each}
+          </div>
+          <div class="flex justify-center gap-3">
+            <div class="w-[50px]">
+              {#if categoriesPageValue === 0}
+                <Button variant="disabled" disabled>
+                  <div class="text-2xl -mt-1">&lsaquo;</div>
+                </Button>
+              {:else}
+                <Button
+                  variant="secondary"
+                  on:click={() => {
+                    if (categoriesPageValue > 1) {
+                      categoriesPageValue = categoriesPageValue - 1;
+                    } else {
+                      categoriesPageValue = 0;
+                    }
+                  }}
+                >
+                  <div class="text-2xl -mt-1">&lsaquo;</div>
+                </Button>
+              {/if}
+            </div>
+            <div class="w-[50px]">
+              <Button
+                variant="secondary"
+                on:click={() => {
+                  categoriesPageValue = categoriesPageValue + 1;
+                }}
+              >
+                <div class="text-2xl -mt-1">&rsaquo;</div>
+              </Button>
+            </div>
+          </div>
+        </div>
+      {/if}
+    {/if}
 
     <div
       class={`rounded-[10px] border border_0000000d xl:overflow-visible overflow-x-auto ${
