@@ -42,7 +42,7 @@
       const paymentIdParams = urlParams.get("paymentId");
 
       const response = await nimbus.get(
-        `/v2/payments/status?paymentId=${paymentIdParams}`
+        `/v3/payments/status?payment_link_id=${paymentIdParams}`
       );
 
       if (

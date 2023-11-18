@@ -6,6 +6,7 @@
   import { wagmiAbi } from "~/lib/viem-evm-abi";
   import { publicClient } from "~/lib/viem-client";
   import { mainnet } from "viem/chains";
+  import { useNavigate } from "svelte-navigator";
 
   import PricePackage from "~/UI/PricePackage/PricePackage.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
@@ -15,6 +16,8 @@
   import Solana from "~/assets/solana.png";
   import Bnb from "~/assets/bnb.png";
   import Matic from "~/assets/matic.png";
+
+  const navigate = useNavigate();
 
   const usdcAddress = "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48";
   const receiveAddress = "0x6AedbE81435BBD67e2223eadd256992DC64fc90B";
@@ -169,13 +172,16 @@
             args: [receiveAddress, BigInt(price * 1000000)],
           })
           .then(async (res) => {
-            // Todo: get trx hash and send to DB to upgrade user Plan
             console.log("res: ", res);
             const response = await nimbus.post("/v3/payments/create-session", {
               ...payload,
               txHash: res,
             });
-            console.log("response: ", response);
+            if (response && response?.data) {
+              navigate(
+                `/payments/success&paymentId=${response?.data?.paymentLinkId}`
+              );
+            }
           })
           .catch((e) => {
             console.error("error", e);
@@ -289,7 +295,9 @@
               <Button
                 variant="secondary"
                 isLoading={isLoadingBuy}
-                on:click={() => handleBuy(chain.value)}
+                on:click={() => {
+                  handleBuy(chain.value);
+                }}
               >
                 <img
                   src={chain.logo}
