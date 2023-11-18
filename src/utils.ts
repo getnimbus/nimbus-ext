@@ -96,6 +96,26 @@ export const sharpeRatioFilter = [
   },
 ];
 
+
+export const whaleCategories = [
+  {
+    label: "Recommended",
+    value: "RECOMMENDED",
+  },
+  {
+    label: "Ventures Capital",
+    value: "VENTURES_CAPITAL",
+  },
+  {
+    label: "Smart money",
+    value: "SMART_MONEY",
+  },
+  {
+    label: "Hand-picked",
+    value: "HAND_PICKED",
+  },
+];
+
 export const volatilityFilter = [
   {
     label: "0-10%",

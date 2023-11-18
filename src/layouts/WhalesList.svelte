@@ -3,7 +3,10 @@
   import { nimbus } from "~/lib/network";
   import { i18n } from "~/lib/i18n";
   import mixpanel from "mixpanel-browser";
-  import { isDarkMode } from "~/store";
+  import { isDarkMode, user, userPublicAddress } from "~/store";
+  import { whaleCategories } from "~/utils";
+  import { AnimateSharedLayout, Motion } from "svelte-motion";
+  import { createQuery } from "@tanstack/svelte-query";
 
   import Loading from "~/components/Loading.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
@@ -12,6 +15,7 @@
   import Button from "~/components/Button.svelte";
   import FilterModal from "~/UI/WhalesList/FilterModal.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
+  import WhalesCategoriesIcon from "~/components/WhalesCategoriesIcon.svelte";
 
   const MultipleLang = {
     whale: i18n("newtabPage.whale", "Whale 🐳"),
@@ -36,6 +40,7 @@
   let isOpenFilterModal = false;
   let filterParams = "";
   let search = "";
+  let listCategories;
 
   let sortNetWorth = "default";
   let sortSharpeRatio = "default";
@@ -46,12 +51,37 @@
   let sortMaxDrawDown = "default";
   let sortVolatility = "default";
 
+  let selectedType:
+    | "RECOMMENDED"
+    | "VENTURES_CAPITAL"
+    | "SMART_MONEY"
+    | "HAND_PICKED"
+    | "" = "";
+  let selectedCategoryId = "";
+  let categoriesPageValue = 0;
+
+  const getPublicPortfolioCategories = async (category, page) => {
+    const response = await nimbus.get(
+      `/market/portfolio/categories?category=${category}&page=${page}`
+    );
+    return response.data;
+  };
+
+  $: query = createQuery({
+    queryKey: ["whale-categories", selectedType, categoriesPageValue],
+    queryFn: () =>
+      getPublicPortfolioCategories(selectedType, categoriesPageValue),
+    staleTime: Infinity,
+    retry: false,
+    enabled: selectedType.length !== 0 && selectedType !== "RECOMMENDED",
+  });
+
   const getPublicPortfolio = async () => {
     try {
       isLoading = true;
       const res = await nimbus
         .get(
-          `/market/portfolio/search?q=${filterParams}&token=${search}&page=${pageValue}&sort=networth:${sortNetWorth},sharpeRatio:${sortSharpeRatio},change24H:${sortChange1D},change7D:${sortChange7D},change30D:${sortChange30D},change1Y:${sortChange1Y},drawDown:${sortMaxDrawDown},volatility:${sortVolatility}`
+          `/market/portfolio/search?q=${filterParams}&token=${search}&page=${pageValue}&sort=networth:${sortNetWorth},sharpeRatio:${sortSharpeRatio},change24H:${sortChange1D},change7D:${sortChange7D},change30D:${sortChange30D},change1Y:${sortChange1Y},drawDown:${sortMaxDrawDown},volatility:${sortVolatility}&category=${selectedType}&category_id=${selectedCategoryId}&address=${$userPublicAddress}`
         )
         .then((response) => response.data);
 
@@ -365,11 +395,24 @@
                     </g>
                   </svg>`;
   };
+
+  $: listCategories =
+    Object.keys($user).length === 0
+      ? whaleCategories.slice(1, whaleCategories.length)
+      : whaleCategories;
+
+  $: {
+    if (selectedType.length !== 0 && selectedType === "RECOMMENDED") {
+      selectedCategoryId = "";
+    }
+  }
+
+  $: console.log("categoriesPageValue: ", categoriesPageValue);
 </script>
 
 <ErrorBoundary>
   <div
-    class="max-w-[2000px] m-auto xl:w-[90%] w-[90%] py-8 flex flex-col xl:gap-10 gap-6"
+    class="max-w-[2000px] m-auto xl:w-[90%] w-[90%] py-8 flex flex-col gap-6"
   >
     <div class="flex justify-between items-end">
       <div class="flex flex-col gap-2">
@@ -405,6 +448,109 @@
         </Button>
       </div>
     </div>
+
+    <div class="flex items-center gap-2">
+      <AnimateSharedLayout>
+        {#each listCategories as type}
+          <div
+            class="relative cursor-pointer xl:text-base text-xl font-medium py-2 px-3 rounded-xl transition-all"
+            on:click={() => {
+              if (selectedType.length !== 0 && selectedType === type.value) {
+                selectedType = "";
+              } else {
+                selectedType = type.value;
+              }
+              getPublicPortfolio();
+            }}
+          >
+            <div
+              class={`relative z-[19] flex items-center gap-2 ${
+                selectedType === type.value && "text-white"
+              }`}
+            >
+              <WhalesCategoriesIcon typeCategory={type.value} />
+              {type.label}
+            </div>
+            {#if type.value === selectedType}
+              <Motion
+                let:motion
+                layoutId="active-pill"
+                transition={{ type: "spring", duration: 0.6 }}
+              >
+                <div
+                  class="absolute inset-0 rounded-full bg-[#1E96FC] -z-10"
+                  use:motion
+                />
+              </Motion>
+            {/if}
+          </div>
+        {/each}
+      </AnimateSharedLayout>
+    </div>
+
+    {#if selectedType.length !== 0 && selectedType !== "RECOMMENDED"}
+      {#if $query.isFetching}
+        <div class="flex items-center justify-center h-[300px]">
+          <Loading />
+        </div>
+      {:else}
+        <div class="flex flex-col gap-6">
+          <div class="grid grid-cols-3 grid-rows-2 gap-6">
+            {#each $query.data || [] as item}
+              <div
+                class={`rounded-[10px] border border_0000000d p-3 cursor-pointer flex flex-col gap-2 ${
+                  $isDarkMode ? "bg-[#131313]" : "bg-[#fff]"
+                }`}
+                on:click={() => {
+                  selectedCategoryId = item?.id;
+                  getPublicPortfolio();
+                }}
+              >
+                <div class="flex flex-col gap-1">
+                  <div class="xl:text-lg text-xl font-medium">{item?.name}</div>
+                  <div class="xl:text-base text-lg">{item?.description}</div>
+                </div>
+                <div class="xl:text-sm text-base text-gray-400">
+                  {item?.address?.length} wallets
+                </div>
+              </div>
+            {/each}
+          </div>
+          <div class="flex justify-center gap-3">
+            <div class="w-[50px]">
+              {#if categoriesPageValue === 0}
+                <Button variant="disabled" disabled>
+                  <div class="text-2xl -mt-1">&lsaquo;</div>
+                </Button>
+              {:else}
+                <Button
+                  variant="secondary"
+                  on:click={() => {
+                    if (categoriesPageValue > 1) {
+                      categoriesPageValue = categoriesPageValue - 1;
+                    } else {
+                      categoriesPageValue = 0;
+                    }
+                  }}
+                >
+                  <div class="text-2xl -mt-1">&lsaquo;</div>
+                </Button>
+              {/if}
+            </div>
+            <div class="w-[50px]">
+              <Button
+                variant="secondary"
+                on:click={() => {
+                  categoriesPageValue = categoriesPageValue + 1;
+                }}
+              >
+                <div class="text-2xl -mt-1">&rsaquo;</div>
+              </Button>
+            </div>
+          </div>
+        </div>
+      {/if}
+    {/if}
 
     <div
       class={`rounded-[10px] border border_0000000d xl:overflow-visible overflow-x-auto ${

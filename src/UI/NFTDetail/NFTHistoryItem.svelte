@@ -50,8 +50,8 @@
         class="w-max px-2 py-1 text_27326F font-normal bg-[#6AC7F533] rounded-[5px] capitalize"
       >
         {data?.owner?.toLowerCase() === data?.fromAddress?.toLowerCase()
-          ? "Buy"
-          : "Sell"}
+          ? "Sell"
+          : "Buy"}
       </div>
     </div>
   </td>
