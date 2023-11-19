@@ -180,7 +180,6 @@
             args: [receiveAddress, BigInt(price * 1000000)],
           })
           .then(async (res) => {
-            console.log("res: ", res);
             const response = await nimbus.post("/v3/payments/create-session", {
               ...payload,
               txHash: res,
