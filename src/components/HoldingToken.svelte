@@ -204,6 +204,8 @@
       };
     })
     .filter((item) => Number(item?.amount) !== 0);
+
+  $: console.log("selectedTokenDetail: ", selectedTokenDetail);
 </script>
 
 <svelte:window on:keydown={closeSideTokenDetail} />
