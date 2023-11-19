@@ -111,7 +111,9 @@
 
 <ErrorBoundary>
   <PriceChart
-    contractAddress={data?.contractAddress}
+    contractAddress={data?.chain === "CEX"
+      ? data?.cg_id
+      : data?.contractAddress}
     {sellHistoryTradeList}
     {buyHistoryTradeList}
     id={data?.name}
