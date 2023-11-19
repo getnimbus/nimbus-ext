@@ -106,14 +106,14 @@ export const whaleCategories = [
     label: "Ventures Capital",
     value: "VENTURES_CAPITAL",
   },
-  {
-    label: "Smart money",
-    value: "SMART_MONEY",
-  },
-  {
-    label: "Hand-picked",
-    value: "HAND_PICKED",
-  },
+  // {
+  //   label: "Smart money",
+  //   value: "SMART_MONEY",
+  // },
+  // {
+  //   label: "Hand-picked",
+  //   value: "HAND_PICKED",
+  // },
 ];
 
 export const volatilityFilter = [

@@ -490,11 +490,15 @@
 
     {#if selectedType.length !== 0 && selectedType !== "RECOMMENDED"}
       {#if $query.isFetching}
-        <div class="flex items-center justify-center h-[300px]">
+        <div class="flex items-center justify-center h-screen">
           <Loading />
         </div>
       {:else}
-        <div class="flex flex-col gap-6">
+        <div
+          class={`flex flex-col gap-6 ${
+            selectedCategoryId.length === 0 ? "h-screen" : ""
+          }`}
+        >
           <div class="grid grid-cols-3 grid-rows-2 gap-6">
             {#each $query.data || [] as item}
               <div
@@ -552,203 +556,213 @@
       {/if}
     {/if}
 
-    <div
-      class={`rounded-[10px] border border_0000000d xl:overflow-visible overflow-x-auto ${
-        $isDarkMode ? "bg-[#131313]" : "bg-[#fff]"
-      } ${
-        isLoading || (whalesData && whalesData?.length === 0) ? "h-screen" : ""
-      }`}
-    >
-      <table class="table-auto xl:w-full w-[2800px] h-full">
-        <thead class="sticky top-0 z-10">
-          <tr class="bg_f4f5f8">
-            <th
-              class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8"
-            >
-              <div class="text-left xl:text-xs text-xl uppercase font-medium">
-                Address
-              </div>
-            </th>
-            <th class="py-3">
-              <div class="text-left xl:text-xs text-xl uppercase font-medium">
-                Tokens
-              </div>
-            </th>
-            <th class="py-3">
-              <div
-                class="flex items-center justify-end xl:gap-2 gap-4 text-right xl:text-xs text-xl uppercase font-medium"
+    {#if selectedType.length !== 0 && selectedType !== "RECOMMENDED" && selectedCategoryId.length === 0}
+      <div />
+    {:else}
+      <div
+        class={`rounded-[10px] border border_0000000d xl:overflow-visible overflow-x-auto ${
+          $isDarkMode ? "bg-[#131313]" : "bg-[#fff]"
+        } ${
+          isLoading || (whalesData && whalesData?.length === 0)
+            ? "h-screen"
+            : ""
+        }`}
+      >
+        <table class="table-auto xl:w-full w-[2800px] h-full">
+          <thead class="sticky top-0 z-10">
+            <tr class="bg_f4f5f8">
+              <th
+                class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8"
               >
-                Net Worth
-                <div on:click={toggleSortNetWorth} class="cursor-pointer">
-                  {@html sortIcon(sortNetWorth)}
+                <div class="text-left xl:text-xs text-xl uppercase font-medium">
+                  Address
                 </div>
-              </div>
-            </th>
-            <th class="py-3">
-              <div
-                class="flex items-center justify-end xl:gap-2 gap-4 text-right xl:text-xs text-xl uppercase font-medium"
-              >
-                1D
-                <div on:click={toggleSortChange1D} class="cursor-pointer">
-                  {@html sortIcon(sortChange1D)}
+              </th>
+              <th class="py-3">
+                <div class="text-left xl:text-xs text-xl uppercase font-medium">
+                  Tokens
                 </div>
-              </div>
-            </th>
-            <th class="py-3">
-              <div
-                class="flex items-center justify-end xl:gap-2 gap-4 text-right xl:text-xs text-xl uppercase font-medium"
-              >
-                7D
-                <div on:click={toggleSortChange7D} class="cursor-pointer">
-                  {@html sortIcon(sortChange7D)}
-                </div>
-              </div>
-            </th>
-            <th class="py-3">
-              <div
-                class="flex items-center justify-end xl:gap-2 gap-4 text-right xl:text-xs text-xl uppercase font-medium"
-              >
-                30D
-                <div on:click={toggleSortChange30D} class="cursor-pointer">
-                  {@html sortIcon(sortChange30D)}
-                </div>
-              </div>
-            </th>
-            <th class="py-3">
-              <div
-                class="flex items-center justify-end xl:gap-2 gap-4 text-right xl:text-xs text-xl uppercase font-medium"
-              >
-                1Y
-                <div on:click={toggleSortChange1Y} class="cursor-pointer">
-                  {@html sortIcon(sortChange1Y)}
-                </div>
-              </div>
-            </th>
-            <th class="py-3">
-              <div
-                class="flex items-center justify-end xl:gap-2 gap-4 text-right xl:text-xs text-xl uppercase font-medium"
-              >
-                <TooltipTitle
-                  tooltipText={"Volatility measures the extent of price fluctuations for an asset over time."}
-                  isBigIcon
+              </th>
+              <th class="py-3">
+                <div
+                  class="flex items-center justify-end xl:gap-2 gap-4 text-right xl:text-xs text-xl uppercase font-medium"
                 >
-                  Volatility
-                </TooltipTitle>
-                <div on:click={toggleSortVolatility} class="cursor-pointer">
-                  {@html sortIcon(sortVolatility)}
+                  Net Worth
+                  <div on:click={toggleSortNetWorth} class="cursor-pointer">
+                    {@html sortIcon(sortNetWorth)}
+                  </div>
                 </div>
-              </div>
-            </th>
-            <th class="py-3">
-              <div
-                class="flex items-center justify-end xl:gap-2 gap-4 text-right xl:text-xs text-xl uppercase font-medium"
-              >
-                <TooltipTitle
-                  tooltipText={"Max drawdown is the biggest loss experienced by an investment or portfolio."}
-                  isBigIcon
+              </th>
+              <th class="py-3">
+                <div
+                  class="flex items-center justify-end xl:gap-2 gap-4 text-right xl:text-xs text-xl uppercase font-medium"
                 >
-                  Max drawdown
-                </TooltipTitle>
-                <div on:click={toggleSortMaxDrawDown} class="cursor-pointer">
-                  {@html sortIcon(sortMaxDrawDown)}
+                  1D
+                  <div on:click={toggleSortChange1D} class="cursor-pointer">
+                    {@html sortIcon(sortChange1D)}
+                  </div>
                 </div>
-              </div>
-            </th>
-            <th class="py-3">
-              <div
-                class="flex items-center justify-end xl:gap-2 gap-4 text-right xl:text-xs text-xl uppercase font-medium"
-              >
-                <TooltipTitle
-                  tooltipText={"The Sharpe ratio measures how well an investment performs relative to its risk."}
-                  isBigIcon
+              </th>
+              <th class="py-3">
+                <div
+                  class="flex items-center justify-end xl:gap-2 gap-4 text-right xl:text-xs text-xl uppercase font-medium"
                 >
-                  Sharpe ratio
-                </TooltipTitle>
-                <div on:click={toggleSortSharpeRatio} class="cursor-pointer">
-                  {@html sortIcon(sortSharpeRatio)}
+                  7D
+                  <div on:click={toggleSortChange7D} class="cursor-pointer">
+                    {@html sortIcon(sortChange7D)}
+                  </div>
                 </div>
-              </div>
-            </th>
-            <th class="pr-3 py-3 rounded-tr-[10px]">
-              <div class="text-right xl:text-xs text-xl uppercase font-medium">
-                Last 30D
-              </div>
-            </th>
-          </tr>
-        </thead>
-
-        {#if isLoading}
-          <tbody>
-            <tr>
-              <td colspan="11">
-                <div class="flex justify-center items-center h-full py-3 px-3">
-                  <Loading />
+              </th>
+              <th class="py-3">
+                <div
+                  class="flex items-center justify-end xl:gap-2 gap-4 text-right xl:text-xs text-xl uppercase font-medium"
+                >
+                  30D
+                  <div on:click={toggleSortChange30D} class="cursor-pointer">
+                    {@html sortIcon(sortChange30D)}
+                  </div>
                 </div>
-              </td>
+              </th>
+              <th class="py-3">
+                <div
+                  class="flex items-center justify-end xl:gap-2 gap-4 text-right xl:text-xs text-xl uppercase font-medium"
+                >
+                  1Y
+                  <div on:click={toggleSortChange1Y} class="cursor-pointer">
+                    {@html sortIcon(sortChange1Y)}
+                  </div>
+                </div>
+              </th>
+              <th class="py-3">
+                <div
+                  class="flex items-center justify-end xl:gap-2 gap-4 text-right xl:text-xs text-xl uppercase font-medium"
+                >
+                  <TooltipTitle
+                    tooltipText={"Volatility measures the extent of price fluctuations for an asset over time."}
+                    isBigIcon
+                  >
+                    Volatility
+                  </TooltipTitle>
+                  <div on:click={toggleSortVolatility} class="cursor-pointer">
+                    {@html sortIcon(sortVolatility)}
+                  </div>
+                </div>
+              </th>
+              <th class="py-3">
+                <div
+                  class="flex items-center justify-end xl:gap-2 gap-4 text-right xl:text-xs text-xl uppercase font-medium"
+                >
+                  <TooltipTitle
+                    tooltipText={"Max drawdown is the biggest loss experienced by an investment or portfolio."}
+                    isBigIcon
+                  >
+                    Max drawdown
+                  </TooltipTitle>
+                  <div on:click={toggleSortMaxDrawDown} class="cursor-pointer">
+                    {@html sortIcon(sortMaxDrawDown)}
+                  </div>
+                </div>
+              </th>
+              <th class="py-3">
+                <div
+                  class="flex items-center justify-end xl:gap-2 gap-4 text-right xl:text-xs text-xl uppercase font-medium"
+                >
+                  <TooltipTitle
+                    tooltipText={"The Sharpe ratio measures how well an investment performs relative to its risk."}
+                    isBigIcon
+                  >
+                    Sharpe ratio
+                  </TooltipTitle>
+                  <div on:click={toggleSortSharpeRatio} class="cursor-pointer">
+                    {@html sortIcon(sortSharpeRatio)}
+                  </div>
+                </div>
+              </th>
+              <th class="pr-3 py-3 rounded-tr-[10px]">
+                <div
+                  class="text-right xl:text-xs text-xl uppercase font-medium"
+                >
+                  Last 30D
+                </div>
+              </th>
             </tr>
-          </tbody>
-        {:else}
-          <tbody>
-            {#if whalesData && whalesData?.length === 0}
+          </thead>
+
+          {#if isLoading}
+            <tbody>
               <tr>
                 <td colspan="11">
                   <div
-                    class="flex justify-center items-center h-full py-4 px-3 text-lg text-gray-400"
+                    class="flex justify-center items-center h-full py-3 px-3"
                   >
-                    Empty
+                    <Loading />
                   </div>
                 </td>
               </tr>
-            {:else}
-              {#each whalesData as data}
-                <PublicPortfolioItem {data} />
-              {/each}
-            {/if}
-          </tbody>
-        {/if}
-      </table>
-    </div>
+            </tbody>
+          {:else}
+            <tbody>
+              {#if whalesData && whalesData?.length === 0}
+                <tr>
+                  <td colspan="11">
+                    <div
+                      class="flex justify-center items-center h-full py-4 px-3 text-lg text-gray-400"
+                    >
+                      Empty
+                    </div>
+                  </td>
+                </tr>
+              {:else}
+                {#each whalesData as data}
+                  <PublicPortfolioItem {data} />
+                {/each}
+              {/if}
+            </tbody>
+          {/if}
+        </table>
+      </div>
 
-    <div class="flex justify-center gap-3 xl:-mt-4">
-      <div class="w-[50px]">
-        {#if pageValue === 0}
-          <Button variant="disabled" disabled>
-            <div class="text-2xl -mt-1">&lsaquo;</div>
-          </Button>
-        {:else}
-          <Button
-            variant="secondary"
-            on:click={() => {
-              if (pageValue > 1) {
-                pageValue = pageValue - 1;
-              } else {
-                pageValue = 0;
-              }
-              getPublicPortfolio();
-            }}
-          >
-            <div class="text-2xl -mt-1">&lsaquo;</div>
-          </Button>
-        {/if}
+      <div class="flex justify-center gap-3 xl:-mt-4">
+        <div class="w-[50px]">
+          {#if pageValue === 0}
+            <Button variant="disabled" disabled>
+              <div class="text-2xl -mt-1">&lsaquo;</div>
+            </Button>
+          {:else}
+            <Button
+              variant="secondary"
+              on:click={() => {
+                if (pageValue > 1) {
+                  pageValue = pageValue - 1;
+                } else {
+                  pageValue = 0;
+                }
+                getPublicPortfolio();
+              }}
+            >
+              <div class="text-2xl -mt-1">&lsaquo;</div>
+            </Button>
+          {/if}
+        </div>
+        <div class="w-[50px]">
+          {#if whalesData && whalesData.length === 0}
+            <Button variant="disabled" disabled>
+              <div class="text-2xl -mt-1">&rsaquo;</div>
+            </Button>
+          {:else}
+            <Button
+              variant="secondary"
+              on:click={() => {
+                pageValue = pageValue + 1;
+                getPublicPortfolio();
+              }}
+            >
+              <div class="text-2xl -mt-1">&rsaquo;</div>
+            </Button>
+          {/if}
+        </div>
       </div>
-      <div class="w-[50px]">
-        {#if whalesData && whalesData.length === 0}
-          <Button variant="disabled" disabled>
-            <div class="text-2xl -mt-1">&rsaquo;</div>
-          </Button>
-        {:else}
-          <Button
-            variant="secondary"
-            on:click={() => {
-              pageValue = pageValue + 1;
-              getPublicPortfolio();
-            }}
-          >
-            <div class="text-2xl -mt-1">&rsaquo;</div>
-          </Button>
-        {/if}
-      </div>
-    </div>
+    {/if}
   </div>
 </ErrorBoundary>
 
