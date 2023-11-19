@@ -4,6 +4,7 @@
   import { Link } from "svelte-navigator";
   import "flowbite/dist/flowbite.css";
   import { Toast } from "flowbite-svelte";
+  import { blur } from "svelte/transition";
   import { useNavigate } from "svelte-navigator";
   import { selectedPackage, user, wallet, chain, typeWallet } from "~/store";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
@@ -41,7 +42,7 @@
       const paymentIdParams = urlParams.get("paymentId");
 
       const response = await nimbus.get(
-        `/v2/payments/status?paymentId=${paymentIdParams}`
+        `/v3/payments/status?payment_link_id=${paymentIdParams}`
       );
 
       if (
@@ -51,7 +52,9 @@
       ) {
         status = true;
         clearInterval(intervalId);
-      } else if (
+      }
+
+      if (
         response &&
         response?.data &&
         response?.data?.paymentStatus === "failed"
@@ -59,7 +62,13 @@
         status = true;
         clearInterval(intervalId);
         navigate("/payments/fail");
-      } else {
+      }
+
+      if (
+        response &&
+        response?.data &&
+        response?.data?.paymentStatus === "pending"
+      ) {
         status = false;
       }
     } catch (e) {
@@ -115,7 +124,7 @@
   $: {
     intervalId = setInterval(() => {
       getStatusPayment();
-    }, 5000); // 5s
+    }, 30000); // 30s
   }
 </script>
 

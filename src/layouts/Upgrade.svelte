@@ -1,66 +1,208 @@
 <script lang="ts">
   import { nimbus } from "~/lib/network";
   import { isDarkMode } from "~/store";
+  import { Toast } from "flowbite-svelte";
+  import { blur } from "svelte/transition";
+  import { wagmiAbi } from "~/lib/viem-evm-abi";
+  import { publicClient } from "~/lib/viem-client";
+  import { mainnet } from "viem/chains";
+  import { useNavigate } from "svelte-navigator";
 
   import PricePackage from "~/UI/PricePackage/PricePackage.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import Button from "~/components/Button.svelte";
-  import Copy from "~/components/Copy.svelte";
 
-  import Bnb from "~/assets/bnb.png";
   import Ethereum from "~/assets/ethereum.png";
-  import Matic from "~/assets/matic.png";
   import Solana from "~/assets/solana.png";
+  import Bnb from "~/assets/bnb.png";
+  import Matic from "~/assets/matic.png";
+
+  const navigate = useNavigate();
+
+  const usdcAddress = "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48";
+  const receiveAddress = "0x6AedbE81435BBD67e2223eadd256992DC64fc90B";
 
   const listChain = [
     {
-      logo: Solana,
-      label: "Solana",
-      value: "sol",
+      logo: Ethereum,
+      label: "Ethereum",
+      value: "ETH",
     },
     // {
-    //   logo: Ethereum,
-    //   label: "Ethereum",
-    //   value: "eth",
+    //   logo: Solana,
+    //   label: "Solana",
+    //   value: "SOL",
     // },
     // {
     //   logo: Bnb,
     //   label: "Binance",
-    //   value: "bsc",
+    //   value: "BSC",
     // },
     // {
     //   logo: Matic,
     //   label: "Polygon",
-    //   value: "pol",
+    //   value: "POL",
     // },
   ];
+
+  let toastMsg = "";
+  let isSuccessToast = false;
+  let counter = 3;
+  let showToast = false;
+
+  const trigger = () => {
+    showToast = true;
+    counter = 3;
+    timeout();
+  };
+
+  const timeout = () => {
+    if (--counter > 0) return setTimeout(timeout, 1000);
+    showToast = false;
+    toastMsg = "";
+    isSuccessToast = false;
+  };
 
   let isLoadingBuy = false;
   let selectedPackage;
 
+  let isLoadingSubmitCoupleCode = false;
+  let code = "";
+  let discountPercent = 0;
+  let coupleCode = "";
+
   const handleSelectedPackage = (item) => {
+    console.log("item: ", item);
     selectedPackage = item;
   };
 
+  const onSubmitCoupleCode = async (e) => {
+    isLoadingSubmitCoupleCode = true;
+    const formData = new FormData(e.target);
+    const data: any = {};
+    for (let field of formData) {
+      const [key, value] = field;
+      data[key] = value;
+    }
+    try {
+      const response = await nimbus.post("/v3/payments/check-coupon", {
+        code: data.code,
+      });
+      if (response?.error) {
+        toastMsg = response?.error;
+        isSuccessToast = false;
+      } else {
+        if (response?.status === 1) {
+          coupleCode = response?.type;
+          isSuccessToast = true;
+
+          if (response?.type === "DISCOUNT") {
+            discountPercent = response.value;
+          }
+
+          if (response?.type === "TRIAL") {
+            await submitTrial(data.code);
+          }
+        }
+
+        if (response?.status === 0) {
+          isSuccessToast = false;
+        }
+
+        toastMsg = response?.message;
+      }
+      isLoadingSubmitCoupleCode = false;
+      trigger();
+    } catch (e) {
+      console.error(e);
+      isLoadingSubmitCoupleCode = false;
+      toastMsg =
+        "There are some error when apply your coupon code. Please try again!";
+      isSuccessToast = false;
+      trigger();
+    }
+  };
+
+  const submitTrial = async (code) => {
+    try {
+      await nimbus.post("/v2/payments/redeem-code", {
+        code,
+      });
+      toastMsg = "Apply your TRIAL coupon code success!";
+      isSuccessToast = true;
+      trigger();
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   const handleBuy = async (chainValue: string) => {
-    const formatData = {
+    const account = await publicClient.requestAddresses();
+
+    const payload = {
+      value: selectedPackage.selectedTypePackage === "year" ? 12 : 1,
+      code: coupleCode,
       plan: selectedPackage.plan,
-      interval: selectedPackage.selectedTypePackage,
+      currency: "USDT",
       chain: chainValue,
-      isTrial: selectedPackage.isNewUser,
+      txHash: "",
     };
+
     isLoadingBuy = true;
     try {
-      const response = await nimbus.post(
-        "/v2/payments/create-session",
-        formatData
-      );
-      if (response && response?.data) {
-        isLoadingBuy = false;
-        window.location.replace(response?.data?.url);
+      // if (chainValue === "SOL") {
+      //   const response = await nimbus.post(
+      //     "/v2/payments/create-session",
+      //     payload
+      //   );
+      //   if (response && response?.data) {
+      //     window.location.replace(response?.data?.url);
+      //   }
+      // }
+
+      if (chainValue === "ETH") {
+        let price =
+          selectedPackage.selectedTypePackage === "year"
+            ? selectedPackage.price * 12
+            : selectedPackage.price;
+
+        if (discountPercent !== 0) {
+          price = price - price * (discountPercent / 100);
+        }
+
+        publicClient
+          .writeContract({
+            address: usdcAddress,
+            account: account[0],
+            chain: mainnet,
+            abi: wagmiAbi,
+            functionName: "transfer",
+            args: [receiveAddress, BigInt(price * 1000000)],
+          })
+          .then(async (res) => {
+            console.log("res: ", res);
+            const response = await nimbus.post("/v3/payments/create-session", {
+              ...payload,
+              txHash: res,
+            });
+            if (response && response?.data) {
+              navigate(
+                `/payments/success&paymentId=${response?.data?.paymentLinkId}`
+              );
+            }
+          })
+          .catch((e) => {
+            console.error("error", e);
+            toastMsg =
+              "Transfer amount exceeds balance in your wallet. Please try again!";
+            isSuccessToast = false;
+            trigger();
+          });
       }
     } catch (e) {
       console.error(e);
+      isLoadingBuy = false;
+    } finally {
       isLoadingBuy = false;
     }
   };
@@ -82,121 +224,78 @@
 
     {#if selectedPackage && Object.keys(selectedPackage).length !== 0}
       <div class="flex flex-col justify-center min-h-[70vh]">
-        <!-- manual payment -->
-        <div class="xl:text-lg text-2xl mb-3">
-          Please follow this payment steps:
-        </div>
-        <ul class="xl:text-lg text-2xl flex flex-col gap-5">
-          <li>
-            <span class="xl:text-xl text-3xl font-medium">Step 1:</span> Send
-            <span class="xl:text-lg text-2xl font-medium"
-              >{selectedPackage.selectedTypePackage === "year"
-                ? selectedPackage.plan === "Professional"
-                  ? "$990"
-                  : "$99"
-                : selectedPackage.price}</span
-            >
-
-            USDT or USDC to this address
-            <span class="font-medium"
-              >0x6aedbe81435bbd67e2223eadd256992dc64fc90b
-            </span>on Ethereum, BNB or Polygon.
-          </li>
-
-          <li>
-            <span class="xl:text-xl text-3xl font-medium">Step 2:</span> After
-            transfer success, Dm TG
-            <a
-              href="https://t.me/thanhle27"
-              target="_blank"
-              class="font-medium text-[#1E96FC] hover:text-[#27326f]"
-              >@thanhle27</a
-            >
-            or send email to
-            <a
-              href="mailto:thanhle@getnimbus.io"
-              target="_blank"
-              class="font-medium text-[#1E96FC] hover:text-[#27326f]"
-              >thanhle@getnimbus.io</a
-            >
-            including your <span class="font-medium">wallet address</span> you
-            want to upgrade, the
-            <span class="font-medium">transaction hash</span>
-            and the <span class="font-medium">coupon code</span> you want to apply.
-          </li>
-
-          <li>
-            <span class="xl:text-xl text-3xl font-medium">Step 3:</span> We will
-            check and upgrade your account after we receive your information.
-          </li>
-        </ul>
-        <div
-          class="text-[#1E96FC] cursor-pointer flex items-center gap-2 mt-2 xl:text-base text-2xl mt-6"
-          on:click={() => {
-            selectedPackage = undefined;
-          }}
-        >
-          <div class="transform -rotate-180">
-            <div class="xl:block hidden">
-              <svg
-                width="14"
-                height="14"
-                viewBox="0 0 14 14"
-                fill="#1E96FC"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
-                  fill=""
-                />
-              </svg>
-            </div>
-            <div class="xl:hidden block">
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 14 14"
-                fill="#1E96FC"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
-                  fill=""
-                />
-              </svg>
-            </div>
-          </div>
-          Choose other Plan
-        </div>
-
-        <!-- <div class="flex flex-col items-center gap-1">
-          <div class="flex items-center gap-1 xl:text-lg text-xl">
-            You're going to upgrade to plan <span class="font-medium uppercase"
-              >{selectedPackage.plan}</span
+        <div class="flex flex-col items-center gap-1">
+          <div class="flex items-center gap-1 xl:text-lg text-2xl">
+            You're going to upgrade to plan <span
+              class="font-semibold uppercase"
+              >{selectedPackage.plan === "Professional"
+                ? "Alpha"
+                : selectedPackage.plan}</span
             >
             with
             <span class="flex items-end gap-1 font-semibold">
-              <span>{selectedPackage.price}</span><span
-                class="xl:text-base text-lg text-gray-400 mb-[2px]">/month</span
-              >
+              {selectedPackage.selectedTypePackage === "year"
+                ? "$" +
+                  `${
+                    discountPercent !== 0
+                      ? selectedPackage.price * 12 -
+                        selectedPackage.price * 12 * (discountPercent / 100)
+                      : selectedPackage.price * 12
+                  }` +
+                  " for 1 year"
+                : "$" +
+                  `${
+                    discountPercent !== 0
+                      ? selectedPackage.price -
+                        selectedPackage.price * (discountPercent / 100)
+                      : selectedPackage.price
+                  }` +
+                  " for 1 month"}
             </span>
           </div>
         </div>
-        {#if selectedPackage.isNewUser}
-          <div class="flex items-center justify-center gap-2 mt-2">
-            Promotion Code:
-            <span class="text-xl">
-              <Copy
-                address="TRIAL"
-                textTooltip="Copy coupon to clipboard"
-                iconColor={`${$isDarkMode ? "#fff" : "#000"}`}
-                color={`${$isDarkMode ? "#fff" : "#000"}`}
+
+        <div class="flex flex-col gap-3 justify-center items-center mt-2">
+          <form
+            on:submit|preventDefault={onSubmitCoupleCode}
+            class="flex items-center gap-3"
+          >
+            <div
+              class={`input-2 input-border w-full xl:py-[6px] py-3 px-3 ${
+                code && !$isDarkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
+              }`}
+            >
+              <input
+                type="text"
+                id="code"
+                name="code"
+                required
+                placeholder="Couple code"
+                value=""
+                class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal ${
+                  code && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+                } ${
+                  $isDarkMode
+                    ? "text-white"
+                    : "text-[#5E656B] placeholder-[#5E656B]"
+                }`}
+                on:keyup={({ target: { value } }) => (code = value)}
               />
-            </span>
-          </div>
-        {/if}
+            </div>
+            <div class="w-[120px]">
+              <Button
+                type="submit"
+                isLoading={isLoadingSubmitCoupleCode}
+                disabled={isLoadingSubmitCoupleCode}
+              >
+                Apply
+              </Button>
+            </div>
+          </form>
+        </div>
+
         <div class="flex flex-col gap-3 items-center mt-5">
-          <div class="my-3 xl:text-base text-lg">
+          <div class="my-3 xl:text-base text-2xl">
             Choose your prefer payment method
           </div>
           {#each listChain as chain}
@@ -204,9 +303,14 @@
               <Button
                 variant="secondary"
                 isLoading={isLoadingBuy}
-                on:click={() => handleBuy(chain.value)}
+                on:click={() => {
+                  handleBuy(chain.value);
+                }}
               >
-                <img src={chain.logo} class="w-5 h-5 rounded-full" />
+                <img
+                  src={chain.logo}
+                  class="xl:w-5 xl:h-5 w-7 h-7 rounded-full"
+                />
                 {chain.label}</Button
               >
             </div>
@@ -218,31 +322,103 @@
             }}
           >
             <div class="transform -rotate-180">
-              <svg
-                width="14"
-                height="14"
-                viewBox="0 0 14 14"
-                fill="#1E96FC"
-                xmlns="http://www.w3.org/2000/svg"
-                ><path
-                  d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
-                  fill=""
-                /></svg
-              >
+              <div class="xl:block hidden">
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 14 14"
+                  fill="#1E96FC"
+                  xmlns="http://www.w3.org/2000/svg"
+                  ><path
+                    d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
+                    fill=""
+                  /></svg
+                >
+              </div>
+              <div class="xl:hidden block">
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 14 14"
+                  fill="#1E96FC"
+                  xmlns="http://www.w3.org/2000/svg"
+                  ><path
+                    d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
+                    fill=""
+                  /></svg
+                >
+              </div>
             </div>
             Choose other Plan
           </div>
         </div>
-        <div class="text-center text-gray-500 xl:text-sm text-2xl mt-8">
-          If missing your prefer payment method, please contact Telegram
-          <strong>@thanhle27</strong> for support
-        </div> -->
+
+        <div class="text-center text-gray-500 xl:text-sm text-xl mt-8">
+          If missing your prefer payment method<br /> please contact Telegram
+          <a
+            href="https://t.me/thanhle27"
+            target="_blank"
+            class="font-medium text-[#1E96FC] hover:underline">@thanhle27</a
+          >
+          or send email to
+          <a
+            href="mailto:thanhle@getnimbus.io"
+            target="_blank"
+            class="font-medium text-[#1E96FC] hover:underline"
+            >thanhle@getnimbus.io</a
+          > for support
+        </div>
       </div>
     {:else}
       <PricePackage selectedPackage={handleSelectedPackage} />
     {/if}
   </div>
 </ErrorBoundary>
+
+{#if showToast}
+  <div class="fixed top-3 right-3 w-full z-10">
+    <Toast
+      transition={blur}
+      params={{ amount: 10 }}
+      position="top-right"
+      color={isSuccessToast ? "green" : "red"}
+      bind:open={showToast}
+    >
+      <svelte:fragment slot="icon">
+        {#if isSuccessToast}
+          <svg
+            aria-hidden="true"
+            class="w-5 h-5"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+            ><path
+              fill-rule="evenodd"
+              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+              clip-rule="evenodd"
+            /></svg
+          >
+          <span class="sr-only">Check icon</span>
+        {:else}
+          <svg
+            aria-hidden="true"
+            class="w-5 h-5"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+            ><path
+              fill-rule="evenodd"
+              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+              clip-rule="evenodd"
+            /></svg
+          >
+          <span class="sr-only">Error icon</span>
+        {/if}
+      </svelte:fragment>
+      {toastMsg}
+    </Toast>
+  </div>
+{/if}
 
 <style windi:preflights:global windi:safelist:global>
 </style>
