@@ -222,7 +222,7 @@
   const handleGetTokenPriceSol = async () => {
     const params =
       $typeWallet === "CEX"
-        ? `cgId:${contractAddress}`
+        ? `coingecko:${contractAddress}`
         : contractAddress === "11111111111111111111111111111111"
         ? "coingecko:solana"
         : `solana:${contractAddress}`;
