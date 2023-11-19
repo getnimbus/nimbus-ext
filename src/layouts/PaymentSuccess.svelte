@@ -52,7 +52,9 @@
       ) {
         status = true;
         clearInterval(intervalId);
-      } else if (
+      }
+
+      if (
         response &&
         response?.data &&
         response?.data?.paymentStatus === "failed"
@@ -60,7 +62,13 @@
         status = true;
         clearInterval(intervalId);
         navigate("/payments/fail");
-      } else {
+      }
+
+      if (
+        response &&
+        response?.data &&
+        response?.data?.paymentStatus === "pending"
+      ) {
         status = false;
       }
     } catch (e) {
@@ -116,7 +124,7 @@
   $: {
     intervalId = setInterval(() => {
       getStatusPayment();
-    }, 5000); // 5s
+    }, 30000); // 30s
   }
 </script>
 

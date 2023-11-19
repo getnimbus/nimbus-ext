@@ -72,6 +72,7 @@
   let coupleCode = "";
 
   const handleSelectedPackage = (item) => {
+    console.log("item: ", item);
     selectedPackage = item;
   };
 
@@ -100,7 +101,7 @@
           }
 
           if (response?.type === "TRIAL") {
-            //Todo: setup Trial flow
+            await submitTrial(data.code);
           }
         }
 
@@ -116,9 +117,22 @@
       console.error(e);
       isLoadingSubmitCoupleCode = false;
       toastMsg =
-        "There are some error when apply your couple code. Please try again!";
+        "There are some error when apply your coupon code. Please try again!";
       isSuccessToast = false;
       trigger();
+    }
+  };
+
+  const submitTrial = async (code) => {
+    try {
+      await nimbus.post("/v2/payments/redeem-code", {
+        code,
+      });
+      toastMsg = "Apply your TRIAL coupon code success!";
+      isSuccessToast = true;
+      trigger();
+    } catch (e) {
+      console.error(e);
     }
   };
 
@@ -126,18 +140,12 @@
     const account = await publicClient.requestAddresses();
 
     const payload = {
-      interval: selectedPackage.selectedTypePackage,
-      intervalCount: 1,
-      price:
-        selectedPackage.selectedTypePackage === "year"
-          ? selectedPackage.price * 12
-          : selectedPackage.price,
-
-      txHash: "",
+      value: selectedPackage.selectedTypePackage === "year" ? 12 : 1,
       code: coupleCode,
       plan: selectedPackage.plan,
       currency: "USDT",
       chain: chainValue,
+      txHash: "",
     };
 
     isLoadingBuy = true;
