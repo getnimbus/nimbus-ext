@@ -20,6 +20,8 @@
   const navigate = useNavigate();
 
   const testAddress = "0x8267cf9254734c6eb452a7bb9aaf97b392258b21";
+  const testReceiveAddress = "0x5C540cF255AE681AA2d6bd61a5f29DB3DDFA9E1e";
+
   const usdcAddress = "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48";
   const receiveAddress = "0x6AedbE81435BBD67e2223eadd256992DC64fc90B";
 
@@ -178,7 +180,7 @@
             chain: sepolia,
             abi: wagmiAbi,
             functionName: "transfer",
-            args: [receiveAddress, BigInt(0.0001 * 1000000)],
+            args: [testReceiveAddress, BigInt(0.0001 * 1000000)],
           })
           .then(async (res) => {
             const response = await nimbus.post("/v3/payments/create-session", {
