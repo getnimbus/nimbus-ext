@@ -99,6 +99,10 @@ export const sharpeRatioFilter = [
 
 export const whaleCategories = [
   {
+    label: "All",
+    value: "ALL",
+  },
+  {
     label: "Recommended",
     value: "RECOMMENDED",
   },
