@@ -3,6 +3,7 @@
   import { shorterName } from "~/utils";
   import { useNavigate } from "svelte-navigator";
 
+  import Tooltip from "~/components/Tooltip.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import TooltipTitle from "~/components/TooltipTitle.svelte";
   import Button from "~/components/Button.svelte";
@@ -306,7 +307,7 @@
                         class="absolute left-0 -top-8"
                         style="z-index: 2147483648;"
                       >
-                        <tooltip-detail text={item.protocol} />
+                        <Tooltip text={item.protocol} />
                       </div>
                     {/if}
                   </div>

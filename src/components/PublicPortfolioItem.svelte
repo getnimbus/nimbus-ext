@@ -7,7 +7,7 @@
 
   export let data;
 
-  import "~/components/Tooltip.custom.svelte";
+  import Tooltip from "~/components/Tooltip.svelte";
   import TooltipNumber from "./TooltipNumber.svelte";
   import Copy from "./Copy.svelte";
 
@@ -73,7 +73,7 @@
                 class="absolute -top-8 left-1/2 transform -translate-x-1/2"
                 style="z-index: 2147483648;"
               >
-                <tooltip-detail text={token.symbol.toUpperCase()} />
+                <Tooltip text={token.symbol.toUpperCase()} />
               </div>
             {/if}
           </div>
@@ -114,7 +114,7 @@
                 class="absolute -top-8 left-1/2 transform -translate-x-1/2"
                 style="z-index: 2147483648;"
               >
-                <tooltip-detail text={token.symbol.toUpperCase()} />
+                <Tooltip text={token.symbol.toUpperCase()} />
               </div>
             {/if}
           </div>

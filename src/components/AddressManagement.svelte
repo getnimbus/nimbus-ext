@@ -40,6 +40,7 @@
   export let type: "portfolio" | "order" = "portfolio";
   export let title;
 
+  import Tooltip from "~/components/Tooltip.svelte";
   import Loading from "./Loading.svelte";
   import Button from "~/components/Button.svelte";
   import Select from "~/components/Select.svelte";
@@ -1452,7 +1453,7 @@
                         class="absolute transform -translate-x-1/2 -top-8 left-1/2 w-max"
                         style="z-index: 2147483648;"
                       >
-                        <tooltip-detail
+                        <Tooltip
                           text={"Alert me when it makes a move"}
                         />
                       </div>
@@ -1835,7 +1836,7 @@
               class="absolute transform -translate-x-1/2 -top-8 left-1/2 w-max"
               style="z-index: 2147483648;"
             >
-              <tooltip-detail
+              <Tooltip
                 text={`/start ${$wallet} ${
                   listAddress.filter((item) => item.value === $wallet)?.[0]
                     ?.label || ""

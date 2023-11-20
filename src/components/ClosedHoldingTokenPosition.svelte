@@ -4,6 +4,7 @@
   import CopyToClipboard from "svelte-copy-to-clipboard";
   import { wait } from "../entries/background/utils";
 
+  import Tooltip from "~/components/Tooltip.svelte";
   import "~/components/Tooltip.custom.svelte";
   import tooltip from "~/entries/contentScript/views/tooltip";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
@@ -102,7 +103,7 @@
             {/if}
             {#if isShowTooltipName && data?.name?.length > 20}
               <div class="absolute -top-8 left-0" style="z-index: 2147483648;">
-                <tooltip-detail text={data.name} />
+                <Tooltip text={data.name} />
               </div>
             {/if}
           </div>
@@ -123,7 +124,7 @@
             {/if}
             {#if isShowTooltipSymbol && data.symbol.length > 20}
               <div class="absolute -top-8 left-0" style="z-index: 2147483648;">
-                <tooltip-detail text={data.symbol} />
+                <Tooltip text={data.symbol} />
               </div>
             {/if}
           </div>
@@ -582,7 +583,7 @@
                     class="absolute left-0 -top-8"
                     style="z-index: 2147483648;"
                   >
-                    <tooltip-detail text={selectedTokenDetail.name} />
+                    <Tooltip text={selectedTokenDetail.name} />
                   </div>
                 {/if}
               </div>
@@ -606,7 +607,7 @@
                     class="absolute left-0 -top-8"
                     style="z-index: 2147483648;"
                   >
-                    <tooltip-detail text={selectedTokenDetail.symbol} />
+                    <Tooltip text={selectedTokenDetail.symbol} />
                   </div>
                 {/if}
               </div>
@@ -669,7 +670,7 @@
                       class="absolute right-0 -top-8"
                       style="z-index: 2147483648;"
                     >
-                      <tooltip-detail
+                      <Tooltip
                         text={shorterAddress(
                           selectedTokenDetail?.contractAddress
                         )}

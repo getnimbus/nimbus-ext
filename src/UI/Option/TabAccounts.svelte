@@ -22,6 +22,7 @@
   import { wait } from "~/entries/background/utils";
   import * as browser from "webextension-polyfill";
 
+  import Tooltip from "~/components/Tooltip.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
   import Button from "~/components/Button.svelte";
   import Copy from "~/components/Copy.svelte";
@@ -939,7 +940,7 @@
                 class="absolute transform -translate-x-1/2 -top-8 left-1/2 w-max"
                 style="z-index: 2147483648;"
               >
-                <tooltip-detail text={"Connect wallet to add account"} />
+                <Tooltip text={"Connect wallet to add account"} />
               </div>
             {/if}
           </div>
@@ -1159,7 +1160,7 @@
                   class="absolute right-0 transform -top-12"
                   style="z-index: 2147483648;"
                 >
-                  <tooltip-detail text={tooltipDisableAddBtn} />
+                  <Tooltip text={tooltipDisableAddBtn} />
                 </div>
               {/if}
             </div>

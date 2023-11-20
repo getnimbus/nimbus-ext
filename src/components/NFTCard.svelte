@@ -1,7 +1,8 @@
 <script lang="ts">
-  import { typeWallet, isDarkMode } from "~/store";
+  import { isDarkMode } from "~/store";
   import { shorterName } from "~/utils";
 
+  import Tooltip from "~/components/Tooltip.svelte";
   import TooltipNumber from "./TooltipNumber.svelte";
   import Image from "./Image.svelte";
 
@@ -50,7 +51,7 @@
         : ""}
       {#if showTooltipName && data?.name.length > 30}
         <span class="absolute -top-7 left-0" style="z-index: 2147483648;">
-          <tooltip-detail text={data?.name} />
+          <Tooltip text={data?.name} />
         </span>
       {/if}
     </div>
