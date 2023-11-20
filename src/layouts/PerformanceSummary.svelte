@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onMount } from "svelte";
   import { isDarkMode, userPublicAddress } from "~/store";
   import { shorterAddress } from "~/utils";
 
@@ -9,6 +10,16 @@
   import ProfitData from "~/UI/Profile/ProfitData.svelte";
 
   import User from "~/assets/user.png";
+
+  let address = $userPublicAddress;
+
+  onMount(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const addressParams = urlParams.get("address");
+    if (addressParams) {
+      address = addressParams;
+    }
+  });
 </script>
 
 <ErrorBoundary>
@@ -29,7 +40,7 @@
               $isDarkMode ? "text-white" : "text-black"
             }`}
           >
-            {shorterAddress($userPublicAddress)}
+            {shorterAddress(address)}
           </div>
         </div>
 
@@ -38,11 +49,11 @@
       <div class="flex-1 flex flex-col gap-4">
         <div class="xl:text-3xl text-4xl font-medium">Performance Summary</div>
         <div class="grid xl:grid-cols-4 grid-cols-2 gap-6">
-          <ProfitData selectedAddress={$userPublicAddress} />
+          <ProfitData selectedAddress={address} />
 
-          <TopProfitAndLoss selectedAddress={$userPublicAddress} />
+          <TopProfitAndLoss selectedAddress={address} />
 
-          <ClosedPositionChart selectedAddress={$userPublicAddress} />
+          <ClosedPositionChart selectedAddress={address} />
         </div>
       </div>
     </div>
