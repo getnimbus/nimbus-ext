@@ -8,6 +8,7 @@
   import ClosedPositionChart from "~/UI/Profile/ClosedPositionChart.svelte";
   import TopProfitAndLoss from "~/UI/Profile/TopProfitAndLoss.svelte";
   import ProfitData from "~/UI/Profile/ProfitData.svelte";
+  import SyncData from "~/components/SyncData.svelte";
 
   import User from "~/assets/user.png";
 
@@ -54,13 +55,15 @@
       </div>
       <div class="flex-1 flex flex-col gap-4">
         <div class="xl:text-3xl text-4xl font-medium">Performance Summary</div>
-        <div class="grid xl:grid-cols-4 grid-cols-2 gap-6">
-          <ProfitData selectedAddress={address} />
+        <SyncData {address}>
+          <div class="grid xl:grid-cols-4 grid-cols-2 gap-6">
+            <ProfitData selectedAddress={address} />
 
-          <TopProfitAndLoss selectedAddress={address} />
+            <TopProfitAndLoss selectedAddress={address} />
 
-          <ClosedPositionChart selectedAddress={address} />
-        </div>
+            <ClosedPositionChart selectedAddress={address} />
+          </div>
+        </SyncData>
       </div>
     </div>
   </div>
