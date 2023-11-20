@@ -55,15 +55,13 @@
       </div>
       <div class="flex-1 flex flex-col gap-4">
         <div class="xl:text-3xl text-4xl font-medium">Performance Summary</div>
-        <SyncData {address}>
-          <div class="grid xl:grid-cols-4 grid-cols-2 gap-6">
-            <ProfitData selectedAddress={address} />
+        <div class="grid xl:grid-cols-4 grid-cols-2 gap-6">
+          <ProfitData selectedAddress={address} />
 
-            <TopProfitAndLoss selectedAddress={address} />
+          <TopProfitAndLoss selectedAddress={address} />
 
-            <ClosedPositionChart selectedAddress={address} />
-          </div>
-        </SyncData>
+          <ClosedPositionChart selectedAddress={address} />
+        </div>
       </div>
     </div>
   </div>
