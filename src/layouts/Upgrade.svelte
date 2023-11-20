@@ -143,7 +143,7 @@
       value: selectedPackage.selectedTypePackage === "year" ? 12 : 1,
       code: coupleCode,
       plan: selectedPackage.plan,
-      currency: "USDT",
+      currency: "SepoliaETH",
       chain: chainValue,
       txHash: "",
     };
@@ -177,7 +177,7 @@
             chain: mainnet,
             abi: wagmiAbi,
             functionName: "transfer",
-            args: [receiveAddress, BigInt(price * 1000000)],
+            args: [receiveAddress, BigInt(0.0001 * 1000000)],
           })
           .then(async (res) => {
             const response = await nimbus.post("/v3/payments/create-session", {
