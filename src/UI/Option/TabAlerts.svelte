@@ -8,7 +8,7 @@
   import { wait } from "~/entries/background/utils";
   import { isDarkMode } from "~/store";
 
-  import "~/components/Tooltip.custom.svelte";
+  import Tooltip from "~/components/Tooltip.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
   import Button from "~/components/Button.svelte";
 
@@ -554,7 +554,7 @@
                   class="absolute left-1/2 transform -translate-x-1/2 -top-8"
                   style="z-index: 2147483648;"
                 >
-                  <tooltip-detail text="Copy command" />
+                  <Tooltip text="Copy command" />
                 </div>
               {/if}
             </div>

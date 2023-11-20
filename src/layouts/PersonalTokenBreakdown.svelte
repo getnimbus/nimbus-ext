@@ -15,6 +15,7 @@
 
   import type { TokenData, HoldingTokenRes } from "~/types/HoldingTokenData";
 
+  import Tooltip from "~/components/Tooltip.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
   import Copy from "~/components/Copy.svelte";
@@ -806,7 +807,7 @@
                     class="absolute transform -translate-x-1/2 -top-8 left-1/2 max"
                     style="z-index: 2147483648;"
                   >
-                    <tooltip-detail text={"Maximum 3 custom categories"} />
+                    <Tooltip text={"Maximum 3 custom categories"} />
                   </div>
                 {/if}
               </div>
@@ -1261,7 +1262,7 @@
                                         class="absolute -top-8 left-0"
                                         style="z-index: 2147483648;"
                                       >
-                                        <tooltip-detail text={data.name} />
+                                        <Tooltip text={data.name} />
                                       </div>
                                     {/if}
                                   </div>
@@ -1290,7 +1291,7 @@
                                         class="absolute -top-8 left-0"
                                         style="z-index: 2147483648;"
                                       >
-                                        <tooltip-detail text={data.symbol} />
+                                        <Tooltip text={data.symbol} />
                                       </div>
                                     {/if}
                                   </div>

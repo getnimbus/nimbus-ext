@@ -1,6 +1,7 @@
 <script lang="ts">
   import { i18n } from "~/lib/i18n";
 
+  import Tooltip from "~/components/Tooltip.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import McdItem from "./TableItem/MCDItem.svelte";
 
@@ -105,7 +106,7 @@
                     class="absolute -top-7 left-1/2 transform -translate-x-1/2"
                     style="z-index: 2147483648;"
                   >
-                    <tooltip-detail
+                    <Tooltip
                       text="Your assests will be liquidated if the health factor is less than or equal to 1"
                     />
                   </span>
