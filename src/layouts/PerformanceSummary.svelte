@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { isDarkMode, userPublicAddress } from "~/store";
+  import { isDarkMode, userPublicAddress, wallet } from "~/store";
   import { shorterAddress } from "~/utils";
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
@@ -20,6 +20,12 @@
       address = addressParams;
     }
   });
+
+  $: {
+    if ($wallet) {
+      address = $wallet;
+    }
+  }
 </script>
 
 <ErrorBoundary>
