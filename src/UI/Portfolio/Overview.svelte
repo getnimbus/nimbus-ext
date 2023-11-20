@@ -45,14 +45,8 @@
   $: networth = totalAssets + totalPositions;
 
   $: totalProfit =
-    networth +
     Number(data?.overview?.cumulativeOutflow || 0) -
     Number(data?.overview?.cumulativeInflow || 0);
-
-  $: changeLast24hNetWorth = getChangeFromPercent(
-    networth,
-    data?.overview?.networthChange
-  );
 
   $: changeLast24hTotalInflow = getChangeFromPercent(
     data?.overview?.cumulativeInflow,
@@ -65,9 +59,7 @@
   );
 
   $: changeLast24hTotalProfit =
-    changeLast24hTotalOutflow -
-    changeLast24hTotalInflow +
-    changeLast24hNetWorth;
+    changeLast24hTotalOutflow - changeLast24hTotalInflow;
 
   $: last24hTotalProfitPercent =
     $typeWallet === "SOL" || $typeWallet === "ALGO" || $typeWallet === "CEX"
@@ -111,7 +103,7 @@
       <OverviewCard
         title={MultipleLang.net_flow}
         isTooltip
-        tooltipText="Net Flow = Total Outflow - Total Inflow + Net Worth"
+        tooltipText="Net Flow = Total Outflow - Total Inflow"
       >
         <div class="flex xl:text-3xl text-5xl">
           {#if totalProfit.toString().toLowerCase().includes("e-")}

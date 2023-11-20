@@ -225,7 +225,7 @@
     on:submit|preventDefault={onSubmitSettingAlert}
     class="flex flex-col gap-8 pt-4"
   >
-    <div class="flex flex-col gap-3">
+    <!-- <div class="flex flex-col gap-3">
       <div class="flex justify-between items-center gap-6">
         <div class="flex flex-col">
           <div class="xl:text-base text-2xl">Price change notification</div>
@@ -264,7 +264,7 @@
           </label>
         {/each}
       </div>
-    </div>
+    </div> -->
     <div class="flex flex-col gap-4">
       <div class="flex justify-between items-center gap-6">
         <div class="flex flex-col">
