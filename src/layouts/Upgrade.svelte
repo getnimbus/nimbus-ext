@@ -5,7 +5,7 @@
   import { blur } from "svelte/transition";
   import { wagmiAbi } from "~/lib/viem-evm-abi";
   import { publicClient } from "~/lib/viem-client";
-  import { mainnet, sepolia } from "viem/chains";
+  import { mainnet, lineaTestnet } from "viem/chains";
   import { useNavigate } from "svelte-navigator";
 
   import PricePackage from "~/UI/PricePackage/PricePackage.svelte";
@@ -19,7 +19,7 @@
 
   const navigate = useNavigate();
 
-  const testAddress = "0x8267cf9254734c6eb452a7bb9aaf97b392258b21";
+  const testAddress = "0xf56dc6695cF1f5c364eDEbC7Dc7077ac9B586068";
   const testReceiveAddress = "0x5C540cF255AE681AA2d6bd61a5f29DB3DDFA9E1e";
 
   const usdcAddress = "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48";
@@ -146,7 +146,7 @@
       value: selectedPackage.selectedTypePackage === "year" ? 12 : 1,
       code: coupleCode,
       plan: selectedPackage.plan,
-      currency: "SepoliaETH",
+      currency: "LineaETH",
       chain: chainValue,
       txHash: "",
     };
@@ -177,7 +177,7 @@
           .writeContract({
             address: testAddress,
             account: account[0],
-            chain: sepolia,
+            chain: lineaTestnet,
             abi: wagmiAbi,
             functionName: "transfer",
             args: [testReceiveAddress, BigInt(0.0001 * 1000000)],
