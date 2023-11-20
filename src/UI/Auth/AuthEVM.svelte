@@ -23,6 +23,7 @@
   import CopyToClipboard from "svelte-copy-to-clipboard";
   import { wait } from "~/entries/background/utils";
 
+  import "~/components/Tooltip.custom.svelte";
   import DarkMode from "~/components/DarkMode.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
 
@@ -52,6 +53,7 @@
   let timeCountdown = 59;
   let timerCountdown;
   let loading = false;
+  let isShowTooltipCopy = false;
 
   onMount(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -566,8 +568,12 @@
               {/if}
             </div>
             <div
-              class="cursor-pointer border w-max p-2 rounded-lg"
+              class="cursor-pointer border w-max p-2 rounded-lg relative"
               on:click={copy}
+              on:mouseover={() => {
+                isShowTooltipCopy = true;
+              }}
+              on:mouseleave={() => (isShowTooltipCopy = false)}
             >
               {#if isCopied}
                 <svg
@@ -604,6 +610,14 @@
                     stroke-linejoin="round"
                   />
                 </svg>
+              {/if}
+              {#if isShowTooltipCopy}
+                <div
+                  class="absolute left-1/2 transform -translate-x-1/2 -top-8"
+                  style="z-index: 2147483648;"
+                >
+                  <tooltip-detail text="Copy code" />
+                </div>
               {/if}
             </div>
           </div>
