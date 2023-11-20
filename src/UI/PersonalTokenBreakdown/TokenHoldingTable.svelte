@@ -4,7 +4,7 @@
   import { isDarkMode, typeWallet } from "~/store";
   import { Progressbar } from "flowbite-svelte";
 
-  import "~/components/Tooltip.custom.svelte";
+  import Tooltip from "~/components/Tooltip.svelte";
   import Loading from "~/components/Loading.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import TooltipTitle from "~/components/TooltipTitle.svelte";
@@ -168,7 +168,7 @@
                             class="absolute -top-8 left-0"
                             style="z-index: 2147483648;"
                           >
-                            <tooltip-detail text={data.name} />
+                            <Tooltip text={data.name} />
                           </div>
                         {/if}
                       </div>
@@ -197,7 +197,7 @@
                             class="absolute -top-8 left-0"
                             style="z-index: 2147483648;"
                           >
-                            <tooltip-detail text={data.symbol} />
+                            <Tooltip text={data.symbol} />
                           </div>
                         {/if}
                       </div>
