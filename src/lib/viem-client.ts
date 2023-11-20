@@ -1,7 +1,7 @@
 import { createWalletClient, custom } from 'viem'
-import { lineaTestnet, mainnet } from 'viem/chains'
+import { goerli, mainnet } from 'viem/chains'
 
 export const publicClient = createWalletClient({
-  chain: lineaTestnet,
+  chain: goerli,
   transport: custom(window.ethereum)
 })
