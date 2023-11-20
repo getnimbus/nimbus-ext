@@ -3,7 +3,12 @@
   import { nimbus } from "~/lib/network";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
+  import CopyToClipboard from "svelte-copy-to-clipboard";
+  import dayjs from "dayjs";
+  import { wait } from "~/entries/background/utils";
+  import { isDarkMode } from "~/store";
 
+  import "~/components/Tooltip.custom.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
   import Button from "~/components/Button.svelte";
 
@@ -68,6 +73,15 @@
   let isLoadingSave = false;
 
   let isOpenFollowWhaleModal = false;
+
+  let isCopied = false;
+  let timer = null;
+  let syncMobileCode = "";
+
+  let timeCountdown = 59;
+  let timerCountdown;
+  let loading = false;
+  let isShowTooltipCopy = false;
 
   const trigger = () => {
     show = true;
@@ -202,6 +216,46 @@
   onMount(() => {
     getUserConfigs();
   });
+
+  const handleGetCodeSyncMobile = async () => {
+    loading = true;
+    try {
+      const res = await nimbus.get("/users/cross-login");
+      if (res?.data) {
+        syncMobileCode = res?.data?.code;
+        const expiredAt = dayjs.unix(res?.data?.expiredAt);
+        const currentTime = dayjs();
+
+        // Check if the time difference is more than 1 minute
+        if (currentTime.diff(expiredAt, "second") > 60) {
+          // Make another API call to get a new sync code
+          const newResponse = await nimbus.get("/users/cross-login");
+          if (newResponse) {
+            syncMobileCode = res?.data?.code;
+          }
+        } else {
+          // Schedule the next check after 1 minute
+          timer = setTimeout(handleGetCodeSyncMobile, 60000);
+
+          timerCountdown = setInterval(() => {
+            timeCountdown -= 1;
+            if (timeCountdown < 0) {
+              timeCountdown = 59;
+              clearInterval(timerCountdown);
+            }
+          }, 1000);
+        }
+      }
+    } catch (e) {
+      syncMobileCode = undefined;
+      timeCountdown = 59;
+      clearTimeout(timer);
+      clearInterval(timerCountdown);
+      console.error("error: ", e);
+    } finally {
+      loading = false;
+    }
+  };
 </script>
 
 <div class="flex flex-col gap-4">
@@ -216,7 +270,10 @@
     </div>
     <div
       class="xl:text-base text-xl text-blue-500 cursor-pointer hover:underline"
-      on:click={() => (isOpenFollowWhaleModal = true)}
+      on:click={() => {
+        isOpenFollowWhaleModal = true;
+        handleGetCodeSyncMobile();
+      }}
     >
       How to start alerts on Telegram?
     </div>
@@ -408,7 +465,12 @@
 <AppOverlay
   clickOutSideToClose
   isOpen={isOpenFollowWhaleModal}
-  on:close={() => (isOpenFollowWhaleModal = false)}
+  on:close={() => {
+    isOpenFollowWhaleModal = false;
+    timeCountdown = 59;
+    clearTimeout(timer);
+    clearInterval(timerCountdown);
+  }}
 >
   <div class="flex flex-col gap-4">
     <div class="flex flex-col gap-1">
@@ -423,6 +485,85 @@
     </div>
     <div class="xl:h-[350px] h-[650px]">
       <img src={FollowWhale} alt="" class="w-full h-full object-contain" />
+    </div>
+    <div class="flex flex-col items-center gap-2">
+      <div class="w-[57%]">
+        <CopyToClipboard
+          text={`/start ${syncMobileCode}`}
+          let:copy
+          on:copy={async () => {
+            isCopied = true;
+            await wait(1000);
+            isCopied = false;
+          }}
+        >
+          <div class="flex items-center gap-2">
+            <div class="flex-1 border rounded-lg py-2 px-3 text-base">
+              {#if loading}
+                -
+              {:else}
+                /start {syncMobileCode}
+              {/if}
+            </div>
+            <div
+              class="cursor-pointer border w-max p-2 rounded-lg relative"
+              on:mouseover={() => {
+                isShowTooltipCopy = true;
+              }}
+              on:mouseleave={() => (isShowTooltipCopy = false)}
+              on:click={copy}
+            >
+              {#if isCopied}
+                <svg
+                  width={21}
+                  height={21}
+                  id="Layer_1"
+                  data-name="Layer 1"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 122.88 74.46"
+                  fill={$isDarkMode ? "#fff" : "#000"}
+                  ><path
+                    fill-rule="evenodd"
+                    d="M1.87,47.2a6.33,6.33,0,1,1,8.92-9c8.88,8.85,17.53,17.66,26.53,26.45l-3.76,4.45-.35.37a6.33,6.33,0,0,1-8.95,0L1.87,47.2ZM30,43.55a6.33,6.33,0,1,1,8.82-9.07l25,24.38L111.64,2.29c5.37-6.35,15,1.84,9.66,8.18L69.07,72.22l-.3.33a6.33,6.33,0,0,1-8.95.12L30,43.55Zm28.76-4.21-.31.33-9.07-8.85L71.67,4.42c5.37-6.35,15,1.83,9.67,8.18L58.74,39.34Z"
+                  /></svg
+                >
+              {:else}
+                <svg
+                  width={21}
+                  height={21}
+                  viewBox="0 0 12 11"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M8.1875 3.3125H10.6875V10.1875H3.8125V7.6875"
+                    stroke={$isDarkMode ? "#fff" : "#000"}
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M8.1875 0.8125H1.3125V7.6875H8.1875V0.8125Z"
+                    stroke={$isDarkMode ? "#fff" : "#000"}
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              {/if}
+              {#if isShowTooltipCopy}
+                <div
+                  class="absolute left-1/2 transform -translate-x-1/2 -top-8"
+                  style="z-index: 2147483648;"
+                >
+                  <tooltip-detail text="Copy command" />
+                </div>
+              {/if}
+            </div>
+          </div>
+        </CopyToClipboard>
+      </div>
+      <div class="xl:text-sm text-base">
+        Notice the command code is expired in {timeCountdown}s
+      </div>
     </div>
   </div>
 </AppOverlay>
