@@ -493,45 +493,53 @@
               <div class="xl:text-lg text-xl font-medium">
                 Want more GM Point? Complete these tasks!
               </div>
-              <div class="border-y-1 border_0000000d">
-                {#each quests as quest}
-                  <div
-                    class="flex justify-between items-center gap-5 py-4 border-b-1 last:border-none border_0000000d"
-                  >
-                    <div class="flex-1 flex items-start gap-2">
-                      <img
-                        src={quest?.img ||
-                          "https://s2.coinmarketcap.com/static/cloud/img/loyalty-program/Flags_3D_1.svg"}
-                        alt=""
-                        class="bg-yellow-200 rounded-lg mt-1"
-                      />
-                      <div class="flex-1 flex items-center">
-                        <div class="flex-1 flex flex-col">
-                          <div class="xl:text-base text-lg font-medium">
-                            {quest?.title}
+              {#if Object.keys($user).length !== 0}
+                <div class="border-y-1 border_0000000d">
+                  {#each quests as quest}
+                    <div
+                      class="flex justify-between items-center gap-5 py-4 border-b-1 last:border-none border_0000000d"
+                    >
+                      <div class="flex-1 flex items-start gap-2">
+                        <img
+                          src={quest?.img ||
+                            "https://s2.coinmarketcap.com/static/cloud/img/loyalty-program/Flags_3D_1.svg"}
+                          alt=""
+                          class="bg-yellow-200 rounded-lg mt-1"
+                        />
+                        <div class="flex-1 flex items-center">
+                          <div class="flex-1 flex flex-col">
+                            <div class="xl:text-base text-lg font-medium">
+                              {quest?.title}
+                            </div>
+                            <div class="xl:text-sm text-base text-gray-500">
+                              {quest?.description}
+                            </div>
                           </div>
-                          <div class="xl:text-sm text-base text-gray-500">
-                            {quest?.description}
-                          </div>
-                        </div>
-                        <div class="flex justify-center items-center gap-1">
-                          <img src={goldImg} alt="" />
-                          <div class="xl:text-base text-lg font-medium">
-                            {quest?.point}
+                          <div class="flex justify-center items-center gap-1">
+                            <img src={goldImg} alt="" />
+                            <div class="xl:text-base text-lg font-medium">
+                              {quest?.point}
+                            </div>
                           </div>
                         </div>
                       </div>
+                      <div class="w-[170px]">
+                        <a href={quest?.url}>
+                          <Button>
+                            <div class="py-1">Collect!</div>
+                          </Button>
+                        </a>
+                      </div>
                     </div>
-                    <div class="w-[170px]">
-                      <a href={quest?.url}>
-                        <Button>
-                          <div class="py-1">Collect!</div>
-                        </Button>
-                      </a>
-                    </div>
-                  </div>
-                {/each}
-              </div>
+                  {/each}
+                </div>
+              {:else}
+                <div
+                  class="flex justify-center items-center h-full xl:text-lg text-xl text-gray-400 h-[152px]"
+                >
+                  Empty
+                </div>
+              {/if}
             </div>
           {:else}
             <div class="xl:text-lg text-xl font-medium">Checkin History</div>

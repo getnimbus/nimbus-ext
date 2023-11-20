@@ -1,6 +1,7 @@
 <script lang="ts">
   import { timeFrame } from "~/utils";
   import {
+    chain,
     wallet,
     selectedPackage,
     isDarkMode,
@@ -61,7 +62,9 @@
     <div class="max-w-[2000px] m-auto -mt-32 xl:w-[90%] w-[90%] relative">
       <div class="analytic_container rounded-[20px] xl:p-8 p-6 space-y-4">
         <div class="flex justify-between items-center">
-          <Link to={`/performance-summary?address=${$userPublicAddress}`}>
+          <Link
+            to={`/performance-summary/?type=${$typeWallet}&chain=${$chain}&address=${$userPublicAddress}`}
+          >
             <Button>
               <div class="w-full xl:w-[230px]">Performance Summary</div>
             </Button>

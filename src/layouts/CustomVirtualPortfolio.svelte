@@ -8,6 +8,7 @@
   import dayjs from "dayjs";
   import { isDarkMode } from "~/store";
 
+  import Tooltip from "~/components/Tooltip.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import Copy from "~/components/Copy.svelte";
   import Button from "~/components/Button.svelte";
@@ -351,7 +352,7 @@
                   class="absolute transform -translate-x-1/2 -top-8 left-1/2 w-max"
                   style="z-index: 2147483648;"
                 >
-                  <tooltip-detail text={"Maximum 3 virtual portfolio"} />
+                  <Tooltip text={"Maximum 3 virtual portfolio"} />
                 </div>
               {/if}
             </div>

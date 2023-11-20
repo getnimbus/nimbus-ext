@@ -1,8 +1,8 @@
 <script lang="ts">
   import { isDarkMode } from "~/store";
 
-  import "~/components/Tooltip.custom.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
+  import Tooltip from "~/components/Tooltip.svelte";
 
   import TrendUp from "~/assets/trend-up.svg";
   import TrendDown from "~/assets/trend-down.svg";
@@ -163,7 +163,7 @@
                 class="absolute -top-7 left-1/2 transform -translate-x-1/2"
                 style="z-index: 2147483648;"
               >
-                <tooltip-detail
+                <Tooltip
                   text="This position is in staking so the PnL might inaccuracy"
                 />
               </span>

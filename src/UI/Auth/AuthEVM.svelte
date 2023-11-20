@@ -23,7 +23,7 @@
   import CopyToClipboard from "svelte-copy-to-clipboard";
   import { wait } from "~/entries/background/utils";
 
-  import "~/components/Tooltip.custom.svelte";
+  import Tooltip from "~/components/Tooltip.svelte";
   import DarkMode from "~/components/DarkMode.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
 
@@ -616,7 +616,7 @@
                   class="absolute left-1/2 transform -translate-x-1/2 -top-8"
                   style="z-index: 2147483648;"
                 >
-                  <tooltip-detail text="Copy code" />
+                  <Tooltip text="Copy code" />
                 </div>
               {/if}
             </div>
