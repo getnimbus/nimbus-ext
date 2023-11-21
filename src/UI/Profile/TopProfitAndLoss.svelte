@@ -12,10 +12,14 @@
   import defaultToken from "~/assets/defaultToken.png";
 
   export let selectedAddress;
+  export let isSync = false;
+  export let enabledFetchAllData = false;
 
   let closedHoldingPosition = [];
   let top5ProfitToken = [];
   let top5LossToken = [];
+
+  $: isFetch = isSync ? enabledFetchAllData : true;
 
   const getTradingStats = async (address) => {
     const response: any = await nimbus.get(
@@ -87,7 +91,10 @@
     queryFn: () => getTradingStats(selectedAddress),
     staleTime: Infinity,
     retry: false,
-    enabled: selectedAddress?.length !== 0 && Object.keys($user).length !== 0,
+    enabled:
+      selectedAddress?.length !== 0 &&
+      Object.keys($user).length !== 0 &&
+      isFetch,
   });
 
   $: {
