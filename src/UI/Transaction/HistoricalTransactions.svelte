@@ -95,13 +95,15 @@
               <div class="flex items-start gap-2 text-left w-max">
                 <div class="flex flex-col space-y-2">
                   <div class="text-2xl xl:text-sm flex gap-2">
-                    <img
-                      src={chainList.find(
-                        (chain) => chain.value === item?.chain
-                      )?.logo}
-                      alt=""
-                      class="object-contain w-5 h-5"
-                    />
+                    {#if $typeWallet !== "CEX" && $typeWallet !== "BTC"}
+                      <img
+                        src={chainList.find(
+                          (chain) => chain.value === item?.chain
+                        )?.logo}
+                        alt=""
+                        class="object-contain w-5 h-5"
+                      />
+                    {/if}
                     {#if $typeWallet === "EVM"}
                       <Copy
                         address={item?.transaction_hash}
