@@ -255,16 +255,14 @@
         />
       </div>
 
-      {#if data?.contractAddress !== "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"}
-        <BalanceAvgCostChart
-          {data}
-          id={data?.name}
-          avgCost={data?.profit?.averageCost}
-          {filterType}
-        />
-      {/if}
+      <BalanceAvgCostChart
+        {data}
+        id={data?.name}
+        avgCost={data?.profit?.averageCost}
+        {filterType}
+      />
 
-      {#if $typeWallet !== "EVM" || ($typeWallet === "EVM" && data?.chain !== "ETH")}
+      {#if $typeWallet !== "EVM" && $typeWallet !== "CEX" && $typeWallet !== "BUNDLE"}
         <div
           class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center gap-3 pt-62 ${
             $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
