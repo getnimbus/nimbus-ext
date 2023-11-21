@@ -15,6 +15,7 @@
 
   let isLoadingSync = false;
   let syncMsg = "";
+  let enabledFetchAllData = false;
 
   const getSync = async () => {
     try {
@@ -44,11 +45,14 @@
 
   const handleGetAllData = async () => {
     isLoadingSync = false;
+    enabledFetchAllData = false;
+
     try {
       let syncStatus = await getSyncStatus();
       // already sync data from db
       if (syncStatus?.data?.lastSync) {
         console.log("start load data (already sync)");
+        enabledFetchAllData = true;
         syncMsg = "";
         isLoadingSync = false;
         return;
@@ -65,6 +69,7 @@
           while (true) {
             if (syncStatus?.data?.lastSync) {
               console.log("start load data (newest sync)");
+              enabledFetchAllData = true;
               syncMsg = "";
               isLoadingSync = false;
               break;
@@ -140,11 +145,23 @@
                 Performance Summary
               </div>
               <div class="grid xl:grid-cols-4 grid-cols-2 gap-6">
-                <ProfitData selectedAddress={$wallet} />
+                <ProfitData
+                  selectedAddress={$wallet}
+                  isSync={true}
+                  enabledFetchAllData
+                />
 
-                <TopProfitAndLoss selectedAddress={$wallet} />
+                <TopProfitAndLoss
+                  selectedAddress={$wallet}
+                  isSync={true}
+                  enabledFetchAllData
+                />
 
-                <ClosedPositionChart selectedAddress={$wallet} />
+                <ClosedPositionChart
+                  selectedAddress={$wallet}
+                  isSync={true}
+                  enabledFetchAllData
+                />
               </div>
             </div>
           </div>
