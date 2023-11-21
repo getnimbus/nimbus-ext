@@ -379,7 +379,7 @@
   const getSync = async () => {
     try {
       await nimbus
-        .post(`/v2/address/${$wallet}/sync?chain=${$chain}`, {})
+        .post(`/v2/address/${$wallet}/sync?chain=ALL`, {})
         .then((response) => response);
     } catch (e) {
       console.error("e: ", e);
