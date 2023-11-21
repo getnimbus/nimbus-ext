@@ -24,6 +24,7 @@
     const addressParams = urlParams.get("address");
     if (addressParams) {
       address = addressParams;
+      handleGetAllData();
     }
   });
 
