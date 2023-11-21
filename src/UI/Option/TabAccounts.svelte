@@ -22,6 +22,7 @@
   import { wait } from "~/entries/background/utils";
   import * as browser from "webextension-polyfill";
 
+  import Tooltip from "~/components/Tooltip.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
   import Button from "~/components/Button.svelte";
   import Copy from "~/components/Copy.svelte";
@@ -36,6 +37,7 @@
   import BitcoinLogo from "~/assets/bitcoin.png";
   import SolanaLogo from "~/assets/solana.png";
   import AuraLogo from "~/assets/aura.png";
+  import AlgorandLogo from "~/assets/algorand.png";
 
   const MultipleLang = {
     title: i18n("optionsPage.accounts-page-title", "Account Settings"),
@@ -272,6 +274,9 @@
       }
       if (item?.type === "SOL") {
         logo = SolanaLogo;
+      }
+      if (item?.type === "ALGO") {
+        logo = AlgorandLogo;
       }
       return {
         position: item.position,
@@ -935,7 +940,7 @@
                 class="absolute transform -translate-x-1/2 -top-8 left-1/2 w-max"
                 style="z-index: 2147483648;"
               >
-                <tooltip-detail text={"Connect wallet to add account"} />
+                <Tooltip text={"Connect wallet to add account"} />
               </div>
             {/if}
           </div>
@@ -1155,7 +1160,7 @@
                   class="absolute right-0 transform -top-12"
                   style="z-index: 2147483648;"
                 >
-                  <tooltip-detail text={tooltipDisableAddBtn} />
+                  <Tooltip text={tooltipDisableAddBtn} />
                 </div>
               {/if}
             </div>
@@ -1694,7 +1699,7 @@
           </label>
         </div>
         <div class="xl:flex hidden items-center justify-center gap-6 my-3">
-          {#each [{ logo: SolanaLogo, label: "Solana", value: "SOL" }, { logo: BitcoinLogo, label: "Bitcoin", value: "BTC" }].concat(chainList.slice(1)) as item}
+          {#each [{ logo: SolanaLogo, label: "Solana", value: "SOL" }, { logo: AlgorandLogo, label: "Algorand", value: "ALGO" }, { logo: BitcoinLogo, label: "Bitcoin", value: "BTC" }].concat(chainList.slice(1)) as item}
             <img
               src={item.logo}
               alt=""
@@ -1703,7 +1708,7 @@
           {/each}
         </div>
         <div class="xl:hidden flex items-center justify-center gap-6 my-3">
-          {#each [{ logo: SolanaLogo, label: "Solana", value: "SOL" }, { logo: BitcoinLogo, label: "Bitcoin", value: "BTC" }].concat(chainList
+          {#each [{ logo: SolanaLogo, label: "Solana", value: "SOL" }, { logo: AlgorandLogo, label: "Algorand", value: "ALGO" }, { logo: BitcoinLogo, label: "Bitcoin", value: "BTC" }].concat(chainList
               .slice(1)
               .slice(0, -7)) as item}
             <img

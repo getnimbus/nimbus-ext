@@ -2,7 +2,7 @@
 label: FAQs
 layout: default
 icon: question
-order: 10
+order: 20
 ---
 
 # FAQs

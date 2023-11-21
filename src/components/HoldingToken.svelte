@@ -10,6 +10,7 @@
   import CopyToClipboard from "svelte-copy-to-clipboard";
   import { wait } from "../entries/background/utils";
 
+  import Tooltip from "~/components/Tooltip.svelte";
   import "~/components/Tooltip.custom.svelte";
   import tooltip from "~/entries/contentScript/views/tooltip";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
@@ -339,7 +340,7 @@
             {/if}
             {#if isShowTooltipName && data?.name?.length > 20}
               <div class="absolute left-0 -top-8" style="z-index: 2147483648;">
-                <tooltip-detail text={data.name} />
+                <Tooltip text={data.name} />
               </div>
             {/if}
           </div>
@@ -376,7 +377,7 @@
             {/if}
             {#if isShowTooltipSymbol && data.symbol.length > 20}
               <div class="absolute left-0 -top-8" style="z-index: 2147483648;">
-                <tooltip-detail text={data.symbol} />
+                <Tooltip text={data.symbol} />
               </div>
             {/if}
           </div>
@@ -760,6 +761,7 @@
   <td
     class={`py-3 ${
       $typeWallet === "SOL" ||
+      $typeWallet === "ALGO" ||
       $typeWallet === "EVM" ||
       $typeWallet === "BUNDLE" ||
       $typeWallet === "CEX"
@@ -818,7 +820,7 @@
     </div>
   </td>
 
-  {#if $typeWallet === "SOL" || $typeWallet === "EVM" || $typeWallet === "BUNDLE" || $typeWallet === "CEX"}
+  {#if $typeWallet === "SOL" || $typeWallet === "ALGO" || $typeWallet === "EVM" || $typeWallet === "BUNDLE" || $typeWallet === "CEX"}
     <td
       class={`py-3 xl:w-14 w-32 h-full flex justify-center items-center xl:gap-3 gap-6 ${
         $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
@@ -874,7 +876,7 @@
         </div>
       {/if}
 
-      {#if $typeWallet === "EVM" || $typeWallet === "SOL" || $typeWallet === "BUNDLE" || $typeWallet === "CEX"}
+      {#if $typeWallet === "EVM" || $typeWallet === "SOL" || $typeWallet === "ALGO" || $typeWallet === "BUNDLE" || $typeWallet === "CEX"}
         <div
           class="flex justify-center cursor-pointer view-icon-detail"
           on:click={() => {
@@ -1441,7 +1443,7 @@
                     class="absolute left-0 -top-8"
                     style="z-index: 2147483648;"
                   >
-                    <tooltip-detail text={selectedTokenDetail.name} />
+                    <Tooltip text={selectedTokenDetail.name} />
                   </div>
                 {/if}
               </div>
@@ -1465,7 +1467,7 @@
                     class="absolute left-0 -top-8"
                     style="z-index: 2147483648;"
                   >
-                    <tooltip-detail text={selectedTokenDetail.symbol} />
+                    <Tooltip text={selectedTokenDetail.symbol} />
                   </div>
                 {/if}
               </div>
@@ -1528,7 +1530,7 @@
                       class="absolute right-0 -top-8"
                       style="z-index: 2147483648;"
                     >
-                      <tooltip-detail
+                      <Tooltip
                         text={shorterAddress(
                           selectedTokenDetail?.contractAddress
                         )}

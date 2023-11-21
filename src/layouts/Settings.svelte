@@ -11,7 +11,6 @@
   import TabReports from "~/UI/Option/TabReports.svelte";
   import TabAlerts from "~/UI/Option/TabAlerts.svelte";
   import TabSettings from "~/UI/Option/TabSettings.svelte";
-  import TabNotification from "~/UI/Option/TabNotification.svelte";
   import TabNft from "~/UI/Option/TabNFT.svelte";
 
   const listSideBar = [
@@ -20,11 +19,11 @@
       value: "accounts",
       type: "Accounts",
     },
-    // {
-    //   label: i18n("optionsPage.tab-title-alerts", "Alerts"),
-    //   value: "alerts",
-    //   type: "Alerts",
-    // },
+    {
+      label: i18n("optionsPage.tab-title-alerts", "Alerts"),
+      value: "alerts",
+      type: "Alerts",
+    },
     {
       label: i18n("optionsPage.tab-title-report", "Reports"),
       value: "reports",
@@ -34,11 +33,6 @@
     //   label: i18n("optionsPage.tab-title-nft", "NFT"),
     //   value: "nft",
     //   type: "NFT",
-    // },
-    // {
-    //   label: i18n("optionsPage.tab-title-notification", "Notification"),
-    //   value: "notification",
-    //   type: "Notification",
     // },
     // {
     //   label: i18n("optionsPage.tab-title-settings", "Settings"),
@@ -90,11 +84,9 @@
         {#if activeTabValue === "accounts"}
           <TabAccounts />
           <!-- {:else if activeTabValue === "nft"}
-          <TabNft />
-        {:else if activeTabValue === "notification"}
-          <TabNotification /> -->
-          <!-- {:else if activeTabValue === "alerts"}
-          <TabAlerts /> -->
+          <TabNft /> -->
+        {:else if activeTabValue === "alerts"}
+          <TabAlerts />
         {:else if activeTabValue === "reports"}
           <TabReports />
           <!-- {:else if activeTabValue === "settings"}

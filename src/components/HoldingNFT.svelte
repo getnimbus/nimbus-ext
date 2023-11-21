@@ -8,6 +8,7 @@
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
 
+  import Tooltip from "~/components/Tooltip.svelte";
   import "~/components/Tooltip.custom.svelte";
   import tooltip from "~/entries/contentScript/views/tooltip";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
@@ -152,7 +153,7 @@
       : data?.current_native_token - (totalNativeTokenPrice || 0);
 
   $: profitAndLossPercent =
-    totalNativeTokenPrice === 0
+    profitAndLoss === 0
       ? 0
       : (profitAndLoss * data?.marketPrice) / Math.abs(totalCost);
 
@@ -203,7 +204,7 @@
             : "N/A"}
           {#if isShowTooltipName && data?.collection?.name?.length > 24}
             <div class="absolute -top-8 left-0" style="z-index: 2147483648;">
-              <tooltip-detail text={data?.collection?.name} />
+              <Tooltip text={data?.collection?.name} />
             </div>
           {/if}
         </div>
@@ -288,7 +289,7 @@
           </div>
           {#if showTooltipListNFT && data?.tokens?.length > 5}
             <div class="absolute -top-7 left-0" style="z-index: 2147483648;">
-              <tooltip-detail
+              <Tooltip
                 text={`${data?.tokens?.length} NFTs on collection ${data?.collection?.name}`}
               />
             </div>

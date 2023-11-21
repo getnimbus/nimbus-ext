@@ -53,6 +53,7 @@
   import BitcoinLogo from "~/assets/bitcoin.png";
   import SolanaLogo from "~/assets/solana.png";
   import AuraLogo from "~/assets/aura.png";
+  import AlgorandLogo from "~/assets/algorand.png";
   import goldImg from "~/assets/Gold4.svg";
 
   const MultipleLang = {
@@ -122,6 +123,9 @@
       if (item?.type === "SOL") {
         logo = SolanaLogo;
       }
+      if (item?.type === "ALGO") {
+        logo = AlgorandLogo;
+      }
       if (item?.type === "BUNDLE") {
         logo = Bundles;
       }
@@ -139,6 +143,9 @@
             }
             if (account?.type === "SOL") {
               logo = SolanaLogo;
+            }
+            if (account?.type === "ALGO") {
+              logo = AlgorandLogo;
             }
             return {
               id: account?.id,
@@ -209,7 +216,12 @@
           `?type=${searchAccountType}&chain=ALL&address=${value}`
       );
     }
-    if (searchAccountType === "BTC" || searchAccountType === "SOL") {
+    if (
+      searchAccountType === "BTC" ||
+      searchAccountType === "SOL" ||
+      searchAccountType === "ALGO" ||
+      searchAccountType === "CEX"
+    ) {
       window.history.replaceState(
         null,
         "",

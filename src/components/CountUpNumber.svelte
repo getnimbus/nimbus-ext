@@ -11,6 +11,8 @@
   import { quintOut } from "svelte/easing";
   import { derived } from "svelte/store";
 
+  import Tooltip from "~/components/Tooltip.svelte";
+
   export let number;
   export let type: "amount" | "balance" | "percent" | "value" = "balance";
   export let personalValue: boolean = false;
@@ -83,7 +85,7 @@
     {/if}
     {#if showTooltip && ((numberSize && numberSize !== "K") || formatPercent($formatted) === "NaN")}
       <span class="absolute -top-7 left-0" style="z-index: 2147483648;">
-        <tooltip-detail text={formatCurrency($formatted)} />
+        <Tooltip text={formatCurrency($formatted)} />
       </span>
     {/if}
   </span>

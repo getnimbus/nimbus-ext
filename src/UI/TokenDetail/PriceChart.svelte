@@ -220,22 +220,19 @@
   }
 
   const handleGetTokenPriceSol = async () => {
+    const params =
+      $typeWallet === "CEX"
+        ? `coingecko:${contractAddress}`
+        : contractAddress === "11111111111111111111111111111111"
+        ? "coingecko:solana"
+        : `solana:${contractAddress}`;
+
     const response = await defillama.get(
-      `/chart/${
-        contractAddress === "11111111111111111111111111111111"
-          ? "coingecko:solana"
-          : `solana:${contractAddress}`
-      }?start=${dayjs()
+      `/chart/${params}?start=${dayjs()
         .subtract(time === "ALL" ? 1825 : time, "day")
         .unix()}&span=${time === "ALL" ? 1825 : time}&period=1d&searchWidth=600`
     );
-    const formatRes = response?.coins[
-      `${
-        contractAddress === "11111111111111111111111111111111"
-          ? "coingecko:solana"
-          : `solana:${contractAddress}`
-      }`
-    ]?.prices.map((item) => {
+    const formatRes = response?.coins[`${params}`]?.prices.map((item) => {
       return [item.timestamp * 1000, item.price];
     });
     return formatRes;
@@ -264,7 +261,9 @@
       contractAddress.length !== 0 &&
       chainType !== undefined &&
       chainType.length !== 0 &&
-      ($typeWallet === "EVM" || ($typeWallet === "BUNDLE" && chain !== "SOL")),
+      ($typeWallet === "EVM" ||
+        $typeWallet === "ALGO" ||
+        ($typeWallet === "BUNDLE" && chain !== "SOL")),
   });
 
   $: queryTokenPriceSol = createQuery({
@@ -275,7 +274,9 @@
     enabled:
       contractAddress !== undefined &&
       contractAddress.length !== 0 &&
-      ($typeWallet === "SOL" || ($typeWallet === "BUNDLE" && chain === "SOL")),
+      ($typeWallet === "SOL" ||
+        $typeWallet === "CEX" ||
+        ($typeWallet === "BUNDLE" && chain === "SOL")),
   });
 
   $: {

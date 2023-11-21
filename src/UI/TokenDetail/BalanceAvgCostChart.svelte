@@ -53,7 +53,7 @@
               </div>
               
               ${
-                avgCost !== undefined
+                avgCost
                   ? `
                   <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
                     <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
@@ -153,12 +153,7 @@
       data !== undefined &&
       Object.keys(data).length !== 0 &&
       $wallet.length !== 0 &&
-      ($typeWallet === "EVM" ||
-        ($typeWallet === "BUNDLE" && data?.chain !== "SOL")),
-    onError(err) {
-      localStorage.removeItem("evm_token");
-      user.update((n) => (n = {}));
-    },
+      ($typeWallet === "EVM" || $typeWallet === "BUNDLE"),
   });
 
   const formatPrice = (value: number) => {
@@ -198,7 +193,7 @@
         return [item?.price, item?.totalToken];
       });
 
-      if (avgCost !== undefined) {
+      if (avgCost) {
         optionBar = {
           ...optionBar,
           series: [

@@ -12,10 +12,14 @@
   import defaultToken from "~/assets/defaultToken.png";
 
   export let selectedAddress;
+  export let isSync = false;
+  export let enabledFetchAllData = false;
 
   let closedHoldingPosition = [];
   let top5ProfitToken = [];
   let top5LossToken = [];
+
+  $: isFetch = isSync ? enabledFetchAllData : true;
 
   const getTradingStats = async (address) => {
     const response: any = await nimbus.get(
@@ -87,7 +91,10 @@
     queryFn: () => getTradingStats(selectedAddress),
     staleTime: Infinity,
     retry: false,
-    enabled: selectedAddress?.length !== 0 && Object.keys($user).length !== 0,
+    enabled:
+      selectedAddress?.length !== 0 &&
+      Object.keys($user).length !== 0 &&
+      isFetch,
   });
 
   $: {
@@ -120,7 +127,7 @@
             {#each top5ProfitToken as item}
               <div class="flex items-center justify-between gap-2">
                 <div class="flex-1 flex items-center gap-2">
-                  <div class="w-[30px] h-[30px] overflow-hidden">
+                  <div class="w-[30px] h-[30px] overflow-hidden rounded-full">
                     <Image logo={item?.logo} defaultLogo={defaultToken} />
                   </div>
                   <span class="flex flex-col">
@@ -163,9 +170,9 @@
             </div>
           {:else}
             {#each top5LossToken as item}
-              <div class="h-full flex items-center justify-between gap-2">
+              <div class="flex items-center justify-between gap-2">
                 <div class="flex-1 flex items-center gap-2">
-                  <div class="w-[30px] h-[30px] overflow-hidden">
+                  <div class="w-[30px] h-[30px] overflow-hidden rounded-full">
                     <Image logo={item?.logo} defaultLogo={defaultToken} />
                   </div>
                   <span class="flex flex-col">

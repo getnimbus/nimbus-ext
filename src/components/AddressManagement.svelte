@@ -40,6 +40,7 @@
   export let type: "portfolio" | "order" = "portfolio";
   export let title;
 
+  import Tooltip from "~/components/Tooltip.svelte";
   import Loading from "./Loading.svelte";
   import Button from "~/components/Button.svelte";
   import Select from "~/components/Select.svelte";
@@ -57,6 +58,7 @@
   import BitcoinLogo from "~/assets/bitcoin.png";
   import SolanaLogo from "~/assets/solana.png";
   import AuraLogo from "~/assets/aura.png";
+  import AlgorandLogo from "~/assets/algorand.png";
 
   const MultipleLang = {
     empty_wallet: i18n("newtabPage.empty-wallet", "No account added yet."),
@@ -306,7 +308,11 @@
     ) {
       chain.update((n) => (n = "ALL"));
 
-      if (typeParams === "BTC" || typeParams === "SOL") {
+      if (
+        typeParams === "BTC" ||
+        typeParams === "SOL" ||
+        typeParams === "ALGO"
+      ) {
         window.history.replaceState(
           null,
           "",
@@ -329,7 +335,11 @@
       if (typeParams === "EVM") {
         chain.update((n) => (n = "ALL"));
       }
-      if (typeParams === "BTC" || typeParams === "SOL") {
+      if (
+        typeParams === "BTC" ||
+        typeParams === "SOL" ||
+        typeParams === "ALGO"
+      ) {
         window.history.replaceState(
           null,
           "",
@@ -394,6 +404,17 @@
         );
       }
 
+      if (selected.type === "ALGO") {
+        typeWallet.update((n) => (n = "ALGO"));
+        browser.storage.sync.set({ typeWalletAddress: "ALGO" });
+        chain.update((n) => (n = "ALL"));
+        window.history.replaceState(
+          null,
+          "",
+          window.location.pathname + `?type=${$typeWallet}&address=${$wallet}`
+        );
+      }
+
       if (selected.type === "BTC") {
         typeWallet.update((n) => (n = "BTC"));
         browser.storage.sync.set({ typeWalletAddress: "BTC" });
@@ -416,6 +437,9 @@
       if (item?.type === "SOL") {
         logo = SolanaLogo;
       }
+      if (item?.type === "ALGO") {
+        logo = AlgorandLogo;
+      }
       if (item?.type === "BUNDLE") {
         logo = Bundles;
       }
@@ -433,6 +457,9 @@
             }
             if (account?.type === "SOL") {
               logo = SolanaLogo;
+            }
+            if (account?.type === "ALGO") {
+              logo = AlgorandLogo;
             }
             return {
               id: account?.id,
@@ -578,7 +605,11 @@
               `?type=${searchAccountType}&chain=ALL&address=${dataFormat.value}`
           );
         }
-        if (searchAccountType === "BTC" || searchAccountType === "SOL") {
+        if (
+          searchAccountType === "BTC" ||
+          searchAccountType === "SOL" ||
+          searchAccountType === "ALGO"
+        ) {
           window.history.replaceState(
             null,
             "",
@@ -1422,7 +1453,7 @@
                         class="absolute transform -translate-x-1/2 -top-8 left-1/2 w-max"
                         style="z-index: 2147483648;"
                       >
-                        <tooltip-detail
+                        <Tooltip
                           text={"Alert me when it makes a move"}
                         />
                       </div>
@@ -1708,7 +1739,7 @@
           </label>
         </div>
         <div class="xl:flex hidden items-center justify-center gap-6 my-3">
-          {#each [{ logo: SolanaLogo, label: "Solana", value: "SOL" }, { logo: BitcoinLogo, label: "Bitcoin", value: "BTC" }].concat(chainList.slice(1)) as item}
+          {#each [{ logo: SolanaLogo, label: "Solana", value: "SOL" }, { logo: AlgorandLogo, label: "Algorand", value: "ALGO" }, { logo: BitcoinLogo, label: "Bitcoin", value: "BTC" }].concat(chainList.slice(1)) as item}
             <img
               src={item.logo}
               alt=""
@@ -1717,7 +1748,7 @@
           {/each}
         </div>
         <div class="xl:hidden flex items-center justify-center gap-6 my-3">
-          {#each [{ logo: SolanaLogo, label: "Solana", value: "SOL" }, { logo: BitcoinLogo, label: "Bitcoin", value: "BTC" }].concat(chainList
+          {#each [{ logo: SolanaLogo, label: "Solana", value: "SOL" }, { logo: AlgorandLogo, label: "Algorand", value: "ALGO" }, { logo: BitcoinLogo, label: "Bitcoin", value: "BTC" }].concat(chainList
               .slice(1)
               .slice(0, -7)) as item}
             <img
@@ -1805,7 +1836,7 @@
               class="absolute transform -translate-x-1/2 -top-8 left-1/2 w-max"
               style="z-index: 2147483648;"
             >
-              <tooltip-detail
+              <Tooltip
                 text={`/start ${$wallet} ${
                   listAddress.filter((item) => item.value === $wallet)?.[0]
                     ?.label || ""

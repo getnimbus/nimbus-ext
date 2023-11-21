@@ -70,11 +70,16 @@
   onMount(() => {
     const evmAddress = localStorage.getItem("evm_address");
     userAddress = evmAddress;
-    link = `https://app.getnimbus.io/?invitation=${$userId}`;
-    qrcode.addData(link);
-    qrcode.make();
-    qrImageDataUrl = qrcode.createDataURL(6, 0);
   });
+
+  $: {
+    if ($userId) {
+      link = `https://app.getnimbus.io/?invitation=${$userId}`;
+      qrcode.addData(link);
+      qrcode.make();
+      qrImageDataUrl = qrcode.createDataURL(6, 0);
+    }
+  }
 
   const downloadQRCode = async () => {
     const targetElement = document.getElementById("target-element");
