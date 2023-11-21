@@ -13,7 +13,6 @@
 
   import User from "~/assets/user.png";
 
-  let isErrorAllData = false;
   let isLoadingSync = false;
   let syncMsg = "";
 
@@ -52,7 +51,6 @@
         console.log("start load data (already sync)");
         syncMsg = "";
         isLoadingSync = false;
-        isErrorAllData = false;
         return;
       }
 
@@ -69,7 +67,6 @@
               console.log("start load data (newest sync)");
               syncMsg = "";
               isLoadingSync = false;
-              isErrorAllData = false;
               break;
             } else {
               isLoadingSync = true;
@@ -83,13 +80,11 @@
           // Cut call when we can not wait
           syncMsg = syncStatus?.data?.error;
           isLoadingSync = false;
-          isErrorAllData = true;
         }
       }
     } catch (e) {
       console.error("error: ", e);
       isLoadingSync = false;
-      isErrorAllData = true;
     }
   };
 
@@ -112,9 +107,9 @@
     </div>
   {:else}
     <div>
-      {#if isErrorAllData}
+      {#if syncMsg}
         <div class="flex flex-col justify-center items-center gap-2">
-          Something when wrong! Please reload your browser to try again
+          {syncMsg}
         </div>
       {:else}
         <div
