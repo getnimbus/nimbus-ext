@@ -379,7 +379,7 @@
   const getSync = async () => {
     try {
       await nimbus
-        .post(`/v2/address/${$wallet}/sync?chain=${$chain}`, {})
+        .post(`/v2/address/${$wallet}/sync?chain=ALL`, {})
         .then((response) => response);
     } catch (e) {
       console.error("e: ", e);
@@ -417,7 +417,7 @@
 
       // sync data again
       if (type === "reload" || !syncStatus?.data?.lastSync) {
-        handleSync();
+        await handleSync();
       }
 
       // already sync data from db
@@ -437,45 +437,50 @@
           return "success";
         } else {
           isErrorAllData = true;
+          return "fail";
         }
       }
 
       // check data from db
-      if (syncStatus?.data?.canWait) {
-        syncMsg = syncStatus?.data?.error;
-        isLoadingSync = true;
-        // keep call api /sync-status until we can not wait
-        while (true) {
-          if (syncStatus?.data?.lastSync) {
-            console.log("start load data (newest sync)");
-            enabledFetchAllData = true;
-            if (
-              !$queryOverview.isError &&
-              !$queryTokenHolding.isError &&
-              !$queryVaults.isError &&
-              !$queryNftHolding.isError &&
-              !$queryCompare.isError
-            ) {
-              syncMsg = "";
-              isLoadingSync = false;
-              isErrorAllData = false;
-              return "success";
+      if (!syncStatus?.data?.lastSync) {
+        if (syncStatus?.data?.canWait) {
+          syncMsg = syncStatus?.data?.error;
+          isLoadingSync = true;
+          // keep call api /sync-status until we can not wait
+          while (true) {
+            if (syncStatus?.data?.lastSync) {
+              console.log("start load data (newest sync)");
+              enabledFetchAllData = true;
+              if (
+                !$queryOverview.isError &&
+                !$queryTokenHolding.isError &&
+                !$queryVaults.isError &&
+                !$queryNftHolding.isError &&
+                !$queryCompare.isError
+              ) {
+                syncMsg = "";
+                isLoadingSync = false;
+                isErrorAllData = false;
+                return "success";
+              } else {
+                isErrorAllData = true;
+                return "fail";
+              }
+              break;
             } else {
-              isErrorAllData = true;
+              isLoadingSync = true;
+              await wait(5000);
+              syncStatus = await getSyncStatus();
             }
-            break;
-          } else {
-            isLoadingSync = true;
-            await wait(5000);
-            syncStatus = await getSyncStatus();
           }
         }
-      } else {
-        // Cut call when we can not wait
-        syncMsg = syncStatus?.data?.error;
-        isLoadingSync = false;
-        isErrorAllData = true;
-        return "fail";
+        if (!syncStatus?.data?.canWait) {
+          // Cut call when we can not wait
+          syncMsg = syncStatus?.data?.error;
+          isLoadingSync = false;
+          isErrorAllData = true;
+          return "fail";
+        }
       }
     } catch (e) {
       console.error("error: ", e);
