@@ -30,7 +30,7 @@
   const getSyncStatus = async () => {
     try {
       const response = await nimbus
-        .get(`/v2/address/${$wallet}/sync-status?chain=${$chain}`)
+        .get(`/address/${$wallet}/sync-status?chain=${$chain}`)
         .then((response) => response);
       return response;
     } catch (e) {
@@ -84,6 +84,8 @@
         isLoadingSync = false;
         isErrorAllData = true;
       }
+
+      console.log("syncStatus: ", syncStatus);
     } catch (e) {
       console.error("error: ", e);
       isLoadingSync = false;
@@ -99,7 +101,7 @@
 </script>
 
 <ErrorBoundary>
-  <!-- {#if isLoadingSync}
+  {#if isLoadingSync}
     <div
       class="text-xl font-medium flex flex-col gap-5 justify-center items-center rounded-[20px] p-6 h-screen"
     >
@@ -154,9 +156,7 @@
         </div>
       {/if}
     </div>
-  {/if} -->
-
-  <div>hello</div>
+  {/if}
 </ErrorBoundary>
 
 <style windi:preflights:global windi:safelist:global></style>
