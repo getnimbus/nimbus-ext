@@ -434,10 +434,8 @@
           syncMsg = "";
           isLoadingSync = false;
           isErrorAllData = false;
-          return "success";
         } else {
           isErrorAllData = true;
-          return "fail";
         }
       }
 
@@ -461,10 +459,8 @@
                 syncMsg = "";
                 isLoadingSync = false;
                 isErrorAllData = false;
-                return "success";
               } else {
                 isErrorAllData = true;
-                return "fail";
               }
               break;
             } else {
@@ -474,19 +470,18 @@
             }
           }
         }
+
         if (!syncStatus?.data?.canWait) {
           // Cut call when we can not wait
           syncMsg = syncStatus?.data?.error;
           isLoadingSync = false;
           isErrorAllData = true;
-          return "fail";
         }
       }
     } catch (e) {
       console.error("error: ", e);
       isLoadingSync = false;
       isErrorAllData = true;
-      return "fail";
     }
   };
 
