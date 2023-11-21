@@ -153,9 +153,7 @@
       data !== undefined &&
       Object.keys(data).length !== 0 &&
       $wallet.length !== 0 &&
-      ($typeWallet === "EVM" ||
-        $typeWallet === "CEX" ||
-        $typeWallet === "BUNDLE"),
+      ($typeWallet === "EVM" || $typeWallet === "BUNDLE"),
   });
 
   const formatPrice = (value: number) => {
