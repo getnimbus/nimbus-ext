@@ -65,10 +65,6 @@
       data !== undefined &&
       Object.keys(data).length !== 0 &&
       $wallet.length !== 0,
-    onError(err) {
-      localStorage.removeItem("evm_token");
-      user.update((n) => (n = {}));
-    },
   });
 
   let sellHistoryTradeList = [];
