@@ -47,45 +47,45 @@
     isLoadingSync = false;
     try {
       let syncStatus = await getSyncStatus();
-      // sync data again
-      if (!syncStatus?.data?.lastSync) {
-        handleSync();
-      }
-
       // already sync data from db
       if (syncStatus?.data?.lastSync) {
         console.log("start load data (already sync)");
         syncMsg = "";
         isLoadingSync = false;
         isErrorAllData = false;
+        return;
       }
 
-      // check data from db
-      if (syncStatus?.data?.canWait) {
-        syncMsg = syncStatus?.data?.error;
-        isLoadingSync = true;
-        // keep call api /sync-status until we can not wait
-        while (true) {
-          if (syncStatus?.data?.lastSync) {
-            console.log("start load data (newest sync)");
-            syncMsg = "";
-            isLoadingSync = false;
-            isErrorAllData = false;
-            break;
-          } else {
-            isLoadingSync = true;
-            await wait(5000);
-            syncStatus = await getSyncStatus();
+      // sync data again and check data from db
+      if (!syncStatus?.data?.lastSync) {
+        await handleSync();
+
+        if (syncStatus?.data?.canWait) {
+          syncMsg = syncStatus?.data?.error;
+          isLoadingSync = true;
+          // keep call api /sync-status until we can not wait
+          while (true) {
+            if (syncStatus?.data?.lastSync) {
+              console.log("start load data (newest sync)");
+              syncMsg = "";
+              isLoadingSync = false;
+              isErrorAllData = false;
+              break;
+            } else {
+              isLoadingSync = true;
+              await wait(5000);
+              syncStatus = await getSyncStatus();
+            }
           }
         }
-      } else {
-        // Cut call when we can not wait
-        syncMsg = syncStatus?.data?.error;
-        isLoadingSync = false;
-        isErrorAllData = true;
-      }
 
-      console.log("syncStatus: ", syncStatus);
+        if (!syncStatus?.data?.canWait) {
+          // Cut call when we can not wait
+          syncMsg = syncStatus?.data?.error;
+          isLoadingSync = false;
+          isErrorAllData = true;
+        }
+      }
     } catch (e) {
       console.error("error: ", e);
       isLoadingSync = false;
