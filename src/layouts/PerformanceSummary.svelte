@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onMount } from "svelte";
   import { isDarkMode, wallet, chain } from "~/store";
   import { shorterAddress } from "~/utils";
   import { wait } from "~/entries/background/utils";
@@ -13,14 +14,23 @@
 
   import User from "~/assets/user.png";
 
+  let address = "";
   let isLoadingSync = false;
   let syncMsg = "";
   let enabledFetchAllData = false;
 
+  onMount(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const addressParams = urlParams.get("address");
+    if (addressParams) {
+      address = addressParams;
+    }
+  });
+
   const getSync = async () => {
     try {
       await nimbus
-        .post(`/v2/address/${$wallet}/sync?chain=ALL`, {})
+        .post(`/v2/address/${address}/sync?chain=ALL`, {})
         .then((response) => response);
     } catch (e) {
       console.error("e: ", e);
@@ -30,7 +40,7 @@
   const getSyncStatus = async () => {
     try {
       const response = await nimbus
-        .get(`/address/${$wallet}/sync-status?chain=${$chain}`)
+        .get(`/address/${address}/sync-status?chain=${$chain}`)
         .then((response) => response);
       return response;
     } catch (e) {
@@ -95,6 +105,7 @@
 
   $: {
     if ($wallet) {
+      address = $wallet;
       handleGetAllData();
     }
   }
@@ -134,7 +145,7 @@
                     $isDarkMode ? "text-white" : "text-black"
                   }`}
                 >
-                  {shorterAddress($wallet)}
+                  {shorterAddress(address)}
                 </div>
               </div>
 
@@ -146,21 +157,21 @@
               </div>
               <div class="grid xl:grid-cols-4 grid-cols-2 gap-6">
                 <ProfitData
-                  selectedAddress={$wallet}
+                  selectedAddress={address}
                   isSync={true}
-                  enabledFetchAllData
+                  {enabledFetchAllData}
                 />
 
                 <TopProfitAndLoss
-                  selectedAddress={$wallet}
+                  selectedAddress={address}
                   isSync={true}
-                  enabledFetchAllData
+                  {enabledFetchAllData}
                 />
 
                 <ClosedPositionChart
-                  selectedAddress={$wallet}
+                  selectedAddress={address}
                   isSync={true}
-                  enabledFetchAllData
+                  {enabledFetchAllData}
                 />
               </div>
             </div>
