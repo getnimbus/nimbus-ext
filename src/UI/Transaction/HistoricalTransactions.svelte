@@ -16,8 +16,6 @@
   export let isLoading;
   export let pageToken;
   export let loadMore = (pageToken) => {};
-
-  $: filteredData = data.filter((item) => item.transaction_hash);
 </script>
 
 <div
@@ -83,7 +81,7 @@
           </td>
         </tr>
       {:else}
-        {#each filteredData || [] as item}
+        {#each data || [] as item}
           <tr
             class="group transition-all border-b-[0.5px] border_0000000d last:border-none"
           >
