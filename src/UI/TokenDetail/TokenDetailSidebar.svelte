@@ -65,10 +65,6 @@
       data !== undefined &&
       Object.keys(data).length !== 0 &&
       $wallet.length !== 0,
-    onError(err) {
-      localStorage.removeItem("evm_token");
-      user.update((n) => (n = {}));
-    },
   });
 
   let sellHistoryTradeList = [];
@@ -238,64 +234,64 @@
   </div>
 
   <div class="flex flex-col gap-6">
-    <div
-      class={`rounded-[20px] p-6 flex flex-col gap-4 relative ${
-        $isDarkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
-      }`}
-    >
-      <div class="flex justify-between items-center">
-        <div class="xl:text-2xl text-4xl font-medium">
-          Avg Cost distribution
+    {#if $typeWallet !== "CEX"}
+      <div
+        class={`rounded-[20px] p-6 flex flex-col gap-4 relative ${
+          $isDarkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
+        }`}
+      >
+        <div class="flex justify-between items-center">
+          <div class="xl:text-2xl text-4xl font-medium">
+            Avg Cost distribution
+          </div>
+          <Select
+            type="lang"
+            positionSelectList="right-0"
+            listSelect={filterAvgCostType}
+            bind:selected={filterType}
+          />
         </div>
-        <Select
-          type="lang"
-          positionSelectList="right-0"
-          listSelect={filterAvgCostType}
-          bind:selected={filterType}
-        />
-      </div>
 
-      {#if data?.contractAddress !== "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"}
         <BalanceAvgCostChart
           {data}
           id={data?.name}
           avgCost={data?.profit?.averageCost}
           {filterType}
         />
-      {/if}
 
-      {#if $typeWallet !== "EVM" || ($typeWallet === "EVM" && data?.chain !== "ETH")}
-        <div
-          class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center gap-3 pt-62 ${
-            $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
-          } z-30 backdrop-blur-md`}
-        >
-          <div class="text-lg">Coming soon 🚀</div>
-        </div>
-      {/if}
+        {#if $typeWallet !== "EVM" && $typeWallet !== "BUNDLE"}
+          <div
+            class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center gap-3 pt-62 ${
+              $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
+            } z-30 backdrop-blur-md`}
+          >
+            <div class="text-lg">Coming soon 🚀</div>
+          </div>
+        {/if}
 
-      {#if $selectedPackage === "FREE"}
-        <div
-          class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center justify-center gap-3 ${
-            $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
-          } z-30 backdrop-blur-md`}
-        >
-          <div class="flex flex-col items-center gap-1">
-            <div class="text-lg font-medium">
-              Use Nimbus at its full potential
+        {#if $selectedPackage === "FREE"}
+          <div
+            class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center justify-center gap-3 ${
+              $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
+            } z-30 backdrop-blur-md`}
+          >
+            <div class="flex flex-col items-center gap-1">
+              <div class="text-lg font-medium">
+                Use Nimbus at its full potential
+              </div>
+              <div class="text-base text-gray-500">
+                Upgrade to Premium to access Compare feature
+              </div>
             </div>
-            <div class="text-base text-gray-500">
-              Upgrade to Premium to access Compare feature
+            <div class="mt-2 w-max">
+              <Button variant="premium" on:click={() => navigate("/upgrade")}
+                >Start 30-day Trial</Button
+              >
             </div>
           </div>
-          <div class="mt-2 w-max">
-            <Button variant="premium" on:click={() => navigate("/upgrade")}
-              >Start 30-day Trial</Button
-            >
-          </div>
-        </div>
-      {/if}
-    </div>
+        {/if}
+      </div>
+    {/if}
 
     <div
       class={`rounded-[20px] p-6 flex flex-col gap-4 ${

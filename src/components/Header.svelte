@@ -219,7 +219,8 @@
     if (
       searchAccountType === "BTC" ||
       searchAccountType === "SOL" ||
-      searchAccountType === "ALGO"
+      searchAccountType === "ALGO" ||
+      searchAccountType === "CEX"
     ) {
       window.history.replaceState(
         null,

@@ -63,7 +63,7 @@
       <div class="analytic_container rounded-[20px] xl:p-8 p-6 space-y-4">
         <div class="flex justify-between items-center">
           <Link
-            to={`/performance-summary/?type=${$typeWallet}&chain=${$chain}&address=${$userPublicAddress}`}
+            to={`/performance-summary/?type=${$typeWallet}&chain=${$chain}&address=${$wallet}`}
           >
             <Button>
               <div class="w-full xl:w-[230px]">Performance Summary</div>

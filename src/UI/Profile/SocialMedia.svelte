@@ -2,7 +2,7 @@
   import { isDarkMode } from "~/store";
 
   import Button from "~/components/Button.svelte";
-  import IconSocialMedia from "~/components/IconSocialMedia.svelte";
+  import IconSocialMedia from "~/UI/Profile/IconSocialMedia.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
 
   export let isEdit;
