@@ -8,6 +8,8 @@
   import TooltipNumber from "~/components/TooltipNumber.svelte";
 
   export let selectedAddress;
+  export let isSync = false;
+  export let enabledFetchAllData = false;
 
   let balance = 0;
   let unRealizedProfit = 0;
@@ -16,6 +18,8 @@
   let totalCost = 0;
   let totalToken = 0;
   let realizedProfit = 0;
+
+  $: isFetch = isSync ? enabledFetchAllData : true;
 
   const getTradingStats = async (address) => {
     const response: any = await nimbus.get(
@@ -108,14 +112,20 @@
     queryFn: () => getTradingStats(selectedAddress),
     staleTime: Infinity,
     retry: false,
-    enabled: selectedAddress?.length !== 0 && Object.keys($user).length !== 0,
+    enabled:
+      selectedAddress?.length !== 0 &&
+      Object.keys($user).length !== 0 &&
+      isFetch,
   });
 
   $: queryTokenHolding = createQuery({
     queryKey: ["token-holding", selectedAddress],
     queryFn: () => getHoldingToken(selectedAddress),
     staleTime: Infinity,
-    enabled: selectedAddress?.length !== 0 && Object.keys($user).length !== 0,
+    enabled:
+      selectedAddress?.length !== 0 &&
+      Object.keys($user).length !== 0 &&
+      isFetch,
   });
 
   $: {
