@@ -153,14 +153,7 @@
       data !== undefined &&
       Object.keys(data).length !== 0 &&
       $wallet.length !== 0 &&
-      ($typeWallet === "EVM" ||
-        ($typeWallet === "BUNDLE" &&
-          data?.chain !== "SOL" &&
-          data?.chain === "ALGO")),
-    onError(err) {
-      localStorage.removeItem("evm_token");
-      user.update((n) => (n = {}));
-    },
+      ($typeWallet === "EVM" || $typeWallet === "BUNDLE"),
   });
 
   const formatPrice = (value: number) => {

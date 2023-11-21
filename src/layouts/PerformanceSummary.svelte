@@ -1,6 +1,5 @@
 <script lang="ts">
-  import { onMount } from "svelte";
-  import { isDarkMode, userPublicAddress, wallet } from "~/store";
+  import { isDarkMode, wallet } from "~/store";
   import { shorterAddress } from "~/utils";
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
@@ -11,22 +10,6 @@
   import SyncData from "~/components/SyncData.svelte";
 
   import User from "~/assets/user.png";
-
-  let address = $userPublicAddress;
-
-  onMount(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const addressParams = urlParams.get("address");
-    if (addressParams) {
-      address = addressParams;
-    }
-  });
-
-  $: {
-    if ($wallet) {
-      address = $wallet;
-    }
-  }
 </script>
 
 <ErrorBoundary>
@@ -47,7 +30,7 @@
               $isDarkMode ? "text-white" : "text-black"
             }`}
           >
-            {shorterAddress(address)}
+            {shorterAddress($wallet)}
           </div>
         </div>
 
@@ -55,15 +38,13 @@
       </div>
       <div class="flex-1 flex flex-col gap-4">
         <div class="xl:text-3xl text-4xl font-medium">Performance Summary</div>
-        <SyncData {address}>
-          <div class="grid xl:grid-cols-4 grid-cols-2 gap-6">
-            <ProfitData selectedAddress={address} />
+        <div class="grid xl:grid-cols-4 grid-cols-2 gap-6">
+          <ProfitData selectedAddress={$wallet} />
 
-            <TopProfitAndLoss selectedAddress={address} />
+          <TopProfitAndLoss selectedAddress={$wallet} />
 
-            <ClosedPositionChart selectedAddress={address} />
-          </div>
-        </SyncData>
+          <ClosedPositionChart selectedAddress={$wallet} />
+        </div>
       </div>
     </div>
   </div>
