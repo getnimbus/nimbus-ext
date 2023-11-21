@@ -23,6 +23,8 @@
   import defaultToken from "~/assets/defaultToken.png";
 
   export let selectedAddress;
+  export let isSync = false;
+  export let enabledFetchAllData = false;
 
   let closedHoldingPosition = [];
   let selectedTypeChart: "value" | "percent" = "value";
@@ -205,6 +207,8 @@
     series: [],
   };
 
+  $: isFetch = isSync ? enabledFetchAllData : true;
+
   const getTradingStats = async (address) => {
     const response: any = await nimbus.get(
       `/v2/analysis/${address}/trading-stats`
@@ -315,7 +319,10 @@
     queryFn: () => getTradingStats(selectedAddress),
     staleTime: Infinity,
     retry: false,
-    enabled: selectedAddress?.length !== 0 && Object.keys($user).length !== 0,
+    enabled:
+      selectedAddress?.length !== 0 &&
+      Object.keys($user).length !== 0 &&
+      isFetch,
   });
 
   $: {
