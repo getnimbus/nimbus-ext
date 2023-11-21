@@ -282,18 +282,20 @@
             <div class="xl:text-2xl text-4xl font-medium">
               Historical Transactions
             </div>
-            <div class="flex items-center gap-4">
-              <CoinSelector
-                bind:selected={selectedCoin}
-                positionSelectList="right-0"
-              />
-              <Select
-                type="lang"
-                bind:selected={selectedType}
-                listSelect={types}
-                positionSelectList="right-0"
-              />
-            </div>
+            {#if $typeWallet === "EVM"}
+              <div class="flex items-center gap-4">
+                <CoinSelector
+                  bind:selected={selectedCoin}
+                  positionSelectList="right-0"
+                />
+                <Select
+                  type="lang"
+                  bind:selected={selectedType}
+                  listSelect={types}
+                  positionSelectList="right-0"
+                />
+              </div>
+            {/if}
           </div>
           <HistoricalTransactions
             {isLoading}
