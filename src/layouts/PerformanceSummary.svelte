@@ -4,6 +4,7 @@
   import { shorterAddress } from "~/utils";
   import { wait } from "~/entries/background/utils";
   import { nimbus } from "~/lib/network";
+  import { Link } from "svelte-navigator";
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import InviterQr from "~/UI/Profile/InviterQR.svelte";
@@ -13,6 +14,7 @@
   import Testimonial from "~/UI/Testimonial/Testimonial.svelte";
 
   import User from "~/assets/user.png";
+  import LeftArrow from "~/assets/left-arrow.svg";
 
   let address = "";
   let isLoadingSync = false;
@@ -130,8 +132,18 @@
         </div>
       {:else}
         <div
-          class="max-w-[2000px] m-auto xl:w-[90%] w-[90%] py-8 flex flex-col gap-10"
+          class="max-w-[2000px] m-auto xl:w-[90%] w-[90%] py-8 flex flex-col gap-6"
         >
+          <div class="flex items-center justify-between">
+            <Link to="/" class="cusor-pointer">
+              <div class="flex items-center gap-1 text-white">
+                <img src={LeftArrow} alt="" class="xl:w-5 xl:h-5 w-7 h-7" />
+                <div class="xl:text-sm text-2xl font-medium">
+                  Back to Portfolio
+                </div>
+              </div>
+            </Link>
+          </div>
           <div
             class="w-full flex xl:flex-row flex-col rounded-xl py-10 px-10 gap-9 border-2 border_0000001a"
           >
