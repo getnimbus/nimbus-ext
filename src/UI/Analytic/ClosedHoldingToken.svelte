@@ -31,6 +31,11 @@
   import TrendUp from "~/assets/trend-up.svg";
   import defaultToken from "~/assets/defaultToken.png";
 
+  export let isSync = false;
+  export let enabledFetchAllData = false;
+
+  $: isFetch = isSync ? enabledFetchAllData : true;
+
   let closedHoldingPosition = [];
   let selectedTypeChart: "value" | "percent" = "value";
   let optionBarValue = {
@@ -376,7 +381,7 @@
     queryFn: () => getHoldingToken($wallet, $chain),
     placeholderData: [],
     staleTime: Infinity,
-    enabled: enabledQuery,
+    enabled: enabledQuery && isFetch,
   });
 
   $: {

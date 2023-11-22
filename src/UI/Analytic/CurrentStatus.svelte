@@ -33,6 +33,10 @@
 
   export let packageSelected;
   export let selectedTimeFrame;
+  export let isSync = false;
+  export let enabledFetchAllData = false;
+
+  $: isFetch = isSync ? enabledFetchAllData : true;
 
   const MultipleLang = {
     token_allocation: i18n("newtabPage.token-allocation", "Token Allocation"),
@@ -67,8 +71,8 @@
                   $isDarkMode ? "white" : "black"
                 }">
                   ${params?.name} ${
-          params?.data?.symbol ? `(${params?.data?.symbol})` : ""
-        }
+                    params?.data?.symbol ? `(${params?.data?.symbol})` : ""
+                  }
                 </div>
               </div>
 
@@ -352,7 +356,7 @@
 
   $: queryPersonalTag = createQuery({
     queryKey: ["personalize-tag", $wallet],
-    enabled: enabledQuery,
+    enabled: enabledQuery && isFetch,
     queryFn: () => getPersonalizeTag($wallet),
     staleTime: Infinity,
   });
@@ -384,7 +388,7 @@
 
   $: queryHoldingToken = createQuery({
     queryKey: ["token-holding", $wallet, $chain],
-    enabled: enabledQuery,
+    enabled: enabledQuery && isFetch,
     queryFn: () => getHoldingToken($wallet, $chain),
     staleTime: Infinity,
   });
@@ -405,7 +409,7 @@
 
   $: queryCompare = createQuery({
     queryKey: ["compare", $wallet, $chain, selectedTimeFrame],
-    enabled: enabledQuery,
+    enabled: enabledQuery && isFetch,
     queryFn: () => getAnalyticCompare($wallet, selectedTimeFrame),
     staleTime: Infinity,
   });

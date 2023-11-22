@@ -13,6 +13,10 @@
   import HistoricalActivities from "../AnalyticChart/HistoricalActivities.svelte";
 
   export let packageSelected;
+  export let isSync = false;
+  export let enabledFetchAllData = false;
+
+  $: isFetch = isSync ? enabledFetchAllData : true;
 
   // const handleGetDateRange = (data) => {
   //   console.log(data);
@@ -38,7 +42,7 @@
 
   $: query = createQuery({
     queryKey: ["holding-history", $wallet, $chain],
-    enabled: enabledQuery,
+    enabled: enabledQuery && isFetch,
     queryFn: () => getTotalValueHistoryAndDailyGain($wallet, $chain),
     staleTime: Infinity,
   });
@@ -55,9 +59,13 @@
     <DailyPnL isLoading={$query.isFetching} isEmpty={$query.isError} dataDailyPnL={$query.data.returnsChange} />
     <SectorGrowth /> -->
     {#if $typeWallet === "DEX"}
-      <TotalGasFee {packageSelected} darkMode={$isDarkMode} />
+      <TotalGasFee {packageSelected} darkMode={$isDarkMode} {isFetch} />
     {:else}
-      <HistoricalActivities {packageSelected} darkMode={$isDarkMode} />
+      <HistoricalActivities
+        {packageSelected}
+        darkMode={$isDarkMode}
+        {isFetch}
+      />
     {/if}
   </div>
 </div>

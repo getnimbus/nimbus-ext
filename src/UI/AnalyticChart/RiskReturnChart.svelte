@@ -39,6 +39,10 @@
   import defaultToken from "~/assets/defaultToken.png";
 
   export let selectedTimeFrame;
+  export let isSync = false;
+  export let enabledFetchAllData = false;
+
+  $: isFetch = isSync ? enabledFetchAllData : true;
 
   const riskTypeChart = [
     {
@@ -179,8 +183,8 @@
                               item?.logo || defaultToken
                             } alt="" width=20 height=20 style="border-radius: 100%" />
                             ${item?.name} ${
-                      item?.symbol ? `(${item?.symbol})` : ""
-                    }
+                              item?.symbol ? `(${item?.symbol})` : ""
+                            }
                         </div>
                         <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right;">
                           <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
@@ -258,14 +262,14 @@
 
   $: query = createQuery({
     queryKey: ["compare", $wallet, $chain, selectedTimeFrame],
-    enabled: enabledQuery,
+    enabled: enabledQuery && isFetch,
     queryFn: () => getAnalyticCompare($wallet, selectedTimeFrame),
     staleTime: Infinity,
   });
 
   $: queryBreakdown = createQuery({
     queryKey: ["compare-breakdown", $wallet, $chain, selectedTimeFrame],
-    enabled: enabledQuery,
+    enabled: enabledQuery && isFetch,
     queryFn: () => getRiskBreakdown($wallet, selectedTimeFrame),
     staleTime: Infinity,
   });

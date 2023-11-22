@@ -17,6 +17,10 @@
 
   export let packageSelected;
   export let selectedTimeFrame;
+  export let isSync = false;
+  export let enabledFetchAllData = false;
+
+  $: isFetch = isSync ? enabledFetchAllData : true;
 
   const listDirection = ["inflow", "outflow"];
 
@@ -353,7 +357,7 @@
 
   $: query = createQuery({
     queryKey: ["inflow-outflow", $wallet, $chain, selectedTimeFrame],
-    enabled: enabledQuery,
+    enabled: enabledQuery && isFetch,
     queryFn: () => getInflowOutflow($wallet, $chain, selectedTimeFrame),
     staleTime: Infinity,
   });

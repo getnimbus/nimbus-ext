@@ -27,6 +27,10 @@
   import LogoWhite from "~/assets/logo-white.svg";
 
   export let selectedTimeFrame;
+  export let isSync = false;
+  export let enabledFetchAllData = false;
+
+  $: isFetch = isSync ? enabledFetchAllData : true;
 
   let data;
   let optionBar = {
@@ -123,7 +127,7 @@
 
   $: query = createQuery({
     queryKey: ["compare", $wallet, $chain, selectedTimeFrame],
-    enabled: enabledQuery,
+    enabled: enabledQuery && isFetch,
     queryFn: () => getAnalyticCompare($wallet, selectedTimeFrame),
     staleTime: Infinity,
   });
