@@ -85,9 +85,7 @@
   >
     <span class="mr-2 xl:mr-1">⭐️</span> We're giving 1000 coupon codes
     <span class="font-bold">EARLY-BIRD</span>
-    which get <span class="font-bold">30%</span> off for the first-time payment
-    and
-    <span class="font-bold">10% off lifetime</span> payments.
+    which get <span class="font-bold">30%</span> off for the first-time payment.
   </div>
 
   <div class="flex flex-col gap-10 mt-4">
