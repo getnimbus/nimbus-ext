@@ -235,16 +235,24 @@
                 ? "$" +
                   `${
                     discountPercent !== 0
-                      ? selectedPackage.price * 12 -
-                        selectedPackage.price * 12 * (discountPercent / 100)
+                      ? Math.round(
+                          (selectedPackage.price * 12 -
+                            selectedPackage.price *
+                              12 *
+                              (discountPercent / 100)) *
+                            100
+                        ) / 100
                       : selectedPackage.price * 12
                   }` +
                   " for 1 year"
                 : "$" +
                   `${
                     discountPercent !== 0
-                      ? selectedPackage.price -
-                        selectedPackage.price * (discountPercent / 100)
+                      ? Math.round(
+                          (selectedPackage.price -
+                            selectedPackage.price * (discountPercent / 100)) *
+                            100
+                        ) / 100
                       : selectedPackage.price
                   }` +
                   " for 1 month"}

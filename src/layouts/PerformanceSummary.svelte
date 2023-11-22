@@ -1,186 +1,74 @@
 <script lang="ts">
-  import { onMount } from "svelte";
-  import { isDarkMode, wallet, chain } from "~/store";
+  import { isDarkMode } from "~/store";
   import { shorterAddress } from "~/utils";
-  import { wait } from "~/entries/background/utils";
-  import { nimbus } from "~/lib/network";
+  import { Link } from "svelte-navigator";
 
-  import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import InviterQr from "~/UI/Profile/InviterQR.svelte";
   import ClosedPositionChart from "~/UI/Profile/ClosedPositionChart.svelte";
   import TopProfitAndLoss from "~/UI/Profile/TopProfitAndLoss.svelte";
   import ProfitData from "~/UI/Profile/ProfitData.svelte";
-  import Testimonial from "~/UI/Testimonial/Testimonial.svelte";
 
   import User from "~/assets/user.png";
-
-  let address = "";
-  let isLoadingSync = false;
-  let syncMsg = "";
-  let enabledFetchAllData = false;
-
-  onMount(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const addressParams = urlParams.get("address");
-    if (addressParams) {
-      address = addressParams;
-      handleGetAllData();
-    }
-  });
-
-  const getSync = async () => {
-    try {
-      await nimbus
-        .post(`/v2/address/${address}/sync?chain=ALL`, {})
-        .then((response) => response);
-    } catch (e) {
-      console.error("e: ", e);
-    }
-  };
-
-  const getSyncStatus = async () => {
-    try {
-      const response = await nimbus
-        .get(`/address/${address}/sync-status?chain=${$chain}`)
-        .then((response) => response);
-      return response;
-    } catch (e) {
-      console.error("e: ", e);
-    }
-  };
-
-  const handleSync = async () => {
-    console.log("Going to full sync");
-    await getSync();
-  };
-
-  const handleGetAllData = async () => {
-    isLoadingSync = false;
-    enabledFetchAllData = false;
-
-    try {
-      let syncStatus = await getSyncStatus();
-      // already sync data from db
-      if (syncStatus?.data?.lastSync) {
-        console.log("start load data (already sync)");
-        enabledFetchAllData = true;
-        syncMsg = "";
-        isLoadingSync = false;
-        return;
-      }
-
-      // sync data again and check data from db
-      if (!syncStatus?.data?.lastSync) {
-        await handleSync();
-
-        if (syncStatus?.data?.canWait) {
-          syncMsg = syncStatus?.data?.error;
-          isLoadingSync = true;
-          // keep call api /sync-status until we can not wait
-          while (true) {
-            if (syncStatus?.data?.lastSync) {
-              console.log("start load data (newest sync)");
-              enabledFetchAllData = true;
-              syncMsg = "";
-              isLoadingSync = false;
-              break;
-            } else {
-              isLoadingSync = true;
-              await wait(5000);
-              syncStatus = await getSyncStatus();
-            }
-          }
-        }
-
-        if (!syncStatus?.data?.canWait) {
-          // Cut call when we can not wait
-          syncMsg = syncStatus?.data?.error;
-          isLoadingSync = false;
-        }
-      }
-    } catch (e) {
-      console.error("error: ", e);
-      isLoadingSync = false;
-    }
-  };
-
-  $: {
-    if ($wallet) {
-      address = $wallet;
-      handleGetAllData();
-    }
-  }
+  import LeftArrow from "~/assets/left-arrow.svg";
+  import SyncData from "~/components/SyncData.svelte";
 </script>
 
-<ErrorBoundary>
-  {#if isLoadingSync}
-    <div
-      class="text-xl font-medium flex flex-col gap-5 justify-center items-center rounded-[20px] p-6 h-screen"
-    >
-      {syncMsg}
-      {#if syncMsg !== "Invalid address"}
-        <Testimonial />
-      {/if}
-    </div>
-  {:else}
-    <div>
-      {#if syncMsg}
-        <div class="flex flex-col justify-center items-center gap-2">
-          {syncMsg}
+<SyncData let:address let:enabledFetchAllData>
+  <div
+    class="max-w-[2000px] m-auto xl:w-[90%] w-[90%] py-8 flex flex-col gap-6"
+  >
+    <div class="flex items-center justify-between">
+      <Link to="/" class="cusor-pointer">
+        <div class="flex items-center gap-1 text-white">
+          <img src={LeftArrow} alt="" class="xl:w-5 xl:h-5 w-7 h-7" />
+          <div class="xl:text-sm text-2xl font-medium">Back to Portfolio</div>
         </div>
-      {:else}
-        <div
-          class="max-w-[2000px] m-auto xl:w-[90%] w-[90%] py-8 flex flex-col gap-10"
-        >
+      </Link>
+    </div>
+    <div
+      class="w-full flex xl:flex-row flex-col rounded-xl py-10 px-10 gap-9 border-2 border_0000001a"
+    >
+      <div class="xl:w-[20%] w-full flex flex-col gap-5 items-center">
+        <div class="flex flex-col gap-3 items-center justify-start">
+          <div class="xl:w-[80px] xl:h-[80px] w-32 h-32">
+            <img src={User} alt="" class="object-cover w-full h-full" />
+          </div>
+
           <div
-            class="w-full flex xl:flex-row flex-col rounded-xl py-10 px-10 gap-9 border-2 border_0000001a"
+            class={`text-2xl xl:text-base font-medium flex items-center gap-2 ${
+              $isDarkMode ? "text-white" : "text-black"
+            }`}
           >
-            <div class="xl:w-[20%] w-full flex flex-col gap-5 items-center">
-              <div class="flex flex-col gap-3 items-center justify-start">
-                <div class="xl:w-[80px] xl:h-[80px] w-32 h-32">
-                  <img src={User} alt="" class="object-cover w-full h-full" />
-                </div>
-
-                <div
-                  class={`text-2xl xl:text-base font-medium flex items-center gap-2 ${
-                    $isDarkMode ? "text-white" : "text-black"
-                  }`}
-                >
-                  {shorterAddress(address)}
-                </div>
-              </div>
-
-              <InviterQr />
-            </div>
-            <div class="flex-1 flex flex-col gap-4">
-              <div class="xl:text-3xl text-4xl font-medium">
-                Performance Summary
-              </div>
-              <div class="grid xl:grid-cols-4 grid-cols-2 gap-6">
-                <ProfitData
-                  selectedAddress={address}
-                  isSync={true}
-                  {enabledFetchAllData}
-                />
-
-                <TopProfitAndLoss
-                  selectedAddress={address}
-                  isSync={true}
-                  {enabledFetchAllData}
-                />
-
-                <ClosedPositionChart
-                  selectedAddress={address}
-                  isSync={true}
-                  {enabledFetchAllData}
-                />
-              </div>
-            </div>
+            {shorterAddress(address)}
           </div>
         </div>
-      {/if}
+
+        <InviterQr />
+      </div>
+      <div class="flex-1 flex flex-col gap-4">
+        <div class="xl:text-3xl text-4xl font-medium">Performance Summary</div>
+        <div class="grid xl:grid-cols-4 grid-cols-2 gap-6">
+          <ProfitData
+            selectedAddress={address}
+            isSync={true}
+            {enabledFetchAllData}
+          />
+
+          <TopProfitAndLoss
+            selectedAddress={address}
+            isSync={true}
+            {enabledFetchAllData}
+          />
+
+          <ClosedPositionChart
+            selectedAddress={address}
+            isSync={true}
+            {enabledFetchAllData}
+          />
+        </div>
+      </div>
     </div>
-  {/if}
-</ErrorBoundary>
+  </div>
+</SyncData>
 
 <style windi:preflights:global windi:safelist:global></style>
