@@ -365,7 +365,7 @@
               </div>
               <div class="mt-2 w-max">
                 <Button variant="premium" on:click={() => navigate("/upgrade")}
-                  >Start 30-day Trial</Button
+                  >Upgrade Plan</Button
                 >
               </div>
             </td>
