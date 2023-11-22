@@ -111,10 +111,17 @@
   }
 
   onMount(() => {
-    toastMsg = "Please waiting for a while we updating your payment!";
+    const urlParams = new URLSearchParams(window.location.search);
+    const isTrialParams = urlParams.get("isTrial");
+    if (isTrialParams && isTrialParams === "true") {
+      toastMsg = "Apply your TRIAL coupon code success!";
+      status = true;
+    } else {
+      toastMsg = "Please waiting for a while we updating your payment!";
+      getStatusPayment();
+    }
     isSuccessToast = true;
     trigger();
-    getStatusPayment();
   });
 
   onDestroy(() => {

@@ -92,24 +92,24 @@
         toastMsg = response?.error;
         isSuccessToast = false;
       } else {
-        if (response?.status === 1) {
-          coupleCode = response?.type;
+        if (response?.data?.status === 1) {
+          coupleCode = data.code;
           isSuccessToast = true;
 
-          if (response?.type === "DISCOUNT") {
-            discountPercent = response.value;
+          if (response?.data?.type === "Discount") {
+            discountPercent = response?.data?.value;
           }
 
-          if (response?.type === "TRIAL") {
+          if (response?.data?.type === "Free Trial") {
             await submitTrial(data.code);
           }
         }
 
-        if (response?.status === 0) {
+        if (response?.data?.status === 0) {
           isSuccessToast = false;
         }
 
-        toastMsg = response?.message;
+        toastMsg = response?.data?.message;
       }
       isLoadingSubmitCoupleCode = false;
       trigger();
@@ -127,10 +127,9 @@
     try {
       await nimbus.post("/v2/payments/redeem-code", {
         code,
+        plan: selectedPackage.plan,
       });
-      toastMsg = "Apply your TRIAL coupon code success!";
-      isSuccessToast = true;
-      trigger();
+      navigate(`/payments/success?isTrial=${true}`);
     } catch (e) {
       console.error(e);
     }
@@ -143,7 +142,6 @@
       value: selectedPackage.selectedTypePackage === "year" ? 12 : 1,
       code: coupleCode,
       plan: selectedPackage.plan,
-      currency: "USDT",
       chain: chainValue,
       txHash: "",
     };
@@ -167,7 +165,8 @@
             : selectedPackage.price;
 
         if (discountPercent !== 0) {
-          price = price - price * (discountPercent / 100);
+          const newPrice = price - price * (discountPercent / 100);
+          price = Math.round(newPrice * 100) / 100;
         }
 
         publicClient
@@ -177,7 +176,7 @@
             chain: mainnet,
             abi: wagmiAbi,
             functionName: "transfer",
-            args: [receiveAddress, BigInt(price * 1000000)],
+            args: [receiveAddress, price * 10 ** 6],
           })
           .then(async (res) => {
             const response = await nimbus.post("/v3/payments/create-session", {
@@ -186,7 +185,7 @@
             });
             if (response && response?.data) {
               navigate(
-                `/payments/success&paymentId=${response?.data?.paymentLinkId}`
+                `/payments/success?paymentId=${response?.data?.paymentLinkId}`
               );
             }
           })
