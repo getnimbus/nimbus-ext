@@ -155,17 +155,20 @@
                     For those who starting to invest
                   </div>
                 </div>
-                <div class="w-max flex items-center min-h-[30px]">
-                  <div
-                    class={`text-center text-base font-medium text-[#1e96fc] ${
-                      buyPackage === "Free"
-                        ? "opacity-100 block"
-                        : "opacity-0 hidden"
-                    }`}
-                  >
-                    Current Plan
+
+                {#if Object.keys($user).length !== 0}
+                  <div class="w-max flex items-center min-h-[30px]">
+                    <div
+                      class={`text-center text-base font-medium text-[#1e96fc] ${
+                        buyPackage === "Free"
+                          ? "opacity-100 block"
+                          : "opacity-0 hidden"
+                      }`}
+                    >
+                      Current Plan
+                    </div>
                   </div>
-                </div>
+                {/if}
               </div>
             </td>
 
@@ -184,95 +187,101 @@
                   </div>
                 </div>
 
-                <div class="w-max flex items-center min-h-[30px]">
-                  {#if selectedTypePackage === "month"}
-                    <div
-                      class={`text-base font-medium text-[#1e96fc] ${
-                        buyPackage === "Explorer" && interval === "month"
-                          ? "opacity-100 block"
-                          : "opacity-0 hidden"
-                      }`}
-                    >
-                      Current Plan have
-                      <span class="font-medium"
-                        >{dateDiffInDays(new Date(), new Date(endDatePackage))} days
-                        left</span
+                {#if Object.keys($user).length !== 0}
+                  <div class="w-max flex items-center min-h-[30px]">
+                    {#if selectedTypePackage === "month"}
+                      <div
+                        class={`text-base font-medium text-[#1e96fc] ${
+                          buyPackage === "Explorer" && interval === "month"
+                            ? "opacity-100 block"
+                            : "opacity-0 hidden"
+                        }`}
                       >
-                    </div>
-
-                    <div class="font-medium text-lg">
-                      {#if buyPackage === "Free"}
-                        <div
-                          class="flex items-center gap-2 cursor-pointer text-[#1E96FC]"
-                          on:click={() => {
-                            selectedPackage({
-                              plan: "Explorer",
-                              selectedTypePackage,
-                              price: 9.99,
-                            });
-                          }}
+                        Current Plan have
+                        <span class="font-medium"
+                          >{dateDiffInDays(
+                            new Date(),
+                            new Date(endDatePackage)
+                          )} days left</span
                         >
-                          Upgrade
-                          <svg
-                            width="14"
-                            height="14"
-                            viewBox="0 0 14 14"
-                            fill="#1E96FC"
-                            xmlns="http://www.w3.org/2000/svg"
-                            ><path
-                              d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
-                              fill=""
-                            /></svg
-                          >
-                        </div>
-                      {/if}
-                    </div>
-                  {/if}
+                      </div>
 
-                  {#if selectedTypePackage === "year"}
-                    <div
-                      class={`text-base font-medium text-[#1e96fc] ${
-                        buyPackage === "Explorer" && interval === "year"
-                          ? "opacity-100 block"
-                          : "opacity-0 hidden"
-                      }`}
-                    >
-                      Current Plan have
-                      <span class="font-medium"
-                        >{dateDiffInDays(new Date(), new Date(endDatePackage))} days
-                        left</span
+                      <div class="font-medium text-lg">
+                        {#if buyPackage === "Free"}
+                          <div
+                            class="flex items-center gap-2 cursor-pointer text-[#1E96FC]"
+                            on:click={() => {
+                              selectedPackage({
+                                plan: "Explorer",
+                                selectedTypePackage,
+                                price: 9.99,
+                              });
+                            }}
+                          >
+                            Upgrade
+                            <svg
+                              width="14"
+                              height="14"
+                              viewBox="0 0 14 14"
+                              fill="#1E96FC"
+                              xmlns="http://www.w3.org/2000/svg"
+                              ><path
+                                d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
+                                fill=""
+                              /></svg
+                            >
+                          </div>
+                        {/if}
+                      </div>
+                    {/if}
+
+                    {#if selectedTypePackage === "year"}
+                      <div
+                        class={`text-base font-medium text-[#1e96fc] ${
+                          buyPackage === "Explorer" && interval === "year"
+                            ? "opacity-100 block"
+                            : "opacity-0 hidden"
+                        }`}
                       >
-                    </div>
-
-                    <div class="font-medium text-lg">
-                      {#if buyPackage === "Free"}
-                        <div
-                          class="flex items-center gap-2 cursor-pointer text-[#1E96FC]"
-                          on:click={() => {
-                            selectedPackage({
-                              plan: "Explorer",
-                              selectedTypePackage,
-                              price: 8.25,
-                            });
-                          }}
+                        Current Plan have
+                        <span class="font-medium"
+                          >{dateDiffInDays(
+                            new Date(),
+                            new Date(endDatePackage)
+                          )} days left</span
                         >
-                          Upgrade
-                          <svg
-                            width="14"
-                            height="14"
-                            viewBox="0 0 14 14"
-                            fill="#1E96FC"
-                            xmlns="http://www.w3.org/2000/svg"
-                            ><path
-                              d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
-                              fill=""
-                            /></svg
+                      </div>
+
+                      <div class="font-medium text-lg">
+                        {#if buyPackage === "Free"}
+                          <div
+                            class="flex items-center gap-2 cursor-pointer text-[#1E96FC]"
+                            on:click={() => {
+                              selectedPackage({
+                                plan: "Explorer",
+                                selectedTypePackage,
+                                price: 8.25,
+                              });
+                            }}
                           >
-                        </div>
-                      {/if}
-                    </div>
-                  {/if}
-                </div>
+                            Upgrade
+                            <svg
+                              width="14"
+                              height="14"
+                              viewBox="0 0 14 14"
+                              fill="#1E96FC"
+                              xmlns="http://www.w3.org/2000/svg"
+                              ><path
+                                d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
+                                fill=""
+                              /></svg
+                            >
+                          </div>
+                        {/if}
+                      </div>
+                    {/if}
+                  </div>
+                {/if}
               </div>
             </td>
 
@@ -291,95 +300,101 @@
                   </div>
                 </div>
 
-                <div class="w-max flex items-center min-h-[30px]">
-                  {#if selectedTypePackage === "month"}
-                    <div
-                      class={`text-base font-medium text-[#1e96fc] ${
-                        buyPackage === "Professional" && interval === "month"
-                          ? "opacity-100 block"
-                          : "opacity-0 hidden"
-                      }`}
-                    >
-                      Current Plan have
-                      <span class="font-medium"
-                        >{dateDiffInDays(new Date(), new Date(endDatePackage))} days
-                        left</span
+                {#if Object.keys($user).length !== 0}
+                  <div class="w-max flex items-center min-h-[30px]">
+                    {#if selectedTypePackage === "month"}
+                      <div
+                        class={`text-base font-medium text-[#1e96fc] ${
+                          buyPackage === "Professional" && interval === "month"
+                            ? "opacity-100 block"
+                            : "opacity-0 hidden"
+                        }`}
                       >
-                    </div>
-
-                    <div class="font-medium text-lg">
-                      {#if buyPackage === "Free"}
-                        <div
-                          class="flex items-center gap-2 cursor-pointer text-[#1E96FC]"
-                          on:click={() => {
-                            selectedPackage({
-                              plan: "Professional",
-                              selectedTypePackage,
-                              price: 99.99,
-                            });
-                          }}
+                        Current Plan have
+                        <span class="font-medium"
+                          >{dateDiffInDays(
+                            new Date(),
+                            new Date(endDatePackage)
+                          )} days left</span
                         >
-                          Upgrade
-                          <svg
-                            width="14"
-                            height="14"
-                            viewBox="0 0 14 14"
-                            fill="#1E96FC"
-                            xmlns="http://www.w3.org/2000/svg"
-                            ><path
-                              d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
-                              fill=""
-                            /></svg
-                          >
-                        </div>
-                      {/if}
-                    </div>
-                  {/if}
+                      </div>
 
-                  {#if selectedTypePackage === "year"}
-                    <div
-                      class={`text-base font-medium text-[#1e96fc] ${
-                        buyPackage === "Professional" && interval === "year"
-                          ? "opacity-100 block"
-                          : "opacity-0 hidden"
-                      }`}
-                    >
-                      Current Plan have
-                      <span class="font-medium"
-                        >{dateDiffInDays(new Date(), new Date(endDatePackage))} days
-                        left</span
+                      <div class="font-medium text-lg">
+                        {#if buyPackage === "Free"}
+                          <div
+                            class="flex items-center gap-2 cursor-pointer text-[#1E96FC]"
+                            on:click={() => {
+                              selectedPackage({
+                                plan: "Professional",
+                                selectedTypePackage,
+                                price: 99.99,
+                              });
+                            }}
+                          >
+                            Upgrade
+                            <svg
+                              width="14"
+                              height="14"
+                              viewBox="0 0 14 14"
+                              fill="#1E96FC"
+                              xmlns="http://www.w3.org/2000/svg"
+                              ><path
+                                d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
+                                fill=""
+                              /></svg
+                            >
+                          </div>
+                        {/if}
+                      </div>
+                    {/if}
+
+                    {#if selectedTypePackage === "year"}
+                      <div
+                        class={`text-base font-medium text-[#1e96fc] ${
+                          buyPackage === "Professional" && interval === "year"
+                            ? "opacity-100 block"
+                            : "opacity-0 hidden"
+                        }`}
                       >
-                    </div>
-
-                    <div class="font-medium text-lg">
-                      {#if buyPackage === "Free"}
-                        <div
-                          class="flex items-center gap-2 cursor-pointer text-[#1E96FC]"
-                          on:click={() => {
-                            selectedPackage({
-                              plan: "Professional",
-                              selectedTypePackage,
-                              price: 82.5,
-                            });
-                          }}
+                        Current Plan have
+                        <span class="font-medium"
+                          >{dateDiffInDays(
+                            new Date(),
+                            new Date(endDatePackage)
+                          )} days left</span
                         >
-                          Upgrade
-                          <svg
-                            width="14"
-                            height="14"
-                            viewBox="0 0 14 14"
-                            fill="#1E96FC"
-                            xmlns="http://www.w3.org/2000/svg"
-                            ><path
-                              d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
-                              fill=""
-                            /></svg
+                      </div>
+
+                      <div class="font-medium text-lg">
+                        {#if buyPackage === "Free"}
+                          <div
+                            class="flex items-center gap-2 cursor-pointer text-[#1E96FC]"
+                            on:click={() => {
+                              selectedPackage({
+                                plan: "Professional",
+                                selectedTypePackage,
+                                price: 82.5,
+                              });
+                            }}
                           >
-                        </div>
-                      {/if}
-                    </div>
-                  {/if}
-                </div>
+                            Upgrade
+                            <svg
+                              width="14"
+                              height="14"
+                              viewBox="0 0 14 14"
+                              fill="#1E96FC"
+                              xmlns="http://www.w3.org/2000/svg"
+                              ><path
+                                d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
+                                fill=""
+                              /></svg
+                            >
+                          </div>
+                        {/if}
+                      </div>
+                    {/if}
+                  </div>
+                {/if}
               </div>
             </td>
           </tr>
