@@ -28,6 +28,11 @@
   import All from "~/assets/all.svg";
   import defaultToken from "~/assets/defaultToken.png";
 
+  export let isSync = false;
+  export let enabledFetchAllData = false;
+
+  $: isFetch = isSync ? enabledFetchAllData : true;
+
   let listCoinPrice = [];
   let dataTokenHolding = [];
   let listTokenHolding = [];
@@ -108,7 +113,7 @@
 
   $: queryHoldingToken = createQuery({
     queryKey: ["token-holding", $wallet, $chain],
-    enabled: enabledQuery,
+    enabled: enabledQuery && isFetch,
     queryFn: () => getHoldingToken($wallet, $chain),
     staleTime: Infinity,
   });
@@ -143,7 +148,7 @@
 
   $: queryListToken = createQuery({
     queryKey: ["list-all-token"],
-    enabled: enabledQuery,
+    enabled: enabledQuery && isFetch,
     queryFn: () => getListAllToken(),
     staleTime: Infinity,
   });
