@@ -5,7 +5,7 @@
   import { blur } from "svelte/transition";
   import { wagmiAbi } from "~/lib/viem-evm-abi";
   import { publicClient } from "~/lib/viem-client";
-  import { mainnet, goerli } from "viem/chains";
+  import { mainnet } from "viem/chains";
   import { useNavigate } from "svelte-navigator";
 
   import PricePackage from "~/UI/PricePackage/PricePackage.svelte";
@@ -18,9 +18,6 @@
   import Matic from "~/assets/matic.png";
 
   const navigate = useNavigate();
-
-  const testAddress = "0x07865c6E87B9F70255377e024ace6630C1Eaa37F";
-  const testReceiveAddress = "0x5C540cF255AE681AA2d6bd61a5f29DB3DDFA9E1e";
 
   const usdcAddress = "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48";
   const receiveAddress = "0x6AedbE81435BBD67e2223eadd256992DC64fc90B";
@@ -75,7 +72,6 @@
   let coupleCode = "";
 
   const handleSelectedPackage = (item) => {
-    console.log("item: ", item);
     selectedPackage = item;
   };
 
@@ -95,24 +91,24 @@
         toastMsg = response?.error;
         isSuccessToast = false;
       } else {
-        if (response?.status === 1) {
-          coupleCode = response?.type;
+        if (response?.data?.status === 1) {
+          coupleCode = data.code;
           isSuccessToast = true;
 
-          if (response?.type === "DISCOUNT") {
-            discountPercent = response.value;
+          if (response?.data?.type === "Discount") {
+            discountPercent = response?.data?.value;
           }
 
-          if (response?.type === "TRIAL") {
+          if (response?.data?.type === "Free Trial") {
             await submitTrial(data.code);
           }
         }
 
-        if (response?.status === 0) {
+        if (response?.data?.status === 0) {
           isSuccessToast = false;
         }
 
-        toastMsg = response?.message;
+        toastMsg = response?.data?.message;
       }
       isLoadingSubmitCoupleCode = false;
       trigger();
@@ -130,10 +126,9 @@
     try {
       await nimbus.post("/v2/payments/redeem-code", {
         code,
+        plan: selectedPackage.plan,
       });
-      toastMsg = "Apply your TRIAL coupon code success!";
-      isSuccessToast = true;
-      trigger();
+      navigate(`/payments/success?isTrial=${true}`);
     } catch (e) {
       console.error(e);
     }
@@ -146,7 +141,6 @@
       value: selectedPackage.selectedTypePackage === "year" ? 12 : 1,
       code: coupleCode,
       plan: selectedPackage.plan,
-      currency: "USDC",
       chain: chainValue,
       txHash: "",
     };
@@ -170,17 +164,18 @@
             : selectedPackage.price;
 
         if (discountPercent !== 0) {
-          price = price - price * (discountPercent / 100);
+          const newPrice = price - price * (discountPercent / 100);
+          price = Math.round(newPrice * 100) / 100;
         }
 
         publicClient
           .writeContract({
-            address: testAddress,
+            address: usdcAddress,
             account: account[0],
-            chain: goerli,
+            chain: mainnet,
             abi: wagmiAbi,
             functionName: "transfer",
-            args: [testReceiveAddress, BigInt(0.0001)],
+            args: [receiveAddress, price * 10 ** 6],
           })
           .then(async (res) => {
             const response = await nimbus.post("/v3/payments/create-session", {
@@ -189,7 +184,7 @@
             });
             if (response && response?.data) {
               navigate(
-                `/payments/success&paymentId=${response?.data?.paymentLinkId}`
+                `/payments/success?paymentId=${response?.data?.paymentLinkId}`
               );
             }
           })
