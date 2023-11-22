@@ -14,6 +14,7 @@
 
   export let packageSelected;
   export let darkMode;
+  export let isFetch;
 
   let option = {
     tooltip: {
@@ -154,7 +155,7 @@
 
   $: query = createQuery({
     queryKey: ["historical", $wallet, $chain],
-    enabled: enabledQuery,
+    enabled: enabledQuery && isFetch,
     queryFn: () => getAnalyticHistorical($wallet, $chain),
     staleTime: Infinity,
   });
