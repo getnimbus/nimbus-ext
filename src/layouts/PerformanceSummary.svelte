@@ -13,18 +13,16 @@
   import SyncData from "~/components/SyncData.svelte";
 </script>
 
-<SyncData let:address let:enabledFetchAllData>
-  <div
-    class="max-w-[2000px] m-auto xl:w-[90%] w-[90%] py-8 flex flex-col gap-6"
-  >
-    <div class="flex items-center justify-between">
-      <Link to="/" class="cusor-pointer">
-        <div class="flex items-center gap-1 text-white">
-          <img src={LeftArrow} alt="" class="xl:w-5 xl:h-5 w-7 h-7" />
-          <div class="xl:text-sm text-2xl font-medium">Back to Portfolio</div>
-        </div>
-      </Link>
-    </div>
+<div class="max-w-[2000px] m-auto xl:w-[90%] w-[90%] py-8 flex flex-col gap-6">
+  <div class="flex items-center justify-between">
+    <Link to="/" class="cusor-pointer">
+      <div class="flex items-center gap-1 text-white">
+        <img src={LeftArrow} alt="" class="xl:w-5 xl:h-5 w-7 h-7" />
+        <div class="xl:text-sm text-2xl font-medium">Back to Portfolio</div>
+      </div>
+    </Link>
+  </div>
+  <SyncData let:address let:enabledFetchAllData>
     <div
       class="w-full flex xl:flex-row flex-col rounded-xl py-10 px-10 gap-9 border-2 border_0000001a"
     >
@@ -68,7 +66,7 @@
         </div>
       </div>
     </div>
-  </div>
-</SyncData>
+  </SyncData>
+</div>
 
 <style windi:preflights:global windi:safelist:global></style>
