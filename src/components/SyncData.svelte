@@ -15,7 +15,7 @@
   onMount(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const addressParams = urlParams.get("address");
-    if (addressParams) {
+    if (addressParams && addressParams !== $wallet) {
       address = addressParams;
       handleGetAllData();
     }
