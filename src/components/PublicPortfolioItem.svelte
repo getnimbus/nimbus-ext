@@ -44,91 +44,88 @@
       $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
-    <div
-      class="xl:text-sm text-2xl text-red-500 font-medium flex flex-col justify-start gap-1"
-    >
-      <div class="xl:flex hidden space-x-1">
-        {#each data?.metadata
-          ?.filter((item) => item.logo)
-          .sort((a, b) => a.value - b.value)
-          .slice(0, 3) || [] as token}
-          <div
-            class="relative"
-            on:mouseover={() => {
-              isShowSymbol = true;
-              selectedToken = token;
-            }}
-            on:mouseleave={() => {
-              isShowSymbol = false;
-              selectedToken = undefined;
-            }}
-          >
-            <img
-              class="xl:w-[30px] xl:h-[30px] w-[50px] h-[50px] border-2 border-white bg-white rounded-full"
-              src={token.logo}
-              alt=""
-            />
-            {#if isShowSymbol && selectedToken === token}
-              <div
-                class="absolute -top-8 left-1/2 transform -translate-x-1/2"
-                style="z-index: 2147483648;"
-              >
-                <Tooltip text={token.symbol.toUpperCase()} />
-              </div>
-            {/if}
-          </div>
-        {/each}
-        {#if data?.metadata?.length > 3}
-          <div
-            class="flex items-center justify-center xl:w-[30px] xl:h-[30px] w-[50px] h-[50px] bg-gray-700 border-2 border-white rounded-full hover:bg-gray-600"
-          >
-            <div class="xl:text-[10px] text-lg font-medium text-white">
-              +{data?.metadata?.length - 3}
+    <div class="xl:flex justify-start hidden">
+      {#each data?.metadata
+        ?.filter((item) => item.logo)
+        .sort((a, b) => a.value - b.value)
+        .slice(0, 3) || [] as token, index}
+        <div
+          class={`relative z-1 ${index > 0 && "-ml-2"}`}
+          on:mouseover={() => {
+            isShowSymbol = true;
+            selectedToken = token;
+          }}
+          on:mouseleave={() => {
+            isShowSymbol = false;
+            selectedToken = undefined;
+          }}
+        >
+          <img
+            class="xl:w-[30px] xl:h-[30px] w-[50px] h-[50px] border-2 border-white bg-white rounded-full"
+            src={token.logo}
+            alt=""
+          />
+          {#if isShowSymbol && selectedToken === token}
+            <div
+              class="absolute -top-8 left-1/2 transform -translate-x-1/2"
+              style="z-index: 2147483648;"
+            >
+              <Tooltip text={token.symbol.toUpperCase()} />
             </div>
+          {/if}
+        </div>
+      {/each}
+      {#if data?.metadata?.length > 3}
+        <div
+          class="z-2 -ml-2 flex items-center justify-center xl:w-[30px] xl:h-[30px] w-[50px] h-[50px] bg-gray-700 border-2 border-white rounded-full hover:bg-gray-600"
+        >
+          <div class="xl:text-[10px] text-lg font-medium text-white">
+            +{data?.metadata?.length - 3}
           </div>
-        {/if}
-      </div>
-      <div class="xl:hidden flex space-x-1">
-        {#each data?.metadata
-          ?.filter((item) => item.logo)
-          .sort((a, b) => a.value - b.value)
-          .slice(0, 5) || [] as token}
-          <div
-            class="relative"
-            on:mouseover={() => {
-              isShowSymbol = true;
-              selectedToken = token;
-            }}
-            on:mouseleave={() => {
-              isShowSymbol = false;
-              selectedToken = undefined;
-            }}
-          >
-            <img
-              class="xl:w-[30px] xl:h-[30px] w-[50px] h-[50px] border-2 border-white bg-white rounded-full"
-              src={token.logo}
-              alt=""
-            />
-            {#if isShowSymbol && selectedToken === token}
-              <div
-                class="absolute -top-8 left-1/2 transform -translate-x-1/2"
-                style="z-index: 2147483648;"
-              >
-                <Tooltip text={token.symbol.toUpperCase()} />
-              </div>
-            {/if}
-          </div>
-        {/each}
-        {#if data?.metadata?.length > 5}
-          <div
-            class="flex items-center justify-center xl:w-[30px] xl:h-[30px] w-[50px] h-[50px] bg-gray-700 border-2 border-white rounded-full hover:bg-gray-600"
-          >
-            <div class="xl:text-[10px] text-lg font-medium text-white">
-              +{data?.metadata?.length - 5}
+        </div>
+      {/if}
+    </div>
+
+    <div class="xl:hidden flex justify-start">
+      {#each data?.metadata
+        ?.filter((item) => item.logo)
+        .sort((a, b) => a.value - b.value)
+        .slice(0, 18) || [] as token, index}
+        <div
+          class={`relative z-1 ${index > 0 && "-ml-2"}`}
+          on:mouseover={() => {
+            isShowSymbol = true;
+            selectedToken = token;
+          }}
+          on:mouseleave={() => {
+            isShowSymbol = false;
+            selectedToken = undefined;
+          }}
+        >
+          <img
+            class="xl:w-[30px] xl:h-[30px] w-[50px] h-[50px] border-2 border-white bg-white rounded-full"
+            src={token.logo}
+            alt=""
+          />
+          {#if isShowSymbol && selectedToken === token}
+            <div
+              class="absolute -top-8 left-1/2 transform -translate-x-1/2"
+              style="z-index: 2147483648;"
+            >
+              <Tooltip text={token.symbol.toUpperCase()} />
             </div>
+          {/if}
+        </div>
+      {/each}
+      {#if data?.metadata?.length > 18}
+        <div
+          class="z-2 -ml-2 flex items-center justify-center xl:w-[30px] xl:h-[30px] w-[50px] h-[50px] bg-gray-700 border-2 border-white rounded-full hover:bg-gray-600"
+        >
+          <div class="xl:text-[10px] text-lg font-medium text-white">
+            +{data?.metadata?.length - 18}
           </div>
-        {/if}
-      </div>
+        </div>
+      {/if}
     </div>
   </td>
 
