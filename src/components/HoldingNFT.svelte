@@ -262,7 +262,7 @@
         {#if data?.tokens?.length > 5}
           {#each data?.tokens.slice(0, 4) as token, index}
             <div
-              class={`xl:w-9 xl:h-9 w-12 h-12 rounded-md border border-gray-300 overflow-hidden ${
+              class={`xl:w-9 xl:h-9 w-12 h-12 rounded-md border-2 border-white overflow-hidden ${
                 index > 0 && "-ml-2"
               }`}
             >
@@ -274,7 +274,7 @@
           {/each}
           <div class="relative xl:w-9 xl:h-9 w-12 h-12">
             <div
-              class="xl:w-9 xl:h-9 w-12 h-12 rounded-md border border-gray-300 overflow-hidden -ml-2"
+              class="xl:w-9 xl:h-9 w-12 h-12 rounded-md border-2 border-white overflow-hidden -ml-2"
             >
               <Image
                 logo={data?.tokens[4].imageUrl}
@@ -297,7 +297,7 @@
         {:else}
           {#each data?.tokens as token, index}
             <div
-              class={`xl:w-9 xl:h-9 w-12 h-12 rounded-md border border-gray-300 overflow-hidden ${
+              class={`xl:w-9 xl:h-9 w-12 h-12 rounded-md border-2 border-white overflow-hidden ${
                 index > 0 && "-ml-2"
               }`}
             >

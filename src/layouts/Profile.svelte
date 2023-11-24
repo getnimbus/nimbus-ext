@@ -35,6 +35,7 @@
   import SolanaLogo from "~/assets/solana.png";
   import AuraLogo from "~/assets/aura.png";
   import AlgorandLogo from "~/assets/algorand.png";
+  import ExzoLogo from "~/assets/exzo.png";
 
   let toastMsg = "";
   let isSuccessToast = false;
@@ -200,6 +201,9 @@
       }
       if (item?.type === "ALGO") {
         logo = AlgorandLogo;
+      }
+      if (item?.type === "XZO") {
+        logo = ExzoLogo;
       }
       return {
         id: item.id,

@@ -69,8 +69,8 @@
                       allTypeSell
                         ? `Sell +${params[0].data?.data.length}`
                         : allTypeBuy
-                        ? `Buy +${params[0].data?.data.length}`
-                        : params[0]?.seriesName
+                          ? `Buy +${params[0].data?.data.length}`
+                          : params[0]?.seriesName
                     }</span>
                   </div>
                 `
@@ -85,9 +85,9 @@
                       item?.seriesName === "Trade"
                         ? handleTooltipTrade(item?.data)
                         : item?.seriesName === "Buy" ||
-                          item?.seriesName === "Sell"
-                        ? handleTooltipBuyAndSell(item?.data)
-                        : `
+                            item?.seriesName === "Sell"
+                          ? handleTooltipBuyAndSell(item?.data)
+                          : `
                         <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
                           <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
                             $isDarkMode ? "white" : "black"
@@ -224,8 +224,8 @@
       $typeWallet === "CEX"
         ? `coingecko:${contractAddress}`
         : contractAddress === "11111111111111111111111111111111"
-        ? "coingecko:solana"
-        : `solana:${contractAddress}`;
+          ? "coingecko:solana"
+          : `solana:${contractAddress}`;
 
     const response = await defillama.get(
       `/chart/${params}?start=${dayjs()
@@ -263,6 +263,7 @@
       chainType.length !== 0 &&
       ($typeWallet === "EVM" ||
         $typeWallet === "ALGO" ||
+        $typeWallet === "XZO" ||
         ($typeWallet === "BUNDLE" && chain !== "SOL")),
   });
 

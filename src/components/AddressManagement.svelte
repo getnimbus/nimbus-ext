@@ -59,6 +59,7 @@
   import SolanaLogo from "~/assets/solana.png";
   import AuraLogo from "~/assets/aura.png";
   import AlgorandLogo from "~/assets/algorand.png";
+  import ExzoLogo from "~/assets/exzo.png";
 
   const MultipleLang = {
     empty_wallet: i18n("newtabPage.empty-wallet", "No account added yet."),
@@ -311,7 +312,8 @@
       if (
         typeParams === "BTC" ||
         typeParams === "SOL" ||
-        typeParams === "ALGO"
+        typeParams === "ALGO" ||
+        typeParams === "XZO"
       ) {
         window.history.replaceState(
           null,
@@ -338,7 +340,8 @@
       if (
         typeParams === "BTC" ||
         typeParams === "SOL" ||
-        typeParams === "ALGO"
+        typeParams === "ALGO" ||
+        typeParams === "XZO"
       ) {
         window.history.replaceState(
           null,
@@ -415,6 +418,17 @@
         );
       }
 
+      if (selected.type === "XZO") {
+        typeWallet.update((n) => (n = "XZO"));
+        browser.storage.sync.set({ typeWalletAddress: "XZO" });
+        chain.update((n) => (n = "ALL"));
+        window.history.replaceState(
+          null,
+          "",
+          window.location.pathname + `?type=${$typeWallet}&address=${$wallet}`
+        );
+      }
+
       if (selected.type === "BTC") {
         typeWallet.update((n) => (n = "BTC"));
         browser.storage.sync.set({ typeWalletAddress: "BTC" });
@@ -440,6 +454,9 @@
       if (item?.type === "ALGO") {
         logo = AlgorandLogo;
       }
+      if (item?.type === "XZO") {
+        logo = ExzoLogo;
+      }
       if (item?.type === "BUNDLE") {
         logo = Bundles;
       }
@@ -460,6 +477,9 @@
             }
             if (account?.type === "ALGO") {
               logo = AlgorandLogo;
+            }
+            if (account?.type === "XZO") {
+              logo = ExzoLogo;
             }
             return {
               id: account?.id,
@@ -490,9 +510,8 @@
     }
 
     // check type wallet
-    const selectedTypeWalletRes = await browser.storage.sync.get(
-      "typeWalletAddress"
-    );
+    const selectedTypeWalletRes =
+      await browser.storage.sync.get("typeWalletAddress");
     if (selectedTypeWalletRes?.typeWalletAddress !== null) {
       typeWallet.update((n) => (n = selectedTypeWalletRes.typeWalletAddress));
     } else {
@@ -608,7 +627,8 @@
         if (
           searchAccountType === "BTC" ||
           searchAccountType === "SOL" ||
-          searchAccountType === "ALGO"
+          searchAccountType === "ALGO" ||
+          searchAccountType === "XZO"
         ) {
           window.history.replaceState(
             null,
@@ -1738,17 +1758,8 @@
             <span class="slider" />
           </label>
         </div>
-        <div class="xl:flex hidden items-center justify-center gap-6 my-3">
-          {#each [{ logo: SolanaLogo, label: "Solana", value: "SOL" }, { logo: AlgorandLogo, label: "Algorand", value: "ALGO" }, { logo: BitcoinLogo, label: "Bitcoin", value: "BTC" }].concat(chainList.slice(1)) as item}
-            <img
-              src={item.logo}
-              alt=""
-              class="xl:w-8 xl:h-8 w-10 h-10 overflow-hidden rounded-full"
-            />
-          {/each}
-        </div>
-        <div class="xl:hidden flex items-center justify-center gap-6 my-3">
-          {#each [{ logo: SolanaLogo, label: "Solana", value: "SOL" }, { logo: AlgorandLogo, label: "Algorand", value: "ALGO" }, { logo: BitcoinLogo, label: "Bitcoin", value: "BTC" }].concat(chainList
+        <div class="flex items-center justify-center gap-6 my-3">
+          {#each [{ logo: SolanaLogo, label: "Solana", value: "SOL" }, { logo: AlgorandLogo, label: "Algorand", value: "ALGO" }, { logo: ExzoLogo, label: "Exzo", value: "XZO" }, { logo: BitcoinLogo, label: "Bitcoin", value: "BTC" }].concat(chainList
               .slice(1)
               .slice(0, -7)) as item}
             <img

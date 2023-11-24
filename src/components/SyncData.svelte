@@ -15,7 +15,7 @@
   onMount(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const addressParams = urlParams.get("address");
-    if (addressParams) {
+    if (addressParams && addressParams !== $wallet) {
       address = addressParams;
       handleGetAllData();
     }
@@ -108,7 +108,7 @@
 <ErrorBoundary>
   {#if isLoadingSync}
     <div
-      class="text-xl font-medium flex flex-col gap-5 justify-center items-center rounded-[20px] p-6 h-screen"
+      class="sync_container text-xl font-medium flex flex-col gap-5 justify-center items-center rounded-[20px] p-6 h-screen"
     >
       {syncMsg}
       {#if syncMsg !== "Invalid address"}
@@ -128,4 +128,13 @@
   {/if}
 </ErrorBoundary>
 
-<style windi:preflights:global windi:safelist:global></style>
+<style windi:preflights:global windi:safelist:global>
+  :global(body) .sync_container {
+    background: #fff;
+    box-shadow: 0px 0px 40px 0px rgba(0, 0, 0, 0.1);
+  }
+  :global(body.dark) .sync_container {
+    background: #0f0f0f;
+    box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 1);
+  }
+</style>
