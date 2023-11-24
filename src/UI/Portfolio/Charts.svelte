@@ -68,8 +68,8 @@
                   $isDarkMode ? "white" : "black"
                 }">
                   ${params?.name} ${
-          params?.data?.symbol ? `(${params?.data?.symbol})` : ""
-        }
+                    params?.data?.symbol ? `(${params?.data?.symbol})` : ""
+                  }
                 </div>
               </div>
 
@@ -613,8 +613,8 @@
                   $isDarkMode ? "white" : "black"
                 }">
                   ${params?.name} ${
-                params?.data?.symbol ? `(${params?.data?.symbol})` : ""
-              }
+                    params?.data?.symbol ? `(${params?.data?.symbol})` : ""
+                  }
                 </div>
               </div>
 
@@ -806,7 +806,7 @@
         </div>
       {:else}
         <div class="flex justify-between mb-6">
-          {#if ($typeWallet === "EVM" && $chain === "SCROLL") || $typeWallet === "CEX" || $typeWallet === "SOL" || $typeWallet === "ALGO" || $selectedBundle?.accounts?.find((item) => item.type === "CEX") !== undefined}
+          {#if ($typeWallet === "EVM" && $chain === "SCROLL") || $typeWallet === "CEX" || $typeWallet === "SOL" || $typeWallet === "ALGO" || $typeWallet === "XZO" || $selectedBundle?.accounts?.find((item) => item.type === "CEX") !== undefined}
             <TooltipTitle
               tooltipText="The performance data can only get after 7 days you connect to Nimbus"
               type="warning"

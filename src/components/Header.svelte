@@ -47,6 +47,7 @@
   import Close from "~/assets/close-menu-bar.svg";
   import Chat from "~/assets/chat.svg";
   import User from "~/assets/user.png";
+  import goldImg from "~/assets/Gold4.svg";
 
   import All from "~/assets/all.svg";
   import Bundles from "~/assets/bundles.png";
@@ -54,7 +55,7 @@
   import SolanaLogo from "~/assets/solana.png";
   import AuraLogo from "~/assets/aura.png";
   import AlgorandLogo from "~/assets/algorand.png";
-  import goldImg from "~/assets/Gold4.svg";
+  import ExzoLogo from "~/assets/exzo.png";
 
   const MultipleLang = {
     portfolio: i18n("newtabPage.portfolio", "Portfolio"),
@@ -126,6 +127,9 @@
       if (item?.type === "ALGO") {
         logo = AlgorandLogo;
       }
+      if (item?.type === "XZO") {
+        logo = ExzoLogo;
+      }
       if (item?.type === "BUNDLE") {
         logo = Bundles;
       }
@@ -146,6 +150,9 @@
             }
             if (account?.type === "ALGO") {
               logo = AlgorandLogo;
+            }
+            if (account?.type === "XZO") {
+              logo = ExzoLogo;
             }
             return {
               id: account?.id,
@@ -220,6 +227,7 @@
       searchAccountType === "BTC" ||
       searchAccountType === "SOL" ||
       searchAccountType === "ALGO" ||
+      searchAccountType === "XZO" ||
       searchAccountType === "CEX"
     ) {
       window.history.replaceState(
@@ -457,8 +465,8 @@
                 ? "bg-[#212121] opacity-100"
                 : "opacity-70 hover:bg-[#212121]"
               : navActive === "portfolio"
-              ? "bg-[#525B8C] opacity-100"
-              : "opacity-70 hover:bg-[#525B8C]"
+                ? "bg-[#525B8C] opacity-100"
+                : "opacity-70 hover:bg-[#525B8C]"
           }`}
           on:click={() => {
             navActive = "portfolio";
@@ -483,8 +491,8 @@
                 ? "bg-[#212121] opacity-100"
                 : "opacity-70 hover:bg-[#212121]"
               : navActive === "analytic"
-              ? "bg-[#525B8C] opacity-100"
-              : "opacity-70 hover:bg-[#525B8C]"
+                ? "bg-[#525B8C] opacity-100"
+                : "opacity-70 hover:bg-[#525B8C]"
           }
           `}
           on:click={() => {
@@ -518,8 +526,8 @@
                   ? "bg-[#212121] opacity-100"
                   : "opacity-70 hover:bg-[#212121]"
                 : navActive === "portfolio"
-                ? "bg-[#525B8C] opacity-100"
-                : "opacity-70 hover:bg-[#525B8C]"
+                  ? "bg-[#525B8C] opacity-100"
+                  : "opacity-70 hover:bg-[#525B8C]"
             }`}
             on:click={() => {
               navActive = "portfolio";
@@ -544,8 +552,8 @@
                 ? "bg-[#212121] opacity-100"
                 : "opacity-70 hover:bg-[#212121]"
               : navActive === "analytic"
-              ? "bg-[#525B8C] opacity-100"
-              : "opacity-70 hover:bg-[#525B8C]"
+                ? "bg-[#525B8C] opacity-100"
+                : "opacity-70 hover:bg-[#525B8C]"
           }
           `}
             on:click={() => {
@@ -604,8 +612,8 @@
                 ? "bg-[#212121] opacity-100"
                 : "opacity-70 hover:bg-[#212121]"
               : navActive === "transactions"
-              ? "bg-[#525B8C] opacity-100"
-              : "opacity-70 hover:bg-[#525B8C]"
+                ? "bg-[#525B8C] opacity-100"
+                : "opacity-70 hover:bg-[#525B8C]"
           }
           `}
           >
@@ -631,8 +639,8 @@
                 ? "bg-[#212121] opacity-100"
                 : "opacity-70 hover:bg-[#212121]"
               : navActive === "whales"
-              ? "bg-[#525B8C] opacity-100"
-              : "opacity-70 hover:bg-[#525B8C]"
+                ? "bg-[#525B8C] opacity-100"
+                : "opacity-70 hover:bg-[#525B8C]"
           }
           `}
           >
@@ -658,8 +666,8 @@
                 ? "bg-[#212121] opacity-100"
                 : "opacity-70 hover:bg-[#212121]"
               : navActive === "news"
-              ? "bg-[#525B8C] opacity-100"
-              : "opacity-70 hover:bg-[#525B8C]"
+                ? "bg-[#525B8C] opacity-100"
+                : "opacity-70 hover:bg-[#525B8C]"
           }
           `}
           >
@@ -812,8 +820,8 @@
                   ? "bg-[#212121] rounded-[1000px] opacity-100"
                   : "opacity-70"
                 : navActive === "upgrade"
-                ? "bg-[#525B8C] rounded-[1000px] opacity-100"
-                : "opacity-70"
+                  ? "bg-[#525B8C] rounded-[1000px] opacity-100"
+                  : "opacity-70"
             }
           `}
                 >
@@ -865,8 +873,8 @@
                   ? "bg-[#212121] rounded-[1000px] opacity-100"
                   : "opacity-70"
                 : navActive === "profile"
-                ? "bg-[#525B8C] rounded-[1000px] opacity-100"
-                : "opacity-70"
+                  ? "bg-[#525B8C] rounded-[1000px] opacity-100"
+                  : "opacity-70"
             }
           `}
                 >
@@ -904,8 +912,8 @@
                   ? "bg-[#212121] rounded-[1000px] opacity-100"
                   : "opacity-70"
                 : navActive === "whales"
-                ? "bg-[#525B8C] rounded-[1000px] opacity-100"
-                : "opacity-70"
+                  ? "bg-[#525B8C] rounded-[1000px] opacity-100"
+                  : "opacity-70"
             }
           `}
               >
@@ -932,8 +940,8 @@
                   ? "bg-[#212121] rounded-[1000px] opacity-100"
                   : "opacity-70"
                 : navActive === "news"
-                ? "bg-[#525B8C] rounded-[1000px] opacity-100"
-                : "opacity-70"
+                  ? "bg-[#525B8C] rounded-[1000px] opacity-100"
+                  : "opacity-70"
             }
           `}
               >
@@ -962,8 +970,8 @@
                   ? "bg-[#212121] rounded-[1000px] opacity-100"
                   : "opacity-70"
                 : navActive === "invitation"
-                ? "bg-[#525B8C] rounded-[1000px] opacity-100"
-                : "opacity-70"
+                  ? "bg-[#525B8C] rounded-[1000px] opacity-100"
+                  : "opacity-70"
             }
           `}
                 >
@@ -1014,8 +1022,8 @@
                     ? "bg-[#212121] rounded-[1000px] opacity-100"
                     : "opacity-70"
                   : navActive === "daily-checkin"
-                  ? "bg-[#525B8C] rounded-[1000px] opacity-100"
-                  : "opacity-70"
+                    ? "bg-[#525B8C] rounded-[1000px] opacity-100"
+                    : "opacity-70"
               }`}
                 >
                   <svg
@@ -1055,8 +1063,8 @@
                   ? "bg-[#212121] rounded-[1000px] opacity-100"
                   : "opacity-70"
                 : navActive === "settings"
-                ? "bg-[#525B8C] rounded-[1000px] opacity-100"
-                : "opacity-70"
+                  ? "bg-[#525B8C] rounded-[1000px] opacity-100"
+                  : "opacity-70"
             }
           `}
                 >

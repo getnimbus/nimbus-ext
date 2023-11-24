@@ -266,6 +266,7 @@
             $typeWallet === "CEX" ||
             $typeWallet === "SOL" ||
             $typeWallet === "ALGO" ||
+            $typeWallet === "XZO" ||
             $typeWallet === "BUNDLE") &&
             $wallet.length !== 0 &&
             $selectedPackage !== "FREE"

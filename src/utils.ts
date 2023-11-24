@@ -26,6 +26,7 @@ import Linea from "~/assets/linea.png";
 import Cronos from "~/assets/cronos.png";
 import Mantle from "~/assets/mantle.png";
 import Algorand from "~/assets/algorand.png";
+import Exzo from "~/assets/exzo.png";
 
 export const ETHAddressRegex = /(\b0x[a-fA-F0-9]{40}\b)/g;
 export const ETHTrxRegex = /(\b0x[a-fA-F0-9]{64}\b)/g;
@@ -401,6 +402,9 @@ export const detectedChain = (type) => {
     case "AURA":
       chain = Aura;
       break;
+    case "XZO":
+      chain = Exzo;
+      break;
     case "SOL":
       chain = Solana;
       break;
@@ -544,6 +548,12 @@ export const linkExplorer = (chain, hash) => {
       links = {
         trx: `https://algoexplorer.io/tx/${hash}`,
         address: `https://algoexplorer.io/address/${hash}`,
+      };
+      break;
+    case "XZO":
+      links = {
+        trx: `https://evm.exzoscan.io/tx/${hash}`,
+        address: `https://evm.exzoscan.io/address/${hash}`,
       };
       break;
     case "BTC":
