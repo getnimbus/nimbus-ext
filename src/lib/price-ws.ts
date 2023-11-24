@@ -35,6 +35,17 @@ export const decodeEvent = (ev: MessageEvent) => {
   }
 };
 
+interface IPriceRealtime {
+  id: string;
+  price: string;
+  volume: string;
+  timestamp: number;
+  type: "mobula" | "cmc" | "ethereum";
+  chain: string;
+}
+
+const cached: Record<string, IPriceRealtime> = {};
+
 export const priceSubscribe = (
   cmc_id: number[] | string[],
   isNullCmcId: boolean,
@@ -52,22 +63,39 @@ export const priceSubscribe = (
         return;
       }
 
+      const key = `${cmc_id}-${chain}`;
+
       if (isNullCmcId) {
-        socket.send(
-          JSON.stringify({
-            ids: cmc_id.join(","),
-            type: chain === "ETH" ? "ethereum" : "mobula",
-            chain: chain,
-          })
-        );
+        if (cached[key]) {
+          // Return from cache
+          callback(cached[key]);
+        } else {
+          socket.send(
+            JSON.stringify({
+              ids: cmc_id.join(","),
+              // type: chain === "ETH" ? "ethereum" : "mobula",
+              type: "mobula",
+              chain: chain,
+            })
+          );
+        }
       } else {
         socket.send(JSON.stringify({ ids: cmc_id.join(",") }));
       }
 
       socket.addEventListener("message", (ev) => {
         const data = decodeEvent(ev);
-        if (data?.id) {
-          if (cmc_id[0].toString().toLowerCase() === data?.id.toLowerCase()) {
+        if (
+          data?.id &&
+          cmc_id[0].toString().toLowerCase() === data?.id.toLowerCase()
+        ) {
+          if (isNullCmcId) {
+            if (!cached[key]) {
+              // Only callback when we don't have data cached
+              cached[key] = data;
+              callback(data);
+            }
+          } else {
             callback(data);
           }
         }
