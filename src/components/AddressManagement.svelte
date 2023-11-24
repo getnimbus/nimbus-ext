@@ -490,9 +490,8 @@
     }
 
     // check type wallet
-    const selectedTypeWalletRes = await browser.storage.sync.get(
-      "typeWalletAddress"
-    );
+    const selectedTypeWalletRes =
+      await browser.storage.sync.get("typeWalletAddress");
     if (selectedTypeWalletRes?.typeWalletAddress !== null) {
       typeWallet.update((n) => (n = selectedTypeWalletRes.typeWalletAddress));
     } else {
@@ -1799,7 +1798,8 @@
         Go to <a
           href="https://t.me/GetNimbusBot"
           target="_blank"
-          class="text-blue-500">https://t.me/GetNimbusBot</a
+          class="text-blue-500 cursor-pointer hover:underline"
+          >https://t.me/GetNimbusBot</a
         >
       </div>
       <div class="text-2xl xl:text-base">Use the command as follow video</div>
