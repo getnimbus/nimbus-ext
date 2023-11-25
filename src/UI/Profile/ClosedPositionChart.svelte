@@ -225,7 +225,7 @@
         return {
           ...item.holding,
           value:
-            Number(item?.holding.amount) *
+            Number(item?.holding?.amount || 0) *
             Number(item?.holding.price?.price || item?.holding.rate),
         };
       })
