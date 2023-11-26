@@ -154,7 +154,9 @@
       >
         <TooltipNumber
           number={Math.abs(Number(data?.change1D))}
-          type={Math.abs(Number(data?.change1D)) > 100 ? "balance" : "percent"}
+          type={Math.abs(Number(data?.change1D)) > 999999
+            ? "balance"
+            : "percent"}
         />
         <span>%</span>
         <img
@@ -181,7 +183,9 @@
       >
         <TooltipNumber
           number={Math.abs(Number(data?.change7D))}
-          type={Math.abs(Number(data?.change7D)) > 100 ? "balance" : "percent"}
+          type={Math.abs(Number(data?.change7D)) > 999999
+            ? "balance"
+            : "percent"}
         />
         <span>%</span>
         <img
@@ -208,7 +212,9 @@
       >
         <TooltipNumber
           number={Math.abs(Number(data?.change30D))}
-          type={Math.abs(Number(data?.change30D)) > 100 ? "balance" : "percent"}
+          type={Math.abs(Number(data?.change30D)) > 999999
+            ? "balance"
+            : "percent"}
         />
         <span>%</span>
         <img
@@ -235,7 +241,9 @@
       >
         <TooltipNumber
           number={Math.abs(Number(data?.change1Y))}
-          type={Math.abs(Number(data?.change1Y)) > 100 ? "balance" : "percent"}
+          type={Math.abs(Number(data?.change1Y)) > 999999
+            ? "balance"
+            : "percent"}
         />
         <span>%</span>
         <img
@@ -257,7 +265,7 @@
     >
       <TooltipNumber
         number={Number(data?.volatility)}
-        type={Number(data?.volatility) > 100 ? "balance" : "percent"}
+        type={Number(data?.volatility) > 999999 ? "balance" : "percent"}
       />
       <span>%</span>
     </div>
@@ -273,7 +281,7 @@
     >
       <TooltipNumber
         number={Number(data?.drawDown)}
-        type={Number(data?.drawDown) > 100 ? "balance" : "percent"}
+        type={Number(data?.drawDown) > 999999 ? "balance" : "percent"}
       />
       <span>%</span>
     </div>
@@ -289,7 +297,7 @@
     >
       <TooltipNumber
         number={Number(data?.sharpeRatio)}
-        type={Number(data?.sharpeRatio) > 100 ? "balance" : "percent"}
+        type={Number(data?.sharpeRatio) > 999999 ? "balance" : "percent"}
       />
     </div>
   </td>
