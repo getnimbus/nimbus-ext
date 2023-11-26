@@ -474,11 +474,12 @@
 >
   <div class="flex flex-col gap-4">
     <div class="flex flex-col gap-1">
-      <div class="xl:text-base text-2xl cursor-pointer hover:underline">
+      <div class="xl:text-base text-2xl">
         Go to <a
           href="https://t.me/GetNimbusBot"
           target="_blank"
-          class="text-blue-500">https://t.me/GetNimbusBot</a
+          class="text-blue-500 cursor-pointer hover:underline"
+          >https://t.me/GetNimbusBot</a
         >
       </div>
       <div class="xl:text-base text-2xl">Use the command as follow video</div>
