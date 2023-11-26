@@ -60,8 +60,8 @@
 
 <AddressManagement type="order" title="Analytics">
   <span slot="body">
-    <SyncData let:address let:enabledFetchAllData>
-      <div class="max-w-[2000px] m-auto -mt-32 xl:w-[90%] w-[90%] relative">
+    <div class="max-w-[2000px] m-auto -mt-32 xl:w-[90%] w-[90%] relative">
+      <SyncData let:address let:enabledFetchAllData>
         <div class="analytic_container rounded-[20px] xl:p-8 p-6 space-y-4">
           <div class="flex justify-between items-center">
             <Link
@@ -205,8 +205,8 @@
             {/if}
           </div>
         {/if}
-      </div>
-    </SyncData>
+      </SyncData>
+    </div>
   </span>
 </AddressManagement>
 
