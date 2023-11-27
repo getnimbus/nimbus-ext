@@ -10,6 +10,8 @@
 
   import User from "~/assets/user.png";
   import LeftArrow from "~/assets/left-arrow.svg";
+  import LeftArrowBlack from "~/assets/left-arrow-black.svg";
+
   import SyncData from "~/components/SyncData.svelte";
 </script>
 
@@ -18,8 +20,12 @@
     <div class="flex flex-col gap-6">
       <div class="flex items-center justify-between">
         <Link to="/" class="cusor-pointer">
-          <div class="flex items-center gap-1 text-white">
-            <img src={LeftArrow} alt="" class="xl:w-5 xl:h-5 w-7 h-7" />
+          <div class="flex items-center gap-1">
+            <img
+              src={$isDarkMode ? LeftArrow : LeftArrowBlack}
+              alt=""
+              class="xl:w-5 xl:h-5 w-7 h-7"
+            />
             <div class="xl:text-sm text-2xl font-medium">Portfolio Detail</div>
           </div>
         </Link>
