@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { isDarkMode } from "~/store";
+  import { isDarkMode, user } from "~/store";
   import { shorterAddress } from "~/utils";
   import { Link } from "svelte-navigator";
 
@@ -42,7 +42,9 @@
             </div>
           </div>
 
-          <InviterQr />
+          {#if Object.keys($user).length !== 0}
+            <InviterQr />
+          {/if}
         </div>
         <div class="flex-1 flex flex-col gap-4">
           <div class="xl:text-3xl text-4xl font-medium">
