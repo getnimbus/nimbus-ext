@@ -36,6 +36,7 @@
   import AuraLogo from "~/assets/aura.png";
   import AlgorandLogo from "~/assets/algorand.png";
   import ExzoLogo from "~/assets/exzo.png";
+  import KlaytnLogo from "~/assets/klaytn.png";
 
   let toastMsg = "";
   let isSuccessToast = false;
@@ -204,6 +205,9 @@
       }
       if (item?.type === "XZO") {
         logo = ExzoLogo;
+      }
+      if (item?.type === "KLAY") {
+        logo = KlaytnLogo;
       }
       return {
         id: item.id,

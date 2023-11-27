@@ -56,6 +56,7 @@
   import AuraLogo from "~/assets/aura.png";
   import AlgorandLogo from "~/assets/algorand.png";
   import ExzoLogo from "~/assets/exzo.png";
+  import KlaytnLogo from "~/assets/klaytn.png";
 
   const MultipleLang = {
     portfolio: i18n("newtabPage.portfolio", "Portfolio"),
@@ -130,6 +131,9 @@
       if (item?.type === "XZO") {
         logo = ExzoLogo;
       }
+      if (item?.type === "KLAY") {
+        logo = KlaytnLogo;
+      }
       if (item?.type === "BUNDLE") {
         logo = Bundles;
       }
@@ -153,6 +157,9 @@
             }
             if (account?.type === "XZO") {
               logo = ExzoLogo;
+            }
+            if (item?.type === "KLAY") {
+              logo = KlaytnLogo;
             }
             return {
               id: account?.id,
@@ -228,6 +235,7 @@
       searchAccountType === "SOL" ||
       searchAccountType === "ALGO" ||
       searchAccountType === "XZO" ||
+      searchAccountType === "KLAY" ||
       searchAccountType === "CEX"
     ) {
       window.history.replaceState(
