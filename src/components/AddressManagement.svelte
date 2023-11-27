@@ -60,6 +60,7 @@
   import AuraLogo from "~/assets/aura.png";
   import AlgorandLogo from "~/assets/algorand.png";
   import ExzoLogo from "~/assets/exzo.png";
+  import KlaytnLogo from "~/assets/klaytn.png";
 
   const MultipleLang = {
     empty_wallet: i18n("newtabPage.empty-wallet", "No account added yet."),
@@ -313,7 +314,8 @@
         typeParams === "BTC" ||
         typeParams === "SOL" ||
         typeParams === "ALGO" ||
-        typeParams === "XZO"
+        typeParams === "XZO" ||
+        typeParams === "KLAY"
       ) {
         window.history.replaceState(
           null,
@@ -341,7 +343,8 @@
         typeParams === "BTC" ||
         typeParams === "SOL" ||
         typeParams === "ALGO" ||
-        typeParams === "XZO"
+        typeParams === "XZO" ||
+        typeParams === "KLAY"
       ) {
         window.history.replaceState(
           null,
@@ -429,6 +432,17 @@
         );
       }
 
+      if (selected.type === "KLAY") {
+        typeWallet.update((n) => (n = "KLAY"));
+        browser.storage.sync.set({ typeWalletAddress: "KLAY" });
+        chain.update((n) => (n = "ALL"));
+        window.history.replaceState(
+          null,
+          "",
+          window.location.pathname + `?type=${$typeWallet}&address=${$wallet}`
+        );
+      }
+
       if (selected.type === "BTC") {
         typeWallet.update((n) => (n = "BTC"));
         browser.storage.sync.set({ typeWalletAddress: "BTC" });
@@ -457,6 +471,9 @@
       if (item?.type === "XZO") {
         logo = ExzoLogo;
       }
+      if (item?.type === "KLAY") {
+        logo = KlaytnLogo;
+      }
       if (item?.type === "BUNDLE") {
         logo = Bundles;
       }
@@ -480,6 +497,9 @@
             }
             if (account?.type === "XZO") {
               logo = ExzoLogo;
+            }
+            if (account?.type === "KLAY") {
+              logo = KlaytnLogo;
             }
             return {
               id: account?.id,
@@ -628,7 +648,8 @@
           searchAccountType === "BTC" ||
           searchAccountType === "SOL" ||
           searchAccountType === "ALGO" ||
-          searchAccountType === "XZO"
+          searchAccountType === "XZO" ||
+          searchAccountType === "KLAY"
         ) {
           window.history.replaceState(
             null,
@@ -1759,7 +1780,7 @@
           </label>
         </div>
         <div class="flex items-center justify-center gap-6 my-3">
-          {#each [{ logo: SolanaLogo, label: "Solana", value: "SOL" }, { logo: AlgorandLogo, label: "Algorand", value: "ALGO" }, { logo: ExzoLogo, label: "Exzo", value: "XZO" }, { logo: BitcoinLogo, label: "Bitcoin", value: "BTC" }].concat(chainList
+          {#each [{ logo: SolanaLogo, label: "Solana", value: "SOL" }, { logo: AlgorandLogo, label: "Algorand", value: "ALGO" }, { logo: ExzoLogo, label: "Exzo", value: "XZO" }, { logo: KlaytnLogo, label: "Klaytn", value: "KLAY" }, { logo: BitcoinLogo, label: "Bitcoin", value: "BTC" }].concat(chainList
               .slice(1)
               .slice(0, -7)) as item}
             <img

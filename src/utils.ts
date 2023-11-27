@@ -27,6 +27,7 @@ import Cronos from "~/assets/cronos.png";
 import Mantle from "~/assets/mantle.png";
 import Algorand from "~/assets/algorand.png";
 import Exzo from "~/assets/exzo.png";
+import Klaytn from "~/assets/klaytn.png";
 
 export const ETHAddressRegex = /(\b0x[a-fA-F0-9]{40}\b)/g;
 export const ETHTrxRegex = /(\b0x[a-fA-F0-9]{64}\b)/g;
@@ -429,6 +430,9 @@ export const detectedChain = (type) => {
     case "XZO":
       chain = Exzo;
       break;
+    case "KLAY":
+      chain = Klaytn;
+      break;
     case "SOL":
       chain = Solana;
       break;
@@ -578,6 +582,12 @@ export const linkExplorer = (chain, hash) => {
       links = {
         trx: `https://evm.exzoscan.io/tx/${hash}`,
         address: `https://evm.exzoscan.io/address/${hash}`,
+      };
+      break;
+    case "KLAY":
+      links = {
+        trx: `https://klaytnscope.com/tx/${hash}`,
+        address: `https://klaytnscope.com/account/${hash}`,
       };
       break;
     case "BTC":

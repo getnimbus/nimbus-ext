@@ -65,6 +65,7 @@
     $typeWallet === "SOL" ||
     $typeWallet === "ALGO" ||
     $typeWallet === "XZO" ||
+    $typeWallet === "KLAY" ||
     $typeWallet === "CEX"
       ? 0
       : getChangePercent(totalProfit, changeLast24hTotalProfit);
@@ -130,6 +131,7 @@
             $typeWallet === "SOL" ||
             $typeWallet === "ALGO" ||
             $typeWallet === "XZO" ||
+            $typeWallet === "KLAY" ||
             $typeWallet === "CEX"
               ? "opacity-50"
               : ""
@@ -174,7 +176,7 @@
             $typeWallet === "CEX" ||
             $typeWallet === "BTC" ||
             $typeWallet === "SOL" ||
-            $typeWallet === "ALGO" || $typeWallet === "XZO"
+            $typeWallet === "ALGO" || $typeWallet === "XZO" || $typeWallet === "KLAY"
               ? "opacity-50"
               : ""
           }`}
@@ -218,7 +220,7 @@
             $typeWallet === "CEX" ||
             $typeWallet === "BTC" ||
             $typeWallet === "SOL" ||
-            $typeWallet === "ALGO" || $typeWallet === "XZO"
+            $typeWallet === "ALGO" || $typeWallet === "XZO" || $typeWallet === "KLAY"
               ? "opacity-50"
               : ""
           }`}

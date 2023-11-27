@@ -377,6 +377,7 @@
             $typeWallet === "SOL" ||
             $typeWallet === "ALGO" ||
             $typeWallet === "XZO" ||
+            $typeWallet === "KLAY" ||
             $typeWallet === "BUNDLE") &&
             $wallet.length !== 0 &&
             packageSelected !== "FREE"
@@ -451,7 +452,7 @@
           </div>
         </div>
       {/if}
-      {#if $typeWallet === "SOL" || $typeWallet === "ALGO" || $typeWallet === "XZO"}
+      {#if $typeWallet === "SOL" || $typeWallet === "ALGO" || $typeWallet === "XZO" || $typeWallet === "KLAY"}
         <div
           class={`absolute top-0 left-0 rounded-[20px] z-30 w-full h-full flex items-center justify-center ${
             $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
@@ -502,7 +503,7 @@
           {/if}
         </div>
       {/if}
-      {#if $typeWallet === "SOL" || $typeWallet === "ALGO" || $typeWallet === "XZO"}
+      {#if $typeWallet === "SOL" || $typeWallet === "ALGO" || $typeWallet === "XZO" || $typeWallet === "KLAY"}
         <div
           class={`absolute top-0 left-0 rounded-[20px] z-30 w-full h-full flex items-center justify-center ${
             $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"

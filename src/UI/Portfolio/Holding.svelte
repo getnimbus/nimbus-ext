@@ -384,6 +384,7 @@
     $typeWallet === "SOL" ||
     $typeWallet === "ALGO" ||
     $typeWallet === "XZO" ||
+    $typeWallet === "KLAY" ||
     $typeWallet === "EVM" ||
     $typeWallet === "BUNDLE" ||
     $typeWallet === "CEX"
@@ -544,6 +545,7 @@
                         $typeWallet === "SOL" ||
                         $typeWallet === "ALGO" ||
                         $typeWallet === "XZO" ||
+                        $typeWallet === "KLAY" ||
                         $typeWallet === "EVM" ||
                         $typeWallet === "BUNDLE" ||
                         $typeWallet === "CEX"
@@ -557,7 +559,7 @@
                         Unrealized PnL
                       </div>
                     </th>
-                    {#if $typeWallet === "SOL" || $typeWallet === "ALGO" || $typeWallet === "XZO" || $typeWallet === "EVM" || $typeWallet === "BUNDLE" || $typeWallet === "CEX"}
+                    {#if $typeWallet === "SOL" || $typeWallet === "ALGO" || $typeWallet === "XZO" || $typeWallet === "KLAY" || $typeWallet === "EVM" || $typeWallet === "BUNDLE" || $typeWallet === "CEX"}
                       <th class="py-3 xl:w-12 w-32 rounded-tr-[10px]" />
                     {/if}
                   </tr>
