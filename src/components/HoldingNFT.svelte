@@ -705,7 +705,7 @@
     </div>
     <div class="flex flex-col items-end">
       <div class="xl:text-3xl text-4xl font-semibold">
-        {data?.collection?.name || "-"}
+        {data?.collection?.name || "N/A"}
       </div>
       <div class="text-3xl xl:text-xl">
         <Copy
