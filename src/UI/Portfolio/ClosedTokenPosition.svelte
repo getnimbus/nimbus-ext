@@ -328,8 +328,8 @@
                 ? "text-[#00A878]"
                 : "text-red-500"
               : $isDarkMode
-              ? "text-white"
-              : "text-black"
+                ? "text-white"
+                : "text-black"
           }`}
         >
           <TooltipNumber
