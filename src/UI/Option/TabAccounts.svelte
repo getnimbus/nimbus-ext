@@ -38,6 +38,8 @@
   import SolanaLogo from "~/assets/solana.png";
   import AuraLogo from "~/assets/aura.png";
   import AlgorandLogo from "~/assets/algorand.png";
+  import ExzoLogo from "~/assets/exzo.png";
+  import KlaytnLogo from "~/assets/klaytn.png";
 
   const MultipleLang = {
     title: i18n("optionsPage.accounts-page-title", "Account Settings"),
@@ -1698,17 +1700,8 @@
             <span class="slider" />
           </label>
         </div>
-        <div class="xl:flex hidden items-center justify-center gap-6 my-3">
-          {#each [{ logo: SolanaLogo, label: "Solana", value: "SOL" }, { logo: AlgorandLogo, label: "Algorand", value: "ALGO" }, { logo: BitcoinLogo, label: "Bitcoin", value: "BTC" }].concat(chainList.slice(1)) as item}
-            <img
-              src={item.logo}
-              alt=""
-              class="xl:w-8 xl:h-8 w-10 h-10 overflow-hidden rounded-full"
-            />
-          {/each}
-        </div>
-        <div class="xl:hidden flex items-center justify-center gap-6 my-3">
-          {#each [{ logo: SolanaLogo, label: "Solana", value: "SOL" }, { logo: AlgorandLogo, label: "Algorand", value: "ALGO" }, { logo: BitcoinLogo, label: "Bitcoin", value: "BTC" }].concat(chainList
+        <div class="flex items-center justify-center gap-6 my-3">
+          {#each [{ logo: BitcoinLogo, label: "Bitcoin", value: "BTC" }, { logo: SolanaLogo, label: "Solana", value: "SOL" }, { logo: AlgorandLogo, label: "Algorand", value: "ALGO" }].concat(chainList
               .slice(1)
               .slice(0, -7)) as item}
             <img

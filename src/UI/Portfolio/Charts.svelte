@@ -68,8 +68,8 @@
                   $isDarkMode ? "white" : "black"
                 }">
                   ${params?.name} ${
-          params?.data?.symbol ? `(${params?.data?.symbol})` : ""
-        }
+                    params?.data?.symbol ? `(${params?.data?.symbol})` : ""
+                  }
                 </div>
               </div>
 
@@ -613,8 +613,8 @@
                   $isDarkMode ? "white" : "black"
                 }">
                   ${params?.name} ${
-                params?.data?.symbol ? `(${params?.data?.symbol})` : ""
-              }
+                    params?.data?.symbol ? `(${params?.data?.symbol})` : ""
+                  }
                 </div>
               </div>
 

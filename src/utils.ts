@@ -26,6 +26,8 @@ import Linea from "~/assets/linea.png";
 import Cronos from "~/assets/cronos.png";
 import Mantle from "~/assets/mantle.png";
 import Algorand from "~/assets/algorand.png";
+import Exzo from "~/assets/exzo.png";
+import Klaytn from "~/assets/klaytn.png";
 
 export const ETHAddressRegex = /(\b0x[a-fA-F0-9]{40}\b)/g;
 export const ETHTrxRegex = /(\b0x[a-fA-F0-9]{64}\b)/g;
@@ -387,6 +389,16 @@ export const chainList = [
     label: "Mantle",
     value: "MANTLE",
   },
+  {
+    logo: Exzo,
+    label: "Exzo",
+    value: "XZO",
+  },
+  {
+    logo: Klaytn,
+    label: "Klaytn",
+    value: "KLAY",
+  },
 ];
 
 export const detectedChain = (type) => {
@@ -445,6 +457,12 @@ export const detectedChain = (type) => {
       break;
     case "MANTLE":
       chain = Mantle;
+      break;
+    case "XZO":
+      chain = Exzo;
+      break;
+    case "KLAY":
+      chain = Klaytn;
       break;
   }
   return chain;
@@ -544,6 +562,18 @@ export const linkExplorer = (chain, hash) => {
       links = {
         trx: `https://algoexplorer.io/tx/${hash}`,
         address: `https://algoexplorer.io/address/${hash}`,
+      };
+      break;
+    case "XZO":
+      links = {
+        trx: `https://evm.exzoscan.io/tx/${hash}`,
+        address: `https://evm.exzoscan.io/address/${hash}`,
+      };
+      break;
+    case "KLAY":
+      links = {
+        trx: `https://klaytnscope.com/tx/${hash}`,
+        address: `https://klaytnscope.com/account/${hash}`,
       };
       break;
     case "BTC":
