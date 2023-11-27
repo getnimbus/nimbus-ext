@@ -319,10 +319,7 @@
     queryFn: () => getTradingStats(selectedAddress),
     staleTime: Infinity,
     retry: false,
-    enabled:
-      selectedAddress?.length !== 0 &&
-      Object.keys($user).length !== 0 &&
-      isFetch,
+    enabled: selectedAddress?.length !== 0 && isFetch,
   });
 
   $: {

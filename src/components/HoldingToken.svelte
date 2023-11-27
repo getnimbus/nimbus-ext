@@ -244,8 +244,8 @@
           ? "bg-[#000]"
           : "bg-gray-100"
         : $isDarkMode
-        ? "bg-[#131313] group-hover:bg-[#000]"
-        : "bg-white group-hover:bg-gray-100"
+          ? "bg-[#131313] group-hover:bg-[#000]"
+          : "bg-white group-hover:bg-gray-100"
     }`}
     style={`${lastIndex ? "border-bottom-left-radius: 10px;" : ""}`}
   >

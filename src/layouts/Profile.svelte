@@ -35,6 +35,8 @@
   import SolanaLogo from "~/assets/solana.png";
   import AuraLogo from "~/assets/aura.png";
   import AlgorandLogo from "~/assets/algorand.png";
+  import ExzoLogo from "~/assets/exzo.png";
+  import KlaytnLogo from "~/assets/klaytn.png";
 
   let toastMsg = "";
   let isSuccessToast = false;
