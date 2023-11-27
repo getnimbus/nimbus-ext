@@ -389,6 +389,16 @@ export const chainList = [
     label: "Mantle",
     value: "MANTLE",
   },
+  {
+    logo: Exzo,
+    label: "Exzo",
+    value: "XZO",
+  },
+  {
+    logo: Klaytn,
+    label: "Klaytn",
+    value: "KLAY",
+  },
 ];
 
 export const detectedChain = (type) => {
@@ -402,12 +412,6 @@ export const detectedChain = (type) => {
       break;
     case "AURA":
       chain = Aura;
-      break;
-    case "XZO":
-      chain = Exzo;
-      break;
-    case "KLAY":
-      chain = Klaytn;
       break;
     case "SOL":
       chain = Solana;
@@ -453,6 +457,12 @@ export const detectedChain = (type) => {
       break;
     case "MANTLE":
       chain = Mantle;
+      break;
+    case "XZO":
+      chain = Exzo;
+      break;
+    case "KLAY":
+      chain = Klaytn;
       break;
   }
   return chain;

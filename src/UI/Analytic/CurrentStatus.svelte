@@ -721,8 +721,6 @@
             $typeWallet === "CEX" ||
             $typeWallet === "SOL" ||
             $typeWallet === "ALGO" ||
-            $typeWallet === "XZO" ||
-            $typeWallet === "KLAY" ||
             $typeWallet === "BUNDLE") &&
             $wallet.length !== 0 &&
             packageSelected !== "FREE"
@@ -901,7 +899,7 @@
   >
     <div class="flex justify-between items-start mb-6">
       <div class="flex justify-start">
-        {#if $typeWallet === "CEX" || $typeWallet === "SOL" || $typeWallet === "ALGO" || $typeWallet === "XZO" || $typeWallet === "KLAY"}
+        {#if $typeWallet === "CEX" || $typeWallet === "SOL" || $typeWallet === "ALGO"}
           <TooltipTitle
             tooltipText="The performance data can only get after 7 days you connect to Nimbus"
             type="warning"

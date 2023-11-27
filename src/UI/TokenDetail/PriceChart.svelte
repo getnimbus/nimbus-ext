@@ -263,8 +263,6 @@
       chainType.length !== 0 &&
       ($typeWallet === "EVM" ||
         $typeWallet === "ALGO" ||
-        $typeWallet === "XZO" ||
-        $typeWallet === "KLAY" ||
         ($typeWallet === "BUNDLE" && chain !== "SOL")),
   });
 

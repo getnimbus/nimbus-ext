@@ -128,12 +128,6 @@
       if (item?.type === "ALGO") {
         logo = AlgorandLogo;
       }
-      if (item?.type === "XZO") {
-        logo = ExzoLogo;
-      }
-      if (item?.type === "KLAY") {
-        logo = KlaytnLogo;
-      }
       if (item?.type === "BUNDLE") {
         logo = Bundles;
       }
@@ -154,12 +148,6 @@
             }
             if (account?.type === "ALGO") {
               logo = AlgorandLogo;
-            }
-            if (account?.type === "XZO") {
-              logo = ExzoLogo;
-            }
-            if (item?.type === "KLAY") {
-              logo = KlaytnLogo;
             }
             return {
               id: account?.id,
@@ -234,8 +222,6 @@
       searchAccountType === "BTC" ||
       searchAccountType === "SOL" ||
       searchAccountType === "ALGO" ||
-      searchAccountType === "XZO" ||
-      searchAccountType === "KLAY" ||
       searchAccountType === "CEX"
     ) {
       window.history.replaceState(

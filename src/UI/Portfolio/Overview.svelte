@@ -62,11 +62,7 @@
     changeLast24hTotalOutflow - changeLast24hTotalInflow;
 
   $: last24hTotalProfitPercent =
-    $typeWallet === "SOL" ||
-    $typeWallet === "ALGO" ||
-    $typeWallet === "XZO" ||
-    $typeWallet === "KLAY" ||
-    $typeWallet === "CEX"
+    $typeWallet === "SOL" || $typeWallet === "ALGO" || $typeWallet === "CEX"
       ? 0
       : getChangePercent(totalProfit, changeLast24hTotalProfit);
 </script>
@@ -130,8 +126,6 @@
             $typeWallet === "BTC" ||
             $typeWallet === "SOL" ||
             $typeWallet === "ALGO" ||
-            $typeWallet === "XZO" ||
-            $typeWallet === "KLAY" ||
             $typeWallet === "CEX"
               ? "opacity-50"
               : ""
@@ -176,7 +170,7 @@
             $typeWallet === "CEX" ||
             $typeWallet === "BTC" ||
             $typeWallet === "SOL" ||
-            $typeWallet === "ALGO" || $typeWallet === "XZO" || $typeWallet === "KLAY"
+            $typeWallet === "ALGO"
               ? "opacity-50"
               : ""
           }`}
@@ -220,7 +214,7 @@
             $typeWallet === "CEX" ||
             $typeWallet === "BTC" ||
             $typeWallet === "SOL" ||
-            $typeWallet === "ALGO" || $typeWallet === "XZO" || $typeWallet === "KLAY"
+            $typeWallet === "ALGO"
               ? "opacity-50"
               : ""
           }`}

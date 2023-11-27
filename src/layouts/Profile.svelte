@@ -203,12 +203,6 @@
       if (item?.type === "ALGO") {
         logo = AlgorandLogo;
       }
-      if (item?.type === "XZO") {
-        logo = ExzoLogo;
-      }
-      if (item?.type === "KLAY") {
-        logo = KlaytnLogo;
-      }
       return {
         id: item.id,
         type: item.type,
