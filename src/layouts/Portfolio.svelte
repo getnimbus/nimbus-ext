@@ -213,7 +213,7 @@
   };
 
   const formatTokenBreakdown = (data) => {
-    if (data?.filter((item) => item?.value !== 0).length === 0) {
+    if (data && data?.length === 0) {
       isEmptyDataPieTokens = true;
     } else {
       isEmptyDataPieTokens = false;
