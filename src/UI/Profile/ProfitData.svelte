@@ -112,20 +112,14 @@
     queryFn: () => getTradingStats(selectedAddress),
     staleTime: Infinity,
     retry: false,
-    enabled:
-      selectedAddress?.length !== 0 &&
-      Object.keys($user).length !== 0 &&
-      isFetch,
+    enabled: selectedAddress?.length !== 0 && isFetch,
   });
 
   $: queryTokenHolding = createQuery({
     queryKey: ["token-holding", selectedAddress],
     queryFn: () => getHoldingToken(selectedAddress),
     staleTime: Infinity,
-    enabled:
-      selectedAddress?.length !== 0 &&
-      Object.keys($user).length !== 0 &&
-      isFetch,
+    enabled: selectedAddress?.length !== 0 && isFetch,
   });
 
   $: {

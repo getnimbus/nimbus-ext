@@ -20,7 +20,7 @@
         <Link to="/" class="cusor-pointer">
           <div class="flex items-center gap-1 text-white">
             <img src={LeftArrow} alt="" class="xl:w-5 xl:h-5 w-7 h-7" />
-            <div class="xl:text-sm text-2xl font-medium">Back to Portfolio</div>
+            <div class="xl:text-sm text-2xl font-medium">Portfolio Detail</div>
           </div>
         </Link>
       </div>
