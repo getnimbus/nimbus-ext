@@ -15,7 +15,6 @@
   export let isSync = false;
   export let enabledFetchAllData = false;
 
-  let closedHoldingPosition = [];
   let top5ProfitToken = [];
   let top5LossToken = [];
 
@@ -54,7 +53,7 @@
     let listProfitToken = [];
     let listLossToken = [];
 
-    closedHoldingPosition = formatData
+    formatData
       .filter((item) => item?.profit?.realizedProfit)
       .map((item) => {
         return {
@@ -67,15 +66,14 @@
                   Number(Math.abs(item?.avgCost))) *
                 100,
         };
+      })
+      .map((item) => {
+        if (item.realizedProfit < 0) {
+          listLossToken.push(item);
+        } else {
+          listProfitToken.push(item);
+        }
       });
-
-    closedHoldingPosition.map((item) => {
-      if (item.realizedProfit < 0) {
-        listLossToken.push(item);
-      } else {
-        listProfitToken.push(item);
-      }
-    });
 
     top5ProfitToken = listProfitToken
       .sort((a, b) => b.realizedProfit - a.realizedProfit)
