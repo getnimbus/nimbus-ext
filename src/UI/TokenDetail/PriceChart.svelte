@@ -263,7 +263,8 @@
       chainType.length !== 0 &&
       ($typeWallet === "EVM" ||
         $typeWallet === "ALGO" ||
-        ($typeWallet === "BUNDLE" && chain !== "SOL")),
+        $typeWallet === "SUI" ||
+        ($typeWallet === "BUNDLE" && chain !== "SOL" && chain !== "SUI")),
   });
 
   $: queryTokenPriceSol = createQuery({

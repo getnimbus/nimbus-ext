@@ -57,10 +57,9 @@
   import Bundles from "~/assets/bundles.png";
   import BitcoinLogo from "~/assets/bitcoin.png";
   import SolanaLogo from "~/assets/solana.png";
+  import SuiLogo from "~/assets/sui.png";
   import AuraLogo from "~/assets/aura.png";
   import AlgorandLogo from "~/assets/algorand.png";
-  import ExzoLogo from "~/assets/exzo.png";
-  import KlaytnLogo from "~/assets/klaytn.png";
 
   const MultipleLang = {
     empty_wallet: i18n("newtabPage.empty-wallet", "No account added yet."),
@@ -313,6 +312,7 @@
       if (
         typeParams === "BTC" ||
         typeParams === "SOL" ||
+        typeParams === "SUI" ||
         typeParams === "ALGO"
       ) {
         window.history.replaceState(
@@ -340,6 +340,7 @@
       if (
         typeParams === "BTC" ||
         typeParams === "SOL" ||
+        typeParams === "SUI" ||
         typeParams === "ALGO"
       ) {
         window.history.replaceState(
@@ -406,6 +407,17 @@
         );
       }
 
+      if (selected.type === "SUI") {
+        typeWallet.update((n) => (n = "SUI"));
+        browser.storage.sync.set({ typeWalletAddress: "SUI" });
+        chain.update((n) => (n = "ALL"));
+        window.history.replaceState(
+          null,
+          "",
+          window.location.pathname + `?type=${$typeWallet}&address=${$wallet}`
+        );
+      }
+
       if (selected.type === "ALGO") {
         typeWallet.update((n) => (n = "ALGO"));
         browser.storage.sync.set({ typeWalletAddress: "ALGO" });
@@ -439,6 +451,9 @@
       if (item?.type === "SOL") {
         logo = SolanaLogo;
       }
+      if (item?.type === "SUI") {
+        logo = SuiLogo;
+      }
       if (item?.type === "ALGO") {
         logo = AlgorandLogo;
       }
@@ -459,6 +474,9 @@
             }
             if (account?.type === "SOL") {
               logo = SolanaLogo;
+            }
+            if (account?.type === "SUI") {
+              logo = SuiLogo;
             }
             if (account?.type === "ALGO") {
               logo = AlgorandLogo;
@@ -609,6 +627,7 @@
         if (
           searchAccountType === "BTC" ||
           searchAccountType === "SOL" ||
+          searchAccountType === "SUI" ||
           searchAccountType === "ALGO"
         ) {
           window.history.replaceState(
@@ -1740,7 +1759,7 @@
           </label>
         </div>
         <div class="flex items-center justify-center gap-6 my-3">
-          {#each [{ logo: BitcoinLogo, label: "Bitcoin", value: "BTC" }, { logo: SolanaLogo, label: "Solana", value: "SOL" }, { logo: AlgorandLogo, label: "Algorand", value: "ALGO" }].concat(chainList
+          {#each [{ logo: BitcoinLogo, label: "Bitcoin", value: "BTC" }, { logo: SolanaLogo, label: "Solana", value: "SOL" }, { logo: SuiLogo, label: "SUI", value: "SUI" }, { logo: AlgorandLogo, label: "Algorand", value: "ALGO" }].concat(chainList
               .slice(1)
               .slice(0, -7)) as item}
             <img
