@@ -288,7 +288,7 @@
   </div>
 {/if}
 
-{#if $typeWallet !== "SOL" && $typeWallet !== "SUI" && $typeWallet !== "ALGO" && $typeWallet !== "CEX"}
+{#if $typeWallet !== "SOL" && $typeWallet !== "SUI" && $typeWallet !== "AURA" && $typeWallet !== "ALGO" && $typeWallet !== "CEX"}
   <div class="flex items-center gap-2">
     <a href="https://mobula.fi/" target="_blank">
       <img

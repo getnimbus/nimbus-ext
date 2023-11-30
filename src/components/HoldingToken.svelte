@@ -762,6 +762,7 @@
     class={`py-3 ${
       $typeWallet === "SOL" ||
       $typeWallet === "SUI" ||
+      $typeWallet === "AURA" ||
       $typeWallet === "ALGO" ||
       $typeWallet === "EVM" ||
       $typeWallet === "BUNDLE" ||
@@ -821,7 +822,7 @@
     </div>
   </td>
 
-  {#if $typeWallet === "SOL" || $typeWallet === "SUI" || $typeWallet === "ALGO" || $typeWallet === "EVM" || $typeWallet === "BUNDLE" || $typeWallet === "CEX"}
+  {#if $typeWallet === "SOL" || $typeWallet === "SUI" || $typeWallet === "AURA" || $typeWallet === "ALGO" || $typeWallet === "EVM" || $typeWallet === "BUNDLE" || $typeWallet === "CEX"}
     <td
       class={`py-3 xl:w-14 w-32 h-full flex justify-center items-center xl:gap-3 gap-6 ${
         $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
@@ -877,7 +878,7 @@
         </div>
       {/if}
 
-      {#if $typeWallet === "EVM" || $typeWallet === "SOL" || $typeWallet === "SUI" || $typeWallet === "ALGO" || $typeWallet === "BUNDLE" || $typeWallet === "CEX"}
+      {#if $typeWallet === "EVM" || $typeWallet === "SOL" || $typeWallet === "SUI" || $typeWallet === "AURA" || $typeWallet === "ALGO" || $typeWallet === "BUNDLE" || $typeWallet === "CEX"}
         <div
           class="flex justify-center cursor-pointer view-icon-detail"
           on:click={() => {

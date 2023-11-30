@@ -127,6 +127,9 @@
       if (item?.type === "SUI") {
         logo = SuiLogo;
       }
+      if (item?.type === "AURA") {
+        logo = AuraLogo;
+      }
       if (item?.type === "ALGO") {
         logo = AlgorandLogo;
       }
@@ -150,6 +153,9 @@
             }
             if (item?.type === "SUI") {
               logo = SuiLogo;
+            }
+            if (item?.type === "AURA") {
+              logo = AuraLogo;
             }
             if (account?.type === "ALGO") {
               logo = AlgorandLogo;
@@ -227,6 +233,7 @@
       searchAccountType === "BTC" ||
       searchAccountType === "SOL" ||
       searchAccountType === "SUI" ||
+      searchAccountType === "AURA" ||
       searchAccountType === "ALGO" ||
       searchAccountType === "CEX"
     ) {

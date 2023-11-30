@@ -64,6 +64,7 @@
   $: last24hTotalProfitPercent =
     $typeWallet === "SOL" ||
     $typeWallet === "SUI" ||
+    $typeWallet === "AURA" ||
     $typeWallet === "ALGO" ||
     $typeWallet === "CEX"
       ? 0
@@ -129,6 +130,7 @@
             $typeWallet === "BTC" ||
             $typeWallet === "SOL" ||
             $typeWallet === "SUI" ||
+            $typeWallet === "AURA" ||
             $typeWallet === "ALGO" ||
             $typeWallet === "CEX"
               ? "opacity-50"
@@ -175,6 +177,7 @@
             $typeWallet === "BTC" ||
             $typeWallet === "SOL" ||
             $typeWallet === "SUI" ||
+            $typeWallet === "AURA" ||
             $typeWallet === "ALGO"
               ? "opacity-50"
               : ""
@@ -220,6 +223,7 @@
             $typeWallet === "BTC" ||
             $typeWallet === "SOL" ||
             $typeWallet === "SUI" ||
+            $typeWallet === "AURA" ||
             $typeWallet === "ALGO"
               ? "opacity-50"
               : ""
