@@ -202,6 +202,9 @@
       if (item?.type === "SUI") {
         logo = SuiLogo;
       }
+      if (item?.type === "AURA") {
+        logo = AuraLogo;
+      }
       if (item?.type === "ALGO") {
         logo = AlgorandLogo;
       }

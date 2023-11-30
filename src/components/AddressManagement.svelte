@@ -313,6 +313,7 @@
         typeParams === "BTC" ||
         typeParams === "SOL" ||
         typeParams === "SUI" ||
+        typeParams === "AURA" ||
         typeParams === "ALGO"
       ) {
         window.history.replaceState(
@@ -341,6 +342,7 @@
         typeParams === "BTC" ||
         typeParams === "SOL" ||
         typeParams === "SUI" ||
+        typeParams === "AURA" ||
         typeParams === "ALGO"
       ) {
         window.history.replaceState(
@@ -418,6 +420,17 @@
         );
       }
 
+      if (selected.type === "AURA") {
+        typeWallet.update((n) => (n = "AURA"));
+        browser.storage.sync.set({ typeWalletAddress: "AURA" });
+        chain.update((n) => (n = "ALL"));
+        window.history.replaceState(
+          null,
+          "",
+          window.location.pathname + `?type=${$typeWallet}&address=${$wallet}`
+        );
+      }
+
       if (selected.type === "ALGO") {
         typeWallet.update((n) => (n = "ALGO"));
         browser.storage.sync.set({ typeWalletAddress: "ALGO" });
@@ -454,6 +467,9 @@
       if (item?.type === "SUI") {
         logo = SuiLogo;
       }
+      if (item?.type === "AURA") {
+        logo = AuraLogo;
+      }
       if (item?.type === "ALGO") {
         logo = AlgorandLogo;
       }
@@ -477,6 +493,9 @@
             }
             if (account?.type === "SUI") {
               logo = SuiLogo;
+            }
+            if (item?.type === "AURA") {
+              logo = AuraLogo;
             }
             if (account?.type === "ALGO") {
               logo = AlgorandLogo;
@@ -628,6 +647,7 @@
           searchAccountType === "BTC" ||
           searchAccountType === "SOL" ||
           searchAccountType === "SUI" ||
+          searchAccountType === "AURA" ||
           searchAccountType === "ALGO"
         ) {
           window.history.replaceState(
@@ -1759,16 +1779,16 @@
           </label>
         </div>
         <div class="flex items-center justify-center gap-6 my-3">
-          {#each [{ logo: BitcoinLogo, label: "Bitcoin", value: "BTC" }, { logo: SolanaLogo, label: "Solana", value: "SOL" }, { logo: SuiLogo, label: "SUI", value: "SUI" }, { logo: AlgorandLogo, label: "Algorand", value: "ALGO" }].concat(chainList
+          {#each [{ logo: BitcoinLogo, label: "Bitcoin", value: "BTC" }, { logo: SolanaLogo, label: "Solana", value: "SOL" }, { logo: SuiLogo, label: "SUI", value: "SUI" }, { logo: AuraLogo, label: "Aura", value: "AURA" }, { logo: AlgorandLogo, label: "Algorand", value: "ALGO" }].concat(chainList
               .slice(1)
-              .slice(0, -7)) as item}
+              .slice(0, -8)) as item}
             <img
               src={item.logo}
               alt=""
               class="xl:w-8 xl:h-8 w-10 h-10 overflow-hidden rounded-full"
             />
           {/each}
-          <div class="text-gray-400 xl:text-base text-2xl">+7 More</div>
+          <div class="text-gray-400 xl:text-base text-2xl">+8 More</div>
         </div>
         <div class="flex justify-end gap-6 lg:gap-2">
           <div class="lg:w-[120px] w-full">

@@ -120,6 +120,7 @@
             $typeWallet === "CEX" ||
             $typeWallet === "SOL" ||
             $typeWallet === "SUI" ||
+            $typeWallet === "AURA" ||
             $typeWallet === "ALGO" ||
             $typeWallet === "BUNDLE") &&
             $wallet.length !== 0 &&
