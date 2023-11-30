@@ -10,6 +10,7 @@ import "driver.js/dist/driver.css";
 import Solana from "~/assets/solana.png";
 import Aura from "~/assets/aura.png";
 import Bitcoin from "~/assets/bitcoin.png";
+import Sui from "~/assets/sui.png";
 
 import All from "~/assets/all.svg";
 import Bnb from "~/assets/bnb.png";
@@ -413,6 +414,9 @@ export const detectedChain = (type) => {
     case "AURA":
       chain = Aura;
       break;
+    case "SUI":
+      chain = Sui;
+      break;
     case "SOL":
       chain = Solana;
       break;
@@ -556,6 +560,12 @@ export const linkExplorer = (chain, hash) => {
       links = {
         trx: `https://solscan.io/tx/${hash}`,
         address: `https://solscan.io/address/${hash}`,
+      };
+      break;
+    case "SUI":
+      links = {
+        trx: `https://suiexplorer.com/txblock/${hash}`,
+        address: `https://suiexplorer.com/address/${hash}`,
       };
       break;
     case "ALGO":

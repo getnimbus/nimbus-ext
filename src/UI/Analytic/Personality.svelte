@@ -183,6 +183,7 @@
     ($typeWallet === "EVM" ||
       $typeWallet === "CEX" ||
       $typeWallet === "SOL" ||
+      $typeWallet === "SUI" ||
       $typeWallet === "ALGO" ||
       $typeWallet === "BUNDLE") &&
       $wallet.length !== 0 &&

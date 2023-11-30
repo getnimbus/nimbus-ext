@@ -33,10 +33,9 @@
   import Bundles from "~/assets/bundles.png";
   import BitcoinLogo from "~/assets/bitcoin.png";
   import SolanaLogo from "~/assets/solana.png";
+  import SuiLogo from "~/assets/sui.png";
   import AuraLogo from "~/assets/aura.png";
   import AlgorandLogo from "~/assets/algorand.png";
-  import ExzoLogo from "~/assets/exzo.png";
-  import KlaytnLogo from "~/assets/klaytn.png";
 
   let toastMsg = "";
   let isSuccessToast = false;
@@ -199,6 +198,9 @@
       }
       if (item?.type === "SOL") {
         logo = SolanaLogo;
+      }
+      if (item?.type === "SUI") {
+        logo = SuiLogo;
       }
       if (item?.type === "ALGO") {
         logo = AlgorandLogo;

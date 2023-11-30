@@ -242,6 +242,7 @@
         $wallet?.length !== 0 &&
         $chain?.length !== 0 &&
         $typeWallet !== "SOL" &&
+        $typeWallet !== "SUI" &&
         $typeWallet !== "ALGO"
       ) {
         getListTransactions("", selectedTypeValue, selectedCoinValue);
@@ -306,7 +307,7 @@
         </div>
       </div>
 
-      {#if $typeWallet === "BUNDLE" || $typeWallet === "SOL" || $typeWallet === "ALGO"}
+      {#if $typeWallet === "BUNDLE" || $typeWallet === "SOL" || $typeWallet === "SUI" || $typeWallet === "ALGO"}
         <div
           class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center gap-3 justify-center z-30 backdrop-blur-md ${
             $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
