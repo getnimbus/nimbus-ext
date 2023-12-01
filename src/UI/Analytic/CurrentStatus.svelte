@@ -718,9 +718,9 @@
       ? true
       : Boolean(
           ($typeWallet === "EVM" ||
+            $typeWallet === "MOVE" ||
             $typeWallet === "CEX" ||
             $typeWallet === "SOL" ||
-            $typeWallet === "SUI" ||
             $typeWallet === "AURA" ||
             $typeWallet === "ALGO" ||
             $typeWallet === "BUNDLE") &&
@@ -901,7 +901,7 @@
   >
     <div class="flex justify-between items-start mb-6">
       <div class="flex justify-start">
-        {#if $typeWallet === "CEX" || $typeWallet === "SOL" || $typeWallet === "SUI" || $typeWallet === "AURA" || $typeWallet === "ALGO"}
+        {#if $typeWallet === "CEX" || $typeWallet === "SOL" || $typeWallet === "AURA" || $typeWallet === "ALGO"}
           <TooltipTitle
             tooltipText="The performance data can only get after 7 days you connect to Nimbus"
             type="warning"

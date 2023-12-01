@@ -33,6 +33,7 @@
   import User from "~/assets/user.png";
   import Success from "~/assets/shield-done.svg";
 
+  import Move from "~/assets/move.png";
   import All from "~/assets/all.svg";
   import BitcoinLogo from "~/assets/bitcoin.png";
   import SolanaLogo from "~/assets/solana.png";
@@ -276,8 +277,8 @@
       if (item?.type === "SOL") {
         logo = SolanaLogo;
       }
-      if (item?.type === "SUI") {
-        logo = SuiLogo;
+      if (item?.type === "MOVE") {
+        logo = Move;
       }
       if (item?.type === "AURA") {
         logo = AuraLogo;
@@ -1706,7 +1707,7 @@
           </label>
         </div>
         <div class="flex items-center justify-center gap-6 my-3">
-          {#each [{ logo: BitcoinLogo, label: "Bitcoin", value: "BTC" }, { logo: SolanaLogo, label: "Solana", value: "SOL" }, { logo: SuiLogo, label: "SUI", value: "SUI" }, { logo: AuraLogo, label: "Aura", value: "AURA" }, { logo: AlgorandLogo, label: "Algorand", value: "ALGO" }].concat(chainList
+          {#each [{ logo: BitcoinLogo, label: "Bitcoin", value: "BTC" }, { logo: SolanaLogo, label: "Solana", value: "SOL" }, { logo: Move, label: "Move", value: "MOVE" }, { logo: AuraLogo, label: "Aura", value: "AURA" }, { logo: AlgorandLogo, label: "Algorand", value: "ALGO" }].concat(chainList
               .slice(1)
               .slice(0, -8)) as item}
             <img

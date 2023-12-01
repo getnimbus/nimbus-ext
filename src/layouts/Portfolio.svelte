@@ -7,7 +7,7 @@
   import { groupBy, isEmpty, flatten } from "lodash";
   import { onMount } from "svelte";
   import { i18n } from "~/lib/i18n";
-  import { chainList, driverObj } from "~/utils";
+  import { chainList, chainMoveList, driverObj } from "~/utils";
   import { wait } from "../entries/background/utils";
   import {
     wallet,
@@ -124,6 +124,8 @@
     select: [],
   };
   let selectedDataPieChart = {};
+
+  let chainListSelected = [];
 
   // overview
   const getOverview = async (address, chain) => {
@@ -303,10 +305,7 @@
   // token holding
   const getVaults = async (address, chain) => {
     let type =
-      $typeWallet === "SOL" ||
-      $typeWallet === "SUI" ||
-      $typeWallet === "AURA" ||
-      $typeWallet === "ALGO";
+      $typeWallet === "SOL" || $typeWallet === "AURA" || $typeWallet === "ALGO";
     const response = await nimbus.get(
       `/v2/investment/${address}/vaults?chain=${type ? $typeWallet : ""}`
     );
@@ -735,10 +734,19 @@
         $queryVaults.isFetching &&
         $queryOverview.isFetching;
 
+  $: {
+    if ($typeWallet === "EVM") {
+      chainListSelected = chainList;
+    }
+    if ($typeWallet === "MOVE") {
+      chainListSelected = chainMoveList;
+    }
+  }
+
   $: chainListQueries =
-    $typeWallet?.length !== 0 && $typeWallet !== "EVM"
-      ? [chainList[0].value]
-      : chainList.slice(1).map((item) => item.value);
+    $typeWallet?.length !== 0 && $typeWallet !== "EVM" && $typeWallet !== "MOVE"
+      ? [chainListSelected[0].value]
+      : chainListSelected.slice(1).map((item) => item.value);
 
   $: {
     if ($triggerUpdateBundle) {
@@ -834,7 +842,7 @@
                 {dataOverviewBundlePieChart}
               />
 
-              <!-- {#if $typeWallet === "EVM" || $typeWallet === "CEX" || $typeWallet === "BUNDLE"}
+              <!-- {#if $typeWallet === "EVM" || $typeWallet === "MOVE" || $typeWallet === "CEX" || $typeWallet === "BUNDLE"}
                 <RiskReturn
                   isLoading={$queryCompare.isFetching}
                   isError={$queryCompare.isError}

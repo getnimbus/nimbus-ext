@@ -49,11 +49,11 @@
   import User from "~/assets/user.png";
   import goldImg from "~/assets/Gold4.svg";
 
+  import Move from "~/assets/move.png";
   import All from "~/assets/all.svg";
   import Bundles from "~/assets/bundles.png";
   import BitcoinLogo from "~/assets/bitcoin.png";
   import SolanaLogo from "~/assets/solana.png";
-  import SuiLogo from "~/assets/sui.png";
   import AuraLogo from "~/assets/aura.png";
   import AlgorandLogo from "~/assets/algorand.png";
 
@@ -124,8 +124,8 @@
       if (item?.type === "SOL") {
         logo = SolanaLogo;
       }
-      if (item?.type === "SUI") {
-        logo = SuiLogo;
+      if (item?.type === "MOVE") {
+        logo = Move;
       }
       if (item?.type === "AURA") {
         logo = AuraLogo;
@@ -151,8 +151,8 @@
             if (account?.type === "SOL") {
               logo = SolanaLogo;
             }
-            if (item?.type === "SUI") {
-              logo = SuiLogo;
+            if (item?.type === "MOVE") {
+              logo = Move;
             }
             if (item?.type === "AURA") {
               logo = AuraLogo;
@@ -221,7 +221,7 @@
       typeWalletAddress: searchAccountType,
     });
 
-    if (searchAccountType === "EVM") {
+    if (searchAccountType === "EVM" || searchAccountType === "MOVE") {
       window.history.replaceState(
         null,
         "",
@@ -232,7 +232,6 @@
     if (
       searchAccountType === "BTC" ||
       searchAccountType === "SOL" ||
-      searchAccountType === "SUI" ||
       searchAccountType === "AURA" ||
       searchAccountType === "ALGO" ||
       searchAccountType === "CEX"

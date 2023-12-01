@@ -87,10 +87,10 @@
   <td
     class={`py-3 ${
       $typeWallet === "SOL" ||
-      $typeWallet === "SUI" ||
       $typeWallet === "AURA" ||
       $typeWallet === "ALGO" ||
       $typeWallet === "EVM" ||
+      $typeWallet === "MOVE" ||
       $typeWallet === "BUNDLE"
         ? ""
         : "pr-3"
@@ -103,7 +103,7 @@
     </div>
   </td>
 
-  {#if $typeWallet === "SOL" || $typeWallet === "SUI" || $typeWallet === "AURA" || $typeWallet === "ALGO" || $typeWallet === "EVM" || $typeWallet === "BUNDLE"}
+  {#if $typeWallet === "SOL" || $typeWallet === "AURA" || $typeWallet === "ALGO" || $typeWallet === "EVM" || $typeWallet === "MOVE" || $typeWallet === "BUNDLE"}
     <td
       class={`py-3 w-10 ${
         $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"

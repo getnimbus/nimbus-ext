@@ -242,7 +242,6 @@
         $wallet?.length !== 0 &&
         $chain?.length !== 0 &&
         $typeWallet !== "SOL" &&
-        $typeWallet !== "SUI" &&
         $typeWallet !== "AURA" &&
         $typeWallet !== "ALGO"
       ) {
@@ -256,7 +255,7 @@
   <span slot="body">
     <div class="max-w-[2000px] m-auto xl:w-[90%] w-[90%] -mt-32 relative">
       <div class="trx_container flex flex-col gap-7 rounded-[20px] xl:p-8 p-6">
-        {#if $typeWallet === "EVM" || $typeWallet === "CEX"}
+        {#if $typeWallet === "EVM" || $typeWallet === "MOVE" || $typeWallet === "CEX"}
           <div
             class={`rounded-[20px] pt-6 pb-9 flex flex-col gap-4  ${
               $isDarkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
@@ -284,7 +283,7 @@
             <div class="xl:text-2xl text-4xl font-medium">
               Historical Transactions
             </div>
-            {#if $typeWallet === "EVM"}
+            {#if $typeWallet === "EVM" || $typeWallet === "MOVE"}
               <div class="flex items-center gap-4">
                 <CoinSelector
                   bind:selected={selectedCoin}
@@ -308,7 +307,7 @@
         </div>
       </div>
 
-      {#if $typeWallet === "BUNDLE" || $typeWallet === "SOL" || $typeWallet === "SUI" || $typeWallet === "AURA" || $typeWallet === "ALGO"}
+      {#if $typeWallet === "BUNDLE" || $typeWallet === "SOL" || $typeWallet === "AURA" || $typeWallet === "ALGO"}
         <div
           class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center gap-3 justify-center z-30 backdrop-blur-md ${
             $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"

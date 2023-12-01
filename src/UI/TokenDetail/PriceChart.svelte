@@ -262,13 +262,10 @@
       chainType !== undefined &&
       chainType.length !== 0 &&
       ($typeWallet === "EVM" ||
+        $typeWallet === "MOVE" ||
         $typeWallet === "ALGO" ||
-        $typeWallet === "SUI" ||
         $typeWallet === "AURA" ||
-        ($typeWallet === "BUNDLE" &&
-          chain !== "SOL" &&
-          chain !== "SUI" &&
-          chain !== "AURA")),
+        ($typeWallet === "BUNDLE" && chain !== "SOL" && chain !== "AURA")),
   });
 
   $: queryTokenPriceSol = createQuery({
