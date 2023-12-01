@@ -24,6 +24,7 @@
     listProviderCEX,
     clickOutside,
     driverObj,
+    chainMoveList,
   } from "~/utils";
   import mixpanel from "mixpanel-browser";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
@@ -53,11 +54,11 @@
   import FollowWhale from "~/assets/whale-tracking.gif";
   import Success from "~/assets/shield-done.svg";
 
+  import Move from "~/assets/move.png";
   import All from "~/assets/all.svg";
   import Bundles from "~/assets/bundles.png";
   import BitcoinLogo from "~/assets/bitcoin.png";
   import SolanaLogo from "~/assets/solana.png";
-  import SuiLogo from "~/assets/sui.png";
   import AuraLogo from "~/assets/aura.png";
   import AlgorandLogo from "~/assets/algorand.png";
 
@@ -312,7 +313,6 @@
       if (
         typeParams === "BTC" ||
         typeParams === "SOL" ||
-        typeParams === "SUI" ||
         typeParams === "AURA" ||
         typeParams === "ALGO"
       ) {
@@ -323,7 +323,7 @@
         );
       }
 
-      if (typeParams === "EVM") {
+      if (typeParams === "EVM" || typeParams === "MOVE") {
         window.history.replaceState(
           null,
           "",
@@ -335,13 +335,12 @@
 
     // if no chain params and list address is not empty
     if (!chainParams && listAddress.length !== 0 && typeParams) {
-      if (typeParams === "EVM") {
+      if (typeParams === "EVM" || typeParams === "MOVE") {
         chain.update((n) => (n = "ALL"));
       }
       if (
         typeParams === "BTC" ||
         typeParams === "SOL" ||
-        typeParams === "SUI" ||
         typeParams === "AURA" ||
         typeParams === "ALGO"
       ) {
@@ -398,20 +397,25 @@
         );
       }
 
-      if (selected.type === "SOL") {
-        typeWallet.update((n) => (n = "SOL"));
-        browser.storage.sync.set({ typeWalletAddress: "SOL" });
-        chain.update((n) => (n = "ALL"));
+      if (selected.type === "MOVE") {
+        typeWallet.update((n) => (n = "MOVE"));
+        browser.storage.sync.set({ typeWalletAddress: "MOVE" });
+        if ($chain) {
+          chain.update((n) => (n = $chain));
+        } else {
+          chain.update((n) => (n = "ALL"));
+        }
         window.history.replaceState(
           null,
           "",
-          window.location.pathname + `?type=${$typeWallet}&address=${$wallet}`
+          window.location.pathname +
+            `?type=${$typeWallet}&chain=${$chain}&address=${$wallet}`
         );
       }
 
-      if (selected.type === "SUI") {
-        typeWallet.update((n) => (n = "SUI"));
-        browser.storage.sync.set({ typeWalletAddress: "SUI" });
+      if (selected.type === "SOL") {
+        typeWallet.update((n) => (n = "SOL"));
+        browser.storage.sync.set({ typeWalletAddress: "SOL" });
         chain.update((n) => (n = "ALL"));
         window.history.replaceState(
           null,
@@ -464,8 +468,8 @@
       if (item?.type === "SOL") {
         logo = SolanaLogo;
       }
-      if (item?.type === "SUI") {
-        logo = SuiLogo;
+      if (item?.type === "MOVE") {
+        logo = Move;
       }
       if (item?.type === "AURA") {
         logo = AuraLogo;
@@ -491,8 +495,8 @@
             if (account?.type === "SOL") {
               logo = SolanaLogo;
             }
-            if (account?.type === "SUI") {
-              logo = SuiLogo;
+            if (account?.type === "MOVE") {
+              logo = Move;
             }
             if (item?.type === "AURA") {
               logo = AuraLogo;
@@ -635,7 +639,7 @@
           selectedWallet: dataFormat.value,
         });
 
-        if (searchAccountType === "EVM") {
+        if (searchAccountType === "EVM" || searchAccountType === "MOVE") {
           window.history.replaceState(
             null,
             "",
@@ -643,10 +647,10 @@
               `?type=${searchAccountType}&chain=ALL&address=${dataFormat.value}`
           );
         }
+
         if (
           searchAccountType === "BTC" ||
           searchAccountType === "SOL" ||
-          searchAccountType === "SUI" ||
           searchAccountType === "AURA" ||
           searchAccountType === "ALGO"
         ) {
@@ -1605,13 +1609,23 @@
                     </div>
                   {/if}
                 </div>
-                {#if $typeWallet === "EVM"}
-                  <Select
-                    type="chain"
-                    positionSelectList="right-0"
-                    listSelect={chainList}
-                    bind:selected={$chain}
-                  />
+                {#if $typeWallet === "EVM" || $typeWallet === "MOVE"}
+                  {#if $typeWallet === "EVM"}
+                    <Select
+                      type="chain"
+                      positionSelectList="right-0"
+                      listSelect={chainList}
+                      bind:selected={$chain}
+                    />
+                  {/if}
+                  {#if $typeWallet === "MOVE"}
+                    <Select
+                      type="chain"
+                      positionSelectList="right-0"
+                      listSelect={chainMoveList}
+                      bind:selected={$chain}
+                    />
+                  {/if}
                 {/if}
               </div>
             </div>
@@ -1779,7 +1793,7 @@
           </label>
         </div>
         <div class="flex items-center justify-center gap-6 my-3">
-          {#each [{ logo: BitcoinLogo, label: "Bitcoin", value: "BTC" }, { logo: SolanaLogo, label: "Solana", value: "SOL" }, { logo: SuiLogo, label: "SUI", value: "SUI" }, { logo: AuraLogo, label: "Aura", value: "AURA" }, { logo: AlgorandLogo, label: "Algorand", value: "ALGO" }].concat(chainList
+          {#each [{ logo: BitcoinLogo, label: "Bitcoin", value: "BTC" }, { logo: SolanaLogo, label: "Solana", value: "SOL" }, { logo: Move, label: "Move", value: "MOVE" }, { logo: AuraLogo, label: "Aura", value: "AURA" }, { logo: AlgorandLogo, label: "Algorand", value: "ALGO" }].concat(chainList
               .slice(1)
               .slice(0, -8)) as item}
             <img

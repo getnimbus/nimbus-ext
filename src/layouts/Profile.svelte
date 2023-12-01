@@ -29,11 +29,11 @@
   import User from "~/assets/user.png";
   import UpArrow from "~/assets/up-arrow.svg";
 
+  import Move from "~/assets/move.png";
   import All from "~/assets/all.svg";
   import Bundles from "~/assets/bundles.png";
   import BitcoinLogo from "~/assets/bitcoin.png";
   import SolanaLogo from "~/assets/solana.png";
-  import SuiLogo from "~/assets/sui.png";
   import AuraLogo from "~/assets/aura.png";
   import AlgorandLogo from "~/assets/algorand.png";
 
@@ -199,8 +199,8 @@
       if (item?.type === "SOL") {
         logo = SolanaLogo;
       }
-      if (item?.type === "SUI") {
-        logo = SuiLogo;
+      if (item?.type === "MOVE") {
+        logo = Move;
       }
       if (item?.type === "AURA") {
         logo = AuraLogo;
@@ -476,7 +476,9 @@
                         class="flex items-center gap-2 xl:text-lg text-2xl font-medium"
                       >
                         <div>
-                          {$typeWallet === "EVM" ? "Token ID" : "Inscription"}
+                          {$typeWallet === "EVM" || $typeWallet === "MOVE"
+                            ? "Token ID"
+                            : "Inscription"}
                         </div>
                         <div>
                           #{selectProfileNFT?.tokenId}

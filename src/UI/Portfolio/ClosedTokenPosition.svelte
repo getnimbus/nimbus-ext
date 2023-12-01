@@ -270,10 +270,10 @@
 
   $: colspan =
     $typeWallet === "SOL" ||
-    $typeWallet === "SUI" ||
     $typeWallet === "AURA" ||
     $typeWallet === "ALGO" ||
     $typeWallet === "EVM" ||
+    $typeWallet === "MOVE" ||
     $typeWallet === "BUNDLE" ||
     $typeWallet === "CEX"
       ? 5
@@ -300,7 +300,7 @@
 >
   <ErrorBoundary>
     <div class="flex items-end gap-3">
-      {#if $typeWallet !== "EVM"}
+      {#if $typeWallet !== "EVM" && $typeWallet !== "MOVE"}
         <div class="xl:text-2xl text-4xl font-medium">
           {MultipleLang.token_position}
         </div>
@@ -393,10 +393,10 @@
                 <th
                   class={`py-3 ${
                     $typeWallet === "SOL" ||
-                    $typeWallet === "SUI" ||
                     $typeWallet === "AURA" ||
                     $typeWallet === "ALGO" ||
                     $typeWallet === "EVM" ||
+                    $typeWallet === "MOVE" ||
                     $typeWallet === "BUNDLE" ||
                     $typeWallet === "CEX"
                       ? ""
@@ -409,7 +409,7 @@
                     ROI
                   </div>
                 </th>
-                {#if $typeWallet === "SOL" || $typeWallet === "SUI" || $typeWallet === "AURA" || $typeWallet === "ALGO" || $typeWallet === "EVM" || $typeWallet === "BUNDLE" || $typeWallet === "CEX"}
+                {#if $typeWallet === "SOL" || $typeWallet === "AURA" || $typeWallet === "ALGO" || $typeWallet === "EVM" || $typeWallet === "MOVE" || $typeWallet === "BUNDLE" || $typeWallet === "CEX"}
                   <th class="py-3 xl:w-14 w-32 rounded-tr-[10px]" />
                 {/if}
               </tr>

@@ -10,6 +10,8 @@ import "driver.js/dist/driver.css";
 import Solana from "~/assets/solana.png";
 import Aura from "~/assets/aura.png";
 import Bitcoin from "~/assets/bitcoin.png";
+
+import Move from "~/assets/move.png"
 import Sui from "~/assets/sui.png";
 
 import All from "~/assets/all.svg";
@@ -318,6 +320,19 @@ export const getAddressContext = (address: string) => {
 
   return undefined;
 };
+
+export const chainMoveList = [
+  {
+    logo: All,
+    label: "All chains",
+    value: "ALL",
+  },
+  {
+    logo: Sui,
+    label: "Sui",
+    value: "SUI",
+  }
+]
 
 export const chainList = [
   {

@@ -181,9 +181,9 @@
 
   $: enabledQuery = Boolean(
     ($typeWallet === "EVM" ||
+      $typeWallet === "MOVE" ||
       $typeWallet === "CEX" ||
       $typeWallet === "SOL" ||
-      $typeWallet === "SUI" ||
       $typeWallet === "AURA" ||
       $typeWallet === "ALGO" ||
       $typeWallet === "BUNDLE") &&
