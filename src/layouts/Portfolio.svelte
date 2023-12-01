@@ -745,7 +745,7 @@
 
   $: chainListQueries =
     $typeWallet?.length !== 0 && $typeWallet !== "EVM" && $typeWallet !== "MOVE"
-      ? [chainListSelected[0].value]
+      ? [chainListSelected[0]?.value]
       : chainListSelected.slice(1).map((item) => item.value);
 
   $: {
