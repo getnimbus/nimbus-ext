@@ -49,14 +49,13 @@
   import User from "~/assets/user.png";
   import goldImg from "~/assets/Gold4.svg";
 
+  import Move from "~/assets/move.png";
   import All from "~/assets/all.svg";
   import Bundles from "~/assets/bundles.png";
   import BitcoinLogo from "~/assets/bitcoin.png";
   import SolanaLogo from "~/assets/solana.png";
   import AuraLogo from "~/assets/aura.png";
   import AlgorandLogo from "~/assets/algorand.png";
-  import ExzoLogo from "~/assets/exzo.png";
-  import KlaytnLogo from "~/assets/klaytn.png";
 
   const MultipleLang = {
     portfolio: i18n("newtabPage.portfolio", "Portfolio"),
@@ -125,6 +124,12 @@
       if (item?.type === "SOL") {
         logo = SolanaLogo;
       }
+      if (item?.type === "MOVE") {
+        logo = Move;
+      }
+      if (item?.type === "AURA") {
+        logo = AuraLogo;
+      }
       if (item?.type === "ALGO") {
         logo = AlgorandLogo;
       }
@@ -145,6 +150,12 @@
             }
             if (account?.type === "SOL") {
               logo = SolanaLogo;
+            }
+            if (item?.type === "MOVE") {
+              logo = Move;
+            }
+            if (item?.type === "AURA") {
+              logo = AuraLogo;
             }
             if (account?.type === "ALGO") {
               logo = AlgorandLogo;
@@ -210,7 +221,7 @@
       typeWalletAddress: searchAccountType,
     });
 
-    if (searchAccountType === "EVM") {
+    if (searchAccountType === "EVM" || searchAccountType === "MOVE") {
       window.history.replaceState(
         null,
         "",
@@ -221,6 +232,7 @@
     if (
       searchAccountType === "BTC" ||
       searchAccountType === "SOL" ||
+      searchAccountType === "AURA" ||
       searchAccountType === "ALGO" ||
       searchAccountType === "CEX"
     ) {

@@ -98,8 +98,10 @@
 
   $: colspan =
     $typeWallet === "SOL" ||
+    $typeWallet === "AURA" ||
     $typeWallet === "ALGO" ||
     $typeWallet === "EVM" ||
+    $typeWallet === "MOVE" ||
     $typeWallet === "BUNDLE"
       ? 5
       : 4;
@@ -259,7 +261,7 @@
           {filterType}
         />
 
-        {#if $typeWallet !== "EVM" && $typeWallet !== "BUNDLE"}
+        {#if $typeWallet !== "EVM" && $typeWallet !== "MOVE" && $typeWallet !== "BUNDLE"}
           <div
             class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center gap-3 pt-62 ${
               $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
@@ -334,8 +336,10 @@
               <th
                 class={`py-3 rounded-tr-[10px] ${
                   $typeWallet === "SOL" ||
+                  $typeWallet === "AURA" ||
                   $typeWallet === "ALGO" ||
                   $typeWallet === "EVM" ||
+                  $typeWallet === "MOVE" ||
                   $typeWallet === "BUNDLE"
                     ? ""
                     : "pr-3"
@@ -348,7 +352,7 @@
                 </div>
               </th>
 
-              {#if $typeWallet === "SOL" || $typeWallet === "ALGO" || $typeWallet === "EVM" || $typeWallet === "BUNDLE"}
+              {#if $typeWallet === "SOL" || $typeWallet === "AURA" || $typeWallet === "ALGO" || $typeWallet === "EVM" || $typeWallet === "MOVE" || $typeWallet === "BUNDLE"}
                 <th class="py-3 w-10" />
               {/if}
             </tr>

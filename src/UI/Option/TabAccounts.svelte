@@ -33,13 +33,13 @@
   import User from "~/assets/user.png";
   import Success from "~/assets/shield-done.svg";
 
+  import Move from "~/assets/move.png";
   import All from "~/assets/all.svg";
   import BitcoinLogo from "~/assets/bitcoin.png";
   import SolanaLogo from "~/assets/solana.png";
+  import SuiLogo from "~/assets/sui.png";
   import AuraLogo from "~/assets/aura.png";
   import AlgorandLogo from "~/assets/algorand.png";
-  import ExzoLogo from "~/assets/exzo.png";
-  import KlaytnLogo from "~/assets/klaytn.png";
 
   const MultipleLang = {
     title: i18n("optionsPage.accounts-page-title", "Account Settings"),
@@ -276,6 +276,12 @@
       }
       if (item?.type === "SOL") {
         logo = SolanaLogo;
+      }
+      if (item?.type === "MOVE") {
+        logo = Move;
+      }
+      if (item?.type === "AURA") {
+        logo = AuraLogo;
       }
       if (item?.type === "ALGO") {
         logo = AlgorandLogo;
@@ -1701,16 +1707,16 @@
           </label>
         </div>
         <div class="flex items-center justify-center gap-6 my-3">
-          {#each [{ logo: BitcoinLogo, label: "Bitcoin", value: "BTC" }, { logo: SolanaLogo, label: "Solana", value: "SOL" }, { logo: AlgorandLogo, label: "Algorand", value: "ALGO" }].concat(chainList
+          {#each [{ logo: BitcoinLogo, label: "Bitcoin", value: "BTC" }, { logo: SolanaLogo, label: "Solana", value: "SOL" }, { logo: Move, label: "Move", value: "MOVE" }, { logo: AuraLogo, label: "Aura", value: "AURA" }, { logo: AlgorandLogo, label: "Algorand", value: "ALGO" }].concat(chainList
               .slice(1)
-              .slice(0, -7)) as item}
+              .slice(0, -8)) as item}
             <img
               src={item.logo}
               alt=""
               class="xl:w-8 xl:h-8 w-10 h-10 overflow-hidden rounded-full"
             />
           {/each}
-          <div class="text-gray-400 xl:text-base text-2xl">+7 More</div>
+          <div class="text-gray-400 xl:text-base text-2xl">+8 More</div>
         </div>
         <div class="flex justify-end gap-6 lg:gap-2">
           <div class="lg:w-[120px] w-full">

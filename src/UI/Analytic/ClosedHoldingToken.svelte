@@ -395,8 +395,10 @@
       ? true
       : Boolean(
           ($typeWallet === "EVM" ||
+            $typeWallet === "MOVE" ||
             $typeWallet === "CEX" ||
             $typeWallet === "SOL" ||
+            $typeWallet === "AURA" ||
             $typeWallet === "ALGO" ||
             $typeWallet === "BUNDLE") &&
             $wallet.length !== 0 &&

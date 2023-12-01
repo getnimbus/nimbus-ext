@@ -262,8 +262,10 @@
       chainType !== undefined &&
       chainType.length !== 0 &&
       ($typeWallet === "EVM" ||
+        $typeWallet === "MOVE" ||
         $typeWallet === "ALGO" ||
-        ($typeWallet === "BUNDLE" && chain !== "SOL")),
+        $typeWallet === "AURA" ||
+        ($typeWallet === "BUNDLE" && chain !== "SOL" && chain !== "AURA")),
   });
 
   $: queryTokenPriceSol = createQuery({
@@ -1006,7 +1008,7 @@
     <div class="h-full">
       {#if $queryTokenPrice.isError || $queryTokenPriceSol.isError || (dataPriceChart && dataPriceChart.length === 0)}
         <div
-          class="flex justify-center items-center h-full text-lg text-gray-400 h-[475px]"
+          class="flex justify-center items-center text-lg text-gray-400 h-[475px]"
         >
           Empty
         </div>

@@ -373,8 +373,10 @@
       ? true
       : Boolean(
           ($typeWallet === "EVM" ||
+            $typeWallet === "MOVE" ||
             $typeWallet === "CEX" ||
             $typeWallet === "SOL" ||
+            $typeWallet === "AURA" ||
             $typeWallet === "ALGO" ||
             $typeWallet === "BUNDLE") &&
             $wallet.length !== 0 &&
@@ -450,7 +452,7 @@
           </div>
         </div>
       {/if}
-      {#if $typeWallet === "SOL" || $typeWallet === "ALGO"}
+      {#if $typeWallet === "SOL" || $typeWallet === "AURA" || $typeWallet === "ALGO"}
         <div
           class={`absolute top-0 left-0 rounded-[20px] z-30 w-full h-full flex items-center justify-center ${
             $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
@@ -501,7 +503,7 @@
           {/if}
         </div>
       {/if}
-      {#if $typeWallet === "SOL" || $typeWallet === "ALGO"}
+      {#if $typeWallet === "SOL" || $typeWallet === "AURA" || $typeWallet === "ALGO"}
         <div
           class={`absolute top-0 left-0 rounded-[20px] z-30 w-full h-full flex items-center justify-center ${
             $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
