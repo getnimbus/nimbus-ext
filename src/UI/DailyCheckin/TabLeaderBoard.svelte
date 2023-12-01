@@ -170,7 +170,7 @@
           <tr class="bg-[#FFB800] sticky top-[29px]">
             <th class="py-2 pl-6 font-medium">
               <div
-                class={`flex justify-start text-3xl font-normal w-4 ${
+                class={`flex justify-start font-normal text-3xl w-6 ${
                   !$isDarkMode && "text-[#27326F]"
                 }`}
               >
@@ -252,12 +252,12 @@
                         ? "bg-[#000]"
                         : "bg-gray-100"
                       : $isDarkMode
-                      ? "group-hover:bg-[#000]"
-                      : "group-hover:bg-gray-100"
+                        ? "group-hover:bg-[#000]"
+                        : "group-hover:bg-gray-100"
                   }`}
                 >
                   <div
-                    class={`flex justify-start text-3xl font-normal w-4 ${
+                    class={`flex justify-start text-3xl font-normal w-6 ${
                       !$isDarkMode && "text-[#27326F]"
                     }`}
                   >
@@ -272,8 +272,8 @@
                         ? "bg-[#000]"
                         : "bg-gray-100"
                       : $isDarkMode
-                      ? "group-hover:bg-[#000]"
-                      : "group-hover:bg-gray-100"
+                        ? "group-hover:bg-[#000]"
+                        : "group-hover:bg-gray-100"
                   }`}
                 >
                   <div
@@ -290,8 +290,8 @@
                         ? "bg-[#000]"
                         : "bg-gray-100"
                       : $isDarkMode
-                      ? "group-hover:bg-[#000]"
-                      : "group-hover:bg-gray-100"
+                        ? "group-hover:bg-[#000]"
+                        : "group-hover:bg-gray-100"
                   }`}
                 >
                   <div class="flex items-center justify-end gap-1">
