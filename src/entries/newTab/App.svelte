@@ -62,6 +62,10 @@
   });
 </script>
 
+<svelte:head>
+  <script src="https://terminal.jup.ag/main-v1.js" data-preload></script>
+</svelte:head>
+
 <ErrorBoundary>
   <QueryClientProvider client={queryClient}>
     <Mixpanel>

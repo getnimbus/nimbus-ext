@@ -59,6 +59,8 @@
   let counter = 3;
   let showToast = false;
 
+  let showSideTokenSwap = false;
+
   const trigger = () => {
     showToast = true;
     counter = 3;
@@ -205,6 +207,25 @@
       };
     })
     .filter((item) => Number(item?.amount) !== 0);
+
+  const handleSwapToken = (data: any) => {
+    window.Jupiter.init({
+      // displayMode: "integrated",
+      // integratedTargetId: "integrated-terminal",
+      endpoint:
+        "https://g.w.lavanet.xyz:443/gateway/solana/rpc-http/214a71156b593f98aca0829dcb78a33a",
+      strictTokenList: false,
+      defaultExplorer: "Solscan",
+      formProps: {
+        fixedOutputMint: true,
+        initialAmount: data?.amountRaw,
+        initialInputMint:
+          data?.contractAddress ||
+          "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+        initialOutputMint: "So11111111111111111111111111111111111111112",
+      },
+    });
+  };
 </script>
 
 <svelte:window on:keydown={closeSideTokenDetail} />
@@ -759,17 +780,9 @@
   </td>
 
   <td
-    class={`py-3 ${
-      $typeWallet === "SOL" ||
-      $typeWallet === "AURA" ||
-      $typeWallet === "ALGO" ||
-      $typeWallet === "EVM" ||
-      $typeWallet === "MOVE" ||
-      $typeWallet === "BUNDLE" ||
-      $typeWallet === "CEX"
-        ? ""
-        : "pr-3"
-    } ${$isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"}`}
+    class={`py-3 xl:pr-3 pr-6 ${
+      $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
+    }`}
   >
     <div
       class="flex items-center justify-end gap-1 text-2xl font-medium xl:text-sm view-token-detail2"
@@ -824,7 +837,7 @@
 
   {#if $typeWallet === "SOL" || $typeWallet === "AURA" || $typeWallet === "ALGO" || $typeWallet === "EVM" || $typeWallet === "MOVE" || $typeWallet === "BUNDLE" || $typeWallet === "CEX"}
     <td
-      class={`py-3 xl:w-14 w-32 h-full flex justify-center items-center xl:gap-3 gap-6 ${
+      class={`py-3 xl:w-22 w-32 h-full flex justify-center items-center xl:gap-4 gap-6 ${
         $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
       }`}
       style={`${lastIndex ? "border-bottom-right-radius: 10px;" : ""}`}
@@ -944,6 +957,54 @@
                 />
               </g>
             </svg>
+          </div>
+        </div>
+      {/if}
+
+      {#if $typeWallet === "SOL" || ($typeWallet === "BUNDLE" && data?.chain === "SOL")}
+        <div
+          use:tooltip={{
+            content: `<tooltip-detail text="Swap token" />`,
+            allowHTML: true,
+            placement: "top",
+          }}
+          class="cursor-pointer"
+          on:click={() => {
+            // showSideTokenSwap = true;
+            handleSwapToken(data);
+          }}
+        >
+          <div class="xl:block hidden transform rotate-90">
+            <svg
+              width="22"
+              height="22"
+              viewBox="0 0 21 22"
+              fill={$isDarkMode ? "white" : "#00000080"}
+              xmlns="http://www.w3.org/2000/svg"
+              ><path
+                d="M6.51043 7.47998V14.99H7.77043V7.47998L9.66043 9.36998L10.5505 8.47994L7.5859 5.51453C7.3398 5.26925 6.94114 5.26925 6.69504 5.51453L3.73047 8.47994L4.62051 9.36998L6.51043 7.47998Z"
+                fill={$isDarkMode ? "white" : "#00000080"}
+              ></path><path
+                d="M14.4902 14.52V7.01001H13.2302V14.52L11.3402 12.63L10.4502 13.5201L13.4148 16.4855C13.6609 16.7308 14.0595 16.7308 14.3056 16.4855L17.2702 13.5201L16.3802 12.63L14.4902 14.52Z"
+                fill={$isDarkMode ? "white" : "#00000080"}
+              ></path></svg
+            >
+          </div>
+          <div class="xl:hidden block transform rotate-90">
+            <svg
+              width="42"
+              height="42"
+              viewBox="0 0 21 22"
+              fill={$isDarkMode ? "white" : "#00000080"}
+              xmlns="http://www.w3.org/2000/svg"
+              ><path
+                d="M6.51043 7.47998V14.99H7.77043V7.47998L9.66043 9.36998L10.5505 8.47994L7.5859 5.51453C7.3398 5.26925 6.94114 5.26925 6.69504 5.51453L3.73047 8.47994L4.62051 9.36998L6.51043 7.47998Z"
+                fill={$isDarkMode ? "white" : "#00000080"}
+              ></path><path
+                d="M14.4902 14.52V7.01001H13.2302V14.52L11.3402 12.63L10.4502 13.5201L13.4148 16.4855C13.6609 16.7308 14.0595 16.7308 14.3056 16.4855L17.2702 13.5201L16.3802 12.63L14.4902 14.52Z"
+                fill={$isDarkMode ? "white" : "#00000080"}
+              ></path></svg
+            >
           </div>
         </div>
       {/if}
@@ -1554,6 +1615,24 @@
     {/if}
   </div>
   <TokenDetailSidebar data={selectedTokenDetail} />
+</OverlaySidebar>
+
+<!-- Sidebar Token Swap -->
+<OverlaySidebar isOpen={showSideTokenSwap}>
+  <div class="flex justify-between items-start">
+    <div
+      class="xl:text-5xl text-6xl text-gray-500 cursor-pointer"
+      on:click|stopPropagation={() => {
+        showSideTokenSwap = false;
+      }}
+    >
+      &times;
+    </div>
+    <div>
+      <div>Swap</div>
+      <div id="integrated-terminal"></div>
+    </div>
+  </div>
 </OverlaySidebar>
 
 {#if showToast}
