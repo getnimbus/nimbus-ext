@@ -213,7 +213,7 @@
       displayMode: "integrated",
       integratedTargetId: "integrated-terminal",
       containerStyles: { height: "90vh" },
-      endpoint: "https://rpc.shyft.to?api_key=Qjb6SubTTbLrkmNo",
+      endpoint: "https://g.w.lavanet.xyz:443/gateway/solana/rpc-http/214a71156b593f98aca0829dcb78a33a",
       strictTokenList: false,
       defaultExplorer: "Solscan",
       formProps: {
