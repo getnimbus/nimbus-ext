@@ -15,8 +15,8 @@
   import { useQueryClient } from "@tanstack/svelte-query";
 
   import AppOverlay from "~/components/Overlay.svelte";
-  import GoogleAuth from "~/components/GoogleAuth.svelte";
-  import SolanaAuth from "~/components/SolanaAuth.svelte";
+  import GoogleAuth from "~/UI/Auth/GoogleAuth.svelte";
+  import SolanaAuth from "~/UI/Auth/SolanaAuth.svelte";
 
   import User from "~/assets/user.png";
 
