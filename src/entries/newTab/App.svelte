@@ -63,7 +63,7 @@
 </script>
 
 <svelte:head>
-  <script src="https://terminal.jup.ag/main-v2.js" data-preload></script>
+  <script src="https://terminal.jup.ag/main-v1.js" data-preload></script>
 </svelte:head>
 
 <ErrorBoundary>
