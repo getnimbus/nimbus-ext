@@ -56,14 +56,14 @@
 
   let toastMsg = "";
   let isSuccessToast = false;
-  let counter = 3;
+  let counter = 5;
   let showToast = false;
 
   let showSideTokenSwap = false;
 
   const trigger = () => {
     showToast = true;
-    counter = 3;
+    counter = 5;
     timeout();
   };
 
@@ -223,6 +223,17 @@
           data?.contractAddress ||
           "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
         initialOutputMint: "So11111111111111111111111111111111111111112",
+      },
+      onSuccess: ({ txid }) => {
+        toastMsg = `Swap token successful. Your tx id is ${txid}`;
+        isSuccessToast = true;
+        trigger();
+      },
+      onSwapError: ({ error }) => {
+        console.log("onSwapError", error);
+        toastMsg = "Swap token fail. Please try again!";
+        isSuccessToast = false;
+        trigger();
       },
     });
   };
