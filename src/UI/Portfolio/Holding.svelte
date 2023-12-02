@@ -490,7 +490,7 @@
                   : "bg-[#fff] border border_0000000d"
               }`}
             >
-              <table class="table-auto xl:w-full w-[1800px] h-full">
+              <table class="table-auto xl:w-full w-[2000px] h-full">
                 <thead
                   class={isStickyTableToken ? "sticky top-0 z-10" : ""}
                   bind:this={tableTokenHeader}
@@ -541,7 +541,7 @@
                       </div>
                     </th>
                     <th
-                      class={`py-3 ${
+                      class={`py-3 xl:pr-3 pr-6 ${
                         $typeWallet === "SOL" ||
                         $typeWallet === "AURA" ||
                         $typeWallet === "ALGO" ||
@@ -550,7 +550,7 @@
                         $typeWallet === "BUNDLE" ||
                         $typeWallet === "CEX"
                           ? ""
-                          : "pr-3 rounded-tr-[10px]"
+                          : "rounded-tr-[10px]"
                       }`}
                     >
                       <div
@@ -560,7 +560,7 @@
                       </div>
                     </th>
                     {#if $typeWallet === "SOL" || $typeWallet === "AURA" || $typeWallet === "ALGO" || $typeWallet === "EVM" || $typeWallet === "MOVE" || $typeWallet === "BUNDLE" || $typeWallet === "CEX"}
-                      <th class="py-3 xl:w-12 w-32 rounded-tr-[10px]" />
+                      <th class="py-3 xl:w-22 w-32 rounded-tr-[10px]" />
                     {/if}
                   </tr>
                 </thead>
