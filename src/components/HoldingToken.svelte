@@ -213,7 +213,7 @@
       displayMode: "integrated",
       integratedTargetId: "integrated-terminal",
       containerStyles: { height: "90vh" },
-      endpoint: "https://api.mainnet-beta.solana.com",
+      endpoint: "https://rpc.shyft.to?api_key=Qjb6SubTTbLrkmNo",
       strictTokenList: false,
       defaultExplorer: "Solscan",
       formProps: {
