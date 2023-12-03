@@ -210,8 +210,8 @@
 
   const handleSwapToken = (data: any) => {
     window.Jupiter.init({
-      // displayMode: "integrated",
-      // integratedTargetId: "integrated-terminal",
+      displayMode: "integrated",
+      integratedTargetId: "integrated-terminal",
       endpoint:
         "https://g.w.lavanet.xyz:443/gateway/solana/rpc-http/214a71156b593f98aca0829dcb78a33a",
       strictTokenList: false,
@@ -981,7 +981,7 @@
           }}
           class="cursor-pointer"
           on:click={() => {
-            // showSideTokenSwap = true;
+            showSideTokenSwap = true;
             handleSwapToken(data);
           }}
         >
