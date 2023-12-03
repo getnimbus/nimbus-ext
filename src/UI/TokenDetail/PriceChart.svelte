@@ -230,8 +230,6 @@
     enabled: Boolean(contractAddress || cgId),
   });
 
-  $: console.log(["token-price", contractAddress, chain, time]);
-
   $: {
     if (
       !$queryTokenPrice.isError &&
