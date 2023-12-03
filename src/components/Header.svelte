@@ -658,7 +658,7 @@
         </Link>
       </div>
 
-      <div
+      <!-- <div
         on:click={() => {
           navActive = "news";
         }}
@@ -683,7 +683,7 @@
             </span>
           </div>
         </Link>
-      </div>
+      </div> -->
     </div>
 
     <div class="flex items-center justify-between gap-6 xl:gap-3">
@@ -931,7 +931,7 @@
             </Link>
           </div>
 
-          <div
+          <!-- <div
             on:click={() => {
               navActive = "news";
               isShowHeaderMobile.update((n) => (n = false));
@@ -957,7 +957,7 @@
                 </span>
               </div>
             </Link>
-          </div>
+          </div> -->
 
           {#if $user && Object.keys($user).length !== 0}
             <div

@@ -102,19 +102,19 @@
     $typeWallet === "ALGO" ||
     $typeWallet === "EVM" ||
     $typeWallet === "MOVE" ||
-    $typeWallet === "BUNDLE"
+    ($typeWallet === "BUNDLE" && data?.chain !== "CEX")
       ? 5
       : 4;
 </script>
 
 <ErrorBoundary>
   <PriceChart
-    contractAddress={data?.chain === "CEX"
-      ? data?.cg_id
-      : data?.contractAddress}
+    contractAddress={data?.contractAddress}
+    cgId={data?.cg_id}
     {sellHistoryTradeList}
     {buyHistoryTradeList}
     id={data?.name}
+    symbol={data?.symbol}
     avgCost={data?.profit?.averageCost}
     chain={data?.chain}
   />
@@ -340,7 +340,7 @@
                   $typeWallet === "ALGO" ||
                   $typeWallet === "EVM" ||
                   $typeWallet === "MOVE" ||
-                  $typeWallet === "BUNDLE"
+                  ($typeWallet === "BUNDLE" && data?.chain !== "CEX")
                     ? ""
                     : "pr-3"
                 }`}
@@ -352,7 +352,7 @@
                 </div>
               </th>
 
-              {#if $typeWallet === "SOL" || $typeWallet === "AURA" || $typeWallet === "ALGO" || $typeWallet === "EVM" || $typeWallet === "MOVE" || $typeWallet === "BUNDLE"}
+              {#if $typeWallet === "SOL" || $typeWallet === "AURA" || $typeWallet === "ALGO" || $typeWallet === "EVM" || $typeWallet === "MOVE" || ($typeWallet === "BUNDLE" && data?.chain !== "CEX")}
                 <th class="py-3 w-10" />
               {/if}
             </tr>
