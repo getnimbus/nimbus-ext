@@ -13,7 +13,7 @@
 
   const listSideBar = [
     {
-      label: i18n("checkinPage.tab-daily-checkin", "Daily Checkin"),
+      label: i18n("checkinPage.tab-daily-checkin", "Daily Check in"),
       value: "checkin",
       type: "Daily Checkin",
     },
