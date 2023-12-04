@@ -110,6 +110,11 @@
       typeWallet.update((n) => (n = ""));
       queryClient.invalidateQueries(["list-address"]);
     },
+    onSuccess(data) {
+      if (data.publicAddress) {
+        mixpanel.identify(data.publicAddress);
+      }
+    },
   });
 
   $: {
@@ -134,6 +139,7 @@
     disconnect($wallets$?.[0]);
     queryClient.invalidateQueries(["list-address"]);
     queryClient.invalidateQueries(["users-me"]);
+    mixpanel.reset();
   };
 
   const handleSignAddressMessage = async (provider, signatureString) => {
