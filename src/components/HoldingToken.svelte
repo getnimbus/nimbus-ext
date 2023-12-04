@@ -220,12 +220,11 @@
       strictTokenList: false,
       defaultExplorer: "Solscan",
       formProps: {
-        fixedOutputMint: true,
+        fixedOutputMint: false,
         initialAmount: data?.amountRaw,
         initialInputMint:
           data?.contractAddress ||
-          "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
-        initialOutputMint: "So11111111111111111111111111111111111111112",
+          "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v", // USDC
       },
       onSuccess: ({ txid }) => {
         toastMsg = `Swap token successful. Your tx id is ${txid}`;
