@@ -68,13 +68,11 @@ export const priceSubscribe = (
       const key = `${cmc_id}-${chain}`;
 
       if (chain === "CEX") {
-        if (chainSupport.includes(chain)) {
-          socket.send(JSON.stringify({
-            ids: cmc_id.join(","),
-            type: "mobula",
-            chain: "CEX",
-          }));
-        }
+        socket.send(JSON.stringify({
+          ids: cmc_id.join(","),
+          type: "mobula",
+          chain: "CEX",
+        }));
       }
 
       if (chain !== "CEX") {
