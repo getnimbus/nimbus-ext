@@ -231,7 +231,9 @@
           marketPriceToken?.id.toString().toLowerCase() ===
             item?.contractAddress.toString().toLowerCase() ||
           marketPriceToken?.id.toString().toLowerCase() ===
-            item?.symbol.toString().toLowerCase()
+            item?.symbol?.toString().toLowerCase() ||
+          marketPriceToken?.id.toString().toLowerCase() ===
+            item?.price?.symbol?.toString().toLowerCase()
         ) {
           return {
             ...item,
