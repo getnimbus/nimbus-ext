@@ -616,6 +616,7 @@
                           index}
                         {selectedWallet}
                         sumAllTokens={totalAssets - sumNFT}
+                        index={index + 1}
                       />
                     {/each}
                   </tbody>
