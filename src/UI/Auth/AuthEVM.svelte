@@ -128,18 +128,22 @@
   }
 
   const handleSignOut = () => {
-    user.update((n) => (n = {}));
-    wallet.update((n) => (n = ""));
-    chain.update((n) => (n = ""));
-    typeWallet.update((n) => (n = ""));
-    userPublicAddress.update((n) => (n = ""));
-    showPopover = false;
-    localStorage.removeItem("evm_address");
-    localStorage.removeItem("evm_token");
-    disconnect($wallets$?.[0]);
-    queryClient.invalidateQueries(["list-address"]);
-    queryClient.invalidateQueries(["users-me"]);
-    mixpanel.reset();
+    try {
+      user.update((n) => (n = {}));
+      wallet.update((n) => (n = ""));
+      chain.update((n) => (n = ""));
+      typeWallet.update((n) => (n = ""));
+      userPublicAddress.update((n) => (n = ""));
+      showPopover = false;
+      localStorage.removeItem("evm_address");
+      localStorage.removeItem("evm_token");
+      disconnect($wallets$?.[0]);
+      queryClient.invalidateQueries(["list-address"]);
+      queryClient.invalidateQueries(["users-me"]);
+      mixpanel.reset();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleSignAddressMessage = async (provider, signatureString) => {
