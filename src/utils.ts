@@ -598,8 +598,8 @@ export const linkExplorer = (chain, hash) => {
       break;
     case "AURA":
       links = {
-        trx: `https://aurascan.io/contracts/${hash}`,
-        address: `https://aurascan.io/transaction/${hash}`,
+        trx: `https://aurascan.io/transaction/${hash}`,
+        address: `https://aurascan.io/account/${hash}`,
       };
       break;
     case "ALGO":
