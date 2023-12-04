@@ -13,6 +13,7 @@
   import { nimbus } from "~/lib/network";
   import { handleGetAccessToken } from "~/utils";
   import { useQueryClient } from "@tanstack/svelte-query";
+  import mixpanel from "mixpanel-browser";
 
   import AppOverlay from "~/components/Overlay.svelte";
   import GoogleAuth from "~/UI/Auth/GoogleAuth.svelte";
@@ -102,6 +103,7 @@
     $walletStore.disconnect();
     queryClient.invalidateQueries(["list-address"]);
     queryClient.invalidateQueries(["users-me"]);
+    mixpanel.reset();
   };
 
   $: {

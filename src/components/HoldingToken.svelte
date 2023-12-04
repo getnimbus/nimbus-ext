@@ -9,6 +9,7 @@
   import { i18n } from "~/lib/i18n";
   import CopyToClipboard from "svelte-copy-to-clipboard";
   import { wait } from "../entries/background/utils";
+  import mixpanel from "mixpanel-browser";
 
   import Tooltip from "~/components/Tooltip.svelte";
   import "~/components/Tooltip.custom.svelte";
@@ -210,8 +211,8 @@
 
   const handleSwapToken = (data: any) => {
     window.Jupiter.init({
-      // displayMode: "integrated",
-      // integratedTargetId: "integrated-terminal",
+      displayMode: "integrated",
+      integratedTargetId: "integrated-terminal",
       endpoint:
         "https://g.w.lavanet.xyz:443/gateway/solana/rpc-http/214a71156b593f98aca0829dcb78a33a",
       strictTokenList: false,
@@ -237,6 +238,14 @@
       },
     });
   };
+  $: {
+    if (showSideTokenDetail) {
+      mixpanel.track("token_detail_page", {
+        address: selectedWallet,
+        token_address: selectedTokenDetail?.contract_address || "",
+      });
+    }
+  }
 </script>
 
 <svelte:window on:keydown={closeSideTokenDetail} />
@@ -981,7 +990,7 @@
           }}
           class="cursor-pointer"
           on:click={() => {
-            // showSideTokenSwap = true;
+            showSideTokenSwap = true;
             handleSwapToken(data);
           }}
         >

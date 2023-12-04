@@ -125,7 +125,7 @@
   };
   let selectedDataPieChart = {};
 
-  let chainListSelected = [];
+  let chainListQueries = [];
 
   // overview
   const getOverview = async (address, chain) => {
@@ -561,7 +561,11 @@
     queryKey: ["nft-holding", $wallet, $chain],
     queryFn: () => getHoldingNFT($wallet, $chain),
     staleTime: Infinity,
-    enabled: enabledFetchAllData && $wallet.length !== 0 && $chain !== "ALL",
+    enabled:
+      enabledFetchAllData &&
+      $wallet.length !== 0 &&
+      $chain.length !== 0 &&
+      $chain !== "ALL",
   });
 
   $: queryAllNftHolding = createQueries(
@@ -571,7 +575,10 @@
         queryFn: () => getHoldingNFT($wallet, item),
         staleTime: Infinity,
         enabled:
-          enabledFetchAllData && $wallet.length !== 0 && $chain === "ALL",
+          enabledFetchAllData &&
+          $wallet.length !== 0 &&
+          $chain.length !== 0 &&
+          $chain === "ALL",
       };
     })
   );
@@ -609,7 +616,11 @@
     queryKey: ["token-holding", $wallet, $chain],
     queryFn: () => getHoldingToken($wallet, $chain),
     staleTime: Infinity,
-    enabled: enabledFetchAllData && $wallet.length !== 0 && $chain !== "ALL",
+    enabled:
+      enabledFetchAllData &&
+      $wallet.length !== 0 &&
+      $chain.length !== 0 &&
+      $chain !== "ALL",
   });
 
   $: queryAllTokenHolding = createQueries(
@@ -619,7 +630,10 @@
         queryFn: () => getHoldingToken($wallet, item),
         staleTime: Infinity,
         enabled:
-          enabledFetchAllData && $wallet.length !== 0 && $chain === "ALL",
+          enabledFetchAllData &&
+          $wallet.length !== 0 &&
+          $chain.length !== 0 &&
+          $chain === "ALL",
       };
     })
   );
@@ -735,18 +749,14 @@
         $queryOverview.isFetching;
 
   $: {
-    if ($typeWallet === "EVM") {
-      chainListSelected = chainList;
-    }
-    if ($typeWallet === "MOVE") {
-      chainListSelected = chainMoveList;
+    if ($typeWallet?.length !== 0 && $typeWallet === "EVM") {
+      chainListQueries = chainList.slice(1).map((item) => item.value);
+    } else if ($typeWallet?.length !== 0 && $typeWallet === "MOVE") {
+      chainListQueries = chainMoveList.slice(1).map((item) => item.value);
+    } else {
+      chainListQueries = [chainMoveList[0]?.value];
     }
   }
-
-  $: chainListQueries =
-    $typeWallet?.length !== 0 && $typeWallet !== "EVM" && $typeWallet !== "MOVE"
-      ? [chainListSelected[0]?.value]
-      : chainListSelected.slice(1).map((item) => item.value);
 
   $: {
     if ($triggerUpdateBundle) {
