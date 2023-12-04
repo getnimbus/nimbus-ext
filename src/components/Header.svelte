@@ -745,11 +745,14 @@
         >
           <Link to="daily-checkin">
             <div
-              class={`rounded-full flex justify-center items-center xl:w-10 xl:h-10 w-12 h-12 ${
+              class={`rounded-full flex justify-center items-center gap-1 px-2 py-1 ${
                 $isDarkMode ? "bg-[#212121]" : "bg-[#525B8C]"
               }`}
             >
-              <img src={goldImg} alt="" class="w-[26px] h-[26px]" />
+              <img src={goldImg} alt="" class="w-[28px] h-[28px]" />
+              <span class="text-yellow-400 font-medium">
+                {$queryUserInfo?.data?.totalPoint || 0}
+              </span>
             </div>
           </Link>
         </div>
