@@ -658,7 +658,7 @@
         </Link>
       </div>
 
-      <div
+      <!-- <div
         on:click={() => {
           navActive = "news";
         }}
@@ -683,7 +683,7 @@
             </span>
           </div>
         </Link>
-      </div>
+      </div> -->
     </div>
 
     <div class="flex items-center justify-between gap-6 xl:gap-3">
