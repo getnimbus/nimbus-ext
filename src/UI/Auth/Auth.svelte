@@ -93,17 +93,21 @@
   };
 
   const handleSignOut = () => {
-    user.update((n) => (n = {}));
-    showPopover = false;
-    localStorage.removeItem("token");
-    localStorage.removeItem("solana_address");
-    localStorage.removeItem("solana_token");
-    addressWallet = "";
-    signMessageAddress = "";
-    $walletStore.disconnect();
-    queryClient.invalidateQueries(["list-address"]);
-    queryClient.invalidateQueries(["users-me"]);
-    mixpanel.reset();
+    try {
+      user.update((n) => (n = {}));
+      showPopover = false;
+      localStorage.removeItem("token");
+      localStorage.removeItem("solana_address");
+      localStorage.removeItem("solana_token");
+      addressWallet = "";
+      signMessageAddress = "";
+      $walletStore.disconnect();
+      queryClient.invalidateQueries(["list-address"]);
+      queryClient.invalidateQueries(["users-me"]);
+      mixpanel.reset();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   $: {

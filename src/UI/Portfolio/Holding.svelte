@@ -107,6 +107,24 @@
           "chain"
         );
 
+        const filteredUndefinedCmcHoldingTokenData = dataTokenHolding?.filter(
+          (item) => item?.cmc_id === undefined
+        );
+
+        if (
+          $typeWallet === "CEX" &&
+          filteredUndefinedCmcHoldingTokenData.length > 0
+        ) {
+          filteredUndefinedCmcHoldingTokenData.map((item) => {
+            priceSubscribe([item?.symbol], false, "CEX", (data) => {
+              marketPriceToken = {
+                id: data.id,
+                market_price: data.price,
+              };
+            });
+          });
+        }
+
         const chainList = Object.keys(groupFilteredNullCmcHoldingTokenData);
 
         chainList.map((chain) => {
@@ -167,12 +185,17 @@
       });
 
       filteredData?.map((item) => {
-        priceSubscribe([Number(item?.cmcId)], false, "", (data) => {
-          marketPriceToken = {
-            id: data.id,
-            market_price: data.price,
-          };
-        });
+        priceSubscribe(
+          [Number(item?.cmcId)],
+          false,
+          $typeWallet !== "CEX" ? "" : "CEX",
+          (data) => {
+            marketPriceToken = {
+              id: data.id,
+              market_price: data.price,
+            };
+          }
+        );
       });
     }
   }
