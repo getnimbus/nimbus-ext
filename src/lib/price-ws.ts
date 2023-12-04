@@ -46,6 +46,8 @@ interface IPriceRealtime {
 
 const cached: Record<string, IPriceRealtime> = {};
 
+const chainSupport = ["ETH", "FTM", "ARB", "AVAX", "OP", "MATIC", "XDAI", "BNB", "BASE", "CRONOS", "KLAY"]
+
 export const priceSubscribe = (
   cmc_id: number[] | string[],
   isNullCmcId: boolean,
@@ -65,22 +67,35 @@ export const priceSubscribe = (
 
       const key = `${cmc_id}-${chain}`;
 
-      if (isNullCmcId) {
-        if (cached[key]) {
-          // Return from cache
-          callback(cached[key]);
-        } else {
-          socket.send(
-            JSON.stringify({
-              ids: cmc_id.join(","),
-              // type: chain === "ETH" ? "ethereum" : "mobula",
-              type: "mobula",
-              chain: chain,
-            })
-          );
+      if (chain === "CEX") {
+        if (chainSupport.includes(chain)) {
+          socket.send(JSON.stringify({
+            ids: cmc_id.join(","),
+            type: "mobula",
+            chain: "CEX",
+          }));
         }
-      } else {
-        socket.send(JSON.stringify({ ids: cmc_id.join(",") }));
+      }
+
+      if (chain !== "CEX") {
+        if (isNullCmcId) {
+          if (cached[key]) {
+            // Return from cache
+            callback(cached[key]);
+          } else {
+            if (chainSupport.includes(chain)) {
+              socket.send(
+                JSON.stringify({
+                  ids: cmc_id.join(","),
+                  type: "mobula",
+                  chain: chain,
+                })
+              );
+            }
+          }
+        } else {
+          socket.send(JSON.stringify({ ids: cmc_id.join(",") }));
+        }
       }
 
       socket.addEventListener("message", (ev) => {
