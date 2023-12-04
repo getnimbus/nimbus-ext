@@ -313,8 +313,9 @@
   };
 
   const getHoldingToken = async (address, chain) => {
+    console.log("chain: ", chain);
     const response: HoldingTokenRes = await nimbus
-      .get(`/v2/address/${address}/holding?chain=${chain}`)
+      .get(`/v2/address/${address}/holding?chain=${chain || "ALL"}`)
       .then((response) => response.data);
     return response;
   };
@@ -350,7 +351,7 @@
   // nft holding
   const getHoldingNFT = async (address, chain) => {
     const response: HoldingNFTRes = await nimbus
-      .get(`/v2/address/${address}/nft-holding?chain=${chain}`)
+      .get(`/v2/address/${address}/nft-holding?chain=${chain || "ALL"}`)
       .then((response) => response?.data);
     return response;
   };
@@ -561,7 +562,11 @@
     queryKey: ["nft-holding", $wallet, $chain],
     queryFn: () => getHoldingNFT($wallet, $chain),
     staleTime: Infinity,
-    enabled: enabledFetchAllData && $wallet.length !== 0 && $chain !== "ALL",
+    enabled:
+      enabledFetchAllData &&
+      $wallet.length !== 0 &&
+      $chain.length !== 0 &&
+      $chain !== "ALL",
   });
 
   $: queryAllNftHolding = createQueries(
@@ -571,7 +576,10 @@
         queryFn: () => getHoldingNFT($wallet, item),
         staleTime: Infinity,
         enabled:
-          enabledFetchAllData && $wallet.length !== 0 && $chain === "ALL",
+          enabledFetchAllData &&
+          $wallet.length !== 0 &&
+          $chain.length !== 0 &&
+          $chain === "ALL",
       };
     })
   );
@@ -609,7 +617,11 @@
     queryKey: ["token-holding", $wallet, $chain],
     queryFn: () => getHoldingToken($wallet, $chain),
     staleTime: Infinity,
-    enabled: enabledFetchAllData && $wallet.length !== 0 && $chain !== "ALL",
+    enabled:
+      enabledFetchAllData &&
+      $wallet.length !== 0 &&
+      $chain.length !== 0 &&
+      $chain !== "ALL",
   });
 
   $: queryAllTokenHolding = createQueries(
@@ -619,7 +631,10 @@
         queryFn: () => getHoldingToken($wallet, item),
         staleTime: Infinity,
         enabled:
-          enabledFetchAllData && $wallet.length !== 0 && $chain === "ALL",
+          enabledFetchAllData &&
+          $wallet.length !== 0 &&
+          $chain.length !== 0 &&
+          $chain === "ALL",
       };
     })
   );
