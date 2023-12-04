@@ -260,7 +260,6 @@
     if (marketPriceToken) {
       // update data token holding
       const formatDataWithMarketPrice = formatData.map((item) => {
-        console.log("item: ", item);
         if (
           marketPriceToken?.id.toString().toLowerCase() ===
             item?.cmc_id?.toString().toLowerCase() ||
