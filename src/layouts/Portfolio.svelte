@@ -125,7 +125,7 @@
   };
   let selectedDataPieChart = {};
 
-  let chainListSelected = [];
+  let chainListQueries = [];
 
   // overview
   const getOverview = async (address, chain) => {
@@ -313,9 +313,8 @@
   };
 
   const getHoldingToken = async (address, chain) => {
-    console.log("chain: ", chain);
     const response: HoldingTokenRes = await nimbus
-      .get(`/v2/address/${address}/holding?chain=${chain || "ALL"}`)
+      .get(`/v2/address/${address}/holding?chain=${chain}`)
       .then((response) => response.data);
     return response;
   };
@@ -351,7 +350,7 @@
   // nft holding
   const getHoldingNFT = async (address, chain) => {
     const response: HoldingNFTRes = await nimbus
-      .get(`/v2/address/${address}/nft-holding?chain=${chain || "ALL"}`)
+      .get(`/v2/address/${address}/nft-holding?chain=${chain}`)
       .then((response) => response?.data);
     return response;
   };
@@ -750,18 +749,14 @@
         $queryOverview.isFetching;
 
   $: {
-    if ($typeWallet === "EVM") {
-      chainListSelected = chainList;
-    }
-    if ($typeWallet === "MOVE") {
-      chainListSelected = chainMoveList;
+    if ($typeWallet?.length !== 0 && $typeWallet === "EVM") {
+      chainListQueries = chainList.slice(1).map((item) => item.value);
+    } else if ($typeWallet?.length !== 0 && $typeWallet === "MOVE") {
+      chainListQueries = chainMoveList.slice(1).map((item) => item.value);
+    } else {
+      chainListQueries = [chainMoveList[0]?.value];
     }
   }
-
-  $: chainListQueries =
-    $typeWallet?.length !== 0 && $typeWallet !== "EVM" && $typeWallet !== "MOVE"
-      ? [chainListSelected[0]?.value]
-      : chainListSelected.slice(1).map((item) => item.value);
 
   $: {
     if ($triggerUpdateBundle) {
