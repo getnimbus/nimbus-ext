@@ -31,6 +31,8 @@
   import TrendUp from "~/assets/trend-up.svg";
   import defaultToken from "~/assets/defaultToken.png";
 
+  export let address;
+  export let isShowSoon;
   export let isSync = false;
   export let enabledFetchAllData = false;
 
@@ -408,7 +410,7 @@
   $: theme = $isDarkMode ? "dark" : "white";
 </script>
 
-<AnalyticSection>
+<AnalyticSection {address} {isShowSoon}>
   <span slot="title">
     <div class="flex justify-start text-4xl font-medium xl:text-2xl">
       Closed Positions
@@ -504,9 +506,9 @@
       {/if}
       {#if $typeWallet === "CEX"}
         <div
-          class={`absolute top-0 left-0 rounded-[20px] z-30 w-full h-full flex items-center justify-center ${
+          class={`absolute top-0 left-0 rounded-[20px] z-30 w-full h-full flex items-center justify-center z-10 backdrop-blur-md ${
             $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
-          } z-10 backdrop-blur-md`}
+          }`}
         >
           <div class="text-2xl xl:text-lg">Coming soon 🚀</div>
         </div>
@@ -600,9 +602,9 @@
       {/if}
       {#if $typeWallet === "CEX"}
         <div
-          class={`absolute top-0 left-0 rounded-[20px] z-30 w-full h-full flex items-center justify-center ${
+          class={`absolute top-0 left-0 rounded-[20px] z-30 w-full h-full flex items-center justify-center z-10 backdrop-blur-md ${
             $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
-          } z-10 backdrop-blur-md`}
+          }`}
         >
           <div class="text-2xl xl:text-lg">Coming soon 🚀</div>
         </div>

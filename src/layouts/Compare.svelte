@@ -132,8 +132,8 @@
                           ? "#05a878"
                           : "#f25f5d"
                         : $isDarkMode
-                        ? "white"
-                        : "black"
+                          ? "white"
+                          : "black"
                     };">
                         ${
                           params[0]?.axisValue === "Volatility" ||
@@ -141,11 +141,11 @@
                             ? formatPercent(Math.abs(item.value))
                             : formatCurrency(Math.abs(item.value))
                         }${
-                    params[0]?.axisValue === "Volatility" ||
-                    params[0]?.axisValue === "Max drawdown"
-                      ? "%"
-                      : ""
-                  }
+                          params[0]?.axisValue === "Volatility" ||
+                          params[0]?.axisValue === "Max drawdown"
+                            ? "%"
+                            : ""
+                        }
                     </div>
                   </div>
                 </div>
@@ -1378,9 +1378,9 @@
 
     {#if $selectedPackage === "FREE"}
       <div
-        class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center justify-center gap-3 ${
+        class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center justify-center gap-3 z-30 backdrop-blur-md ${
           $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
-        } z-30 backdrop-blur-md`}
+        }`}
       >
         <div class="flex flex-col items-center gap-1">
           <div class="text-lg font-medium">

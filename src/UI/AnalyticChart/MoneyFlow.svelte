@@ -15,6 +15,8 @@
   import Logo from "~/assets/logo-1.svg";
   import LogoWhite from "~/assets/logo-white.svg";
 
+  export let address;
+  export let isShowSoon;
   export let packageSelected;
   export let selectedTimeFrame;
   export let isSync = false;
@@ -386,7 +388,7 @@
   $: theme = $isDarkMode ? "dark" : "white";
 </script>
 
-<AnalyticSection>
+<AnalyticSection {address} {isShowSoon}>
   <span slot="title">
     <div class="flex justify-start text-4xl font-medium xl:text-2xl">
       Money flow
@@ -454,9 +456,9 @@
       {/if}
       {#if $typeWallet === "SOL" || $typeWallet === "AURA" || $typeWallet === "ALGO"}
         <div
-          class={`absolute top-0 left-0 rounded-[20px] z-30 w-full h-full flex items-center justify-center ${
+          class={`absolute top-0 left-0 rounded-[20px] z-30 w-full h-full flex items-center justify-center z-10 backdrop-blur-md ${
             $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
-          } z-10 backdrop-blur-md`}
+          }`}
         >
           <div class="text-2xl xl:text-lg">Coming soon 🚀</div>
         </div>
@@ -505,9 +507,9 @@
       {/if}
       {#if $typeWallet === "SOL" || $typeWallet === "AURA" || $typeWallet === "ALGO"}
         <div
-          class={`absolute top-0 left-0 rounded-[20px] z-30 w-full h-full flex items-center justify-center ${
+          class={`absolute top-0 left-0 rounded-[20px] z-30 w-full h-full flex items-center justify-center z-10 backdrop-blur-md ${
             $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
-          } z-10 backdrop-blur-md`}
+          }`}
         >
           <div class="text-2xl xl:text-lg">Coming soon 🚀</div>
         </div>
