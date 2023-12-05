@@ -399,7 +399,7 @@
     <div class="h-full">
       {#if $queryHistoryTokenDetailAnalysis.isError || ($queryHistoryTokenDetailAnalysis.data !== undefined && $queryHistoryTokenDetailAnalysis.data.length === 0)}
         <div
-          class="flex justify-center items-center h-full text-lg text-gray-400 h-[475px]"
+          class="flex justify-center items-center text-lg text-gray-400 h-[475px]"
         >
           Empty
         </div>

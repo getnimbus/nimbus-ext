@@ -7,7 +7,7 @@
   import { groupBy, isEmpty, flatten } from "lodash";
   import { onMount } from "svelte";
   import { i18n } from "~/lib/i18n";
-  import { chainList, driverObj } from "~/utils";
+  import { chainList, chainMoveList, driverObj } from "~/utils";
   import { wait } from "../entries/background/utils";
   import {
     wallet,
@@ -125,6 +125,8 @@
   };
   let selectedDataPieChart = {};
 
+  let chainListQueries = [];
+
   // overview
   const getOverview = async (address, chain) => {
     const response: OverviewDataRes = await nimbus
@@ -219,12 +221,19 @@
       isEmptyDataPieTokens = false;
     }
 
-    const sumToken = (data || []).reduce(
-      (prev, item) => prev + Number(item.value),
+    const formatData = data.map((item) => {
+      return {
+        ...item,
+        value: Number(item?.amount || 0) * Number(item?.price?.price || 0),
+      };
+    });
+
+    const sumToken = (formatData || []).reduce(
+      (prev, item) => prev + Number(item?.value),
       0
     );
 
-    const sortBreakdownToken = data?.sort((a, b) => {
+    const sortBreakdownToken = formatData?.sort((a, b) => {
       if (a.value < b.value) {
         return 1;
       }
@@ -302,7 +311,8 @@
 
   // token holding
   const getVaults = async (address, chain) => {
-    let type = $typeWallet === "SOL" || $typeWallet === "ALGO";
+    let type =
+      $typeWallet === "SOL" || $typeWallet === "AURA" || $typeWallet === "ALGO";
     const response = await nimbus.get(
       `/v2/investment/${address}/vaults?chain=${type ? $typeWallet : ""}`
     );
@@ -558,7 +568,11 @@
     queryKey: ["nft-holding", $wallet, $chain],
     queryFn: () => getHoldingNFT($wallet, $chain),
     staleTime: Infinity,
-    enabled: enabledFetchAllData && $wallet.length !== 0 && $chain !== "ALL",
+    enabled:
+      enabledFetchAllData &&
+      $wallet.length !== 0 &&
+      $chain.length !== 0 &&
+      $chain !== "ALL",
   });
 
   $: queryAllNftHolding = createQueries(
@@ -568,7 +582,10 @@
         queryFn: () => getHoldingNFT($wallet, item),
         staleTime: Infinity,
         enabled:
-          enabledFetchAllData && $wallet.length !== 0 && $chain === "ALL",
+          enabledFetchAllData &&
+          $wallet.length !== 0 &&
+          $chain.length !== 0 &&
+          $chain === "ALL",
       };
     })
   );
@@ -606,7 +623,11 @@
     queryKey: ["token-holding", $wallet, $chain],
     queryFn: () => getHoldingToken($wallet, $chain),
     staleTime: Infinity,
-    enabled: enabledFetchAllData && $wallet.length !== 0 && $chain !== "ALL",
+    enabled:
+      enabledFetchAllData &&
+      $wallet.length !== 0 &&
+      $chain.length !== 0 &&
+      $chain !== "ALL",
   });
 
   $: queryAllTokenHolding = createQueries(
@@ -616,7 +637,10 @@
         queryFn: () => getHoldingToken($wallet, item),
         staleTime: Infinity,
         enabled:
-          enabledFetchAllData && $wallet.length !== 0 && $chain === "ALL",
+          enabledFetchAllData &&
+          $wallet.length !== 0 &&
+          $chain.length !== 0 &&
+          $chain === "ALL",
       };
     })
   );
@@ -731,10 +755,15 @@
         $queryVaults.isFetching &&
         $queryOverview.isFetching;
 
-  $: chainListQueries =
-    $typeWallet?.length !== 0 && $typeWallet !== "EVM"
-      ? [chainList[0].value]
-      : chainList.slice(1).map((item) => item.value);
+  $: {
+    if ($typeWallet?.length !== 0 && $typeWallet === "EVM") {
+      chainListQueries = chainList.slice(1).map((item) => item.value);
+    } else if ($typeWallet?.length !== 0 && $typeWallet === "MOVE") {
+      chainListQueries = chainMoveList.slice(1).map((item) => item.value);
+    } else {
+      chainListQueries = [chainMoveList[0]?.value];
+    }
+  }
 
   $: {
     if ($triggerUpdateBundle) {
@@ -830,7 +859,7 @@
                 {dataOverviewBundlePieChart}
               />
 
-              <!-- {#if $typeWallet === "EVM" || $typeWallet === "CEX" || $typeWallet === "BUNDLE"}
+              <!-- {#if $typeWallet === "EVM" || $typeWallet === "MOVE" || $typeWallet === "CEX" || $typeWallet === "BUNDLE"}
                 <RiskReturn
                   isLoading={$queryCompare.isFetching}
                   isError={$queryCompare.isError}

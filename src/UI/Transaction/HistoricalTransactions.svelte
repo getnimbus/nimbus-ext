@@ -104,7 +104,7 @@
                         class="object-contain w-5 h-5"
                       />
                     {/if}
-                    {#if $typeWallet === "EVM"}
+                    {#if $typeWallet === "EVM" || $typeWallet === "MOVE"}
                       <Copy
                         address={item?.transaction_hash}
                         textTooltip="Copy transaction to clipboard"
@@ -142,7 +142,7 @@
             >
               {#if item?.detail?.from}
                 <div class="text-2xl w-max xl:text-sm">
-                  {#if $typeWallet === "EVM"}
+                  {#if $typeWallet === "EVM" || $typeWallet === "MOVE"}
                     <Copy
                       address={item?.detail?.from}
                       iconColor={`${$isDarkMode ? "#fff" : "#000"}`}
@@ -176,7 +176,7 @@
             >
               {#if item?.detail?.to}
                 <div class="text-2xl w-max xl:text-sm">
-                  {#if $typeWallet === "EVM"}
+                  {#if $typeWallet === "EVM" || $typeWallet === "MOVE"}
                     <Copy
                       address={item?.detail?.to}
                       iconColor={`${$isDarkMode ? "#fff" : "#000"}`}
@@ -288,7 +288,7 @@
   </div>
 {/if}
 
-{#if $typeWallet !== "SOL" && $typeWallet !== "ALGO" && $typeWallet !== "CEX"}
+{#if $typeWallet !== "SOL" && $typeWallet !== "AURA" && $typeWallet !== "ALGO" && $typeWallet !== "CEX"}
   <div class="flex items-center gap-2">
     <a href="https://mobula.fi/" target="_blank">
       <img

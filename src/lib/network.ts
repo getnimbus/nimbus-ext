@@ -8,9 +8,13 @@ interface IOption {
   getHeaderAuthorize: () => void;
 }
 
+interface IReqOption {
+  params?: Record<string, any>;
+}
+
 const createAxiosInterface = ({ baseURL, getHeaderAuthorize }: IOption) => {
   return {
-    get<T>(url: string, config?: any): Promise<T> {
+    get<T>(url: string, config?: IReqOption): Promise<T> {
       const apiUrl = new URL(`${baseURL}${url}`);
       if (config?.params) {
         Object.keys(config.params).forEach((key) =>
@@ -32,7 +36,7 @@ const createAxiosInterface = ({ baseURL, getHeaderAuthorize }: IOption) => {
         return await response.json();
       });
     },
-    post<T>(url: string, body: any, config?: any): Promise<T> {
+    post<T>(url: string, body: any, config?: IReqOption): Promise<T> {
       const apiUrl = new URL(`${baseURL}${url}`);
       if (config?.params) {
         Object.keys(config.params).forEach((key) =>
@@ -91,12 +95,12 @@ const createAxiosInterface = ({ baseURL, getHeaderAuthorize }: IOption) => {
 
 export const messari = createAxiosInterface({
   baseURL: "https://data.messari.io/api/v1",
-  getHeaderAuthorize: () => { },
+  getHeaderAuthorize: () => {},
 });
 
 export const coinGeko = createAxiosInterface({
   baseURL: "https://api.coingecko.com/api/v3",
-  getHeaderAuthorize: () => { },
+  getHeaderAuthorize: () => {},
 });
 
 export const API_URL =
@@ -118,22 +122,22 @@ export const nimbus = createAxiosInterface({
 
 export const defillama = createAxiosInterface({
   baseURL: "https://coins.llama.fi",
-  getHeaderAuthorize: () => { },
+  getHeaderAuthorize: () => {},
 });
 
 export const coinmarketcap = createAxiosInterface({
   baseURL: "https://s3.coinmarketcap.com",
-  getHeaderAuthorize: () => { },
+  getHeaderAuthorize: () => {},
 });
 
 export const mixpanel = createAxiosInterface({
   baseURL: "https://api.mixpanel.com",
-  getHeaderAuthorize: () => { },
+  getHeaderAuthorize: () => {},
 });
 
 export const goplus = createAxiosInterface({
   baseURL: "https://api.gopluslabs.io/api/v1",
-  getHeaderAuthorize: () => { },
+  getHeaderAuthorize: () => {},
 });
 
 export const mobula = createAxiosInterface({
@@ -141,16 +145,16 @@ export const mobula = createAxiosInterface({
   getHeaderAuthorize: () => {
     return {
       Authorization: "fe18f8be-644a-45a8-ad05-b088a5e61764",
-    }
+    };
   },
 });
 
 export const nimbusApi = createAxiosInterface({
   baseURL: "https://nimbus-api-production.up.railway.app/api",
-  getHeaderAuthorize: () => { },
+  getHeaderAuthorize: () => {},
 });
 
 export const aptos = createAxiosInterface({
   baseURL: "https://aptos-celebtron-api.getnimbus.io/api/v1",
-  getHeaderAuthorize: () => { },
+  getHeaderAuthorize: () => {},
 });

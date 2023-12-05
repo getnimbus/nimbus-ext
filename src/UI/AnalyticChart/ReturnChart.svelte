@@ -26,6 +26,8 @@
   import Logo from "~/assets/logo-1.svg";
   import LogoWhite from "~/assets/logo-white.svg";
 
+  export let address;
+  export let isShowSoon;
   export let selectedTimeFrame;
   export let isSync = false;
   export let enabledFetchAllData = false;
@@ -117,8 +119,10 @@
       ? true
       : Boolean(
           ($typeWallet === "EVM" ||
+            $typeWallet === "MOVE" ||
             $typeWallet === "CEX" ||
             $typeWallet === "SOL" ||
+            $typeWallet === "AURA" ||
             $typeWallet === "ALGO" ||
             $typeWallet === "BUNDLE") &&
             $wallet.length !== 0 &&
@@ -239,7 +243,7 @@
   $: theme = $isDarkMode ? "dark" : "white";
 </script>
 
-<AnalyticSection>
+<AnalyticSection {address} {isShowSoon}>
   <span slot="title">
     <div class="flex justify-start text-4xl font-medium xl:text-2xl">
       <TooltipTitle

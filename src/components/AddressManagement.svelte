@@ -24,6 +24,7 @@
     listProviderCEX,
     clickOutside,
     driverObj,
+    chainMoveList,
   } from "~/utils";
   import mixpanel from "mixpanel-browser";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
@@ -53,14 +54,13 @@
   import FollowWhale from "~/assets/whale-tracking.gif";
   import Success from "~/assets/shield-done.svg";
 
+  import Move from "~/assets/move.png";
   import All from "~/assets/all.svg";
   import Bundles from "~/assets/bundles.png";
   import BitcoinLogo from "~/assets/bitcoin.png";
   import SolanaLogo from "~/assets/solana.png";
   import AuraLogo from "~/assets/aura.png";
   import AlgorandLogo from "~/assets/algorand.png";
-  import ExzoLogo from "~/assets/exzo.png";
-  import KlaytnLogo from "~/assets/klaytn.png";
 
   const MultipleLang = {
     empty_wallet: i18n("newtabPage.empty-wallet", "No account added yet."),
@@ -313,6 +313,7 @@
       if (
         typeParams === "BTC" ||
         typeParams === "SOL" ||
+        typeParams === "AURA" ||
         typeParams === "ALGO"
       ) {
         window.history.replaceState(
@@ -322,7 +323,7 @@
         );
       }
 
-      if (typeParams === "EVM") {
+      if (typeParams === "EVM" || typeParams === "MOVE") {
         window.history.replaceState(
           null,
           "",
@@ -334,12 +335,13 @@
 
     // if no chain params and list address is not empty
     if (!chainParams && listAddress.length !== 0 && typeParams) {
-      if (typeParams === "EVM") {
+      if (typeParams === "EVM" || typeParams === "MOVE") {
         chain.update((n) => (n = "ALL"));
       }
       if (
         typeParams === "BTC" ||
         typeParams === "SOL" ||
+        typeParams === "AURA" ||
         typeParams === "ALGO"
       ) {
         window.history.replaceState(
@@ -395,9 +397,36 @@
         );
       }
 
+      if (selected.type === "MOVE") {
+        typeWallet.update((n) => (n = "MOVE"));
+        browser.storage.sync.set({ typeWalletAddress: "MOVE" });
+        if ($chain) {
+          chain.update((n) => (n = $chain));
+        } else {
+          chain.update((n) => (n = "ALL"));
+        }
+        window.history.replaceState(
+          null,
+          "",
+          window.location.pathname +
+            `?type=${$typeWallet}&chain=${$chain}&address=${$wallet}`
+        );
+      }
+
       if (selected.type === "SOL") {
         typeWallet.update((n) => (n = "SOL"));
         browser.storage.sync.set({ typeWalletAddress: "SOL" });
+        chain.update((n) => (n = "ALL"));
+        window.history.replaceState(
+          null,
+          "",
+          window.location.pathname + `?type=${$typeWallet}&address=${$wallet}`
+        );
+      }
+
+      if (selected.type === "AURA") {
+        typeWallet.update((n) => (n = "AURA"));
+        browser.storage.sync.set({ typeWalletAddress: "AURA" });
         chain.update((n) => (n = "ALL"));
         window.history.replaceState(
           null,
@@ -439,6 +468,12 @@
       if (item?.type === "SOL") {
         logo = SolanaLogo;
       }
+      if (item?.type === "MOVE") {
+        logo = Move;
+      }
+      if (item?.type === "AURA") {
+        logo = AuraLogo;
+      }
       if (item?.type === "ALGO") {
         logo = AlgorandLogo;
       }
@@ -459,6 +494,12 @@
             }
             if (account?.type === "SOL") {
               logo = SolanaLogo;
+            }
+            if (account?.type === "MOVE") {
+              logo = Move;
+            }
+            if (item?.type === "AURA") {
+              logo = AuraLogo;
             }
             if (account?.type === "ALGO") {
               logo = AlgorandLogo;
@@ -598,7 +639,7 @@
           selectedWallet: dataFormat.value,
         });
 
-        if (searchAccountType === "EVM") {
+        if (searchAccountType === "EVM" || searchAccountType === "MOVE") {
           window.history.replaceState(
             null,
             "",
@@ -606,9 +647,11 @@
               `?type=${searchAccountType}&chain=ALL&address=${dataFormat.value}`
           );
         }
+
         if (
           searchAccountType === "BTC" ||
           searchAccountType === "SOL" ||
+          searchAccountType === "AURA" ||
           searchAccountType === "ALGO"
         ) {
           window.history.replaceState(
@@ -1566,13 +1609,23 @@
                     </div>
                   {/if}
                 </div>
-                {#if $typeWallet === "EVM"}
-                  <Select
-                    type="chain"
-                    positionSelectList="right-0"
-                    listSelect={chainList}
-                    bind:selected={$chain}
-                  />
+                {#if $typeWallet === "EVM" || $typeWallet === "MOVE"}
+                  {#if $typeWallet === "EVM"}
+                    <Select
+                      type="chain"
+                      positionSelectList="right-0"
+                      listSelect={chainList}
+                      bind:selected={$chain}
+                    />
+                  {/if}
+                  {#if $typeWallet === "MOVE"}
+                    <Select
+                      type="chain"
+                      positionSelectList="right-0"
+                      listSelect={chainMoveList}
+                      bind:selected={$chain}
+                    />
+                  {/if}
                 {/if}
               </div>
             </div>
@@ -1740,16 +1793,16 @@
           </label>
         </div>
         <div class="flex items-center justify-center gap-6 my-3">
-          {#each [{ logo: BitcoinLogo, label: "Bitcoin", value: "BTC" }, { logo: SolanaLogo, label: "Solana", value: "SOL" }, { logo: AlgorandLogo, label: "Algorand", value: "ALGO" }].concat(chainList
+          {#each [{ logo: BitcoinLogo, label: "Bitcoin", value: "BTC" }, { logo: SolanaLogo, label: "Solana", value: "SOL" }, { logo: Move, label: "Move", value: "MOVE" }, { logo: AuraLogo, label: "Aura", value: "AURA" }, { logo: AlgorandLogo, label: "Algorand", value: "ALGO" }].concat(chainList
               .slice(1)
-              .slice(0, -7)) as item}
+              .slice(0, -8)) as item}
             <img
               src={item.logo}
               alt=""
               class="xl:w-8 xl:h-8 w-10 h-10 overflow-hidden rounded-full"
             />
           {/each}
-          <div class="text-gray-400 xl:text-base text-2xl">+7 More</div>
+          <div class="text-gray-400 xl:text-base text-2xl">+8 More</div>
         </div>
         <div class="flex justify-end gap-6 lg:gap-2">
           <div class="lg:w-[120px] w-full">

@@ -252,8 +252,10 @@
       ? true
       : Boolean(
           ($typeWallet === "EVM" ||
+            $typeWallet === "MOVE" ||
             $typeWallet === "CEX" ||
             $typeWallet === "SOL" ||
+            $typeWallet === "AURA" ||
             $typeWallet === "ALGO" ||
             $typeWallet === "BUNDLE") &&
             $wallet.length !== 0 &&
@@ -458,6 +460,14 @@
     Number(data?.base?.avgMarket?.maxShapreRatio || 0)
   );
 
+  $: badPerfValue =
+    Number(badPerf?.profit?.averageCost || 0) *
+    (Number(badPerf?.change30DPercent) / 100);
+
+  $: goodPerfValue =
+    Number(goodPerf?.profit?.averageCost || 0) *
+    (Number(goodPerf?.change30DPercent) / 100);
+
   $: sharpeRatioAvgMarket = (
     (Number(data?.base?.avgMarket?.minShapreRatio || 0) +
       Number(data?.base?.avgMarket?.maxShapreRatio || 0)) /
@@ -553,26 +563,39 @@
                       Worse return
                     </div>
                     <div class="text-3xl xl:text-2xl">{badPerf?.symbol}</div>
-                    <div class="flex items-center gap-1 text-2xl xl:text-lg">
-                      <img
-                        src={badPerf?.change30DPercent >= 0
-                          ? TrendUp
-                          : TrendDown}
-                        alt="trend"
-                        class="mb-1"
-                      />
+
+                    <div class="flex flex-col">
                       <div
-                        class={`${
-                          badPerf?.change30DPercent >= 0
-                            ? "text-[#00A878]"
-                            : "text-red-500"
+                        class={`text-2xl xl:text-lg ${
+                          badPerfValue >= 0 ? "text-[#00A878]" : "text-red-500"
                         }`}
                       >
-                        <TooltipNumber
-                          number={Math.abs(badPerf?.change30DPercent || 0)}
-                          type="percent"
+                        $<TooltipNumber
+                          number={Math.abs(badPerfValue || 0)}
+                          type="balance"
                         />
-                        %
+                      </div>
+                      <div class="flex items-center gap-1 text-2xl xl:text-lg">
+                        <img
+                          src={badPerf?.change30DPercent >= 0
+                            ? TrendUp
+                            : TrendDown}
+                          alt="trend"
+                          class="mb-1"
+                        />
+                        <div
+                          class={`${
+                            badPerf?.change30DPercent >= 0
+                              ? "text-[#00A878]"
+                              : "text-red-500"
+                          }`}
+                        >
+                          <TooltipNumber
+                            number={Math.abs(badPerf?.change30DPercent || 0)}
+                            type="percent"
+                          />
+                          %
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -587,26 +610,39 @@
                       Best return
                     </div>
                     <div class="text-3xl xl:text-2xl">{goodPerf?.symbol}</div>
-                    <div class="flex items-center gap-1 text-2xl xl:text-lg">
-                      <img
-                        src={goodPerf?.change30DPercent >= 0
-                          ? TrendUp
-                          : TrendDown}
-                        alt="trend"
-                        class="mb-1"
-                      />
+
+                    <div class="flex flex-col">
                       <div
-                        class={`${
-                          goodPerf?.change30DPercent >= 0
-                            ? "text-[#00A878]"
-                            : "text-red-500"
+                        class={`text-2xl xl:text-lg ${
+                          goodPerfValue >= 0 ? "text-[#00A878]" : "text-red-500"
                         }`}
                       >
-                        <TooltipNumber
-                          number={Math.abs(goodPerf?.change30DPercent || 0)}
-                          type="percent"
+                        $<TooltipNumber
+                          number={Math.abs(goodPerfValue || 0)}
+                          type="balance"
                         />
-                        %
+                      </div>
+                      <div class="flex items-center gap-1 text-2xl xl:text-lg">
+                        <img
+                          src={goodPerf?.change30DPercent >= 0
+                            ? TrendUp
+                            : TrendDown}
+                          alt="trend"
+                          class="mb-1"
+                        />
+                        <div
+                          class={`${
+                            goodPerf?.change30DPercent >= 0
+                              ? "text-[#00A878]"
+                              : "text-red-500"
+                          }`}
+                        >
+                          <TooltipNumber
+                            number={Math.abs(goodPerf?.change30DPercent || 0)}
+                            type="percent"
+                          />
+                          %
+                        </div>
                       </div>
                     </div>
                   </div>

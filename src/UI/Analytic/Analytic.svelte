@@ -60,17 +60,24 @@
 
 <AddressManagement type="order" title="Analytics">
   <span slot="body">
-    <div class="max-w-[2000px] m-auto -mt-32 xl:w-[90%] w-[90%] relative">
+    <div class="max-w-[2000px] m-auto -mt-32 xl:w-[90%] w-[90%]">
       <SyncData let:address let:enabledFetchAllData>
         <div class="analytic_container rounded-[20px] xl:p-8 p-6 space-y-4">
           <div class="flex justify-between items-center">
-            <Link
-              to={`/performance-summary/?type=${$typeWallet}&chain=${$chain}&address=${address}`}
-            >
-              <Button>
-                <div class="w-full xl:w-[230px]">Performance Summary</div>
-              </Button>
-            </Link>
+            {#if isShowSoon && address !== "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0"}
+              <div class="w-full xl:w-[230px]">
+                <Button disabled>Performance Summary</Button>
+              </div>
+            {:else}
+              <Link
+                to={`/performance-summary/?type=${$typeWallet}&chain=${$chain}&address=${address}`}
+              >
+                <Button>
+                  <div class="w-full xl:w-[230px]">Performance Summary</div>
+                </Button>
+              </Link>
+            {/if}
+
             <div class="flex items-center justify-end gap-1">
               <div class="mr-1 xl:text-base text-2xl">Timeframe</div>
               <AnimateSharedLayout>
@@ -78,6 +85,12 @@
                   <div
                     class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
                     on:click={() => {
+                      if (
+                        isShowSoon &&
+                        address !== "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0"
+                      ) {
+                        return;
+                      }
                       selectedTimeFrame = type.value;
                     }}
                   >
@@ -95,7 +108,13 @@
                         transition={{ type: "spring", duration: 0.6 }}
                       >
                         <div
-                          class="absolute inset-0 rounded-full bg-[#1E96FC] z-1"
+                          class={`absolute inset-0 rounded-full z-1 ${
+                            isShowSoon &&
+                            address !==
+                              "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0"
+                              ? "bg-[#dddddd]"
+                              : "bg-[#1E96FC]"
+                          }`}
                           use:motion
                         />
                       </Motion>
@@ -108,6 +127,8 @@
 
           <div class="flex flex-col gap-7">
             <CurrentStatus
+              {address}
+              {isShowSoon}
               packageSelected={$selectedPackage}
               {selectedTimeFrame}
               isSync={true}
@@ -126,16 +147,22 @@
                   Minimize risk & maximize return by rebalance your portfolio 🚀
                 </div>
                 <div class="xl:w-[164px] w-[284px]">
-                  <Button
-                    on:click={() => {
-                      navigate(
-                        `/compare?address=${encodeURIComponent(address)}`
-                      );
-                      mixpanel.track("user_compare");
-                    }}
-                  >
-                    <div class="xl:text-base text-2xl">Get suggestion</div>
-                  </Button>
+                  {#if isShowSoon && address !== "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0"}
+                    <Button disabled>
+                      <div class="xl:text-base text-2xl">Get suggestion</div>
+                    </Button>
+                  {:else}
+                    <Button
+                      on:click={() => {
+                        navigate(
+                          `/compare?address=${encodeURIComponent(address)}`
+                        );
+                        mixpanel.track("user_compare");
+                      }}
+                    >
+                      <div class="xl:text-base text-2xl">Get suggestion</div>
+                    </Button>
+                  {/if}
                 </div>
               </div>
             </section>
@@ -147,6 +174,8 @@
             />
 
             <ReturnChart
+              {address}
+              {isShowSoon}
               {selectedTimeFrame}
               isSync={true}
               {enabledFetchAllData}
@@ -158,11 +187,23 @@
               {enabledFetchAllData}
             />
 
-            <CorrelationsMatrix isSync={true} {enabledFetchAllData} />
+            <CorrelationsMatrix
+              {address}
+              {isShowSoon}
+              isSync={true}
+              {enabledFetchAllData}
+            />
 
-            <ClosedHoldingToken isSync={true} {enabledFetchAllData} />
+            <ClosedHoldingToken
+              {address}
+              {isShowSoon}
+              isSync={true}
+              {enabledFetchAllData}
+            />
 
             <MoneyFlow
+              {address}
+              {isShowSoon}
               packageSelected={$selectedPackage}
               {selectedTimeFrame}
               isSync={true}
@@ -170,6 +211,8 @@
             />
 
             <PastPerformance
+              {address}
+              {isShowSoon}
               packageSelected={$selectedPackage}
               isSync={true}
               {enabledFetchAllData}
@@ -178,33 +221,6 @@
             <!-- <Personality /> -->
           </div>
         </div>
-
-        {#if isShowSoon && address !== "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0"}
-          <div
-            class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center gap-3 pt-62 ${
-              $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
-            } z-10 backdrop-blur-md`}
-          >
-            {#if $selectedPackage === "FREE"}
-              <div class="flex flex-col items-center gap-1">
-                <div class="text-lg font-medium">
-                  Use Nimbus at its full potential
-                </div>
-                <div class="text-base text-gray-500">
-                  Upgrade to Premium to access Analytics feature
-                </div>
-              </div>
-              <div class="mt-2 w-max">
-                <Button variant="premium" on:click={() => navigate("/upgrade")}
-                  >Upgrade Plan</Button
-                >
-              </div>
-            {/if}
-            {#if $selectedPackage !== "FREE" && $typeWallet === "BTC"}
-              <div class="text-lg">Coming soon 🚀</div>
-            {/if}
-          </div>
-        {/if}
       </SyncData>
     </div>
   </span>

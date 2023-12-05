@@ -49,14 +49,13 @@
   import User from "~/assets/user.png";
   import goldImg from "~/assets/Gold4.svg";
 
+  import Move from "~/assets/move.png";
   import All from "~/assets/all.svg";
   import Bundles from "~/assets/bundles.png";
   import BitcoinLogo from "~/assets/bitcoin.png";
   import SolanaLogo from "~/assets/solana.png";
   import AuraLogo from "~/assets/aura.png";
   import AlgorandLogo from "~/assets/algorand.png";
-  import ExzoLogo from "~/assets/exzo.png";
-  import KlaytnLogo from "~/assets/klaytn.png";
 
   const MultipleLang = {
     portfolio: i18n("newtabPage.portfolio", "Portfolio"),
@@ -125,6 +124,12 @@
       if (item?.type === "SOL") {
         logo = SolanaLogo;
       }
+      if (item?.type === "MOVE") {
+        logo = Move;
+      }
+      if (item?.type === "AURA") {
+        logo = AuraLogo;
+      }
       if (item?.type === "ALGO") {
         logo = AlgorandLogo;
       }
@@ -145,6 +150,12 @@
             }
             if (account?.type === "SOL") {
               logo = SolanaLogo;
+            }
+            if (item?.type === "MOVE") {
+              logo = Move;
+            }
+            if (item?.type === "AURA") {
+              logo = AuraLogo;
             }
             if (account?.type === "ALGO") {
               logo = AlgorandLogo;
@@ -210,7 +221,7 @@
       typeWalletAddress: searchAccountType,
     });
 
-    if (searchAccountType === "EVM") {
+    if (searchAccountType === "EVM" || searchAccountType === "MOVE") {
       window.history.replaceState(
         null,
         "",
@@ -221,6 +232,7 @@
     if (
       searchAccountType === "BTC" ||
       searchAccountType === "SOL" ||
+      searchAccountType === "AURA" ||
       searchAccountType === "ALGO" ||
       searchAccountType === "CEX"
     ) {
@@ -646,7 +658,7 @@
         </Link>
       </div>
 
-      <div
+      <!-- <div
         on:click={() => {
           navActive = "news";
         }}
@@ -671,7 +683,7 @@
             </span>
           </div>
         </Link>
-      </div>
+      </div> -->
     </div>
 
     <div class="flex items-center justify-between gap-6 xl:gap-3">
@@ -733,11 +745,14 @@
         >
           <Link to="daily-checkin">
             <div
-              class={`rounded-full flex justify-center items-center xl:w-10 xl:h-10 w-12 h-12 ${
+              class={`rounded-full flex justify-center items-center gap-1 px-2 py-1 ${
                 $isDarkMode ? "bg-[#212121]" : "bg-[#525B8C]"
               }`}
             >
-              <img src={goldImg} alt="" class="w-[26px] h-[26px]" />
+              <img src={goldImg} alt="" class="w-[28px] h-[28px]" />
+              <span class="text-yellow-400 font-medium">
+                {$queryUserInfo?.data?.totalPoint || 0}
+              </span>
             </div>
           </Link>
         </div>
@@ -919,7 +934,7 @@
             </Link>
           </div>
 
-          <div
+          <!-- <div
             on:click={() => {
               navActive = "news";
               isShowHeaderMobile.update((n) => (n = false));
@@ -945,7 +960,7 @@
                 </span>
               </div>
             </Link>
-          </div>
+          </div> -->
 
           {#if $user && Object.keys($user).length !== 0}
             <div

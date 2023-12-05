@@ -13,10 +13,11 @@
   import { nimbus } from "~/lib/network";
   import { handleGetAccessToken } from "~/utils";
   import { useQueryClient } from "@tanstack/svelte-query";
+  import mixpanel from "mixpanel-browser";
 
   import AppOverlay from "~/components/Overlay.svelte";
-  import GoogleAuth from "~/components/GoogleAuth.svelte";
-  import SolanaAuth from "~/components/SolanaAuth.svelte";
+  import GoogleAuth from "~/UI/Auth/GoogleAuth.svelte";
+  import SolanaAuth from "~/UI/Auth/SolanaAuth.svelte";
 
   import User from "~/assets/user.png";
 
@@ -92,16 +93,21 @@
   };
 
   const handleSignOut = () => {
-    user.update((n) => (n = {}));
-    showPopover = false;
-    localStorage.removeItem("token");
-    localStorage.removeItem("solana_address");
-    localStorage.removeItem("solana_token");
-    addressWallet = "";
-    signMessageAddress = "";
-    $walletStore.disconnect();
-    queryClient.invalidateQueries(["list-address"]);
-    queryClient.invalidateQueries(["users-me"]);
+    try {
+      user.update((n) => (n = {}));
+      showPopover = false;
+      localStorage.removeItem("token");
+      localStorage.removeItem("solana_address");
+      localStorage.removeItem("solana_token");
+      addressWallet = "";
+      signMessageAddress = "";
+      $walletStore.disconnect();
+      queryClient.invalidateQueries(["list-address"]);
+      queryClient.invalidateQueries(["users-me"]);
+      mixpanel.reset();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   $: {
