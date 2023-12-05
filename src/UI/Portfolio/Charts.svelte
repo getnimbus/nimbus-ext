@@ -35,6 +35,7 @@
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import TokenAllocation from "~/components/TokenAllocation.svelte";
   import TooltipTitle from "~/components/TooltipTitle.svelte";
+  import TooltipNumber from "~/components/TooltipNumber.svelte";
 
   import TrendDown from "~/assets/trend-down.svg";
   import TrendUp from "~/assets/trend-up.svg";
@@ -228,11 +229,34 @@
     formatXAxis: [],
   };
 
+  let networth = 0;
+  let portfolioPercentChange = 0;
+  let networthValueChange = 0;
+  let tooltipDateValue;
+
+  $: {
+    if (tooltipDateValue) {
+      console.log("tooltipDateValue: ", tooltipDateValue);
+    }
+  }
+
   $: {
     if (
       overviewDataPerformance?.performance?.length !== 0 ||
       overviewDataPerformance?.portfolioChart?.length !== 0
     ) {
+      networth =
+        overviewDataPerformance?.portfolioChart[
+          overviewDataPerformance?.portfolioChart.length - 1
+        ].value;
+
+      portfolioPercentChange =
+        overviewDataPerformance?.performance[
+          overviewDataPerformance?.performance.length - 1
+        ].portfolio;
+
+      networthValueChange = networth * (portfolioPercentChange / 100);
+
       const formatXAxisPerformance = overviewDataPerformance?.performance?.map(
         (item) => {
           return dayjs(item.date).format("YYYY-MM-DD");
@@ -382,6 +406,7 @@
             trigger: "axis",
             extraCssText: "z-index: 9997",
             formatter: function (params) {
+              tooltipDateValue = params[0].axisValue;
               return `
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 260px;">
               <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
@@ -493,6 +518,7 @@
             trigger: "axis",
             extraCssText: "z-index: 9997",
             formatter: function (params) {
+              tooltipDateValue = params[0].axisValue;
               return `
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 320px;">
               <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
@@ -805,7 +831,7 @@
           <div class="text-2xl xl:text-lg">Coming soon 🚀</div>
         </div>
       {:else}
-        <div class="flex justify-between mb-6">
+        <div class="flex justify-between mb-4">
           {#if ($typeWallet === "EVM" && ($chain === "SCROLL" || $chain === "KLAY" || $chain === "XZO")) || $typeWallet === "CEX" || $typeWallet === "SOL" || $typeWallet === "ALGO" || $typeWallet === "AURA" || $typeWallet === "MOVE" || $selectedBundle?.accounts?.find((item) => item.type === "CEX") !== undefined}
             <TooltipTitle
               tooltipText="The performance data can only get after 7 days you connect to Nimbus"
@@ -867,9 +893,38 @@
               </div>
             {:else}
               <div class="flex flex-col gap-4">
-                <!-- {#if selectedTypePerformance === "networth"}
-                  <div class="ml-4">hello world</div>
-                {/if} -->
+                <div class="ml-4 flex flex-col">
+                  <div class="xl:text-xl text-2xl font-medium">
+                    $<TooltipNumber number={networth} type="balance" />
+                  </div>
+                  <div
+                    class={`xl:text-base text-lg flex gap-1 ${
+                      portfolioPercentChange >= 0
+                        ? "text-[#00A878]"
+                        : "text-red-500"
+                    }`}
+                  >
+                    <span>
+                      <TooltipNumber
+                        number={Math.abs(portfolioPercentChange)}
+                        type="percent"
+                      />%
+                    </span>
+                    {#if portfolioPercentChange !== 0}
+                      <img
+                        src={portfolioPercentChange >= 0 ? TrendUp : TrendDown}
+                        alt="trend"
+                        class="mb-1"
+                      />
+                    {/if}
+                    <span>
+                      ($<TooltipNumber
+                        number={networthValueChange}
+                        type="balance"
+                      />)
+                    </span>
+                  </div>
+                </div>
                 <EChart
                   id="line-chart"
                   {theme}
