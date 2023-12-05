@@ -88,6 +88,18 @@
             {/await}
           </Route>
 
+          <Route path="robots.txt">
+            {#await import("~/robots.txt")}
+              <div class="flex items-center justify-center h-screen">
+                <Loading />
+              </div>
+            {:catch error}
+              <div class="flex items-center justify-center h-screen">
+                Something when wrong! Please reload your browser to try again
+              </div>
+            {/await}
+          </Route>
+
           <Route path="analytic">
             {#await import("~/layouts/Analytic.svelte")}
               <div class="flex items-center justify-center h-screen">
