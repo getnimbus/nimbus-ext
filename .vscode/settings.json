@@ -1,4 +1,4 @@
 {
   "vue.features.codeActions.enable": false,
-  "editor.inlineSuggest.showToolbar": "onHover"
+  "editor.inlineSuggest.showToolbar": "always"
 }
