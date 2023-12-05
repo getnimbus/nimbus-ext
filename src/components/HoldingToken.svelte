@@ -32,7 +32,7 @@
   export let selectedWallet;
   export let sumAllTokens;
   export let lastIndex: boolean = false;
-  export let index;
+  export let index: number;
 
   let isShowTooltipName = false;
   let isShowTooltipSymbol = false;
@@ -858,7 +858,7 @@
 
   {#if $typeWallet === "SOL" || $typeWallet === "AURA" || $typeWallet === "ALGO" || $typeWallet === "EVM" || $typeWallet === "MOVE" || $typeWallet === "BUNDLE" || $typeWallet === "CEX"}
     <td
-      class={`py-3 xl:w-22 w-32 h-full flex justify-start items-center xl:gap-4 gap-6 ${
+      class={`py-3 w-full h-full flex justify-start items-center xl:gap-4 gap-7 ${
         $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
       }`}
       style={`${lastIndex ? "border-bottom-right-radius: 10px;" : ""}`}
@@ -984,22 +984,24 @@
 
       {#if $typeWallet === "SOL" || ($typeWallet === "BUNDLE" && data?.chain === "SOL")}
         <div
+          class="flex justify-center view-icon-detail"
           use:tooltip={{
             content: `<tooltip-detail text="Swap token" />`,
             allowHTML: true,
             placement: "top",
           }}
-          class="cursor-pointer"
-          on:click={() => {
-            showSideTokenSwap = true;
-            selectedTokenDetail = data;
-            handleSwapToken(data);
-          }}
         >
-          <div class="xl:block hidden transform rotate-90">
+          <div
+            class="xl:block hidden cursor-pointer transform rotate-90"
+            on:click={() => {
+              showSideTokenSwap = true;
+              selectedTokenDetail = data;
+              handleSwapToken(data);
+            }}
+          >
             <svg
-              width="22"
-              height="22"
+              width="24"
+              height="24"
               viewBox="0 0 21 22"
               fill={$isDarkMode ? "white" : "#00000080"}
               xmlns="http://www.w3.org/2000/svg"
@@ -1012,7 +1014,14 @@
               ></path></svg
             >
           </div>
-          <div class="xl:hidden block transform rotate-90">
+          <div
+            class="xl:hidden block cursor-pointer transform rotate-90"
+            on:click={() => {
+              showSideTokenSwap = true;
+              selectedTokenDetail = data;
+              handleSwapToken(data);
+            }}
+          >
             <svg
               width="42"
               height="42"

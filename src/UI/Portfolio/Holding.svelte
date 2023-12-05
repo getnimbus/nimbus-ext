@@ -587,7 +587,7 @@
                       </div>
                     </th>
                     {#if $typeWallet === "SOL" || $typeWallet === "AURA" || $typeWallet === "ALGO" || $typeWallet === "EVM" || $typeWallet === "MOVE" || $typeWallet === "BUNDLE" || $typeWallet === "CEX"}
-                      <th class="py-3 xl:w-22 w-32 rounded-tr-[10px]" />
+                      <th class="py-3 xl:w-auto w-24 rounded-tr-[10px]" />
                     {/if}
                   </tr>
                 </thead>
@@ -672,6 +672,7 @@
                               index}
                             {selectedWallet}
                             sumAllTokens={totalAssets - sumNFT}
+                            index={index + 1}
                           />
                         {/each}
                       {/if}
