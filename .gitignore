@@ -12,3 +12,5 @@ web-build
 
 dev-dist
 .env
+
+src/dev-dist

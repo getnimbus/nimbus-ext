@@ -98,21 +98,23 @@
 
   $: colspan =
     $typeWallet === "SOL" ||
+    $typeWallet === "AURA" ||
     $typeWallet === "ALGO" ||
     $typeWallet === "EVM" ||
-    $typeWallet === "BUNDLE"
+    $typeWallet === "MOVE" ||
+    ($typeWallet === "BUNDLE" && data?.chain !== "CEX")
       ? 5
       : 4;
 </script>
 
 <ErrorBoundary>
   <PriceChart
-    contractAddress={data?.chain === "CEX"
-      ? data?.cg_id
-      : data?.contractAddress}
+    contractAddress={data?.contractAddress}
+    cgId={data?.cg_id}
     {sellHistoryTradeList}
     {buyHistoryTradeList}
     id={data?.name}
+    symbol={data?.symbol}
     avgCost={data?.profit?.averageCost}
     chain={data?.chain}
   />
@@ -259,11 +261,11 @@
           {filterType}
         />
 
-        {#if $typeWallet !== "EVM" && $typeWallet !== "BUNDLE"}
+        {#if $typeWallet !== "EVM" && $typeWallet !== "MOVE" && $typeWallet !== "BUNDLE"}
           <div
-            class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center gap-3 pt-62 ${
+            class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center gap-3 pt-62 z-30 backdrop-blur-md ${
               $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
-            } z-30 backdrop-blur-md`}
+            }`}
           >
             <div class="text-lg">Coming soon 🚀</div>
           </div>
@@ -271,9 +273,9 @@
 
         {#if $selectedPackage === "FREE"}
           <div
-            class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center justify-center gap-3 ${
+            class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center justify-center gap-3 z-30 backdrop-blur-md ${
               $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
-            } z-30 backdrop-blur-md`}
+            }`}
           >
             <div class="flex flex-col items-center gap-1">
               <div class="text-lg font-medium">
@@ -334,9 +336,11 @@
               <th
                 class={`py-3 rounded-tr-[10px] ${
                   $typeWallet === "SOL" ||
+                  $typeWallet === "AURA" ||
                   $typeWallet === "ALGO" ||
                   $typeWallet === "EVM" ||
-                  $typeWallet === "BUNDLE"
+                  $typeWallet === "MOVE" ||
+                  ($typeWallet === "BUNDLE" && data?.chain !== "CEX")
                     ? ""
                     : "pr-3"
                 }`}
@@ -348,7 +352,7 @@
                 </div>
               </th>
 
-              {#if $typeWallet === "SOL" || $typeWallet === "ALGO" || $typeWallet === "EVM" || $typeWallet === "BUNDLE"}
+              {#if $typeWallet === "SOL" || $typeWallet === "AURA" || $typeWallet === "ALGO" || $typeWallet === "EVM" || $typeWallet === "MOVE" || ($typeWallet === "BUNDLE" && data?.chain !== "CEX")}
                 <th class="py-3 w-10" />
               {/if}
             </tr>

@@ -408,6 +408,24 @@
           "chain"
         );
 
+        const filteredUndefinedCmcHoldingTokenData = dataTokenHolding?.filter(
+          (item) => item?.cmc_id === undefined
+        );
+
+        if (
+          $typeWallet === "CEX" &&
+          filteredUndefinedCmcHoldingTokenData.length > 0
+        ) {
+          filteredUndefinedCmcHoldingTokenData.map((item) => {
+            priceSubscribe([item?.symbol], false, "CEX", (data) => {
+              marketPriceToken = {
+                id: data.id,
+                market_price: data.price,
+              };
+            });
+          });
+        }
+
         const chainList = Object.keys(groupFilteredNullCmcHoldingTokenData);
 
         chainList.map((chain) => {
@@ -432,12 +450,17 @@
         });
 
         filteredData?.map((item) => {
-          priceSubscribe([Number(item?.cmc_id)], false, "", (data) => {
-            marketPriceToken = {
-              id: data.id,
-              market_price: data.price,
-            };
-          });
+          priceSubscribe(
+            [Number(item?.cmc_id)],
+            false,
+            $typeWallet !== "CEX" ? "" : "CEX",
+            (data) => {
+              marketPriceToken = {
+                id: data.id,
+                market_price: data.price,
+              };
+            }
+          );
         });
       }
     }
@@ -465,7 +488,11 @@
           marketPriceToken?.id.toString().toLowerCase() ===
             item?.cmc_id?.toString().toLowerCase() ||
           marketPriceToken?.id.toString().toLowerCase() ===
-            item?.contractAddress.toString().toLowerCase()
+            item?.contractAddress.toString().toLowerCase() ||
+          marketPriceToken?.id.toString().toLowerCase() ===
+            item?.symbol?.toString().toLowerCase() ||
+          marketPriceToken?.id.toString().toLowerCase() ===
+            item?.price?.symbol?.toString().toLowerCase()
         ) {
           return {
             ...item,

@@ -9,6 +9,7 @@
     autoFontSize,
     formatBalance,
     formatCurrency,
+    mobulaChainConfig,
     timeFrame,
   } from "~/utils";
   import numeral from "numeral";
@@ -22,11 +23,13 @@
   import LogoWhite from "~/assets/logo-white.svg";
 
   export let contractAddress;
+  export let cgId: string | undefined;
   export let sellHistoryTradeList;
   export let buyHistoryTradeList;
   export let id;
   export let avgCost;
-  export let chain;
+  export let chain: string;
+  export let symbol;
 
   let selectedTimeFrame: "7D" | "30D" | "3M" | "1Y" | "ALL" = "30D";
   let dataPriceChart = [];
@@ -164,7 +167,6 @@
     },
     series: [],
   };
-  let chainType = "Ethereum";
   let time: any = 30;
 
   $: {
@@ -189,123 +191,44 @@
     }
   }
 
-  $: {
-    if (chain) {
-      switch (chain) {
-        case "ETH":
-          chainType = "Ethereum";
-          break;
-        case "BNB":
-          chainType = "BNB Smart Chain (BEP20)";
-          break;
-        case "XDAI":
-          chainType = "XDAI";
-          break;
-        case "MATIC":
-          chainType = "Polygon";
-          break;
-        case "OP":
-          chainType = "Optimistic";
-          break;
-        case "AVAX":
-          chainType = "Avalanche C-Chain";
-          break;
-        case "ARB":
-          chainType = "Arbitrum";
-          break;
-        default:
-          chainType = "Ethereum";
-      }
-    }
-  }
-
-  const handleGetTokenPriceSol = async () => {
-    const params =
-      $typeWallet === "CEX"
-        ? `coingecko:${contractAddress}`
-        : contractAddress === "11111111111111111111111111111111"
-          ? "coingecko:solana"
-          : `solana:${contractAddress}`;
-
-    const response = await defillama.get(
-      `/chart/${params}?start=${dayjs()
-        .subtract(time === "ALL" ? 1825 : time, "day")
-        .unix()}&span=${time === "ALL" ? 1825 : time}&period=1d&searchWidth=600`
-    );
-    const formatRes = response?.coins[`${params}`]?.prices.map((item) => {
-      return [item.timestamp * 1000, item.price];
-    });
-    return formatRes;
-  };
-
   const handleGetTokenPrice = async () => {
-    const response = await mobula.get(
-      `/1/market/history?blockchain=${chainType}&asset=${
-        contractAddress === "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
-          ? "ethereum"
-          : contractAddress
-      }&from=${
-        time === "ALL" ? "" : dayjs().subtract(time, "day").valueOf()
-      }&to`
-    );
-    return response?.data?.price_history;
+    if (chain === "SOL" || cgId) {
+      const params = cgId ? `coingecko:${cgId}` : `solana:${contractAddress}`;
+
+      const response = await defillama.get(
+        `/chart/${params}?start=${dayjs()
+          .subtract(time === "ALL" ? 1825 : time, "day")
+          .unix()}&span=${
+          time === "ALL" ? 1825 : time
+        }&period=1d&searchWidth=600`
+      );
+      const formatRes = response?.coins[`${params}`]?.prices.map((item) => {
+        return [item.timestamp * 1000, item.price];
+      });
+      return formatRes || [];
+    }
+
+    const blockchain = mobulaChainConfig[chain] || undefined;
+
+    const response = await mobula.get("/1/market/history", {
+      // TODO: Map to mobula blockchain type
+      params: {
+        blockchain,
+        asset: chain === "CEX" ? symbol : contractAddress,
+        time: time === "ALL" ? "" : dayjs().subtract(time, "day").valueOf(),
+      },
+    });
+
+    return response?.data?.price_history || [];
   };
 
   $: queryTokenPrice = createQuery({
-    queryKey: ["token-price", contractAddress, chainType, time],
+    queryKey: ["token-price", contractAddress, cgId, chain, time],
     queryFn: () => handleGetTokenPrice(),
     staleTime: Infinity,
     retry: false,
-    enabled:
-      contractAddress !== undefined &&
-      contractAddress.length !== 0 &&
-      chainType !== undefined &&
-      chainType.length !== 0 &&
-      ($typeWallet === "EVM" ||
-        $typeWallet === "ALGO" ||
-        ($typeWallet === "BUNDLE" && chain !== "SOL")),
+    enabled: Boolean(contractAddress || cgId),
   });
-
-  $: queryTokenPriceSol = createQuery({
-    queryKey: ["token-price-sol", contractAddress, time],
-    queryFn: () => handleGetTokenPriceSol(),
-    staleTime: Infinity,
-    retry: false,
-    enabled:
-      contractAddress !== undefined &&
-      contractAddress.length !== 0 &&
-      ($typeWallet === "SOL" ||
-        $typeWallet === "CEX" ||
-        ($typeWallet === "BUNDLE" && chain === "SOL")),
-  });
-
-  $: {
-    if (
-      !$queryTokenPriceSol.isError &&
-      $queryTokenPriceSol.data !== undefined &&
-      $queryTokenPriceSol.data.length !== 0
-    ) {
-      dataPriceChart = $queryTokenPriceSol.data?.map((item) => {
-        return {
-          value: [item[0], item[1]],
-          itemStyle: {
-            color: "#1e96fc",
-          },
-        };
-      });
-
-      if (avgCost !== undefined) {
-        dataAvgCost = $queryTokenPriceSol.data?.map((item) => {
-          return {
-            value: [item[0], avgCost],
-            itemStyle: {
-              color: "#eab308",
-            },
-          };
-        });
-      }
-    }
-  }
 
   $: {
     if (
@@ -961,7 +884,6 @@
           on:click={() => {
             if (
               !$queryTokenPrice.isError ||
-              !$queryTokenPriceSol.isError ||
               (dataPriceChart && dataPriceChart.length !== 0)
             ) {
               selectedTimeFrame = type.value;
@@ -985,7 +907,6 @@
                 class="absolute inset-0 rounded-full z-10"
                 style={`background:${
                   !$queryTokenPrice.isError ||
-                  !$queryTokenPriceSol.isError ||
                   (dataPriceChart && dataPriceChart.length !== 0)
                     ? "rgba(30, 150, 252, 1)"
                     : "#dddddd"
@@ -998,15 +919,15 @@
       {/each}
     </AnimateSharedLayout>
   </div>
-  {#if $queryTokenPrice.isFetching || $queryTokenPriceSol.isFetching}
+  {#if $queryTokenPrice.isFetching}
     <div class="flex items-center justify-center h-[475px]">
       <Loading />
     </div>
   {:else}
     <div class="h-full">
-      {#if $queryTokenPrice.isError || $queryTokenPriceSol.isError || (dataPriceChart && dataPriceChart.length === 0)}
+      {#if $queryTokenPrice.isError || (dataPriceChart && dataPriceChart.length === 0)}
         <div
-          class="flex justify-center items-center h-full text-lg text-gray-400 h-[475px]"
+          class="flex justify-center items-center text-lg text-gray-400 h-[475px]"
         >
           Empty
         </div>

@@ -96,6 +96,24 @@
           "chain"
         );
 
+        const filteredUndefinedCmcHoldingTokenData = dataTokenHolding?.filter(
+          (item) => item?.cmc_id === undefined
+        );
+
+        if (
+          $typeWallet === "CEX" &&
+          filteredUndefinedCmcHoldingTokenData.length > 0
+        ) {
+          filteredUndefinedCmcHoldingTokenData.map((item) => {
+            priceSubscribe([item?.symbol], false, "CEX", (data) => {
+              marketPriceToken = {
+                id: data.id,
+                market_price: data.price,
+              };
+            });
+          });
+        }
+
         const chainList = Object.keys(groupFilteredNullCmcHoldingTokenData);
 
         chainList.map((chain) => {
@@ -132,12 +150,17 @@
       });
 
       filteredData?.map((item) => {
-        priceSubscribe([Number(item?.cmcId)], false, "", (data) => {
-          marketPriceToken = {
-            id: data.id,
-            market_price: data.price,
-          };
-        });
+        priceSubscribe(
+          [Number(item?.cmcId)],
+          false,
+          $typeWallet !== "CEX" ? "" : "CEX",
+          (data) => {
+            marketPriceToken = {
+              id: data.id,
+              market_price: data.price,
+            };
+          }
+        );
       });
     }
   }
@@ -206,7 +229,11 @@
           marketPriceToken?.id.toString().toLowerCase() ===
             item?.cmc_id?.toString().toLowerCase() ||
           marketPriceToken?.id.toString().toLowerCase() ===
-            item?.contractAddress.toString().toLowerCase()
+            item?.contractAddress.toString().toLowerCase() ||
+          marketPriceToken?.id.toString().toLowerCase() ===
+            item?.symbol?.toString().toLowerCase() ||
+          marketPriceToken?.id.toString().toLowerCase() ===
+            item?.price?.symbol?.toString().toLowerCase()
         ) {
           return {
             ...item,
@@ -270,8 +297,10 @@
 
   $: colspan =
     $typeWallet === "SOL" ||
+    $typeWallet === "AURA" ||
     $typeWallet === "ALGO" ||
     $typeWallet === "EVM" ||
+    $typeWallet === "MOVE" ||
     $typeWallet === "BUNDLE" ||
     $typeWallet === "CEX"
       ? 5
@@ -298,7 +327,7 @@
 >
   <ErrorBoundary>
     <div class="flex items-end gap-3">
-      {#if $typeWallet !== "EVM"}
+      {#if $typeWallet !== "EVM" && $typeWallet !== "MOVE"}
         <div class="xl:text-2xl text-4xl font-medium">
           {MultipleLang.token_position}
         </div>
@@ -391,8 +420,10 @@
                 <th
                   class={`py-3 ${
                     $typeWallet === "SOL" ||
+                    $typeWallet === "AURA" ||
                     $typeWallet === "ALGO" ||
                     $typeWallet === "EVM" ||
+                    $typeWallet === "MOVE" ||
                     $typeWallet === "BUNDLE" ||
                     $typeWallet === "CEX"
                       ? ""
@@ -405,7 +436,7 @@
                     ROI
                   </div>
                 </th>
-                {#if $typeWallet === "SOL" || $typeWallet === "ALGO" || $typeWallet === "EVM" || $typeWallet === "BUNDLE" || $typeWallet === "CEX"}
+                {#if $typeWallet === "SOL" || $typeWallet === "AURA" || $typeWallet === "ALGO" || $typeWallet === "EVM" || $typeWallet === "MOVE" || $typeWallet === "BUNDLE" || $typeWallet === "CEX"}
                   <th class="py-3 xl:w-14 w-32 rounded-tr-[10px]" />
                 {/if}
               </tr>
