@@ -32,6 +32,8 @@
     Value: i18n("newtabPage.Value", "Value"),
   };
 
+  $: console.log("dataPieChartToken: ", dataPieChartToken);
+
   let optionPie = {
     title: {
       text: "",
@@ -50,8 +52,8 @@
                   $isDarkMode ? "white" : "black"
                 }">
                   ${params?.name} ${
-          params?.data?.symbol ? `(${params?.data?.symbol})` : ""
-        }
+                    params?.data?.symbol ? `(${params?.data?.symbol})` : ""
+                  }
                 </div>
               </div>
 
