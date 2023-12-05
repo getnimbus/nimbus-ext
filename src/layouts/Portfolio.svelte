@@ -221,12 +221,19 @@
       isEmptyDataPieTokens = false;
     }
 
-    const sumToken = (data || []).reduce(
-      (prev, item) => prev + Number(item.value),
+    const formatData = data.map((item) => {
+      return {
+        ...item,
+        value: Number(item?.amount || 0) * Number(item?.price?.price || 0),
+      };
+    });
+
+    const sumToken = (formatData || []).reduce(
+      (prev, item) => prev + Number(item?.value),
       0
     );
 
-    const sortBreakdownToken = data?.sort((a, b) => {
+    const sortBreakdownToken = formatData?.sort((a, b) => {
       if (a.value < b.value) {
         return 1;
       }
