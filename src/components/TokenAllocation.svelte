@@ -32,8 +32,6 @@
     Value: i18n("newtabPage.Value", "Value"),
   };
 
-  $: console.log("dataPieChartToken: ", dataPieChartToken);
-
   let optionPie = {
     title: {
       text: "",
