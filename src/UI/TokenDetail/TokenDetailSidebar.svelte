@@ -263,9 +263,9 @@
 
         {#if $typeWallet !== "EVM" && $typeWallet !== "MOVE" && $typeWallet !== "BUNDLE"}
           <div
-            class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center gap-3 pt-62 ${
+            class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center gap-3 pt-62 z-30 backdrop-blur-md ${
               $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
-            } z-30 backdrop-blur-md`}
+            }`}
           >
             <div class="text-lg">Coming soon 🚀</div>
           </div>
@@ -273,9 +273,9 @@
 
         {#if $selectedPackage === "FREE"}
           <div
-            class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center justify-center gap-3 ${
+            class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center justify-center gap-3 z-30 backdrop-blur-md ${
               $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
-            } z-30 backdrop-blur-md`}
+            }`}
           >
             <div class="flex flex-col items-center gap-1">
               <div class="text-lg font-medium">
