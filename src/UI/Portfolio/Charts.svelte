@@ -866,13 +866,18 @@
                 Empty
               </div>
             {:else}
-              <EChart
-                id="line-chart"
-                {theme}
-                notMerge={true}
-                option={optionLine}
-                height={465}
-              />
+              <div class="flex flex-col gap-4">
+                <!-- {#if selectedTypePerformance === "networth"}
+                  <div class="ml-4">hello world</div>
+                {/if} -->
+                <EChart
+                  id="line-chart"
+                  {theme}
+                  notMerge={true}
+                  option={optionLine}
+                  height={465}
+                />
+              </div>
             {/if}
           </div>
         {/if}
