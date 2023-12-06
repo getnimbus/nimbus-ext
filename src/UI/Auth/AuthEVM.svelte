@@ -91,23 +91,6 @@
     }
   });
 
-  const connect = async () => {
-    try {
-      const res = await onboard.connectWallet();
-      if (res && res.length !== 0) {
-        handleGetNonce(res?.[0]?.provider, res?.[0]?.accounts[0]?.address);
-      }
-    } catch (e) {
-      console.error("error: ", e);
-    }
-  };
-
-  const disconnect = (value: any) => {
-    if (value && Object.keys(value).length !== 0) {
-      onboard.disconnectWallet({ label: value.label });
-    }
-  };
-
   const getUserInfo = async () => {
     const response: any = await nimbus.get("/users/me");
     return response?.data;
@@ -144,6 +127,46 @@
     }
   }
 
+  const handleGetCodeSyncMobile = async () => {
+    loading = true;
+    try {
+      const res = await nimbus.get("/users/cross-login");
+      if (res?.data) {
+        syncMobileCode = res?.data?.code;
+        const expiredAt = dayjs.unix(res?.data?.expiredAt);
+        const currentTime = dayjs();
+
+        // Check if the time difference is more than 1 minute
+        if (currentTime.diff(expiredAt, "second") > 60) {
+          // Make another API call to get a new sync code
+          const newResponse = await nimbus.get("/users/cross-login");
+          if (newResponse) {
+            syncMobileCode = res?.data?.code;
+          }
+        } else {
+          // Schedule the next check after 1 minute
+          timer = setTimeout(handleGetCodeSyncMobile, 60000);
+
+          timerCountdown = setInterval(() => {
+            timeCountdown -= 1;
+            if (timeCountdown < 0) {
+              timeCountdown = 59;
+              clearInterval(timerCountdown);
+            }
+          }, 1000);
+        }
+      }
+    } catch (e) {
+      syncMobileCode = undefined;
+      timeCountdown = 59;
+      clearTimeout(timer);
+      clearInterval(timerCountdown);
+      console.error("error: ", e);
+    } finally {
+      loading = false;
+    }
+  };
+
   const handleSignOut = () => {
     try {
       user.update((n) => (n = {}));
@@ -166,6 +189,24 @@
       mixpanel.reset();
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  // handle evm login
+  const connect = async () => {
+    try {
+      const res = await onboard.connectWallet();
+      if (res && res.length !== 0) {
+        handleGetNonce(res?.[0]?.provider, res?.[0]?.accounts[0]?.address);
+      }
+    } catch (e) {
+      console.error("error: ", e);
+    }
+  };
+
+  const disconnect = (value: any) => {
+    if (value && Object.keys(value).length !== 0) {
+      onboard.disconnectWallet({ label: value.label });
     }
   };
 
@@ -231,43 +272,74 @@
     }
   };
 
-  const handleGetCodeSyncMobile = async () => {
-    loading = true;
+  // handle solana login
+  $: solanaPublicAddress = $walletStore?.publicKey?.toBase58();
+
+  $: {
+    if (solanaPublicAddress) {
+      const solanaToken = localStorage.getItem("solana_token");
+      if (!solanaToken) {
+        handleGetSolanaNonce(solanaPublicAddress);
+      }
+    }
+  }
+
+  const handleSignSolanaAddressMessage = async (signatureString) => {
+    if ($walletStore.connected) {
+      const res = await $walletStore?.signMessage(
+        Uint8Array.from(
+          Array.from(`I am signing my one-time nonce: ${signatureString}`).map(
+            (letter) => letter.charCodeAt(0)
+          )
+        )
+      );
+      if (res) {
+        return bs58.encode(res);
+      } else {
+        return "";
+      }
+    }
+  };
+
+  const handleGetSolanaNonce = async (address) => {
     try {
-      const res = await nimbus.get("/users/cross-login");
-      if (res?.data) {
-        syncMobileCode = res?.data?.code;
-        const expiredAt = dayjs.unix(res?.data?.expiredAt);
-        const currentTime = dayjs();
-
-        // Check if the time difference is more than 1 minute
-        if (currentTime.diff(expiredAt, "second") > 60) {
-          // Make another API call to get a new sync code
-          const newResponse = await nimbus.get("/users/cross-login");
-          if (newResponse) {
-            syncMobileCode = res?.data?.code;
-          }
-        } else {
-          // Schedule the next check after 1 minute
-          timer = setTimeout(handleGetCodeSyncMobile, 60000);
-
-          timerCountdown = setInterval(() => {
-            timeCountdown -= 1;
-            if (timeCountdown < 0) {
-              timeCountdown = 59;
-              clearInterval(timerCountdown);
-            }
-          }, 1000);
+      const res: any = await nimbus.post("/users/nonce", {
+        publicAddress: address,
+        referrer: invitation.length !== 0 ? invitation : undefined,
+      });
+      if (res && res.data) {
+        const signatureString = await handleSignSolanaAddressMessage(
+          res?.data?.nonce
+        );
+        if (signatureString) {
+          const payload = {
+            signature: signatureString,
+            publicAddress: address?.toLowerCase(),
+          };
+          handleGetSolanaToken(payload);
         }
       }
     } catch (e) {
-      syncMobileCode = undefined;
-      timeCountdown = 59;
-      clearTimeout(timer);
-      clearInterval(timerCountdown);
       console.error("error: ", e);
-    } finally {
-      loading = false;
+    }
+  };
+
+  const handleGetSolanaToken = async (data) => {
+    try {
+      const res = await nimbus.post("/auth/solana", data);
+      if (res?.data?.result) {
+        localStorage.setItem("solana_token", res?.data?.result);
+        user.update(
+          (n) =>
+            (n = {
+              picture: User,
+            })
+        );
+        queryClient.invalidateQueries(["users-me"]);
+        queryClient.invalidateQueries(["list-address"]);
+      }
+    } catch (e) {
+      console.error("error: ", e);
     }
   };
 

@@ -38,49 +38,49 @@
   let addressWallet = "";
 
   onMount(() => {
-    // const token = localStorage.getItem("token");
-    // const solanaToken = localStorage.getItem("solana_token");
-    // if (token || solanaToken) {
-    //   if (token) {
-    //     const { access_token, id_token } = JSON.parse(token);
-    //     fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
-    //       headers: {
-    //         Authorization: `Bearer ${access_token}`,
-    //       },
-    //     })
-    //       .then((response) => {
-    //         if (response.ok) {
-    //           // User is authenticated and access token is still valid
-    //           user.update((n) => (n = jwt_decode(id_token)));
-    //         } else {
-    //           // Access token is invalid or expired, prompt user to sign in again
-    //           user.update((n) => (n = {}));
-    //           showPopover = false;
-    //           localStorage.removeItem("token");
-    //         }
-    //       })
-    //       .catch((error) => {
-    //         console.error(error);
-    //       });
-    //   }
-    //   if (solanaToken) {
-    //     user.update(
-    //       (n) =>
-    //         (n = {
-    //           picture: User,
-    //         })
-    //     );
-    //   }
-    // } else {
-    //   user.update((n) => (n = {}));
-    //   showPopover = false;
-    //   localStorage.removeItem("token");
-    //   localStorage.removeItem("solana_address");
-    //   localStorage.removeItem("solana_token");
-    //   addressWallet = "";
-    //   signMessageAddress = "";
-    //   $walletStore.disconnect();
-    // }
+    const token = localStorage.getItem("token");
+    const solanaToken = localStorage.getItem("solana_token");
+    if (token || solanaToken) {
+      if (token) {
+        const { access_token, id_token } = JSON.parse(token);
+        fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
+          headers: {
+            Authorization: `Bearer ${access_token}`,
+          },
+        })
+          .then((response) => {
+            if (response.ok) {
+              // User is authenticated and access token is still valid
+              user.update((n) => (n = jwt_decode(id_token)));
+            } else {
+              // Access token is invalid or expired, prompt user to sign in again
+              user.update((n) => (n = {}));
+              showPopover = false;
+              localStorage.removeItem("token");
+            }
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      }
+      if (solanaToken) {
+        user.update(
+          (n) =>
+            (n = {
+              picture: User,
+            })
+        );
+      }
+    } else {
+      user.update((n) => (n = {}));
+      showPopover = false;
+      localStorage.removeItem("token");
+      localStorage.removeItem("solana_address");
+      localStorage.removeItem("solana_token");
+      addressWallet = "";
+      signMessageAddress = "";
+      $walletStore.disconnect();
+    }
   });
 
   const handleGetGoogleUserInfo = async () => {
@@ -170,7 +170,7 @@
   }
 </script>
 
-<!-- {#if $user && Object.keys($user).length !== 0}
+{#if $user && Object.keys($user).length !== 0}
   <div class="relative">
     <div
       class="w-[40px] h-[40px] rounded-full overflow-hidden cursor-pointer"
@@ -211,16 +211,7 @@
   >
     Connect Wallet
   </div>
-{/if} -->
-
-<div
-  on:click={() => {
-    isOpenAuthModal = true;
-  }}
-  class="text-sm font-semibold text-white cursor-pointer xl:text-base"
->
-  Connect Wallet
-</div>
+{/if}
 
 <WalletProvider localStorageKey="walletAdapter" {wallets} autoConnect />
 
