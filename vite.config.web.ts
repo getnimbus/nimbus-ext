@@ -33,13 +33,17 @@ export default defineConfig(({ mode }) => {
             dest: "",
           },
           {
-            src: "public",
+            src: path.resolve(__dirname, "./public"),
+            dest: "",
+          },
+          {
+            src: path.resolve(__dirname, "./public/robots.txt"),
             dest: "",
           },
           {
             src: path.resolve(__dirname, "./src/assets/logo/"),
             dest: "assets",
-          }
+          },
         ],
       }),
       VitePWA({
