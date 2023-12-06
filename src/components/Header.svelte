@@ -1091,7 +1091,6 @@
         <div class="flex flex-col gap-7 px-4">
           <DarkModeFooter />
           <div class="w-max flex flex-col gap-6">
-            <AuthEvm />
             {#if Object.keys($user).length === 0}
               <div
                 class="text-3xl font-semibold text-white cursor-pointer xl:text-base"

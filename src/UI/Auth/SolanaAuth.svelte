@@ -87,7 +87,7 @@
 {#if !wallet}
   <WalletButton class="wallet-adapter-button-trigger" on:click={openModal}>
     <slot>
-      <div style="display: flex; align-items: center; gap: 8px; color: black">
+      <div style="display: flex; align-items: center; gap: 8px;">
         <img
           src={SolanaIcon}
           alt=""

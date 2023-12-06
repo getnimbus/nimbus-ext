@@ -960,7 +960,9 @@
   <div>
     {#if listAddress.length === 0 && $wallet?.length === 0}
       <div class="flex items-center justify-center h-screen">
-        <div class="flex flex-col items-center justify-center w-2/3 gap-4 p-6">
+        <div
+          class="flex flex-col items-center justify-center w-[70%] gap-4 p-6"
+        >
           {#if $query.isError && Object.keys($user).length !== 0}
             <div class="xl:text-lg text-2xl">
               {$query.error}
@@ -970,7 +972,12 @@
               {#if Object.keys($user).length !== 0}
                 {MultipleLang.addwallet}
               {:else}
-                Connect wallet to start tracking your investments
+                <div class="xl:block hidden">
+                  Connect wallet to start tracking your investments
+                </div>
+                <div class="xl:hidden block">
+                  Sync from Desktop to start tracking your investments
+                </div>
               {/if}
             </div>
             {#if Object.keys($user).length !== 0}
@@ -986,17 +993,31 @@
                 </Button>
               </div>
             {:else}
-              <div class="flex flex-col gap-4">
-                <Button
-                  on:click={() => {
-                    triggerConnectWallet.update((n) => (n = true));
-                    driverObj.destroy();
-                  }}
-                >
-                  <div class="text-2xl font-medium xl:text-base">
-                    Connect Wallet
-                  </div>
-                </Button>
+              <div class="flex flex-col justify-center items-center gap-4">
+                <div class="xl:block hidden">
+                  <Button
+                    on:click={() => {
+                      triggerConnectWallet.update((n) => (n = true));
+                      driverObj.destroy();
+                    }}
+                  >
+                    <div class="text-2xl font-medium xl:text-base">
+                      Connect Wallet
+                    </div>
+                  </Button>
+                </div>
+                <div class="xl:hidden block">
+                  <Button
+                    on:click={() => {
+                      console.log("Sync from desktop");
+                      driverObj.destroy();
+                    }}
+                  >
+                    <div class="text-2xl font-medium xl:text-base">
+                      Sync from Desktop
+                    </div>
+                  </Button>
+                </div>
                 <div
                   class="text-2xl font-medium xl:text-base mt-2 hover:underline text-[#1E96FC] cursor-pointer"
                   on:click={() => {

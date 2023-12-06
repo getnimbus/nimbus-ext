@@ -26,12 +26,13 @@
   import Tooltip from "~/components/Tooltip.svelte";
   import DarkMode from "~/components/DarkMode.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
+  import Loading from "~/components/Loading.svelte";
 
   import User from "~/assets/user.png";
   import Logo from "~/assets/logo-1.svg";
   import Reload from "~/assets/reload-black.svg";
   import ReloadWhite from "~/assets/reload-white.svg";
-  import Loading from "~/components/Loading.svelte";
+  import Evm from "~/assets/ethereum.png";
 
   import SolanaAuth from "./SolanaAuth.svelte";
   import { WalletProvider } from "@svelte-on-solana/wallet-adapter-ui";
@@ -281,7 +282,7 @@
 
   $: {
     if ($triggerConnectWallet) {
-      connect();
+      isOpenAuthModal = true;
       mixpanel.track("user_connect_wallet");
       triggerConnectWallet.update((n) => (n = false));
     }
@@ -486,11 +487,11 @@
 {:else}
   <div
     on:click={() => {
-      connect();
+      isOpenAuthModal = true;
       mixpanel.track("user_connect_wallet");
       isShowHeaderMobile.update((n) => (n = false));
     }}
-    class="text-3xl font-semibold text-white cursor-pointer xl:text-base"
+    class="xl:text-base text-2xl font-semibold text-white cursor-pointer"
   >
     Connect Wallet
   </div>
@@ -673,7 +674,17 @@
     <div class="xl:title-3 title-1 font-medium">
       Connect wallet to enjoy more features
     </div>
-    <div class="flex flex-col items-center justify-center xl:gap-2 gap-4">
+    <div class="flex flex-col items-center justify-center gap-4">
+      <div
+        class="flex items-center gap-2 text-white bg-[#27326f] cursor-pointer py-3 px-6 rounded-[12px] w-[250px]"
+        on:click={() => {
+          connect();
+          isOpenAuthModal = false;
+        }}
+      >
+        <img src={Evm} alt="" width="24" height="24" />
+        <div class="font-semibold text-[15px]">Login with EVM</div>
+      </div>
       <SolanaAuth />
     </div>
   </div>
