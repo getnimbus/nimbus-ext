@@ -279,6 +279,7 @@
     if (solanaPublicAddress) {
       const solanaToken = localStorage.getItem("solana_token");
       if (!solanaToken) {
+        isOpenAuthModal = false;
         handleGetSolanaNonce(solanaPublicAddress);
       }
     }
