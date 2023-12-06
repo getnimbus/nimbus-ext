@@ -10,6 +10,7 @@
     isDarkMode,
     selectedBundle,
     triggerConnectWallet,
+    triggerSync,
     userPublicAddress,
   } from "~/store";
   import { i18n } from "~/lib/i18n";
@@ -1009,7 +1010,7 @@
                 <div class="xl:hidden block">
                   <Button
                     on:click={() => {
-                      console.log("Sync from desktop");
+                      triggerSync.update((n) => (n = true));
                       driverObj.destroy();
                     }}
                   >

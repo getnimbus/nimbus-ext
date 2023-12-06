@@ -12,6 +12,7 @@
     isShowHeaderMobile,
     userId,
     userPublicAddress,
+    triggerSync,
   } from "~/store";
   import { shorterAddress } from "~/utils";
   import mixpanel from "mixpanel-browser";
@@ -452,6 +453,15 @@
           item.value.toLowerCase().includes(search.toLowerCase())
       )
     : listAddress;
+
+  $: {
+    if ($triggerSync) {
+      isOpenModalSync = true;
+      isShowHeaderMobile.update((n) => (n = false));
+      mixpanel.track("user_connect_wallet");
+      triggerSync.update((n) => (n = false));
+    }
+  }
 </script>
 
 <div class="mobile-header-container py-1 border-b-[1px] border-[#ffffff1a]">
