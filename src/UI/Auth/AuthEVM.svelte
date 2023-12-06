@@ -377,7 +377,7 @@
 
     {#if showPopover}
       <div
-        class="select_content absolute right-0 z-50 flex flex-col gap-1 px-3 xl:py-2 py-3 text-sm transform rounded-lg xl:top-12 top-20 w-max"
+        class="select_content absolute top-15 right-0 z-50 flex flex-col gap-1 px-3 xl:py-2 py-3 text-sm transform rounded-lg w-max"
         style="box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);"
         use:clickOutside
         on:click_outside={() => (showPopover = false)}
