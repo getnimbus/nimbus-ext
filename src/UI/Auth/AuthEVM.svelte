@@ -33,6 +33,18 @@
   import ReloadWhite from "~/assets/reload-white.svg";
   import Loading from "~/components/Loading.svelte";
 
+  import SolanaAuth from "./SolanaAuth.svelte";
+  import { WalletProvider } from "@svelte-on-solana/wallet-adapter-ui";
+  import {
+    PhantomWalletAdapter,
+    SolflareWalletAdapter,
+  } from "@solana/wallet-adapter-wallets";
+  import jwt_decode from "jwt-decode";
+  import bs58 from "bs58";
+  import { walletStore } from "@svelte-on-solana/wallet-adapter-core";
+
+  const wallets = [new PhantomWalletAdapter(), new SolflareWalletAdapter()];
+
   const wallets$ = onboard.state.select("wallets");
 
   let showPopover = false;
@@ -55,6 +67,8 @@
   let loading = false;
   let isShowTooltipCopy = false;
 
+  let isOpenAuthModal = false;
+
   onMount(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const invitationParams = urlParams.get("invitation");
@@ -62,8 +76,9 @@
       invitation = invitationParams;
     }
 
+    const solanaToken = localStorage.getItem("solana_token");
     const evmToken = localStorage.getItem("evm_token");
-    if (evmToken) {
+    if (evmToken || solanaToken) {
       user.update(
         (n) =>
           (n = {
@@ -103,6 +118,7 @@
     staleTime: Infinity,
     retry: false,
     onError(err) {
+      localStorage.removeItem("solana_token");
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
       wallet.update((n) => (n = ""));
@@ -135,9 +151,15 @@
       typeWallet.update((n) => (n = ""));
       userPublicAddress.update((n) => (n = ""));
       showPopover = false;
-      localStorage.removeItem("evm_address");
+
+      localStorage.removeItem("public_address");
+
       localStorage.removeItem("evm_token");
       disconnect($wallets$?.[0]);
+
+      localStorage.removeItem("solana_token");
+      $walletStore.disconnect();
+
       queryClient.invalidateQueries(["list-address"]);
       queryClient.invalidateQueries(["users-me"]);
       mixpanel.reset();
@@ -364,7 +386,9 @@
           class="flex flex-col gap-3 mx-2 pt-1 pb-2 border-b-[1px] border_0000001a"
         >
           <div class="text-2xl xl:text-base">
-            GM 👋, {shorterAddress(localStorage.getItem("evm_address") || "")}
+            GM 👋, {shorterAddress(
+              localStorage.getItem("public_address") || ""
+            )}
           </div>
           <DarkMode />
         </div>
@@ -471,6 +495,8 @@
     Connect Wallet
   </div>
 {/if}
+
+<WalletProvider localStorageKey="walletAdapter" {wallets} autoConnect />
 
 <!-- Modal sync user to mobile -->
 <AppOverlay
@@ -633,6 +659,22 @@
           </div>
         </CopyToClipboard>
       </div>
+    </div>
+  </div>
+</AppOverlay>
+
+<!-- Modal connect wallet -->
+<AppOverlay
+  clickOutSideToClose
+  isOpen={isOpenAuthModal}
+  on:close={() => (isOpenAuthModal = false)}
+>
+  <div class="flex flex-col gap-4">
+    <div class="xl:title-3 title-1 font-medium">
+      Connect wallet to enjoy more features
+    </div>
+    <div class="flex flex-col items-center justify-center xl:gap-2 gap-4">
+      <SolanaAuth />
     </div>
   </div>
 </AppOverlay>

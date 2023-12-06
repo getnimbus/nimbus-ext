@@ -121,6 +121,7 @@
       Object.keys($user).length !== 0 &&
       $userPublicAddress.length !== 0,
     onError(err) {
+      localStorage.removeItem("solana_token");
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
     },
@@ -135,6 +136,7 @@
       Object.keys($user).length !== 0 &&
       $userPublicAddress.length !== 0,
     onError(err) {
+      localStorage.removeItem("solana_token");
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
     },
@@ -427,12 +429,12 @@
                         selectedCheckinIndex > index && $isDarkMode
                           ? "grayscale bg-gray-700"
                           : selectedCheckinIndex > index && !$isDarkMode
-                          ? "grayscale bg-gray-100"
-                          : selectedCheckinIndex === index
-                          ? "bg-black text-white scale-100 drop-shadow-lg"
-                          : $isDarkMode
-                          ? "bg-gray-700"
-                          : "bg-gray-100"
+                            ? "grayscale bg-gray-100"
+                            : selectedCheckinIndex === index
+                              ? "bg-black text-white scale-100 drop-shadow-lg"
+                              : $isDarkMode
+                                ? "bg-gray-700"
+                                : "bg-gray-100"
                       }`}
                     >
                       <div class="xl:text-lg text-xl font-medium">
@@ -478,8 +480,8 @@
                           {index + 1}{index === 0
                             ? "st"
                             : index == 1
-                            ? "nd"
-                            : "rd"}
+                              ? "nd"
+                              : "rd"}
                           Rank
                         </div>
                       </div>
@@ -611,8 +613,8 @@
                             point > 0
                               ? "text-green-500"
                               : point < 0
-                              ? "text-red-500"
-                              : ""
+                                ? "text-red-500"
+                                : ""
                           }`}
                         >
                           {point}

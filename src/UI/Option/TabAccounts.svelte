@@ -338,6 +338,7 @@
     retry: false,
     enabled: $user && Object.keys($user).length !== 0,
     onError(err) {
+      localStorage.removeItem("solana_token");
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
     },
@@ -429,14 +430,15 @@
 
   // Add CEX address account
   const onSubmitCEX = () => {
+    const solanaToken = localStorage.getItem("solana_token");
     const evmToken = localStorage.getItem("evm_token");
-    if (evmToken) {
+    if (evmToken || solanaToken) {
       isLoadingConnectCEX = true;
       const vezgo: any = Vezgo.init({
         clientId: "6st9c6s816su37qe8ld1d5iiq2",
         authEndpoint: `${API_URL}/auth/vezgo`,
         auth: {
-          headers: { Authorization: `${evmToken}` },
+          headers: { Authorization: `${evmToken || solanaToken}` },
         },
       });
       const userVezgo = vezgo.login();
@@ -714,8 +716,9 @@
   }
 
   onMount(() => {
+    const solanaToken = localStorage.getItem("solana_token");
     const evmToken = localStorage.getItem("evm_token");
-    if (evmToken) {
+    if (evmToken || solanaToken) {
       user.update(
         (n) =>
           (n = {
@@ -743,6 +746,7 @@
     staleTime: Infinity,
     enabled: $user && Object.keys($user).length !== 0,
     onError(err) {
+      localStorage.removeItem("solana_token");
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
     },

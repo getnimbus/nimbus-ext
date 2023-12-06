@@ -24,7 +24,6 @@
   import addGlobalBinds from "bind-mousetrap-global";
   addGlobalBinds(Mousetrap);
 
-  import Auth from "~/UI/Auth/Auth.svelte";
   import AuthEvm from "~/UI/Auth/AuthEVM.svelte";
   import DarkModeFooter from "./DarkModeFooter.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
@@ -100,6 +99,7 @@
     staleTime: Infinity,
     enabled: Object.keys($user).length !== 0,
     onError(err) {
+      localStorage.removeItem("solana_token");
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
     },
@@ -320,6 +320,7 @@
         code: code,
       });
       if (res?.data?.result) {
+        // Todo: check chain token to set local storage
         localStorage.setItem("evm_token", res?.data?.result);
         user.update(
           (n) =>
@@ -384,6 +385,7 @@
     staleTime: Infinity,
     retry: false,
     onError(err) {
+      localStorage.removeItem("solana_token");
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
       wallet.update((n) => (n = ""));
@@ -395,7 +397,7 @@
 
   $: {
     if (!$queryUserInfo.isError && $queryUserInfo.data !== undefined) {
-      localStorage.setItem("evm_address", $queryUserInfo.data.publicAddress);
+      localStorage.setItem("public_address", $queryUserInfo.data.publicAddress);
       userPublicAddress.update((n) => (n = $queryUserInfo.data.publicAddress));
       userId.update((n) => (n = $queryUserInfo.data.id));
       userID = $queryUserInfo.data.id;
@@ -766,7 +768,6 @@
         <img src={Bell} alt="" class="xl:w-5 xl:h-5 w-7 h-7" />
       </div> -->
 
-      <!-- <Auth /> -->
       <div class="xl:block hidden">
         <AuthEvm />
       </div>
@@ -805,7 +806,7 @@
           <div class="flex justify-between items-center px-4 text-white">
             <div class="text-3xl">
               GM 👋, {shorterAddress(
-                localStorage.getItem("evm_address") || publicAddress
+                localStorage.getItem("public_address") || publicAddress
               )}
             </div>
           </div>

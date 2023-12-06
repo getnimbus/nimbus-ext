@@ -239,6 +239,7 @@
     staleTime: Infinity,
     retry: false,
     onError(err) {
+      localStorage.removeItem("solana_token");
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
     },
@@ -561,19 +562,19 @@
   };
 
   const handleCreateUser = async () => {
-    const evmAddress = localStorage.getItem("evm_address");
-    if (evmAddress) {
+    const publicAddress = localStorage.getItem("public_address");
+    if (publicAddress) {
       try {
         await nimbus.post("/accounts", {
           type: "DEX",
-          publicAddress: evmAddress,
-          accountId: evmAddress,
+          publicAddress: publicAddress,
+          accountId: publicAddress,
           label: "My address",
         });
-        wallet.update((n) => (n = evmAddress));
+        wallet.update((n) => (n = publicAddress));
         await nimbus.post("/address/personalize/bundle", {
           name: "Your wallets",
-          addresses: [evmAddress],
+          addresses: [publicAddress],
         });
         queryClient.invalidateQueries(["list-bundle"]);
         queryClient.invalidateQueries(["list-address"]);
@@ -689,14 +690,15 @@
 
   // Add CEX address account
   const onSubmitCEX = () => {
+    const solanaToken = localStorage.getItem("solana_token");
     const evmToken = localStorage.getItem("evm_token");
-    if (evmToken) {
+    if (evmToken || solanaToken) {
       isLoadingConnectCEX = true;
       const vezgo: any = Vezgo.init({
         clientId: "6st9c6s816su37qe8ld1d5iiq2",
         authEndpoint: `${API_URL}/auth/vezgo`,
         auth: {
-          headers: { Authorization: `${evmToken}` },
+          headers: { Authorization: `${evmToken || solanaToken}` },
         },
       });
       const userVezgo = vezgo.login();

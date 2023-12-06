@@ -87,11 +87,11 @@
 {#if !wallet}
   <WalletButton class="wallet-adapter-button-trigger" on:click={openModal}>
     <slot>
-      <div style="display: flex; align-items: center; gap: 8px">
+      <div style="display: flex; align-items: center; gap: 8px; color: black">
         <img
           src={SolanaIcon}
           alt=""
-          style="width: 24px; height: 24px; border-radius: 100%"
+          style="width: 24px; height: 24px; border-radius: 100%;"
         />
         Login with Solana
       </div>
