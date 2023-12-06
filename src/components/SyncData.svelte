@@ -34,7 +34,7 @@
   const getSyncStatus = async () => {
     try {
       const response = await nimbus
-        .get(`/address/${address}/sync-status?chain=${$chain}`)
+        .get(`/v2/address/${address}/sync-status?chain=${$chain}`)
         .then((response) => response);
       return response;
     } catch (e) {
