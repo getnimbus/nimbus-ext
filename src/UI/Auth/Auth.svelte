@@ -315,7 +315,7 @@
         if (signatureString) {
           const payload = {
             signature: signatureString,
-            publicAddress: address?.toLowerCase(),
+            publicAddress: address,
           };
           handleGetSolanaToken(payload);
         }
