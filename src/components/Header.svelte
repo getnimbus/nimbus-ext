@@ -25,7 +25,7 @@
   import addGlobalBinds from "bind-mousetrap-global";
   addGlobalBinds(Mousetrap);
 
-  import AuthEvm from "~/UI/Auth/AuthEVM.svelte";
+  import Auth from "~/UI/Auth/Auth.svelte";
   import DarkModeFooter from "./DarkModeFooter.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
   import Button from "~/components/Button.svelte";
@@ -779,7 +779,7 @@
       </div> -->
 
       <div class="xl:block hidden">
-        <AuthEvm />
+        <Auth />
       </div>
     </div>
   </div>
