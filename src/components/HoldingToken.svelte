@@ -1800,7 +1800,7 @@
           </div>
         </div>
       {/if}
-      <div class="mr-7" id={`swap-${index}`}></div>
+      <div class="mr-7 swap-wrapper" id={`swap-${index}`}></div>
     </div>
   </div>
 </OverlaySidebarSwap>
