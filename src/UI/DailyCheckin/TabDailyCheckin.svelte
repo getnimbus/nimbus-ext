@@ -337,7 +337,7 @@
         window.open(link, "_blank");
         await wait(5000);
         const res = await nimbus.get(
-          `/v2/checkin/${$userPublicAddress}/twitter-quest`
+          `/v2/checkin/${$userPublicAddress}/quest/first-share-on-twitter`
         );
         if (res && res?.data === null) {
           toastMsg = "You already post us on Twitter";
