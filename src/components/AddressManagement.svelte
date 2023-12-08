@@ -245,8 +245,9 @@
       user.update((n) => (n = {}));
     },
     onSuccess(data) {
-      if (data.length === 0) {
-        handleCreateUser();
+      const publicAddress = localStorage.getItem("public_address");
+      if (data.length === 0 && publicAddress) {
+        handleCreateUser(publicAddress);
       }
     },
   });
@@ -562,27 +563,24 @@
     initialUpdateStateFromParams();
   };
 
-  const handleCreateUser = async () => {
-    const publicAddress = localStorage.getItem("public_address");
-    if (publicAddress) {
-      try {
-        await nimbus.post("/accounts", {
-          type: "DEX",
-          publicAddress: publicAddress,
-          accountId: publicAddress,
-          label: "My address",
-        });
-        wallet.update((n) => (n = publicAddress));
-        await nimbus.post("/address/personalize/bundle", {
-          name: "Your wallets",
-          addresses: [publicAddress],
-        });
-        queryClient.invalidateQueries(["list-bundle"]);
-        queryClient.invalidateQueries(["list-address"]);
-        mixpanel.track("user_add_address");
-      } catch (e) {
-        console.error(e);
-      }
+  const handleCreateUser = async (address: string) => {
+    try {
+      await nimbus.post("/accounts", {
+        type: "DEX",
+        publicAddress: address,
+        accountId: address,
+        label: "My address",
+      });
+      wallet.update((n) => (n = address));
+      await nimbus.post("/address/personalize/bundle", {
+        name: "Your wallets",
+        addresses: [address],
+      });
+      queryClient.invalidateQueries(["list-bundle"]);
+      queryClient.invalidateQueries(["list-address"]);
+      mixpanel.track("user_add_address");
+    } catch (e) {
+      console.error(e);
     }
   };
 
