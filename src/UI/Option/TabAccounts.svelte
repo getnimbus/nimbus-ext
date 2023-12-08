@@ -1334,15 +1334,17 @@
                           }`}
                         >
                           <div class="flex justify-end gap-6">
-                            <div
-                              class="text-2xl font-semibold text-red-600 transition-all cursor-pointer hover:underline dark:text-red-500 xl:text-base"
-                              on:click={() => {
-                                isOpenConfirmDelete = true;
-                                selectedWallet = item;
-                              }}
-                            >
-                              {MultipleLang.content.modal_delete}
-                            </div>
+                            {#if item.label !== "My address"}
+                              <div
+                                class="text-2xl font-semibold text-red-600 transition-all cursor-pointer hover:underline dark:text-red-500 xl:text-base"
+                                on:click={() => {
+                                  isOpenConfirmDelete = true;
+                                  selectedWallet = item;
+                                }}
+                              >
+                                {MultipleLang.content.modal_delete}
+                              </div>
+                            {/if}
                             <div
                               class="text-2xl font-semibold text-blue-600 transition-all cursor-pointer hover:underline dark:text-blue-500 xl:text-base"
                               on:click={() => handleSelectedEdit(item)}
@@ -1534,15 +1536,17 @@
                         }`}
                       >
                         <div class="flex justify-end gap-6">
-                          <div
-                            class="text-2xl font-semibold text-red-600 transition-all cursor-pointer hover:underline dark:text-red-500 xl:text-base"
-                            on:click={() => {
-                              isOpenConfirmDelete = true;
-                              selectedWallet = item;
-                            }}
-                          >
-                            {MultipleLang.content.modal_delete}
-                          </div>
+                          {#if item.label !== "My address"}
+                            <div
+                              class="text-2xl font-semibold text-red-600 transition-all cursor-pointer hover:underline dark:text-red-500 xl:text-base"
+                              on:click={() => {
+                                isOpenConfirmDelete = true;
+                                selectedWallet = item;
+                              }}
+                            >
+                              {MultipleLang.content.modal_delete}
+                            </div>
+                          {/if}
                           <div
                             class="text-2xl font-semibold text-blue-600 transition-all cursor-pointer hover:underline dark:text-blue-500 xl:text-base"
                             on:click={() => handleSelectedEdit(item)}
