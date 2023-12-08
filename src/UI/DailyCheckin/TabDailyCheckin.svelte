@@ -121,6 +121,7 @@
       Object.keys($user).length !== 0 &&
       $userPublicAddress.length !== 0,
     onError(err) {
+      localStorage.removeItem("solana_token");
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
     },
@@ -135,6 +136,7 @@
       Object.keys($user).length !== 0 &&
       $userPublicAddress.length !== 0,
     onError(err) {
+      localStorage.removeItem("solana_token");
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
     },
@@ -427,12 +429,12 @@
                         selectedCheckinIndex > index && $isDarkMode
                           ? "grayscale bg-gray-700"
                           : selectedCheckinIndex > index && !$isDarkMode
-                          ? "grayscale bg-gray-100"
-                          : selectedCheckinIndex === index
-                          ? "bg-black text-white scale-100 drop-shadow-lg"
-                          : $isDarkMode
-                          ? "bg-gray-700"
-                          : "bg-gray-100"
+                            ? "grayscale bg-gray-100"
+                            : selectedCheckinIndex === index
+                              ? "bg-black text-white scale-100 drop-shadow-lg"
+                              : $isDarkMode
+                                ? "bg-gray-700"
+                                : "bg-gray-100"
                       }`}
                     >
                       <div class="xl:text-lg text-xl font-medium">
@@ -478,8 +480,8 @@
                           {index + 1}{index === 0
                             ? "st"
                             : index == 1
-                            ? "nd"
-                            : "rd"}
+                              ? "nd"
+                              : "rd"}
                           Rank
                         </div>
                       </div>
@@ -495,7 +497,7 @@
               </div>
               {#if Object.keys($user).length !== 0}
                 <div class="border-y-1 border_0000000d">
-                  {#each quests as quest}
+                  <!-- {#each quests as quest}
                     <div
                       class="flex justify-between items-center gap-5 py-4 border-b-1 last:border-none border_0000000d"
                     >
@@ -506,7 +508,7 @@
                           alt=""
                           class="bg-yellow-200 rounded-lg mt-1"
                         />
-                        <div class="flex-1 flex items-center">
+                        <div class="flex-1 flex items-center gap-4">
                           <div class="flex-1 flex flex-col">
                             <div class="xl:text-base text-lg font-medium">
                               {quest?.title}
@@ -531,7 +533,43 @@
                         </a>
                       </div>
                     </div>
-                  {/each}
+                  {/each} -->
+                  <!-- Todo: remove me -->
+                  <div
+                    class="flex justify-between items-center gap-5 py-4 border-b-1 last:border-none border_0000000d"
+                  >
+                    <div class="flex-1 flex items-start gap-2">
+                      <img
+                        src={quests[0]?.img ||
+                          "https://s2.coinmarketcap.com/static/cloud/img/loyalty-program/Flags_3D_1.svg"}
+                        alt=""
+                        class="bg-yellow-200 rounded-lg mt-1"
+                      />
+                      <div class="flex-1 flex items-center gap-4">
+                        <div class="flex-1 flex flex-col">
+                          <div class="xl:text-base text-lg font-medium">
+                            {quests[0]?.title}
+                          </div>
+                          <div class="xl:text-sm text-base text-gray-500">
+                            {quests[0]?.description}
+                          </div>
+                        </div>
+                        <div class="flex justify-center items-center gap-1">
+                          <img src={goldImg} alt="" />
+                          <div class="xl:text-base text-lg font-medium">
+                            {quests[0]?.point}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="w-[170px]">
+                      <a href={quests[0]?.url}>
+                        <Button>
+                          <div class="py-1">Collect!</div>
+                        </Button>
+                      </a>
+                    </div>
+                  </div>
                 </div>
               {:else}
                 <div
@@ -611,8 +649,8 @@
                             point > 0
                               ? "text-green-500"
                               : point < 0
-                              ? "text-red-500"
-                              : ""
+                                ? "text-red-500"
+                                : ""
                           }`}
                         >
                           {point}

@@ -399,7 +399,7 @@
   const getSyncStatus = async () => {
     try {
       const response = await nimbus
-        .get(`/address/${$wallet}/sync-status?chain=${$chain}`)
+        .get(`/v2/address/${$wallet}/sync-status?chain=${$chain}`)
         .then((response) => response);
       dataUpdatedTime = response?.data?.lastSync;
       return response;

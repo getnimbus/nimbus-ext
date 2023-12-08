@@ -10,6 +10,7 @@
     isDarkMode,
     selectedBundle,
     triggerConnectWallet,
+    triggerSync,
     userPublicAddress,
   } from "~/store";
   import { i18n } from "~/lib/i18n";
@@ -239,15 +240,23 @@
     staleTime: Infinity,
     retry: false,
     onError(err) {
+      localStorage.removeItem("solana_token");
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
     },
-    onSuccess(data) {
-      if (data.length === 0) {
-        handleCreateUser();
-      }
-    },
   });
+
+  $: {
+    if (
+      $userPublicAddress &&
+      !$query.isError &&
+      $query.data !== undefined &&
+      $query.data.length === 0 &&
+      !$query.isError
+    ) {
+      handleCreateUser();
+    }
+  }
 
   $: {
     if (
@@ -561,26 +570,23 @@
   };
 
   const handleCreateUser = async () => {
-    const evmAddress = localStorage.getItem("evm_address");
-    if (evmAddress) {
-      try {
-        await nimbus.post("/accounts", {
-          type: "DEX",
-          publicAddress: evmAddress,
-          accountId: evmAddress,
-          label: "My address",
-        });
-        wallet.update((n) => (n = evmAddress));
-        await nimbus.post("/address/personalize/bundle", {
-          name: "Your wallets",
-          addresses: [evmAddress],
-        });
-        queryClient.invalidateQueries(["list-bundle"]);
-        queryClient.invalidateQueries(["list-address"]);
-        mixpanel.track("user_add_address");
-      } catch (e) {
-        console.error(e);
-      }
+    try {
+      await nimbus.post("/accounts", {
+        type: "DEX",
+        publicAddress: $userPublicAddress,
+        accountId: $userPublicAddress,
+        label: "My address",
+      });
+      wallet.update((n) => (n = $userPublicAddress));
+      await nimbus.post("/address/personalize/bundle", {
+        name: "Your wallets",
+        addresses: [$userPublicAddress],
+      });
+      queryClient.invalidateQueries(["list-bundle"]);
+      queryClient.invalidateQueries(["list-address"]);
+      mixpanel.track("user_add_address");
+    } catch (e) {
+      console.error(e);
     }
   };
 
@@ -689,14 +695,15 @@
 
   // Add CEX address account
   const onSubmitCEX = () => {
+    const solanaToken = localStorage.getItem("solana_token");
     const evmToken = localStorage.getItem("evm_token");
-    if (evmToken) {
+    if (evmToken || solanaToken) {
       isLoadingConnectCEX = true;
       const vezgo: any = Vezgo.init({
         clientId: "6st9c6s816su37qe8ld1d5iiq2",
         authEndpoint: `${API_URL}/auth/vezgo`,
         auth: {
-          headers: { Authorization: `${evmToken}` },
+          headers: { Authorization: `${evmToken || solanaToken}` },
         },
       });
       const userVezgo = vezgo.login();
@@ -958,7 +965,9 @@
   <div>
     {#if listAddress.length === 0 && $wallet?.length === 0}
       <div class="flex items-center justify-center h-screen">
-        <div class="flex flex-col items-center justify-center w-2/3 gap-4 p-6">
+        <div
+          class="flex flex-col items-center justify-center w-[70%] gap-4 p-6"
+        >
           {#if $query.isError && Object.keys($user).length !== 0}
             <div class="xl:text-lg text-2xl">
               {$query.error}
@@ -968,7 +977,12 @@
               {#if Object.keys($user).length !== 0}
                 {MultipleLang.addwallet}
               {:else}
-                Connect wallet to start tracking your investments
+                <div class="xl:block hidden">
+                  Connect wallet to start tracking your investments
+                </div>
+                <div class="xl:hidden block">
+                  Sync from Desktop to start tracking your investments
+                </div>
               {/if}
             </div>
             {#if Object.keys($user).length !== 0}
@@ -984,17 +998,31 @@
                 </Button>
               </div>
             {:else}
-              <div class="flex flex-col gap-4">
-                <Button
-                  on:click={() => {
-                    triggerConnectWallet.update((n) => (n = true));
-                    driverObj.destroy();
-                  }}
-                >
-                  <div class="text-2xl font-medium xl:text-base">
-                    Connect Wallet
-                  </div>
-                </Button>
+              <div class="flex flex-col justify-center items-center gap-4">
+                <div class="xl:block hidden">
+                  <Button
+                    on:click={() => {
+                      triggerConnectWallet.update((n) => (n = true));
+                      driverObj.destroy();
+                    }}
+                  >
+                    <div class="text-2xl font-medium xl:text-base">
+                      Connect Wallet
+                    </div>
+                  </Button>
+                </div>
+                <div class="xl:hidden block">
+                  <Button
+                    on:click={() => {
+                      triggerSync.update((n) => (n = true));
+                      driverObj.destroy();
+                    }}
+                  >
+                    <div class="text-2xl font-medium xl:text-base">
+                      Sync from Desktop
+                    </div>
+                  </Button>
+                </div>
                 <div
                   class="text-2xl font-medium xl:text-base mt-2 hover:underline text-[#1E96FC] cursor-pointer"
                   on:click={() => {
