@@ -244,13 +244,19 @@
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
     },
-    onSuccess(data) {
-      const publicAddress = localStorage.getItem("public_address");
-      if (data.length === 0 && publicAddress) {
-        handleCreateUser(publicAddress);
-      }
-    },
   });
+
+  $: {
+    if (
+      $userPublicAddress &&
+      !$query.isError &&
+      $query.data !== undefined &&
+      $query.data.length === 0 &&
+      !$query.isError
+    ) {
+      handleCreateUser();
+    }
+  }
 
   $: {
     if (
@@ -563,18 +569,18 @@
     initialUpdateStateFromParams();
   };
 
-  const handleCreateUser = async (address: string) => {
+  const handleCreateUser = async () => {
     try {
       await nimbus.post("/accounts", {
         type: "DEX",
-        publicAddress: address,
-        accountId: address,
+        publicAddress: $userPublicAddress,
+        accountId: $userPublicAddress,
         label: "My address",
       });
-      wallet.update((n) => (n = address));
+      wallet.update((n) => (n = $userPublicAddress));
       await nimbus.post("/address/personalize/bundle", {
         name: "Your wallets",
-        addresses: [address],
+        addresses: [$userPublicAddress],
       });
       queryClient.invalidateQueries(["list-bundle"]);
       queryClient.invalidateQueries(["list-address"]);
