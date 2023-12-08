@@ -24,7 +24,7 @@
   const getSync = async () => {
     try {
       await nimbus
-        .post(`/v2/address/${address}/sync?chain=ALL`, {})
+        .get(`/v2/address/${address}/sync?chain=ALL`)
         .then((response) => response);
     } catch (e) {
       console.error("e: ", e);
