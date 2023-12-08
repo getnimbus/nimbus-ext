@@ -17,9 +17,11 @@ const createAxiosInterface = ({ baseURL, getHeaderAuthorize }: IOption) => {
     get<T>(url: string, config?: IReqOption): Promise<T> {
       const apiUrl = new URL(`${baseURL}${url}`);
       if (config?.params) {
-        Object.keys(config.params).forEach((key) =>
-          apiUrl.searchParams.append(key, config.params[key])
-        );
+        Object.keys(config.params)
+          .filter((_) => _)
+          .forEach((key) =>
+            apiUrl.searchParams.append(key, config.params[key])
+          );
       }
       const authorization: any = getHeaderAuthorize();
       return fetch(apiUrl, {
@@ -39,9 +41,11 @@ const createAxiosInterface = ({ baseURL, getHeaderAuthorize }: IOption) => {
     post<T>(url: string, body: any, config?: IReqOption): Promise<T> {
       const apiUrl = new URL(`${baseURL}${url}`);
       if (config?.params) {
-        Object.keys(config.params).forEach((key) =>
-          apiUrl.searchParams.append(key, config.params[key])
-        );
+        Object.keys(config.params)
+          .filter((_) => _)
+          .forEach((key) =>
+            apiUrl.searchParams.append(key, config.params[key])
+          );
       }
       const authorization: any = getHeaderAuthorize();
       return fetch(apiUrl, {
