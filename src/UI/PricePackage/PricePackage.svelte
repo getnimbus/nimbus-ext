@@ -29,6 +29,7 @@
     staleTime: Infinity,
     retry: false,
     onError(err) {
+      localStorage.removeItem("solana_token");
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
       wallet.update((n) => (n = ""));
@@ -62,8 +63,8 @@
       selectedPricePackage === "Free"
         ? item.content.free
         : selectedPricePackage === "Explorer"
-        ? item.content.explorer
-        : item.content.alpha;
+          ? item.content.explorer
+          : item.content.alpha;
 
     return `
       <div class="text-xl">
@@ -514,10 +515,10 @@
               selectedPricePackage === "Free" && !$isDarkMode
                 ? "bg-blue-100 text-primary"
                 : selectedPricePackage === "Free" && $isDarkMode
-                ? "bg-gray-500 text-white"
-                : $isDarkMode
-                ? "text-white"
-                : "text-black"
+                  ? "bg-gray-500 text-white"
+                  : $isDarkMode
+                    ? "text-white"
+                    : "text-black"
             }`}
             on:click={() => {
               selectedPricePackage = "Free";
@@ -531,10 +532,10 @@
               selectedPricePackage === "Explorer" && !$isDarkMode
                 ? "bg-blue-100 text-primary"
                 : selectedPricePackage === "Explorer" && $isDarkMode
-                ? "bg-gray-500 text-white"
-                : $isDarkMode
-                ? "text-white"
-                : "text-black"
+                  ? "bg-gray-500 text-white"
+                  : $isDarkMode
+                    ? "text-white"
+                    : "text-black"
             }`}
             on:click={() => {
               selectedPricePackage = "Explorer";
@@ -548,10 +549,10 @@
               selectedPricePackage === "Professional" && !$isDarkMode
                 ? "bg-blue-100 text-primary"
                 : selectedPricePackage === "Professional" && $isDarkMode
-                ? "bg-gray-500 text-white"
-                : $isDarkMode
-                ? "text-white"
-                : "text-black"
+                  ? "bg-gray-500 text-white"
+                  : $isDarkMode
+                    ? "text-white"
+                    : "text-black"
             }`}
             on:click={() => {
               selectedPricePackage = "Professional";
