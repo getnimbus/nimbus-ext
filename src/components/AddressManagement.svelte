@@ -234,29 +234,23 @@
     return response?.data;
   };
 
-  const query = createQuery({
+  $: query = createQuery({
     queryKey: ["list-address"],
     queryFn: () => getListAddress(),
     staleTime: Infinity,
     retry: false,
+    enabled: $user && Object.keys($user).length !== 0,
     onError(err) {
       localStorage.removeItem("solana_token");
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
     },
+    onSuccess(data) {
+      if (data.length === 0) {
+        handleCreateUser();
+      }
+    },
   });
-
-  $: {
-    if (
-      $userPublicAddress &&
-      !$query.isError &&
-      $query.data !== undefined &&
-      $query.data.length === 0 &&
-      !$query.isError
-    ) {
-      handleCreateUser();
-    }
-  }
 
   $: {
     if (
@@ -570,21 +564,30 @@
   };
 
   const handleCreateUser = async () => {
+    await wait(200);
     try {
-      await nimbus.post("/accounts", {
-        type: "DEX",
-        publicAddress: $userPublicAddress,
-        accountId: $userPublicAddress,
-        label: "My address",
+      const [resAddAccount, resAddBundle] = await Promise.all([
+        await nimbus.post("/accounts", {
+          type: "DEX",
+          publicAddress: $userPublicAddress,
+          accountId: $userPublicAddress,
+          label: "My address",
+        }),
+        await nimbus.post("/address/personalize/bundle", {
+          name: "Your wallets",
+          addresses: [$userPublicAddress],
+        }),
+      ]);
+      console.log({
+        resAddAccount,
+        resAddBundle,
       });
-      wallet.update((n) => (n = $userPublicAddress));
-      await nimbus.post("/address/personalize/bundle", {
-        name: "Your wallets",
-        addresses: [$userPublicAddress],
-      });
-      queryClient.invalidateQueries(["list-bundle"]);
-      queryClient.invalidateQueries(["list-address"]);
-      mixpanel.track("user_add_address");
+      if (resAddAccount && resAddBundle) {
+        wallet.update((n) => (n = $userPublicAddress));
+        queryClient.invalidateQueries(["list-bundle"]);
+        queryClient.invalidateQueries(["list-address"]);
+        mixpanel.track("user_add_address");
+      }
     } catch (e) {
       console.error(e);
     }
