@@ -17,9 +17,11 @@ const createAxiosInterface = ({ baseURL, getHeaderAuthorize }: IOption) => {
     get<T>(url: string, config?: IReqOption): Promise<T> {
       const apiUrl = new URL(`${baseURL}${url}`);
       if (config?.params) {
-        Object.keys(config.params).forEach((key) =>
-          apiUrl.searchParams.append(key, config.params[key])
-        );
+        Object.keys(config.params)
+          .filter((_) => _)
+          .forEach((key) =>
+            apiUrl.searchParams.append(key, config.params[key])
+          );
       }
       const authorization: any = getHeaderAuthorize();
       return fetch(apiUrl, {
@@ -39,9 +41,11 @@ const createAxiosInterface = ({ baseURL, getHeaderAuthorize }: IOption) => {
     post<T>(url: string, body: any, config?: IReqOption): Promise<T> {
       const apiUrl = new URL(`${baseURL}${url}`);
       if (config?.params) {
-        Object.keys(config.params).forEach((key) =>
-          apiUrl.searchParams.append(key, config.params[key])
-        );
+        Object.keys(config.params)
+          .filter((_) => _)
+          .forEach((key) =>
+            apiUrl.searchParams.append(key, config.params[key])
+          );
       }
       const authorization: any = getHeaderAuthorize();
       return fetch(apiUrl, {
@@ -95,12 +99,12 @@ const createAxiosInterface = ({ baseURL, getHeaderAuthorize }: IOption) => {
 
 export const messari = createAxiosInterface({
   baseURL: "https://data.messari.io/api/v1",
-  getHeaderAuthorize: () => {},
+  getHeaderAuthorize: () => { },
 });
 
 export const coinGeko = createAxiosInterface({
   baseURL: "https://api.coingecko.com/api/v3",
-  getHeaderAuthorize: () => {},
+  getHeaderAuthorize: () => { },
 });
 
 export const API_URL =
@@ -110,10 +114,11 @@ export const nimbus = createAxiosInterface({
   baseURL: API_URL,
   getHeaderAuthorize: () => {
     if (APP_TYPE.TYPE === "WEB") {
+      const solanaToken = localStorage.getItem("solana_token");
       const evmToken = localStorage.getItem("evm_token");
-      if (evmToken) {
+      if (evmToken || solanaToken) {
         return {
-          Authorization: `${evmToken}`,
+          Authorization: `${evmToken || solanaToken}`,
         };
       }
     }
@@ -122,22 +127,22 @@ export const nimbus = createAxiosInterface({
 
 export const defillama = createAxiosInterface({
   baseURL: "https://coins.llama.fi",
-  getHeaderAuthorize: () => {},
+  getHeaderAuthorize: () => { },
 });
 
 export const coinmarketcap = createAxiosInterface({
   baseURL: "https://s3.coinmarketcap.com",
-  getHeaderAuthorize: () => {},
+  getHeaderAuthorize: () => { },
 });
 
 export const mixpanel = createAxiosInterface({
   baseURL: "https://api.mixpanel.com",
-  getHeaderAuthorize: () => {},
+  getHeaderAuthorize: () => { },
 });
 
 export const goplus = createAxiosInterface({
   baseURL: "https://api.gopluslabs.io/api/v1",
-  getHeaderAuthorize: () => {},
+  getHeaderAuthorize: () => { },
 });
 
 export const mobula = createAxiosInterface({
@@ -151,10 +156,10 @@ export const mobula = createAxiosInterface({
 
 export const nimbusApi = createAxiosInterface({
   baseURL: "https://nimbus-api-production.up.railway.app/api",
-  getHeaderAuthorize: () => {},
+  getHeaderAuthorize: () => { },
 });
 
 export const aptos = createAxiosInterface({
   baseURL: "https://aptos-celebtron-api.getnimbus.io/api/v1",
-  getHeaderAuthorize: () => {},
+  getHeaderAuthorize: () => { },
 });
