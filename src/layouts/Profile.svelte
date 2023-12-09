@@ -254,6 +254,7 @@
     staleTime: Infinity,
     enabled: selectedAddress?.length !== 0 && Object.keys($user).length !== 0,
     onError(err) {
+      localStorage.removeItem("solana_token");
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
     },
@@ -270,8 +271,9 @@
     queryKey: ["list-address"],
     queryFn: () => getListAddress(),
     staleTime: Infinity,
-    enabled: Object.keys($user).length !== 0,
+    enabled: $user && Object.keys($user).length !== 0,
     onError(err) {
+      localStorage.removeItem("solana_token");
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
     },

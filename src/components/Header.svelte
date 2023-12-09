@@ -12,6 +12,7 @@
     isShowHeaderMobile,
     userId,
     userPublicAddress,
+    triggerSync,
   } from "~/store";
   import { shorterAddress } from "~/utils";
   import mixpanel from "mixpanel-browser";
@@ -25,7 +26,6 @@
   addGlobalBinds(Mousetrap);
 
   import Auth from "~/UI/Auth/Auth.svelte";
-  import AuthEvm from "~/UI/Auth/AuthEVM.svelte";
   import DarkModeFooter from "./DarkModeFooter.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
   import Button from "~/components/Button.svelte";
@@ -98,8 +98,9 @@
     queryKey: ["list-address"],
     queryFn: () => getListAddress(),
     staleTime: Infinity,
-    enabled: Object.keys($user).length !== 0,
+    enabled: $user && Object.keys($user).length !== 0,
     onError(err) {
+      localStorage.removeItem("solana_token");
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
     },
@@ -320,6 +321,7 @@
         code: code,
       });
       if (res?.data?.result) {
+        // Todo: check chain token to set local storage
         localStorage.setItem("evm_token", res?.data?.result);
         user.update(
           (n) =>
@@ -384,6 +386,7 @@
     staleTime: Infinity,
     retry: false,
     onError(err) {
+      localStorage.removeItem("solana_token");
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
       wallet.update((n) => (n = ""));
@@ -395,7 +398,7 @@
 
   $: {
     if (!$queryUserInfo.isError && $queryUserInfo.data !== undefined) {
-      localStorage.setItem("evm_address", $queryUserInfo.data.publicAddress);
+      localStorage.setItem("public_address", $queryUserInfo.data.publicAddress);
       userPublicAddress.update((n) => (n = $queryUserInfo.data.publicAddress));
       userId.update((n) => (n = $queryUserInfo.data.id));
       userID = $queryUserInfo.data.id;
@@ -450,6 +453,15 @@
           item.value.toLowerCase().includes(search.toLowerCase())
       )
     : listAddress;
+
+  $: {
+    if ($triggerSync) {
+      isOpenModalSync = true;
+      isShowHeaderMobile.update((n) => (n = false));
+      mixpanel.track("user_connect_wallet");
+      triggerSync.update((n) => (n = false));
+    }
+  }
 </script>
 
 <div class="mobile-header-container py-1 border-b-[1px] border-[#ffffff1a]">
@@ -766,9 +778,8 @@
         <img src={Bell} alt="" class="xl:w-5 xl:h-5 w-7 h-7" />
       </div> -->
 
-      <!-- <Auth /> -->
       <div class="xl:block hidden">
-        <AuthEvm />
+        <Auth />
       </div>
     </div>
   </div>
@@ -805,7 +816,7 @@
           <div class="flex justify-between items-center px-4 text-white">
             <div class="text-3xl">
               GM 👋, {shorterAddress(
-                localStorage.getItem("evm_address") || publicAddress
+                localStorage.getItem("public_address") || publicAddress
               )}
             </div>
           </div>
@@ -1090,7 +1101,6 @@
         <div class="flex flex-col gap-7 px-4">
           <DarkModeFooter />
           <div class="w-max flex flex-col gap-6">
-            <AuthEvm />
             {#if Object.keys($user).length === 0}
               <div
                 class="text-3xl font-semibold text-white cursor-pointer xl:text-base"
