@@ -346,7 +346,7 @@
           trigger();
         }
         if (res?.data?.bonus !== undefined) {
-          triggerCheckinSuccess();
+          triggerBonusScore();
           bonusScore = res?.data?.bonus;
           isTriggerBonusScore = true;
           queryClient.invalidateQueries([$userPublicAddress, "daily-checkin"]);
@@ -356,6 +356,14 @@
       console.error(e);
     }
   };
+
+  $: console.log("dataCheckinHistory: ", dataCheckinHistory);
+
+  $: disabledCollect = dataCheckinHistory.every(
+    (item) => item.type === "QUEST" && item.note === "first-share-on-twitter"
+  );
+
+  $: console.log("disabledCollect: ", disabledCollect);
 </script>
 
 <div class="flex flex-col gap-4 min-h-screen">
@@ -579,11 +587,13 @@
                         {:else}
                           <div
                             on:click={() => {
-                              handleReceiveQuest(quest?.url, quest?.id);
+                              if (!disabledCollect) {
+                                handleReceiveQuest(quest?.url, quest?.id);
+                              }
                             }}
                             class="py-1"
                           >
-                            <Button>Collect!</Button>
+                            <Button disabled={disabledCollect}>Collect!</Button>
                           </div>
                         {/if}
                       </div>
