@@ -214,8 +214,9 @@
       // TODO: Map to mobula blockchain type
       params: {
         blockchain,
-        asset: chain === "CEX" ? symbol : contractAddress,
-        time: time === "ALL" ? "" : dayjs().subtract(time, "day").valueOf(),
+        symbol: chain === "CEX" ? symbol : undefined,
+        asset: chain === "CEX" ? undefined : contractAddress,
+        from: time === "ALL" ? "" : dayjs().subtract(time, "day").valueOf(),
       },
     });
 
