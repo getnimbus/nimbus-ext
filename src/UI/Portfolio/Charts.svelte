@@ -946,9 +946,9 @@
                         class="mb-1"
                       />
                     {/if}
-                    <span>
-                      ($<TooltipNumber
-                        number={networthValueChange}
+                    <span class="flex">
+                      ({#if networthValueChange < 0}-{/if}$<TooltipNumber
+                        number={Math.abs(networthValueChange)}
                         type="balance"
                       />)
                     </span>
