@@ -357,13 +357,9 @@
     }
   };
 
-  $: console.log("dataCheckinHistory: ", dataCheckinHistory);
-
-  $: disabledCollect = dataCheckinHistory.every(
+  $: disabledCollect = dataCheckinHistory.find(
     (item) => item.type === "QUEST" && item.note === "first-share-on-twitter"
   );
-
-  $: console.log("disabledCollect: ", disabledCollect);
 </script>
 
 <div class="flex flex-col gap-4 min-h-screen">
