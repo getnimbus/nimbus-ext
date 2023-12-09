@@ -236,7 +236,35 @@
 
   $: {
     if (tooltipDateValue) {
-      console.log("tooltipDateValue: ", tooltipDateValue);
+      const formatDataPortfolioChart =
+        overviewDataPerformance?.portfolioChart.map((item) => {
+          return {
+            timestamp: dayjs(item.timestamp * 1000).format("YYYY-MM-DD"),
+            value: item.value,
+          };
+        });
+
+      const formatDataPerformance = overviewDataPerformance?.performance.map(
+        (item) => {
+          return {
+            timestamp: dayjs(item.date).format("YYYY-MM-DD"),
+            value: item.portfolio,
+          };
+        }
+      );
+
+      const selectedDataPortfolioChart = formatDataPortfolioChart.find(
+        (item) => item.timestamp === tooltipDateValue
+      );
+      const selectedDataPerformance = formatDataPerformance.find(
+        (item) => item.timestamp === tooltipDateValue
+      );
+
+      networth = selectedDataPortfolioChart.value;
+
+      portfolioPercentChange = selectedDataPerformance.portfolio;
+
+      networthValueChange = networth * (portfolioPercentChange / 100);
     }
   }
 
