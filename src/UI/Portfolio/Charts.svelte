@@ -248,7 +248,7 @@
         (item) => {
           return {
             timestamp: dayjs(item.date).format("YYYY-MM-DD"),
-            value: item.portfolio,
+            portfolio: item.portfolio,
           };
         }
       );
@@ -256,6 +256,7 @@
       const selectedDataPortfolioChart = formatDataPortfolioChart.find(
         (item) => item.timestamp === tooltipDateValue
       );
+
       const selectedDataPerformance = formatDataPerformance.find(
         (item) => item.timestamp === tooltipDateValue
       );
