@@ -461,11 +461,11 @@
   );
 
   $: badPerfValue =
-    Number(badPerf?.profit?.averageCost || 0) *
+    Number(badPerf?.price?.price || 0) *
     (Number(badPerf?.change30DPercent) / 100);
 
   $: goodPerfValue =
-    Number(goodPerf?.profit?.averageCost || 0) *
+    Number(goodPerf?.price?.price || 0) *
     (Number(goodPerf?.change30DPercent) / 100);
 
   $: sharpeRatioAvgMarket = (
