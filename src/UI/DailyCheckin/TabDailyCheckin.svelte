@@ -363,7 +363,7 @@
       }
       if (type === "sync-telegram") {
         window.open(link, "_blank");
-        await wait(120000);
+        await wait(6000);
         const res = await nimbus.post(
           `/v2/checkin/${$userPublicAddress}/quest/sync-telegram`,
           {}
