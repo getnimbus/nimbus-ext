@@ -119,6 +119,7 @@ export default defineConfig(({ mode }) => {
         target: "es2020",
       },
     },
+    publicDir: path.resolve(__dirname, "./public"),
     build: {
       target: ["es2020"],
       rollupOptions: {
