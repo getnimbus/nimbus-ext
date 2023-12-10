@@ -924,7 +924,9 @@
             {:else}
               <div class="flex flex-col gap-4 relative">
                 <div
-                  class="absolute top-8 left-20 flex flex-col rounded-[4px] px-2 py-1 bg-white z-10"
+                  class={`absolute top-8 left-20 flex flex-col rounded-[4px] px-2 py-1 z-10 ${
+                    $isDarkMode ? "bg-[#131313]" : "bg-white"
+                  }`}
                   style="box-shadow: rgba(0, 0, 0, 0.2) 1px 2px 10px;"
                 >
                   <div class="xl:text-lg text-xl font-medium">
