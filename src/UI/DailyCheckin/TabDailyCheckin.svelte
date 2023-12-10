@@ -352,6 +352,25 @@
           queryClient.invalidateQueries([$userPublicAddress, "daily-checkin"]);
         }
       }
+      if (type === "sync-telegram") {
+        window.open(link, "_blank");
+        await wait(5000);
+        const res = await nimbus.post(
+          `/v2/checkin/${$userPublicAddress}/quest/sync-telegram`,
+          {}
+        );
+        if (res && res?.data === null) {
+          toastMsg = "You are not sync Telegram";
+          isSuccessToast = false;
+          trigger();
+        }
+        if (res?.data?.bonus !== undefined) {
+          triggerBonusScore();
+          bonusScore = res?.data?.bonus;
+          isTriggerBonusScore = true;
+          queryClient.invalidateQueries([$userPublicAddress, "daily-checkin"]);
+        }
+      }
     } catch (e) {
       console.error(e);
     }
