@@ -1,12 +1,14 @@
 <script lang="ts">
   import { Swiper, SwiperSlide } from "swiper/svelte";
-  import SwiperCore, { Pagination, Navigation } from "swiper";
-  SwiperCore.use([Pagination, Navigation]);
+  import SwiperCore, { Pagination, Navigation, Autoplay } from "swiper";
+  SwiperCore.use([Pagination, Navigation, Autoplay]);
 
+  import Loading from "~/components/Loading.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import SlideOne from "./SlideOne.svelte";
   import SlideTwo from "./SlideTwo.svelte";
-  import Loading from "~/components/Loading.svelte";
+  import SlideThree from "./SlideThree.svelte";
+  import SlideFour from "./SlideFour.svelte";
 
   import "swiper/swiper.scss";
   import "swiper/components/pagination/pagination.scss";
@@ -21,6 +23,10 @@
         slidesPerView={1}
         speed={2000}
         pagination={{ clickable: true, dynamicBullets: true }}
+        autoplay={{
+          delay: 7000,
+        }}
+        loop={true}
       >
         <SwiperSlide>
           <SlideOne />
@@ -28,6 +34,14 @@
 
         <SwiperSlide>
           <SlideTwo />
+        </SwiperSlide>
+
+        <SwiperSlide>
+          <SlideThree />
+        </SwiperSlide>
+
+        <SwiperSlide>
+          <SlideFour />
         </SwiperSlide>
       </Swiper>
     </div>
