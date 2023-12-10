@@ -43,6 +43,7 @@
   import jwt_decode from "jwt-decode";
   import bs58 from "bs58";
   import { walletStore } from "@svelte-on-solana/wallet-adapter-core";
+  import Button from "~/components/Button.svelte";
 
   const wallets = [new PhantomWalletAdapter(), new SolflareWalletAdapter()];
 
@@ -519,7 +520,7 @@
             showPopover = false;
           }}
         >
-          Sync to mobile
+          Sync session
         </div>
 
         <div on:click={() => (showPopover = false)}>
@@ -732,6 +733,25 @@
             </div>
           </div>
         </CopyToClipboard>
+      </div>
+    </div>
+    <div class="flex flex-col items-center mt-2 gap-4">
+      <div class="border-t-[1px] relative w-[57%]">
+        <div
+          class={`absolute xl:top-[-10px] top-[-14px] left-1/2 transform -translate-x-1/2 text-gray-400 text-xs px-2 ${
+            $isDarkMode ? "bg-[#0f0f0f]" : "bg-white"
+          }`}
+        >
+          Or open Telegram
+        </div>
+      </div>
+      <div class="w-[57%]">
+        <a
+          href={`https://t.me/GetNimbusBot?start=${syncMobileCode}`}
+          target="_blank"
+        >
+          <Button variant="primary">Sync to Telegram</Button>
+        </a>
       </div>
     </div>
   </div>

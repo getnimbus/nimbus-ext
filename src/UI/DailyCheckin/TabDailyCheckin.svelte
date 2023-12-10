@@ -166,8 +166,17 @@
     if (!$queryDailyCheckin.isError && $queryDailyCheckin.data !== undefined) {
       selectedCheckinIndex = $queryDailyCheckin?.data?.steak;
       isDisabledCheckin = $queryDailyCheckin?.data?.checkinable;
-      quests = $queryDailyCheckin?.data?.quests;
       dataCheckinHistory = $queryDailyCheckin?.data?.checkinLogs;
+      quests = $queryDailyCheckin?.data?.quests.map((item) => {
+        const selectedLogs = dataCheckinHistory
+          .filter((log) => log.type === "QUEST" && log.note !== "id-generate")
+          .find((log) => log.note === item.id);
+
+        return {
+          ...item,
+          isDone: !item.isInternalLink && selectedLogs,
+        };
+      });
     }
   }
 
@@ -352,14 +361,29 @@
           queryClient.invalidateQueries([$userPublicAddress, "daily-checkin"]);
         }
       }
+      if (type === "sync-telegram") {
+        window.open(link, "_blank");
+        await wait(6000);
+        const res = await nimbus.post(
+          `/v2/checkin/${$userPublicAddress}/quest/sync-telegram`,
+          {}
+        );
+        if (res && res?.data === null) {
+          toastMsg = "You are not sync Telegram";
+          isSuccessToast = false;
+          trigger();
+        }
+        if (res?.data?.bonus !== undefined) {
+          triggerBonusScore();
+          bonusScore = res?.data?.bonus;
+          isTriggerBonusScore = true;
+          queryClient.invalidateQueries([$userPublicAddress, "daily-checkin"]);
+        }
+      }
     } catch (e) {
       console.error(e);
     }
   };
-
-  $: disabledCollect = dataCheckinHistory.find(
-    (item) => item.type === "QUEST" && item.note === "first-share-on-twitter"
-  );
 </script>
 
 <div class="flex flex-col gap-4 min-h-screen">
@@ -583,13 +607,13 @@
                         {:else}
                           <div
                             on:click={() => {
-                              if (!disabledCollect) {
+                              if (!quest.isDone) {
                                 handleReceiveQuest(quest?.url, quest?.id);
                               }
                             }}
                             class="py-1"
                           >
-                            <Button disabled={disabledCollect}>Collect!</Button>
+                            <Button disabled={quest.isDone}>Collect!</Button>
                           </div>
                         {/if}
                       </div>
