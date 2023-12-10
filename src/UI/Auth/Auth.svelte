@@ -586,7 +586,7 @@
 >
   <div class="flex flex-col gap-4">
     <div class="flex flex-col gap-1 items-start">
-      <div class="xl:title-3 title-1 font-semibold">Sync session to mobile</div>
+      <div class="xl:title-3 title-1 font-semibold">Sync session</div>
       <div class="xl:text-sm text-2xl text-gray-500">
         More convenience in managing your portfolio on mobile devices
       </div>
@@ -651,15 +651,6 @@
       </div>
     </div>
     <div class="flex flex-col items-center mt-2 gap-4">
-      <div class="border-t-[1px] relative w-[57%]">
-        <div
-          class={`absolute xl:top-[-10px] top-[-14px] left-1/2 transform -translate-x-1/2 text-gray-400 text-xs px-2 ${
-            $isDarkMode ? "bg-[#0f0f0f]" : "bg-white"
-          }`}
-        >
-          Or enter the code manually
-        </div>
-      </div>
       <div class="w-[57%]">
         <CopyToClipboard
           text={syncMobileCode}
