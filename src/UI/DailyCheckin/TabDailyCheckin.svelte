@@ -358,7 +358,9 @@
   };
 
   $: disabledCollect = dataCheckinHistory.find(
-    (item) => item.type === "QUEST" && item.note === "first-share-on-twitter"
+    (item) =>
+      item.type === "QUEST" &&
+      (item.note === "first-share-on-twitter" || item.note === "sync-telegram")
   );
 </script>
 
