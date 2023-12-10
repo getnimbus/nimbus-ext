@@ -32,14 +32,14 @@ export default defineConfig(({ mode }) => {
             src: "src/_locales",
             dest: "",
           },
-          {
-            src: path.resolve(__dirname, "./public"),
-            dest: "",
-          },
-          {
-            src: path.resolve(__dirname, "./public/robots.txt"),
-            dest: "",
-          },
+          // {
+          //   src: path.resolve(__dirname, "./public"),
+          //   dest: "",
+          // },
+          // {
+          //   src: path.resolve(__dirname, "./public/robots.txt"),
+          //   dest: "",
+          // },
           {
             src: path.resolve(__dirname, "./src/assets/logo/"),
             dest: "assets",
