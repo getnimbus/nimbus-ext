@@ -4,6 +4,7 @@
   import { Route, Router } from "svelte-navigator";
   import * as browser from "webextension-polyfill";
   import { isDarkMode } from "~/store";
+  import "../../lib/jupiter/main-2.0.4.js";
 
   import "flowbite/dist/flowbite.css";
 
@@ -62,9 +63,9 @@
   });
 </script>
 
-<svelte:head>
+<!-- <svelte:head>
   <script src="https://terminal.jup.ag/main-v1.js" data-preload></script>
-</svelte:head>
+</svelte:head> -->
 
 <ErrorBoundary>
   <QueryClientProvider client={queryClient}>
