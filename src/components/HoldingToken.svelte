@@ -22,11 +22,11 @@
   import Image from "~/components/Image.svelte";
   import OverlaySidebar from "./OverlaySidebar.svelte";
   import TokenDetailSidebar from "~/UI/TokenDetail/TokenDetailSidebar.svelte";
+  import OverlaySidebarSwap from "./OverlaySidebarSwap.svelte";
 
   import TrendUp from "~/assets/trend-up.svg";
   import TrendDown from "~/assets/trend-down.svg";
   import defaultToken from "~/assets/defaultToken.png";
-  import OverlaySidebarSwap from "./OverlaySidebarSwap.svelte";
 
   export let data;
   export let selectedWallet;
@@ -220,6 +220,7 @@
       strictTokenList: false,
       defaultExplorer: "Solscan",
       formProps: {
+        darkMode: $isDarkMode,
         fixedOutputMint: false,
         initialAmount: data?.amountRaw,
         initialInputMint:
@@ -1800,7 +1801,7 @@
           </div>
         </div>
       {/if}
-      <div class="mr-7 swap-wrapper" id={`swap-${index}`}></div>
+      <div class="mr-7" id={`swap-${index}`}></div>
     </div>
   </div>
 </OverlaySidebarSwap>

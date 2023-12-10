@@ -566,7 +566,7 @@
 
                     <div class="flex flex-col">
                       <div
-                        class={`text-2xl xl:text-lg ${
+                        class={`flex text-2xl xl:text-lg ${
                           badPerfValue >= 0 ? "text-[#00A878]" : "text-red-500"
                         }`}
                       >
@@ -613,7 +613,7 @@
 
                     <div class="flex flex-col">
                       <div
-                        class={`text-2xl xl:text-lg ${
+                        class={`flex text-2xl xl:text-lg ${
                           goodPerfValue >= 0 ? "text-[#00A878]" : "text-red-500"
                         }`}
                       >
