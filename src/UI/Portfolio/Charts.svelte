@@ -921,13 +921,13 @@
                 Empty
               </div>
             {:else}
-              <div class="flex flex-col gap-4">
-                <div class="ml-4 flex flex-col">
-                  <div class="xl:text-xl text-2xl font-medium">
+              <div class="flex flex-col gap-4 relative">
+                <div class="absolute top-8 left-20 flex flex-col">
+                  <div class="xl:text-lg text-xl font-medium">
                     $<TooltipNumber number={networth} type="balance" />
                   </div>
                   <div
-                    class={`xl:text-base text-lg flex gap-1 ${
+                    class={`xl:text-sm text-base flex gap-1 ${
                       portfolioPercentChange >= 0
                         ? "text-[#00A878]"
                         : "text-red-500"
