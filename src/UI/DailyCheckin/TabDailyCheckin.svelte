@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { useLocation } from "svelte-navigator";
+  import { useLocation } from "svelte-navigator";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { nimbus } from "~/lib/network";
@@ -392,13 +392,15 @@
     }
   };
 
-  
-
   $: {
-    // if (!$queryDailyCheckin.isLoading && $location.pathname === "/daily-checkin" && !localStorage.getItem("view-checkin-tour")) {
+    if (
+      !$queryDailyCheckin.isLoading &&
+      $location.pathname === "/daily-checkin" &&
+      !localStorage.getItem("view-checkin-tour")
+    ) {
       driveCheckin().drive();
-        // localStorage.setItem("view-checkin-tour", "true");
-    // }
+      localStorage.setItem("view-checkin-tour", "true");
+    }
   }
 </script>
 
