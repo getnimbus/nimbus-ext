@@ -31,6 +31,7 @@ import Mantle from "~/assets/mantle.png";
 import Algorand from "~/assets/algorand.png";
 import Exzo from "~/assets/exzo.png";
 import Klaytn from "~/assets/klaytn.png";
+import { userPublicAddress } from "./store";
 
 export const ETHAddressRegex = /(\b0x[a-fA-F0-9]{40}\b)/g;
 export const ETHTrxRegex = /(\b0x[a-fA-F0-9]{64}\b)/g;
@@ -704,9 +705,9 @@ export const exponentialToDecimal = (exponential: number) => {
       let i = 0;
       i <
       +exponentialSplitted[1] -
-      (exponentialSplitted[0].includes(".")
-        ? exponentialSplitted[0].split(".")[1].length
-        : 0);
+        (exponentialSplitted[0].includes(".")
+          ? exponentialSplitted[0].split(".")[1].length
+          : 0);
       i++
     ) {
       postfix += "0";
@@ -756,16 +757,16 @@ export const formatValue = (input: number) => {
   return numeral(input).format("0,0.00") === "NaN"
     ? formatNumberSmall(input)
     : input !== 0 && input > 0 && input < 0.01
-      ? "<$0.01"
-      : numeral(input).format("$0,0.00");
+    ? "<$0.01"
+    : numeral(input).format("$0,0.00");
 };
 
 export const formatCurrency = (input: number) => {
   return numeral(input).format("0,0.000000") === "NaN"
     ? formatNumberSmall(input)
     : input !== 0 && input > 0 && input < 0.01
-      ? numeral(input).format("0,0.000000")
-      : numeral(input).format("0,0.0000");
+    ? numeral(input).format("0,0.000000")
+    : numeral(input).format("0,0.0000");
 };
 
 export const formatBalance = (input: number) => {
@@ -1076,14 +1077,17 @@ export const getTooltipContent = (
   width?: string
 ) => {
   return `
-      <div style="padding: 8px; border-radius: 8px; background: ${darkMode ? "#0f0f0f" : "#000"
-    }; width: ${isMaxWidth ? "100%" : "560px"}; height: auto;">
-        ${text
-      ? `<div style="margin-bottom: 6px; font-size: 14px; line-height: 20px; color: #fff;">${text}</div>`
-      : ""
-    } 
-        <div style="border-radius: 6px; width: ${width ? width : "100%"
-    }; overflow: hidden">
+      <div style="padding: 8px; border-radius: 8px; background: ${
+        darkMode ? "#0f0f0f" : "#000"
+      }; width: ${isMaxWidth ? "100%" : "560px"}; height: auto;">
+        ${
+          text
+            ? `<div style="margin-bottom: 6px; font-size: 14px; line-height: 20px; color: #fff;">${text}</div>`
+            : ""
+        } 
+        <div style="border-radius: 6px; width: ${
+          width ? width : "100%"
+        }; overflow: hidden">
           <video autoplay muted playsinline disablepictureinpicture loop>
             <source type="video/mp4" src="${videoUrl}" />
           </video>
@@ -1181,24 +1185,24 @@ export const triggerFirework = () => {
   });
 };
 
-export const driverObj = driver({
+export const drivePortfolio = driver({
   showProgress: true,
   overlayColor: "#27326f",
   onDestroyStarted: () => {
-    driverObj.destroy();
-    // if (!driverObj.hasNextStep() || confirm("Are you sure?")) {
-    //   driverObj.destroy();
+    drivePortfolio.destroy();
+    // if (!drivePortfolio.hasNextStep() || confirm("Are you sure?")) {
+    //   drivePortfolio.destroy();
     // }
   },
   showButtons: ["next", "previous", "close"],
   steps: [
-    // {
-    //   element: "#view-use-wallet-or-demo",
-    //   popover: {
-    //     title: "Introduce App",
-    //     description: "Add wallet or view Demo wallet",
-    //   },
-    // },
+    {
+      element: ".wellcome-portfolio",
+      popover: {
+        title: "Welcome to our portfolio tools 🤩",
+        description: "Allow me to guide you through our application",
+      },
+    },
     {
       element: ".view-the-pnl",
       popover: {
@@ -1238,13 +1242,72 @@ export const driverObj = driver({
         description: "All of your NFTs, and of course, Profit and loss",
       },
     },
-    // {
-    //   element: "#view-closed-positions",
-    //   popover: {
-    //     title: "Introduce App",
-    //     description: "View closed positions",
-    //   },
-    // },
+  ],
+});
+
+export const driveCheckin = driver({
+  showProgress: true,
+  overlayColor: "#27326f",
+  onDestroyStarted: () => {
+    if (driveCheckin.isLastStep()) {
+      driveCheckin.destroy();
+    } else {
+      driveCheckin.moveTo(4);
+    }
+  },
+  showButtons: ["next", "previous", "close"],
+  steps: [
+    {
+      element: ".wellcome-checkin",
+      popover: {
+        title: "Welcome to our checkin page 🤩",
+        description:
+          "Checkin everyday to receive our exclusive offers and benefits 🥳",
+      },
+    },
+    {
+      element: ".view-checkin-page",
+      popover: {
+        title: "Daily Check-in Zone 🛑",
+        description: "Visit here regularly to check in and stay updated",
+      },
+    },
+    {
+      element: ".view-checkin-btn",
+      popover: {
+        title: "Button used for check-in 👇",
+        description:
+          "Tap the button here to mark your attendance every day and unlock exclusive rewards!",
+      },
+    },
+    {
+      element: ".view-checkin-quests",
+      popover: {
+        title: "Doing quests to gain more GM points 🤝",
+        description:
+          "Besides checking in, you can easily complete tasks to earn GM points",
+      },
+    },
+    {
+      element: ".give-bonus-for-new-user",
+      popover: {
+        title: "Tour Rewards: 20 GM Points! 🥳🥳🥳",
+        description:
+          "Thank you for taking the time for our tour. You've earned 20 GM points as your reward.",
+      },
+      onDeselected: async () => {
+        let address;
+        userPublicAddress.subscribe((value) => {
+          address = value;
+        });
+
+        const res = await nimbus.post(
+          `/v2/checkin/${address}/quest/new-user-tutorial`,
+          {}
+        );
+        console.log("bonus points for new user!", res?.data);
+      },
+    },
   ],
 });
 
