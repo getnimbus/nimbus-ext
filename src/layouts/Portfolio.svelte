@@ -766,8 +766,6 @@
         $queryVaults.isFetched &&
         $queryOverview.isFetched;
 
-  $: console.log("hello worlds", $queryNftHolding.isFetched);
-
   $: {
     if ($typeWallet?.length !== 0 && $typeWallet === "EVM") {
       chainListQueries = chainList.slice(1).map((item) => item.value);
