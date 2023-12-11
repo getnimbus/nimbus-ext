@@ -755,6 +755,17 @@
         $queryVaults.isFetching &&
         $queryOverview.isFetching;
 
+  $: isPortfolioReady =
+    $chain === "ALL"
+      ? $queryAllTokenHolding.every((item) => item.isFetched) &&
+        $queryAllNftHolding.every((item) => item.isFetched) &&
+        $queryVaults.isFetched &&
+        $queryOverview.isFetched
+      : $queryTokenHolding.isFetched &&
+        $queryNftHolding.isFetched &&
+        $queryVaults.isFetched &&
+        $queryOverview.isFetched;
+
   $: {
     if ($typeWallet?.length !== 0 && $typeWallet === "EVM") {
       chainListQueries = chainList.slice(1).map((item) => item.value);
@@ -773,10 +784,10 @@
   }
 
   $: {
-    // if (!localStorage.getItem("view-portfolio-tour") && loading) {
-    drivePortfolio().drive();
-    // localStorage.setItem("view-portfolio-tour", "true");
-    // }
+    if (!localStorage.getItem("view-portfolio-tour") && isPortfolioReady) {
+      drivePortfolio().drive();
+      // localStorage.setItem("view-portfolio-tour", "true");
+    }
   }
 
   // onMount(() => {

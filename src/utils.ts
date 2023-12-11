@@ -1213,13 +1213,13 @@ export const drivePortfolio = () =>
   driver({
     showProgress: true,
     overlayColor: "#27326f",
-    onDestroyStarted: () => {
-      if (drivePortfolio().isLastStep()) {
-        drivePortfolio().destroy();
-      } else {
-        drivePortfolio().moveNext();
-      }
-    },
+    // onDestroyStarted: () => {
+    //   if (drivePortfolio().isLastStep()) {
+    //     drivePortfolio().destroy();
+    //   } else {
+    //     drivePortfolio().moveNext();
+    //   }
+    // },
     showButtons: ["next", "previous", "close"],
     steps: [
       {
@@ -1279,7 +1279,7 @@ export const driveCheckin = () =>
       if (driveCheckin().isLastStep()) {
         driveCheckin().destroy();
       } else {
-        driveCheckin().moveNext();
+        driveCheckin().moveTo(4);
       }
     },
     showButtons: ["next", "previous", "close"],
