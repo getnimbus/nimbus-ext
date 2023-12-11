@@ -7,7 +7,7 @@
   import { groupBy, isEmpty, flatten } from "lodash";
   import { onMount } from "svelte";
   import { i18n } from "~/lib/i18n";
-  import { chainList, chainMoveList, driverObj } from "~/utils";
+  import { chainList, chainMoveList, drivePortfolio } from "~/utils";
   import { wait } from "../entries/background/utils";
   import {
     wallet,
@@ -773,11 +773,20 @@
   }
 
   $: {
-    if (!localStorage.getItem("view-portfolio-tour") && loading) {
-      driverObj.drive();
-      localStorage.setItem("view-portfolio-tour", "true");
-    }
+    // if (!localStorage.getItem("view-portfolio-tour") && loading) {
+    drivePortfolio().drive();
+    // localStorage.setItem("view-portfolio-tour", "true");
+    // }
   }
+
+  // onMount(() => {
+  //   // if (!localStorage.getItem("view-portfolio-tour") && loading) {
+  //     setTimeout(() => {
+  //     drivePortfolio().drive();
+  //     // localStorage.setItem("view-portfolio-tour", "true");
+  //   }, 5000);
+  //   // }
+  // });
 </script>
 
 <AddressManagement title={MultipleLang.overview}>

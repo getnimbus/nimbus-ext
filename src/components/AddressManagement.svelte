@@ -24,7 +24,7 @@
     listLogoCEX,
     listProviderCEX,
     clickOutside,
-    driverObj,
+    drivePortfolio,
     chainMoveList,
   } from "~/utils";
   import mixpanel from "mixpanel-browser";
@@ -1006,7 +1006,7 @@
                   <Button
                     on:click={() => {
                       triggerConnectWallet.update((n) => (n = true));
-                      driverObj.destroy();
+                      drivePortfolio.destroy();
                     }}
                   >
                     <div class="text-2xl font-medium xl:text-base">
@@ -1018,7 +1018,7 @@
                   <Button
                     on:click={() => {
                       triggerSync.update((n) => (n = true));
-                      driverObj.destroy();
+                      drivePortfolio.destroy();
                     }}
                   >
                     <div class="text-2xl font-medium xl:text-base">
@@ -1038,7 +1038,7 @@
                     navigate(
                       `/?type=EVM&chain=ALL&address=0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0`
                     );
-                    driverObj.destroy();
+                    drivePortfolio.destroy();
                   }}
                 >
                   Try Demo account
@@ -1233,15 +1233,16 @@
                       width="24px"
                       viewBox="0 0 24 24"
                       class="sc-aef7b723-0 fKbUaI"
-                      ><path
+                    >
+                      <path
                         d="M15 6L9 12L15 18"
                         stroke="currentColor"
                         stroke-width="2"
                         stroke-miterlimit="10"
                         stroke-linecap="round"
                         stroke-linejoin="round"
-                      /></svg
-                    >
+                      />
+                    </svg>
                   </div>
                   <div
                     class="container flex gap-3 overflow-x-auto w-max whitespace-nowrap"
@@ -1292,15 +1293,16 @@
                         width="24px"
                         viewBox="0 0 24 24"
                         class="sc-aef7b723-0 fKbUaI"
-                        ><path
+                      >
+                        <path
                           d="M9 6L15 12L9 18"
                           stroke="currentColor"
                           stroke-width="2"
                           stroke-miterlimit="10"
                           stroke-linecap="round"
                           stroke-linejoin="round"
-                        /></svg
-                      >
+                        />
+                      </svg>
                     </div>
                   {/if}
                 </div>

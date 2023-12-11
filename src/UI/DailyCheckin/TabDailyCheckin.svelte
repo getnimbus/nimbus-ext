@@ -1,9 +1,14 @@
 <script lang="ts">
+	import { useLocation } from "svelte-navigator";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { nimbus } from "~/lib/network";
   import { isDarkMode, user, userPublicAddress } from "~/store";
-  import { dailyCheckinTypePortfolio, triggerFirework } from "~/utils";
+  import {
+    dailyCheckinTypePortfolio,
+    driveCheckin,
+    triggerFirework,
+  } from "~/utils";
   import dayjs from "dayjs";
   import { wait } from "~/entries/background/utils";
   import { Toast } from "flowbite-svelte";
@@ -25,6 +30,8 @@
   const rankBackground = [img1stframe, img2stframe, img3stframe];
 
   const rank = [rank1, rank2, rank3];
+
+  const location = useLocation();
 
   let selectedType: "collectGMPoint" | "history" = "collectGMPoint";
   let openScreenSuccess: boolean = false;
@@ -384,6 +391,15 @@
       console.error(e);
     }
   };
+
+  
+
+  $: {
+    // if (!$queryDailyCheckin.isLoading && $location.pathname === "/daily-checkin" && !localStorage.getItem("view-checkin-tour")) {
+      driveCheckin().drive();
+        // localStorage.setItem("view-checkin-tour", "true");
+    // }
+  }
 </script>
 
 <div class="flex flex-col gap-4 min-h-screen">
@@ -399,7 +415,7 @@
       <Loading />
     </div>
   {:else}
-    <div class="flex flex-col gap-7 mt-2">
+    <div class="flex flex-col gap-7 mt-2 view-checkin-page">
       <div
         class="flex flex-col gap-3 bg-[#1589EB] py-4 px-6 rounded-lg min-w-[250px] w-max"
       >
@@ -457,7 +473,7 @@
                   Check in 7 days in a row, your rewards will grow
                 </div>
               </div>
-              <div class="w-[200px]">
+              <div class="w-[200px] view-checkin-btn">
                 {#if isDisabledCheckin}
                   <Button
                     variant="primary"
@@ -565,7 +581,7 @@
               {/if}
             </div>
 
-            <div class="flex flex-col gap-4 mt-5">
+            <div class="flex flex-col gap-4 mt-5 view-checkin-quests">
               <div class="xl:text-lg text-xl font-medium">
                 Want more GM Point? Complete these tasks!
               </div>
