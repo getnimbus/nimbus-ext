@@ -17,7 +17,6 @@ export const userId = writable("");
 export const userPublicAddress = writable("");
 export const triggerUpdateBundle = writable(false);
 
-
 // let isFirstTime = true;
 // isOpenReport.subscribe((value) => {
 //   if (!isFirstTime && APP_TYPE.TYPE === 'WEB') {

@@ -1185,131 +1185,134 @@ export const triggerFirework = () => {
   });
 };
 
-export const drivePortfolio = driver({
-  showProgress: true,
-  overlayColor: "#27326f",
-  onDestroyStarted: () => {
-    drivePortfolio.destroy();
-    // if (!drivePortfolio.hasNextStep() || confirm("Are you sure?")) {
-    //   drivePortfolio.destroy();
-    // }
-  },
-  showButtons: ["next", "previous", "close"],
-  steps: [
-    {
-      element: ".wellcome-portfolio",
-      popover: {
-        title: "Welcome to our portfolio tools 🤩",
-        description: "Allow me to guide you through our application",
-      },
+export const drivePortfolio = () =>
+  driver({
+    showProgress: true,
+    overlayColor: "#27326f",
+    onDestroyStarted: () => {
+      if (drivePortfolio().isLastStep()) {
+        drivePortfolio().destroy();
+      } else {
+        drivePortfolio().moveNext();
+      }
     },
-    {
-      element: ".view-the-pnl",
-      popover: {
-        title: "Track your token performance 📊",
-        description:
-          "View your Portfolio diversify, compare your invesment with Bitcoin or Ethereum",
+    showButtons: ["next", "previous", "close"],
+    steps: [
+      {
+        element: ".wellcome-portfolio",
+        popover: {
+          title: "Welcome to our portfolio tools 🤩",
+          description: "Allow me to guide you through our application",
+        },
       },
-    },
-    {
-      element: ".view-token-detail1",
-      popover: {
-        title: "Your profit and loss, in every token 💰",
-        description:
-          "We have the most important metrics for Investors - Profit and loss",
+      {
+        element: ".view-the-pnl",
+        popover: {
+          title: "Track your token performance 📊",
+          description:
+            "View your Portfolio diversify, compare your invesment with Bitcoin or Ethereum",
+        },
       },
-    },
-    {
-      element: ".view-token-detail2",
-      popover: {
-        title: "Your profit and loss, in every token 💰",
-        description:
-          "We have the most important metrics for Investors - Profit and loss",
+      {
+        element: ".view-token-detail1",
+        popover: {
+          title: "Your profit and loss, in every token 💰",
+          description:
+            "We have the most important metrics for Investors - Profit and loss",
+        },
       },
-    },
-    {
-      element: ".view-icon-detail",
-      popover: {
-        title: "Get your trading detail 🧐",
-        description:
-          "View your trading activities on the Price chart, get market bought distribution to make wise more",
+      {
+        element: ".view-token-detail2",
+        popover: {
+          title: "Your profit and loss, in every token 💰",
+          description:
+            "We have the most important metrics for Investors - Profit and loss",
+        },
       },
-    },
-    {
-      element: ".view-nft-detail",
-      popover: {
-        title: "Not just token, we track NFT as well 🌁",
-        description: "All of your NFTs, and of course, Profit and loss",
+      {
+        element: ".view-icon-detail",
+        popover: {
+          title: "Get your trading detail 🧐",
+          description:
+            "View your trading activities on the Price chart, get market bought distribution to make wise more",
+        },
       },
-    },
-  ],
-});
+      {
+        element: ".view-nft-detail",
+        popover: {
+          title: "Not just token, we track NFT as well 🌁",
+          description: "All of your NFTs, and of course, Profit and loss",
+        },
+      },
+    ],
+  });
 
-export const driveCheckin = driver({
-  showProgress: true,
-  overlayColor: "#27326f",
-  onDestroyStarted: () => {
-    if (driveCheckin.isLastStep()) {
-      driveCheckin.destroy();
-    } else {
-      driveCheckin.moveTo(4);
-    }
-  },
-  showButtons: ["next", "previous", "close"],
-  steps: [
-    {
-      element: ".wellcome-checkin",
-      popover: {
-        title: "Welcome to our checkin page 🤩",
-        description:
-          "Checkin everyday to receive our exclusive offers and benefits 🥳",
-      },
+export const driveCheckin = () =>
+  driver({
+    showProgress: true,
+    overlayColor: "#27326f",
+    onDestroyStarted: () => {
+      if (driveCheckin().isLastStep()) {
+        driveCheckin().destroy();
+      } else {
+        driveCheckin().moveNext();
+      }
     },
-    {
-      element: ".view-checkin-page",
-      popover: {
-        title: "Daily Check-in Zone 🛑",
-        description: "Visit here regularly to check in and stay updated",
+    showButtons: ["next", "previous", "close"],
+    steps: [
+      {
+        element: ".wellcome-checkin",
+        popover: {
+          title: "Welcome to our checkin page 🤩",
+          description:
+            "Checkin everyday to receive our exclusive offers and benefits 🥳",
+        },
       },
-    },
-    {
-      element: ".view-checkin-btn",
-      popover: {
-        title: "Button used for check-in 👇",
-        description:
-          "Tap the button here to mark your attendance every day and unlock exclusive rewards!",
+      {
+        element: ".view-checkin-page",
+        popover: {
+          title: "Daily Check-in Zone 🛑",
+          description: "Visit here regularly to check in and stay updated",
+        },
       },
-    },
-    {
-      element: ".view-checkin-quests",
-      popover: {
-        title: "Doing quests to gain more GM points 🤝",
-        description:
-          "Besides checking in, you can easily complete tasks to earn GM points",
+      {
+        element: ".view-checkin-btn",
+        popover: {
+          title: "Button used for check-in 👇",
+          description:
+            "Tap the button here to mark your attendance every day and unlock exclusive rewards!",
+        },
       },
-    },
-    {
-      element: ".give-bonus-for-new-user",
-      popover: {
-        title: "Tour Rewards: 20 GM Points! 🥳🥳🥳",
-        description:
-          "Thank you for taking the time for our tour. You've earned 20 GM points as your reward.",
+      {
+        element: ".view-checkin-quests",
+        popover: {
+          title: "Doing quests to gain more GM points 🤝",
+          description:
+            "Besides checking in, you can easily complete tasks to earn GM points",
+        },
       },
-      onDeselected: async () => {
-        let address;
-        userPublicAddress.subscribe((value) => {
-          address = value;
-        });
+      {
+        element: ".give-bonus-for-new-user",
+        popover: {
+          title: "Tour Rewards: 20 GM Points! 🥳🥳🥳",
+          description:
+            "Thank you for taking the time for our tour. You've earned 20 GM points as your reward.",
+        },
+        onDeselected: async () => {
+          let address;
+          userPublicAddress.subscribe((value) => {
+            address = value;
+          });
 
-        const res = await nimbus.post(
-          `/v2/checkin/${address}/quest/new-user-tutorial`,
-          {}
-        );
-        console.log("bonus points for new user!", res?.data);
+          const res = await nimbus.post(
+            `/v2/checkin/${address}/quest/new-user-tutorial`,
+            {}
+          );
+          console.log("bonus points for new user!", res?.data);
+        },
       },
-    },
-  ],
-});
+    ],
+  });
 
 export const formatTransactionTime = (date: Date) => {
   if (dayjs().diff(date, "days") >= 1) {

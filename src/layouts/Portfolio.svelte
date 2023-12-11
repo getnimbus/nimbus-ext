@@ -773,11 +773,20 @@
   }
 
   $: {
-    if (!localStorage.getItem("view-portfolio-tour") && loading) {
-      drivePortfolio.drive();
-      localStorage.setItem("view-portfolio-tour", "true");
-    }
+    // if (!localStorage.getItem("view-portfolio-tour") && loading) {
+    drivePortfolio().drive();
+    // localStorage.setItem("view-portfolio-tour", "true");
+    // }
   }
+
+  // onMount(() => {
+  //   // if (!localStorage.getItem("view-portfolio-tour") && loading) {
+  //     setTimeout(() => {
+  //     drivePortfolio().drive();
+  //     // localStorage.setItem("view-portfolio-tour", "true");
+  //   }, 5000);
+  //   // }
+  // });
 </script>
 
 <AddressManagement title={MultipleLang.overview}>

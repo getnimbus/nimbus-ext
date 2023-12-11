@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { useLocation } from "svelte-navigator";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { nimbus } from "~/lib/network";
@@ -29,6 +30,8 @@
   const rankBackground = [img1stframe, img2stframe, img3stframe];
 
   const rank = [rank1, rank2, rank3];
+
+  const location = useLocation();
 
   let selectedType: "collectGMPoint" | "history" = "collectGMPoint";
   let openScreenSuccess: boolean = false;
@@ -389,10 +392,12 @@
     }
   };
 
+  
+
   $: {
-    // if (!localStorage.getItem("view-checkin-tour")) {
-    driveCheckin.drive();
-    //   localStorage.setItem("view-checkin-tour", "true");
+    // if (!$queryDailyCheckin.isLoading && $location.pathname === "/daily-checkin" && !localStorage.getItem("view-checkin-tour")) {
+      driveCheckin().drive();
+        // localStorage.setItem("view-checkin-tour", "true");
     // }
   }
 </script>
