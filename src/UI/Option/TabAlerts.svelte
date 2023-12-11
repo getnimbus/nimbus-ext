@@ -563,7 +563,7 @@
         </CopyToClipboard>
       </div>
       <div class="xl:text-sm text-base">
-        Notice the command code is expired in {timeCountdown}s
+        The code is expired in {timeCountdown}s
       </div>
     </div>
   </div>
