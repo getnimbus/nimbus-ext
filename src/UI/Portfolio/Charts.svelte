@@ -261,13 +261,14 @@
         (item) => item.timestamp === tooltipDateValue
       );
 
-      networth = selectedDataPortfolioChart.value;
+      if (selectedDataPortfolioChart) {
+        networth = selectedDataPortfolioChart?.value;
 
-      portfolioPercentChange = selectedDataPerformance.portfolio;
+        portfolioPercentChange = selectedDataPerformance.portfolio;
 
-      networthValueChange =
-        formatDataPortfolioChart[formatDataPortfolioChart.length - 1].value *
-        (portfolioPercentChange / 100);
+        networthValueChange =
+          formatDataPortfolioChart[0].value * (portfolioPercentChange / 100);
+      }
     }
   }
 

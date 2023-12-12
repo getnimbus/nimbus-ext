@@ -31,6 +31,7 @@ import Mantle from "~/assets/mantle.png";
 import Algorand from "~/assets/algorand.png";
 import Exzo from "~/assets/exzo.png";
 import Klaytn from "~/assets/klaytn.png";
+import { userPublicAddress } from "./store";
 
 export const ETHAddressRegex = /(\b0x[a-fA-F0-9]{40}\b)/g;
 export const ETHTrxRegex = /(\b0x[a-fA-F0-9]{64}\b)/g;
@@ -1181,72 +1182,67 @@ export const triggerFirework = () => {
   });
 };
 
-export const driverObj = driver({
-  showProgress: true,
-  overlayColor: "#27326f",
-  onDestroyStarted: () => {
-    driverObj.destroy();
-    // if (!driverObj.hasNextStep() || confirm("Are you sure?")) {
-    //   driverObj.destroy();
-    // }
-  },
-  showButtons: ["next", "previous", "close"],
-  steps: [
-    // {
-    //   element: "#view-use-wallet-or-demo",
-    //   popover: {
-    //     title: "Introduce App",
-    //     description: "Add wallet or view Demo wallet",
-    //   },
+export const drivePortfolio = () =>
+  driver({
+    showProgress: true,
+    overlayColor: "#27326f",
+    // onDestroyStarted: () => {
+    //   if (drivePortfolio().isLastStep()) {
+    //     drivePortfolio().destroy();
+    //   } else {
+    //     drivePortfolio().moveNext();
+    //   }
     // },
-    {
-      element: ".view-the-pnl",
-      popover: {
-        title: "Track your token performance 📊",
-        description:
-          "View your Portfolio diversify, compare your invesment with Bitcoin or Ethereum",
+    showButtons: ["next", "previous", "close"],
+    steps: [
+      {
+        element: ".wellcome-portfolio",
+        popover: {
+          title: "Welcome to our portfolio tools 🤩",
+          description: "Allow me to guide you through our application",
+        },
       },
-    },
-    {
-      element: ".view-token-detail1",
-      popover: {
-        title: "Your profit and loss, in every token 💰",
-        description:
-          "We have the most important metrics for Investors - Profit and loss",
+      {
+        element: ".view-the-pnl",
+        popover: {
+          title: "Track your token performance 📊",
+          description:
+            "View your Portfolio diversify, compare your invesment with Bitcoin or Ethereum",
+        },
       },
-    },
-    {
-      element: ".view-token-detail2",
-      popover: {
-        title: "Your profit and loss, in every token 💰",
-        description:
-          "We have the most important metrics for Investors - Profit and loss",
+      {
+        element: ".view-token-detail1",
+        popover: {
+          title: "Your profit and loss, in every token 💰",
+          description:
+            "We have the most important metrics for Investors - Profit and loss",
+        },
       },
-    },
-    {
-      element: ".view-icon-detail",
-      popover: {
-        title: "Get your trading detail 🧐",
-        description:
-          "View your trading activities on the Price chart, get market bought distribution to make wise more",
+      {
+        element: ".view-token-detail2",
+        popover: {
+          title: "Your profit and loss, in every token 💰",
+          description:
+            "We have the most important metrics for Investors - Profit and loss",
+        },
       },
-    },
-    {
-      element: ".view-nft-detail",
-      popover: {
-        title: "Not just token, we track NFT as well 🌁",
-        description: "All of your NFTs, and of course, Profit and loss",
+      {
+        element: ".view-icon-detail",
+        popover: {
+          title: "Get your trading detail 🧐",
+          description:
+            "View your trading activities on the Price chart, get market bought distribution to make wise more",
+        },
       },
-    },
-    // {
-    //   element: "#view-closed-positions",
-    //   popover: {
-    //     title: "Introduce App",
-    //     description: "View closed positions",
-    //   },
-    // },
-  ],
-});
+      {
+        element: ".view-nft-detail",
+        popover: {
+          title: "Not just token, we track NFT as well 🌁",
+          description: "All of your NFTs, and of course, Profit and loss",
+        },
+      },
+    ],
+  });
 
 export const formatTransactionTime = (date: Date) => {
   if (dayjs().diff(date, "days") >= 1) {
