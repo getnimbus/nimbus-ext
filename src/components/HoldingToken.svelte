@@ -104,8 +104,9 @@
     },
   ];
 
-  const closeSideTokenDetail = (event) => {
+  const closeSideBar = (event) => {
     if (event.key === "Escape") {
+      showSideTokenSwap = false;
       showSideTokenDetail = false;
       selectedTokenDetail = {};
     }
@@ -254,7 +255,7 @@
   }
 </script>
 
-<svelte:window on:keydown={closeSideTokenDetail} />
+<svelte:window on:keydown={closeSideBar} />
 
 <tr
   key={data?.symbol}
