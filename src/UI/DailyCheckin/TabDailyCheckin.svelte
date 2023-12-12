@@ -662,6 +662,8 @@
                             "https://s2.coinmarketcap.com/static/cloud/img/loyalty-program/Flags_3D_1.svg"}
                           alt=""
                           class="bg-yellow-200 rounded-lg mt-1"
+                          width="32"
+                          height="32"
                         />
                         <div class="flex-1 flex items-center gap-4">
                           <div class="flex-1 flex flex-col">
