@@ -104,8 +104,9 @@
     },
   ];
 
-  const closeSideTokenDetail = (event) => {
+  const closeSideBar = (event) => {
     if (event.key === "Escape") {
+      showSideTokenSwap = false;
       showSideTokenDetail = false;
       selectedTokenDetail = {};
     }
@@ -212,7 +213,7 @@
     .filter((item) => Number(item?.amount) !== 0);
 
   const handleSwapToken = (data: any) => {
-    window.Jupiter.init({
+    const config = {
       displayMode: "integrated",
       integratedTargetId: `swap-${index}`,
       endpoint:
@@ -238,6 +239,10 @@
         isSuccessToast = false;
         trigger();
       },
+    };
+
+    window.Jupiter.init(config).catch((error) => {
+      window.Jupiter.init(config);
     });
   };
   $: {
@@ -250,7 +255,7 @@
   }
 </script>
 
-<svelte:window on:keydown={closeSideTokenDetail} />
+<svelte:window on:keydown={closeSideBar} />
 
 <tr
   key={data?.symbol}
