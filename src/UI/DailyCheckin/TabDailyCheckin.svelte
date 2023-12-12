@@ -4,15 +4,13 @@
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { nimbus } from "~/lib/network";
   import { isDarkMode, user, userPublicAddress } from "~/store";
-  import {
-    dailyCheckinTypePortfolio,
-    driveCheckin,
-    triggerFirework,
-  } from "~/utils";
+  import { dailyCheckinTypePortfolio, triggerFirework } from "~/utils";
   import dayjs from "dayjs";
   import { wait } from "~/entries/background/utils";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
+  import { driver } from "driver.js";
+  import "driver.js/dist/driver.css";
 
   import Button from "~/components/Button.svelte";
   import Loading from "~/components/Loading.svelte";
@@ -32,6 +30,54 @@
   const rank = [rank1, rank2, rank3];
 
   const location = useLocation();
+
+  const driveCheckin = () =>
+    driver({
+      showProgress: true,
+      overlayColor: "#27326f",
+      onDestroyStarted: () => {
+        if (driveCheckin().isLastStep()) {
+          driveCheckin().destroy();
+          handleReceiveQuest("", "new-user-tutorial");
+        } else {
+          driveCheckin().moveTo(3);
+        }
+      },
+      showButtons: ["next", "previous", "close"],
+      steps: [
+        {
+          element: ".wellcome-checkin",
+          popover: {
+            title: "Welcome to our checkin page 🤩",
+            description:
+              "Checkin everyday to receive our exclusive offers and benefits 🥳",
+          },
+        },
+        {
+          element: ".view-checkin-page",
+          popover: {
+            title: "Daily Check-in Zone 🛑",
+            description: "Visit here regularly to check in and stay updated",
+          },
+        },
+        {
+          element: ".view-checkin-btn",
+          popover: {
+            title: "Button used for check-in 👇",
+            description:
+              "Tap the button here to mark your attendance every day and unlock exclusive rewards!",
+          },
+        },
+        {
+          element: ".view-checkin-quests",
+          popover: {
+            title: "Doing quests to gain more GM points 🤝",
+            description:
+              "Besides checking in, you can easily complete tasks to earn GM points",
+          },
+        },
+      ],
+    });
 
   let selectedType: "collectGMPoint" | "history" = "collectGMPoint";
   let openScreenSuccess: boolean = false;
@@ -377,6 +423,23 @@
         );
         if (res && res?.data === null) {
           toastMsg = "You are not sync Telegram";
+          isSuccessToast = false;
+          trigger();
+        }
+        if (res?.data?.bonus !== undefined) {
+          triggerBonusScore();
+          bonusScore = res?.data?.bonus;
+          isTriggerBonusScore = true;
+          queryClient.invalidateQueries([$userPublicAddress, "daily-checkin"]);
+        }
+      }
+      if (type === "new-user-tutorial") {
+        const res = await nimbus.post(
+          `/v2/checkin/${$userPublicAddress}/quest/new-user-tutorial`,
+          {}
+        );
+        if (res && res?.data === null) {
+          toastMsg = "You are already finished this quest";
           isSuccessToast = false;
           trigger();
         }

@@ -266,8 +266,7 @@
       portfolioPercentChange = selectedDataPerformance.portfolio;
 
       networthValueChange =
-        formatDataPortfolioChart[formatDataPortfolioChart.length - 1].value *
-        (portfolioPercentChange / 100);
+        formatDataPortfolioChart[0].value * (portfolioPercentChange / 100);
     }
   }
 
