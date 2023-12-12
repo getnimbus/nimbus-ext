@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { useLocation } from "svelte-navigator";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { nimbus } from "~/lib/network";
@@ -8,6 +9,8 @@
   import { wait } from "~/entries/background/utils";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
+  import { driver } from "driver.js";
+  import "driver.js/dist/driver.css";
 
   import Button from "~/components/Button.svelte";
   import Loading from "~/components/Loading.svelte";
@@ -25,6 +28,56 @@
   const rankBackground = [img1stframe, img2stframe, img3stframe];
 
   const rank = [rank1, rank2, rank3];
+
+  const location = useLocation();
+
+  const driveCheckin = () =>
+    driver({
+      showProgress: true,
+      overlayColor: "#27326f",
+      onDestroyStarted: () => {
+        if (driveCheckin().isLastStep()) {
+          driveCheckin().destroy();
+          handleReceiveQuest("", "new-user-tutorial");
+        } else {
+          driveCheckin().moveTo(3);
+        }
+      },
+      showButtons: ["next", "previous", "close"],
+      steps: [
+        {
+          element: ".wellcome-checkin",
+          popover: {
+            title: "Welcome to our checkin page 🤩",
+            description:
+              "Checkin everyday to receive our exclusive offers and benefits 🥳",
+          },
+        },
+        {
+          element: ".view-checkin-page",
+          popover: {
+            title: "Daily Check-in Zone 🛑",
+            description: "Visit here regularly to check in and stay updated",
+          },
+        },
+        {
+          element: ".view-checkin-btn",
+          popover: {
+            title: "Button used for check-in 👇",
+            description:
+              "Tap the button here to mark your attendance every day and unlock exclusive rewards!",
+          },
+        },
+        {
+          element: ".view-checkin-quests",
+          popover: {
+            title: "Doing quests to gain more GM points 🤝",
+            description:
+              "Besides checking in, you can easily complete tasks to earn GM points",
+          },
+        },
+      ],
+    });
 
   let selectedType: "collectGMPoint" | "history" = "collectGMPoint";
   let openScreenSuccess: boolean = false;
@@ -380,10 +433,38 @@
           queryClient.invalidateQueries([$userPublicAddress, "daily-checkin"]);
         }
       }
+      if (type === "new-user-tutorial") {
+        const res = await nimbus.post(
+          `/v2/checkin/${$userPublicAddress}/quest/new-user-tutorial`,
+          {}
+        );
+        if (res && res?.data === null) {
+          toastMsg = "You are already finished this quest";
+          isSuccessToast = false;
+          trigger();
+        }
+        if (res?.data?.bonus !== undefined) {
+          triggerBonusScore();
+          bonusScore = res?.data?.bonus;
+          isTriggerBonusScore = true;
+          queryClient.invalidateQueries([$userPublicAddress, "daily-checkin"]);
+        }
+      }
     } catch (e) {
       console.error(e);
     }
   };
+
+  $: {
+    if (
+      !$queryDailyCheckin.isLoading &&
+      $location.pathname === "/daily-checkin" &&
+      !localStorage.getItem("view-checkin-tour")
+    ) {
+      driveCheckin().drive();
+      localStorage.setItem("view-checkin-tour", "true");
+    }
+  }
 </script>
 
 <div class="flex flex-col gap-4 min-h-screen">
@@ -399,7 +480,7 @@
       <Loading />
     </div>
   {:else}
-    <div class="flex flex-col gap-7 mt-2">
+    <div class="flex flex-col gap-7 mt-2 view-checkin-page">
       <div
         class="flex flex-col gap-3 bg-[#1589EB] py-4 px-6 rounded-lg min-w-[250px] w-max"
       >
@@ -457,7 +538,7 @@
                   Check in 7 days in a row, your rewards will grow
                 </div>
               </div>
-              <div class="w-[200px]">
+              <div class="w-[200px] view-checkin-btn">
                 {#if isDisabledCheckin}
                   <Button
                     variant="primary"
@@ -565,7 +646,7 @@
               {/if}
             </div>
 
-            <div class="flex flex-col gap-4 mt-5">
+            <div class="flex flex-col gap-4 mt-5 view-checkin-quests">
               <div class="xl:text-lg text-xl font-medium">
                 Want more GM Point? Complete these tasks!
               </div>

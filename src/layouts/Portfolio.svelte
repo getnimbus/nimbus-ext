@@ -7,7 +7,7 @@
   import { groupBy, isEmpty, flatten } from "lodash";
   import { onMount } from "svelte";
   import { i18n } from "~/lib/i18n";
-  import { chainList, chainMoveList, driverObj } from "~/utils";
+  import { chainList, chainMoveList, drivePortfolio } from "~/utils";
   import { wait } from "../entries/background/utils";
   import {
     wallet,
@@ -755,6 +755,17 @@
         $queryVaults.isFetching &&
         $queryOverview.isFetching;
 
+  $: isPortfolioReady =
+    $chain === "ALL"
+      ? $queryAllTokenHolding.every((item) => item.isFetched) &&
+        $queryAllNftHolding.every((item) => item.isFetched) &&
+        $queryVaults.isFetched &&
+        $queryOverview.isFetched
+      : $queryTokenHolding.isFetched &&
+        $queryNftHolding.isFetched &&
+        $queryVaults.isFetched &&
+        $queryOverview.isFetched;
+
   $: {
     if ($typeWallet?.length !== 0 && $typeWallet === "EVM") {
       chainListQueries = chainList.slice(1).map((item) => item.value);
@@ -773,11 +784,20 @@
   }
 
   $: {
-    if (!localStorage.getItem("view-portfolio-tour") && loading) {
-      driverObj.drive();
-      localStorage.setItem("view-portfolio-tour", "true");
+    if (!localStorage.getItem("view-portfolio-tour") && isPortfolioReady) {
+      drivePortfolio().drive();
+      // localStorage.setItem("view-portfolio-tour", "true");
     }
   }
+
+  // onMount(() => {
+  //   // if (!localStorage.getItem("view-portfolio-tour") && loading) {
+  //     setTimeout(() => {
+  //     drivePortfolio().drive();
+  //     // localStorage.setItem("view-portfolio-tour", "true");
+  //   }, 5000);
+  //   // }
+  // });
 </script>
 
 <AddressManagement title={MultipleLang.overview}>
