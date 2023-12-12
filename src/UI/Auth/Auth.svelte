@@ -37,6 +37,7 @@
   import SolanaAuth from "./SolanaAuth.svelte";
   import { WalletProvider } from "@svelte-on-solana/wallet-adapter-ui";
   import {
+    BackpackWalletAdapter,
     PhantomWalletAdapter,
     SolflareWalletAdapter,
   } from "@solana/wallet-adapter-wallets";
@@ -45,7 +46,11 @@
   import { walletStore } from "@svelte-on-solana/wallet-adapter-core";
   import Button from "~/components/Button.svelte";
 
-  const wallets = [new PhantomWalletAdapter(), new SolflareWalletAdapter()];
+  const wallets = [
+    new PhantomWalletAdapter(),
+    new SolflareWalletAdapter(),
+    new BackpackWalletAdapter(),
+  ];
 
   const wallets$ = onboard.state.select("wallets");
 
@@ -758,9 +763,13 @@
     <div class="xl:title-3 title-1 font-medium">
       Connect wallet to enjoy more features
     </div>
-    <div class="flex flex-col items-center justify-center gap-4">
+    <div class="flex items-center justify-center gap-4">
       <div
-        class="flex items-center gap-2 text-white bg-[#27326f] cursor-pointer py-3 px-6 rounded-[12px] w-[250px]"
+        class={`flex items-center gap-2 text-white border cursor-pointer py-3 px-6 rounded-[12px] w-[250px] ${
+          $isDarkMode
+            ? "border-white text-white"
+            : "border-[#27326f] text-[#27326f]"
+        }`}
         on:click={() => {
           connect();
           isOpenAuthModal = false;
