@@ -412,6 +412,7 @@
           bonusScore = res?.data?.bonus;
           isTriggerBonusScore = true;
           queryClient.invalidateQueries([$userPublicAddress, "daily-checkin"]);
+          queryClient.invalidateQueries(["users-me"]);
         }
       }
       if (type === "sync-telegram") {
@@ -431,6 +432,7 @@
           bonusScore = res?.data?.bonus;
           isTriggerBonusScore = true;
           queryClient.invalidateQueries([$userPublicAddress, "daily-checkin"]);
+          queryClient.invalidateQueries(["users-me"]);
         }
       }
       if (type === "new-user-tutorial") {
@@ -448,6 +450,7 @@
           bonusScore = res?.data?.bonus;
           isTriggerBonusScore = true;
           queryClient.invalidateQueries([$userPublicAddress, "daily-checkin"]);
+          queryClient.invalidateQueries(["users-me"]);
         }
       }
     } catch (e) {
