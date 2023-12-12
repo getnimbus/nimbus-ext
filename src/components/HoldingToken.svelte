@@ -216,8 +216,7 @@
     const config = {
       displayMode: "integrated",
       integratedTargetId: `swap-${index}`,
-      endpoint:
-        "https://g.w.lavanet.xyz:443/gateway/solana/rpc-http/214a71156b593f98aca0829dcb78a33a",
+      endpoint: "https://rpc.shyft.to?api_key=Qjb6SubTTbLrkmNo",
       strictTokenList: false,
       defaultExplorer: "Solscan",
       formProps: {
