@@ -20,7 +20,7 @@
   style="z-index: 2147483647;"
 >
   <div
-    class={`h-full fixed top-0 right-0 w-max flex flex-col gap-6 p-6 sidebar sidebar-container ${
+    class={`h-full fixed top-0 right-0 min-w-[458px] flex flex-col gap-6 p-6 sidebar sidebar-container ${
       isOpen
         ? "opacity-100 transform translate-x-[0px]"
         : "opacity-0 transform translate-x-[100vw]"
