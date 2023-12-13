@@ -274,8 +274,10 @@
 
   $: {
     if (
-      overviewDataPerformance?.performance?.length !== 0 ||
-      overviewDataPerformance?.portfolioChart?.length !== 0
+      (overviewDataPerformance?.performance &&
+        overviewDataPerformance?.performance?.length !== 0) ||
+      (overviewDataPerformance?.portfolioChart &&
+        overviewDataPerformance?.portfolioChart?.length !== 0)
     ) {
       networth =
         overviewDataPerformance?.portfolioChart[
