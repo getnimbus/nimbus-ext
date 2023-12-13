@@ -21,8 +21,8 @@
   import Copy from "~/components/Copy.svelte";
   import Image from "~/components/Image.svelte";
   import OverlaySidebar from "./OverlaySidebar.svelte";
-  import TokenDetailSidebar from "~/UI/TokenDetail/TokenDetailSidebar.svelte";
   import OverlaySidebarSwap from "./OverlaySidebarSwap.svelte";
+  import TokenDetailSidebar from "~/UI/TokenDetail/TokenDetailSidebar.svelte";
 
   import TrendUp from "~/assets/trend-up.svg";
   import TrendDown from "~/assets/trend-down.svg";
