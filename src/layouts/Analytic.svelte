@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from "svelte";
+  import { onMount, onDestroy } from "svelte";
   import mixpanel from "mixpanel-browser";
   import dayjs from "dayjs";
   import isBetween from "dayjs/plugin/isBetween";
@@ -21,6 +21,7 @@
   // let listNft = [];
   // let isLoading = false;
 
+  let allowScroll = false;
   let isOpenModal = false;
   let isLoadingSendMail = false;
   let email = "";
@@ -96,6 +97,20 @@
     }
   };
 
+  const handleScroll = () => {
+    const scrollY = window.scrollY || window.pageYOffset;
+
+    if (!allowScroll) {
+      window.scrollTo(0, 0);
+    }
+
+    isOpenModal = scrollY > 1000;
+
+    if (allowScroll && isOpenModal) {
+      window.removeEventListener("scroll", handleScroll);
+    }
+  };
+
   onMount(() => {
     mixpanel.track("analytic_page");
 
@@ -103,24 +118,30 @@
     const next7DaysStorage = localStorage.getItem("next7Days");
     const isSubmitStorage = localStorage.getItem("isShowFormAnalytic");
 
+    allowScroll = true;
+    window.addEventListener("scroll", handleScroll);
+
     if ($selectedPackage === "FREE") {
-      if (currentDayStorage && next7DaysStorage) {
+      if (currentDayStorage && next7DaysStorage && isSubmitStorage === null) {
         const isTodayBetween = currentDate.isBetween(
           currentDayStorage,
           next7DaysStorage,
           "day",
           "[]"
         );
-        if (!isTodayBetween && isSubmitStorage === null) {
-          isOpenModal = true;
-        } else {
-        }
-      } else {
-        if (isSubmitStorage === null) {
+        if (!isTodayBetween) {
           isOpenModal = true;
         }
       }
+
+      if (!currentDayStorage && !next7DaysStorage && isSubmitStorage === null) {
+        isOpenModal = true;
+      }
     }
+  });
+
+  onDestroy(() => {
+    window.removeEventListener("scroll", handleScroll);
   });
 </script>
 

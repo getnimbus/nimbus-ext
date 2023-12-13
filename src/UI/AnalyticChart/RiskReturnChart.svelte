@@ -258,8 +258,7 @@
             $typeWallet === "AURA" ||
             $typeWallet === "ALGO" ||
             $typeWallet === "BUNDLE") &&
-            $wallet.length !== 0 &&
-            $selectedPackage !== "FREE"
+            $wallet.length !== 0
         );
 
   $: query = createQuery({

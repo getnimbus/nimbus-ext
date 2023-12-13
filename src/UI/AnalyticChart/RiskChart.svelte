@@ -43,6 +43,8 @@
   import MaxDrawdownExplain from "~/assets/explain/max-drawdown-explain.mp4";
   import defaultToken from "~/assets/defaultToken.png";
 
+  export let address;
+  export let isShowSoon;
   export let selectedTimeFrame;
   export let isSync = false;
   export let enabledFetchAllData = false;
@@ -506,7 +508,7 @@
   $: theme = $isDarkMode ? "dark" : "white";
 </script>
 
-<AnalyticSection>
+<AnalyticSection {address} {isShowSoon}>
   <span slot="title">
     <div class="flex justify-start text-4xl font-medium xl:text-2xl">
       Volatility
