@@ -116,10 +116,10 @@
     const next7DaysStorage = localStorage.getItem("next7Days");
     const isSubmitStorage = localStorage.getItem("isShowFormAnalytic");
 
-    allowScroll = true;
-    window.addEventListener("scroll", handleScroll);
-
     if ($selectedPackage === "FREE") {
+      allowScroll = true;
+      window.addEventListener("scroll", handleScroll);
+
       if (currentDayStorage && next7DaysStorage && isSubmitStorage === null) {
         const isTodayBetween = currentDate.isBetween(
           currentDayStorage,
