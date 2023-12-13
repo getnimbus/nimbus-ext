@@ -477,7 +477,7 @@
     </Link>
 
     <div
-      class="items-center justify-between hidden gap-1 xl:flex 2xl:absolute 2xl:top-[34px] xl:ml-40 absolute-center"
+      class="items-center justify-between hidden gap-1 xl:flex 2xl:absolute 2xl:top-[34px] 2xl:ml-0 xl:ml-40 absolute-center"
     >
       {#if $wallet === "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0"}
         <div
