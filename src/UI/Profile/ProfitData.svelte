@@ -40,8 +40,7 @@
       .map((item) => {
         return {
           ...item,
-          value:
-            Number(item?.amount) * Number(item?.price?.price || item?.rate),
+          value: Number(item?.amount) * Number(item?.price?.price),
         };
       })
       .sort((a, b) => {
