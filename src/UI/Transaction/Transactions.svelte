@@ -310,7 +310,7 @@
       {#if $typeWallet === "BUNDLE" || $typeWallet === "SOL" || $typeWallet === "AURA" || $typeWallet === "ALGO"}
         <div
           class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center gap-3 justify-center z-30 backdrop-blur-md ${
-            $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
+            $isDarkMode ? "bg-black/90" : "bg-white/95"
           }`}
         >
           <div class="text-lg">Coming soon 🚀</div>

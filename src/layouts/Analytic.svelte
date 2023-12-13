@@ -102,7 +102,7 @@
       window.scrollTo(0, 0);
     }
 
-    isOpenModal = scrollY > 1000;
+    isOpenModal = scrollY > 1500;
 
     if (allowScroll && isOpenModal) {
       window.removeEventListener("scroll", handleScroll);
@@ -117,23 +117,25 @@
     const isSubmitStorage = localStorage.getItem("isShowFormAnalytic");
 
     if ($selectedPackage === "FREE") {
-      allowScroll = true;
-      window.addEventListener("scroll", handleScroll);
+      if (isSubmitStorage === null) {
+        allowScroll = true;
+        window.addEventListener("scroll", handleScroll);
 
-      if (currentDayStorage && next7DaysStorage && isSubmitStorage === null) {
-        const isTodayBetween = currentDate.isBetween(
-          currentDayStorage,
-          next7DaysStorage,
-          "day",
-          "[]"
-        );
-        if (!isTodayBetween) {
+        if (currentDayStorage && next7DaysStorage) {
+          const isTodayBetween = currentDate.isBetween(
+            currentDayStorage,
+            next7DaysStorage,
+            "day",
+            "[]"
+          );
+          if (!isTodayBetween) {
+            isOpenModal = true;
+          }
+        }
+
+        if (!currentDayStorage && !next7DaysStorage) {
           isOpenModal = true;
         }
-      }
-
-      if (!currentDayStorage && !next7DaysStorage && isSubmitStorage === null) {
-        isOpenModal = true;
       }
     }
   });

@@ -26,7 +26,7 @@
     {#if isShowSoon && address !== "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0"}
       <div
         class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center gap-3 pt-62 z-40 backdrop-blur-md ${
-          $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
+          $isDarkMode ? "bg-black/90" : "bg-white/95"
         }`}
       >
         {#if $selectedPackage === "FREE"}

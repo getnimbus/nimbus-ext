@@ -348,8 +348,8 @@
           <tr
             class={`absolute z-10 left-0 right-0 bottom-0 top-[220px] flex justify-center pt-10 backdrop-blur-md bg-gradient-to-t to-transparent ${
               $isDarkMode
-                ? "bg-[#222222e6] from-[#000] via-[#222222]"
-                : "bg-white/90 from-white via-white"
+                ? "bg-black/90 from-[#000] via-[#222222]"
+                : "bg-white/95 from-white via-white"
             } `}
           >
             <td colspan="5" class="flex flex-col items-center gap-1">

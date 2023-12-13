@@ -861,7 +861,7 @@
         </div>
         <div
           class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex items-center justify-center z-10 backdrop-blur-md ${
-            $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
+            $isDarkMode ? "bg-black/90" : "bg-white/95"
           }`}
         >
           <div class="text-2xl xl:text-lg">Coming soon 🚀</div>
