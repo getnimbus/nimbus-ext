@@ -13,8 +13,6 @@
   import Button from "~/components/Button.svelte";
   import Loading from "~/components/Loading.svelte";
 
-  import Crown from "~/assets/crown.svg";
-
   const currentDate = dayjs();
   const next7Days = currentDate.add(7, "day");
 
@@ -197,13 +195,10 @@
   >
     <div class="flex flex-col gap-4">
       <div class="flex flex-col">
-        <div class="xl:text-base text-2xl text-gray-500 text-center">
-          Our analysis is
-          <span class="font-medium text-[#ffb800]">Premium</span>
-          <img src={Crown} alt="" width="13" height="12" class="inline-block" />
-          feature is under beta<br /> which you can access for free now.
+        <div class="xl:title-3 title-1 font-semibold">
+          Let's us know your email.
         </div>
-        <div class="xl:text-base text-2xl text-gray-500">
+        <div class="xl:text-sm text-2xl text-gray-500">
           Add your email to get updates from us and receive exclusive benefits
           in the future.
         </div>
