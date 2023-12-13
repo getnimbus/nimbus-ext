@@ -464,8 +464,10 @@
   }
 </script>
 
-<div class="mobile-header-container py-1 border-b-[1px] border-[#ffffff1a]">
-  <div class="flex justify-between items-center max-w-[2000px] m-auto w-[90%]">
+<div
+  class="mobile-header-container py-1 border-b-[1px] border-[#ffffff1a] relative"
+>
+  <div class="flex items-center justify-between max-w-[2000px] m-auto w-[90%]">
     <Link to={`/?type=${$typeWallet}&chain=${$chain}&address=${$wallet}`}>
       <img
         src={Logo}
@@ -474,7 +476,9 @@
       />
     </Link>
 
-    <div class="items-center hidden gap-1 xl:flex">
+    <div
+      class="items-center justify-between hidden gap-1 xl:flex 2xl:absolute 2xl:top-[34px] xl:ml-40 absolute-center"
+    >
       {#if $wallet === "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0"}
         <div
           class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:opacity-100 transition-all ${
@@ -698,7 +702,7 @@
       </div> -->
     </div>
 
-    <div class="flex items-center justify-between gap-6 xl:gap-3">
+    <div class="flex items-center justify-end gap-6 xl:gap-3">
       <!-- Search -->
       <div
         class={`px-4 xl:w-[220px] w-[400px] flex items-center gap-1 rounded-[1000px] cursor-pointer ${
@@ -1454,6 +1458,14 @@
   }
   :global(body.dark) .bg_fafafbff {
     background: #212121;
+  }
+
+  @media (min-width: 1536px) {
+    :global(body) .absolute-center {
+      /* position: absolute; */
+      left: 49.5%;
+      transform: translate(-50%, -50%);
+    }
   }
 
   @supports (height: 100dvh) {
