@@ -279,12 +279,12 @@
     ) {
       networth =
         overviewDataPerformance?.portfolioChart[
-          overviewDataPerformance?.portfolioChart.length - 1
+          overviewDataPerformance?.portfolioChart?.length - 1
         ]?.value;
 
       portfolioPercentChange =
         overviewDataPerformance?.performance[
-          overviewDataPerformance?.performance.length - 1
+          overviewDataPerformance?.performance?.length - 1
         ]?.portfolio;
 
       networthValueChange =
