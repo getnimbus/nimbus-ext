@@ -220,10 +220,14 @@
       selectedCheckinIndex = $queryDailyCheckin?.data?.steak;
       isDisabledCheckin = $queryDailyCheckin?.data?.checkinable;
       dataCheckinHistory = $queryDailyCheckin?.data?.checkinLogs;
-      quests = $queryDailyCheckin?.data?.quests.map((item) => {
+      quests = $queryDailyCheckin?.data?.quests.map((item, index) => {
         const selectedLogs = dataCheckinHistory
           .filter((log) => log.type === "QUEST" && log.note !== "id-generate")
-          .find((log) => log.note === item.id);
+          .find(
+            (log) =>
+              log.note === item.id ||
+              log.note === `retweet-on-twitter${index + 1}`
+          );
 
         return {
           ...item,
