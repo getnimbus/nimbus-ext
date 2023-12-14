@@ -895,7 +895,7 @@
                 bind:totalAssets
               />
 
-              <!-- {#if $typeWallet !== "BTC"}
+              {#if $typeWallet !== "BTC"}
                 <ClosedTokenPosition
                   selectedWallet={$wallet}
                   isLoadingNFT={$chain === "ALL"
@@ -911,7 +911,7 @@
                   holdingTokenData={closedHoldingPosition}
                   {holdingNFTData}
                 />
-              {/if} -->
+              {/if}
 
               <!-- <News isLoading={false} data={newsData} /> -->
             </div>
