@@ -43,6 +43,7 @@
   let showTableVaults = false;
   let selectedHighestVault;
   let selectedVaults;
+  let selectedVaultsSymbol;
 
   let isShowReportTable = false;
   let isOldToken = false;
@@ -397,6 +398,7 @@
               on:click={() => {
                 showTableVaults = true;
                 selectedVaults = data.vaults;
+                selectedVaultsSymbol = data.symbol;
               }}
             >
               <div class="hidden xl:block">
@@ -1320,7 +1322,7 @@
     showTableVaults = false;
   }}
 >
-  <VaultTable data={selectedVaults} />
+  <VaultTable data={selectedVaults} symbol={selectedVaultsSymbol} />
 </AppOverlay>
 
 <!-- Modal report spam/trash token  -->
