@@ -234,6 +234,7 @@
           isDone: !item.isInternalLink && selectedLogs,
         };
       });
+      console.log("quests : ", quests);
     }
   }
 
@@ -446,6 +447,26 @@
         );
         if (res && res?.data === null) {
           toastMsg = "You are already finished this quest";
+          isSuccessToast = false;
+          trigger();
+        }
+        if (res?.data?.bonus !== undefined) {
+          triggerBonusScore();
+          bonusScore = res?.data?.bonus;
+          isTriggerBonusScore = true;
+          queryClient.invalidateQueries([$userPublicAddress, "daily-checkin"]);
+          queryClient.invalidateQueries(["users-me"]);
+        }
+      }
+      if (type.startsWith("retweet-on-twitter")) {
+        window.open(link, "_blank");
+        await wait(5000);
+        const res = await nimbus.post(
+          `/v2/checkin/${$userPublicAddress}/quest/retweet-on-twitter`,
+          {}
+        );
+        if (res && res?.data === null) {
+          toastMsg = "You already retweet us on Twitter";
           isSuccessToast = false;
           trigger();
         }
