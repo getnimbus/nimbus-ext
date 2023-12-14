@@ -184,26 +184,22 @@
 </script>
 
 <div class="h-[563px] flex flex-col gap-4">
-  <div class="flex justify-between items-center">
+  <div class="flex justify-between items-center xl:mt-6 mt-12">
     <div class="text-4xl font-medium xl:text-2xl">
       Yield farming opportunities
     </div>
-
-    <div
-      class="relative inline-flex items-center cursor-pointer mr-5"
-      on:click={() => {
-        isSingle = !isSingle;
-      }}
-    >
-      <span
-        class="ms-3 text-sm px-2 font-medium text-gray-900 dark:text-gray-300"
-      >
-        Single
-      </span>
-      <input type="checkbox" class="sr-only peer" checked={isSingle} />
-      <div
-        class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"
-      ></div>
+    <div class="flex items-center">
+      <div class="xl:text-sm text-2xl px-2 font-medium">Single</div>
+      <label class="switch">
+        <input
+          type="checkbox"
+          checked={isSingle}
+          on:click={() => {
+            isSingle = !isSingle;
+          }}
+        />
+        <span class="slider" />
+      </label>
     </div>
   </div>
   <div
@@ -406,4 +402,74 @@
 </div>
 
 <style windi:preflights:global windi:safelist:global>
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 20px;
+  }
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: 0.4s;
+    transition: 0.4s;
+    border-radius: 34px;
+  }
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 4px;
+    bottom: 2px;
+    background-color: white;
+    -webkit-transition: 0.4s;
+    transition: 0.4s;
+    border-radius: 50%;
+  }
+  input:checked + .slider {
+    background-color: #2196f3;
+  }
+  input:checked + .slider {
+    box-shadow: 0 0 1px #2196f3;
+  }
+  input:checked + .slider:before {
+    -webkit-transform: translateX(16px);
+    -ms-transform: translateX(16px);
+    transform: translateX(16px);
+  }
+
+  @media screen and (max-width: 1280px) {
+    .switch {
+      width: 60px;
+      height: 30px;
+    }
+
+    .slider {
+      border-radius: 44px;
+    }
+
+    .slider:before {
+      height: 26px;
+      width: 26px;
+      left: 4px;
+      bottom: 2px;
+    }
+
+    input:checked + .slider:before {
+      -webkit-transform: translateX(26px);
+      -ms-transform: translateX(26px);
+      transform: translateX(26px);
+    }
+  }
 </style>
