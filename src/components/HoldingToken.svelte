@@ -722,9 +722,7 @@
         <TooltipNumber number={value} type="value" personalValue />
       </div>
       <div class="flex flex-col items-end justify-end gap-1">
-        <div
-          class="flex justify-end text-2xl font-medium text-gray-400 xl:text-sm"
-        >
+        <div class="flex justify-end text-2xl text-gray-400 xl:text-sm">
           <TooltipNumber number={ratio} type="percent" />%
         </div>
 
@@ -1126,7 +1124,7 @@
 
                 <div class="flex flex-col items-end justify-end gap-1 w-full">
                   <div
-                    class="flex justify-end text-2xl font-medium text-gray-400 xl:text-sm"
+                    class="flex justify-end text-2xl text-gray-400 xl:text-sm"
                   >
                     <TooltipNumber
                       number={Math.abs(item.amount / data.amount) * 100}
@@ -1271,7 +1269,7 @@
                       class="flex flex-col items-end justify-end gap-1 w-full"
                     >
                       <div
-                        class="flex justify-end text-2xl font-medium text-gray-400 xl:text-sm"
+                        class="flex justify-end text-2xl text-gray-400 xl:text-sm"
                       >
                         <TooltipNumber
                           number={Math.abs(item.amount / data.amount) * 100}
