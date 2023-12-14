@@ -9,20 +9,30 @@
   import Button from "~/components/Button.svelte";
 
   export let data;
+  export let symbol;
 
   const navigate = useNavigate();
 
   let isShowTooltipProtocol = false;
+  let isSingle = false;
   let sortTVL = "default";
   let sortAPY = "default";
 
-  $: formatData = data?.map((item) => {
-    return {
-      ...item,
-      tvl: Number(item.tvl),
-      apy: item.apy * 100,
-    };
-  });
+  $: formatData = data
+    ?.map((item) => {
+      return {
+        ...item,
+        tvl: Number(item.tvl),
+        apy: item.apy * 100,
+      };
+    })
+    .filter((item) => {
+      if (isSingle) {
+        return item.name === symbol;
+      } else {
+        return item;
+      }
+    });
 
   const toggleSortTVL = () => {
     if ($selectedPackage === "FREE") {
@@ -174,8 +184,27 @@
 </script>
 
 <div class="h-[563px] flex flex-col gap-4">
-  <div class="text-4xl font-medium xl:text-2xl">
-    Yield farming opportunities
+  <div class="flex justify-between items-center">
+    <div class="text-4xl font-medium xl:text-2xl">
+      Yield farming opportunities
+    </div>
+
+    <div
+      class="relative inline-flex items-center cursor-pointer mr-5"
+      on:click={() => {
+        isSingle = !isSingle;
+      }}
+    >
+      <span
+        class="ms-3 text-sm px-2 font-medium text-gray-900 dark:text-gray-300"
+      >
+        Single
+      </span>
+      <input type="checkbox" class="sr-only peer" checked={isSingle} />
+      <div
+        class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"
+      ></div>
+    </div>
   </div>
   <div
     class={`rounded-[10px] overflow-x-auto overflow-y-auto h-[563px] relative ${
