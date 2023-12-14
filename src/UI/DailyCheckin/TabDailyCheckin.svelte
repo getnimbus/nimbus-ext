@@ -458,7 +458,7 @@
           queryClient.invalidateQueries(["users-me"]);
         }
       }
-      if (type.startsWith("retweet-on-twitter")) {
+      if (type.includes("retweet-on-twitter")) {
         window.open(link, "_blank");
         await wait(5000);
         const res = await nimbus.post(
