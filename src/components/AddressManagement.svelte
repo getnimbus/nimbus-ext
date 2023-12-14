@@ -578,10 +578,6 @@
           addresses: [$userPublicAddress],
         }),
       ]);
-      console.log({
-        resAddAccount,
-        resAddBundle,
-      });
       if (resAddAccount && resAddBundle) {
         wallet.update((n) => (n = $userPublicAddress));
         queryClient.invalidateQueries(["list-bundle"]);
