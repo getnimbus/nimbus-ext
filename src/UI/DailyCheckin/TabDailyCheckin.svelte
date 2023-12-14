@@ -234,7 +234,6 @@
           isDone: !item.isInternalLink && selectedLogs,
         };
       });
-      console.log("quests : ", quests);
     }
   }
 
