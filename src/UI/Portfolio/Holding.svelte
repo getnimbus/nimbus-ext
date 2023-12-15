@@ -589,9 +589,9 @@
                     {#if $typeWallet === "SOL" || $typeWallet === "AURA" || $typeWallet === "ALGO" || $typeWallet === "EVM" || $typeWallet === "MOVE" || $typeWallet === "BUNDLE" || $typeWallet === "CEX"}
                       <th
                         class={`py-3 rounded-tr-[10px] ${
-                          $typeWallet === "SOL" || $typeWallet === "BUNDLE"
-                            ? "xl:max-w-20 w-24"
-                            : "xl:max-w-14 w-24"
+                          ["BUNDLE", "SOL"].includes($typeWallet)
+                            ? "xl:max-w-20 w-16"
+                            : "xl:max-w-14"
                         }`}
                       />
                     {/if}

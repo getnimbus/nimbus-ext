@@ -733,14 +733,13 @@
             $typeWallet === "AURA" ||
             $typeWallet === "ALGO" ||
             $typeWallet === "BUNDLE") &&
-            $wallet.length !== 0 &&
-            packageSelected !== "FREE"
+            $wallet.length !== 0
         );
 
   $: theme = $isDarkMode ? "dark" : "white";
 </script>
 
-<div class="flex flex-col justify-between gap-6 xl:flex-row relative">
+<div class="flex flex-col justify-between gap-6 xl:flex-row">
   <!-- Token allocation -->
   <div
     class={`xl:w-1/2 w-full flex flex-col justify-between items-start gap-2 rounded-[20px] p-6 ${
@@ -1001,33 +1000,6 @@
       </div>
     {/if}
   </div>
-
-  {#if isShowSoon && address !== "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0"}
-    <div
-      class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center gap-3 pt-62 z-10 backdrop-blur-md ${
-        $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
-      }`}
-    >
-      {#if $selectedPackage === "FREE"}
-        <div class="flex flex-col items-center gap-1">
-          <div class="text-lg font-medium">
-            Use Nimbus at its full potential
-          </div>
-          <div class="text-base text-gray-500">
-            Upgrade to Premium to access Analytics feature
-          </div>
-        </div>
-        <div class="mt-2 w-max">
-          <Button variant="premium" on:click={() => navigate("/upgrade")}
-            >Upgrade Plan</Button
-          >
-        </div>
-      {/if}
-      {#if $selectedPackage !== "FREE" && $typeWallet === "BTC"}
-        <div class="text-lg">Coming soon 🚀</div>
-      {/if}
-    </div>
-  {/if}
 </div>
 
 <style>

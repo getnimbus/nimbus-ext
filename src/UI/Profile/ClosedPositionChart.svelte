@@ -394,7 +394,7 @@
             <div
               class="h-full flex justify-center items-center xl:text-base text-lg"
             >
-              There is no closed holding position in the last 30 day
+              There are no closed holding position in the last 30 day
             </div>
           {:else}
             <div class="relative pl-4">

@@ -432,7 +432,7 @@
           {#if $queryTokenHolding.isError}
             <div
               class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-30 backdrop-blur-md xl:text-xs text-lg ${
-                $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
+                $isDarkMode ? "bg-black/90" : "bg-white/95"
               }`}
             >
               {#if $typeWallet === "CEX"}
@@ -506,7 +506,7 @@
       {#if $typeWallet === "CEX"}
         <div
           class={`absolute top-0 left-0 rounded-[20px] z-30 w-full h-full flex items-center justify-center z-10 backdrop-blur-md ${
-            $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
+            $isDarkMode ? "bg-black/90" : "bg-white/95"
           }`}
         >
           <div class="text-2xl xl:text-lg">Coming soon 🚀</div>
@@ -526,7 +526,7 @@
           {#if $queryTokenHolding.isError}
             <div
               class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-30 backdrop-blur-md xl:text-xs text-lg ${
-                $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
+                $isDarkMode ? "bg-black/90" : "bg-white/95"
               }`}
             >
               {#if $typeWallet === "CEX"}
@@ -602,7 +602,7 @@
       {#if $typeWallet === "CEX"}
         <div
           class={`absolute top-0 left-0 rounded-[20px] z-30 w-full h-full flex items-center justify-center z-10 backdrop-blur-md ${
-            $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
+            $isDarkMode ? "bg-black/90" : "bg-white/95"
           }`}
         >
           <div class="text-2xl xl:text-lg">Coming soon 🚀</div>

@@ -220,10 +220,14 @@
       selectedCheckinIndex = $queryDailyCheckin?.data?.steak;
       isDisabledCheckin = $queryDailyCheckin?.data?.checkinable;
       dataCheckinHistory = $queryDailyCheckin?.data?.checkinLogs;
-      quests = $queryDailyCheckin?.data?.quests.map((item) => {
+      quests = $queryDailyCheckin?.data?.quests.map((item, index) => {
         const selectedLogs = dataCheckinHistory
           .filter((log) => log.type === "QUEST" && log.note !== "id-generate")
-          .find((log) => log.note === item.id);
+          .find(
+            (log) =>
+              log.note === item.id ||
+              log.note === `retweet-on-twitter${index + 1}`
+          );
 
         return {
           ...item,
@@ -442,6 +446,26 @@
         );
         if (res && res?.data === null) {
           toastMsg = "You are already finished this quest";
+          isSuccessToast = false;
+          trigger();
+        }
+        if (res?.data?.bonus !== undefined) {
+          triggerBonusScore();
+          bonusScore = res?.data?.bonus;
+          isTriggerBonusScore = true;
+          queryClient.invalidateQueries([$userPublicAddress, "daily-checkin"]);
+          queryClient.invalidateQueries(["users-me"]);
+        }
+      }
+      if (type.includes("retweet-on-twitter")) {
+        window.open(link, "_blank");
+        await wait(5000);
+        const res = await nimbus.post(
+          `/v2/checkin/${$userPublicAddress}/quest/retweet-on-twitter`,
+          {}
+        );
+        if (res && res?.data === null) {
+          toastMsg = "You already retweet us on Twitter";
           isSuccessToast = false;
           trigger();
         }

@@ -43,6 +43,7 @@
   let showTableVaults = false;
   let selectedHighestVault;
   let selectedVaults;
+  let selectedVaultsSymbol;
 
   let isShowReportTable = false;
   let isOldToken = false;
@@ -397,6 +398,7 @@
               on:click={() => {
                 showTableVaults = true;
                 selectedVaults = data.vaults;
+                selectedVaultsSymbol = data.symbol;
               }}
             >
               <div class="hidden xl:block">
@@ -722,9 +724,7 @@
         <TooltipNumber number={value} type="value" personalValue />
       </div>
       <div class="flex flex-col items-end justify-end gap-1">
-        <div
-          class="flex justify-end text-2xl font-medium text-gray-400 xl:text-sm"
-        >
+        <div class="flex justify-end text-2xl text-gray-400 xl:text-sm">
           <TooltipNumber number={ratio} type="percent" />%
         </div>
 
@@ -1126,7 +1126,7 @@
 
                 <div class="flex flex-col items-end justify-end gap-1 w-full">
                   <div
-                    class="flex justify-end text-2xl font-medium text-gray-400 xl:text-sm"
+                    class="flex justify-end text-2xl text-gray-400 xl:text-sm"
                   >
                     <TooltipNumber
                       number={Math.abs(item.amount / data.amount) * 100}
@@ -1271,7 +1271,7 @@
                       class="flex flex-col items-end justify-end gap-1 w-full"
                     >
                       <div
-                        class="flex justify-end text-2xl font-medium text-gray-400 xl:text-sm"
+                        class="flex justify-end text-2xl text-gray-400 xl:text-sm"
                       >
                         <TooltipNumber
                           number={Math.abs(item.amount / data.amount) * 100}
@@ -1322,7 +1322,7 @@
     showTableVaults = false;
   }}
 >
-  <VaultTable data={selectedVaults} />
+  <VaultTable data={selectedVaults} symbol={selectedVaultsSymbol} />
 </AppOverlay>
 
 <!-- Modal report spam/trash token  -->
@@ -1665,149 +1665,147 @@
     >
       &times;
     </div>
-    <div class="flex flex-col gap-6">
-      {#if selectedTokenDetail && Object.keys(selectedTokenDetail).length !== 0}
-        <div class="flex items-center justify-end gap-4">
-          <div class="relative">
-            <div class="rounded-full w-[46px] h-[46px] overflow-hidden">
-              <Image logo={data.logo} defaultLogo={defaultToken} />
-            </div>
-            {#if ($typeWallet === "EVM" || $typeWallet === "MOVE" || $typeWallet === "BUNDLE") && selectedTokenDetail?.chain !== "CEX"}
-              <div class="absolute -top-2 -right-1">
-                <img
-                  src={detectedChain(selectedTokenDetail?.chain)}
-                  alt=""
-                  width="26"
-                  height="26"
-                  class="rounded-full"
-                />
-              </div>
-            {/if}
+    {#if selectedTokenDetail && Object.keys(selectedTokenDetail).length !== 0}
+      <div class="flex items-center justify-end gap-4">
+        <div class="relative">
+          <div class="rounded-full w-[46px] h-[46px] overflow-hidden">
+            <Image logo={data.logo} defaultLogo={defaultToken} />
           </div>
-          <div class="flex flex-col">
-            <div class="flex items-start gap-2">
-              <div
-                class="relative font-medium xl:text-xl text-2xl"
-                on:mouseover={() => {
-                  isShowTooltipName = true;
-                }}
-                on:mouseleave={() => (isShowTooltipName = false)}
-              >
-                {#if selectedTokenDetail.name === undefined}
-                  N/A
-                {:else}
-                  {selectedTokenDetail?.name?.length > 20
-                    ? shorterName(selectedTokenDetail.name, 20)
-                    : selectedTokenDetail.name}
-                {/if}
-                {#if isShowTooltipName && selectedTokenDetail?.name?.length > 20}
-                  <div
-                    class="absolute left-0 -top-8"
-                    style="z-index: 2147483648;"
-                  >
-                    <Tooltip text={selectedTokenDetail.name} />
-                  </div>
-                {/if}
-              </div>
+          {#if ($typeWallet === "EVM" || $typeWallet === "MOVE" || $typeWallet === "BUNDLE") && selectedTokenDetail?.chain !== "CEX"}
+            <div class="absolute -top-2 -right-1">
+              <img
+                src={detectedChain(selectedTokenDetail?.chain)}
+                alt=""
+                width="26"
+                height="26"
+                class="rounded-full"
+              />
             </div>
-
-            <div class="flex items-center gap-2">
-              <div
-                class="relative font-medium text_00000080 xl:text-base text-lg"
-                on:mouseover={() => {
-                  isShowTooltipSymbol = true;
-                }}
-                on:mouseleave={() => (isShowTooltipSymbol = false)}
-              >
-                {#if selectedTokenDetail.symbol === undefined}
-                  N/A
-                {:else}
-                  {shorterName(selectedTokenDetail.symbol, 20)}
-                {/if}
-                {#if isShowTooltipSymbol && selectedTokenDetail.symbol.length > 20}
-                  <div
-                    class="absolute left-0 -top-8"
-                    style="z-index: 2147483648;"
-                  >
-                    <Tooltip text={selectedTokenDetail.symbol} />
-                  </div>
-                {/if}
-              </div>
-              <CopyToClipboard
-                text={selectedTokenDetail?.contractAddress}
-                let:copy
-                on:copy={async () => {
-                  isCopied = true;
-                  await wait(1000);
-                  isCopied = false;
-                }}
-              >
+          {/if}
+        </div>
+        <div class="flex flex-col">
+          <div class="flex items-start gap-2">
+            <div
+              class="relative font-medium xl:text-xl text-2xl"
+              on:mouseover={() => {
+                isShowTooltipName = true;
+              }}
+              on:mouseleave={() => (isShowTooltipName = false)}
+            >
+              {#if selectedTokenDetail.name === undefined}
+                N/A
+              {:else}
+                {selectedTokenDetail?.name?.length > 20
+                  ? shorterName(selectedTokenDetail.name, 20)
+                  : selectedTokenDetail.name}
+              {/if}
+              {#if isShowTooltipName && selectedTokenDetail?.name?.length > 20}
                 <div
-                  class="cursor-pointer relative"
-                  on:mouseover={() => {
-                    isShowTooltipContractAddress = true;
-                  }}
-                  on:mouseleave={() => (isShowTooltipContractAddress = false)}
-                  on:click={copy}
+                  class="absolute left-0 -top-8"
+                  style="z-index: 2147483648;"
                 >
-                  {#if isCopied}
-                    <svg
-                      width={20}
-                      height={20}
-                      id="Layer_1"
-                      data-name="Layer 1"
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 122.88 74.46"
-                      fill={$isDarkMode ? "#d1d5db" : "#00000080"}
-                      ><path
-                        fill-rule="evenodd"
-                        d="M1.87,47.2a6.33,6.33,0,1,1,8.92-9c8.88,8.85,17.53,17.66,26.53,26.45l-3.76,4.45-.35.37a6.33,6.33,0,0,1-8.95,0L1.87,47.2ZM30,43.55a6.33,6.33,0,1,1,8.82-9.07l25,24.38L111.64,2.29c5.37-6.35,15,1.84,9.66,8.18L69.07,72.22l-.3.33a6.33,6.33,0,0,1-8.95.12L30,43.55Zm28.76-4.21-.31.33-9.07-8.85L71.67,4.42c5.37-6.35,15,1.83,9.67,8.18L58.74,39.34Z"
-                      /></svg
-                    >
-                  {:else}
-                    <svg
-                      width={20}
-                      height={20}
-                      viewBox="0 0 12 11"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M8.1875 3.3125H10.6875V10.1875H3.8125V7.6875"
-                        stroke={$isDarkMode ? "#d1d5db" : "#00000080"}
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      />
-                      <path
-                        d="M8.1875 0.8125H1.3125V7.6875H8.1875V0.8125Z"
-                        stroke={$isDarkMode ? "#d1d5db" : "#00000080"}
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      />
-                    </svg>
-                  {/if}
-
-                  {#if isShowTooltipContractAddress}
-                    <div
-                      class="absolute right-0 -top-8"
-                      style="z-index: 2147483648;"
-                    >
-                      <Tooltip
-                        text={shorterAddress(
-                          selectedTokenDetail?.contractAddress
-                        )}
-                      />
-                    </div>
-                  {/if}
+                  <Tooltip text={selectedTokenDetail.name} />
                 </div>
-              </CopyToClipboard>
+              {/if}
             </div>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <div
+              class="relative font-medium text_00000080 xl:text-base text-lg"
+              on:mouseover={() => {
+                isShowTooltipSymbol = true;
+              }}
+              on:mouseleave={() => (isShowTooltipSymbol = false)}
+            >
+              {#if selectedTokenDetail.symbol === undefined}
+                N/A
+              {:else}
+                {shorterName(selectedTokenDetail.symbol, 20)}
+              {/if}
+              {#if isShowTooltipSymbol && selectedTokenDetail.symbol.length > 20}
+                <div
+                  class="absolute left-0 -top-8"
+                  style="z-index: 2147483648;"
+                >
+                  <Tooltip text={selectedTokenDetail.symbol} />
+                </div>
+              {/if}
+            </div>
+            <CopyToClipboard
+              text={selectedTokenDetail?.contractAddress}
+              let:copy
+              on:copy={async () => {
+                isCopied = true;
+                await wait(1000);
+                isCopied = false;
+              }}
+            >
+              <div
+                class="cursor-pointer relative"
+                on:mouseover={() => {
+                  isShowTooltipContractAddress = true;
+                }}
+                on:mouseleave={() => (isShowTooltipContractAddress = false)}
+                on:click={copy}
+              >
+                {#if isCopied}
+                  <svg
+                    width={20}
+                    height={20}
+                    id="Layer_1"
+                    data-name="Layer 1"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 122.88 74.46"
+                    fill={$isDarkMode ? "#d1d5db" : "#00000080"}
+                    ><path
+                      fill-rule="evenodd"
+                      d="M1.87,47.2a6.33,6.33,0,1,1,8.92-9c8.88,8.85,17.53,17.66,26.53,26.45l-3.76,4.45-.35.37a6.33,6.33,0,0,1-8.95,0L1.87,47.2ZM30,43.55a6.33,6.33,0,1,1,8.82-9.07l25,24.38L111.64,2.29c5.37-6.35,15,1.84,9.66,8.18L69.07,72.22l-.3.33a6.33,6.33,0,0,1-8.95.12L30,43.55Zm28.76-4.21-.31.33-9.07-8.85L71.67,4.42c5.37-6.35,15,1.83,9.67,8.18L58.74,39.34Z"
+                    /></svg
+                  >
+                {:else}
+                  <svg
+                    width={20}
+                    height={20}
+                    viewBox="0 0 12 11"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M8.1875 3.3125H10.6875V10.1875H3.8125V7.6875"
+                      stroke={$isDarkMode ? "#d1d5db" : "#00000080"}
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      d="M8.1875 0.8125H1.3125V7.6875H8.1875V0.8125Z"
+                      stroke={$isDarkMode ? "#d1d5db" : "#00000080"}
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                {/if}
+
+                {#if isShowTooltipContractAddress}
+                  <div
+                    class="absolute right-0 -top-8"
+                    style="z-index: 2147483648;"
+                  >
+                    <Tooltip
+                      text={shorterAddress(
+                        selectedTokenDetail?.contractAddress
+                      )}
+                    />
+                  </div>
+                {/if}
+              </div>
+            </CopyToClipboard>
           </div>
         </div>
-      {/if}
-      <div class="mr-7" id={`swap-${index}`}></div>
-    </div>
+      </div>
+    {/if}
   </div>
+  <div id={`swap-${index}`}></div>
 </OverlaySidebarSwap>
 
 {#if showToast}

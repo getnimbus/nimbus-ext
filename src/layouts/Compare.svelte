@@ -976,7 +976,7 @@
                 {#if isEmptyDataPie}
                   <div
                     class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-30 backdrop-blur-md xl:text-xs text-lg rounded-[20px] ${
-                      $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
+                      $isDarkMode ? "bg-black/90" : "bg-white/95"
                     }`}
                   >
                     {#if $typeWallet === "CEX"}
@@ -1054,7 +1054,7 @@
                       {#if compareData && Object.keys(compareData).length === 0}
                         <div
                           class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-30 backdrop-blur-md xl:text-xs text-lg ${
-                            $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
+                            $isDarkMode ? "bg-black/90" : "bg-white/95"
                           }`}
                         >
                           {#if $typeWallet === "CEX"}
@@ -1106,7 +1106,7 @@
                       </div>
                       <div
                         class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-30 backdrop-blur-md xl:text-xs text-lg rounded-[20px] ${
-                          $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
+                          $isDarkMode ? "bg-black/90" : "bg-white/95"
                         }`}
                       >
                         {#if $typeWallet === "CEX"}
@@ -1281,7 +1281,7 @@
             <div class="h-[433px]">
               <div
                 class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-30 backdrop-blur-md xl:text-xs text-lg rounded-[20px] ${
-                  $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
+                  $isDarkMode ? "bg-black/90" : "bg-white/95"
                 }`}
               >
                 {#if $typeWallet === "CEX"}
@@ -1340,7 +1340,7 @@
             <div class="h-[465px]">
               <div
                 class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-30 backdrop-blur-md xl:text-xs text-lg rounded-[20px] ${
-                  $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
+                  $isDarkMode ? "bg-black/90" : "bg-white/95"
                 }`}
               >
                 {#if $typeWallet === "CEX"}
@@ -1379,7 +1379,7 @@
     {#if $selectedPackage === "FREE"}
       <div
         class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center justify-center gap-3 z-30 backdrop-blur-md ${
-          $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
+          $isDarkMode ? "bg-black/90" : "bg-white/95"
         }`}
       >
         <div class="flex flex-col items-center gap-1">
