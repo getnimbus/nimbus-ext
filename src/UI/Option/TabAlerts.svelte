@@ -273,7 +273,10 @@
       on:click={() => {
         isOpenFollowWhaleModal = true;
         handleGetCodeSyncMobile();
-        window.open("https://t.me/GetNimbusBot", "_blank");
+        window.open(
+          `https://t.me/GetNimbusBot?start=${syncMobileCode}`,
+          "_blank"
+        );
       }}
     >
       How to start alerts on Telegram?
