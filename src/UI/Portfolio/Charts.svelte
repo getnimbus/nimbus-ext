@@ -935,7 +935,7 @@
                   }`}
                   style="box-shadow: rgba(0, 0, 0, 0.2) 1px 2px 10px;"
                 >
-                  <div class="xl:text-lg text-xl font-medium">
+                  <div class="xl:text-lg text-xl font-medium flex items-center">
                     $<TooltipNumber number={networth} type="balance" />
                   </div>
                   <div
