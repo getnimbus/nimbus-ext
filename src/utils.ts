@@ -31,7 +31,7 @@ import Mantle from "~/assets/mantle.png";
 import Algorand from "~/assets/algorand.png";
 import Exzo from "~/assets/exzo.png";
 import Klaytn from "~/assets/klaytn.png";
-import { userPublicAddress } from "./store";
+import Viction from "~/assets/viction.png";
 
 export const ETHAddressRegex = /(\b0x[a-fA-F0-9]{40}\b)/g;
 export const ETHTrxRegex = /(\b0x[a-fA-F0-9]{64}\b)/g;
@@ -416,6 +416,11 @@ export const chainList = [
     label: "Klaytn",
     value: "KLAY",
   },
+  {
+    logo: Viction,
+    label: "Viction",
+    value: "VIC",
+  },
 ];
 
 export const mobulaChainConfig: Record<string, string> = {
@@ -496,6 +501,9 @@ export const detectedChain = (type) => {
       break;
     case "KLAY":
       chain = Klaytn;
+      break;
+    case "VIC":
+      chain = Viction;
       break;
   }
   return chain;
@@ -619,6 +627,12 @@ export const linkExplorer = (chain, hash) => {
       links = {
         trx: `https://klaytnscope.com/tx/${hash}`,
         address: `https://klaytnscope.com/account/${hash}`,
+      };
+      break;
+    case "VIC":
+      links = {
+        trx: `https://tomoscan.io/tx/${hash}`,
+        address: `https://tomoscan.io/address/${hash}`,
       };
       break;
     case "BTC":
