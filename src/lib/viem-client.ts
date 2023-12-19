@@ -1,7 +1,13 @@
-import { createWalletClient, custom } from 'viem'
-import { mainnet } from 'viem/chains'
+import { createWalletClient, custom } from 'viem';
+import { mainnet } from 'viem/chains';
 
-export const publicClient = createWalletClient({
-  chain: mainnet,
-  transport: custom(window.ethereum)
-})
+let publicClient
+
+if (mainnet && window?.ethereum) {
+  publicClient = createWalletClient({
+    chain: mainnet,
+    transport: custom(window?.ethereum)
+  })
+}
+
+export default publicClient;
