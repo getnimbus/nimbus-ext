@@ -94,6 +94,7 @@
   let dataCheckinHistory = [];
   let sortTypeHistory = "default";
   let sortPointHistory = "default";
+  let isDisabledReceiveQuest = false;
 
   let toastMsg = "";
   let isSuccessToast = false;
@@ -477,8 +478,10 @@
           queryClient.invalidateQueries(["users-me"]);
         }
       }
+      isDisabledReceiveQuest = true;
     } catch (e) {
       console.error(e);
+      isDisabledReceiveQuest = false;
     }
   };
 
@@ -723,7 +726,10 @@
                             }}
                             class="py-1"
                           >
-                            <Button disabled={quest.isDone}>Collect!</Button>
+                            <Button
+                              disabled={isDisabledReceiveQuest || quest.isDone}
+                              >Collect!</Button
+                            >
                           </div>
                         {/if}
                       </div>
