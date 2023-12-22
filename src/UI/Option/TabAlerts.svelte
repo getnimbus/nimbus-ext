@@ -284,129 +284,144 @@
   </div>
   <form
     on:submit|preventDefault={onSubmitSettingAlert}
-    class="flex flex-col gap-8 pt-4"
+    class="flex flex-col gap-8"
   >
-    <!-- <div class="flex flex-col gap-3">
-      <div class="flex justify-between items-center gap-6">
-        <div class="flex flex-col">
-          <div class="xl:text-base text-2xl">Price change notification</div>
-          <div class="xl:text-sm text-xl text-gray-400">
-            Receive notification whenever your price percent change
-          </div>
-        </div>
-        <label class="switch">
-          <input
-            type="checkbox"
-            checked={percent}
-            on:click={() => {
-              percent = !percent;
-            }}
-          />
-          <span class="slider" />
-        </label>
-      </div>
-      <div class="flex flex-col gap-3">
-        {#each percentList as item}
-          <label class="flex items-center xl:gap-2 gap-6 cursor-pointer w-max">
-            <input
-              type="radio"
-              disabled={!percent}
-              name={item.id}
-              id={item.id}
-              value={item.value}
-              bind:group={selectedPercent}
-              class={`cursor-pointer relative xl:w-4 xl:h-4 w-6 h-6 appearance-none rounded-full border outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white checked:focus:after:bg-transparent dark:border-neutral-600 dark:checked:border-primary dark:checked:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] ${
-                percent ? "" : "bg-gray-200 border-gray-200"
-              }`}
-            />
-            <div class="xl:text-sm text-2xl font-normal cursor-pointer">
-              {item.content}
+    <!-- <div class="border-b-[1px] border_0000000d pb-8 flex flex-col gap-4">
+      <div class="xl:title-4 title-2">Token holding alerts</div>
+      <div class="flex flex-col gap-8">
+        <div class="flex flex-col gap-3">
+          <div class="flex justify-between items-center gap-6">
+            <div class="flex flex-col">
+              <div class="xl:text-base text-2xl">Price change notification</div>
+              <div class="xl:text-sm text-xl text-gray-400">
+                Receive notification whenever your price percent change
+              </div>
             </div>
-          </label>
-        {/each}
-      </div>
-    </div> -->
-    <div class="flex flex-col gap-4">
-      <div class="flex justify-between items-center gap-6">
-        <div class="flex flex-col">
-          <div class="xl:text-base text-2xl">
-            Frequency of portfolio summary notification
-          </div>
-          <div class="xl:text-sm text-xl text-gray-400">
-            Receive portfolio summary every daily, weekly or monthly
-          </div>
-        </div>
-        <label class="switch">
-          <input
-            type="checkbox"
-            checked={summary}
-            on:click={() => {
-              summary = !summary;
-            }}
-          />
-          <span class="slider" />
-        </label>
-      </div>
-      <div class="flex flex-col gap-3">
-        {#each summaryList as item}
-          <div class="flex items-center xl:gap-2 gap-6 cursor-pointer w-max">
-            <input
-              type="radio"
-              disabled={!summary}
-              name={item.id}
-              id={item.id}
-              value={item.value}
-              class={`cursor-pointer relative xl:w-4 xl:h-4 w-6 h-6 appearance-none rounded-full border outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white checked:focus:after:bg-transparent dark:border-neutral-600 dark:checked:border-primary dark:checked:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] ${
-                summary ? "" : "bg-gray-200 border-gray-200"
-              }`}
-              bind:group={selectedSummary}
-            />
-            <label
-              for={item.id}
-              class="xl:text-sm text-2xl font-normal cursor-pointer"
-            >
-              {item.content}
+            <label class="switch">
+              <input
+                type="checkbox"
+                checked={percent}
+                on:click={() => {
+                  percent = !percent;
+                }}
+              />
+              <span class="slider" />
             </label>
           </div>
-        {/each}
-      </div>
-    </div>
-    <!-- <div class="flex flex-col gap-4">
-      <div class="flex justify-between items-center gap-6">
-        <div class="flex flex-col">
-          <div class="xl:text-base text-2xl">Transaction notification</div>
-          <div class="xl:text-sm text-xl text-gray-400">
-            Receive notification whenever you have transaction
+          <div class="flex flex-col gap-3">
+            {#each percentList as item}
+              <label
+                class="flex items-center xl:gap-2 gap-6 cursor-pointer w-max"
+              >
+                <input
+                  type="radio"
+                  disabled={!percent}
+                  name={item.id}
+                  id={item.id}
+                  value={item.value}
+                  bind:group={selectedPercent}
+                  class={`cursor-pointer relative xl:w-4 xl:h-4 w-6 h-6 appearance-none rounded-full border outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white checked:focus:after:bg-transparent dark:border-neutral-600 dark:checked:border-primary dark:checked:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] ${
+                    percent ? "" : "bg-gray-200 border-gray-200"
+                  }`}
+                />
+                <div class="xl:text-sm text-2xl font-normal cursor-pointer">
+                  {item.content}
+                </div>
+              </label>
+            {/each}
           </div>
         </div>
-        <label class="switch">
-          <input
-            type="checkbox"
-            checked={transaction}
-            on:click={() => {
-              transaction = !transaction;
-            }}
-          />
-          <span class="slider" />
-        </label>
-      </div>
-      <div class="flex items-center gap-2">
-        <div class="xl:text-sm text-2xl font-normal">
-          Filter spam transaction
-        </div>
-        <label class="switch">
-          <input
-            type="checkbox"
-            disabled={!transaction}
-            checked={filterSpamTrx}
-            on:click={() => {
-              filterSpamTrx = !filterSpamTrx;
-            }}
-          />
-          <span class="slider" />
-        </label>
       </div>
     </div> -->
+
+    <div class="flex flex-col gap-4">
+      <div class="xl:title-4 title-2">Portfolio summary alerts</div>
+      <div class="flex flex-col gap-8">
+        <div class="flex flex-col gap-4">
+          <div class="flex justify-between items-center gap-6">
+            <div class="flex flex-col">
+              <div class="xl:text-base text-2xl">
+                Frequency of portfolio summary notification
+              </div>
+              <div class="xl:text-sm text-xl text-gray-400">
+                Receive portfolio summary every daily, weekly or monthly
+              </div>
+            </div>
+            <label class="switch">
+              <input
+                type="checkbox"
+                checked={summary}
+                on:click={() => {
+                  summary = !summary;
+                }}
+              />
+              <span class="slider" />
+            </label>
+          </div>
+          <div class="flex flex-col gap-3">
+            {#each summaryList as item}
+              <div
+                class="flex items-center xl:gap-2 gap-6 cursor-pointer w-max"
+              >
+                <input
+                  type="radio"
+                  disabled={!summary}
+                  name={item.id}
+                  id={item.id}
+                  value={item.value}
+                  class={`cursor-pointer relative xl:w-4 xl:h-4 w-6 h-6 appearance-none rounded-full border outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white checked:focus:after:bg-transparent dark:border-neutral-600 dark:checked:border-primary dark:checked:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] ${
+                    summary ? "" : "bg-gray-200 border-gray-200"
+                  }`}
+                  bind:group={selectedSummary}
+                />
+                <label
+                  for={item.id}
+                  class="xl:text-sm text-2xl font-normal cursor-pointer"
+                >
+                  {item.content}
+                </label>
+              </div>
+            {/each}
+          </div>
+        </div>
+        <!-- <div class="flex flex-col gap-4">
+          <div class="flex justify-between items-center gap-6">
+            <div class="flex flex-col">
+              <div class="xl:text-base text-2xl">Transaction notification</div>
+              <div class="xl:text-sm text-xl text-gray-400">
+                Receive notification whenever you have transaction
+              </div>
+            </div>
+            <label class="switch">
+              <input
+                type="checkbox"
+                checked={transaction}
+                on:click={() => {
+                  transaction = !transaction;
+                }}
+              />
+              <span class="slider" />
+            </label>
+          </div>
+          <div class="flex items-center gap-2">
+            <div class="xl:text-sm text-2xl font-normal">
+              Filter spam transaction
+            </div>
+            <label class="switch">
+              <input
+                type="checkbox"
+                disabled={!transaction}
+                checked={filterSpamTrx}
+                on:click={() => {
+                  filterSpamTrx = !filterSpamTrx;
+                }}
+              />
+              <span class="slider" />
+            </label>
+          </div>
+        </div> -->
+      </div>
+    </div>
 
     <div class="flex justify-start gap-6 lg:gap-2 mt-6">
       <div class="w-[120px]">
