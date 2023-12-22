@@ -76,6 +76,7 @@
   let userConfigs = {
     filter_spam_tx_alert: false,
     price_alert: 0,
+    token_value_ignore: 0,
     summary_setting_alert: "",
     transaction_alert: false,
   };
@@ -189,6 +190,14 @@
         selectedSummary = res?.data?.alertSettings?.portfolioSummary?.value;
         transaction = res?.data?.alertSettings?.transaction?.enabled;
         filterSpamTrx = res?.data?.alertSettings?.transaction?.filterSpam;
+        selectedTokenValueIgnore =
+          res?.data?.alertSettings?.portfolioSummary?.ignore?.value;
+        if (
+          Number(res?.data?.alertSettings?.portfolioSummary?.ignore?.value) !==
+          0
+        ) {
+          ignoreTokenValue = true;
+        }
         if (Number(res?.data?.alertSettings?.price?.value) !== 0) {
           percent = true;
         }
@@ -215,6 +224,10 @@
     selectedSummary = userConfigs.summary_setting_alert;
     transaction = userConfigs.transaction_alert;
     filterSpamTrx = userConfigs.filter_spam_tx_alert;
+    selectedTokenValueIgnore = Number(userConfigs.token_value_ignore);
+    if (userConfigs.token_value_ignore !== 0) {
+      ignoreTokenValue = true;
+    }
     if (userConfigs.price_alert !== 0) {
       percent = true;
     }
@@ -226,20 +239,31 @@
   const getUserConfigs = async () => {
     try {
       const res: any = await nimbus.get("/users/configs");
-      console.log("res: ", res);
-      userConfigs = {
-        filter_spam_tx_alert: res?.data?.alertSettings?.transaction?.filterSpam,
-        price_alert: Number(res?.data?.alertSettings?.price?.value),
-        summary_setting_alert:
-          res?.data?.alertSettings?.portfolioSummary?.value,
-        transaction_alert: res?.data?.alertSettings?.transaction?.enabled,
-      };
-
       if (res && res?.data) {
+        userConfigs = {
+          filter_spam_tx_alert:
+            res?.data?.alertSettings?.transaction?.filterSpam,
+          price_alert: Number(res?.data?.alertSettings?.price?.value),
+          token_value_ignore: Number(
+            res?.data?.alertSettings?.portfolioSummary?.ignore?.value
+          ),
+          summary_setting_alert:
+            res?.data?.alertSettings?.portfolioSummary?.value,
+          transaction_alert: res?.data?.alertSettings?.transaction?.enabled,
+        };
+
         selectedPercent = Number(res?.data?.alertSettings?.price?.value);
         selectedSummary = res?.data?.alertSettings?.portfolioSummary?.value;
         transaction = res?.data?.alertSettings?.transaction?.enabled;
         filterSpamTrx = res?.data?.alertSettings?.transaction?.filterSpam;
+        selectedTokenValueIgnore =
+          res?.data?.alertSettings?.portfolioSummary?.ignore?.value;
+        if (
+          Number(res?.data?.alertSettings?.portfolioSummary?.ignore?.value) !==
+          0
+        ) {
+          ignoreTokenValue = true;
+        }
         if (Number(res?.data?.alertSettings?.price?.value) !== 0) {
           percent = true;
         }
