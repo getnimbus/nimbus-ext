@@ -6,13 +6,36 @@
   import CopyToClipboard from "svelte-copy-to-clipboard";
   import dayjs from "dayjs";
   import { wait } from "~/entries/background/utils";
-  import { isDarkMode } from "~/store";
+  import { isDarkMode, user } from "~/store";
+  import { createQuery } from "@tanstack/svelte-query";
+  import { i18n } from "~/lib/i18n";
 
   import Tooltip from "~/components/Tooltip.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
   import Button from "~/components/Button.svelte";
 
   import FollowWhale from "~/assets/whale-tracking.gif";
+  import Move from "~/assets/move.png";
+  import All from "~/assets/all.svg";
+  import BitcoinLogo from "~/assets/bitcoin.png";
+  import SolanaLogo from "~/assets/solana.png";
+  import AuraLogo from "~/assets/aura.png";
+  import AlgorandLogo from "~/assets/algorand.png";
+  import Loading from "~/components/Loading.svelte";
+  import Copy from "~/components/Copy.svelte";
+
+  const MultipleLang = {
+    content: {
+      address_header_table: i18n(
+        "optionsPage.accounts-page-content.address-header-table",
+        "Account"
+      ),
+      label_header_table: i18n(
+        "optionsPage.accounts-page-content.label-header-table",
+        "Label"
+      ),
+    },
+  };
 
   const tokenIgnoreList = [
     {
@@ -104,6 +127,9 @@
   let loading = false;
   let isShowTooltipCopy = false;
 
+  let listAddress = [];
+  let selectedAddresses = [];
+
   const trigger = () => {
     show = true;
     counter = 3;
@@ -115,6 +141,78 @@
     show = false;
     toastMsg = "";
     isSuccess = false;
+  };
+
+  const getListAddress = async () => {
+    const response: any = await nimbus.get("/accounts/list");
+    return response?.data;
+  };
+
+  $: query = createQuery({
+    queryKey: ["list-address"],
+    queryFn: () => getListAddress(),
+    staleTime: Infinity,
+    retry: false,
+    enabled: $user && Object.keys($user).length !== 0,
+    onError(err) {
+      localStorage.removeItem("solana_token");
+      localStorage.removeItem("evm_token");
+      user.update((n) => (n = {}));
+    },
+  });
+
+  $: {
+    if (!$query.isError && $query.data !== undefined) {
+      formatDataListAddress($query.data);
+    }
+  }
+
+  const formatDataListAddress = (data) => {
+    const structWalletData = data.map((item) => {
+      let logo = All;
+      if (item?.type === "BTC") {
+        logo = BitcoinLogo;
+      }
+      if (item?.type === "SOL") {
+        logo = SolanaLogo;
+      }
+      if (item?.type === "MOVE") {
+        logo = Move;
+      }
+      if (item?.type === "AURA") {
+        logo = AuraLogo;
+      }
+      if (item?.type === "ALGO") {
+        logo = AlgorandLogo;
+      }
+      return {
+        position: item.position,
+        id: item.id,
+        type: item.type,
+        label: item.label,
+        logo: item.type === "CEX" ? item.logo : logo,
+        address: item.type === "CEX" ? item.id : item.accountId,
+        accounts:
+          item?.accounts?.map((account) => {
+            return {
+              id: account?.id,
+              type: account?.type,
+              label: account?.label,
+              value: account?.type === "CEX" ? account?.id : account?.accountId,
+            };
+          }) || [],
+      };
+    });
+
+    listAddress = structWalletData;
+  };
+
+  const handleToggleCheckAll = (e) => {
+    if (e.target.checked) {
+      selectedAddresses = listAddress.map((item) => item.address);
+    } else {
+      selectedAddresses = [];
+    }
   };
 
   $: {
@@ -133,6 +231,7 @@
   }
 
   const onSubmitSettingAlert = async () => {
+    console.log("selectedAddresses: ", selectedAddresses);
     if (percent && selectedPercent === 0) {
       toastMsg =
         "Please select at least one price percent to receive notification";
@@ -232,7 +331,6 @@
   const getUserConfigs = async () => {
     try {
       const res: any = await nimbus.get("/users/configs");
-      console.log("res: ", res);
       if (res && res?.data) {
         userConfigs = {
           filter_spam_tx_alert:
@@ -482,6 +580,126 @@
                 </label>
               </div>
             {/each}
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-4">
+          <div class="flex flex-col">
+            <div class="xl:text-base text-2xl">
+              Custom portfolio summary notification
+            </div>
+            <div class="xl:text-sm text-xl text-gray-400">
+              Selected portfolio summary to receive notification
+            </div>
+          </div>
+          <div class={`${$query.isLoading ? "h-[400px]" : ""}`}>
+            <div
+              class={`border border_0000000d rounded-[10px] xl:overflow-hidden overflow-x-auto h-full ${
+                $isDarkMode ? "bg-[#131313]" : "bg-[#fff]"
+              }`}
+            >
+              <table class="table-auto xl:w-full w-[1800px] h-full">
+                <thead>
+                  <tr class="bg_f4f5f8">
+                    <th class="flex items-center justify-start gap-6 py-3 pl-3">
+                      <input
+                        type="checkbox"
+                        on:change={handleToggleCheckAll}
+                        class="cursor-pointer relative w-5 h-5 appearance-none rounded-[0.25rem] border outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white checked:focus:after:bg-transparent dark:border-neutral-600 dark:checked:border-primary dark:checked:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]"
+                      />
+                      <div class="text-xl font-semibold uppercase xl:text-xs">
+                        {MultipleLang.content.label_header_table}
+                      </div>
+                    </th>
+                    <th class="py-3 pr-3">
+                      <div
+                        class="text-xl font-semibold text-left uppercase xl:text-xs"
+                      >
+                        {MultipleLang.content.address_header_table}
+                      </div>
+                    </th>
+                  </tr>
+                </thead>
+                {#if $query.isLoading}
+                  <tbody>
+                    <tr>
+                      <td colspan="2">
+                        <div
+                          class="flex items-center justify-center h-full px-3 py-4"
+                        >
+                          <Loading />
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                {:else}
+                  <tbody>
+                    {#if listAddress && listAddress.length === 0}
+                      <tr>
+                        <td colspan="2">
+                          <div
+                            class="flex items-center justify-center h-full px-3 py-4"
+                          >
+                            No address
+                          </div>
+                        </td>
+                      </tr>
+                    {:else}
+                      {#each listAddress as item (item.id)}
+                        <tr class="transition-all group">
+                          <td
+                            class={`pl-3 py-3 ${
+                              $isDarkMode
+                                ? "group-hover:bg-[#000]"
+                                : "group-hover:bg-gray-100"
+                            }`}
+                          >
+                            <div
+                              class="flex items-center gap-6 text-2xl text-left xl:text-base"
+                            >
+                              <div class="flex justify-center">
+                                <input
+                                  type="checkbox"
+                                  value={item.address}
+                                  bind:group={selectedAddresses}
+                                  class="cursor-pointer relative w-5 h-5 appearance-none rounded-[0.25rem] border outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white checked:focus:after:bg-transparent dark:border-neutral-600 dark:checked:border-primary dark:checked:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]"
+                                />
+                              </div>
+                              <div class="flex items-center gap-2">
+                                <img
+                                  src={item.logo}
+                                  alt=""
+                                  class="w-5 h-5 xl:w-4 xl:h-4 rounded-full"
+                                />
+                                {item.label}
+                              </div>
+                            </div>
+                          </td>
+
+                          <td
+                            class={`py-3  ${
+                              $isDarkMode
+                                ? "group-hover:bg-[#000]"
+                                : "group-hover:bg-gray-100"
+                            }`}
+                          >
+                            <div
+                              class="bg-[#6AC7F533] text_27326F w-max px-3 py-1 rounded-[5px] xl:text-base text-2xl"
+                            >
+                              <Copy
+                                address={item.address}
+                                iconColor={`${$isDarkMode ? "#fff" : "#000"}`}
+                                color={`${$isDarkMode ? "#fff" : "#000"}`}
+                              />
+                            </div>
+                          </td>
+                        </tr>
+                      {/each}
+                    {/if}
+                  </tbody>
+                {/if}
+              </table>
+            </div>
           </div>
         </div>
 
