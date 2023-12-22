@@ -4,7 +4,7 @@
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
   import { wagmiAbi } from "~/lib/viem-evm-abi";
-  import { publicClient } from "~/lib/viem-client";
+  import publicClient from "~/lib/viem-client";
   import { mainnet } from "viem/chains";
   import { useNavigate } from "svelte-navigator";
 
