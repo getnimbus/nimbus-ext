@@ -102,6 +102,7 @@
     token_value_ignore: 0,
     summary_setting_alert: "",
     transaction_alert: false,
+    backlist: [],
   };
 
   let percent = false;
@@ -128,7 +129,7 @@
   let isShowTooltipCopy = false;
 
   let listAddress = [];
-  let selectedAddresses = [];
+  let blacklistAddress = [];
 
   const trigger = () => {
     show = true;
@@ -209,9 +210,9 @@
 
   const handleToggleCheckAll = (e) => {
     if (e.target.checked) {
-      selectedAddresses = listAddress.map((item) => item.address);
+      blacklistAddress = listAddress.map((item) => item.address);
     } else {
-      selectedAddresses = [];
+      blacklistAddress = [];
     }
   };
 
@@ -231,7 +232,6 @@
   }
 
   const onSubmitSettingAlert = async () => {
-    console.log("selectedAddresses: ", selectedAddresses);
     if (percent && selectedPercent === 0) {
       toastMsg =
         "Please select at least one price percent to receive notification";
@@ -269,7 +269,7 @@
       portfolioSummary: {
         enabled: summary,
         value: selectedSummary.length !== 0 ? selectedSummary : null,
-        blacklist: [],
+        blacklist: blacklistAddress,
       },
       transaction: {
         enabled: transaction,
@@ -287,6 +287,8 @@
         filterSpamTrx = res?.data?.alertSettings?.transaction?.filterSpam;
         selectedTokenValueIgnore =
           res?.data?.alertSettings?.price?.ignore?.value;
+        blacklistAddress =
+          res?.data?.alertSettings?.portfolioSummary?.blacklist;
         if (Number(res?.data?.alertSettings?.price?.ignore?.value) !== 0) {
           ignoreTokenValue = true;
         }
@@ -317,6 +319,7 @@
     transaction = userConfigs.transaction_alert;
     filterSpamTrx = userConfigs.filter_spam_tx_alert;
     selectedTokenValueIgnore = Number(userConfigs.token_value_ignore);
+    blacklistAddress = userConfigs.backlist;
     if (userConfigs.token_value_ignore !== 0) {
       ignoreTokenValue = true;
     }
@@ -342,8 +345,11 @@
           summary_setting_alert:
             res?.data?.alertSettings?.portfolioSummary?.value,
           transaction_alert: res?.data?.alertSettings?.transaction?.enabled,
+          backlist: res?.data?.alertSettings?.portfolioSummary?.blacklist,
         };
 
+        blacklistAddress =
+          res?.data?.alertSettings?.portfolioSummary?.blacklist;
         selectedPercent = Number(res?.data?.alertSettings?.price?.value);
         selectedSummary = res?.data?.alertSettings?.portfolioSummary?.value;
         transaction = res?.data?.alertSettings?.transaction?.enabled;
@@ -589,7 +595,7 @@
               Custom portfolio summary notification
             </div>
             <div class="xl:text-sm text-xl text-gray-400">
-              Selected portfolio summary to receive notification
+              Selected portfolio summary to ignore notification
             </div>
           </div>
           <div class={`${$query.isLoading ? "h-[400px]" : ""}`}>
@@ -661,7 +667,7 @@
                                 <input
                                   type="checkbox"
                                   value={item.address}
-                                  bind:group={selectedAddresses}
+                                  bind:group={blacklistAddress}
                                   class="cursor-pointer relative w-5 h-5 appearance-none rounded-[0.25rem] border outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white checked:focus:after:bg-transparent dark:border-neutral-600 dark:checked:border-primary dark:checked:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]"
                                 />
                               </div>
