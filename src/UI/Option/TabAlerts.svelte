@@ -14,6 +14,24 @@
 
   import FollowWhale from "~/assets/whale-tracking.gif";
 
+  const tokenIgnoreList = [
+    {
+      id: "$1",
+      value: 5,
+      content: "$1",
+    },
+    {
+      id: "$5",
+      value: 7,
+      content: "$5",
+    },
+    {
+      id: "$10",
+      value: 10,
+      content: "$10",
+    },
+  ];
+
   const percentList = [
     {
       id: "5%",
@@ -65,10 +83,12 @@
   let percent = false;
   let summary = false;
   let transaction = false;
+  let ignoreTokenValue = false;
 
   let filterSpamTrx = false;
   let selectedPercent = 0;
   let selectedSummary = "";
+  let selectedTokenValueIgnore = 0;
 
   let isLoadingSave = false;
 
@@ -106,6 +126,9 @@
     if (!summary) {
       selectedSummary = "";
     }
+    if (!ignoreTokenValue) {
+      selectedTokenValueIgnore = 0;
+    }
   }
 
   const onSubmitSettingAlert = async () => {
@@ -125,14 +148,32 @@
       return;
     }
 
+    if (ignoreTokenValue && selectedTokenValueIgnore === 0) {
+      toastMsg =
+        "Please select at least one value of portfolio summary to ignore";
+      isSuccess = false;
+      trigger();
+      return;
+    }
+
     const payload = {
       price: {
         enabled: percent,
         value: selectedPercent !== 0 ? selectedPercent : null,
+        ignore: {
+          enabled: false,
+          value: null,
+        },
       },
       portfolioSummary: {
         enabled: summary,
         value: selectedSummary.length !== 0 ? selectedSummary : null,
+        ignore: {
+          enabled: ignoreTokenValue,
+          value:
+            selectedTokenValueIgnore !== 0 ? selectedTokenValueIgnore : null,
+        },
+        blacklist: [],
       },
       transaction: {
         enabled: transaction,
@@ -185,6 +226,7 @@
   const getUserConfigs = async () => {
     try {
       const res: any = await nimbus.get("/users/configs");
+      console.log("res: ", res);
       userConfigs = {
         filter_spam_tx_alert: res?.data?.alertSettings?.transaction?.filterSpam,
         price_alert: Number(res?.data?.alertSettings?.price?.value),
@@ -381,6 +423,49 @@
                   {item.content}
                 </label>
               </div>
+            {/each}
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-3">
+          <div class="flex justify-between items-center gap-6">
+            <div class="flex flex-col">
+              <div class="xl:text-base text-2xl">Portfolio summary ignore</div>
+              <div class="xl:text-sm text-xl text-gray-400">
+                Ignore the alert if the portfolio is less than some value
+              </div>
+            </div>
+            <label class="switch">
+              <input
+                type="checkbox"
+                checked={ignoreTokenValue}
+                on:click={() => {
+                  ignoreTokenValue = !ignoreTokenValue;
+                }}
+              />
+              <span class="slider" />
+            </label>
+          </div>
+          <div class="flex flex-col gap-3">
+            {#each tokenIgnoreList as item}
+              <label
+                class="flex items-center xl:gap-2 gap-6 cursor-pointer w-max"
+              >
+                <input
+                  type="radio"
+                  disabled={!ignoreTokenValue}
+                  name={item.id}
+                  id={item.id}
+                  value={item.value}
+                  bind:group={selectedTokenValueIgnore}
+                  class={`cursor-pointer relative xl:w-4 xl:h-4 w-6 h-6 appearance-none rounded-full border outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white checked:focus:after:bg-transparent dark:border-neutral-600 dark:checked:border-primary dark:checked:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] ${
+                    ignoreTokenValue ? "" : "bg-gray-200 border-gray-200"
+                  }`}
+                />
+                <div class="xl:text-sm text-2xl font-normal cursor-pointer">
+                  {item.content}
+                </div>
+              </label>
             {/each}
           </div>
         </div>
