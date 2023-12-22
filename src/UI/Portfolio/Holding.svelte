@@ -489,7 +489,9 @@
                 <span class="xl:text-xl text-2xl font-medium text-gray-400">
                   <TooltipNumber
                     number={selectedDataPieChart?.series[0]?.data.filter(
-                      (item) => item.name === selectedTypeTable?.value
+                      (item) =>
+                        item.name === selectedTypeTable?.value ||
+                        item.name === selectedTypeTable?.label
                     )[0]?.value}
                     type="percent"
                   />%

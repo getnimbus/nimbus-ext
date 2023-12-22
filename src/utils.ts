@@ -984,6 +984,45 @@ export const handleFormatDataTable = (data, type) => {
   };
 };
 
+export const handleFormatDataTableBundle = (data, bundles) => {
+  let formatData = data.map((item) => {
+    return {
+      ...item,
+      value: Number(item?.amount) * Number(item?.price?.price),
+      market_price: Number(item?.price?.price) || 0,
+    };
+  });
+
+  const formatDataByOwner = [];
+  formatData.forEach((item) => {
+    item.breakdown.forEach((breakdownItem) => {
+      formatDataByOwner.push({
+        ...item,
+        owner: breakdownItem.owner,
+      });
+    });
+  });
+
+  let groupData = groupBy(formatDataByOwner, "owner");
+
+  let formatGroupData = bundles.map((item) => {
+    return {
+      name: item.value,
+      data: groupData[item.value],
+    };
+  });
+
+  return {
+    select: bundles.map((item) => {
+      return {
+        value: item.value,
+        label: item.label,
+      };
+    }),
+    data: formatGroupData,
+  };
+};
+
 export const correlationsMatrixColor = (value: number) => {
   if (value < -1) value = -1;
   if (value > 1) value = 1;
