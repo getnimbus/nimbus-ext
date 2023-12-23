@@ -38,7 +38,6 @@
   import All from "~/assets/all.svg";
   import BitcoinLogo from "~/assets/bitcoin.png";
   import SolanaLogo from "~/assets/solana.png";
-  import SuiLogo from "~/assets/sui.png";
   import AuraLogo from "~/assets/aura.png";
   import AlgorandLogo from "~/assets/algorand.png";
 
