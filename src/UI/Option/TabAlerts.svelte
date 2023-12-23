@@ -96,14 +96,7 @@
   let toastMsg = "";
   let isSuccess = false;
 
-  let userConfigs = {
-    filter_spam_tx_alert: false,
-    price_alert: 0,
-    token_value_ignore: 0,
-    summary_setting_alert: "",
-    transaction_alert: false,
-    backlist: [],
-  };
+  let userConfigs;
 
   let percent = false;
   let summary = false;
@@ -128,6 +121,7 @@
   let loading = false;
   let isShowTooltipCopy = false;
 
+  let checkAll = false;
   let listAddress = [];
   let blacklistAddress = [];
 
@@ -206,13 +200,16 @@
     });
 
     listAddress = structWalletData;
+    checkAll = true;
   };
 
   const handleToggleCheckAll = (e) => {
     if (e.target.checked) {
+      checkAll = true;
       blacklistAddress = listAddress.map((item) => item.address);
     } else {
       blacklistAddress = [];
+      checkAll = false;
     }
   };
 
@@ -269,7 +266,9 @@
       portfolioSummary: {
         enabled: summary,
         value: selectedSummary.length !== 0 ? selectedSummary : null,
-        blacklist: blacklistAddress,
+        blacklist: listAddress
+          .map((item) => item.address)
+          .filter((element) => !blacklistAddress.includes(element)),
       },
       transaction: {
         enabled: transaction,
@@ -281,24 +280,7 @@
     try {
       const res = await nimbus.put("/users/configs/alert-settings", payload);
       if (res && res?.data) {
-        selectedPercent = Number(res?.data?.alertSettings?.price?.value);
-        selectedSummary = res?.data?.alertSettings?.portfolioSummary?.value;
-        transaction = res?.data?.alertSettings?.transaction?.enabled;
-        filterSpamTrx = res?.data?.alertSettings?.transaction?.filterSpam;
-        selectedTokenValueIgnore =
-          res?.data?.alertSettings?.price?.ignore?.value;
-        blacklistAddress =
-          res?.data?.alertSettings?.portfolioSummary?.blacklist;
-        if (Number(res?.data?.alertSettings?.price?.ignore?.value) !== 0) {
-          ignoreTokenValue = true;
-        }
-        if (Number(res?.data?.alertSettings?.price?.value) !== 0) {
-          percent = true;
-        }
-        if (res?.data?.alertSettings?.portfolioSummary?.value !== null) {
-          summary = true;
-        }
-
+        handleSetState(res?.data);
         toastMsg = "Your settings have been successfully saved!";
         isSuccess = true;
       }
@@ -335,48 +317,52 @@
     try {
       const res: any = await nimbus.get("/users/configs");
       if (res && res?.data) {
-        userConfigs = {
-          filter_spam_tx_alert:
-            res?.data?.alertSettings?.transaction?.filterSpam,
-          price_alert: Number(res?.data?.alertSettings?.price?.value),
-          token_value_ignore: Number(
-            res?.data?.alertSettings?.price?.ignore?.value
-          ),
-          summary_setting_alert:
-            res?.data?.alertSettings?.portfolioSummary?.value,
-          transaction_alert: res?.data?.alertSettings?.transaction?.enabled,
-          backlist: res?.data?.alertSettings?.portfolioSummary?.blacklist,
-        };
-
-        blacklistAddress =
-          res?.data?.alertSettings?.portfolioSummary?.blacklist;
-        selectedPercent = Number(res?.data?.alertSettings?.price?.value);
-        selectedSummary = res?.data?.alertSettings?.portfolioSummary?.value;
-        transaction = res?.data?.alertSettings?.transaction?.enabled;
-        filterSpamTrx = res?.data?.alertSettings?.transaction?.filterSpam;
-        selectedTokenValueIgnore =
-          res?.data?.alertSettings?.price?.ignore?.value;
-        if (Number(res?.data?.alertSettings?.price?.ignore?.value) !== 0) {
-          ignoreTokenValue = true;
-        }
-        if (Number(res?.data?.alertSettings?.price?.value) !== 0) {
-          percent = true;
-        }
-        if (res?.data?.alertSettings?.portfolioSummary?.value !== null) {
-          summary = true;
-        }
-
-        toastMsg = "Your settings have been successfully saved!";
-        isSuccess = true;
+        handleSetState(res?.data);
       }
     } catch (e) {
       console.error(e);
     }
   };
 
-  onMount(() => {
-    getUserConfigs();
-  });
+  const handleSetState = (data: any) => {
+    const formatDataBlackList = listAddress
+      .map((item) => item.address)
+      .filter(
+        (element) =>
+          !data?.alertSettings?.portfolioSummary?.blacklist.includes(element)
+      );
+
+    userConfigs = {
+      filter_spam_tx_alert: data?.alertSettings?.transaction?.filterSpam,
+      price_alert: Number(data?.alertSettings?.price?.value),
+      token_value_ignore: Number(data?.alertSettings?.price?.ignore?.value),
+      summary_setting_alert: data?.alertSettings?.portfolioSummary?.value,
+      transaction_alert: data?.alertSettings?.transaction?.enabled,
+      backlist: formatDataBlackList,
+    };
+
+    selectedPercent = Number(data?.alertSettings?.price?.value);
+    selectedSummary = data?.alertSettings?.portfolioSummary?.value;
+    transaction = data?.alertSettings?.transaction?.enabled;
+    filterSpamTrx = data?.alertSettings?.transaction?.filterSpam;
+    selectedTokenValueIgnore = data?.alertSettings?.price?.ignore?.value;
+    blacklistAddress = formatDataBlackList;
+    if (Number(data?.alertSettings?.price?.ignore?.value) !== 0) {
+      ignoreTokenValue = true;
+    }
+    if (Number(data?.alertSettings?.price?.value) !== 0) {
+      percent = true;
+    }
+    if (data?.alertSettings?.portfolioSummary?.value !== null) {
+      summary = true;
+    }
+  };
+
+  $: {
+    if (listAddress && listAddress.length !== 0) {
+      getUserConfigs();
+    }
+  }
 
   const handleGetCodeSyncMobile = async () => {
     loading = true;
@@ -611,6 +597,7 @@
                       <input
                         type="checkbox"
                         on:change={handleToggleCheckAll}
+                        bind:checked={checkAll}
                         class="cursor-pointer relative w-5 h-5 appearance-none rounded-[0.25rem] border outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white checked:focus:after:bg-transparent dark:border-neutral-600 dark:checked:border-primary dark:checked:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]"
                       />
                       <div class="text-xl font-semibold uppercase xl:text-xs">
