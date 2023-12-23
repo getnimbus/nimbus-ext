@@ -581,7 +581,7 @@
               Custom portfolio summary notification
             </div>
             <div class="xl:text-sm text-xl text-gray-400">
-              Selected portfolio summary to ignore notification
+              Select portfolio you want to receive notification
             </div>
           </div>
           <div class={`${$query.isLoading ? "h-[400px]" : ""}`}>
