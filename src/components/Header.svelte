@@ -56,6 +56,7 @@
   import SolanaLogo from "~/assets/solana.png";
   import AuraLogo from "~/assets/aura.png";
   import AlgorandLogo from "~/assets/algorand.png";
+  import TonLogo from "~/assets/ton.png";
 
   const MultipleLang = {
     portfolio: i18n("newtabPage.portfolio", "Portfolio"),
@@ -125,6 +126,9 @@
       if (item?.type === "SOL") {
         logo = SolanaLogo;
       }
+      if (item?.type === "TON") {
+        logo = TonLogo;
+      }
       if (item?.type === "MOVE") {
         logo = Move;
       }
@@ -151,6 +155,9 @@
             }
             if (account?.type === "SOL") {
               logo = SolanaLogo;
+            }
+            if (item?.type === "TON") {
+              logo = TonLogo;
             }
             if (item?.type === "MOVE") {
               logo = Move;
@@ -233,6 +240,7 @@
     if (
       searchAccountType === "BTC" ||
       searchAccountType === "SOL" ||
+      searchAccountType === "TON" ||
       searchAccountType === "AURA" ||
       searchAccountType === "ALGO" ||
       searchAccountType === "CEX"

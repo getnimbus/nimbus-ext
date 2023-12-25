@@ -184,6 +184,7 @@
       $typeWallet === "MOVE" ||
       $typeWallet === "CEX" ||
       $typeWallet === "SOL" ||
+      $typeWallet === "TON" ||
       $typeWallet === "AURA" ||
       $typeWallet === "ALGO" ||
       $typeWallet === "BUNDLE") &&
