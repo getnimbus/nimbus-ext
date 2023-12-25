@@ -2,11 +2,19 @@
   import { onMount } from "svelte";
   import { priceSubscribe } from "~/lib/price-ws";
   import { i18n } from "~/lib/i18n";
-  import { chain, typeWallet, isDarkMode, isShowModalNftList } from "~/store";
+  import {
+    chain,
+    typeWallet,
+    isDarkMode,
+    isShowModalNftList,
+    selectedNftContractAddress,
+    wallet,
+  } from "~/store";
   import { filterTokenValueType } from "~/utils";
   import { groupBy } from "lodash";
   import web3 from "@solana/web3.js";
   import bs58 from "bs58";
+  import { sniperlabs } from "~/lib/network";
 
   export let selectedWallet;
   export let isLoadingNFT;
@@ -27,7 +35,8 @@
   import Loading from "~/components/Loading.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
   import Button from "~/components/Button.svelte";
-  import { sniperlabs } from "~/lib/network";
+
+  const marketList = [{ value: "SniperMarket", label: "Sniper Market" }];
 
   let filteredHoldingDataToken = [];
   let filteredHoldingDataNFT = [];
@@ -44,6 +53,7 @@
   let isStickyTableNFT = false;
 
   let nftListPrice = 0;
+  let selectedMarket;
 
   let selectedTypeTable = {
     label: "",
@@ -453,12 +463,17 @@
   }
 
   const onSubmitListNFT = async () => {
+    const payload = {
+      seller: $wallet,
+      price: Number(nftListPrice),
+      mintAddress: $selectedNftContractAddress,
+      marketplace: selectedMarket?.value,
+    };
     try {
       const res = await sniperlabs.get("/v1/list/", {
-        params: {
-          price: Number(nftListPrice),
-        },
+        params: payload,
       });
+      console.log("res: ", res);
     } catch (e) {
       console.log(e);
     }
@@ -923,7 +938,7 @@
         }`}
       >
         <div class="xl:text-base text-2xl text-[#666666] font-medium">
-          Price (SOL)
+          Price ({$typeWallet})
         </div>
         <input
           type="text"
@@ -938,6 +953,19 @@
           on:keyup={({ target: { value } }) => (nftListPrice = value)}
         />
       </div>
+
+      <div class="flex items-center gap-3 px-3">
+        <div class="xl:text-base text-2xl text-[#666666] font-medium">
+          Market
+        </div>
+        <Select
+          type="lang"
+          positionSelectList="left-0"
+          listSelect={marketList}
+          bind:selected={selectedMarket}
+        />
+      </div>
+
       <div class="flex justify-end lg:gap-2 gap-6">
         <div class="xl:w-[120px] w-full">
           <Button

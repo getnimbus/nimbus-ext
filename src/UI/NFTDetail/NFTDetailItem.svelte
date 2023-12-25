@@ -1,5 +1,10 @@
 <script lang="ts">
-  import { isDarkMode, isShowModalNftList } from "~/store";
+  import {
+    typeWallet,
+    isDarkMode,
+    isShowModalNftList,
+    selectedNftContractAddress,
+  } from "~/store";
 
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import Image from "~/components/Image.svelte";
@@ -65,6 +70,11 @@
   <td
     class={`py-3 ${
       $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
+    } ${
+      $typeWallet === "SOL" ||
+      ($typeWallet === "BUNDLE" && nativeToken?.symbol === "SOL")
+        ? ""
+        : "pr-3"
     }`}
   >
     <div
@@ -131,22 +141,27 @@
     </div>
   </td>
 
-  <td
-    class={`py-3 pr-3 ${
-      $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
-    }`}
-  >
-    <div class="flex items-center justify-end">
-      <div
-        class="text-2xl font-semibold text-blue-600 transition-all cursor-pointer hover:underline dark:text-blue-500 xl:text-base"
-        on:click={() => {
-          isShowModalNftList.update((n) => (n = true));
-        }}
-      >
-        Listing
+  {#if $typeWallet === "SOL" || ($typeWallet === "BUNDLE" && nativeToken?.symbol === "SOL")}
+    <td
+      class={`py-3 pr-3 ${
+        $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
+      }`}
+    >
+      <div class="flex items-center justify-end">
+        <div
+          class="text-2xl font-semibold text-blue-600 transition-all cursor-pointer hover:underline xl:text-base"
+          on:click={() => {
+            selectedNftContractAddress.update(
+              (n) => (n = item?.contractAddress)
+            );
+            isShowModalNftList.update((n) => (n = true));
+          }}
+        >
+          List
+        </div>
       </div>
-    </div>
-  </td>
+    </td>
+  {/if}
 </tr>
 
 <style>

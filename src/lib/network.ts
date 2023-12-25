@@ -157,5 +157,9 @@ export const aptos = createAxiosInterface({
 
 export const sniperlabs = createAxiosInterface({
   baseURL: "https://q911c3yhyc.execute-api.us-east-1.amazonaws.com/prod",
-  getHeaderAuthorize: () => { },
+  getHeaderAuthorize: () => {
+    return {
+      "x-api-key": "KnY6OIFuha5RdZu1xLJGT9CofGddHgbA1noabnUn",
+    };
+  },
 });
