@@ -5,7 +5,7 @@ import * as browser from "webextension-polyfill";
 import * as Sentry from "@sentry/svelte";
 
 Sentry.init({
-  dsn: "https://eaa14b85aa9332aadeacfb759857a387@o4505729367801856.ingest.sentry.io/4505729426391040",
+  dsn: "https://4968b57a69d75f894cd7b080b1f82116@o4505729367801856.ingest.sentry.io/4506455493246976",
   integrations: [
     new Sentry.BrowserTracing()
   ],
