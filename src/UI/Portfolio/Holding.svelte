@@ -463,7 +463,7 @@
   }
 
   const onSubmitListNFT = async () => {
-    const payload = {
+    const params = {
       seller: $wallet,
       price: Number(nftListPrice),
       mintAddress: $selectedNftContractAddress,
@@ -471,7 +471,7 @@
     };
     try {
       const res = await sniperlabs.get("/v1/list/", {
-        params: payload,
+        params,
       });
       console.log("res: ", res);
     } catch (e) {
