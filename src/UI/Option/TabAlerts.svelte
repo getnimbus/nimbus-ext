@@ -13,6 +13,8 @@
   import Tooltip from "~/components/Tooltip.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
   import Button from "~/components/Button.svelte";
+  import Loading from "~/components/Loading.svelte";
+  import Copy from "~/components/Copy.svelte";
 
   import FollowWhale from "~/assets/whale-tracking.gif";
   import Move from "~/assets/move.png";
@@ -21,8 +23,6 @@
   import SolanaLogo from "~/assets/solana.png";
   import AuraLogo from "~/assets/aura.png";
   import AlgorandLogo from "~/assets/algorand.png";
-  import Loading from "~/components/Loading.svelte";
-  import Copy from "~/components/Copy.svelte";
 
   const MultipleLang = {
     content: {
