@@ -11,7 +11,7 @@ import Solana from "~/assets/solana.png";
 import Aura from "~/assets/aura.png";
 import Bitcoin from "~/assets/bitcoin.png";
 
-import Move from "~/assets/move.png";
+import Ton from "~/assets/ton.png";
 import Sui from "~/assets/sui.png";
 
 import All from "~/assets/all.svg";
@@ -478,6 +478,9 @@ export const detectedChain = (type) => {
     case "SOL":
       chain = Solana;
       break;
+    case "TON":
+      chain = Ton;
+      break;
     case "ALGO":
       chain = Algorand;
       break;
@@ -621,6 +624,12 @@ export const linkExplorer = (chain, hash) => {
       links = {
         trx: `https://solscan.io/tx/${hash}`,
         address: `https://solscan.io/address/${hash}`,
+      };
+      break;
+    case "TON":
+      links = {
+        trx: `https://tonscan.org/tx/${hash}`,
+        address: `https://tonscan.org/address/${hash}#transactions`,
       };
       break;
     case "SUI":

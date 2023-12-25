@@ -13,7 +13,7 @@
     equalizeArrayLengths,
     formatPercent,
   } from "~/utils";
-  import { nimbus } from "~/lib/network";
+  import { defillama, nimbus } from "~/lib/network";
   import dayjs from "dayjs";
 
   import type { HoldingTokenRes } from "~/types/HoldingTokenData";
@@ -91,14 +91,11 @@
 
   const getCoinPrice = async (coinName) => {
     try {
-      const result = await axios
-        .get(
-          `https://coins.llama.fi/chart/coingecko:${coinName}?start=${dayjs()
-            .startOf("d")
-            .subtract(30, "d")
-            .unix()}&span=30&period=1d&searchWidth=600`
-        )
-        .then((res) => res.data);
+      const result = await defillama.get(
+        `/chart/coingecko:${coinName}?start=${dayjs()
+          .subtract(30, "day")
+          .unix()}&span=${30}&period=1d&searchWidth=600`
+      );
       return result;
     } catch (e) {
       console.error(e);
@@ -376,6 +373,7 @@
             $typeWallet === "MOVE" ||
             $typeWallet === "CEX" ||
             $typeWallet === "SOL" ||
+            $typeWallet === "TON" ||
             $typeWallet === "AURA" ||
             $typeWallet === "ALGO" ||
             $typeWallet === "BUNDLE") &&

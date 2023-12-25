@@ -62,6 +62,7 @@
   import SolanaLogo from "~/assets/solana.png";
   import AuraLogo from "~/assets/aura.png";
   import AlgorandLogo from "~/assets/algorand.png";
+  import TonLogo from "~/assets/ton.png";
 
   const MultipleLang = {
     empty_wallet: i18n("newtabPage.empty-wallet", "No account added yet."),
@@ -317,6 +318,7 @@
         typeParams === "BTC" ||
         typeParams === "SOL" ||
         typeParams === "AURA" ||
+        typeParams === "TON" ||
         typeParams === "ALGO"
       ) {
         window.history.replaceState(
@@ -345,6 +347,7 @@
         typeParams === "BTC" ||
         typeParams === "SOL" ||
         typeParams === "AURA" ||
+        typeParams === "TON" ||
         typeParams === "ALGO"
       ) {
         window.history.replaceState(
@@ -427,6 +430,17 @@
         );
       }
 
+      if (selected.type === "TON") {
+        typeWallet.update((n) => (n = "TON"));
+        browser.storage.sync.set({ typeWalletAddress: "TON" });
+        chain.update((n) => (n = "ALL"));
+        window.history.replaceState(
+          null,
+          "",
+          window.location.pathname + `?type=${$typeWallet}&address=${$wallet}`
+        );
+      }
+
       if (selected.type === "AURA") {
         typeWallet.update((n) => (n = "AURA"));
         browser.storage.sync.set({ typeWalletAddress: "AURA" });
@@ -471,6 +485,9 @@
       if (item?.type === "SOL") {
         logo = SolanaLogo;
       }
+      if (item?.type === "TON") {
+        logo = TonLogo;
+      }
       if (item?.type === "MOVE") {
         logo = Move;
       }
@@ -497,6 +514,9 @@
             }
             if (account?.type === "SOL") {
               logo = SolanaLogo;
+            }
+            if (account?.type === "TON") {
+              logo = TonLogo;
             }
             if (account?.type === "MOVE") {
               logo = Move;
@@ -657,6 +677,7 @@
           searchAccountType === "BTC" ||
           searchAccountType === "SOL" ||
           searchAccountType === "AURA" ||
+          searchAccountType === "TON" ||
           searchAccountType === "ALGO"
         ) {
           window.history.replaceState(
@@ -1822,16 +1843,16 @@
           </label>
         </div>
         <div class="flex items-center justify-center gap-6 my-3">
-          {#each [{ logo: BitcoinLogo, label: "Bitcoin", value: "BTC" }, { logo: SolanaLogo, label: "Solana", value: "SOL" }, { logo: Move, label: "Move", value: "MOVE" }, { logo: AuraLogo, label: "Aura", value: "AURA" }, { logo: AlgorandLogo, label: "Algorand", value: "ALGO" }].concat(chainList
+          {#each [{ logo: BitcoinLogo, label: "Bitcoin", value: "BTC" }, { logo: SolanaLogo, label: "Solana", value: "SOL" }, { logo: Move, label: "Move", value: "MOVE" }, { logo: AuraLogo, label: "Aura", value: "AURA" }, { logo: AlgorandLogo, label: "Algorand", value: "ALGO" }, { logo: TonLogo, label: "TON", value: "TON" }].concat(chainList
               .slice(1)
-              .slice(0, -9)) as item}
+              .slice(0, -10)) as item}
             <img
               src={item.logo}
               alt=""
               class="xl:w-8 xl:h-8 w-10 h-10 overflow-hidden rounded-full"
             />
           {/each}
-          <div class="text-gray-400 xl:text-base text-2xl">+9 More</div>
+          <div class="text-gray-400 xl:text-base text-2xl">+10 More</div>
         </div>
         <div class="flex justify-end gap-6 lg:gap-2">
           <div class="lg:w-[120px] w-full">
