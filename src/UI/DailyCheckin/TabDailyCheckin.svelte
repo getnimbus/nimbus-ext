@@ -224,11 +224,7 @@
       quests = $queryDailyCheckin?.data?.quests.map((item, index) => {
         const selectedLogs = dataCheckinHistory
           .filter((log) => log.type === "QUEST" && log.note !== "id-generate")
-          .find(
-            (log) =>
-              log.note === item.id ||
-              log.note === `retweet-on-twitter${index + 1}`
-          );
+          .find((log) => log.note === item.id);
 
         return {
           ...item,
