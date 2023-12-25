@@ -386,7 +386,7 @@
                     </div>
                   </th>
 
-                  <th class="py-3 pr-3 rounded-tr-[10px]">
+                  <th class="py-3">
                     <div
                       class="text-right xl:text-xs text-xl uppercase font-medium"
                     >
@@ -395,6 +395,14 @@
                       >
                         Profit & Loss
                       </TooltipTitle>
+                    </div>
+                  </th>
+
+                  <th class="py-3 pr-3 rounded-tr-[10px]">
+                    <div
+                      class="text-right xl:text-xs text-xl uppercase font-medium"
+                    >
+                      Action
                     </div>
                   </th>
                 </tr>

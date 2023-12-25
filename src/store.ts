@@ -16,6 +16,7 @@ export const triggerSync = writable(false);
 export const userId = writable("");
 export const userPublicAddress = writable("");
 export const triggerUpdateBundle = writable(false);
+export const isShowModalNftList = writable(false);
 
 // let isFirstTime = true;
 // isOpenReport.subscribe((value) => {

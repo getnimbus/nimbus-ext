@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { isDarkMode } from "~/store";
+  import { isDarkMode, isShowModalNftList } from "~/store";
 
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import Image from "~/components/Image.svelte";
@@ -63,7 +63,7 @@
   </td>
 
   <td
-    class={`py-3 pr-3 ${
+    class={`py-3 ${
       $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
@@ -127,6 +127,23 @@
             />
           {/if}
         </div>
+      </div>
+    </div>
+  </td>
+
+  <td
+    class={`py-3 pr-3 ${
+      $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
+    }`}
+  >
+    <div class="flex items-center justify-end">
+      <div
+        class="text-2xl font-semibold text-blue-600 transition-all cursor-pointer hover:underline dark:text-blue-500 xl:text-base"
+        on:click={() => {
+          isShowModalNftList.update((n) => (n = true));
+        }}
+      >
+        Listing
       </div>
     </div>
   </td>
