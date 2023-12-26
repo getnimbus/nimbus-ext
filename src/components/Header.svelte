@@ -181,10 +181,10 @@
     listAddress = structWalletData;
   };
 
-  const validateAddress = async (address: string) => {
+  const handleValidateAddress = async (address: string) => {
     try {
       const response = await nimbus.get(`/v2/address/${address}/validate`);
-      return response?.data?.type;
+      return response?.data;
     } catch (e) {
       console.error(e);
       return undefined;
@@ -216,42 +216,43 @@
 
   const handleSearchAddress = async (value: string) => {
     mixpanel.track("user_search");
-    const searchAccountType = await validateAddress(value);
+    const validateAccount = await handleValidateAddress(value);
     chain.update((n) => (n = "ALL"));
-    wallet.update((n) => (n = value));
-    typeWallet.update((n) => (n = searchAccountType));
+    wallet.update((n) => (n = validateAccount?.address));
+    typeWallet.update((n) => (n = validateAccount?.type));
 
     browser.storage.sync.set({
-      selectedWallet: value,
+      selectedWallet: validateAccount?.address,
     });
     browser.storage.sync.set({ selectedChain: "ALL" });
     browser.storage.sync.set({
-      typeWalletAddress: searchAccountType,
+      typeWalletAddress: validateAccount?.type,
     });
 
-    if (searchAccountType === "EVM" || searchAccountType === "MOVE") {
+    if (validateAccount?.type === "EVM" || validateAccount?.type === "MOVE") {
       window.history.replaceState(
         null,
         "",
         window.location.pathname +
-          `?type=${searchAccountType}&chain=ALL&address=${value}`
+          `?type=${validateAccount?.type}&chain=ALL&address=${validateAccount?.address}`
       );
     }
     if (
-      searchAccountType === "BTC" ||
-      searchAccountType === "SOL" ||
-      searchAccountType === "TON" ||
-      searchAccountType === "AURA" ||
-      searchAccountType === "ALGO" ||
-      searchAccountType === "CEX"
+      validateAccount?.type === "BTC" ||
+      validateAccount?.type === "SOL" ||
+      validateAccount?.type === "TON" ||
+      validateAccount?.type === "AURA" ||
+      validateAccount?.type === "ALGO" ||
+      validateAccount?.type === "CEX"
     ) {
       window.history.replaceState(
         null,
         "",
-        window.location.pathname + `?type=${searchAccountType}&address=${value}`
+        window.location.pathname +
+          `?type=${validateAccount?.type}&address=${validateAccount?.address}`
       );
     }
-    handleSaveSuggest(value);
+    handleSaveSuggest(validateAccount?.address);
   };
 
   onMount(() => {
