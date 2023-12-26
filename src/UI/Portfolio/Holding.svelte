@@ -2,9 +2,19 @@
   import { onMount } from "svelte";
   import { priceSubscribe } from "~/lib/price-ws";
   import { i18n } from "~/lib/i18n";
-  import { chain, typeWallet, isDarkMode } from "~/store";
+  import {
+    chain,
+    typeWallet,
+    isDarkMode,
+    isShowModalNftList,
+    selectedNftContractAddress,
+    wallet,
+  } from "~/store";
   import { filterTokenValueType } from "~/utils";
   import { groupBy } from "lodash";
+  import web3 from "@solana/web3.js";
+  import bs58 from "bs58";
+  import { nimbus } from "~/lib/network";
 
   export let selectedWallet;
   export let isLoadingNFT;
@@ -23,6 +33,10 @@
   import TooltipTitle from "~/components/TooltipTitle.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import Loading from "~/components/Loading.svelte";
+  import AppOverlay from "~/components/Overlay.svelte";
+  import Button from "~/components/Button.svelte";
+
+  const marketList = [{ value: "SniperMarket", label: "Sniper Market" }];
 
   let filteredHoldingDataToken = [];
   let filteredHoldingDataNFT = [];
@@ -37,6 +51,9 @@
   let isStickyTableToken = false;
   let tableNFTHeader;
   let isStickyTableNFT = false;
+
+  let nftListPrice = 0;
+  let selectedMarket;
 
   let selectedTypeTable = {
     label: "",
@@ -445,6 +462,24 @@
       sumTokens = 0;
     }
   }
+
+  const onSubmitListNFT = async () => {
+    const params = {
+      price: Number(nftListPrice),
+      mintAddress: $selectedNftContractAddress,
+      marketplace: selectedMarket?.value,
+    };
+    try {
+      const res = await nimbus.get(`/v2/address/${$wallet}/nft/list`, {
+        params,
+      });
+      console.log("res: ", res);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const approveSolTrx = async (data: any) => {};
 </script>
 
 <div
@@ -885,6 +920,75 @@
     </div>
   </ErrorBoundary>
 </div>
+
+<!-- Modal list nft  -->
+<AppOverlay
+  clickOutSideToClose
+  isOpen={$isShowModalNftList}
+  on:close={() => {
+    isShowModalNftList.update((n) => (n = false));
+  }}
+>
+  <div class="flex flex-col gap-4">
+    <div class="font-medium xl:title-3 title-1">List your NFT</div>
+    <form
+      on:submit|preventDefault={onSubmitListNFT}
+      class="flex flex-col xl:gap-3 gap-10"
+    >
+      <div
+        class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
+          nftListPrice && !$isDarkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
+        }`}
+      >
+        <div class="xl:text-base text-2xl text-[#666666] font-medium">
+          Price ({$typeWallet})
+        </div>
+        <input
+          type="text"
+          id="price"
+          name="price"
+          required
+          placeholder="Your NFT price"
+          value=""
+          class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
+            nftListPrice && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+          }`}
+          on:keyup={({ target: { value } }) => (nftListPrice = value)}
+        />
+      </div>
+
+      <div class="flex items-center gap-3 px-3">
+        <div class="xl:text-base text-2xl text-[#666666] font-medium">
+          Market
+        </div>
+        <Select
+          type="lang"
+          positionSelectList="left-0"
+          listSelect={marketList}
+          bind:selected={selectedMarket}
+        />
+      </div>
+
+      <div class="flex justify-end lg:gap-2 gap-6">
+        <div class="xl:w-[120px] w-full">
+          <Button
+            variant="secondary"
+            on:click={() => {
+              isShowModalNftList.update((n) => (n = false));
+            }}
+          >
+            Cancel</Button
+          >
+        </div>
+        <div class="xl:w-[120px] w-full">
+          <Button type="submit" isLoading={false} disabled={false}
+            >Submit</Button
+          >
+        </div>
+      </div>
+    </form>
+  </div>
+</AppOverlay>
 
 <style>
 </style>

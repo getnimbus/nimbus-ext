@@ -200,10 +200,10 @@
     return value != null && value !== "";
   };
 
-  const validateAddress = async (address: string) => {
+  const handleValidateAddress = async (address: string) => {
     try {
       const response = await nimbus.get(`/v2/address/${address}/validate`);
-      return response?.data?.type;
+      return response?.data;
     } catch (e) {
       console.error(e);
       return undefined;
@@ -214,7 +214,7 @@
     const isDuplicatedAddress = listAddress.some((item) => {
       return item.address.toLowerCase() === data.address.toLowerCase();
     });
-    const addressValidate = await validateAddress(data.address);
+    const addressValidate = await handleValidateAddress(data.address);
 
     if (!isRequiredFieldValid(data.address)) {
       errors["address"] = {
@@ -223,7 +223,7 @@
         msg: MultipleLang.content.address_required,
       };
     } else {
-      if (data.address && !addressValidate) {
+      if (data.address && addressValidate === undefined) {
         errors["address"] = {
           ...errors["address"],
           required: true,
@@ -373,21 +373,25 @@
       ) {
         Object.assign(data, { id: data.address });
 
+        const validateAccount = await handleValidateAddress(data.address);
+
         if (groupedToBundles) {
           await nimbus.put(
             `/address/personalize/bundle?name=${"Your wallets"}`,
             {
               name: "Your wallets",
-              addresses: selectYourWalletsBundle.concat([data.address]),
+              addresses: selectYourWalletsBundle.concat([
+                validateAccount?.address,
+              ]),
             }
           );
           queryClient.invalidateQueries(["list-bundle"]);
         }
 
-        const response = await nimbus.post("/accounts", {
+        await nimbus.post("/accounts", {
           type: "DEX",
-          publicAddress: data.address,
-          accountId: data.address,
+          publicAddress: validateAccount?.address,
+          accountId: validateAccount?.address,
           label: data.label,
         });
 
@@ -396,21 +400,17 @@
         isOpenAddModal = false;
         queryClient.refetchQueries(["list-address"]);
 
-        const searchAccountType = await validateAddress(
-          response?.data?.accountId
-        );
-
         browser.storage.sync.set({ selectedChain: "ALL" });
         browser.storage.sync.set({
-          typeWalletAddress: searchAccountType,
+          typeWalletAddress: validateAccount?.type,
         });
         browser.storage.sync.set({
-          selectedWallet: response?.data?.accountId,
+          selectedWallet: validateAccount?.address,
         });
 
         chain.update((n) => (n = "ALL"));
-        typeWallet.update((n) => (n = searchAccountType));
-        wallet.update((n) => (n = response?.data?.accountId));
+        typeWallet.update((n) => (n = validateAccount?.type));
+        wallet.update((n) => (n = validateAccount?.address));
 
         toastMsg = "Successfully add On-chain account!";
         isSuccess = true;
@@ -1340,7 +1340,7 @@
                           <div class="flex justify-end gap-6">
                             {#if item.label !== "My address" || item.address !== $userPublicAddress}
                               <div
-                                class="text-2xl font-semibold text-red-600 transition-all cursor-pointer hover:underline dark:text-red-500 xl:text-base"
+                                class="text-2xl font-semibold text-red-600 transition-all cursor-pointer hover:underline xl:text-base"
                                 on:click={() => {
                                   isOpenConfirmDelete = true;
                                   selectedWallet = item;
@@ -1350,7 +1350,7 @@
                               </div>
                             {/if}
                             <div
-                              class="text-2xl font-semibold text-blue-600 transition-all cursor-pointer hover:underline dark:text-blue-500 xl:text-base"
+                              class="text-2xl font-semibold text-blue-600 transition-all cursor-pointer hover:underline xl:text-base"
                               on:click={() => handleSelectedEdit(item)}
                             >
                               {MultipleLang.content.modal_edit}
@@ -1542,7 +1542,7 @@
                         <div class="flex justify-end gap-6">
                           {#if item.label !== "My address" || item.address !== $userPublicAddress}
                             <div
-                              class="text-2xl font-semibold text-red-600 transition-all cursor-pointer hover:underline dark:text-red-500 xl:text-base"
+                              class="text-2xl font-semibold text-red-600 transition-all cursor-pointer hover:underline xl:text-base"
                               on:click={() => {
                                 isOpenConfirmDelete = true;
                                 selectedWallet = item;
@@ -1552,7 +1552,7 @@
                             </div>
                           {/if}
                           <div
-                            class="text-2xl font-semibold text-blue-600 transition-all cursor-pointer hover:underline dark:text-blue-500 xl:text-base"
+                            class="text-2xl font-semibold text-blue-600 transition-all cursor-pointer hover:underline xl:text-base"
                             on:click={() => handleSelectedEdit(item)}
                           >
                             {MultipleLang.content.modal_edit}

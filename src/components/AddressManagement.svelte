@@ -177,10 +177,10 @@
     return value != null && value !== "";
   };
 
-  const validateAddress = async (address: string) => {
+  const handleValidateAddress = async (address: string) => {
     try {
       const response = await nimbus.get(`/v2/address/${address}/validate`);
-      return response?.data?.type;
+      return response?.data;
     } catch (e) {
       console.error(e);
       return undefined;
@@ -191,7 +191,7 @@
     const isDuplicatedAddress = listAddress.some((item) => {
       return item.value.toLowerCase() === data.address.toLowerCase();
     });
-    const addressValidate = await validateAddress(data.address);
+    const addressValidate = await handleValidateAddress(data.address);
 
     if (!isRequiredFieldValid(data.address)) {
       errors["address"] = {
@@ -200,7 +200,7 @@
         msg: MultipleLang.content.address_required,
       };
     } else {
-      if (data.address && !addressValidate) {
+      if (data.address && addressValidate === undefined) {
         errors["address"] = {
           ...errors["address"],
           required: true,
@@ -632,12 +632,16 @@
           value: data.address,
         };
 
+        const validateAccount = await handleValidateAddress(dataFormat.value);
+
         if (groupedToBundles) {
           await nimbus.put(
             `/address/personalize/bundle?name=${"Your wallets"}`,
             {
               name: "Your wallets",
-              addresses: selectYourWalletsBundle.concat([dataFormat.value]),
+              addresses: selectYourWalletsBundle.concat([
+                validateAccount?.address,
+              ]),
             }
           );
           queryClient.invalidateQueries(["list-bundle"]);
@@ -645,46 +649,48 @@
 
         await nimbus.post("/accounts", {
           type: "DEX",
-          publicAddress: dataFormat.value,
-          accountId: dataFormat.value,
+          publicAddress: validateAccount?.address,
+          accountId: validateAccount?.address,
           label: dataFormat.label,
         });
 
-        const searchAccountType = await validateAddress(dataFormat.value);
         queryClient.invalidateQueries(["list-address"]);
-        wallet.update((n) => (n = dataFormat.value));
+        wallet.update((n) => (n = validateAccount?.address));
         chain.update((n) => (n = "ALL"));
-        typeWallet.update((n) => (n = searchAccountType));
+        typeWallet.update((n) => (n = validateAccount?.type));
 
         browser.storage.sync.set({ selectedChain: "ALL" });
         browser.storage.sync.set({
-          typeWalletAddress: searchAccountType,
+          typeWalletAddress: validateAccount?.type,
         });
         browser.storage.sync.set({
-          selectedWallet: dataFormat.value,
+          selectedWallet: validateAccount?.address,
         });
 
-        if (searchAccountType === "EVM" || searchAccountType === "MOVE") {
-          window.history.replaceState(
-            null,
-            "",
-            window.location.pathname +
-              `?type=${searchAccountType}&chain=ALL&address=${dataFormat.value}`
-          );
-        }
-
         if (
-          searchAccountType === "BTC" ||
-          searchAccountType === "SOL" ||
-          searchAccountType === "AURA" ||
-          searchAccountType === "TON" ||
-          searchAccountType === "ALGO"
+          validateAccount?.type === "EVM" ||
+          validateAccount?.type === "MOVE"
         ) {
           window.history.replaceState(
             null,
             "",
             window.location.pathname +
-              `?type=${searchAccountType}&address=${dataFormat.value}`
+              `?type=${validateAccount?.type}&chain=ALL&address=${validateAccount?.address}`
+          );
+        }
+
+        if (
+          validateAccount?.type === "BTC" ||
+          validateAccount?.type === "SOL" ||
+          validateAccount?.type === "AURA" ||
+          validateAccount?.type === "TON" ||
+          validateAccount?.type === "ALGO"
+        ) {
+          window.history.replaceState(
+            null,
+            "",
+            window.location.pathname +
+              `?type=${validateAccount?.type}&address=${validateAccount?.address}`
           );
         }
 

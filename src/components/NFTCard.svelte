@@ -1,5 +1,10 @@
 <script lang="ts">
-  import { isDarkMode } from "~/store";
+  import {
+    typeWallet,
+    isDarkMode,
+    isShowModalNftList,
+    selectedNftContractAddress,
+  } from "~/store";
   import { shorterName } from "~/utils";
 
   import Tooltip from "~/components/Tooltip.svelte";
@@ -148,6 +153,27 @@
         </div>
       </div>
     </div>
+
+    {#if $typeWallet === "SOL" || ($typeWallet === "BUNDLE" && nativeToken?.symbol === "SOL")}
+      <div
+        class="xl:text-sm text-2xl font-normal flex items-start justify-between gap-1"
+      >
+        <div class="text-[#616b84]">Action</div>
+        <div class="flex flex-col items-end">
+          <div
+            class="font-semibold text-blue-600 transition-all cursor-pointer hover:underline"
+            on:click={() => {
+              selectedNftContractAddress.update(
+                (n) => (n = data?.contractAddress)
+              );
+              isShowModalNftList.update((n) => (n = true));
+            }}
+          >
+            List
+          </div>
+        </div>
+      </div>
+    {/if}
   </div>
 </div>
 

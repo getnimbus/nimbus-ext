@@ -234,7 +234,7 @@
                   <td class="pr-3 py-4">
                     <div class="flex justify-end gap-6">
                       <div
-                        class="text-red-600 xl:text-base text-2xl hover:underline dark:text-red-500 transition-all cursor-pointer font-semibold"
+                        class="text-red-600 xl:text-base text-2xl hover:underline transition-all cursor-pointer font-semibold"
                         on:click={() => {
                           isOpenConfirmDelete = true;
                           selectedHighlight = item;
@@ -243,7 +243,7 @@
                         {MultipleLang.content.modal_delete}
                       </div>
                       <div
-                        class="text-blue-600 xl:text-base text-2xl hover:underline dark:text-blue-500 transition-all cursor-pointer font-semibold"
+                        class="text-blue-600 xl:text-base text-2xl hover:underline transition-all cursor-pointer font-semibold"
                         on:click={() => handleEdit(item)}
                       >
                         {MultipleLang.content.modal_edit}
