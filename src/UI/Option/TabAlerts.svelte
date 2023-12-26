@@ -23,6 +23,7 @@
   import SolanaLogo from "~/assets/solana.png";
   import AuraLogo from "~/assets/aura.png";
   import AlgorandLogo from "~/assets/algorand.png";
+  import TonLogo from "~/assets/ton.png";
 
   const MultipleLang = {
     content: {
@@ -170,6 +171,9 @@
       }
       if (item?.type === "SOL") {
         logo = SolanaLogo;
+      }
+      if (item?.type === "TON") {
+        logo = TonLogo;
       }
       if (item?.type === "MOVE") {
         logo = Move;
