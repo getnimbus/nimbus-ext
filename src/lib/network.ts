@@ -154,12 +154,3 @@ export const aptos = createAxiosInterface({
   baseURL: "https://aptos-celebtron-api.getnimbus.io/api/v1",
   getHeaderAuthorize: () => { },
 });
-
-export const sniperlabs = createAxiosInterface({
-  baseURL: "https://q911c3yhyc.execute-api.us-east-1.amazonaws.com/prod",
-  getHeaderAuthorize: () => {
-    return {
-      "x-api-key": "KnY6OIFuha5RdZu1xLJGT9CofGddHgbA1noabnUn",
-    };
-  },
-});

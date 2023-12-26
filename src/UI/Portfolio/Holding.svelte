@@ -14,7 +14,7 @@
   import { groupBy } from "lodash";
   import web3 from "@solana/web3.js";
   import bs58 from "bs58";
-  import { sniperlabs } from "~/lib/network";
+  import { nimbus } from "~/lib/network";
 
   export let selectedWallet;
   export let isLoadingNFT;
@@ -464,13 +464,12 @@
 
   const onSubmitListNFT = async () => {
     const params = {
-      seller: $wallet,
       price: Number(nftListPrice),
       mintAddress: $selectedNftContractAddress,
       marketplace: selectedMarket?.value,
     };
     try {
-      const res = await sniperlabs.get("/v1/list/", {
+      const res = await nimbus.get(`/v2/address/${$wallet}/nft/list`, {
         params,
       });
       console.log("res: ", res);
@@ -478,6 +477,8 @@
       console.log(e);
     }
   };
+
+  const approveSolTrx = async (data: any) => {};
 </script>
 
 <div
