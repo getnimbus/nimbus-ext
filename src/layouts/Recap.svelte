@@ -75,30 +75,34 @@
     class="h-screen"
   >
     <SwiperSlide>
-      <div class="bg-[#EBFDFF] min-h-screen">
-        <div class="flex max-w-[2000px] m-auto w-[90%]">
-          <div class="flex flex-col">
-            <img
-              src={Logo}
-              alt="logo"
-              class="-ml-10 xl:w-[177px] w-[220px] xl:h-[60px] h-[100px]"
-            />
-            <div>
-              <div class="text-[#323842] text-5xl font-bold">
-                2023 Solana Recap
-              </div>
-              <div class="flex flex-col">
-                <div class="text-[#565E6C] font-normal text-sm">
-                  2023 has proven to be a challenging year for every holder, but
-                  we've managed to weather the storm and emerge from the bottom.
-                  This resilience is a significant achievement, and now let's
-                  reflect on the moments we've overcome together.
+      <div class="bg-[#EBFDFF] h-full">
+        <div class="flex flex-col h-full max-w-[2000px] m-auto w-[90%]">
+          <img
+            src={Logo}
+            alt="logo"
+            class="-ml-10 xl:w-[177px] w-[220px] xl:h-[60px] h-[100px]"
+          />
+          <div class="flex-1 h-full flex items-center gap-20">
+            <div class="w-[562px] flex flex-col">
+              <div class="flex flex-col gap-10">
+                <div class="text-[#323842] text-5xl font-bold">
+                  2023 Solana Recap
                 </div>
-                <SolanaAuth text="Connect wallet" />
+                <div class="flex flex-col gap-6">
+                  <div class="text-[#565E6C] font-normal text-sm">
+                    2023 has proven to be a challenging year for every holder,
+                    but we've managed to weather the storm and emerge from the
+                    bottom. This resilience is a significant achievement, and
+                    now let's reflect on the moments we've overcome together.
+                  </div>
+                  <div class="w-max">
+                    <SolanaAuth text="Connect wallet" />
+                  </div>
+                </div>
               </div>
             </div>
+            <div class="flex-1">hello</div>
           </div>
-          <div>hello</div>
         </div>
       </div>
     </SwiperSlide>
