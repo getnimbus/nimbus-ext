@@ -1,13 +1,13 @@
 <script>
-  import logoNimbus from "./../assets/logo-2.png";
+  import logoNimbus from "~/assets/logo-2.png";
 
   const item2 = [{}, {}];
   const card3 = [{}, {}, {}];
 </script>
 
-<div class="h-screen border border-red-400">
+<div class="border border-red-400">
   <div>NFT Holdig</div>
-
+  <!-- 
   <div class="flex justify-center mt-20">
     <div class="flex gap-8">
       {#each card3 as card}
@@ -53,7 +53,7 @@
         </div>
       {/each}
     </div>
-  </div>
+  </div> -->
 </div>
 
 <style></style>

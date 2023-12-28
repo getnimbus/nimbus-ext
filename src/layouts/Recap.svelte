@@ -16,40 +16,38 @@
 </script>
 
 <ErrorBoundary>
-  <div class="flex flex-col items-center gap-5">
-    <Loading />
-    <div class="mx-auto max-w-2xl mt-5">
-      <Swiper
-        cssMode={true}
-        slidesPerView={1}
-        speed={2000}
-        pagination={{ clickable: true, dynamicBullets: true }}
-        autoplay={{
-          delay: 7000,
-        }}
-        loop={true}
-      >
-        <SwiperSlide>
-          <TokenHolding />
-        </SwiperSlide>
+  <div class="h-screen">
+    <Swiper
+      direction="vertical"
+      cssMode={true}
+      slidesPerView={1}
+      speed={2000}
+      pagination={{ clickable: true, dynamicBullets: true }}
+      autoplay={{
+        delay: 7000,
+      }}
+      loop={true}
+    >
+      <SwiperSlide>
+        <TokenHolding />
+      </SwiperSlide>
 
-        <SwiperSlide>
-          <NftHolding />
-        </SwiperSlide>
+      <SwiperSlide>
+        <NftHolding />
+      </SwiperSlide>
 
-        <SwiperSlide>
-          <Airdrop />
-        </SwiperSlide>
+      <SwiperSlide>
+        <Airdrop />
+      </SwiperSlide>
 
-        <SwiperSlide>
-          <MintNft />
-        </SwiperSlide>
+      <SwiperSlide>
+        <MintNft />
+      </SwiperSlide>
 
-        <SwiperSlide>
-          <Promote />
-        </SwiperSlide>
-      </Swiper>
-    </div>
+      <SwiperSlide>
+        <Promote />
+      </SwiperSlide>
+    </Swiper>
   </div>
 </ErrorBoundary>
 
