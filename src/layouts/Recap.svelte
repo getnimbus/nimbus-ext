@@ -69,7 +69,7 @@
         <div class="font-medium xl:title-3 title-1">
           Connect your wallet to take a look recap for last year
         </div>
-        <SolanaAuth text="Connect wallet" />
+        <SolanaAuth text="Login with Solana" />
       </div>
     {:else}
       <Swiper
