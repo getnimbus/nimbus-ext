@@ -4,6 +4,13 @@
   SwiperCore.use([Pagination, Navigation, Mousewheel]);
   import { userPublicAddress } from "~/store";
   import { nimbus } from "~/lib/network";
+  import { WalletProvider } from "@svelte-on-solana/wallet-adapter-ui";
+  import {
+    BackpackWalletAdapter,
+    PhantomWalletAdapter,
+    SolflareWalletAdapter,
+  } from "@solana/wallet-adapter-wallets";
+  import { walletStore } from "@svelte-on-solana/wallet-adapter-core";
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
 
