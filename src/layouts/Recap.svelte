@@ -65,7 +65,7 @@
   $: console.log("userAddress: ", userAddress);
 </script>
 
-<CardNftRecap />
+<!-- <CardNftRecap /> -->
 
 <ErrorBoundary>
   <Swiper
