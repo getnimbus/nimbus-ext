@@ -2,6 +2,8 @@
   import { Swiper, SwiperSlide } from "swiper/svelte";
   import SwiperCore, { Pagination, Navigation, Mousewheel } from "swiper";
   SwiperCore.use([Pagination, Navigation, Mousewheel]);
+  import { userPublicAddress } from "~/store";
+  import { nimbus } from "~/lib/network";
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
 
@@ -13,6 +15,45 @@
   import MintNft from "~/UI/Recap/MintNFT.svelte";
   import NftHolding from "~/UI/Recap/NFTHolding.svelte";
   import Promote from "~/UI/Recap/Promote.svelte";
+
+  const handleValidateAddress = async (address: string) => {
+    try {
+      const response = await nimbus.get(`/v2/address/${address}/validate`);
+      userPublicAddressChain = response?.data.type;
+    } catch (e) {
+      console.error(e);
+      return undefined;
+    }
+  };
+
+  const wallets = [
+    new PhantomWalletAdapter(),
+    new SolflareWalletAdapter(),
+    new BackpackWalletAdapter(),
+  ];
+
+  const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
+
+  let userPublicAddressChain = "EVM";
+  let userAddress = $userPublicAddress;
+
+  $: solanaPublicAddress = $walletStore?.publicKey?.toBase58();
+
+  $: {
+    if (solanaPublicAddress) {
+      userAddress = solanaPublicAddress;
+    } else {
+      userAddress = $userPublicAddress;
+    }
+  }
+
+  $: {
+    if (userAddress) {
+      handleValidateAddress(userAddress);
+    }
+  }
+
+  $: console.log("userAddress: ", userAddress);
 </script>
 
 <ErrorBoundary>
