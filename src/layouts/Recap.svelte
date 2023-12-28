@@ -4,6 +4,13 @@
   SwiperCore.use([Pagination, Navigation, Mousewheel]);
   import { userPublicAddress } from "~/store";
   import { nimbus } from "~/lib/network";
+  import {
+    Connection,
+    clusterApiUrl,
+    Transaction,
+    PublicKey,
+  } from "@solana/web3.js";
+  import bs58 from "bs58";
   import { WalletProvider } from "@svelte-on-solana/wallet-adapter-ui";
   import {
     BackpackWalletAdapter,
