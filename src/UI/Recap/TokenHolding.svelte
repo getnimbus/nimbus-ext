@@ -27,21 +27,22 @@
     const shareBtn = document.getElementById("btn-share");
     if (targetElement && shareBtn) {
       try {
-        const canvas = await html2canvas(targetElement);
-        console.log("canvas: ", canvas);
-        const img = canvas
-          .toDataURL("image/png")
-          .replace("image/png", "image/octet-stream");
-        // handle download image
-        const a = document.createElement("a");
-        a.href = img;
-        a.download = "TokenHolding.png";
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        toastMsg = "Successfully downloaded!";
-        isSuccessToast = true;
-        trigger();
+        shareBtn.style.visibility = "hidden";
+        await html2canvas(targetElement).then((canvas) => {
+          shareBtn.style.visibility = "visible";
+          const img = canvas
+            .toDataURL("image/png")
+            .replace("image/png", "image/octet-stream");
+          const a = document.createElement("a");
+          a.href = img;
+          a.download = "TokenHolding.png";
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          toastMsg = "Successfully downloaded!";
+          isSuccessToast = true;
+          trigger();
+        });
       } catch (error) {
         console.error("Error capturing screenshot:", error);
         toastMsg = "Something wrong when download. Please try again!";
