@@ -4,13 +4,6 @@
   SwiperCore.use([Pagination, Navigation, Mousewheel]);
   import { userPublicAddress } from "~/store";
   import { nimbus } from "~/lib/network";
-  import {
-    Connection,
-    clusterApiUrl,
-    Transaction,
-    PublicKey,
-  } from "@solana/web3.js";
-  import bs58 from "bs58";
   import { WalletProvider } from "@svelte-on-solana/wallet-adapter-ui";
   import {
     BackpackWalletAdapter,
@@ -46,8 +39,6 @@
     new BackpackWalletAdapter(),
   ];
 
-  const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
-
   let userPublicAddressChain = "EVM";
   let userAddress = $userPublicAddress;
 
@@ -72,37 +63,43 @@
 
 <ErrorBoundary>
   <div class="px-10">
-    <Swiper
-      direction="vertical"
-      mousewheel={true}
-      cssMode={true}
-      slidesPerView={1}
-      speed={2000}
-      pagination={{ clickable: true, dynamicBullets: true }}
-      class="h-screen"
-    >
-      <SwiperSlide>
-        <TokenHolding />
-      </SwiperSlide>
+    {#if userPublicAddressChain !== "SOL"}
+      <div>hello world</div>
+    {:else}
+      <Swiper
+        direction="vertical"
+        mousewheel={true}
+        cssMode={true}
+        slidesPerView={1}
+        speed={2000}
+        pagination={{ clickable: true, dynamicBullets: true }}
+        class="h-screen"
+      >
+        <SwiperSlide>
+          <TokenHolding />
+        </SwiperSlide>
 
-      <SwiperSlide>
-        <NftHolding />
-      </SwiperSlide>
+        <SwiperSlide>
+          <NftHolding />
+        </SwiperSlide>
 
-      <SwiperSlide>
-        <Airdrop />
-      </SwiperSlide>
+        <SwiperSlide>
+          <Airdrop />
+        </SwiperSlide>
 
-      <SwiperSlide>
-        <MintNft />
-      </SwiperSlide>
+        <SwiperSlide>
+          <MintNft />
+        </SwiperSlide>
 
-      <SwiperSlide>
-        <Promote />
-      </SwiperSlide>
-    </Swiper>
+        <SwiperSlide>
+          <Promote />
+        </SwiperSlide>
+      </Swiper>
+    {/if}
   </div>
 </ErrorBoundary>
+
+<WalletProvider localStorageKey="walletAdapter" {wallets} autoConnect />
 
 <style windi:preflights:global windi:safelist:global>
 </style>
