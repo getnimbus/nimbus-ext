@@ -24,6 +24,8 @@
   import Promote from "~/UI/Recap/Promote.svelte";
   import SolanaAuth from "~/UI/Auth/SolanaAuth.svelte";
 
+  import Logo from "~/assets/logo-1.svg";
+
   const handleValidateAddress = async (address: string) => {
     try {
       const response = await nimbus.get(`/v2/address/${address}/validate`);
@@ -63,46 +65,66 @@
 </script>
 
 <ErrorBoundary>
-  <div class="px-10">
-    {#if userPublicAddressChain !== "SOL"}
-      <div class="flex flex-col items-center justify-center gap-4 h-screen">
-        <div class="font-medium xl:title-3 title-1">
-          Connect your wallet to take a look recap for last year
+  <Swiper
+    direction="vertical"
+    mousewheel={true}
+    cssMode={true}
+    slidesPerView={1}
+    speed={2000}
+    pagination={{ clickable: true, dynamicBullets: true }}
+    class="h-screen"
+  >
+    <SwiperSlide>
+      <div class="bg-[#EBFDFF] min-h-screen">
+        <div class="flex max-w-[2000px] m-auto w-[90%]">
+          <div class="flex flex-col">
+            <img
+              src={Logo}
+              alt="logo"
+              class="-ml-10 xl:w-[177px] w-[220px] xl:h-[60px] h-[100px]"
+            />
+            <div>
+              <div class="text-[#323842] text-5xl font-bold">
+                2023 Solana Recap
+              </div>
+              <div class="flex flex-col">
+                <div class="text-[#565E6C] font-normal text-sm">
+                  2023 has proven to be a challenging year for every holder, but
+                  we've managed to weather the storm and emerge from the bottom.
+                  This resilience is a significant achievement, and now let's
+                  reflect on the moments we've overcome together.
+                </div>
+                <SolanaAuth text="Connect wallet" />
+              </div>
+            </div>
+          </div>
+          <div>hello</div>
         </div>
-        <SolanaAuth text="Login with Solana" />
       </div>
-    {:else}
-      <Swiper
-        direction="vertical"
-        mousewheel={true}
-        cssMode={true}
-        slidesPerView={1}
-        speed={2000}
-        pagination={{ clickable: true, dynamicBullets: true }}
-        class="h-screen"
-      >
-        <SwiperSlide>
-          <TokenHolding />
-        </SwiperSlide>
+    </SwiperSlide>
 
-        <SwiperSlide>
-          <NftHolding />
-        </SwiperSlide>
+    {#if userPublicAddressChain === "SOL"}
+      <SwiperSlide>
+        <TokenHolding />
+      </SwiperSlide>
 
-        <SwiperSlide>
-          <Airdrop />
-        </SwiperSlide>
+      <SwiperSlide>
+        <NftHolding />
+      </SwiperSlide>
 
-        <SwiperSlide>
-          <MintNft />
-        </SwiperSlide>
+      <SwiperSlide>
+        <Airdrop />
+      </SwiperSlide>
 
-        <SwiperSlide>
-          <Promote />
-        </SwiperSlide>
-      </Swiper>
+      <SwiperSlide>
+        <MintNft />
+      </SwiperSlide>
     {/if}
-  </div>
+
+    <SwiperSlide>
+      <Promote />
+    </SwiperSlide>
+  </Swiper>
 </ErrorBoundary>
 
 <WalletProvider localStorageKey="walletAdapter" {wallets} autoConnect />
