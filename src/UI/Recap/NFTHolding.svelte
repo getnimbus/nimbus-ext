@@ -5,8 +5,8 @@
   const card3 = [{}, {}, {}];
 </script>
 
-<div class="border border-red-400">
-  <div>NFT Holdig</div>
+<div class="h-screen">
+  <div>NFT Holding</div>
   <!-- 
   <div class="flex justify-center mt-20">
     <div class="flex gap-8">

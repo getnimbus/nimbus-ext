@@ -1,5 +1,5 @@
 <script></script>
 
-<div class="border border-red-400">Promote</div>
+<div class="h-screen">Promote</div>
 
 <style></style>

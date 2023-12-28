@@ -1,5 +1,5 @@
 <script></script>
 
-<div class="border border-red-400">MintnFT</div>
+<div class="h-screen">MintnFT</div>
 
 <style></style>

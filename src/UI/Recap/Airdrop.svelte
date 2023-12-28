@@ -1,5 +1,5 @@
 <script></script>
 
-<div class="border border-red-400">Airdrop</div>
+<div class="h-screen">Airdrop</div>
 
 <style></style>

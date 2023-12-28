@@ -1,5 +1,5 @@
 <script></script>
 
-<div class="border border-red-400">Token holding</div>
+<div class="h-screen">Token holding</div>
 
 <style></style>

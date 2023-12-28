@@ -1,13 +1,13 @@
 <script lang="ts">
   import { Swiper, SwiperSlide } from "swiper/svelte";
-  import SwiperCore, { Pagination, Navigation, Autoplay } from "swiper";
-  SwiperCore.use([Pagination, Navigation, Autoplay]);
+  import SwiperCore, { Pagination, Navigation, Mousewheel } from "swiper";
+  SwiperCore.use([Pagination, Navigation, Mousewheel]);
 
-  import Loading from "~/components/Loading.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
 
   import "swiper/swiper.scss";
   import "swiper/components/pagination/pagination.scss";
+
   import TokenHolding from "~/UI/Recap/TokenHolding.svelte";
   import Airdrop from "~/UI/Recap/Airdrop.svelte";
   import MintNft from "~/UI/Recap/MintNFT.svelte";
@@ -16,17 +16,15 @@
 </script>
 
 <ErrorBoundary>
-  <div class="h-screen">
+  <div class="px-10">
     <Swiper
       direction="vertical"
+      mousewheel={true}
       cssMode={true}
       slidesPerView={1}
       speed={2000}
       pagination={{ clickable: true, dynamicBullets: true }}
-      autoplay={{
-        delay: 7000,
-      }}
-      loop={true}
+      class="h-screen"
     >
       <SwiperSlide>
         <TokenHolding />
@@ -51,4 +49,5 @@
   </div>
 </ErrorBoundary>
 
-<style></style>
+<style windi:preflights:global windi:safelist:global>
+</style>
