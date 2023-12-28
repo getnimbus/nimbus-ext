@@ -7,7 +7,6 @@
 
 <div class="h-screen">
   <div>NFT Holding</div>
-  <!-- 
   <div class="flex justify-center mt-20">
     <div class="flex gap-8">
       {#each card3 as card}
@@ -53,7 +52,7 @@
         </div>
       {/each}
     </div>
-  </div> -->
+  </div>
 </div>
 
 <style></style>

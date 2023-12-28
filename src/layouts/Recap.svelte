@@ -25,6 +25,7 @@
   import SolanaAuth from "~/UI/Auth/SolanaAuth.svelte";
 
   import Logo from "~/assets/logo-1.svg";
+  import CardNftRecap from "~/components/CardNFTRecap.svelte";
 
   const handleValidateAddress = async (address: string) => {
     try {
@@ -63,6 +64,8 @@
 
   $: console.log("userAddress: ", userAddress);
 </script>
+
+<CardNftRecap />
 
 <ErrorBoundary>
   <Swiper
