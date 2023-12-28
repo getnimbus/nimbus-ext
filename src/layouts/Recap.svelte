@@ -103,7 +103,7 @@
       </div>
     </SwiperSlide>
 
-    {#if userPublicAddressChain === "SOL"}
+    {#if userPublicAddressChain === "SOL" && userAddress}
       <SwiperSlide>
         <TokenHolding />
       </SwiperSlide>
