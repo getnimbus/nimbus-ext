@@ -313,6 +313,20 @@
               </div>
             {/await}
           </Route>
+
+          <Route path="recap">
+            {#await import("~/layouts/Recap.svelte")}
+              <div class="flex items-center justify-center h-screen">
+                <Loading />
+              </div>
+            {:then { default: component }}
+              <svelte:component this={component} />
+            {:catch error}
+              <div class="flex items-center justify-center h-screen">
+                Something when wrong! Please reload your browser to try again
+              </div>
+            {/await}
+          </Route>
         </div>
         <div class="fixed bottom-0 left-0 z-20 w-full footer xl:relative">
           <div class="hidden xl:block">
