@@ -25,6 +25,8 @@
   import SolanaAuth from "~/UI/Auth/SolanaAuth.svelte";
   import CardNftRecap from "~/components/CardNFTRecap.svelte";
 
+  import NFTOne from "~/assets/recap/nft-card-3.png";
+  import NFTTwo from "~/assets/recap/nft-card-1.png";
   import Logo from "~/assets/logo-1.svg";
 
   const handleValidateAddress = async (address: string) => {
@@ -61,8 +63,6 @@
       handleValidateAddress(userAddress);
     }
   }
-
-  import NFTOne from "~/assets/recap/nft-card-1.png";
 
   const fakeData = {
     tokens: {
@@ -250,8 +250,10 @@
             alt="logo"
             class="xl:w-[177px] w-[220px] xl:h-[75px] h-[100px]"
           />
-          <div class="flex-1 h-full flex items-center gap-20 px-[35px]">
-            <div class="flex-[0.7] flex flex-col">
+          <div
+            class="flex-1 h-full flex xl:flex-row flex-col items-center xl:gap-20 gap-10 px-[35px]"
+          >
+            <div class="xl:flex-[0.7] flex-0 flex flex-col">
               <div class="flex flex-col gap-10">
                 <div class="text-[#323842] text-5xl font-bold">
                   2023 Solana Recap
@@ -269,8 +271,13 @@
                 </div>
               </div>
             </div>
-            <div class="flex-1 flex flex-col">
-              <CardNftRecap nft={NFTOne} />
+            <div class="flex-1 flex justify-end relative">
+              <div class="relative z-2">
+                <CardNftRecap nft={NFTTwo} />
+              </div>
+              <div class="absolute bottom-16 left-4 z-1">
+                <CardNftRecap nft={NFTOne} />
+              </div>
             </div>
           </div>
         </div>
