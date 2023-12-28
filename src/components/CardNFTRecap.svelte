@@ -1,199 +1,169 @@
 <script>
-  import logoNimbus from "~/assets/logo-2.png";
-  import demoimg from "~/assets/recap/nft-card-1.png";
+  import Logo from "~/assets/logo-2.png";
+  import TrendUp from "~/assets/trend-up.svg";
+  import TrendDown from "~/assets/trend-down.svg";
 
-  const item2 = [{}, {}];
+  export let nft;
 </script>
-
-<!-- "https://azk.imgix.net/images/2b5d534e-6f7e-4625-9061-d2c3e991ae77.png" -->
-<!-- card  -->
 
 <div class="card-container">
   <div class="card-img-wrapper">
-    <img src={demoimg} class="card-img" alt="" />
+    <img src={nft} class="card-img" alt="" />
     <div class="card-state">True Holder</div>
+    <div class="card-info">BONK is 20% of my portfolio</div>
   </div>
   <div class="card-content">
     <div class="card-intro">
-      <img src={logoNimbus} alt="" class="logo-img" />
+      <img src={Logo} alt="" class="logo-img" />
       <div class="time-card">01/01/2023 - 01/01/2024</div>
     </div>
     <div class="statistics-card-content">
-      {#each item2 as item}
-        <div class="statistics-card-content-wrapper">
-          <div class="text-1">My SOL</div>
-          <div class="text-2">230</div>
-          <div class="text-3-wrapper">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="12"
-              height="12"
-              viewBox="0 0 15 15"
-            >
-              <path fill="currentColor" d="m7.5 3l7.5 8H0z" />
-            </svg>
-            <div class="text-3">201.231k</div>
-          </div>
+      <div class="statistics-card-content-wrapper">
+        <div class="text-1">My SOL</div>
+        <div class="text-2">230</div>
+        <div class="text-3-wrapper">
+          <div class="text-3">201.231%</div>
+          <img src={TrendUp} alt="" class="icon" />
         </div>
-      {/each}
+      </div>
+
+      <div class="statistics-card-content-wrapper">
+        <div class="text-1">My NFT</div>
+        <div class="text-2">230</div>
+        <div class="text-3-wrapper">
+          <div class="text-3">201.231%</div>
+          <img src={TrendUp} alt="" class="icon" />
+        </div>
+      </div>
     </div>
   </div>
 </div>
 
 <style>
   .card-container {
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: -webkit-flex;
     display: flex;
-    border-width: 1px;
-    border-radius: 8px;
-    -webkit-box-orient: vertical;
-    -webkit-box-direction: normal;
-    -ms-flex-direction: column;
-    -webkit-flex-direction: column;
     flex-direction: column;
+    width: 400px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 9px 0px #171a1f1c;
+    box-shadow: 0px 0px 2px 0px #171a1f1f;
+    background: white;
   }
 
   .card-img-wrapper {
     position: relative;
-    width: 300px;
   }
 
-  .card-img {
-    border-top-left-radius: 0.5rem; /* 8px */
-    border-top-right-radius: 0.5rem; /* 8px */
-    border-radius:;
-    -o-object-fit: fill;
+  .card-img-wrapper .card-img {
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
     object-fit: fill;
     height: 100%;
     width: 100%;
   }
 
-  .card-content {
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: -webkit-flex;
-    display: flex;
-    -webkit-box-orient: vertical;
-    -webkit-box-direction: normal;
-    -ms-flex-direction: column;
-    -webkit-flex-direction: column;
-    flex-direction: column;
-    padding: 12px 0px 12px 0px;
-  }
-
-  .card-state {
+  .card-img-wrapper .card-state {
     padding: 4px 8px 4px 8px;
     border-radius: 9999px;
     position: absolute;
-    top: 0.75rem; /* 12px */
-    left: 0.75rem; /* 12px */
-    --tw-text-opacity: 1;
-    color: rgba(255, 255, 255, var(--tw-text-opacity));
-    font-size: 0.75rem; /* 12px */
-    line-height: 1rem; /* 16px */
-    z-index: 10;
-    --tw-bg-opacity: 1;
-    background-color: rgba(131, 83, 226, var(--tw-bg-opacity));
+    top: 12px;
+    left: 12px;
+    color: white;
+    font-size: 12px;
+    background: #8353e2;
     text-align: center;
   }
 
-  .card-intro {
-    -webkit-box-align: center;
-    -ms-flex-align: center;
-    -webkit-align-items: center;
-    align-items: center;
-    padding-left: 0.25rem; /* 4px */
-    padding-right: 0.25rem; /* 4px */
-    -webkit-box-pack: justify;
-    -ms-flex-pack: justify;
-    -webkit-justify-content: space-between;
-    justify-content: space-between;
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: -webkit-flex;
-    display: flex;
+  .card-img-wrapper .card-info {
+    font-size: 14px;
+    font-weight: 700;
+    color: white;
+    position: absolute;
+    bottom: 4px;
+    right: 8px;
   }
 
-  .logo-img {
-    -o-object-fit: contain;
+  .card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 12px 0px 12px 0px;
+  }
+
+  .card-content .card-intro {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 4px;
+  }
+
+  .card-content .card-intro .logo-img {
     object-fit: contain;
     height: 35px;
   }
 
-  .time-card {
-    margin-right: 0.5rem; /* 8px */
-    --tw-text-opacity: 1;
-    color: rgba(156, 163, 175, var(--tw-text-opacity));
-    font-size: 0.75rem; /* 12px */
-    line-height: 1rem; /* 16px */
+  .card-content .card-intro .time-card {
+    margin-right: 8px;
+    color: #9095a0;
+    font-size: 12px;
+    font-weight: 400;
   }
-  .text-1 {
-    font-weight: 500;
-    --tw-text-opacity: 1;
-    color: rgba(156, 163, 175, var(--tw-text-opacity));
-  }
-  .text-2 {
-    font-size: 1.875rem; /* 30px */
-    line-height: 2.25rem; /* 36px */
-  }
-  .text-3-wrapper {
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: -webkit-flex;
+
+  .card-content .statistics-card-content {
+    padding: 0px 12px;
     display: flex;
-    grid-gap: 0.25rem; /* 4px */
-    gap: 0.25rem; /* 4px */
-
-    -webkit-box-align: center;
-    -ms-flex-align: center;
-    -webkit-align-items: center;
     align-items: center;
-
-    --tw-text-opacity: 1;
-    color: rgba(16, 185, 129, var(--tw-text-opacity));
-  }
-  .text-3 {
-    font-size: 0.875rem; /* 14px */
-    line-height: 1.25rem; /* 20px */
-  }
-
-  .statistics-card-content {
-    padding: 0px 12px 0px 12px;
-    grid-gap: 1rem; /* 16px */
-    gap: 1rem; /* 16px */
-    -webkit-box-align: center;
-    -ms-flex-align: center;
-    -webkit-align-items: center;
-    align-items: center;
-    -webkit-box-pack: justify;
-    -ms-flex-pack: justify;
-    -webkit-justify-content: space-between;
     justify-content: space-between;
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: -webkit-flex;
-    display: flex;
+    gap: 16px;
   }
-  .statistics-card-content-wrapper {
-    padding: 8px 12px 8px 12px;
-    border-radius: 4px;
+  .card-content .statistics-card-content .statistics-card-content-wrapper {
+    padding: 8px 12px;
+    border-radius: 8px;
     border-width: 1px;
-    grid-gap: 0.25rem; /* 4px */
-    gap: 0.25rem; /* 4px */
-    -webkit-box-orient: vertical;
-    -webkit-box-direction: normal;
-    -ms-flex-direction: column;
-    -webkit-flex-direction: column;
-    flex-direction: column;
-    -webkit-box-flex: 1;
-    -ms-flex: 1 1 0%;
-    -webkit-flex: 1 1 0%;
-    flex: 1 1 0%;
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: -webkit-flex;
+    flex: 1;
     display: flex;
+    flex-direction: column;
+  }
+
+  .card-content
+    .statistics-card-content
+    .statistics-card-content-wrapper
+    .text-1 {
+    font-size: 14px;
+    font-weight: 400;
+    color: #9095a0;
+  }
+  .card-content
+    .statistics-card-content
+    .statistics-card-content-wrapper
+    .text-2 {
+    font-size: 40px;
+    font-weight: 400;
+    color: #171a1f;
+  }
+  .card-content
+    .statistics-card-content
+    .statistics-card-content-wrapper
+    .text-3-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: #14923e;
+  }
+  .card-content
+    .statistics-card-content
+    .statistics-card-content-wrapper
+    .text-3-wrapper
+    .text-3 {
+    font-size: 14px;
+    font-weight: 400;
+  }
+
+  .card-content
+    .statistics-card-content
+    .statistics-card-content-wrapper
+    .text-3-wrapper
+    .icon {
+    margin-bottom: 2px;
   }
 </style>
