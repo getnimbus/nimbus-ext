@@ -778,7 +778,7 @@
         <img src={Evm} alt="" width="24" height="24" />
         <div class="font-semibold text-[15px]">Login with EVM</div>
       </div>
-      <SolanaAuth />
+      <SolanaAuth text="Login with Solana" />
     </div>
   </div>
 </AppOverlay>

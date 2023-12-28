@@ -22,6 +22,7 @@
   import MintNft from "~/UI/Recap/MintNFT.svelte";
   import NftHolding from "~/UI/Recap/NFTHolding.svelte";
   import Promote from "~/UI/Recap/Promote.svelte";
+  import SolanaAuth from "~/UI/Auth/SolanaAuth.svelte";
 
   const handleValidateAddress = async (address: string) => {
     try {
@@ -64,7 +65,12 @@
 <ErrorBoundary>
   <div class="px-10">
     {#if userPublicAddressChain !== "SOL"}
-      <div>hello world</div>
+      <div class="flex flex-col items-center justify-center gap-4 h-screen">
+        <div class="font-medium xl:title-3 title-1">
+          Connect your wallet to take a look recap for last year
+        </div>
+        <SolanaAuth text="Connect wallet" />
+      </div>
     {:else}
       <Swiper
         direction="vertical"

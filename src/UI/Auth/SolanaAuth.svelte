@@ -10,6 +10,7 @@
 
   import SolanaIcon from "~/assets/solana.png";
 
+  export let text;
   export let maxNumberOfWallets = 3;
 
   $: ({ publicKey, wallet, disconnect, connect, select } = $walletStore);
@@ -95,7 +96,7 @@
     on:click={openModal}
   >
     <img src={SolanaIcon} alt="" width="24" height="24" />
-    <div class="font-semibold text-[15px]">Login with Solana</div>
+    <div class="font-semibold text-[15px]">{text}</div>
   </div>
 {:else if !base58}
   <WalletConnectButton />
