@@ -80,10 +80,10 @@
           <img
             src={Logo}
             alt="logo"
-            class="-ml-10 xl:w-[177px] w-[220px] xl:h-[60px] h-[100px]"
+            class="xl:w-[177px] w-[220px] xl:h-[75px] h-[100px]"
           />
-          <div class="flex-1 h-full flex items-center gap-20">
-            <div class="w-[562px] flex flex-col">
+          <div class="flex-1 h-full flex items-center gap-20 px-[35px]">
+            <div class="flex-[0.7] flex flex-col">
               <div class="flex flex-col gap-10">
                 <div class="text-[#323842] text-5xl font-bold">
                   2023 Solana Recap

@@ -1,6 +1,9 @@
 <script>
   import html2canvas from "html2canvas";
 
+  import Logo from "~/assets/logo-1.svg";
+  import Upload from "~/assets/upload.svg";
+
   let toastMsg = "";
   let isSuccessToast = false;
   let counter = 3;
@@ -21,10 +24,14 @@
 
   const downloadPage = async () => {
     const targetElement = document.getElementById("target-slide-1");
-    if (targetElement) {
+    const shareBtn = document.getElementById("btn-share");
+    if (targetElement && shareBtn) {
       try {
         const canvas = await html2canvas(targetElement);
-        const img = canvas.toDataURL("image/png");
+        console.log("canvas: ", canvas);
+        const img = canvas
+          .toDataURL("image/png")
+          .replace("image/png", "image/octet-stream");
         // handle download image
         const a = document.createElement("a");
         a.href = img;
@@ -45,32 +52,70 @@
   };
 </script>
 
-<div
-  class="h-screen flex flex-col gap-4 justify-center items-center"
-  id="target-slide-1"
->
-  Token holding
-  <div
-    class={`flex items-center gap-1 transition-all ease-in py-1 px-2 rounded-[10px] cursor-pointer border`}
-    on:click={downloadPage}
-  >
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke={"#00000099"}
-      stroke-width="1.8"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      class="tabler-icon tabler-icon-download"
-      ><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" /><path
-        d="M7 11l5 5l5 -5"
-      /><path d="M12 4l0 12" /></svg
-    >
-    <div class="xl:text-base text-lg">Save</div>
+<div class="wrapper" id="target-slide-1">
+  <img src={Logo} alt="logo" class="logo" />
+  <div class="container">
+    <div class="content_container">
+      <div class="content">Token holding summary</div>
+      <button id="btn-share" class="btn-share" on:click={downloadPage}>
+        <img src={Upload} alt="" />
+        <div>Share</div>
+      </button>
+    </div>
+    <div class="chart_container">Chart</div>
   </div>
 </div>
 
-<style></style>
+<style windi:preflights:global windi:safelist:global>
+  .wrapper {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    max-width: 2000px;
+    margin: auto;
+    width: 90%;
+  }
+
+  .wrapper .logo {
+    width: 177px;
+    height: 75px;
+  }
+
+  .wrapper .container {
+    padding: 0 35px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    gap: 80px;
+  }
+
+  .wrapper .container .chart_container {
+    flex: 1;
+  }
+
+  .wrapper .container .content_container {
+    flex: 0.6;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .wrapper .content_container .content {
+    font-weight: 500;
+    font-size: 32px;
+  }
+
+  .wrapper .content_container .btn-share {
+    background: #27326f;
+    color: white;
+    padding: 6px 9px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 12px;
+    width: max-content;
+    cursor: pointer;
+  }
+</style>
