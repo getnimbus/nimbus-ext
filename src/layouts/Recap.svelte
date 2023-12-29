@@ -11,7 +11,7 @@
     SolflareWalletAdapter,
   } from "@solana/wallet-adapter-wallets";
   import { walletStore } from "@svelte-on-solana/wallet-adapter-core";
-  import { useQueryClient } from "@tanstack/svelte-query";
+  import { useQueryClient, createQuery } from "@tanstack/svelte-query";
   import bs58 from "bs58";
   import { onMount } from "svelte";
   import onboard from "~/lib/web3-onboard";
@@ -37,171 +37,6 @@
   import User from "~/assets/user.png";
   import NFTOne from "~/assets/recap/nft-card-3.png";
   import NFTTwo from "~/assets/recap/nft-card-1.png";
-
-  const fakeData = {
-    tokens: {
-      stats: {
-        total_holding: 100,
-        networth_change: 100,
-        total_txs: 100,
-        total_gas_fee_in_sol: 100,
-        total_gas_fee_in_eth: 100,
-      },
-      holding: [
-        {
-          owner: "ArTbfyWWNBLkDhU2ar8RBEPDHkEv6jVWJTwxjDnVYnMX",
-          cmc_id: 0,
-          cg_id: "lamas-finance",
-          cmc_slug: null,
-          name: "Lamas Finance",
-          symbol: "LMF",
-          logo: "https://www.lamas.co/resource/lmf_token.png",
-          amount: "0",
-          amountRaw: "0",
-          balance: "0",
-          contractAddress: "LMFzmYL6y1FX8HsEmZ6yNKNzercBmtmpg2ZoLwuUboU",
-          contractDecimals: 9,
-          rate: 0.3278586024970768,
-          price: {
-            price: 0.3278586024970768,
-            symbol: "LMF",
-            decimal: 9,
-            source: "C",
-          },
-          profit: {
-            address: "LMFzmYL6y1FX8HsEmZ6yNKNzercBmtmpg2ZoLwuUboU",
-            realizedProfit: 0,
-            averageCost: null,
-            cost: 0,
-            chain: "SOL",
-            type: "TOKEN",
-          },
-          avgCost: 0,
-          last_transferred_at: null,
-          positionId: "SOL-LMFzmYL6y1FX8HsEmZ6yNKNzercBmtmpg2ZoLwuUboU",
-          category: "Other",
-          sector: "Other",
-          rank: "No rank yet",
-          positionType: "Other",
-          chain: "SOL",
-        },
-      ],
-      top_gainer: [
-        {
-          owner: "ArTbfyWWNBLkDhU2ar8RBEPDHkEv6jVWJTwxjDnVYnMX",
-          cmc_id: 0,
-          cg_id: "lamas-finance",
-          cmc_slug: null,
-          name: "Lamas Finance",
-          symbol: "LMF",
-          logo: "https://www.lamas.co/resource/lmf_token.png",
-          amount: "0",
-          amountRaw: "0",
-          balance: "0",
-          contractAddress: "LMFzmYL6y1FX8HsEmZ6yNKNzercBmtmpg2ZoLwuUboU",
-          contractDecimals: 9,
-          rate: 0.3278586024970768,
-          price: {
-            price: 0.3278586024970768,
-            symbol: "LMF",
-            decimal: 9,
-            source: "C",
-          },
-          profit: {
-            address: "LMFzmYL6y1FX8HsEmZ6yNKNzercBmtmpg2ZoLwuUboU",
-            realizedProfit: 0,
-            averageCost: null,
-            cost: 0,
-            chain: "SOL",
-            type: "TOKEN",
-          },
-          avgCost: 0,
-          last_transferred_at: null,
-          positionId: "SOL-LMFzmYL6y1FX8HsEmZ6yNKNzercBmtmpg2ZoLwuUboU",
-          category: "Other",
-          sector: "Other",
-          rank: "No rank yet",
-          positionType: "Other",
-          chain: "SOL",
-        },
-      ],
-    },
-    nfts: {
-      stats: {
-        total_holding: 100,
-        total_trades: 100,
-        networth: 100, // in USD
-        amount: 100, // in SOL
-      },
-      top_holding: [
-        {
-          attributes: [
-            {
-              trait_type: "Gender",
-              value: "Male",
-            },
-            {
-              trait_type: "Type",
-              value: "Light",
-            },
-            {
-              trait_type: "Expression",
-              value: "Joy",
-            },
-            {
-              trait_type: "Hair",
-              value: "Aviator",
-            },
-            {
-              trait_type: "Eyes",
-              value: "Closed",
-            },
-            {
-              trait_type: "Clothing",
-              value: "Tuxedo",
-            },
-            {
-              trait_type: "Background",
-              value: "Violet",
-            },
-          ],
-          royalty: 0,
-          imageUrl:
-            "https://madlads.s3.us-west-2.amazonaws.com/images/2736.png",
-          tokenId: "2736",
-          contractAddress: "4BehroxbhTuevXv3NACTsHTFRrSkv66fN7hUhDyKsJsA",
-          name: "Mad Lads #2736",
-          collection: {
-            description: "",
-            externalUrl: "https://madlads.com",
-            id: "mad_lads",
-            imageUrl:
-              "https://madlads.s3.us-west-2.amazonaws.com/images/2736.png",
-            name: "Mad Lads",
-            totalItems: 2,
-            chain: "SOL",
-          },
-          collectionId: "mad_lads",
-          rarityScore: 0,
-          rank: "N/A",
-          price: 94.8999,
-          cost: 1669.289241,
-        },
-      ],
-    },
-    airdrops: [
-      {
-        protocol: "pyth",
-        protocolLabel: "Pyth",
-        token: "pyth",
-        ticker: "PYTH",
-        eligible: false,
-        amount: 0,
-        note: "This is based on a single address. This does not include any other addresses that may be associated with this account. This data is provided by pyth.network",
-        potentialValueUsdc: 0,
-      },
-    ],
-  };
 
   const handleValidateAddress = async (address: string) => {
     try {
@@ -362,6 +197,25 @@
       isLoading = false;
     }
   };
+
+  const getRecapData = async (address: string) => {
+    const response: any = await nimbus.get(`/api/recap?address=${address}`);
+    return response?.data;
+  };
+
+  $: query = createQuery({
+    queryKey: ["recap", userAddress],
+    queryFn: () => getRecapData(userAddress),
+    staleTime: Infinity,
+    retry: false,
+    enabled:
+      $user &&
+      Object.keys($user).length !== 0 &&
+      userPublicAddressChain === "SOL" &&
+      userAddress.length !== 0,
+  });
+
+  $: console.log("query: ", $query);
 </script>
 
 <ErrorBoundary>
