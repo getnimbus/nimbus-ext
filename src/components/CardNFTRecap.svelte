@@ -6,7 +6,7 @@
   export let nft;
 </script>
 
-<div class="card-container">
+<div class="card-container lg:max-xl:w-300">
   <div class="card-img-wrapper">
     <img src={nft} class="card-img" alt="" />
     <div class="card-state">True Holder</div>
@@ -49,7 +49,13 @@
     box-shadow: 0px 0px 2px 0px #171a1f1f;
     background: white;
   }
-
+  @media (min-width: 1024px) {
+    @media not all and (min-width: 1280px) {
+      .lg\:max-xl\:w-300 {
+        width: 300px /* 28px */;
+      }
+    }
+  }
   .card-img-wrapper {
     position: relative;
   }

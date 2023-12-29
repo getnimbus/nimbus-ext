@@ -237,7 +237,7 @@
             class="xl:w-[177px] w-[220px] xl:h-[75px] h-[100px]"
           />
           <div
-            class="flex-1 h-full flex xl:flex-row flex-col items-center xl:gap-20 gap-10 px-[35px]"
+            class="flex-1 h-full flex xl:flex-row flex-col items-center xl:justify-between justify-center xl:gap-20 lg:gap-10 gap-48 px-[35px]"
           >
             <div class="xl:flex-[0.7] flex-0 flex flex-col">
               <div class="flex flex-col gap-10">
@@ -301,7 +301,9 @@
                 </div>
               </div>
             </div>
-            <div class="flex-1 flex justify-end relative">
+            <div
+              class="flex justify-end lg:max-xl:self-end mx-auto-high-screen relative w-[700px] lg:max-xl:w-500"
+            >
               <div class="relative z-2">
                 <CardNftRecap nft={NFTTwo} />
               </div>
@@ -357,4 +359,29 @@
 </AppOverlay>
 
 <style windi:preflights:global windi:safelist:global>
+  @media (min-width: 2000px) {
+    .mx-auto-high-screen {
+      margin-left: auto;
+      margin-right: auto;
+    }
+  }
+  @media (min-width: 1024px) {
+    .lg\:gap-10 {
+      grid-gap: 40px;
+      gap: 40px;
+    }
+  }
+  @media (min-width: 1024px) {
+    @media not all and (min-width: 1280px) {
+      .lg\:max-xl\:w-500 {
+        width: 500px /* 28px */;
+      }
+
+      .lg\:max-xl\:self-end {
+        -ms-flex-item-align: end;
+        -webkit-align-self: flex-end;
+        align-self: flex-end;
+      }
+    }
+  }
 </style>
