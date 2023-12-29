@@ -156,9 +156,23 @@
   .wrapper .container_wrapper .container {
     padding: 0 35px;
     height: 100%;
+    flex: 1;
     display: flex;
-    align-items: center;
+    justify-content: space-between;
     gap: 80px;
+  }
+
+  @media (max-width: 1024px) {
+    .wrapper .container_wrapper .container {
+      flex-direction: column;
+      justify-content: center;
+      gap: 0;
+    }
+
+    .wrapper .container_wrapper .container .content_container {
+      justify-content: center;
+      order: 2;
+    }
   }
 
   .wrapper .container_wrapper .container .chart_container {
@@ -169,6 +183,7 @@
     flex: 1;
     display: flex;
     flex-direction: column;
+    justify-content: center;
     gap: 32px;
   }
 

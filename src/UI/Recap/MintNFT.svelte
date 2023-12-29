@@ -36,8 +36,6 @@
 </script>
 
 <div class="">
-  MintnFT
-
   <button on:click={$handleMintNFT.mutate()}>Mint NFT</button>
 </div>
 
