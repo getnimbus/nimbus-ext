@@ -35,7 +35,7 @@
   });
 </script>
 
-<div class="h-screen">
+<div class="">
   MintnFT
 
   <button on:click={$handleMintNFT.mutate()}>Mint NFT</button>

@@ -1,5 +1,5 @@
 <script></script>
 
-<div class="h-screen">Airdrop</div>
+<div class="">Airdrop</div>
 
 <style></style>

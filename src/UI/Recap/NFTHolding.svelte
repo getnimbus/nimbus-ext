@@ -1,7 +1,7 @@
 <script>
 </script>
 
-<div class="h-screen">
+<div class="">
   <div>NFT Holding</div>
 </div>
 

@@ -4,6 +4,10 @@
   import Logo from "~/assets/logo-1.svg";
   import Upload from "~/assets/upload.svg";
 
+  export let data;
+
+  $: console.log("data: ", data);
+
   let toastMsg = "";
   let isSuccessToast = false;
   let counter = 3;
@@ -57,7 +61,12 @@
   <img src={Logo} alt="logo" class="logo" />
   <div class="container">
     <div class="content_container">
-      <div class="content">Token holding summary</div>
+      <div class="content">
+        You ape in tokens: {data?.stats?.total_holding}
+        Make your investment growth: {data?.stats?.networth_change}% Total
+        transactions: {data?.stats?.total_txs}
+        Paid fee (if use Ethereum): {data?.stats.total_gas_fee_in_eth} ETH
+      </div>
       <button id="btn-share" class="btn-share" on:click={downloadPage}>
         <img src={Upload} alt="" />
         <div>Share</div>

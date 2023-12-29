@@ -64,6 +64,7 @@
   let isOpenAuthModal = false;
   let showPopover = false;
   let isLoading = false;
+  let data;
 
   $: solanaPublicAddress = $walletStore?.publicKey?.toBase58();
 
@@ -199,7 +200,7 @@
   };
 
   const getRecapData = async (address: string) => {
-    const response: any = await nimbus.get(`/api/recap?address=${address}`);
+    const response: any = await nimbus.get(`/recap?address=${address}`);
     return response?.data;
   };
 
@@ -215,7 +216,15 @@
       userAddress.length !== 0,
   });
 
-  $: console.log("query: ", $query);
+  $: {
+    if (
+      !$query.isError &&
+      $query.data !== undefined &&
+      Object.keys($query.data).length !== 0
+    ) {
+      data = $query.data;
+    }
+  }
 </script>
 
 <ErrorBoundary>
@@ -318,7 +327,7 @@
 
     {#if userPublicAddressChain === "SOL" && userAddress}
       <SwiperSlide>
-        <TokenHolding />
+        <TokenHolding data={data?.tokens} />
       </SwiperSlide>
 
       <SwiperSlide>
