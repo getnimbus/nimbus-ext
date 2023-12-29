@@ -230,6 +230,8 @@
       data = $query.data;
     }
   }
+
+  $: console.log("data: ", data);
 </script>
 
 <ErrorBoundary>
@@ -351,7 +353,7 @@
       </SwiperSlide>
 
       <SwiperSlide>
-        <NftHolding />
+        <NftHolding data={data?.nfts} loading={$query.isLoading} />
       </SwiperSlide>
 
       <SwiperSlide>

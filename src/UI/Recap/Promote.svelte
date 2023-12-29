@@ -3,7 +3,7 @@
 </script>
 
 <div
-  class="flex flex-col gap-10 h-full max-w-[2000px] m-auto w-[90%] pt-[35px] px-[35px]"
+  class="flex flex-col gap-5 h-full max-w-[2000px] m-auto w-[90%] pt-[35px] px-[35px]"
 >
   <div class="flex items-start xl:flex-row flex-col gap-8">
     <div
@@ -30,9 +30,6 @@
 
   <div>
     <div class="mx-auto text-center w-full mb-6">
-      <div class="mx-auto bg-[#edf5ff] w-max rounded-full py-1.5 px-4.5 mb-2">
-        <div class="font-medium">TESTIMONIALS</div>
-      </div>
       <div class="font-medium text-3xl xl:text-4xl mx-auto mb-3">
         Client's Testimonials
       </div>

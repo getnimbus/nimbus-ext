@@ -4,6 +4,7 @@
   import Logo from "~/assets/logo-1.svg";
   import Share from "~/assets/recap/hero/share.svg";
   import SvgOne from "~/assets/recap/hero/svgOne.svg";
+  import SvgFour from "~/assets/recap/hero/svgFour.svg";
 
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import Portfolio from "./TokenHoldingCharts/Portfolio.svelte";
@@ -12,8 +13,6 @@
 
   export let data;
   export let loading;
-
-  $: console.log("data: ", data);
 
   let toastMsg = "";
   let isSuccessToast = false;
@@ -135,6 +134,10 @@
 
       <div class="absolute bottom-[-100px] left-[-120px] z-[1]">
         <img src={SvgOne} alt="" />
+      </div>
+
+      <div class="absolute top-[-80px] right-[-120px] z-[1]">
+        <img src={SvgFour} alt="" />
       </div>
     </div>
   </div>
