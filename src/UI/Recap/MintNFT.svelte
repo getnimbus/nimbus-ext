@@ -25,7 +25,8 @@
         )
       );
       const connection = new Connection(
-        "https://rpc.shyft.to?api_key=Qjb6SubTTbLrkmNo"
+        "https://devnet-rpc.shyft.to?api_key=Gny0V25q6Y2kMjze" // DEVNET
+        // "https://rpc.shyft.to?api_key=Qjb6SubTTbLrkmNo" // PROD
       );
       const result = await $walletStore.sendTransaction(signedTx, connection);
       console.log(result);
