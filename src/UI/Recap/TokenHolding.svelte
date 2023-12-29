@@ -2,9 +2,10 @@
   import html2canvas from "html2canvas";
 
   import Logo from "~/assets/logo-1.svg";
-  import Upload from "~/assets/upload.svg";
-  import CardNftRecap from "~/components/CardNFTRecap.svelte";
-  import NFTOne from "~/assets/recap/nft-card-3.png";
+  import Share from "~/assets/recap/hero/share.svg";
+  import SvgOne from "~/assets/recap/hero/svgOne.svg";
+
+  import TooltipNumber from "~/components/TooltipNumber.svelte";
 
   export let data;
 
@@ -60,44 +61,99 @@
 </script>
 
 <div class="wrapper" id="target-slide-1">
-  <img src={Logo} alt="logo" class="logo" />
-  <div class="container">
-    <div class="content_container">
-      <div class="content">
-        You ape in tokens: {data?.stats?.total_holding}
-        Make your investment growth: {data?.stats?.networth_change}% Total
-        transactions: {data?.stats?.total_txs}
-        Paid fee (if use Ethereum): {data?.stats.total_gas_fee_in_eth} ETH
-      </div>
-      <button id="btn-share" class="btn-share" on:click={downloadPage}>
-        <img src={Upload} alt="" />
-        <div>Share</div>
-      </button>
-    </div>
-    <div class="chart_container">
-      Chart
+  <div class="container_wrapper">
+    <img src={Logo} alt="logo" class="logo" />
+    <div class="container">
+      <div class="content_container">
+        <div class="content">
+          <div class="info_container">
+            <div class="title">You ape in tokens</div>
+            <div class="content">
+              {data?.stats?.total_holding || 0}
+            </div>
+          </div>
 
-      <CardNftRecap nft={NFTOne} />
+          <div class="info_container">
+            <div class="title">Make your investment growth</div>
+            <div
+              class="content"
+              style="display: flex; align-items: center; gap: 8px;"
+            >
+              <TooltipNumber
+                number={Math.abs(Number(data?.stats?.networth_change)) * 100}
+                type="percent"
+              />
+              <span>%</span>
+            </div>
+          </div>
+
+          <div class="info_container">
+            <div class="title">Total transactions</div>
+            <div class="content">
+              {data?.stats?.total_txs || 0}
+            </div>
+          </div>
+
+          <div class="info_container">
+            <div class="title">Paid fee (if use Ethereum)</div>
+            <div
+              class="content"
+              style="display: flex; align-items: center; gap: 8px;"
+            >
+              <TooltipNumber
+                number={Number(data?.stats.total_gas_fee_in_eth)}
+                type="amount"
+              />
+              <div>ETH</div>
+            </div>
+          </div>
+        </div>
+
+        <div id="btn-share" class="btn-share" on:click={downloadPage}>
+          <div>Share</div>
+          <img src={Share} alt="" />
+        </div>
+      </div>
+
+      <div class="chart_container">Chart</div>
+
+      <div class="iconOne">
+        <img src={SvgOne} alt="" />
+      </div>
     </div>
   </div>
 </div>
 
 <style windi:preflights:global windi:safelist:global>
   .wrapper {
+    background: #eff4e8;
     height: 100%;
-    display: flex;
-    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .wrapper .container_wrapper {
     max-width: 2000px;
     margin: auto;
     width: 90%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    position: relative;
   }
 
-  .wrapper .logo {
+  .wrapper .container_wrapper .iconOne {
+    position: absolute;
+    bottom: -100px;
+    left: -120px;
+    z-index: 1;
+  }
+
+  .wrapper .container_wrapper .logo {
     width: 177px;
     height: 75px;
   }
 
-  .wrapper .container {
+  .wrapper .container_wrapper .container {
     padding: 0 35px;
     height: 100%;
     display: flex;
@@ -105,33 +161,62 @@
     gap: 80px;
   }
 
-  .wrapper .container .chart_container {
+  .wrapper .container_wrapper .container .chart_container {
     flex: 1;
   }
 
-  .wrapper .container .content_container {
-    flex: 0.6;
+  .wrapper .container_wrapper .container .content_container {
+    flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 32px;
   }
 
-  .wrapper .content_container .content {
-    font-weight: 500;
-    font-size: 32px;
+  .wrapper .container_wrapper .content_container .content {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 32px;
   }
 
-  .wrapper .content_container .btn-share {
-    background: #27326f;
-    color: white;
-    padding: 6px 9px;
+  .wrapper .container_wrapper .content_container .content .info_container {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .wrapper
+    .container_wrapper
+    .content_container
+    .content
+    .info_container
+    .title {
+    font-size: 18px;
+    color: #4f4f4f;
+  }
+
+  .wrapper
+    .container_wrapper
+    .content_container
+    .content
+    .info_container
+    .content {
+    font-size: 36px;
+    font-weight: 800;
+    color: #202025;
+  }
+
+  .wrapper .container_wrapper .content_container .btn-share {
+    background: #ffa41c;
+    color: black;
+    padding: 16px;
     display: flex;
     align-items: center;
-    gap: 4px;
-    font-size: 14px;
-    font-weight: 500;
-    border-radius: 12px;
+    gap: 8px;
+    font-size: 22px;
+    font-weight: 600;
+    border-radius: 32px;
     width: max-content;
     cursor: pointer;
+    position: relative;
+    z-index: 2;
   }
 </style>

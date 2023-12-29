@@ -308,7 +308,7 @@
             </div>
 
             <div class="flex flex-col gap-4">
-              <div class="text-black font-normal text-base">
+              <div class="text-black font-normal text-base xl:px-0 px-[35px]">
                 2023 has proven to be a challenging year for every holder, but
                 we've managed to weather the storm and emerge from the bottom.
                 This resilience is a significant achievement, and now let's
