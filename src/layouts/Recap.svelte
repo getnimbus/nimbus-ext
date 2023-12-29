@@ -317,7 +317,7 @@
 
               <div class="flex justify-center gap-10 py-10 px-16">
                 <div class="relative">
-                  <div class="absolute top-[-140px] left-[-160px]">
+                  <div class="absolute top-[-110px] left-[-160px]">
                     <img
                       src={SvgOne}
                       alt=""
