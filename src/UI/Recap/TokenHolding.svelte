@@ -61,12 +61,18 @@
   };
 </script>
 
-<div class="wrapper" id="target-slide-1">
-  <div class="container_wrapper">
-    <img src={Logo} alt="logo" class="logo" />
-    <div class="container">
-      <div class="content_container">
-        <div class="content">
+<div class="bg-[#eff4e8] overflow-hidden w-full h-full" id="target-slide-1">
+  <div class="flex flex-col h-full max-w-[2000px] m-auto w-[90%]">
+    <img
+      src={Logo}
+      alt="logo"
+      class="xl:w-[177px] w-[220px] xl:h-[75px] h-[100px]"
+    />
+    <div
+      class="relative flex-1 h-full flex xl:flex-row flex-col xl:items-center justify-between gap-20 px-[35px]"
+    >
+      <div class="flex flex-col gap-7">
+        <div class="grid grid-cols-2 gap-10">
           <div class="info_container">
             <div class="title">You ape in tokens</div>
             <div class="content">
@@ -116,15 +122,15 @@
         </div>
       </div>
 
-      <div class="chart_container">
-        <Portfolio />
-        <div class="flex-1 flex flex-col gap-6">
+      <div class="flex-1">
+        <div class="flex items-end gap-6">
+          <Portfolio />
           <div class="flex-1">Price charts</div>
-          <div class="flex-1">Top changes charts</div>
         </div>
+        <div class="flex-1">Top changes charts</div>
       </div>
 
-      <div class="iconOne">
+      <div class="absolute bottom-[-100px] left-[-120px] z-[1]">
         <img src={SvgOne} alt="" />
       </div>
     </div>
@@ -132,102 +138,18 @@
 </div>
 
 <style>
-  .wrapper {
-    background: #eff4e8;
-    height: 100%;
-    width: 100%;
-    overflow: hidden;
-  }
-
-  .wrapper .container_wrapper {
-    max-width: 2000px;
-    margin: auto;
-    width: 90%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    position: relative;
-  }
-
-  .wrapper .container_wrapper .iconOne {
-    position: absolute;
-    bottom: -100px;
-    left: -120px;
-    z-index: 1;
-  }
-
-  .wrapper .container_wrapper .logo {
-    width: 177px;
-    height: 75px;
-  }
-
-  .wrapper .container_wrapper .container {
-    padding: 0 35px;
-    height: 100%;
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    gap: 80px;
-  }
-
-  @media (max-width: 1024px) {
-    .wrapper .container_wrapper .container {
-      flex-direction: column;
-      justify-content: center;
-      gap: 0;
-    }
-
-    .wrapper .container_wrapper .container .content_container {
-      justify-content: center;
-      order: 2;
-    }
-  }
-
-  .wrapper .container_wrapper .container .chart_container {
-    display: flex;
-    gap: 24px;
-  }
-
-  .wrapper .container_wrapper .container .content_container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 32px;
-  }
-
-  .wrapper .container_wrapper .content_container .content {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 32px;
-  }
-
-  .wrapper .container_wrapper .content_container .content .info_container {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .wrapper
-    .container_wrapper
-    .content_container
-    .content
-    .info_container
-    .title {
+  .info_container .title {
     font-size: 18px;
     color: #4f4f4f;
   }
 
-  .wrapper
-    .container_wrapper
-    .content_container
-    .content
-    .info_container
-    .content {
+  .info_container .content {
     font-size: 36px;
     font-weight: 800;
     color: #202025;
   }
 
-  .wrapper .container_wrapper .content_container .btn-share {
+  .btn-share {
     background: #ffa41c;
     color: black;
     padding: 16px;

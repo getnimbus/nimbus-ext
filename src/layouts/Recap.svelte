@@ -251,59 +251,57 @@
           <div
             class="flex-1 h-full flex xl:flex-row flex-col items-center xl:justify-between justify-center gap-20 px-[35px]"
           >
-            <div class="flex flex-col">
-              <div class="flex flex-col gap-10">
-                <div class="text-[#202025] text-[100px] font-bold">
-                  2023 Solana Recap
-                </div>
-                <div class="flex flex-col gap-6">
-                  {#if userPublicAddressChain === "SOL" && userAddress}
-                    <div
-                      class="relative w-max flex items-center justify-center gap-2 cursor-pointer p-[20px] rounded-[32px] min-w-[250px] bg-[#A7EB50] text-black xl:text-xl text-2xl font-semibold"
-                      on:click={() => {
-                        showPopover = true;
-                      }}
-                    >
-                      {#if isLoading}
-                        <Loading />
-                      {:else}
-                        {shorterAddress(userAddress)}
-                      {/if}
+            <div class="flex flex-col gap-10">
+              <div class="text-[#202025] text-[100px] font-bold">
+                2023 Solana Recap
+              </div>
+              <div class="flex flex-col gap-6">
+                {#if userPublicAddressChain === "SOL" && userAddress}
+                  <div
+                    class="relative w-max flex items-center justify-center gap-2 cursor-pointer p-[20px] rounded-[32px] min-w-[250px] bg-[#A7EB50] text-black xl:text-xl text-2xl font-semibold"
+                    on:click={() => {
+                      showPopover = true;
+                    }}
+                  >
+                    {#if isLoading}
+                      <Loading />
+                    {:else}
+                      {shorterAddress(userAddress)}
+                    {/if}
 
-                      {#if showPopover && $user && Object.keys($user).length !== 0}
+                    {#if showPopover && $user && Object.keys($user).length !== 0}
+                      <div
+                        class="bg-white absolute top-20 right-0 z-50 flex flex-col gap-1 px-3 xl:py-2 py-3 text-sm transform rounded-lg w-full"
+                        style="box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);"
+                        use:clickOutside
+                        on:click_outside={() => (showPopover = false)}
+                      >
                         <div
-                          class="bg-white absolute top-20 right-0 z-50 flex flex-col gap-1 px-3 xl:py-2 py-3 text-sm transform rounded-lg w-full"
-                          style="box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);"
-                          use:clickOutside
-                          on:click_outside={() => (showPopover = false)}
+                          class="text-2xl font-medium text-red-500 cursor-pointer xl:text-base rounded-md transition-all px-2 py-1 text-center"
+                          on:click={() => {
+                            handleSignOut();
+                            localStorage.removeItem("solana_token");
+                            $walletStore.disconnect();
+                            showPopover = false;
+                            isOpenAuthModal = false;
+                          }}
                         >
-                          <div
-                            class="text-2xl font-medium text-red-500 cursor-pointer xl:text-base rounded-md transition-all px-2 py-1 text-center"
-                            on:click={() => {
-                              handleSignOut();
-                              localStorage.removeItem("solana_token");
-                              $walletStore.disconnect();
-                              showPopover = false;
-                              isOpenAuthModal = false;
-                            }}
-                          >
-                            Log out
-                          </div>
+                          Log out
                         </div>
-                      {/if}
-                    </div>
-                  {:else}
-                    <div
-                      class="w-max flex items-center justify-center gap-2 cursor-pointer p-[20px] rounded-[32px] min-w-[250px] bg-[#A7EB50] text-black xl:text-xl text-2xl font-semibold"
-                      on:click={() => {
-                        isOpenAuthModal = true;
-                      }}
-                    >
-                      Connect My Wallet
-                      <img src={Arrow} alt="" />
-                    </div>
-                  {/if}
-                </div>
+                      </div>
+                    {/if}
+                  </div>
+                {:else}
+                  <div
+                    class="w-max flex items-center justify-center gap-2 cursor-pointer p-[20px] rounded-[32px] min-w-[250px] bg-[#A7EB50] text-black xl:text-xl text-2xl font-semibold"
+                    on:click={() => {
+                      isOpenAuthModal = true;
+                    }}
+                  >
+                    Connect My Wallet
+                    <img src={Arrow} alt="" />
+                  </div>
+                {/if}
               </div>
             </div>
 
