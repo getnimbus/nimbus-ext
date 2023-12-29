@@ -5,19 +5,26 @@
 <div
   class="flex flex-col gap-10 h-full max-w-[2000px] m-auto w-[90%] pt-[35px] px-[35px]"
 >
-  <div class="flex items-start xl:gap-16 gap-8">
-    <div class="flex flex-col gap-6 mt-[5vh] flex-[0.5]">
+  <div class="flex items-start xl:flex-row flex-col gap-8">
+    <div
+      class="flex flex-col xl:items-start items-center gap-6 xl:flex-[0.5] flex-1 w-full"
+    >
       <div class="font-medium text-3xl xl:text-4xl">
         A Personalized portfolio for Crypto investors
       </div>
       <div class="w-max">
-        <button class="rounded-full bg-[#00BDD6] py-3 px-5 text-white">
+        <button
+          class="w-max flex items-center justify-center gap-2 cursor-pointer p-[20px] rounded-[32px] min-w-[250px] bg-[#A7EB50] text-black xl:text-xl text-2xl font-semibold"
+          on:click={() => {
+            window.open("https://app.getnimbus.io/", "_blank");
+          }}
+        >
           Launch app
         </button>
       </div>
     </div>
     <div class="flex-1">
-      <img src={heroImage} alt="" class="object-contain w-full" />
+      <img src={heroImage} alt="" class="object-cover w-full h-full" />
     </div>
   </div>
 
