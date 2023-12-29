@@ -1,5 +1,5 @@
 <script>
-  import Logo from "~/assets/logo-2.png";
+  import Logo from "~/assets/logo-white.svg";
   import TrendUp from "~/assets/trend-up.svg";
   import TrendDown from "~/assets/trend-down.svg";
 
@@ -44,10 +44,10 @@
     display: flex;
     flex-direction: column;
     width: 400px;
-    border-radius: 8px;
+    border-radius: 24px;
     box-shadow: 0px 4px 9px 0px #171a1f1c;
     box-shadow: 0px 0px 2px 0px #171a1f1f;
-    background: white;
+    background: #202025;
   }
   @media (min-width: 1024px) {
     @media not all and (min-width: 1280px) {

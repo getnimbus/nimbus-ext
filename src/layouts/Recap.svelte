@@ -311,14 +311,10 @@
               </div>
             </div>
             <div
-              class="flex justify-end lg:max-xl:self-end mx-auto-high-screen relative w-[700px] lg:max-xl:w-500"
+              class="flex gap-6 justify-end lg:max-xl:self-end mx-auto-high-screen relative w-[700px] lg:max-xl:w-500"
             >
-              <div class="relative z-2">
-                <CardNftRecap nft={NFTTwo} />
-              </div>
-              <div class="absolute bottom-16 left-4 z-1">
-                <CardNftRecap nft={NFTOne} />
-              </div>
+              <CardNftRecap nft={NFTTwo} />
+              <CardNftRecap nft={NFTOne} />
             </div>
           </div>
         </div>
