@@ -2,7 +2,7 @@
   import { Swiper, SwiperSlide } from "swiper/svelte";
   import SwiperCore, { Pagination, Navigation, Mousewheel } from "swiper";
   SwiperCore.use([Pagination, Navigation, Mousewheel]);
-  import { userPublicAddress } from "~/store";
+  import { chain, typeWallet, user, userPublicAddress, wallet } from "~/store";
   import { nimbus } from "~/lib/network";
   import { WalletProvider } from "@svelte-on-solana/wallet-adapter-ui";
   import {
@@ -11,6 +11,12 @@
     SolflareWalletAdapter,
   } from "@solana/wallet-adapter-wallets";
   import { walletStore } from "@svelte-on-solana/wallet-adapter-core";
+  import { useQueryClient } from "@tanstack/svelte-query";
+  import bs58 from "bs58";
+  import { onMount } from "svelte";
+  import onboard from "~/lib/web3-onboard";
+  import mixpanel from "mixpanel-browser";
+  import { shorterAddress, clickOutside } from "~/utils";
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
 
@@ -24,45 +30,13 @@
   import Promote from "~/UI/Recap/Promote.svelte";
   import SolanaAuth from "~/UI/Auth/SolanaAuth.svelte";
   import CardNftRecap from "~/components/CardNFTRecap.svelte";
+  import AppOverlay from "~/components/Overlay.svelte";
+  import Loading from "~/components/Loading.svelte";
 
+  import Logo from "~/assets/logo-1.svg";
+  import User from "~/assets/user.png";
   import NFTOne from "~/assets/recap/nft-card-3.png";
   import NFTTwo from "~/assets/recap/nft-card-1.png";
-  import Logo from "~/assets/logo-1.svg";
-
-  const handleValidateAddress = async (address: string) => {
-    try {
-      const response = await nimbus.get(`/v2/address/${address}/validate`);
-      userPublicAddressChain = response?.data.type;
-    } catch (e) {
-      console.error(e);
-      return undefined;
-    }
-  };
-
-  const wallets = [
-    new PhantomWalletAdapter(),
-    new SolflareWalletAdapter(),
-    new BackpackWalletAdapter(),
-  ];
-
-  let userPublicAddressChain = "EVM";
-  let userAddress = $userPublicAddress;
-
-  $: solanaPublicAddress = $walletStore?.publicKey?.toBase58();
-
-  $: {
-    if (solanaPublicAddress) {
-      userAddress = solanaPublicAddress;
-    } else {
-      userAddress = $userPublicAddress;
-    }
-  }
-
-  $: {
-    if (userAddress) {
-      handleValidateAddress(userAddress);
-    }
-  }
 
   const fakeData = {
     tokens: {
@@ -229,7 +203,165 @@
     ],
   };
 
-  $: console.log("userAddress: ", userAddress);
+  const handleValidateAddress = async (address: string) => {
+    try {
+      const response = await nimbus.get(`/v2/address/${address}/validate`);
+      userPublicAddressChain = response?.data.type;
+    } catch (e) {
+      console.error(e);
+      return undefined;
+    }
+  };
+
+  const wallets = [
+    new PhantomWalletAdapter(),
+    new SolflareWalletAdapter(),
+    new BackpackWalletAdapter(),
+  ];
+
+  const wallets$ = onboard.state.select("wallets");
+
+  const queryClient = useQueryClient();
+
+  let userPublicAddressChain = "EVM";
+  let userAddress = $userPublicAddress;
+  let invitation = "";
+  let isOpenAuthModal = false;
+  let showPopover = false;
+  let isLoading = false;
+
+  $: solanaPublicAddress = $walletStore?.publicKey?.toBase58();
+
+  $: {
+    if (solanaPublicAddress) {
+      userAddress = solanaPublicAddress;
+
+      const solanaToken = localStorage.getItem("solana_token");
+      if (!solanaToken) {
+        isLoading = true;
+        isOpenAuthModal = false;
+        handleSignOut();
+        handleGetSolanaNonce(solanaPublicAddress);
+      }
+    } else {
+      userAddress = $userPublicAddress;
+    }
+  }
+
+  $: {
+    if (userAddress) {
+      handleValidateAddress(userAddress);
+    }
+  }
+
+  onMount(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const invitationParams = urlParams.get("invitation");
+    if (invitationParams) {
+      invitation = invitationParams;
+    }
+    const solanaToken = localStorage.getItem("solana_token");
+
+    if (solanaToken) {
+      user.update(
+        (n) =>
+          (n = {
+            picture: User,
+          })
+      );
+      userAddress = $userPublicAddress;
+    } else {
+      handleSignOut();
+    }
+  });
+
+  const disconnect = (value: any) => {
+    if (value && Object.keys(value).length !== 0) {
+      onboard.disconnectWallet({ label: value.label });
+    }
+  };
+
+  const handleSignOut = () => {
+    try {
+      user.update((n) => (n = {}));
+      wallet.update((n) => (n = ""));
+      chain.update((n) => (n = ""));
+      typeWallet.update((n) => (n = ""));
+      userPublicAddress.update((n) => (n = ""));
+
+      localStorage.removeItem("public_address");
+
+      localStorage.removeItem("evm_token");
+      disconnect($wallets$?.[0]);
+
+      queryClient.invalidateQueries(["list-address"]);
+      queryClient.invalidateQueries(["users-me"]);
+      mixpanel.reset();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleSignSolanaAddressMessage = async (signatureString) => {
+    if ($walletStore.connected) {
+      const res = await $walletStore?.signMessage(
+        Uint8Array.from(
+          Array.from(`I am signing my one-time nonce: ${signatureString}`).map(
+            (letter) => letter.charCodeAt(0)
+          )
+        )
+      );
+      if (res) {
+        return bs58.encode(res);
+      } else {
+        return "";
+      }
+    }
+  };
+
+  const handleGetSolanaNonce = async (address) => {
+    try {
+      const res: any = await nimbus.post("/users/nonce", {
+        publicAddress: address,
+        referrer: invitation.length !== 0 ? invitation : undefined,
+      });
+      if (res && res.data) {
+        const signatureString = await handleSignSolanaAddressMessage(
+          res?.data?.nonce
+        );
+        if (signatureString) {
+          const payload = {
+            signature: signatureString,
+            publicAddress: address,
+          };
+          handleGetSolanaToken(payload);
+        }
+      }
+    } catch (e) {
+      console.error("error: ", e);
+    }
+  };
+
+  const handleGetSolanaToken = async (data) => {
+    try {
+      const res = await nimbus.post("/auth/solana", data);
+      if (res?.data?.result) {
+        localStorage.setItem("solana_token", res?.data?.result);
+        user.update(
+          (n) =>
+            (n = {
+              picture: User,
+            })
+        );
+        queryClient.invalidateQueries(["users-me"]);
+        queryClient.invalidateQueries(["list-address"]);
+      }
+    } catch (e) {
+      console.error("error: ", e);
+    } finally {
+      isLoading = false;
+    }
+  };
 </script>
 
 <ErrorBoundary>
@@ -265,8 +397,52 @@
                     bottom. This resilience is a significant achievement, and
                     now let's reflect on the moments we've overcome together.
                   </div>
-                  <div class="w-max">
-                    <SolanaAuth text="Connect wallet" />
+                  <div
+                    class="relative w-max flex items-center justify-center gap-2 text-white border cursor-pointer py-3 px-6 rounded-[12px] min-w-[250px] border-[#27326f] text-[#27326f] xl:text-base text-2xl font-semibold"
+                  >
+                    {#if userPublicAddressChain === "SOL" && userAddress}
+                      <span
+                        on:click={() => {
+                          showPopover = true;
+                        }}
+                      >
+                        {#if isLoading}
+                          <Loading />
+                        {:else}
+                          {shorterAddress(userAddress)}
+                        {/if}
+                      </span>
+                    {:else}
+                      <span
+                        on:click={() => {
+                          isOpenAuthModal = true;
+                        }}
+                      >
+                        Connect wallet
+                      </span>
+                    {/if}
+
+                    {#if showPopover}
+                      <div
+                        class="select_content absolute top-15 right-0 z-50 flex flex-col gap-1 px-3 xl:py-2 py-3 text-sm transform rounded-lg w-full"
+                        style="box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);"
+                        use:clickOutside
+                        on:click_outside={() => (showPopover = false)}
+                      >
+                        <div
+                          class="text-2xl font-medium text-red-500 cursor-pointer xl:text-base rounded-md transition-all px-2 py-1 text-center"
+                          on:click={() => {
+                            handleSignOut();
+                            localStorage.removeItem("solana_token");
+                            $walletStore.disconnect();
+                            showPopover = false;
+                            isOpenAuthModal = false;
+                          }}
+                        >
+                          Log out
+                        </div>
+                      </div>
+                    {/if}
                   </div>
                 </div>
               </div>
@@ -309,6 +485,22 @@
 </ErrorBoundary>
 
 <WalletProvider localStorageKey="walletAdapter" {wallets} autoConnect />
+
+<!-- Modal connect wallet -->
+<AppOverlay
+  clickOutSideToClose
+  isOpen={isOpenAuthModal}
+  on:close={() => (isOpenAuthModal = false)}
+>
+  <div class="flex flex-col gap-4">
+    <div class="xl:title-3 title-1 font-medium">
+      Connect wallet to enjoy more features
+    </div>
+    <div class="flex items-center justify-center gap-4">
+      <SolanaAuth text="Login with Solana" />
+    </div>
+  </div>
+</AppOverlay>
 
 <style windi:preflights:global windi:safelist:global>
 </style>
