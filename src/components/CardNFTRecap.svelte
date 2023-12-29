@@ -1,34 +1,36 @@
 <script>
-  import Logo from "~/assets/logo-white.svg";
   import TrendUp from "~/assets/trend-up.svg";
   import TrendDown from "~/assets/trend-down.svg";
 
   export let nft;
 </script>
 
-<div class="card-container lg:max-xl:w-300">
+<div class="card-container">
   <div class="card-img-wrapper">
     <img src={nft} class="card-img" alt="" />
-    <div class="card-state">True Holder</div>
-    <div class="card-info">BONK is 20% of my portfolio</div>
+    <div class="card-info-wrapper">
+      <div class="tag">
+        <div class="card-state">True Holder</div>
+        <div class="card-state">My 2023</div>
+      </div>
+      <div class="card-info">BONK is 20% of my portfolio</div>
+    </div>
   </div>
   <div class="card-content">
-    <div class="card-intro">
-      <img src={Logo} alt="" class="logo-img" />
-      <div class="time-card">01/01/2023 - 01/01/2024</div>
-    </div>
-    <div class="statistics-card-content">
-      <div class="statistics-card-content-wrapper">
-        <div class="text-1">My SOL</div>
+    <div class="statistics-card-content-wrapper">
+      <div class="text-1">SOL</div>
+      <div class="info">
         <div class="text-2">230</div>
         <div class="text-3-wrapper">
           <div class="text-3">201.231%</div>
           <img src={TrendUp} alt="" class="icon" />
         </div>
       </div>
+    </div>
 
-      <div class="statistics-card-content-wrapper">
-        <div class="text-1">My NFT</div>
+    <div class="statistics-card-content-wrapper">
+      <div class="text-1">NFT</div>
+      <div class="info">
         <div class="text-2">230</div>
         <div class="text-3-wrapper">
           <div class="text-3">201.231%</div>
@@ -43,126 +45,105 @@
   .card-container {
     display: flex;
     flex-direction: column;
-    width: 400px;
     border-radius: 24px;
-    box-shadow: 0px 4px 9px 0px #171a1f1c;
-    box-shadow: 0px 0px 2px 0px #171a1f1f;
+    padding: 20px;
     background: #202025;
+    width: max-content;
   }
-  @media (min-width: 1024px) {
-    @media not all and (min-width: 1280px) {
-      .lg\:max-xl\:w-300 {
-        width: 300px /* 28px */;
-      }
-    }
-  }
+
   .card-img-wrapper {
     position: relative;
   }
 
   .card-img-wrapper .card-img {
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
+    border-radius: 20px;
     object-fit: fill;
-    height: 100%;
+    height: 300px;
+    width: 320px;
+  }
+
+  .card-img-wrapper .card-info-wrapper {
     width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: end;
+    gap: 8px;
+    padding: 12px 20px;
+  }
+
+  .card-img-wrapper .card-info-wrapper .tag {
+    display: flex;
+    align-items: center;
+    gap: 10px;
   }
 
   .card-img-wrapper .card-state {
-    padding: 4px 8px 4px 8px;
-    border-radius: 9999px;
-    position: absolute;
-    top: 12px;
-    left: 12px;
-    color: white;
-    font-size: 12px;
-    background: #8353e2;
+    padding: 0px 16px;
+    border-radius: 10px;
+    width: max-content;
+    color: #010101;
+    font-size: 18px;
+    font-weight: 700;
+    background: white;
     text-align: center;
+    box-shadow: 0px 32px 48px -16px #0000001a;
   }
 
   .card-img-wrapper .card-info {
     font-size: 14px;
     font-weight: 700;
-    color: white;
-    position: absolute;
-    bottom: 4px;
-    right: 8px;
+    color: #f7fbfa;
   }
 
   .card-content {
     display: flex;
-    flex-direction: column;
-    gap: 4px;
-    padding: 12px 0px 12px 0px;
-  }
-
-  .card-content .card-intro {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 4px;
-  }
-
-  .card-content .card-intro .logo-img {
-    object-fit: contain;
-    height: 35px;
-  }
-
-  .card-content .card-intro .time-card {
-    margin-right: 8px;
-    color: #9095a0;
-    font-size: 12px;
-    font-weight: 400;
-  }
-
-  .card-content .statistics-card-content {
-    padding: 0px 12px;
-    display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 16px;
+    margin-top: 16px;
   }
-  .card-content .statistics-card-content .statistics-card-content-wrapper {
-    padding: 8px 12px;
-    border-radius: 8px;
-    border-width: 1px;
+
+  .card-content .statistics-card-content-wrapper {
     flex: 1;
     display: flex;
     flex-direction: column;
   }
 
-  .card-content
-    .statistics-card-content
-    .statistics-card-content-wrapper
-    .text-1 {
-    font-size: 14px;
-    font-weight: 400;
-    color: #9095a0;
+  .card-content .statistics-card-content-wrapper:first-child {
+    border-right: 1px solid;
+    border-color: #555555;
   }
-  .card-content
-    .statistics-card-content
-    .statistics-card-content-wrapper
-    .text-2 {
-    font-size: 40px;
-    font-weight: 400;
-    color: #171a1f;
+
+  .card-content .statistics-card-content-wrapper .info {
+    display: flex;
+    flex-direction: column;
   }
-  .card-content
-    .statistics-card-content
-    .statistics-card-content-wrapper
-    .text-3-wrapper {
+
+  .card-content .statistics-card-content-wrapper .text-1 {
+    font-size: 16px;
+    font-weight: 400;
+    color: #9a9a9a;
+  }
+  .card-content .statistics-card-content-wrapper .text-2 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #f7fbfa;
+  }
+  .card-content .statistics-card-content-wrapper .text-3-wrapper {
     display: flex;
     align-items: center;
     gap: 4px;
-    color: #14923e;
+    color: #5affd0;
+    margin-top: -4px;
   }
-  .card-content
-    .statistics-card-content
-    .statistics-card-content-wrapper
-    .text-3-wrapper
-    .text-3 {
-    font-size: 14px;
-    font-weight: 400;
+  .card-content .statistics-card-content-wrapper .text-3-wrapper .text-3 {
+    font-size: 18px;
+    font-weight: 500;
   }
 
   .card-content

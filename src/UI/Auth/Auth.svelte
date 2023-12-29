@@ -760,7 +760,7 @@
   on:close={() => (isOpenAuthModal = false)}
 >
   <div class="flex flex-col gap-4">
-    <div class="xl:title-3 title-1 font-medium">
+    <div class="xl:title-3 title-1 font-medium text-center">
       Connect wallet to enjoy more features
     </div>
     <div class="flex items-center justify-center gap-4">

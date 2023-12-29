@@ -37,6 +37,9 @@
   import User from "~/assets/user.png";
   import NFTOne from "~/assets/recap/nft-card-3.png";
   import NFTTwo from "~/assets/recap/nft-card-1.png";
+  import SvgOne from "~/assets/recap/hero/svgOne.svg";
+  import SvgTwo from "~/assets/recap/hero/svgTwo.svg";
+  import Arrow from "~/assets/recap/hero/arrow-right.svg";
 
   const handleValidateAddress = async (address: string) => {
     try {
@@ -238,7 +241,7 @@
     class="h-screen"
   >
     <SwiperSlide>
-      <div class="bg-[#EBFDFF] h-full">
+      <div class="bg-[#EBFDFF] h-full overflow-hidden">
         <div class="flex flex-col h-full max-w-[2000px] m-auto w-[90%]">
           <img
             src={Logo}
@@ -246,23 +249,17 @@
             class="xl:w-[177px] w-[220px] xl:h-[75px] h-[100px]"
           />
           <div
-            class="flex-1 h-full flex xl:flex-row flex-col items-center xl:justify-between justify-center xl:gap-20 lg:gap-10 gap-48 px-[35px]"
+            class="flex-1 h-full flex xl:flex-row flex-col items-center xl:justify-between justify-center gap-20 px-[35px]"
           >
             <div class="xl:flex-[0.7] flex-0 flex flex-col">
               <div class="flex flex-col gap-10">
-                <div class="text-[#323842] text-5xl font-bold">
+                <div class="text-[#202025] text-[100px] font-bold">
                   2023 Solana Recap
                 </div>
                 <div class="flex flex-col gap-6">
-                  <div class="text-[#565E6C] font-normal text-sm">
-                    2023 has proven to be a challenging year for every holder,
-                    but we've managed to weather the storm and emerge from the
-                    bottom. This resilience is a significant achievement, and
-                    now let's reflect on the moments we've overcome together.
-                  </div>
                   {#if userPublicAddressChain === "SOL" && userAddress}
                     <div
-                      class="relative w-max flex items-center justify-center gap-2 text-white border cursor-pointer py-3 px-6 rounded-[12px] min-w-[250px] border-[#27326f] text-[#27326f] xl:text-base text-2xl font-semibold"
+                      class="relative w-max flex items-center justify-center gap-2 cursor-pointer p-[20px] rounded-[32px] min-w-[250px] bg-[#A7EB50] text-black xl:text-xl text-2xl font-semibold"
                       on:click={() => {
                         showPopover = true;
                       }}
@@ -273,9 +270,9 @@
                         {shorterAddress(userAddress)}
                       {/if}
 
-                      {#if showPopover}
+                      {#if showPopover && $user && Object.keys($user).length !== 0}
                         <div
-                          class="bg-white absolute top-15 right-0 z-50 flex flex-col gap-1 px-3 xl:py-2 py-3 text-sm transform rounded-lg w-full"
+                          class="bg-white absolute top-20 right-0 z-50 flex flex-col gap-1 px-3 xl:py-2 py-3 text-sm transform rounded-lg w-full"
                           style="box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);"
                           use:clickOutside
                           on:click_outside={() => (showPopover = false)}
@@ -297,22 +294,46 @@
                     </div>
                   {:else}
                     <div
-                      class="w-max flex items-center justify-center gap-2 text-white border cursor-pointer py-3 px-6 rounded-[12px] min-w-[250px] border-[#27326f] text-[#27326f] xl:text-base text-2xl font-semibold"
+                      class="w-max flex items-center justify-center gap-2 cursor-pointer p-[20px] rounded-[32px] min-w-[250px] bg-[#A7EB50] text-black xl:text-xl text-2xl font-semibold"
                       on:click={() => {
                         isOpenAuthModal = true;
                       }}
                     >
-                      Connect wallet
+                      Connect My Wallet
+                      <img src={Arrow} alt="" />
                     </div>
                   {/if}
                 </div>
               </div>
             </div>
-            <div
-              class="flex gap-6 justify-end lg:max-xl:self-end mx-auto-high-screen relative w-[700px] lg:max-xl:w-500"
-            >
-              <CardNftRecap nft={NFTTwo} />
-              <CardNftRecap nft={NFTOne} />
+
+            <div class="flex flex-col gap-4">
+              <div class="text-black font-normal text-base">
+                2023 has proven to be a challenging year for every holder, but
+                we've managed to weather the storm and emerge from the bottom.
+                This resilience is a significant achievement, and now let's
+                reflect on the moments we've overcome together.
+              </div>
+              <div class="flex gap-10 relative py-14 px-16">
+                <div class="absolute top-[-50px] left-[-40px]">
+                  <img
+                    src={SvgOne}
+                    alt=""
+                    class="w-full h-full object-contain"
+                  />
+                </div>
+
+                <div class="absolute bottom-[-100px] right-[-150px]">
+                  <img
+                    src={SvgTwo}
+                    alt=""
+                    class="w-full h-full object-contain"
+                  />
+                </div>
+
+                <CardNftRecap nft={NFTTwo} />
+                <CardNftRecap nft={NFTOne} />
+              </div>
             </div>
           </div>
         </div>
@@ -353,38 +374,13 @@
 >
   <div class="flex flex-col gap-4">
     <div class="xl:title-3 title-1 font-medium text-center">
-      Connect Solana wallet to enjoy more features
+      Connect wallet to enjoy more features
     </div>
     <div class="flex items-center justify-center gap-4">
-      <SolanaAuth text="Connect wallet" />
+      <SolanaAuth text="Login with Solana" />
     </div>
   </div>
 </AppOverlay>
 
 <style windi:preflights:global windi:safelist:global>
-  @media (min-width: 2000px) {
-    .mx-auto-high-screen {
-      margin-left: auto;
-      margin-right: auto;
-    }
-  }
-  @media (min-width: 1024px) {
-    .lg\:gap-10 {
-      grid-gap: 40px;
-      gap: 40px;
-    }
-  }
-  @media (min-width: 1024px) {
-    @media not all and (min-width: 1280px) {
-      .lg\:max-xl\:w-500 {
-        width: 500px /* 28px */;
-      }
-
-      .lg\:max-xl\:self-end {
-        -ms-flex-item-align: end;
-        -webkit-align-self: flex-end;
-        align-self: flex-end;
-      }
-    }
-  }
 </style>

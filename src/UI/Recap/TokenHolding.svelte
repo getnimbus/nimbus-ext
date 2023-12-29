@@ -3,6 +3,8 @@
 
   import Logo from "~/assets/logo-1.svg";
   import Upload from "~/assets/upload.svg";
+  import CardNftRecap from "~/components/CardNFTRecap.svelte";
+  import NFTOne from "~/assets/recap/nft-card-3.png";
 
   export let data;
 
@@ -72,7 +74,11 @@
         <div>Share</div>
       </button>
     </div>
-    <div class="chart_container">Chart</div>
+    <div class="chart_container">
+      Chart
+
+      <CardNftRecap nft={NFTOne} />
+    </div>
   </div>
 </div>
 
