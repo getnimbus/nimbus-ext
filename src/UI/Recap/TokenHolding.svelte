@@ -7,8 +7,11 @@
 
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import Portfolio from "./TokenHoldingCharts/Portfolio.svelte";
+  import Price from "./TokenHoldingCharts/Price.svelte";
+  import TopChanges from "./TokenHoldingCharts/TopChanges.svelte";
 
   export let data;
+  export let loading;
 
   $: console.log("data: ", data);
 
@@ -122,12 +125,12 @@
         </div>
       </div>
 
-      <div class="flex-1">
+      <div class="flex-1 flex flex-col gap-6">
         <div class="flex items-end gap-6">
-          <Portfolio />
-          <div class="flex-1">Price charts</div>
+          <Portfolio data={data?.holding} {loading} />
+          <Price data={data?.stats} {loading} />
         </div>
-        <div class="flex-1">Top changes charts</div>
+        <TopChanges data={data?.top_gainer} {loading} />
       </div>
 
       <div class="absolute bottom-[-100px] left-[-120px] z-[1]">
