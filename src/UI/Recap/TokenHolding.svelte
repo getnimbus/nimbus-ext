@@ -4,10 +4,9 @@
   import Logo from "~/assets/logo-1.svg";
   import Share from "~/assets/recap/hero/share.svg";
   import SvgOne from "~/assets/recap/hero/svgOne.svg";
-  import NFTOne from "~/assets/recap/nft-card-3.png";
 
   import TooltipNumber from "~/components/TooltipNumber.svelte";
-  import CardNftRecap from "~/components/CardNFTRecap.svelte";
+  import Portfolio from "./TokenHoldingCharts/Portfolio.svelte";
 
   export let data;
 
@@ -118,9 +117,11 @@
       </div>
 
       <div class="chart_container">
-        Chart
-
-        <CardNftRecap nft={NFTOne} />
+        <Portfolio />
+        <div class="flex-1 flex flex-col gap-6">
+          <div class="flex-1">Price charts</div>
+          <div class="flex-1">Top changes charts</div>
+        </div>
       </div>
 
       <div class="iconOne">
@@ -130,10 +131,11 @@
   </div>
 </div>
 
-<style windi:preflights:global windi:safelist:global>
+<style>
   .wrapper {
     background: #eff4e8;
     height: 100%;
+    width: 100%;
     overflow: hidden;
   }
 
@@ -162,7 +164,7 @@
   .wrapper .container_wrapper .container {
     padding: 0 35px;
     height: 100%;
-    flex: 1;
+    width: 100%;
     display: flex;
     justify-content: space-between;
     gap: 80px;
@@ -182,11 +184,11 @@
   }
 
   .wrapper .container_wrapper .container .chart_container {
-    flex: 1;
+    display: flex;
+    gap: 24px;
   }
 
   .wrapper .container_wrapper .container .content_container {
-    flex: 1;
     display: flex;
     flex-direction: column;
     justify-content: center;

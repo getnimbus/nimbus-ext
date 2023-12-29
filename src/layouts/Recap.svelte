@@ -251,7 +251,7 @@
           <div
             class="flex-1 h-full flex xl:flex-row flex-col items-center xl:justify-between justify-center gap-20 px-[35px]"
           >
-            <div class="xl:flex-[0.7] flex-0 flex flex-col">
+            <div class="flex flex-col">
               <div class="flex flex-col gap-10">
                 <div class="text-[#202025] text-[100px] font-bold">
                   2023 Solana Recap
@@ -314,7 +314,7 @@
                 This resilience is a significant achievement, and now let's
                 reflect on the moments we've overcome together.
               </div>
-              <div class="flex gap-10 relative py-14 px-16">
+              <div class="flex justify-center gap-10 relative py-14 px-16">
                 <div class="absolute top-[-50px] left-[-40px]">
                   <img
                     src={SvgOne}
