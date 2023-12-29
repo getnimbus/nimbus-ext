@@ -4,8 +4,10 @@
   import Logo from "~/assets/logo-1.svg";
   import Share from "~/assets/recap/hero/share.svg";
   import SvgOne from "~/assets/recap/hero/svgOne.svg";
+  import NFTOne from "~/assets/recap/nft-card-3.png";
 
   import TooltipNumber from "~/components/TooltipNumber.svelte";
+  import CardNftRecap from "~/components/CardNFTRecap.svelte";
 
   export let data;
 
@@ -115,7 +117,11 @@
         </div>
       </div>
 
-      <div class="chart_container">Chart</div>
+      <div class="chart_container">
+        Chart
+
+        <CardNftRecap nft={NFTOne} />
+      </div>
 
       <div class="iconOne">
         <img src={SvgOne} alt="" />
