@@ -249,10 +249,12 @@
             class="xl:w-[177px] w-[220px] xl:h-[75px] h-[100px]"
           />
           <div
-            class="flex-1 h-full flex xl:flex-row flex-col items-center xl:justify-between justify-center gap-20 px-[35px]"
+            class="flex-1 h-full flex xl:flex-row flex-col items-center item_start xl:justify-between justify-center gap-20 px-[35px]"
           >
             <div class="flex flex-col gap-10">
-              <div class="text-[#202025] text-[100px] font-bold">
+              <div
+                class="text-[#202025] text-[100px] text_title_lg_view font-bold"
+              >
                 2023 Solana Recap
               </div>
               <div class="flex flex-col gap-6">
@@ -312,25 +314,28 @@
                 This resilience is a significant achievement, and now let's
                 reflect on the moments we've overcome together.
               </div>
-              <div class="flex justify-center gap-10 relative py-14 px-16">
-                <div class="absolute top-[-50px] left-[-40px]">
-                  <img
-                    src={SvgOne}
-                    alt=""
-                    class="w-full h-full object-contain"
-                  />
-                </div>
 
-                <div class="absolute bottom-[-100px] right-[-150px]">
-                  <img
-                    src={SvgTwo}
-                    alt=""
-                    class="w-full h-full object-contain"
-                  />
+              <div class="flex justify-center gap-10 py-10 px-16">
+                <div class="relative">
+                  <div class="absolute top-[-140px] left-[-160px]">
+                    <img
+                      src={SvgOne}
+                      alt=""
+                      class="w-full h-full object-contain"
+                    />
+                  </div>
+                  <CardNftRecap nft={NFTTwo} />
                 </div>
-
-                <CardNftRecap nft={NFTTwo} />
-                <CardNftRecap nft={NFTOne} />
+                <div class="relative">
+                  <div class="absolute bottom-[-130px] right-[-150px]">
+                    <img
+                      src={SvgTwo}
+                      alt=""
+                      class="w-full h-full object-contain"
+                    />
+                  </div>
+                  <CardNftRecap nft={NFTOne} />
+                </div>
               </div>
             </div>
           </div>
@@ -381,4 +386,17 @@
 </AppOverlay>
 
 <style windi:preflights:global windi:safelist:global>
+  @media (min-width: 1024px) {
+    @media not all and (min-width: 1280px) {
+      .text_title_lg_view {
+        font-size: 60px;
+      }
+      .item_start {
+        -webkit-box-align: start;
+        -ms-flex-align: start;
+        -webkit-align-items: flex-start;
+        align-items: flex-start;
+      }
+    }
+  }
 </style>
