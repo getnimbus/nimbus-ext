@@ -260,53 +260,51 @@
                     bottom. This resilience is a significant achievement, and
                     now let's reflect on the moments we've overcome together.
                   </div>
-                  <div
-                    class="relative w-max flex items-center justify-center gap-2 text-white border cursor-pointer py-3 px-6 rounded-[12px] min-w-[250px] border-[#27326f] text-[#27326f] xl:text-base text-2xl font-semibold"
-                  >
-                    {#if userPublicAddressChain === "SOL" && userAddress}
-                      <span
-                        on:click={() => {
-                          showPopover = true;
-                        }}
-                      >
-                        {#if isLoading}
-                          <Loading />
-                        {:else}
-                          {shorterAddress(userAddress)}
-                        {/if}
-                      </span>
-                    {:else}
-                      <span
-                        on:click={() => {
-                          isOpenAuthModal = true;
-                        }}
-                      >
-                        Connect wallet
-                      </span>
-                    {/if}
+                  {#if userPublicAddressChain === "SOL" && userAddress}
+                    <div
+                      class="relative w-max flex items-center justify-center gap-2 text-white border cursor-pointer py-3 px-6 rounded-[12px] min-w-[250px] border-[#27326f] text-[#27326f] xl:text-base text-2xl font-semibold"
+                      on:click={() => {
+                        showPopover = true;
+                      }}
+                    >
+                      {#if isLoading}
+                        <Loading />
+                      {:else}
+                        {shorterAddress(userAddress)}
+                      {/if}
 
-                    {#if showPopover}
-                      <div
-                        class="select_content absolute top-15 right-0 z-50 flex flex-col gap-1 px-3 xl:py-2 py-3 text-sm transform rounded-lg w-full"
-                        style="box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);"
-                        use:clickOutside
-                        on:click_outside={() => (showPopover = false)}
-                      >
+                      {#if showPopover}
                         <div
-                          class="text-2xl font-medium text-red-500 cursor-pointer xl:text-base rounded-md transition-all px-2 py-1 text-center"
-                          on:click={() => {
-                            handleSignOut();
-                            localStorage.removeItem("solana_token");
-                            $walletStore.disconnect();
-                            showPopover = false;
-                            isOpenAuthModal = false;
-                          }}
+                          class="bg-white absolute top-15 right-0 z-50 flex flex-col gap-1 px-3 xl:py-2 py-3 text-sm transform rounded-lg w-full"
+                          style="box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);"
+                          use:clickOutside
+                          on:click_outside={() => (showPopover = false)}
                         >
-                          Log out
+                          <div
+                            class="text-2xl font-medium text-red-500 cursor-pointer xl:text-base rounded-md transition-all px-2 py-1 text-center"
+                            on:click={() => {
+                              handleSignOut();
+                              localStorage.removeItem("solana_token");
+                              $walletStore.disconnect();
+                              showPopover = false;
+                              isOpenAuthModal = false;
+                            }}
+                          >
+                            Log out
+                          </div>
                         </div>
-                      </div>
-                    {/if}
-                  </div>
+                      {/if}
+                    </div>
+                  {:else}
+                    <div
+                      class="w-max flex items-center justify-center gap-2 text-white border cursor-pointer py-3 px-6 rounded-[12px] min-w-[250px] border-[#27326f] text-[#27326f] xl:text-base text-2xl font-semibold"
+                      on:click={() => {
+                        isOpenAuthModal = true;
+                      }}
+                    >
+                      Connect wallet
+                    </div>
+                  {/if}
                 </div>
               </div>
             </div>
@@ -354,11 +352,11 @@
   on:close={() => (isOpenAuthModal = false)}
 >
   <div class="flex flex-col gap-4">
-    <div class="xl:title-3 title-1 font-medium">
-      Connect wallet to enjoy more features
+    <div class="xl:title-3 title-1 font-medium text-center">
+      Connect Solana wallet to enjoy more features
     </div>
     <div class="flex items-center justify-center gap-4">
-      <SolanaAuth text="Login with Solana" />
+      <SolanaAuth text="Connect wallet" />
     </div>
   </div>
 </AppOverlay>
