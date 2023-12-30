@@ -84,7 +84,7 @@
     </div>
     <div class="relative px-[35px] h-[90%] text-white">
       <div
-        class="bg-black relative rounded-[32px] p-[60px] h-full w-full flex items-center"
+        class="bg-black relative rounded-[32px] p-[60px] h-full w-full flex xl:flex-row flex-col xl:justify-start justify-center items-center gap-20"
       >
         <div class="flex flex-col justify-between gap-[60px]">
           <div class="text-[60px] font-bold">Mint You 2023 recap</div>
@@ -117,7 +117,7 @@
             </div>
           </div>
         </div>
-        <div class="absolute right-[120px]">
+        <div class="xl:absolute right-[120px]">
           <CardNftRecap nft={NFTimg} />
         </div>
       </div>
