@@ -72,7 +72,7 @@
 </script>
 
 <div
-  class="bg-[#E8F4EF] pt-10 pb-20 overflow-hidden w-full h-full"
+  class="bg-[#E8F4EF] text-black pt-10 pb-20 overflow-hidden w-full h-full"
   id="target-slide-2"
 >
   <div

@@ -5,6 +5,9 @@
     useQueryClient,
   } from "@tanstack/svelte-query";
   import { nimbus } from "~/lib/network";
+  import { triggerFirework } from "~/utils";
+  import { wait } from "~/entries/background/utils";
+  import { userPublicAddress } from "~/store";
   import { walletStore } from "@svelte-on-solana/wallet-adapter-core";
   import {
     Connection,
@@ -16,17 +19,27 @@
   import { blur } from "svelte/transition";
 
   import CardNftRecap from "~/components/CardNFTRecap.svelte";
+  import AppOverlay from "~/components/Overlay.svelte";
+  import Button from "~/components/Button.svelte";
 
   import Logo from "~/assets/logo-1.svg";
   import HammerIcon from "~/assets/recap/hero/hammer.svg";
   import Share from "~/assets/recap/hero/share.svg";
   import NFTTwo from "~/assets/recap/nft-card-1.png";
   import dotIcon from "~/assets/recap/2-dot-icon.svg";
+  import goldImg from "~/assets/Gold4.svg";
+
+  const queryClient = useQueryClient();
 
   let toastMsg = "";
   let isSuccessToast = false;
   let counter = 3;
   let showToast = false;
+
+  let openScreenSuccess = false;
+  let openScreenBonusScore = false;
+  let isOpenModal = false;
+  let bonusScore = 0;
 
   const trigger = () => {
     showToast = true;
@@ -39,6 +52,48 @@
     showToast = false;
     toastMsg = "";
     isSuccessToast = false;
+  };
+
+  const triggerScreenSuccess = async () => {
+    openScreenSuccess = true;
+    triggerFirework();
+    await wait(2000);
+    openScreenSuccess = false;
+    isOpenModal = true;
+  };
+
+  const triggerBonusScore = async () => {
+    openScreenBonusScore = true;
+    triggerFirework();
+    await wait(2000);
+    openScreenBonusScore = false;
+  };
+
+  const handleReceiveQuest = async () => {
+    // try {
+    //   window.open(link, "_blank");
+    //   await wait(5000);
+    //   const res = await nimbus.post(
+    //     `/v2/checkin/${$userPublicAddress}/quest/retweet-on-twitter`,
+    //     {}
+    //   );
+    //   if (res && res?.data === null) {
+    //     toastMsg = "You already retweet us on Twitter";
+    //     isSuccessToast = false;
+    //     trigger();
+    //   }
+    //   if (res?.data?.bonus !== undefined) {
+    //     triggerBonusScore();
+    //     bonusScore = res?.data?.bonus;
+    //     queryClient.invalidateQueries([$userPublicAddress, "daily-checkin"]);
+    //     queryClient.invalidateQueries(["users-me"]);
+    //   }
+    // } catch (error) {
+    //   console.error(e);
+    // }
+    triggerBonusScore();
+    bonusScore = 50;
+    isOpenModal = false;
   };
 
   const downloadPage = async () => {
@@ -181,6 +236,11 @@
                 >
                   Share <img src={Share} alt="" class="w-10 h-10" />
                 </button>
+
+                <button
+                  class="text-white bg-green-500"
+                  on:click={() => triggerScreenSuccess()}>demo click</button
+                >
               </div>
             </div>
           </div>
@@ -237,6 +297,73 @@
     </Toast>
   </div>
 {/if}
+
+{#if openScreenSuccess}
+  <div
+    class="fixed h-screen w-screen top-0 left-0 z-[9999xp] flex items-center justify-center bg-[#000000cc]"
+    on:click={() => {
+      setTimeout(() => {
+        openScreenSuccess = false;
+      }, 500);
+    }}
+  >
+    <div class="flex flex-col items-center justify-center gap-6">
+      <div class="text-4xl text-white font-bold">
+        Mint Nimbus recap NFT successfully
+      </div>
+      <div class="xl:text-2xl text-4xl text-white font-medium">
+        Thank you for Mint our recap NFT. Ready to receive exclusive benefit
+        with us!
+      </div>
+    </div>
+  </div>
+{/if}
+
+{#if openScreenBonusScore}
+  <div
+    class="fixed h-screen w-screen top-0 left-0 z-[9999xp] flex items-center justify-center bg-[#000000cc]"
+    on:click={() => {
+      setTimeout(() => {
+        openScreenBonusScore = false;
+      }, 500);
+    }}
+  >
+    <div class="flex flex-col items-center justify-center gap-10">
+      <div class="xl:text-2xl text-4xl text-white font-medium">
+        Congratulation!!!
+      </div>
+      <img src={goldImg} alt="" class="w-40 h-40" />
+      <div class="xl:text-2xl text-4xl text-white font-medium">
+        You have received {bonusScore} Bonus GM Points
+      </div>
+    </div>
+  </div>
+{/if}
+
+<AppOverlay
+  clickOutSideToClose
+  isOpen={isOpenModal}
+  on:close={() => {
+    isOpenModal = false;
+  }}
+>
+  <div class="flex flex-col gap-4">
+    <div class="flex flex-col gap-1 items-start">
+      <div class="xl:title-3 title-1 font-semibold">Sharing us on Twitter!</div>
+      <div class="flex items-center justify-between">
+        <div class="xl:text-base text-2xl text-gray-500 flex-[0.8]">
+          Tweet your top moments, achievements, and favorite memories using our
+          Nimbus Recap NFT and receive 50 GM Points bonus
+        </div>
+        <div on:click={() => handleReceiveQuest()}>
+          <Button>
+            <div class="py-2 px-3">Share!</div>
+          </Button>
+        </div>
+      </div>
+    </div>
+  </div>
+</AppOverlay>
 
 <style>
   @media (min-width: 2000px) {
