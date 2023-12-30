@@ -47,7 +47,7 @@
     flex-direction: column;
     border-radius: 24px;
     padding: 20px;
-    background: black;
+    background: #202025;
     width: max-content;
   }
 

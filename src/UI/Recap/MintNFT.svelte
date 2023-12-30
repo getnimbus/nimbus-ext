@@ -45,7 +45,7 @@
   });
 </script>
 
-<div class="bg-[#E8F4EF] overflow-hidden w-full h-full" id="target-slide-2">
+<div class="bg-[#E8F4EF] overflow-hidden w-full h-screen" id="target-slide-2">
   <div
     class="flex flex-col justify-between h-full max-w-[2000px] gap-2 m-auto w-[90%] py-5"
   >
