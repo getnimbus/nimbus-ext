@@ -12,6 +12,8 @@
     VersionedTransaction,
   } from "@solana/web3.js";
 
+  import Logo from "~/assets/logo-1.svg";
+
   const handleMintNFT = createMutation({
     mutationFn: async () => {
       const data = await nimbus.post("/recap/mint-nft", {
@@ -35,8 +37,23 @@
   });
 </script>
 
-<div class="">
-  <button on:click={$handleMintNFT.mutate()}>Mint NFT</button>
+<div
+  class="bg-[#E8F4EF] pt-10 pb-20 overflow-hidden w-full h-full"
+  id="target-slide-4"
+>
+  <div
+    class="relative flex flex-col gap-20 h-full max-w-[2400px] m-auto w-[96%]"
+  >
+    <img
+      src={Logo}
+      alt="logo"
+      class="xl:w-[177px] w-[220px] xl:h-[75px] h-[100px]"
+    />
+    <div class="flex-1 h-full px-[35px]">
+      <div>Mint your NFT</div>
+      <button on:click={$handleMintNFT.mutate()}>Mint</button>
+    </div>
+  </div>
 </div>
 
 <style></style>
