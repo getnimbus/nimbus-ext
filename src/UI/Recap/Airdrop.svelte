@@ -18,7 +18,7 @@
       class="xl:w-[177px] w-[220px] xl:h-[75px] h-[100px]"
     />
     <div
-      class="flex-1 h-full px-[35px] flex flex-col justify-between items-center"
+      class="flex-1 h-full px-[35px] flex flex-col justify-center gap-14 items-center"
     >
       <div class="font-bold text-4xl">
         You earn <span class="text-[60px]">21</span> airdrop worth
@@ -29,46 +29,102 @@
       >
         Share <img src={shareIco} alt="" />
       </button>
-      <div class="flex gap-3 justify-between">
+      <div class="xl:flex hidden gap-3 justify-between xl:min-h-60">
+        <!-- 1 -->
         <div
-          class="bg-black w-[240px] flex flex-col justify-between rounded-3xl px-6 py-5 gap-6"
+          class="bg-black w-[240px] flex flex-col card-shadow-airdrop self-start justify-between rounded-3xl px-6 py-5 gap-6"
         >
           <div class="text-center text-gray-500 flex items-center gap-3">
             <img src={carIco} alt="" class="w-10 h-10 rounded-full" /> 2000 JTO
           </div>
           <div class="text-white text-[40px]">$12,002</div>
         </div>
+        <!-- 2 -->
         <div
-          class="bg-black w-[240px] flex flex-col justify-between rounded-3xl px-6 py-5 gap-6"
+          class="bg-black w-[240px] flex flex-col card-shadow-airdrop self-end justify-between rounded-3xl px-6 py-5 gap-6"
         >
           <div class="text-center text-gray-500 flex items-center gap-3">
             <img src={carIco} alt="" class="w-10 h-10 rounded-full" /> 2000 JTO
           </div>
           <div class="text-white text-[40px]">$12,002</div>
         </div>
+        <!-- 3 -->
         <div
-          class="bg-black w-[240px] flex flex-col justify-between rounded-3xl px-6 py-5 gap-6"
+          class="bg-black w-[240px] flex flex-col card-shadow-airdrop self-start justify-between rounded-3xl px-6 py-5 gap-6"
         >
           <div class="text-center text-gray-500 flex items-center gap-3">
             <img src={carIco} alt="" class="w-10 h-10 rounded-full" /> 2000 JTO
           </div>
           <div class="text-white text-[40px]">$12,002</div>
         </div>
+        <!-- 4 -->
         <div
-          class="bg-black w-[240px] flex flex-col justify-between rounded-3xl px-6 py-5 gap-6"
+          class="bg-black w-[240px] flex flex-col card-shadow-airdrop self-end justify-between rounded-3xl px-6 py-5 gap-6"
         >
           <div class="text-center text-gray-500 flex items-center gap-3">
             <img src={carIco} alt="" class="w-10 h-10 rounded-full" /> 2000 JTO
           </div>
           <div class="text-white text-[40px]">$12,002</div>
         </div>
+        <!-- 5 -->
         <div
-          class="bg-black w-[240px] flex flex-col justify-between rounded-3xl px-6 py-5 gap-6"
+          class="bg-black w-[240px] flex flex-col card-shadow-airdrop self-start justify-between rounded-3xl px-6 py-5 gap-6"
         >
           <div class="text-center text-gray-500 flex items-center gap-3">
             <img src={carIco} alt="" class="w-10 h-10 rounded-full" /> 2000 JTO
           </div>
           <div class="text-white text-[40px]">$12,002</div>
+        </div>
+      </div>
+      <div class="flex xl:hidden flex-col gap-3 justify-between">
+        <div class="flex gap-3 justify-center">
+          <!-- 1 -->
+          <div
+            class="bg-black w-[240px] flex flex-col card-shadow-airdrop self-start justify-between rounded-3xl px-6 py-5 gap-6"
+          >
+            <div class="text-center text-gray-500 flex items-center gap-3">
+              <img src={carIco} alt="" class="w-10 h-10 rounded-full" /> 2000 JTO
+            </div>
+            <div class="text-white text-[40px]">$12,002</div>
+          </div>
+          <!-- 2 -->
+          <div
+            class="bg-black w-[240px] flex flex-col card-shadow-airdrop self-end justify-between rounded-3xl px-6 py-5 gap-6"
+          >
+            <div class="text-center text-gray-500 flex items-center gap-3">
+              <img src={carIco} alt="" class="w-10 h-10 rounded-full" /> 2000 JTO
+            </div>
+            <div class="text-white text-[40px]">$12,002</div>
+          </div>
+          <!-- 3 -->
+          <div
+            class="bg-black w-[240px] flex flex-col card-shadow-airdrop self-start justify-between rounded-3xl px-6 py-5 gap-6"
+          >
+            <div class="text-center text-gray-500 flex items-center gap-3">
+              <img src={carIco} alt="" class="w-10 h-10 rounded-full" /> 2000 JTO
+            </div>
+            <div class="text-white text-[40px]">$12,002</div>
+          </div>
+        </div>
+        <div class="flex gap-3 justify-center">
+          <!-- 4 -->
+          <div
+            class="bg-black w-[240px] flex flex-col card-shadow-airdrop self-end justify-between rounded-3xl px-6 py-5 gap-6"
+          >
+            <div class="text-center text-gray-500 flex items-center gap-3">
+              <img src={carIco} alt="" class="w-10 h-10 rounded-full" /> 2000 JTO
+            </div>
+            <div class="text-white text-[40px]">$12,002</div>
+          </div>
+          <!-- 5 -->
+          <div
+            class="bg-black w-[240px] flex flex-col card-shadow-airdrop self-start justify-between rounded-3xl px-6 py-5 gap-6"
+          >
+            <div class="text-center text-gray-500 flex items-center gap-3">
+              <img src={carIco} alt="" class="w-10 h-10 rounded-full" /> 2000 JTO
+            </div>
+            <div class="text-white text-[40px]">$12,002</div>
+          </div>
         </div>
       </div>
     </div>
@@ -90,5 +146,9 @@
 
   .rotate-93_74 {
     transform: rotate(93.74deg);
+  }
+
+  .card-shadow-airdrop {
+    box-shadow: 20px 20px 40px 0px #48513c8a;
   }
 </style>
