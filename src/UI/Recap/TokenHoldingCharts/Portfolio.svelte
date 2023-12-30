@@ -260,17 +260,17 @@
   }
 </script>
 
-<div class="flex-1 flex flex-col gap-4 p-[24px] rounded-[20px] bg-black">
+<div class="flex-1 flex flex-col p-[24px] rounded-[20px] bg-black">
   <div class="text-white text-xl font-medium">Your Portfolio</div>
   {#if loading}
-    <div class="flex justify-center items-center h-full h-[275px]">
+    <div class="flex justify-center items-center h-full h-[225px]">
       <Loading />
     </div>
   {:else}
     <div>
       {#if isEmptyDataPieTokens}
         <div
-          class="flex justify-center items-center h-full xl:text-lg text-xl text-white h-[275px]"
+          class="flex justify-center items-center h-full xl:text-lg text-xl text-white h-[225px]"
         >
           Empty
         </div>
@@ -281,7 +281,7 @@
             theme="dark"
             notMerge={true}
             option={optionPie}
-            height={265}
+            height={225}
           />
         </div>
       {/if}

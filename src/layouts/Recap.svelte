@@ -235,7 +235,7 @@
 </script>
 
 <ErrorBoundary>
-  <Swiper
+  <!-- <Swiper
     direction="vertical"
     mousewheel={true}
     cssMode={true}
@@ -368,7 +368,107 @@
     <SwiperSlide>
       <Promote />
     </SwiperSlide>
-  </Swiper>
+  </Swiper> -->
+
+  <div class="bg-[#EBFDFF] h-full overflow-hidden py-10">
+    <div class="flex flex-col h-full max-w-[2400px] m-auto w-[96%]">
+      <img
+        src={Logo}
+        alt="logo"
+        class="xl:w-[177px] w-[220px] xl:h-[75px] h-[100px]"
+      />
+      <div
+        class="flex-1 h-full flex xl:flex-row flex-col items-center item_start xl:justify-between justify-center gap-20 px-[35px]"
+      >
+        <div class="flex flex-col gap-10">
+          <div class="text-[#202025] text-[100px] text_title_lg_view font-bold">
+            2023 Solana Recap
+          </div>
+          <div class="flex flex-col gap-6">
+            {#if userPublicAddressChain === "SOL" && userAddress}
+              <div
+                class="relative w-max flex items-center justify-center gap-2 cursor-pointer p-[20px] rounded-[32px] min-w-[250px] bg-[#A7EB50] text-black xl:text-xl text-2xl font-semibold"
+                on:click={() => {
+                  showPopover = true;
+                }}
+              >
+                {#if isLoading}
+                  <Loading />
+                {:else}
+                  {shorterAddress(userAddress)}
+                {/if}
+
+                {#if showPopover && $user && Object.keys($user).length !== 0}
+                  <div
+                    class="bg-white absolute top-20 right-0 z-50 flex flex-col gap-1 px-3 xl:py-2 py-3 text-sm transform rounded-lg w-full"
+                    style="box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);"
+                    use:clickOutside
+                    on:click_outside={() => (showPopover = false)}
+                  >
+                    <div
+                      class="text-2xl font-medium text-red-500 cursor-pointer xl:text-base rounded-md transition-all px-2 py-1 text-center"
+                      on:click={() => {
+                        handleSignOut();
+                        localStorage.removeItem("solana_token");
+                        $walletStore.disconnect();
+                        showPopover = false;
+                        isOpenAuthModal = false;
+                      }}
+                    >
+                      Log out
+                    </div>
+                  </div>
+                {/if}
+              </div>
+            {:else}
+              <div
+                class="w-max flex items-center justify-center gap-2 cursor-pointer p-[20px] rounded-[32px] min-w-[250px] bg-[#A7EB50] text-black xl:text-xl text-2xl font-semibold"
+                on:click={() => {
+                  isOpenAuthModal = true;
+                }}
+              >
+                Connect My Wallet
+                <img src={Arrow} alt="" />
+              </div>
+            {/if}
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-4">
+          <div class="text-black font-normal text-base xl:px-0 px-[35px]">
+            2023 has proven to be a challenging year for every holder, but we've
+            managed to weather the storm and emerge from the bottom. This
+            resilience is a significant achievement, and now let's reflect on
+            the moments we've overcome together.
+          </div>
+
+          <div class="flex justify-center gap-10 py-10 px-16">
+            <div class="relative">
+              <div class="absolute top-[-80px] left-[-160px]">
+                <img src={SvgOne} alt="" class="w-full h-full object-contain" />
+              </div>
+              <CardNftRecap nft={NFTTwo} />
+            </div>
+            <div class="relative">
+              <div class="absolute bottom-[-130px] right-[-150px]">
+                <img src={SvgTwo} alt="" class="w-full h-full object-contain" />
+              </div>
+              <CardNftRecap nft={NFTOne} />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {#if userPublicAddressChain === "SOL" && userAddress}
+    <TokenHolding data={data?.tokens} loading={$query.isLoading} />
+    <NftHolding data={data?.nfts} loading={$query.isLoading} />
+    <Airdrop />
+    <MintNft />
+  {/if}
+
+  <Promote />
 </ErrorBoundary>
 
 <WalletProvider localStorageKey="walletAdapter" {wallets} autoConnect />

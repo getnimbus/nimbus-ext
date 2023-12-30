@@ -3,7 +3,7 @@
 </script>
 
 <div
-  class="flex flex-col gap-5 h-full max-w-[2000px] m-auto w-[90%] pt-[35px] px-[35px]"
+  class="flex flex-col gap-5 h-full max-w-[2000px] m-auto w-[90%] py-10 px-[35px]"
 >
   <div class="flex items-start xl:flex-row flex-col gap-8">
     <div

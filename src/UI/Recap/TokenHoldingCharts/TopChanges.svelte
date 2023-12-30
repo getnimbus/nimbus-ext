@@ -1,5 +1,6 @@
 <script>
   import { autoFontSize, formatValue } from "~/utils";
+  import numeral from "numeral";
 
   import EChart from "~/components/EChart.svelte";
   import Loading from "~/components/Loading.svelte";
@@ -60,6 +61,12 @@
       {
         type: "value",
         axisLabel: {
+          formatter: function (value, index) {
+            return (
+              `${value < 0 ? "-" : ""} $` +
+              numeral(Math.abs(value)).format("0.00a")
+            );
+          },
           fontSize: autoFontSize(),
         },
       },
@@ -109,11 +116,11 @@
   }
 </script>
 
-<div class="flex flex-col gap-4 p-[24px] rounded-[20px] bg-black">
+<div class="w-[600px] flex flex-col p-[24px] rounded-[20px] bg-black">
   <div class="text-white text-xl font-medium">Top changes</div>
   {#if loading}
     <div
-      class="flex justify-center items-center h-full xl:text-lg text-xl text-white h-[385px]"
+      class="flex justify-center items-center h-full xl:text-lg text-xl text-white h-[335px]"
     >
       <Loading />
     </div>
@@ -121,7 +128,7 @@
     <div>
       {#if isEmptyData}
         <div
-          class="flex justify-center items-center h-full xl:text-lg text-xl text-white h-[385px]"
+          class="flex justify-center items-center h-full xl:text-lg text-xl text-white h-[335px]"
         >
           Empty
         </div>
@@ -131,7 +138,7 @@
           theme="dark"
           notMerge={true}
           option={optionBar}
-          height={385}
+          height={335}
         />
       {/if}
     </div>

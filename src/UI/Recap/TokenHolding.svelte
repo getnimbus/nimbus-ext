@@ -37,7 +37,6 @@
     const shareBtn = document.getElementById("btn-share");
     if (targetElement && shareBtn) {
       try {
-        // shareBtn.style.visibility = "hidden";
         await html2canvas(targetElement, {
           ignoreElements: (el) => {
             return el.id === "btn-share";
@@ -48,7 +47,6 @@
         }).then((canvas) => {
           const ctx = canvas.getContext("2d");
           ctx.imageSmoothingEnabled = true;
-          // shareBtn.style.visibility = "visible";
           const img = canvas
             .toDataURL("image/png")
             .replace("image/png", "image/octet-stream");
@@ -72,30 +70,34 @@
   };
 </script>
 
-<div class="bg-[#eff4e8] overflow-hidden w-full h-full" id="target-slide-1">
-  <div class="flex flex-col h-full max-w-[2000px] m-auto w-[90%]">
+<div
+  class="bg-[#eff4e8] py-10 overflow-hidden w-full h-full"
+  id="target-slide-1"
+>
+  <div class="flex flex-col h-full max-w-[2400px] m-auto w-[96%]">
     <img
       src={Logo}
       alt="logo"
       class="xl:w-[177px] w-[220px] xl:h-[75px] h-[100px]"
     />
     <div
-      class="relative flex-1 h-full flex xl:flex-row flex-col xl:items-center justify-between gap-20 px-[35px]"
+      class="relative flex-1 h-full flex xl:flex-row flex-col xl:items-center justify-between gap-10 px-[35px]"
     >
-      <div class="flex flex-col gap-7">
+      <div class="flex-1 flex flex-col gap-7">
         <div class="grid grid-cols-2 gap-10">
-          <div class="info_container">
-            <div class="title">You ape in tokens</div>
-            <div class="content">
+          <div class="flex flex-col gap-1">
+            <div class="text-xl text-[#4f4f4f]">You ape in tokens</div>
+            <div class="text-[64px] font-extrabold text-[#202025]">
               {data?.stats?.total_holding || 0}
             </div>
           </div>
 
-          <div class="info_container">
-            <div class="title">Make your investment growth</div>
+          <div class="flex flex-col gap-1">
+            <div class="text-xl text-[#4f4f4f]">
+              Make your investment growth
+            </div>
             <div
-              class="content"
-              style="display: flex; align-items: center; gap: 8px;"
+              class="flex items-center gap-1 text-[64px] font-extrabold text-[#202025]"
             >
               <TooltipNumber
                 number={Math.abs(Number(data?.stats?.networth_change)) * 100}
@@ -105,29 +107,41 @@
             </div>
           </div>
 
-          <div class="info_container">
-            <div class="title">Total transactions</div>
-            <div class="content">
+          <div class="flex flex-col gap-1">
+            <div class="text-xl text-[#4f4f4f]">Total transactions</div>
+            <div class="text-[64px] font-extrabold text-[#202025]">
               {data?.stats?.total_txs || 0}
             </div>
           </div>
 
-          <div class="info_container">
-            <div class="title">Paid fee (if use Ethereum)</div>
-            <div
-              class="content"
-              style="display: flex; align-items: center; gap: 8px;"
-            >
-              <TooltipNumber
-                number={Number(data?.stats.total_gas_fee_in_eth)}
-                type="amount"
-              />
-              <div>ETH</div>
+          <div class="flex flex-col gap-1">
+            <div class="text-xl text-[#4f4f4f]">Paid fee</div>
+            <div class="flex flex-col gap-3">
+              <div class="text-[64px] font-extrabold text-[#202025]">
+                <TooltipNumber
+                  number={Number(data?.stats?.price) *
+                    Number(data?.stats.total_gas_fee)}
+                  type="value"
+                />
+              </div>
+              <div class="flex flex-col gap-1">
+                <div class="text-[#202025] font-semibold text-4xl">
+                  <TooltipNumber
+                    number={1.5 * Number(data?.stats.total_txs)}
+                    type="value"
+                  />
+                </div>
+                <div class="text-[#4F4F4F] text-xl">(If you use Ethereum)</div>
+              </div>
             </div>
           </div>
         </div>
 
-        <div id="btn-share" class="btn-share" on:click={downloadPage}>
+        <div
+          id="btn-share"
+          class="bg-[#ffa41c] text-black p-4 flex items-center gap-2 text-2xl font-semibold rounded-[32px] w-max relative z-20"
+          on:click={downloadPage}
+        >
           <div>Share</div>
           <img src={Share} alt="" />
         </div>
@@ -138,14 +152,16 @@
           <Portfolio data={data?.holding} {loading} />
           <Price data={data?.stats} {loading} />
         </div>
-        <TopChanges data={data?.top_gainer} {loading} />
+        <div class="mx-auto">
+          <TopChanges data={data?.top_gainer} {loading} />
+        </div>
       </div>
 
-      <div class="absolute bottom-[-100px] left-[-120px] z-[1]">
+      <div class="absolute bottom-[-100px] left-[-120px] z-10">
         <img src={SvgOne} alt="" />
       </div>
 
-      <div class="absolute top-[-80px] right-[-120px] z-[1]">
+      <div class="absolute top-[-115px] right-[-10px] z-10">
         <img src={SvgFour} alt="" />
       </div>
     </div>
@@ -153,30 +169,4 @@
 </div>
 
 <style>
-  .info_container .title {
-    font-size: 18px;
-    color: #4f4f4f;
-  }
-
-  .info_container .content {
-    font-size: 36px;
-    font-weight: 800;
-    color: #202025;
-  }
-
-  .btn-share {
-    background: #ffa41c;
-    color: black;
-    padding: 16px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 22px;
-    font-weight: 600;
-    border-radius: 32px;
-    width: max-content;
-    cursor: pointer;
-    position: relative;
-    z-index: 2;
-  }
 </style>

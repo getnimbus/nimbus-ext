@@ -1514,7 +1514,7 @@
     <SparkLine
       data={solanaPrice.map((item) => item.price) || []}
       width={210}
-      height={80}
+      height={60}
     />
   {/if}
 </div>

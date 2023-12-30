@@ -33,9 +33,16 @@
     const shareBtn = document.getElementById("btn-share");
     if (targetElement && shareBtn) {
       try {
-        shareBtn.style.visibility = "hidden";
-        await html2canvas(targetElement).then((canvas) => {
-          shareBtn.style.visibility = "visible";
+        await html2canvas(targetElement, {
+          ignoreElements: (el) => {
+            return el.id === "btn-share";
+          },
+          allowTaint: true,
+          logging: true,
+          scale: 2,
+        }).then((canvas) => {
+          const ctx = canvas.getContext("2d");
+          ctx.imageSmoothingEnabled = true;
           const img = canvas
             .toDataURL("image/png")
             .replace("image/png", "image/octet-stream");
@@ -59,8 +66,11 @@
   };
 </script>
 
-<div class="bg-[#E8F4EF] overflow-hidden w-full h-full" id="target-slide-2">
-  <div class="flex flex-col h-full max-w-[2000px] m-auto w-[90%]">
+<div
+  class="bg-[#E8F4EF] py-10 overflow-hidden w-full h-full"
+  id="target-slide-2"
+>
+  <div class="flex flex-col h-full max-w-[2400px] m-auto w-[96%]">
     <img
       src={Logo}
       alt="logo"
@@ -95,7 +105,11 @@
             </div>
           </div>
         </div>
-        <div id="btn-share" class="btn-share" on:click={downloadPage}>
+        <div
+          id="btn-share"
+          class="bg-[#ffa41c] text-black p-4 flex items-center gap-2 text-2xl font-semibold rounded-[32px] w-max relative z-20"
+          on:click={downloadPage}
+        >
           <div>Share</div>
           <img src={Share} alt="" />
         </div>
@@ -142,11 +156,11 @@
         <div>hello2</div>
       </div>
 
-      <div class="absolute bottom-[0px] left-[-120px] z-[1]">
+      <div class="absolute bottom-[0px] left-[-120px] z-10">
         <img src={SvgThree} alt="" />
       </div>
 
-      <div class="absolute top-[-140px] right-[-160px] z-[1]">
+      <div class="absolute top-[-140px] right-[-160px] z-10">
         <img src={SvgOne} alt="" />
       </div>
     </div>
