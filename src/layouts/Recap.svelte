@@ -28,9 +28,7 @@
   import MintNft from "~/UI/Recap/MintNFT.svelte";
   import NftHolding from "~/UI/Recap/NFTHolding.svelte";
   import Promote from "~/UI/Recap/Promote.svelte";
-  import SolanaAuth from "~/UI/Auth/SolanaAuth.svelte";
   import CardNftRecap from "~/components/CardNFTRecap.svelte";
-  import AppOverlay from "~/components/Overlay.svelte";
   import Loading from "~/components/Loading.svelte";
 
   import WalletModal from "~/UI/SolanaCustomWalletBtn/WalletModal.svelte";
@@ -397,7 +395,7 @@
           <div class="flex flex-col gap-6">
             {#if userPublicAddressChain === "SOL" && userAddress}
               <div
-                class="relative w-max flex items-center justify-center gap-2 cursor-pointer p-[20px] rounded-[32px] min-w-[250px] bg-[#A7EB50] text-black xl:text-xl text-2xl font-semibold"
+                class="relative w-max flex items-center justify-center gap-2 cursor-pointer p-[20px] rounded-[32px] min-w-[250px] bg-[#A7EB50] text-black text-2xl font-semibold"
                 on:click={() => {
                   showPopover = true;
                 }}
@@ -431,7 +429,7 @@
               </div>
             {:else}
               <div
-                class="w-max flex items-center justify-center gap-2 cursor-pointer p-[20px] rounded-[32px] min-w-[250px] bg-[#A7EB50] text-black xl:text-xl text-2xl font-semibold"
+                class="w-max flex items-center justify-center gap-2 cursor-pointer p-[20px] rounded-[32px] min-w-[250px] bg-[#A7EB50] text-black text-2xl font-semibold"
                 on:click={() => {
                   openModal();
                 }}

@@ -1,5 +1,6 @@
 <script>
   import heroImage from "~/assets/recap/hero/heroimage.png";
+  import Arrow from "~/assets/recap/hero/arrow-right.svg";
 </script>
 
 <div
@@ -10,15 +11,14 @@
       <div class="font-bold text-5xl">
         A Personalized portfolio for Crypto investors
       </div>
-      <div class="w-max">
-        <button
-          class="w-max flex items-center justify-center gap-2 cursor-pointer p-[20px] rounded-[32px] min-w-[250px] bg-[#A7EB50] text-black xl:text-xl text-2xl font-semibold"
-          on:click={() => {
-            window.open("https://app.getnimbus.io/", "_blank");
-          }}
-        >
-          Launch app
-        </button>
+      <div
+        class="w-max flex items-center justify-center gap-2 cursor-pointer p-[20px] rounded-[32px] min-w-[250px] bg-[#A7EB50] text-black text-2xl font-semibold"
+        on:click={() => {
+          window.open("https://app.getnimbus.io/", "_blank");
+        }}
+      >
+        Launch app
+        <img src={Arrow} alt="" />
       </div>
     </div>
     <div class="flex-1">
