@@ -7,7 +7,7 @@
 
 <div class="relative overflow-hidden">
   <div
-    class="flex flex-col gap-5 h-full max-w-[2000px] m-auto w-[90%] pt-10 pb-20"
+    class="flex flex-col gap-10 h-full max-w-[2000px] m-auto w-[90%] pt-10 pb-20"
   >
     <div class="flex items-start xl:flex-row flex-col gap-8">
       <div class="flex flex-col items-start gap-6 xl:flex-[0.5] flex-1 w-full">
