@@ -140,7 +140,45 @@
         </div>
       </div>
     </div>
-    <div class="flex-1 h-full px-[35px]">
+    <div class="px-[35px] h-[90%] text-white rounded-[32px] bg-black">
+      <div
+        class="mx-auto large_screen_width relative p-[60px] h-full w-full flex xl:flex-row flex-col xl:justify-start justify-center items-center gap-20"
+      >
+        <div class="flex flex-col justify-between gap-[60px]">
+          <div class="text-[60px] font-bold">Mint You 2023 recap</div>
+          <div class="flex flex-col justify-between gap-8">
+            <div class="flex flex-col justify-between gap-5">
+              <div class="flex justify-between items-center">
+                <div class="text-white text-[24px]">Total mint</div>
+                <div class="flex items-end">
+                  <div class="text-[#4DF6E2] text-[40px]">45</div>
+                  <div class="text-[#646464] text-[36px]">/100</div>
+                </div>
+              </div>
+              <Progressbar progress={90} animate size="h-6" />
+            </div>
+            <div class="flex justify-between items-center text-black">
+              <button
+                class="p-5 font-semibold text-2xl flex items-center gap-4 rounded-[32px] bg-[#4DF6E2]"
+                on:click={$handleMintNFT.mutate()}
+              >
+                Mint 0.05 SOL ($5.25) <img src={HammerIcon} alt="" />
+              </button>
+              <button
+                class="p-5 font-semibold text-2xl flex items-center gap-4 rounded-[32px] bg-[#FFA41C]"
+                on:click={downloadPage}
+              >
+                Share <img src={Share} alt="" />
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="xl:absolute right-[120px]">
+          <CardNftRecap nft={NFTTwo} />
+        </div>
+      </div>
+    </div>
+    <!-- <div class="flex-1 h-full px-[35px]">
       <div
         class="bg-black rounded-[32px] p-[60px] h-full flex justify-between gap-20 border border-red-500"
       >
@@ -186,7 +224,7 @@
       <div class="xl:block hidden">
         <CardNftRecap nft={NFTTwo} />
       </div>
-    </div>
+    </div> -->
   </div>
 </div>
 
@@ -235,4 +273,10 @@
   </div>
 {/if}
 
-<style></style>
+<style>
+  @media (min-width: 2000px) {
+    .large_screen_width {
+      width: 1700px;
+    }
+  }
+</style>
