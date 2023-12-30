@@ -3,10 +3,38 @@
   import SvgTwo from "~/assets/recap/hero/svgTwo.svg";
   import shareIco from "~/assets/recap/share-icon.svg";
   import carIco from "~/assets/recap/car-ico.svg";
+  import { createMutation } from "@tanstack/svelte-query";
+  import { nimbus } from "~/lib/network";
+  import { walletStore } from "@svelte-on-solana/wallet-adapter-core";
+  import { Connection, Transaction } from "@solana/web3.js";
+
+  const handleAirdrop = createMutation({
+    mutationFn: async () => {
+      const data = await nimbus.post("/recap/airdrop", {
+        image: "", // TODO: Add base 64 image here
+      });
+
+      console.log(data.data.result.encoded_transaction);
+      const signedTx = await $walletStore.signTransaction(
+        Transaction.from(
+          Buffer.from(data.data.result.encoded_transaction, "base64")
+        )
+      );
+      const connection = new Connection(
+        "https://devnet-rpc.shyft.to?api_key=Gny0V25q6Y2kMjze" // DEVNET
+        // "https://rpc.shyft.to?api_key=Qjb6SubTTbLrkmNo" // PROD
+      );
+      const result = await $walletStore.sendTransaction(signedTx, connection);
+      console.log(result);
+      return result;
+    },
+  });
+
+  $: console.log("this is data airdrop", $handleAirdrop);
 </script>
 
 <div
-  class="bg-[#E8F4EF] pt-10 pb-20 overflow-hidden w-full h-screen"
+  class="bg-[#EFF4E8] pt-10 pb-20 overflow-hidden w-full h-screen"
   id="target-slide-4"
 >
   <div
@@ -18,7 +46,7 @@
       class="xl:w-[177px] w-[220px] xl:h-[75px] h-[100px]"
     />
     <div
-      class="flex-1 h-full px-[35px] flex flex-col justify-center gap-14 items-center"
+      class="flex-1 h-full px-[35px] flex flex-col justify-center gap-14 items-center text-black"
     >
       <div class="font-bold text-4xl">
         You earn <span class="text-[60px]">21</span> airdrop worth

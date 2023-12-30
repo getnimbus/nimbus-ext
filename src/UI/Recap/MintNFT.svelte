@@ -180,7 +180,7 @@
     </div>
     <!-- <div class="flex-1 h-full px-[35px]">
       <div
-        class="bg-black rounded-[32px] p-[60px] h-full flex justify-between gap-20 border border-red-500"
+        class="bg-black rounded-[32px] p-[60px] h-full flex justify-between gap-20"
       >
         <div class="flex-1 flex flex-col gap-10 justify-between">
           <div class="text-white text-[60px] xl:w-1/2 w-full font-bold">
