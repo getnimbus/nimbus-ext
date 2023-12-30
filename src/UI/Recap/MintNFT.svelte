@@ -21,6 +21,7 @@
   import HammerIcon from "~/assets/recap/hero/hammer.svg";
   import Share from "~/assets/recap/hero/share.svg";
   import NFTTwo from "~/assets/recap/nft-card-1.png";
+  import dotIcon from "~/assets/recap/2-dot-icon.svg";
 
   let toastMsg = "";
   let isSuccessToast = false;
@@ -101,19 +102,48 @@
 </script>
 
 <div
-  class="bg-[#E8F4EF] pt-10 pb-20 overflow-hidden w-full h-full"
+  class="bg-[#E8F4EF] pt-10 pb-20 overflow-hidden w-full h-screen"
   id="target-slide-4"
 >
   <div
     class="relative flex flex-col gap-20 h-full max-w-[2400px] m-auto w-[96%]"
   >
-    <img
-      src={Logo}
-      alt="logo"
-      class="xl:w-[177px] w-[220px] xl:h-[75px] h-[100px]"
-    />
+    <div class="flex justify-between items-center">
+      <img
+        src={Logo}
+        alt="logo"
+        class="xl:w-[177px] w-[220px] xl:h-[75px] h-[100px]"
+      />
+      <div class="flex justify-end items-center gap-6 pr-[35px]">
+        <div
+          class="bg-black text-white text-[32px] leading-[48px] py-[14px] px-[19px] rounded-[12px]"
+        >
+          6<span class="text-gray-500 ml-[3px] text-2xl">d</span>
+        </div>
+        <img src={dotIcon} alt="" class="text-xl" />
+        <div
+          class="bg-black text-white text-[32px] leading-[48px] py-[14px] px-[19px] rounded-[12px]"
+        >
+          21<span class="text-gray-500 ml-[3px] text-2xl">h</span>
+        </div>
+        <img src={dotIcon} alt="" class="text-xl" />
+        <div
+          class="bg-black text-white text-[32px] leading-[48px] py-[14px] px-[19px] rounded-[12px]"
+        >
+          15<span class="text-gray-500 ml-[3px] text-2xl">m</span>
+        </div>
+        <img src={dotIcon} alt="" class="text-xl" />
+        <div
+          class="bg-black text-white text-[32px] leading-[48px] py-[14px] px-[19px] rounded-[12px]"
+        >
+          5<span class="text-gray-500 ml-[3px] text-2xl">s</span>
+        </div>
+      </div>
+    </div>
     <div class="flex-1 h-full px-[35px]">
-      <div class="bg-black rounded-[32px] p-[60px] flex justify-between gap-20">
+      <div
+        class="bg-black rounded-[32px] p-[60px] h-full flex justify-between gap-20 border border-red-500"
+      >
         <div class="flex-1 flex flex-col gap-10 justify-between">
           <div class="text-white text-[60px] xl:w-1/2 w-full font-bold">
             Mint your 2023 recap
@@ -130,7 +160,7 @@
                   <div class="text-[#646464] text-[36px]">/100</div>
                 </div>
               </div>
-              <Progressbar progress={90} animate size="h-8" />
+              <Progressbar progress={90} animate size="h-6" />
             </div>
             <div class="flex items-center gap-10">
               <div
@@ -151,9 +181,10 @@
             </div>
           </div>
         </div>
-        <div class="xl:block hidden">
-          <CardNftRecap nft={NFTTwo} />
-        </div>
+      </div>
+
+      <div class="xl:block hidden">
+        <CardNftRecap nft={NFTTwo} />
       </div>
     </div>
   </div>
