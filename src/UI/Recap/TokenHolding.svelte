@@ -37,9 +37,18 @@
     const shareBtn = document.getElementById("btn-share");
     if (targetElement && shareBtn) {
       try {
-        shareBtn.style.visibility = "hidden";
-        await html2canvas(targetElement).then((canvas) => {
-          shareBtn.style.visibility = "visible";
+        // shareBtn.style.visibility = "hidden";
+        await html2canvas(targetElement, {
+          ignoreElements: (el) => {
+            return el.id === "btn-share";
+          },
+          allowTaint: true,
+          logging: true,
+          scale: 2,
+        }).then((canvas) => {
+          const ctx = canvas.getContext("2d");
+          ctx.imageSmoothingEnabled = true;
+          // shareBtn.style.visibility = "visible";
           const img = canvas
             .toDataURL("image/png")
             .replace("image/png", "image/octet-stream");
