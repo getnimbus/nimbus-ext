@@ -110,7 +110,7 @@
         </div>
         <div
           id="btn-share"
-          class="bg-[#ffa41c] text-black p-4 flex items-center gap-2 text-2xl font-semibold rounded-[32px] w-max relative z-20"
+          class="bg-[#ffa41c] text-black p-4 flex items-center gap-2 text-2xl font-semibold rounded-[32px] w-max cursor-pointer relative z-20"
           on:click={downloadPage}
         >
           <div>Share</div>
