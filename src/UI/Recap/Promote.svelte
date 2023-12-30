@@ -2,14 +2,10 @@
   import heroImage from "~/assets/recap/hero/heroimage.png";
 </script>
 
-<div
-  class="flex flex-col gap-5 h-full max-w-[2000px] m-auto w-[90%] py-10 px-[35px]"
->
+<div class="flex flex-col gap-5 h-full max-w-[2000px] m-auto w-[90%] py-10">
   <div class="flex items-start xl:flex-row flex-col gap-8">
-    <div
-      class="flex flex-col xl:items-start items-center gap-6 xl:flex-[0.5] flex-1 w-full"
-    >
-      <div class="font-bold text-5xl text-center">
+    <div class="flex flex-col items-start gap-6 xl:flex-[0.5] flex-1 w-full">
+      <div class="font-bold text-5xl">
         A Personalized portfolio for Crypto investors
       </div>
       <div class="w-max">
