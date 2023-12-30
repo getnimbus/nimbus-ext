@@ -1476,7 +1476,7 @@
     {#if !loading}
       <div class="flex flex-col gap-1">
         <div class="text-[#F7FBFA] text-2xl flex items-center gap-1">
-          <TooltipNumber number={Number(data?.price || 0)} type="balance" />
+          <TooltipNumber number={Number(data?.price || 0)} type="percent" />
           <span>SOL</span>
         </div>
         <div class="flex items-center gap-1 font-medium text-xl">
@@ -1514,7 +1514,7 @@
     <SparkLine
       data={solanaPrice.map((item) => item.price) || []}
       width={210}
-      height={60}
+      height={40}
     />
   {/if}
 </div>

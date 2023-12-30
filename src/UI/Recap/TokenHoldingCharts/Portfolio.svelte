@@ -74,14 +74,15 @@
     },
     legend: {
       type: "scroll",
+      orient: "vertical",
       top: "0%",
-      left: "center",
+      right: "right",
     },
     series: [
       {
         type: "pie",
         radius: ["40%", "60%"],
-        left: 0,
+        left: -150,
         avoidLabelOverlap: false,
         label: {
           show: false,

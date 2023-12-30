@@ -97,10 +97,18 @@
             barStyle: {
               type: "solid",
             },
+            barWidth: 30,
             emphasis: {
               focus: "series",
             },
-            data: data.map((item) => item.value),
+            data: data.map((item) => {
+              return {
+                value: item.value,
+                itemStyle: {
+                  borderRadius: [7, 7, 0, 0],
+                },
+              };
+            }),
           },
         ],
       };
