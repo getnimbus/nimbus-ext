@@ -1,11 +1,14 @@
-<script>
+<script lang="ts">
   import html2canvas from "html2canvas";
+
+  import TooltipNumber from "~/components/TooltipNumber.svelte";
+  import NftCard from "./NFTHolding/NFTCard.svelte";
+  import Loading from "~/components/Loading.svelte";
 
   import Logo from "~/assets/logo-1.svg";
   import Share from "~/assets/recap/hero/share.svg";
   import SvgThree from "~/assets/recap/hero/svgThree.svg";
   import SvgOne from "~/assets/recap/hero/svgOne.svg";
-  import TooltipNumber from "~/components/TooltipNumber.svelte";
 
   export let data;
   export let loading;
@@ -67,23 +70,23 @@
 </script>
 
 <div
-  class="bg-[#E8F4EF] py-10 overflow-hidden w-full h-full"
+  class="bg-[#E8F4EF] pt-10 pb-20 overflow-hidden w-full h-full"
   id="target-slide-2"
 >
-  <div class="flex flex-col h-full max-w-[2400px] m-auto w-[96%]">
+  <div
+    class="relative flex flex-col gap-20 h-full max-w-[2400px] m-auto w-[96%]"
+  >
     <img
       src={Logo}
       alt="logo"
       class="xl:w-[177px] w-[220px] xl:h-[75px] h-[100px]"
     />
     <div
-      class="relative flex-1 h-full flex xl:flex-row flex-col xl:items-center justify-between gap-20 px-[35px]"
+      class="flex-1 h-full flex xl:flex-row flex-col xl:items-center justify-between gap-20 px-[35px]"
     >
-      <div class="flex flex-col gap-7">
+      <div class="xl:flex-[0.3] flex-1 flex flex-col gap-7">
         <div class="flex flex-col gap-4">
-          <div class="font-medium text-3xl xl:text-4xl">
-            Your top collection
-          </div>
+          <div class="font-bold text-5xl">Your top collection</div>
           <div class="flex">
             {#each data?.top_holding || [] as item, index}
               <div
@@ -115,72 +118,69 @@
         </div>
       </div>
 
-      <div
-        class="text-white p-[24px] rounded-[20px] bg-black flex flex-col gap-10"
-      >
-        <div class="flex items-center gap-10">
-          <div class="flex flex-col">
-            <div class="text-[#B7B7B7] font-normal text-2xl">NFT you own</div>
-            <div class="text-white font-extrabold text-4xl">
-              {data?.stats?.total_holding}
-            </div>
+      <div class="flex-1 p-[24px] rounded-[20px] bg-black flex flex-col gap-10">
+        {#if loading}
+          <div class="flex justify-center items-center h-full h-[525px]">
+            <Loading />
           </div>
-
-          <div class="flex flex-col">
-            <div class="text-[#B7B7B7] font-normal text-2xl">Making trades</div>
-            <div class="text-white font-extrabold text-4xl">
-              {data?.stats?.total_trades}
-            </div>
-          </div>
-
-          <div class="flex flex-col">
-            <div class="text-[#B7B7B7] font-normal text-2xl">Net worth</div>
-            <div
-              class="flex items-center gap-1 text-white font-extrabold text-4xl"
-            >
-              <div class="flex items-center gap-1">
-                <TooltipNumber
-                  number={Number(data?.stats?.amount)}
-                  type="amount"
-                />
-                SOL
+        {:else}
+          <div
+            class="flex lg:flex-row flex-col lg:items-center items-start gap-10"
+          >
+            <div class="flex flex-col">
+              <div class="text-[#B7B7B7] font-normal text-2xl">NFT you own</div>
+              <div class="text-white font-extrabold text-4xl">
+                {data?.stats?.total_holding}
               </div>
-              <div>-</div>
-              <TooltipNumber
-                number={Number(data?.stats?.networth)}
-                type="value"
-              />
+            </div>
+
+            <div class="flex flex-col">
+              <div class="text-[#B7B7B7] font-normal text-2xl">
+                Making trades
+              </div>
+              <div class="text-white font-extrabold text-4xl">
+                {data?.stats?.total_trades}
+              </div>
+            </div>
+
+            <div class="flex flex-col">
+              <div class="text-[#B7B7B7] font-normal text-2xl">Net worth</div>
+              <div
+                class="flex items-center gap-1 text-white font-extrabold text-4xl"
+              >
+                <div class="flex items-center gap-1">
+                  <TooltipNumber
+                    number={Number(data?.stats?.amount)}
+                    type="amount"
+                  />
+                  SOL
+                </div>
+                <div>-</div>
+                <TooltipNumber
+                  number={Number(data?.stats?.networth)}
+                  type="value"
+                />
+              </div>
             </div>
           </div>
-        </div>
-        <div>hello2</div>
+          <div class="flex justify-between gap-12">
+            {#each data?.top_holding || [] as item}
+              <NftCard data={item} />
+            {/each}
+          </div>
+        {/if}
       </div>
+    </div>
 
-      <div class="absolute bottom-[0px] left-[-120px] z-10">
-        <img src={SvgThree} alt="" />
-      </div>
+    <div class="absolute bottom-[-80px] left-[-120px] z-10">
+      <img src={SvgThree} alt="" />
+    </div>
 
-      <div class="absolute top-[-140px] right-[-160px] z-10">
-        <img src={SvgOne} alt="" />
-      </div>
+    <div class="absolute top-[-120px] right-[-120px] z-10">
+      <img src={SvgOne} alt="" />
     </div>
   </div>
 </div>
 
 <style>
-  .btn-share {
-    background: #ffa41c;
-    color: black;
-    padding: 16px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 22px;
-    font-weight: 600;
-    border-radius: 32px;
-    width: max-content;
-    cursor: pointer;
-    position: relative;
-    z-index: 2;
-  }
 </style>

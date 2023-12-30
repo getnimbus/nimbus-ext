@@ -71,17 +71,19 @@
 </script>
 
 <div
-  class="bg-[#eff4e8] py-10 overflow-hidden w-full h-full"
+  class="bg-[#eff4e8] pt-10 pb-20 overflow-hidden w-full h-full"
   id="target-slide-1"
 >
-  <div class="flex flex-col h-full max-w-[2400px] m-auto w-[96%]">
+  <div
+    class="relative flex flex-col gap-20 h-full max-w-[2400px] m-auto w-[96%]"
+  >
     <img
       src={Logo}
       alt="logo"
       class="xl:w-[177px] w-[220px] xl:h-[75px] h-[100px]"
     />
     <div
-      class="relative flex-1 h-full flex xl:flex-row flex-col xl:items-center justify-between gap-10 px-[35px]"
+      class="flex-1 h-full flex xl:flex-row flex-col xl:items-center justify-between gap-10 px-[35px]"
     >
       <div class="flex-1 flex flex-col gap-7">
         <div class="grid grid-cols-2 gap-10">
@@ -156,14 +158,14 @@
           <TopChanges data={data?.top_gainer} {loading} />
         </div>
       </div>
+    </div>
 
-      <div class="absolute bottom-[-100px] left-[-120px] z-10">
-        <img src={SvgOne} alt="" />
-      </div>
+    <div class="absolute bottom-[-160px] left-[-100px] z-10">
+      <img src={SvgOne} alt="" />
+    </div>
 
-      <div class="absolute top-[-115px] right-[-10px] z-10">
-        <img src={SvgFour} alt="" />
-      </div>
+    <div class="absolute top-[-40px] right-[-10px] z-10">
+      <img src={SvgFour} alt="" />
     </div>
   </div>
 </div>
