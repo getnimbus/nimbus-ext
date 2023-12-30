@@ -6,8 +6,6 @@
 
   export let data;
 
-  $: console.log("data: ", data);
-
   $: profitAndLoss =
     Number(data?.price) === 0
       ? 0

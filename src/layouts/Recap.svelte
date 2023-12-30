@@ -33,6 +33,8 @@
   import AppOverlay from "~/components/Overlay.svelte";
   import Loading from "~/components/Loading.svelte";
 
+  import WalletModal from "~/UI/SolanaCustomWalletBtn/WalletModal.svelte";
+
   import Logo from "~/assets/logo-1.svg";
   import User from "~/assets/user.png";
   import NFTOne from "~/assets/recap/nft-card-3.png";
@@ -64,7 +66,7 @@
   let userPublicAddressChain = "EVM";
   let userAddress = $userPublicAddress;
   let invitation = "";
-  let isOpenAuthModal = false;
+
   let showPopover = false;
   let isLoading = false;
   let data;
@@ -78,7 +80,6 @@
       const solanaToken = localStorage.getItem("solana_token");
       if (!solanaToken) {
         isLoading = true;
-        isOpenAuthModal = false;
         handleSignOut();
         handleGetSolanaNonce(solanaPublicAddress);
       }
@@ -202,6 +203,19 @@
     }
   };
 
+  // trigger Solana wallet
+  const maxNumberOfWallets = 3;
+  let modalVisible = false;
+  const openModal = () => {
+    modalVisible = true;
+  };
+  const closeModal = () => (modalVisible = false);
+  async function connectWallet(event) {
+    closeModal();
+    await $walletStore.select(event.detail);
+    await $walletStore.connect();
+  }
+
   const getRecapData = async (address: string) => {
     const response: any = await nimbus.get(
       `/recap?address=${"DD9eeertZsaHXzxiBwaBV9BSgMhPHb2yuvBH5ivuxAFV"}`
@@ -289,7 +303,6 @@
                             localStorage.removeItem("solana_token");
                             $walletStore.disconnect();
                             showPopover = false;
-                            isOpenAuthModal = false;
                           }}
                         >
                           Log out
@@ -300,9 +313,6 @@
                 {:else}
                   <div
                     class="w-max flex items-center justify-center gap-2 cursor-pointer p-[20px] rounded-[32px] min-w-[250px] bg-[#A7EB50] text-black xl:text-xl text-2xl font-semibold"
-                    on:click={() => {
-                      isOpenAuthModal = true;
-                    }}
                   >
                     Connect My Wallet
                     <img src={Arrow} alt="" />
@@ -412,7 +422,6 @@
                         localStorage.removeItem("solana_token");
                         $walletStore.disconnect();
                         showPopover = false;
-                        isOpenAuthModal = false;
                       }}
                     >
                       Log out
@@ -424,7 +433,7 @@
               <div
                 class="w-max flex items-center justify-center gap-2 cursor-pointer p-[20px] rounded-[32px] min-w-[250px] bg-[#A7EB50] text-black xl:text-xl text-2xl font-semibold"
                 on:click={() => {
-                  isOpenAuthModal = true;
+                  openModal();
                 }}
               >
                 Connect My Wallet
@@ -473,21 +482,13 @@
 
 <WalletProvider localStorageKey="walletAdapter" {wallets} autoConnect />
 
-<!-- Modal connect wallet -->
-<AppOverlay
-  clickOutSideToClose
-  isOpen={isOpenAuthModal}
-  on:close={() => (isOpenAuthModal = false)}
->
-  <div class="flex flex-col gap-4">
-    <div class="xl:title-3 title-1 font-medium text-center">
-      Connect wallet to enjoy more features
-    </div>
-    <div class="flex items-center justify-center gap-4">
-      <SolanaAuth text="Login with Solana" />
-    </div>
-  </div>
-</AppOverlay>
+{#if modalVisible}
+  <WalletModal
+    on:close={closeModal}
+    on:connect={connectWallet}
+    {maxNumberOfWallets}
+  />
+{/if}
 
 <style windi:preflights:global windi:safelist:global>
   @media (min-width: 1024px) {
