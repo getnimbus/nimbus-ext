@@ -106,7 +106,10 @@
             <div
               class="flex items-center justify-center text-2xl bg-black text-white w-[74px] h-[74px] rounded-full border-3 border-white -ml-3"
             >
-              +{data?.stats?.total_collection - 3}
+              {#if data?.stats?.total_collection !== 0}
+                +{data?.stats?.total_collection - 3}
+              {:else}0
+              {/if}
             </div>
           </div>
         </div>
@@ -150,18 +153,11 @@
               <div
                 class="flex items-center gap-1 text-white font-extrabold text-4xl"
               >
-                <div class="flex items-center gap-1">
-                  <TooltipNumber
-                    number={Number(data?.stats?.amount)}
-                    type="amount"
-                  />
-                  SOL
-                </div>
-                <div>-</div>
                 <TooltipNumber
-                  number={Number(data?.stats?.networth)}
-                  type="value"
+                  number={Number(data?.stats?.amount)}
+                  type="amount"
                 />
+                SOL
               </div>
             </div>
           </div>

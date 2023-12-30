@@ -5,7 +5,7 @@
   import SvgTwo from "~/assets/recap/hero/svgTwo.svg";
 </script>
 
-<div class="relative overflow-hidden">
+<div class="relative overflow-hidden bg-white text-black">
   <div
     class="flex flex-col gap-10 h-full max-w-[2000px] m-auto w-[90%] pt-10 pb-20"
   >
