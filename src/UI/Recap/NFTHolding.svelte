@@ -103,14 +103,20 @@
                 />
               </div>
             {/each}
-            <div
-              class="flex items-center justify-center text-2xl bg-black text-white w-[74px] h-[74px] rounded-full border-3 border-white -ml-3"
-            >
-              {#if data?.stats?.total_collection !== 0}
+            {#if data?.stats?.total_collection === 0}
+              <div
+                class="flex items-center justify-center text-2xl bg-black text-white w-[74px] h-[74px] rounded-full border-3 border-white -ml-3"
+              >
+                0
+              </div>
+            {/if}
+            {#if data?.stats?.total_collection !== 0 && data?.top_holding?.length > 3}
+              <div
+                class="flex items-center justify-center text-2xl bg-black text-white w-[74px] h-[74px] rounded-full border-3 border-white -ml-3"
+              >
                 +{data?.stats?.total_collection - 3}
-              {:else}0
-              {/if}
-            </div>
+              </div>
+            {/if}
           </div>
         </div>
         <div
