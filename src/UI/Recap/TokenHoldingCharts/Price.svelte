@@ -1515,6 +1515,7 @@
       data={solanaPrice.map((item) => item.price) || []}
       width={210}
       height={40}
+      color="#4A97CF"
     />
   {/if}
 </div>
