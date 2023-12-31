@@ -29,12 +29,10 @@
   import Logo from "~/assets/logo-1.svg";
   import HammerIcon from "~/assets/recap/hero/hammer.svg";
   import Share from "~/assets/recap/hero/share.svg";
-  import NFTTwo from "~/assets/recap/nft-card-1.png";
   import dotIcon from "~/assets/recap/2-dot-icon.svg";
   import goldImg from "~/assets/Gold4.svg";
 
   export let data;
-  export let loading;
 
   let days: number = 0;
   let hours: number = 0;
@@ -276,7 +274,7 @@
             </div>
           </div>
           <div class="xl:absolute right-[120px]">
-            <CardNftRecap nft={NFTTwo} />
+            <CardNftRecap {data} />
           </div>
         </div>
       </div>
