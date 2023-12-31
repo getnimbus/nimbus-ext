@@ -42,7 +42,7 @@
           ...option,
           tooltip: {
             ...(option?.tooltip || {}),
-            backgroundColor: $isDarkMode ? "#131313" : "#fff",
+            backgroundColor: theme === "dark" ? "#131313" : "#fff",
           },
           backgroundColor: "transparent",
           textStyle: {
