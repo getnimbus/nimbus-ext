@@ -60,6 +60,7 @@
     yAxis: [
       {
         type: "value",
+        splitNumber: 2,
         axisLabel: {
           formatter: function (value, index) {
             return (
@@ -69,12 +70,26 @@
           },
           fontSize: autoFontSize(),
         },
+        splitLine: {
+          lineStyle: {
+            type: "dashed",
+          },
+        },
       },
     ],
+    grid: {
+      // show: false,
+      top: 15,
+      left: "15%",
+      right: 0,
+      width: "auto",
+      bottom: 20,
+    },
     series: [],
   };
 
   const formatData = (data) => {
+    console.log(data);
     if (data.length !== 0) {
       optionBar = {
         ...optionBar,
@@ -98,8 +113,14 @@
               type: "solid",
             },
             barCategoryGap: "55%",
+            itemStyle: {
+              color: "white",
+            },
             emphasis: {
-              focus: "series",
+              // focus: "series",
+              itemStyle: {
+                color: "#6AC7F5",
+              },
             },
             data: data.map((item) => {
               return {
@@ -124,7 +145,7 @@
   }
 </script>
 
-<div class="w-[600px] flex flex-col p-[24px] rounded-[20px] bg-black">
+<div class="w-[370px] h-[256px] flex flex-col p-[24px] rounded-[20px] bg-black">
   <div class="text-white text-xl font-medium">Top changes</div>
   {#if loading}
     <div
@@ -146,7 +167,7 @@
           theme="dark"
           notMerge={true}
           option={optionBar}
-          height={335}
+          height={166}
         />
       {/if}
     </div>
