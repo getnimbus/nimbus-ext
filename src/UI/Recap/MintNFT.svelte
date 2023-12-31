@@ -371,8 +371,7 @@
       width: 1700px;
     }
   }
-
   .zindex {
-    z-index: 999999;
+    z-index: 99999;
   }
 </style>
