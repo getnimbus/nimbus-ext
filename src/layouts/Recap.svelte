@@ -469,7 +469,7 @@
   {#if userPublicAddressChain === "SOL" && userAddress}
     <TokenHolding data={data?.tokens} loading={$query.isLoading} />
     <NftHolding data={data?.nfts} loading={$query.isLoading} />
-    <Airdrop />
+    <Airdrop data={data?.airdrops} loading={$query.isLoading} />
     <MintNft />
   {/if}
 
