@@ -90,7 +90,7 @@
       <div class="flex-1 flex flex-col gap-7">
         <div class="grid grid-cols-2 gap-10">
           <div class="flex flex-col gap-1">
-            <div class="text-xl text-[#4f4f4f]">You ape in tokens</div>
+            <div class="text-xl text-[#4f4f4f]">You aped in tokens</div>
             <div class="text-[64px] font-extrabold text-[#202025]">
               {data?.stats?.total_holding || 0}
             </div>

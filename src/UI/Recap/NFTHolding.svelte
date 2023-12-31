@@ -146,9 +146,7 @@
             </div>
 
             <div class="flex flex-col">
-              <div class="text-[#B7B7B7] font-normal text-2xl">
-                Making trades
-              </div>
+              <div class="text-[#B7B7B7] font-normal text-2xl">Trades made</div>
               <div class="text-white font-extrabold text-4xl">
                 {data?.stats?.total_trades}
               </div>
