@@ -7,7 +7,7 @@
 
 <div class="relative overflow-hidden bg-white text-black">
   <div
-    class="flex flex-col gap-10 h-full max-w-[2000px] m-auto w-[90%] pt-10 pb-20"
+    class="flex flex-col gap-10 h-full max-w-[1400px] m-auto pt-10 pb-20 px-[35px]"
   >
     <div class="flex items-start xl:flex-row flex-col gap-8">
       <div class="flex flex-col items-start gap-6 xl:flex-[0.5] flex-1 w-full">
@@ -24,7 +24,7 @@
           <img src={Arrow} alt="" />
         </div>
       </div>
-      <div class="flex-1">
+      <div class="flex-1 relative z-20">
         <img src={heroImage} alt="" class="object-cover w-full h-full" />
       </div>
     </div>
@@ -48,11 +48,11 @@
     </div>
   </div>
 
-  <div class="absolute top-[-100px] right-[-100px]">
+  <div class="absolute top-[-100px] right-[-100px] z-10">
     <img src={SvgOne} alt="" class="w-full h-full object-contain" />
   </div>
 
-  <div class="absolute bottom-[-90px] left-[-120px]">
+  <div class="absolute bottom-[-90px] left-[-120px] z-10">
     <img src={SvgTwo} alt="" class="w-full h-full object-contain" />
   </div>
 </div>

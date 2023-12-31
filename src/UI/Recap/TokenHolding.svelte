@@ -75,9 +75,7 @@
   class="bg-[#eff4e8] pt-10 pb-20 overflow-hidden w-full h-full"
   id="target-slide-1"
 >
-  <div
-    class="relative flex flex-col gap-20 h-full max-w-[2400px] m-auto w-[96%]"
-  >
+  <div class="relative flex flex-col gap-20 h-full max-w-[1400px] m-auto">
     <img
       src={Logo}
       alt="logo"

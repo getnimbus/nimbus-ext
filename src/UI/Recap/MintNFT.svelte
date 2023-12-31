@@ -168,9 +168,7 @@
   class="bg-[#E8F4EF] pt-10 pb-20 overflow-hidden w-full h-screen"
   id="target-slide-4"
 >
-  <div
-    class="relative flex flex-col gap-20 h-full max-w-[2400px] m-auto w-[96%]"
-  >
+  <div class="relative flex flex-col gap-20 h-full max-w-[1400px] m-auto">
     <div class="flex justify-between items-center">
       <img
         src={Logo}

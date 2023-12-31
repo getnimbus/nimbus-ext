@@ -7,9 +7,6 @@
   export let data;
   export let loading;
 
-  import TrendUp from "~/assets/trend-up.svg";
-  import TrendDown from "~/assets/trend-down.svg";
-
   const solanaPrice = [
     {
       timestamp: 1672332897,
@@ -1473,11 +1470,24 @@
   <div class="flex flex-col gap-2">
     <div class="text-white text-xl font-medium">Solana price change</div>
     {#if !loading}
-      <div class="flex flex-col gap-1">
-        <div class="text-[#F7FBFA] text-2xl">
+      <div class="flex items-center gap-2">
+        <div class="text-[#F7FBFA] text-[30px]">
           $<TooltipNumber number={Number(data?.price || 0)} type="percent" />
         </div>
-        <div class="flex items-center gap-1 font-medium text-xl">
+        <div class="flex items-center gap-1 font-medium text-base">
+          {#if percentChange !== 0}
+            <div
+              class={`${
+                percentChange >= 0 ? "text-[#00A878]" : "text-red-500"
+              }`}
+            >
+              {#if percentChange >= 0}
+                ↑
+              {:else}
+                ↓
+              {/if}
+            </div>
+          {/if}
           <div
             class={`flex items-center ${
               percentChange !== 0
@@ -1493,13 +1503,6 @@
             />
             <span>%</span>
           </div>
-          {#if percentChange !== 0}
-            <img
-              src={percentChange >= 0 ? TrendUp : TrendDown}
-              alt="trend"
-              class="mb-1"
-            />
-          {/if}
         </div>
       </div>
     {/if}

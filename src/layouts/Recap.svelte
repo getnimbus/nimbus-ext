@@ -242,8 +242,6 @@
       data = $query.data;
     }
   }
-
-  $: console.log("data: ", data);
 </script>
 
 <ErrorBoundary>
@@ -382,7 +380,7 @@
   </Swiper> -->
 
   <div class="bg-[#EBFDFF] h-full overflow-hidden py-10">
-    <div class="flex flex-col gap-20 h-full max-w-[2400px] m-auto w-[96%]">
+    <div class="flex flex-col gap-20 h-full max-w-[1400px] m-auto">
       <img
         src={Logo}
         alt="logo"
