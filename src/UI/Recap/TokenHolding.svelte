@@ -43,7 +43,6 @@
           ignoreElements: (el) => {
             return el.id === "btn-share";
           },
-          allowTaint: true,
           logging: true,
           scale: 2,
         }).then((canvas) => {
