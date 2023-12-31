@@ -1466,8 +1466,7 @@
   ];
 
   $: percentChange =
-    (Number(data?.price || 0) - solanaPrice[solanaPrice.length - 1].price) /
-    Number(data?.price || 0);
+    (Number(data?.price || 0) - solanaPrice[0].price) / solanaPrice[0].price;
 </script>
 
 <div class="w-[260px] flex flex-col gap-4 p-[24px] rounded-[20px] bg-black">
