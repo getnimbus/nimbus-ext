@@ -66,6 +66,11 @@
       }
     }
   };
+
+  $: networth = (data || []).reduce(
+    (total, item) => total + Number(item.value),
+    0
+  );
 </script>
 
 <div
@@ -87,7 +92,7 @@
         You earn <span class="text-[60px]">{(data && data.length) || 0}</span>
         airdrop worth
         <span class="text-[60px]">
-          <TooltipNumber number={0} type="value" />
+          <TooltipNumber number={networth} type="value" />
         </span>
       </div>
       <div
