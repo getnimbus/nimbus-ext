@@ -70,6 +70,8 @@
     (total, item) => total + Number(item.value),
     0
   );
+
+  $: dataAirdropFormated = data.filter((item) => item.amount > 0);
 </script>
 
 <div
@@ -88,7 +90,9 @@
       class="flex-1 h-full px-[35px] flex flex-col justify-center gap-14 items-center text-black"
     >
       <div class="font-bold text-4xl">
-        You earn <span class="text-[60px]">{(data && data.length) || 0}</span>
+        You earn <span class="text-[60px]"
+          >{(dataAirdropFormated && dataAirdropFormated.length) || 0}</span
+        >
         airdrop worth
         <span class="text-[60px]">
           <TooltipNumber number={networth} type="value" />
@@ -103,105 +107,95 @@
         <img src={Share} alt="" />
       </div>
 
-      {#if data && data.length !== 0}
-        <div class="xl:flex hidden gap-3 justify-between xl:min-h-60">
-          <!-- 1 -->
-          <div
-            class="bg-black w-[240px] flex flex-col card-shadow-airdrop self-start justify-between rounded-3xl px-6 py-5 gap-6"
-          >
-            <div class="text-center text-gray-500 flex items-center gap-3">
-              <img src={carIco} alt="" class="w-10 h-10 rounded-full" /> 2000 JTO
-            </div>
-            <div class="text-white text-[40px]">$12,002</div>
+      {#if dataAirdropFormated && dataAirdropFormated.length !== 0}
+        <div class="xl:flex hidden flex-col gap-3">
+          <div class="flex justify-center gap-2 items-center xl:min-h-60">
+            {#each dataAirdropFormated.slice(0, 5) as item, index}
+              <div class="flex h-full">
+                <div
+                  class={`bg-black w-[240px] flex flex-col card-shadow-airdrop justify-between rounded-3xl px-6 py-5 gap-6 ${
+                    dataAirdropFormated.slice(0, 5).length % 2 == 0
+                      ? "self-center"
+                      : index % 2 == 0
+                        ? "self-start"
+                        : "self-end"
+                  }`}
+                >
+                  <div
+                    class="text-center text-gray-500 flex items-center gap-3"
+                  >
+                    <img
+                      src={item.logo}
+                      alt=""
+                      class="w-10 h-10 rounded-full"
+                    />{item.amount}
+                    {item.token}
+                  </div>
+                  <div class="text-white text-[30px]">
+                    $<TooltipNumber number={item.value} type="balance" />
+                  </div>
+                </div>
+              </div>
+            {/each}
           </div>
-          <!-- 2 -->
-          <div
-            class="bg-black w-[240px] flex flex-col card-shadow-airdrop self-end justify-between rounded-3xl px-6 py-5 gap-6"
-          >
-            <div class="text-center text-gray-500 flex items-center gap-3">
-              <img src={carIco} alt="" class="w-10 h-10 rounded-full" /> 2000 JTO
+
+          {#if dataAirdropFormated.length > 5}
+            <div
+              class="flex justify-center gap-2 items-center flex-shrink xl:min-h-60"
+            >
+              {#each dataAirdropFormated.slice(5, 10) as item, index}
+                <div class="flex h-full">
+                  <div
+                    class={`bg-black w-[240px] flex flex-col card-shadow-airdrop justify-between rounded-3xl px-6 py-5 gap-6 ${
+                      dataAirdropFormated.slice(5, 10).length % 2 == 0
+                        ? "self-center"
+                        : dataAirdropFormated.slice(5, 10).length !== 3
+                          ? index % 2 == 0
+                            ? "self-start"
+                            : "self-end"
+                          : index % 2 == 0
+                            ? "self-end"
+                            : "self-start"
+                    }`}
+                  >
+                    <div
+                      class="text-center text-gray-500 flex items-center gap-3"
+                    >
+                      <img
+                        src={item.logo}
+                        alt=""
+                        class="w-10 h-10 rounded-full"
+                      />{item.amount}
+                      {item.token}
+                    </div>
+                    <div class="text-white text-[30px]">
+                      $<TooltipNumber number={item.value} type="balance" />
+                    </div>
+                  </div>
+                </div>
+              {/each}
             </div>
-            <div class="text-white text-[40px]">$12,002</div>
-          </div>
-          <!-- 3 -->
-          <div
-            class="bg-black w-[240px] flex flex-col card-shadow-airdrop self-start justify-between rounded-3xl px-6 py-5 gap-6"
-          >
-            <div class="text-center text-gray-500 flex items-center gap-3">
-              <img src={carIco} alt="" class="w-10 h-10 rounded-full" /> 2000 JTO
-            </div>
-            <div class="text-white text-[40px]">$12,002</div>
-          </div>
-          <!-- 4 -->
-          <div
-            class="bg-black w-[240px] flex flex-col card-shadow-airdrop self-end justify-between rounded-3xl px-6 py-5 gap-6"
-          >
-            <div class="text-center text-gray-500 flex items-center gap-3">
-              <img src={carIco} alt="" class="w-10 h-10 rounded-full" /> 2000 JTO
-            </div>
-            <div class="text-white text-[40px]">$12,002</div>
-          </div>
-          <!-- 5 -->
-          <div
-            class="bg-black w-[240px] flex flex-col card-shadow-airdrop self-start justify-between rounded-3xl px-6 py-5 gap-6"
-          >
-            <div class="text-center text-gray-500 flex items-center gap-3">
-              <img src={carIco} alt="" class="w-10 h-10 rounded-full" /> 2000 JTO
-            </div>
-            <div class="text-white text-[40px]">$12,002</div>
-          </div>
+          {/if}
         </div>
 
-        <div class="flex xl:hidden flex-col gap-3 justify-between">
-          <div class="flex gap-3 justify-center">
-            <!-- 1 -->
+        <div class="xl:hidden flex flex-wrap items-center justify-center gap-3">
+          {#each dataAirdropFormated as item, index}
             <div
-              class="bg-black w-[240px] flex flex-col card-shadow-airdrop self-start justify-between rounded-3xl px-6 py-5 gap-6"
+              class={`bg-black w-[240px] flex flex-col card-shadow-airdrop justify-between rounded-3xl px-6 py-5 gap-5`}
             >
               <div class="text-center text-gray-500 flex items-center gap-3">
-                <img src={carIco} alt="" class="w-10 h-10 rounded-full" /> 2000 JTO
+                <img
+                  src={item.logo}
+                  alt=""
+                  class="w-10 h-10 rounded-full"
+                />{item.amount}
+                {item.token}
               </div>
-              <div class="text-white text-[40px]">$12,002</div>
-            </div>
-            <!-- 2 -->
-            <div
-              class="bg-black w-[240px] flex flex-col card-shadow-airdrop self-end justify-between rounded-3xl px-6 py-5 gap-6"
-            >
-              <div class="text-center text-gray-500 flex items-center gap-3">
-                <img src={carIco} alt="" class="w-10 h-10 rounded-full" /> 2000 JTO
+              <div class="text-white text-[30px]">
+                $<TooltipNumber number={item.value} type="balance" />
               </div>
-              <div class="text-white text-[40px]">$12,002</div>
             </div>
-            <!-- 3 -->
-            <div
-              class="bg-black w-[240px] flex flex-col card-shadow-airdrop self-start justify-between rounded-3xl px-6 py-5 gap-6"
-            >
-              <div class="text-center text-gray-500 flex items-center gap-3">
-                <img src={carIco} alt="" class="w-10 h-10 rounded-full" /> 2000 JTO
-              </div>
-              <div class="text-white text-[40px]">$12,002</div>
-            </div>
-          </div>
-          <div class="flex gap-3 justify-center">
-            <!-- 4 -->
-            <div
-              class="bg-black w-[240px] flex flex-col card-shadow-airdrop self-end justify-between rounded-3xl px-6 py-5 gap-6"
-            >
-              <div class="text-center text-gray-500 flex items-center gap-3">
-                <img src={carIco} alt="" class="w-10 h-10 rounded-full" /> 2000 JTO
-              </div>
-              <div class="text-white text-[40px]">$12,002</div>
-            </div>
-            <!-- 5 -->
-            <div
-              class="bg-black w-[240px] flex flex-col card-shadow-airdrop self-start justify-between rounded-3xl px-6 py-5 gap-6"
-            >
-              <div class="text-center text-gray-500 flex items-center gap-3">
-                <img src={carIco} alt="" class="w-10 h-10 rounded-full" /> 2000 JTO
-              </div>
-              <div class="text-white text-[40px]">$12,002</div>
-            </div>
-          </div>
+          {/each}
         </div>
       {/if}
     </div>
