@@ -244,6 +244,7 @@
           );
           return selected?.symbol || name;
         },
+        icon: "circle",
       },
       series: [
         {
