@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onDestroy, onMount } from "svelte";
   import {
     createQuery,
     createMutation,
@@ -28,10 +29,10 @@
   import Logo from "~/assets/logo-1.svg";
   import HammerIcon from "~/assets/recap/hero/hammer.svg";
   import Share from "~/assets/recap/hero/share.svg";
-  import NFTTwo from "~/assets/recap/nft-card-1.png";
   import dotIcon from "~/assets/recap/2-dot-icon.svg";
   import goldImg from "~/assets/Gold4.svg";
-  import { onDestroy, onMount } from "svelte";
+
+  export let data;
 
   let days: number = 0;
   let hours: number = 0;
@@ -66,11 +67,13 @@
   let interval: ReturnType<typeof setInterval>;
 
   onMount(() => {
+    getDataRecapMintNFT();
     updateCountdown(); // Initial update
     interval = setInterval(updateCountdown, 1000);
   });
 
   onDestroy(() => {
+    clearInterval(intervalId);
     clearInterval(interval);
   });
 
@@ -81,6 +84,9 @@
 
   let openScreenSuccess = false;
   let isOpenModal = false;
+
+  let intervalId = null;
+  let dataMint;
 
   const trigger = () => {
     showToast = true;
@@ -139,6 +145,21 @@
     }
   };
 
+  const getDataRecapMintNFT = async () => {
+    try {
+      const response = await nimbus.get("/recap/mint-stats");
+      dataMint = response?.data;
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  $: {
+    intervalId = setInterval(() => {
+      getDataRecapMintNFT();
+    }, 10000); // 10s
+  }
+
   const handleMintNFT = createMutation({
     onError: () => {
       toastMsg = "Something wrong while minting. Please try again!";
@@ -168,9 +189,7 @@
   class="bg-[#E8F4EF] pt-10 pb-20 overflow-hidden w-full h-screen"
   id="target-slide-4"
 >
-  <div
-    class="relative flex flex-col gap-20 h-full max-w-[2400px] m-auto w-[96%]"
-  >
+  <div class="relative flex flex-col gap-20 h-full max-w-[1400px] m-auto">
     <div class="flex justify-between items-center">
       <img
         src={Logo}
@@ -206,7 +225,7 @@
     <div class="px-[35px] h-[90%] text-white">
       <div class="h-full rounded-[32px] bg-black">
         <div
-          class="mx-auto large_screen_width relative p-[60px] h-full w-full flex xl:flex-row flex-col xl:justify-start justify-center items-center gap-20"
+          class="mx-auto relative p-[60px] h-full w-full flex xl:flex-row flex-col xl:justify-start justify-center items-center gap-20"
         >
           <div class="flex flex-col justify-between gap-[60px]">
             <div class="text-[60px] font-bold">Mint You 2023 recap</div>
@@ -215,15 +234,19 @@
                 <div class="flex justify-between items-center">
                   <div class="text-white text-[24px]">Total mint</div>
                   <div class="flex items-end">
-                    <div class="text-[#4DF6E2] text-[40px]">45</div>
-                    <div class="text-[#646464] text-[36px]">/100</div>
+                    <div class="text-[#4DF6E2] text-[40px]">
+                      {dataMint?.totalMinted || 0}
+                    </div>
+                    <div class="text-[#646464] text-[36px]">
+                      /{dataMint?.next || 0}
+                    </div>
                   </div>
                 </div>
 
                 <div class="w-full bg-gray-200 rounded-full h-6">
                   <div
                     class="bg-[#4DF6E2] h-6 rounded-full"
-                    style="width: 45%"
+                    style={`width: ${dataMint?.totalMinted || 0}%`}
                   />
                 </div>
               </div>
@@ -235,11 +258,10 @@
                   {#if $handleMintNFT.isLoading}
                     Minting... <img src={HammerIcon} alt="" class="w-10 h-10" />
                   {:else}
-                    Mint 0.05 SOL <img
-                      src={HammerIcon}
-                      alt=""
-                      class="w-10 h-10"
-                    />
+                    Mint {dataMint?.mintFee && dataMint?.mintFee !== 0
+                      ? dataMint?.mintFee + " SOL"
+                      : "Free"}
+                    <img src={HammerIcon} alt="" class="w-10 h-10" />
                   {/if}
                 </button>
                 <button
@@ -252,7 +274,7 @@
             </div>
           </div>
           <div class="xl:absolute right-[120px]">
-            <CardNftRecap nft={NFTTwo} />
+            <CardNftRecap {data} />
           </div>
         </div>
       </div>
@@ -358,11 +380,6 @@
 </AppOverlay>
 
 <style>
-  @media (min-width: 2000px) {
-    .large_screen_width {
-      width: 1700px;
-    }
-  }
   .zindex {
     z-index: 99999;
   }

@@ -35,11 +35,21 @@
 
   import Logo from "~/assets/logo-1.svg";
   import User from "~/assets/user.png";
-  import NFTOne from "~/assets/recap/nft-card-3.png";
-  import NFTTwo from "~/assets/recap/nft-card-1.png";
   import SvgOne from "~/assets/recap/hero/svgOne.svg";
   import SvgTwo from "~/assets/recap/hero/svgTwo.svg";
   import Arrow from "~/assets/recap/hero/arrow-right.svg";
+
+  const NFTOne = {
+    solHolding: 5.5,
+    summaryLabel: "Bonk Friend",
+    tag: "Top 10",
+  };
+
+  const NFTTwo = {
+    solHolding: 68.78,
+    summaryLabel: "True Holder",
+    tag: "Top 8",
+  };
 
   const handleValidateAddress = async (address: string) => {
     try {
@@ -215,9 +225,7 @@
   }
 
   const getRecapData = async (address: string) => {
-    const response: any = await nimbus.get(
-      `/recap?address=${"DD9eeertZsaHXzxiBwaBV9BSgMhPHb2yuvBH5ivuxAFV"}`
-    );
+    const response: any = await nimbus.get(`/recap?address=${address}`);
     return response?.data;
   };
 
@@ -242,8 +250,6 @@
       data = $query.data;
     }
   }
-
-  $: console.log("data: ", data);
 </script>
 
 <ErrorBoundary>
@@ -258,7 +264,7 @@
   >
     <SwiperSlide>
       <div class="bg-[#EBFDFF] h-full overflow-hidden py-10">
-        <div class="flex flex-col gap-20 h-full max-w-[2400px] m-auto w-[96%]">
+        <div class="flex flex-col gap-20 h-full max-w-[1400px] m-auto">
           <img
             src={Logo}
             alt="logo"
@@ -339,7 +345,7 @@
                       class="w-full h-full object-contain"
                     />
                   </div>
-                  <CardNftRecap nft={NFTTwo} />
+                  <CardNftRecap data={NFTOne} />
                 </div>
                 <div class="relative">
                   <div class="absolute bottom-[-130px] right-[-150px]">
@@ -349,7 +355,7 @@
                       class="w-full h-full object-contain"
                     />
                   </div>
-                  <CardNftRecap nft={NFTOne} />
+                  <CardNftRecap data={NFTTwo} />
                 </div>
               </div>
             </div>
@@ -372,7 +378,7 @@
       </SwiperSlide>
 
       <SwiperSlide>
-        <MintNft />
+        <MintNft data={data?.mintNFT} />
       </SwiperSlide>
     {/if}
 
@@ -382,7 +388,7 @@
   </Swiper> -->
 
   <div class="bg-[#EBFDFF] h-full overflow-hidden py-10">
-    <div class="flex flex-col gap-20 h-full max-w-[2400px] m-auto w-[96%]">
+    <div class="flex flex-col gap-20 h-full max-w-[1400px] m-auto">
       <img
         src={Logo}
         alt="logo"
@@ -457,13 +463,13 @@
               <div class="absolute top-[-80px] left-[-160px]">
                 <img src={SvgOne} alt="" class="w-full h-full object-contain" />
               </div>
-              <CardNftRecap nft={NFTTwo} />
+              <CardNftRecap data={NFTOne} />
             </div>
             <div class="relative">
               <div class="absolute bottom-[-130px] right-[-150px]">
                 <img src={SvgTwo} alt="" class="w-full h-full object-contain" />
               </div>
-              <CardNftRecap nft={NFTOne} />
+              <CardNftRecap data={NFTTwo} />
             </div>
           </div>
         </div>
@@ -475,7 +481,7 @@
     <TokenHolding data={data?.tokens} loading={$query.isLoading} />
     <NftHolding data={data?.nfts} loading={$query.isLoading} />
     <Airdrop data={data?.airdrops} loading={$query.isLoading} />
-    <MintNft />
+    <MintNft data={data?.mintNFT} />
   {/if}
 
   <Promote />

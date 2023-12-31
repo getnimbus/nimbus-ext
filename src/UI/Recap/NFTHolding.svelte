@@ -71,12 +71,10 @@
 </script>
 
 <div
-  class="bg-[#E8F4EF] text-black pt-10 pb-20 overflow-hidden w-full h-full"
+  class="bg-[#E8F4EF] text-black relative pt-10 pb-20 overflow-hidden w-full h-full"
   id="target-slide-2"
 >
-  <div
-    class="relative flex flex-col gap-20 h-full max-w-[2400px] m-auto w-[96%]"
-  >
+  <div class="flex flex-col gap-20 h-full max-w-[1400px] m-auto">
     <img
       src={Logo}
       alt="logo"
@@ -128,7 +126,9 @@
         </div>
       </div>
 
-      <div class="flex-1 p-[24px] rounded-[20px] bg-black flex flex-col gap-10">
+      <div
+        class="flex-1 py-[40px] px-[60px] rounded-[20px] bg-black flex flex-col gap-10"
+      >
         {#if loading}
           <div class="flex justify-center items-center h-full h-[525px]">
             <Loading />
@@ -172,14 +172,14 @@
         {/if}
       </div>
     </div>
+  </div>
 
-    <div class="absolute bottom-[-80px] left-[-120px] z-10">
-      <img src={SvgThree} alt="" />
-    </div>
+  <div class="absolute bottom-[0px] left-[-10px] z-10">
+    <img src={SvgThree} alt="" />
+  </div>
 
-    <div class="absolute top-[-120px] right-[-120px] z-10">
-      <img src={SvgOne} alt="" />
-    </div>
+  <div class="absolute top-[-80px] right-[-80px] z-10">
+    <img src={SvgOne} alt="" />
   </div>
 </div>
 

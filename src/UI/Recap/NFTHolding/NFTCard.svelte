@@ -1,9 +1,6 @@
 <script lang="ts">
   import TooltipNumber from "~/components/TooltipNumber.svelte";
 
-  import TrendUp from "~/assets/trend-up.svg";
-  import TrendDown from "~/assets/trend-down.svg";
-
   export let data;
 
   $: profitAndLoss =
@@ -35,6 +32,19 @@
       <div class="text-[#B7B7B7] text-base mt-1">SOL</div>
     </div>
     <div class="flex items-center gap-1 text-xl">
+      {#if profitAndLossPercent !== 0}
+        <div
+          class={`${
+            profitAndLossPercent >= 0 ? "text-[#00A878]" : "text-red-500"
+          }`}
+        >
+          {#if profitAndLossPercent >= 0}
+            ↑
+          {:else}
+            ↓
+          {/if}
+        </div>
+      {/if}
       <div
         class={`flex items-center ${
           profitAndLossPercent !== 0
@@ -50,13 +60,6 @@
         />
         <span>%</span>
       </div>
-      {#if profitAndLossPercent !== 0}
-        <img
-          src={profitAndLossPercent >= 0 ? TrendUp : TrendDown}
-          alt="trend"
-          class="mb-1"
-        />
-      {/if}
     </div>
   </div>
 </div>

@@ -72,12 +72,10 @@
 </script>
 
 <div
-  class="bg-[#eff4e8] pt-10 pb-20 overflow-hidden w-full h-full"
+  class="bg-[#eff4e8] relative pt-10 pb-20 overflow-hidden w-full h-full"
   id="target-slide-1"
 >
-  <div
-    class="relative flex flex-col gap-20 h-full max-w-[2400px] m-auto w-[96%]"
-  >
+  <div class="flex flex-col gap-20 h-full max-w-[1400px] m-auto">
     <img
       src={Logo}
       alt="logo"
@@ -160,14 +158,13 @@
         </div>
       </div>
     </div>
+  </div>
+  <div class="absolute bottom-[-90px] left-[-100px] z-10">
+    <img src={SvgOne} alt="" />
+  </div>
 
-    <div class="absolute bottom-[-160px] left-[-100px] z-10">
-      <img src={SvgOne} alt="" />
-    </div>
-
-    <div class="absolute top-[-40px] right-[-10px] z-10">
-      <img src={SvgFour} alt="" />
-    </div>
+  <div class="absolute top-0 right-0 z-10">
+    <img src={SvgFour} alt="" />
   </div>
 </div>
 
