@@ -475,7 +475,7 @@
     <TokenHolding data={data?.tokens} loading={$query.isLoading} />
     <NftHolding data={data?.nfts} loading={$query.isLoading} />
     <Airdrop data={data?.airdrops} loading={$query.isLoading} />
-    <MintNft />
+    <MintNft data={data?.mintNFT} loading={$query.isLoading} />
   {/if}
 
   <Promote />

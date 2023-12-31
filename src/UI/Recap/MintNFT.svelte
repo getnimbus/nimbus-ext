@@ -33,6 +33,9 @@
   import dotIcon from "~/assets/recap/2-dot-icon.svg";
   import goldImg from "~/assets/Gold4.svg";
 
+  export let data;
+  export let loading;
+
   let days: number = 0;
   let hours: number = 0;
   let minutes: number = 0;
