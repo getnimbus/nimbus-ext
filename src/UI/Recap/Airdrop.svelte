@@ -90,7 +90,7 @@
       class="flex-1 h-full px-[35px] flex flex-col justify-center gap-14 items-center text-black"
     >
       <div class="font-bold text-4xl">
-        You earn <span class="text-[60px]"
+        You earned <span class="text-[60px]"
           >{(dataAirdropFormated && dataAirdropFormated.length) || 0}</span
         >
         airdrop worth
