@@ -255,8 +255,8 @@
     class="h-screen"
   >
     <SwiperSlide>
-      <div class="bg-[#EBFDFF] h-full overflow-hidden">
-        <div class="flex flex-col h-full max-w-[2000px] m-auto w-[90%]">
+      <div class="bg-[#EBFDFF] h-full overflow-hidden py-10">
+        <div class="flex flex-col gap-20 h-full max-w-[2400px] m-auto w-[96%]">
           <img
             src={Logo}
             alt="logo"
@@ -274,7 +274,7 @@
               <div class="flex flex-col gap-6">
                 {#if userPublicAddressChain === "SOL" && userAddress}
                   <div
-                    class="relative w-max flex items-center justify-center gap-2 cursor-pointer p-[20px] rounded-[32px] min-w-[250px] bg-[#A7EB50] text-black xl:text-xl text-2xl font-semibold"
+                    class="relative w-max flex items-center justify-center gap-2 cursor-pointer p-[20px] rounded-[32px] min-w-[250px] bg-[#A7EB50] text-black text-2xl font-semibold"
                     on:click={() => {
                       showPopover = true;
                     }}
@@ -308,7 +308,10 @@
                   </div>
                 {:else}
                   <div
-                    class="w-max flex items-center justify-center gap-2 cursor-pointer p-[20px] rounded-[32px] min-w-[250px] bg-[#A7EB50] text-black xl:text-xl text-2xl font-semibold"
+                    class="w-max flex items-center justify-center gap-2 cursor-pointer p-[20px] rounded-[32px] min-w-[250px] bg-[#A7EB50] text-black text-2xl font-semibold"
+                    on:click={() => {
+                      openModal();
+                    }}
                   >
                     Connect My Wallet
                     <img src={Arrow} alt="" />
@@ -318,7 +321,7 @@
             </div>
 
             <div class="flex flex-col gap-4">
-              <div class="text-black font-normal text-base xl:px-0 px-[35px]">
+              <div class="text-black font-normal text-base">
                 2023 has proven to be a challenging year for every holder, but
                 we've managed to weather the storm and emerge from the bottom.
                 This resilience is a significant achievement, and now let's
@@ -327,7 +330,7 @@
 
               <div class="flex justify-center gap-10 py-10 px-16">
                 <div class="relative">
-                  <div class="absolute top-[-110px] left-[-160px]">
+                  <div class="absolute top-[-80px] left-[-160px]">
                     <img
                       src={SvgOne}
                       alt=""
@@ -363,7 +366,7 @@
       </SwiperSlide>
 
       <SwiperSlide>
-        <Airdrop />
+        <Airdrop data={data?.airdrops} loading={$query.isLoading} />
       </SwiperSlide>
 
       <SwiperSlide>

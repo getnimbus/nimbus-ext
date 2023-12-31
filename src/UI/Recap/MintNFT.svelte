@@ -12,7 +12,7 @@
     VersionedTransaction,
   } from "@solana/web3.js";
   import html2canvas from "html2canvas";
-  import { Toast, Progressbar } from "flowbite-svelte";
+  import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
 
   import CardNftRecap from "~/components/CardNFTRecap.svelte";
@@ -156,7 +156,7 @@
                     <div class="text-[#646464] text-[36px]">/100</div>
                   </div>
                 </div>
-                <!-- <Progressbar progress={90} animate size="h-6" /> -->
+
                 <div class="w-full bg-gray-200 rounded-full h-6">
                   <div
                     class="bg-[#4DF6E2] h-6 rounded-full"
@@ -164,7 +164,7 @@
                   />
                 </div>
               </div>
-              <div class="flex justify-between items-center text-black">
+              <div class="flex gap-10 items-center text-black">
                 <button
                   class="p-5 font-semibold text-2xl flex items-center gap-4 rounded-[32px] bg-[#4DF6E2]"
                   on:click={$handleMintNFT.mutate()}
