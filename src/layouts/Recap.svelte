@@ -242,6 +242,8 @@
       data = $query.data;
     }
   }
+
+  $: console.log("$query: ", $query);
 </script>
 
 <ErrorBoundary>
