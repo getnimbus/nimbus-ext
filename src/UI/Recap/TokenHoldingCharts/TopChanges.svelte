@@ -78,7 +78,6 @@
       },
     ],
     grid: {
-      // show: false,
       top: 15,
       left: "15%",
       right: 0,
@@ -145,7 +144,9 @@
   }
 </script>
 
-<div class="w-[370px] h-[256px] flex flex-col p-[24px] rounded-[20px] bg-black">
+<div
+  class="w-[370px] h-[256px] flex flex-col gap-3 p-[24px] rounded-[20px] bg-black"
+>
   <div class="text-white text-xl font-medium">Top changes</div>
   {#if loading}
     <div

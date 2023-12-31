@@ -277,15 +277,13 @@
           Empty
         </div>
       {:else}
-        <div class="pt-4">
-          <EChart
-            id="recap-portfolio"
-            theme="dark"
-            notMerge={true}
-            option={optionPie}
-            height={225}
-          />
-        </div>
+        <EChart
+          id="recap-portfolio"
+          theme="dark"
+          notMerge={true}
+          option={optionPie}
+          height={225}
+        />
       {/if}
     </div>
   {/if}
