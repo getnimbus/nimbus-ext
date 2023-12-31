@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import {
     createQuery,
     createMutation,
@@ -17,6 +17,9 @@
   import html2canvas from "html2canvas";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
+  import dayjs from "dayjs";
+  import duration from "dayjs/plugin/duration";
+  dayjs.extend(duration);
 
   import CardNftRecap from "~/components/CardNFTRecap.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
@@ -28,6 +31,48 @@
   import NFTTwo from "~/assets/recap/nft-card-1.png";
   import dotIcon from "~/assets/recap/2-dot-icon.svg";
   import goldImg from "~/assets/Gold4.svg";
+  import { onDestroy, onMount } from "svelte";
+
+  let days: number = 0;
+  let hours: number = 0;
+  let minutes: number = 0;
+  let seconds: number = 0;
+
+  const getTargetDate = () => {
+    const storedDate = localStorage.getItem("countdownTarget");
+    if (storedDate) {
+      return dayjs(storedDate);
+    } else {
+      const newTargetDate = dayjs().add(7, "day");
+      localStorage.setItem("countdownTarget", newTargetDate.toISOString());
+      return newTargetDate;
+    }
+  };
+
+  // Set the target date for the countdown
+  const targetDate = getTargetDate();
+
+  const updateCountdown = () => {
+    const now = dayjs();
+
+    const duration = dayjs.duration(targetDate.diff(now));
+
+    days = duration.days();
+    hours = duration.hours();
+    minutes = duration.minutes();
+    seconds = duration.seconds();
+  };
+
+  let interval: ReturnType<typeof setInterval>;
+
+  onMount(() => {
+    updateCountdown(); // Initial update
+    interval = setInterval(updateCountdown, 1000);
+  });
+
+  onDestroy(() => {
+    clearInterval(interval);
+  });
 
   let toastMsg = "";
   let isSuccessToast = false;
@@ -134,27 +179,27 @@
       />
       <div class="flex justify-end items-center gap-6 pr-[35px]">
         <div
-          class="bg-black text-white text-[32px] leading-[48px] py-[14px] px-[19px] rounded-[12px]"
+          class="bg-black text-white text-[32px] leading-[48px] py-[14px] px-[19px] rounded-[12px] w-[100px] flex items-center justify-center"
         >
-          6<span class="text-gray-500 ml-[3px] text-2xl">d</span>
+          {days}<span class="text-gray-500 ml-[3px] text-2xl">d</span>
         </div>
         <img src={dotIcon} alt="" class="text-xl" />
         <div
-          class="bg-black text-white text-[32px] leading-[48px] py-[14px] px-[19px] rounded-[12px]"
+          class="bg-black text-white text-[32px] leading-[48px] py-[14px] px-[19px] rounded-[12px] w-[100px] flex items-center justify-center"
         >
-          21<span class="text-gray-500 ml-[3px] text-2xl">h</span>
+          {hours}<span class="text-gray-500 ml-[3px] text-2xl">h</span>
         </div>
         <img src={dotIcon} alt="" class="text-xl" />
         <div
-          class="bg-black text-white text-[32px] leading-[48px] py-[14px] px-[19px] rounded-[12px]"
+          class="bg-black text-white text-[32px] leading-[48px] py-[14px] px-[19px] rounded-[12px] w-[100px] flex items-center justify-center"
         >
-          15<span class="text-gray-500 ml-[3px] text-2xl">m</span>
+          {minutes}<span class="text-gray-500 ml-[3px] text-2xl">m</span>
         </div>
         <img src={dotIcon} alt="" class="text-xl" />
         <div
-          class="bg-black text-white text-[32px] leading-[48px] py-[14px] px-[19px] rounded-[12px]"
+          class="bg-black text-white text-[32px] leading-[48px] py-[14px] px-[19px] rounded-[12px] w-[100px] flex items-center justify-center"
         >
-          5<span class="text-gray-500 ml-[3px] text-2xl">s</span>
+          {seconds}<span class="text-gray-500 ml-[3px] text-2xl">s</span>
         </div>
       </div>
     </div>
