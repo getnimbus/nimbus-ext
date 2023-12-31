@@ -109,7 +109,7 @@
 
       {#if dataAirdropFormated && dataAirdropFormated.length !== 0}
         <div class="xl:flex hidden flex-col gap-3">
-          <div class="flex justify-center gap-2 items-center xl:min-h-60">
+          <div class="flex justify-center gap-2 items-center xl:h-60">
             {#each dataAirdropFormated.slice(0, 5) as item, index}
               <div class="flex h-full">
                 <div
@@ -156,7 +156,7 @@
 
           {#if dataAirdropFormated.length > 5}
             <div
-              class="flex justify-center gap-2 items-center flex-shrink xl:min-h-60"
+              class="flex justify-center gap-2 items-center flex-shrink xl:h-60"
             >
               {#each dataAirdropFormated.slice(5, 10) as item, index}
                 <div class="flex h-full">

@@ -49,6 +49,8 @@
     padding: 20px;
     background: #202025;
     width: max-content;
+    position: relative;
+    z-index: 10;
   }
 
   .card-img-wrapper {
@@ -121,7 +123,10 @@
 
   .card-content .statistics-card-content-wrapper .info {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
   }
 
   .card-content .statistics-card-content-wrapper .text-1 {
@@ -137,13 +142,13 @@
   .card-content .statistics-card-content-wrapper .text-3-wrapper {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 4px;
     color: #5affd0;
-    margin-top: -4px;
   }
   .card-content .statistics-card-content-wrapper .text-3-wrapper .text-3 {
     font-size: 18px;
-    font-weight: 500;
+    font-weight: 400;
   }
 
   .card-content
