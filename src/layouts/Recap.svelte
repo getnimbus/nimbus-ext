@@ -215,7 +215,9 @@
   }
 
   const getRecapData = async (address: string) => {
-    const response: any = await nimbus.get(`/recap?address=${address}`);
+    const response: any = await nimbus.get(
+      `/recap?address=${"DD9eeertZsaHXzxiBwaBV9BSgMhPHb2yuvBH5ivuxAFV"}`
+    );
     return response?.data;
   };
 

@@ -190,53 +190,6 @@
         </div>
       </div>
     </div>
-    <!-- <div class="flex-1 h-full px-[35px]">
-      <div
-        class="bg-black rounded-[32px] p-[60px] h-full flex justify-between gap-20"
-      >
-        <div class="flex-1 flex flex-col gap-10 justify-between">
-          <div class="text-white text-[60px] xl:w-1/2 w-full font-bold">
-            Mint your 2023 recap
-          </div>
-          <div class="xl:hidden block">
-            <CardNftRecap nft={NFTTwo} />
-          </div>
-          <div class="flex flex-col xl:gap-20 gap-10 w-max">
-            <div class="w-full flex flex-col gap-6">
-              <div class="flex justify-between items-center">
-                <div class="text-white text-[24px]">Total mint</div>
-                <div class="flex items-end">
-                  <div class="text-[#4DF6E2] text-[40px]">45</div>
-                  <div class="text-[#646464] text-[36px]">/100</div>
-                </div>
-              </div>
-              <Progressbar progress={90} animate size="h-6" />
-            </div>
-            <div class="flex items-center gap-10">
-              <div
-                class="bg-[#4DF6E2] text-black p-4 flex items-center gap-4 text-2xl font-semibold rounded-[32px] w-max cursor-pointer relative z-20"
-                on:click={$handleMintNFT.mutate()}
-              >
-                Mint 0.05 SOL ($5.25)
-                <img src={HammerIcon} alt="" />
-              </div>
-              <div
-                id="btn-share"
-                class="bg-[#ffa41c] text-black p-4 flex items-center gap-4 text-2xl font-semibold rounded-[32px] w-max cursor-pointer relative z-20"
-                on:click={downloadPage}
-              >
-                <div>Share</div>
-                <img src={Share} alt="" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="xl:block hidden">
-        <CardNftRecap nft={NFTTwo} />
-      </div>
-    </div> -->
   </div>
 </div>
 
