@@ -64,7 +64,7 @@
           formatter: function (value, index) {
             return (
               `${value < 0 ? "-" : ""} $` +
-              numeral(Math.abs(value)).format("0.00a")
+              numeral(Math.abs(value)).format("0.0a")
             );
           },
           fontSize: autoFontSize(),
@@ -97,7 +97,7 @@
             barStyle: {
               type: "solid",
             },
-            barWidth: 30,
+            barCategoryGap: "55%",
             emphasis: {
               focus: "series",
             },
@@ -124,7 +124,7 @@
   }
 </script>
 
-<div class="w-[600px] flex flex-col p-[24px] rounded-[20px] bg-black">
+<div class="w-[500px] flex flex-col p-[24px] rounded-[20px] bg-black">
   <div class="text-white text-xl font-medium">Top changes</div>
   {#if loading}
     <div

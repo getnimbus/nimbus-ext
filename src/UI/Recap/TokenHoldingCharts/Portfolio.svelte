@@ -75,7 +75,7 @@
     legend: {
       type: "scroll",
       orient: "vertical",
-      top: "0%",
+      top: "16%",
       right: "right",
     },
     series: [

@@ -20,7 +20,12 @@
 
 <div class="flex-1 flex flex-col gap-4 items-center">
   <div class="h-[300px] rounded-[20px] overflow-hidden">
-    <img src={data.imageUrl} alt="" class="w-full h-full object-cover" />
+    <img
+      src={data?.imageUrl ||
+        "https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"}
+      alt=""
+      class="w-full h-full object-cover"
+    />
   </div>
   <div class="flex flex-col items-center">
     <div class="flex items-center gap-1">
