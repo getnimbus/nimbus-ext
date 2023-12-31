@@ -124,7 +124,7 @@
   }
 </script>
 
-<div class="w-[500px] flex flex-col p-[24px] rounded-[20px] bg-black">
+<div class="w-[600px] flex flex-col p-[24px] rounded-[20px] bg-black">
   <div class="text-white text-xl font-medium">Top changes</div>
   {#if loading}
     <div
