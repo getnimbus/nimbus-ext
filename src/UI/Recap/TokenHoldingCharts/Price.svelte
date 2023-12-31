@@ -1471,12 +1471,11 @@
 
 <div class="w-[260px] flex flex-col gap-4 p-[24px] rounded-[20px] bg-black">
   <div class="flex flex-col gap-2">
-    <div class="text-[#C0C0C0] text-xl font-medium">Solana price change</div>
+    <div class="text-white text-xl font-medium">Solana price change</div>
     {#if !loading}
       <div class="flex flex-col gap-1">
-        <div class="text-[#F7FBFA] text-2xl flex items-center gap-1">
-          <TooltipNumber number={Number(data?.price || 0)} type="percent" />
-          <span>SOL</span>
+        <div class="text-[#F7FBFA] text-2xl">
+          $<TooltipNumber number={Number(data?.price || 0)} type="percent" />
         </div>
         <div class="flex items-center gap-1 font-medium text-xl">
           <div
