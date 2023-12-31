@@ -159,11 +159,11 @@
       </div>
     </div>
   </div>
-  <div class="absolute bottom-[-100px] left-[-100px] z-10">
+  <div class="absolute bottom-[-90px] left-[-100px] z-10">
     <img src={SvgOne} alt="" />
   </div>
 
-  <div class="absolute top-[-40px] right-[-10px] z-10">
+  <div class="absolute top-0 right-0 z-10">
     <img src={SvgFour} alt="" />
   </div>
 </div>

@@ -4,6 +4,7 @@
   import { blur } from "svelte/transition";
 
   import TooltipNumber from "~/components/TooltipNumber.svelte";
+  import Loading from "~/components/Loading.svelte";
 
   import Logo from "~/assets/logo-1.svg";
   import SvgTwo from "~/assets/recap/hero/svgTwo.svg";
@@ -105,125 +106,145 @@
         <img src={Share} alt="" />
       </div>
 
-      {#if dataAirdropFormated && dataAirdropFormated.length !== 0}
-        <div class="xl:flex hidden flex-col gap-3">
-          <div class="flex justify-center gap-2 items-center xl:h-60">
-            {#each dataAirdropFormated.slice(0, 5) as item, index}
-              <div class="flex h-full">
-                <div
-                  class={`bg-black min-w-[240px] flex flex-col gap-4 card-shadow-airdrop justify-between rounded-3xl px-6 pt-5 ${
-                    dataAirdropFormated.slice(0, 5).length % 2 == 0
-                      ? "self-center"
-                      : index % 2 == 0
-                        ? "self-start"
-                        : "self-end"
-                  }`}
-                >
-                  {#if item.upcoming}
+      {#if loading}
+        <div
+          class="flex justify-center items-center h-full xl:text-lg text-xl text-white h-[435px]"
+        >
+          <Loading />
+        </div>
+      {:else}
+        <div>
+          {#if dataAirdropFormated && dataAirdropFormated.length !== 0}
+            <div class="xl:flex hidden flex-col gap-3">
+              <div class="flex justify-center gap-2 items-center xl:h-60">
+                {#each dataAirdropFormated.slice(0, 5) as item, index}
+                  <div class="flex h-full">
                     <div
-                      class="text-[#010101] text-[18px] font-bold bg-white px-3 py-1 rounded-[10px] w-max"
-                    >
-                      Upcoming
-                    </div>
-                  {/if}
-
-                  <div class="flex flex-col gap-4 pb-5">
-                    <div
-                      class="text-center text-gray-500 flex items-center gap-3"
-                    >
-                      <img
-                        src={item.logo}
-                        alt=""
-                        class="w-10 h-10 rounded-full"
-                      />
-                      <div
-                        class="flex items-center gap-1 text-[#C0C0C0] text-[20px]"
-                      >
-                        <TooltipNumber number={item.amount} type="amount" />
-                        {item.token}
-                      </div>
-                    </div>
-                    <div class="text-[#F7FBFA] text-[30px]">
-                      <TooltipNumber number={item.value} type="value" />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            {/each}
-          </div>
-
-          {#if dataAirdropFormated.length > 5}
-            <div
-              class="flex justify-center gap-2 items-center flex-shrink xl:h-60"
-            >
-              {#each dataAirdropFormated.slice(5, 10) as item, index}
-                <div class="flex h-full">
-                  <div
-                    class={`bg-black min-w-[240px] flex flex-col gap-4 card-shadow-airdrop justify-between rounded-3xl px-6 pt-5 ${
-                      dataAirdropFormated.slice(5, 10).length % 2 == 0
-                        ? "self-center"
-                        : dataAirdropFormated.slice(5, 10).length !== 3
-                          ? index % 2 == 0
+                      class={`bg-black min-w-[240px] flex flex-col gap-4 card-shadow-airdrop justify-between rounded-3xl px-6 pt-5 ${
+                        dataAirdropFormated.slice(0, 5).length % 2 == 0
+                          ? "self-center"
+                          : index % 2 == 0
                             ? "self-start"
                             : "self-end"
-                          : index % 2 == 0
-                            ? "self-end"
-                            : "self-start"
-                    }`}
-                  >
-                    {#if item.upcoming}
-                      <div
-                        class="text-[#010101] text-[18px] font-bold bg-white px-3 py-1 rounded-[10px] w-max"
-                      >
-                        Upcoming
-                      </div>
-                    {/if}
-
-                    <div class="flex flex-col gap-4 pb-5">
-                      <div
-                        class="text-center text-gray-500 flex items-center gap-3"
-                      >
-                        <img
-                          src={item.logo}
-                          alt=""
-                          class="w-10 h-10 rounded-full"
-                        />
+                      }`}
+                    >
+                      {#if item.upcoming}
                         <div
-                          class="flex items-center gap-1 text-[#C0C0C0] text-[20px]"
+                          class="text-[#010101] text-[18px] font-bold bg-white px-3 py-1 rounded-[10px] w-max"
                         >
-                          <TooltipNumber number={item.amount} type="amount" />
-                          {item.token}
+                          Upcoming
+                        </div>
+                      {/if}
+
+                      <div class="flex flex-col gap-4 pb-5">
+                        <div
+                          class="text-center text-gray-500 flex items-center gap-3"
+                        >
+                          <img
+                            src={item.logo}
+                            alt=""
+                            class="w-10 h-10 rounded-full"
+                          />
+                          <div
+                            class="flex items-center gap-1 text-[#C0C0C0] text-[20px]"
+                          >
+                            <TooltipNumber number={item.amount} type="amount" />
+                            {item.token}
+                          </div>
+                        </div>
+                        <div class="text-[#F7FBFA] text-[30px]">
+                          <TooltipNumber number={item.value} type="value" />
                         </div>
                       </div>
-                      <div class="text-[#F7FBFA] text-[30px]">
-                        $<TooltipNumber number={item.value} type="balance" />
+                    </div>
+                  </div>
+                {/each}
+              </div>
+
+              {#if dataAirdropFormated.length > 5}
+                <div
+                  class="flex justify-center gap-2 items-center flex-shrink xl:h-60"
+                >
+                  {#each dataAirdropFormated.slice(5, 10) as item, index}
+                    <div class="flex h-full">
+                      <div
+                        class={`bg-black min-w-[240px] flex flex-col gap-4 card-shadow-airdrop justify-between rounded-3xl px-6 pt-5 ${
+                          dataAirdropFormated.slice(5, 10).length % 2 == 0
+                            ? "self-center"
+                            : dataAirdropFormated.slice(5, 10).length !== 3
+                              ? index % 2 == 0
+                                ? "self-start"
+                                : "self-end"
+                              : index % 2 == 0
+                                ? "self-end"
+                                : "self-start"
+                        }`}
+                      >
+                        {#if item.upcoming}
+                          <div
+                            class="text-[#010101] text-[18px] font-bold bg-white px-3 py-1 rounded-[10px] w-max"
+                          >
+                            Upcoming
+                          </div>
+                        {/if}
+
+                        <div class="flex flex-col gap-4 pb-5">
+                          <div
+                            class="text-center text-gray-500 flex items-center gap-3"
+                          >
+                            <img
+                              src={item.logo}
+                              alt=""
+                              class="w-10 h-10 rounded-full"
+                            />
+                            <div
+                              class="flex items-center gap-1 text-[#C0C0C0] text-[20px]"
+                            >
+                              <TooltipNumber
+                                number={item.amount}
+                                type="amount"
+                              />
+                              {item.token}
+                            </div>
+                          </div>
+                          <div class="text-[#F7FBFA] text-[30px]">
+                            $<TooltipNumber
+                              number={item.value}
+                              type="balance"
+                            />
+                          </div>
+                        </div>
                       </div>
                     </div>
+                  {/each}
+                </div>
+              {/if}
+            </div>
+
+            <div
+              class="xl:hidden flex flex-wrap items-center justify-center gap-3"
+            >
+              {#each dataAirdropFormated as item, index}
+                <div
+                  class={`bg-black w-[240px] flex flex-col card-shadow-airdrop justify-between rounded-3xl px-6 py-5 gap-5`}
+                >
+                  <div
+                    class="text-center text-gray-500 flex items-center gap-3"
+                  >
+                    <img
+                      src={item.logo}
+                      alt=""
+                      class="w-10 h-10 rounded-full"
+                    />{item.amount}
+                    {item.token}
+                  </div>
+                  <div class="text-white text-[30px]">
+                    <TooltipNumber number={item.value} type="value" />
                   </div>
                 </div>
               {/each}
             </div>
           {/if}
-        </div>
-
-        <div class="xl:hidden flex flex-wrap items-center justify-center gap-3">
-          {#each dataAirdropFormated as item, index}
-            <div
-              class={`bg-black w-[240px] flex flex-col card-shadow-airdrop justify-between rounded-3xl px-6 py-5 gap-5`}
-            >
-              <div class="text-center text-gray-500 flex items-center gap-3">
-                <img
-                  src={item.logo}
-                  alt=""
-                  class="w-10 h-10 rounded-full"
-                />{item.amount}
-                {item.token}
-              </div>
-              <div class="text-white text-[30px]">
-                <TooltipNumber number={item.value} type="value" />
-              </div>
-            </div>
-          {/each}
         </div>
       {/if}
     </div>
@@ -233,7 +254,7 @@
     <img src={SvgTwo} alt="" />
   </div>
 
-  <div class="absolute top-[-125px] right-[-120px] z-10 rotate-131_26">
+  <div class="absolute top-[-90px] right-[-80px] z-10 rotate-131_26">
     <img src={SvgTwo} alt="" class="" />
   </div>
 </div>
