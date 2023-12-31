@@ -112,7 +112,6 @@
           ignoreElements: (el) => {
             return el.id === "btn-share";
           },
-          allowTaint: true,
           logging: true,
           scale: 2,
         }).then((canvas) => {
@@ -141,23 +140,24 @@
   };
 
   const handleMintNFT = createMutation({
+    onError: () => {
+      toastMsg = "Something wrong while minting. Please try again!";
+      isSuccessToast = false;
+      trigger();
+    },
     mutationFn: async () => {
-      const data = await nimbus.post("/recap/mint-nft", {
-        image: "", // TODO: Add base 64 image here
-      });
-
-      console.log(data.data.result.encoded_transaction);
-      const signedTx = await $walletStore.signTransaction(
-        Transaction.from(
-          Buffer.from(data.data.result.encoded_transaction, "base64")
-        )
-      );
+      const data = await nimbus.post("/recap/mint-nft", {});
+      // TODO: Update me once deployed
       const connection = new Connection(
         "https://devnet-rpc.shyft.to?api_key=Gny0V25q6Y2kMjze" // DEVNET
         // "https://rpc.shyft.to?api_key=Qjb6SubTTbLrkmNo" // PROD
       );
-      const result = await $walletStore.sendTransaction(signedTx, connection);
-      console.log(result);
+      const result = await $walletStore.sendTransaction(
+        Transaction.from(
+          Buffer.from(data.data.result.encoded_transaction, "base64")
+        ),
+        connection
+      );
       triggerScreenSuccess();
       return result;
     },
@@ -232,11 +232,15 @@
                   class="p-5 font-semibold text-2xl flex items-center gap-4 rounded-[32px] bg-[#4DF6E2]"
                   on:click={$handleMintNFT.mutate()}
                 >
-                  Mint 0.05 SOL <img
-                    src={HammerIcon}
-                    alt=""
-                    class="w-10 h-10"
-                  />
+                  {#if $handleMintNFT.isLoading}
+                    Minting... <img src={HammerIcon} alt="" class="w-10 h-10" />
+                  {:else}
+                    Mint 0.05 SOL <img
+                      src={HammerIcon}
+                      alt=""
+                      class="w-10 h-10"
+                    />
+                  {/if}
                 </button>
                 <button
                   class="p-5 font-semibold text-2xl flex items-center gap-4 rounded-[32px] bg-[#FFA41C]"
