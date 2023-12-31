@@ -71,10 +71,10 @@
 </script>
 
 <div
-  class="bg-[#E8F4EF] text-black pt-10 pb-20 overflow-hidden w-full h-full"
+  class="bg-[#E8F4EF] text-black relative pt-10 pb-20 overflow-hidden w-full h-full"
   id="target-slide-2"
 >
-  <div class="relative flex flex-col gap-20 h-full max-w-[1400px] m-auto">
+  <div class="flex flex-col gap-20 h-full max-w-[1400px] m-auto">
     <img
       src={Logo}
       alt="logo"
@@ -172,14 +172,14 @@
         {/if}
       </div>
     </div>
+  </div>
 
-    <div class="absolute bottom-[-120px] left-[-120px] z-10">
-      <img src={SvgThree} alt="" />
-    </div>
+  <div class="absolute bottom-[0px] left-[-10px] z-10">
+    <img src={SvgThree} alt="" />
+  </div>
 
-    <div class="absolute top-[-120px] right-[-120px] z-10">
-      <img src={SvgOne} alt="" />
-    </div>
+  <div class="absolute top-[-80px] right-[-80px] z-10">
+    <img src={SvgOne} alt="" />
   </div>
 </div>
 

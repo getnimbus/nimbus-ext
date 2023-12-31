@@ -3,11 +3,11 @@
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
 
+  import TooltipNumber from "~/components/TooltipNumber.svelte";
+
   import Logo from "~/assets/logo-1.svg";
   import SvgTwo from "~/assets/recap/hero/svgTwo.svg";
   import Share from "~/assets/recap/share-icon.svg";
-  import carIco from "~/assets/recap/car-ico.svg";
-  import TooltipNumber from "~/components/TooltipNumber.svelte";
 
   export let data;
   export let loading;
@@ -75,10 +75,10 @@
 </script>
 
 <div
-  class="bg-[#EFF4E8] pt-10 pb-20 overflow-hidden w-full"
+  class="bg-[#EFF4E8] relative pt-10 pb-20 overflow-hidden w-full"
   id="target-slide-3"
 >
-  <div class="relative flex flex-col gap-20 h-full max-w-[1400px] m-auto">
+  <div class="flex flex-col gap-20 h-full max-w-[1400px] m-auto">
     <img
       src={Logo}
       alt="logo"
@@ -227,14 +227,14 @@
         </div>
       {/if}
     </div>
+  </div>
 
-    <div class="absolute bottom-[-125px] left-[-145px] z-10 rotate-93_74">
-      <img src={SvgTwo} alt="" />
-    </div>
+  <div class="absolute bottom-[-95px] left-[-95px] z-10 rotate-93_74">
+    <img src={SvgTwo} alt="" />
+  </div>
 
-    <div class="absolute top-[-175px] right-[-120px] z-10 rotate-131_26">
-      <img src={SvgTwo} alt="" class="" />
-    </div>
+  <div class="absolute top-[-125px] right-[-120px] z-10 rotate-131_26">
+    <img src={SvgTwo} alt="" class="" />
   </div>
 </div>
 

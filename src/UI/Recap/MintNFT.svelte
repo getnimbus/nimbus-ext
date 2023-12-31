@@ -204,7 +204,7 @@
     <div class="px-[35px] h-[90%] text-white">
       <div class="h-full rounded-[32px] bg-black">
         <div
-          class="mx-auto large_screen_width relative p-[60px] h-full w-full flex xl:flex-row flex-col xl:justify-start justify-center items-center gap-20"
+          class="mx-auto relative p-[60px] h-full w-full flex xl:flex-row flex-col xl:justify-start justify-center items-center gap-20"
         >
           <div class="flex flex-col justify-between gap-[60px]">
             <div class="text-[60px] font-bold">Mint You 2023 recap</div>
@@ -356,11 +356,6 @@
 </AppOverlay>
 
 <style>
-  @media (min-width: 2000px) {
-    .large_screen_width {
-      width: 1700px;
-    }
-  }
   .zindex {
     z-index: 99999;
   }
