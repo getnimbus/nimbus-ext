@@ -300,7 +300,7 @@
 
 {#if openScreenSuccess}
   <div
-    class="fixed h-screen w-screen top-0 left-0 z-[9999xp] flex items-center justify-center bg-[#000000cc]"
+    class="fixed h-screen w-screen top-0 left-0 zindex flex items-center justify-center bg-[#000000cc]"
     on:click={() => {
       setTimeout(() => {
         openScreenSuccess = false;
@@ -321,7 +321,7 @@
 
 {#if openScreenBonusScore}
   <div
-    class="fixed h-screen w-screen top-0 left-0 z-[9999xp] flex items-center justify-center bg-[#000000cc]"
+    class="fixed h-screen w-screen top-0 left-0 zindex flex items-center justify-center bg-[#000000cc]"
     on:click={() => {
       setTimeout(() => {
         openScreenBonusScore = false;
@@ -370,5 +370,9 @@
     .large_screen_width {
       width: 1700px;
     }
+  }
+
+  .zindex {
+    z-index: 999999;
   }
 </style>
