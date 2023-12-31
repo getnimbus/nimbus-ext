@@ -250,8 +250,6 @@
       data = $query.data;
     }
   }
-
-  $: console.log("$query: ", $query);
 </script>
 
 <ErrorBoundary>
@@ -266,7 +264,7 @@
   >
     <SwiperSlide>
       <div class="bg-[#EBFDFF] h-full overflow-hidden py-10">
-        <div class="flex flex-col gap-20 h-full max-w-[2400px] m-auto w-[96%]">
+        <div class="flex flex-col gap-20 h-full max-w-[1400px] m-auto">
           <img
             src={Logo}
             alt="logo"
@@ -347,7 +345,7 @@
                       class="w-full h-full object-contain"
                     />
                   </div>
-                  <CardNftRecap nft={NFTTwo} />
+                  <CardNftRecap data={NFTOne} />
                 </div>
                 <div class="relative">
                   <div class="absolute bottom-[-130px] right-[-150px]">
@@ -357,7 +355,7 @@
                       class="w-full h-full object-contain"
                     />
                   </div>
-                  <CardNftRecap nft={NFTOne} />
+                  <CardNftRecap data={NFTTwo} />
                 </div>
               </div>
             </div>
@@ -380,7 +378,7 @@
       </SwiperSlide>
 
       <SwiperSlide>
-        <MintNft />
+        <MintNft data={data?.mintNFT} />
       </SwiperSlide>
     {/if}
 
