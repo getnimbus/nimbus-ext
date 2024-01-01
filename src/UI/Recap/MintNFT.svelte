@@ -44,7 +44,7 @@
     if (storedDate) {
       return dayjs(storedDate);
     } else {
-      const newTargetDate = dayjs().add(7, "day");
+      const newTargetDate = dayjs().add(10, "day");
       localStorage.setItem("countdownTarget", newTargetDate.toISOString());
       return newTargetDate;
     }
