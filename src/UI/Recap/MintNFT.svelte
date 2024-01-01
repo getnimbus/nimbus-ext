@@ -170,8 +170,8 @@
       const data = await nimbus.post("/recap/mint-nft", {});
       // TODO: Update me once deployed
       const connection = new Connection(
-        "https://devnet-rpc.shyft.to?api_key=gsusEvomKHQwwltu" // DEVNET
-        // "https://rpc.shyft.to?api_key=gsusEvomKHQwwltu" // PROD
+        // "https://devnet-rpc.shyft.to?api_key=gsusEvomKHQwwltu" // DEVNET
+        "https://rpc.shyft.to?api_key=gsusEvomKHQwwltu" // PROD
       );
       const result = await $walletStore.sendTransaction(
         Transaction.from(

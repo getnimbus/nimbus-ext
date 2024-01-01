@@ -15,6 +15,7 @@
 
   export let data;
   export let loading;
+  export let summary;
 
   let toastMsg = "";
   let isSuccessToast = false;
@@ -94,17 +95,11 @@
           </div>
 
           <div class="flex flex-col gap-1">
-            <div class="text-xl text-[#4f4f4f]">
-              Make your investment growth
-            </div>
+            <div class="text-xl text-[#4f4f4f]">You're among</div>
             <div
               class="flex items-center gap-1 text-[64px] font-extrabold text-[#202025]"
             >
-              <TooltipNumber
-                number={Math.abs(Number(data?.stats?.networth_change)) * 100}
-                type="percent"
-              />
-              <span>%</span>
+              {summary?.tag || "--"}
             </div>
           </div>
 
