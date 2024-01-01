@@ -245,9 +245,16 @@
       data = $query.data;
     }
   }
-
-  $: console.log({ data });
 </script>
+
+<svelte:head>
+  <title>Your Solana 2023 Recap</title>
+  <meta
+    name="description"
+    content="Recap your journey with Solana in 2023, mint your momemnt"
+  />
+  <meta property="twitter:image" content="/assets/logo/logoN.png" />
+</svelte:head>
 
 <ErrorBoundary>
   <div class="recap-wrapper" id="recap-wrapper">
