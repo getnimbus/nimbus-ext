@@ -45,7 +45,7 @@
       localStorage.removeItem("countdownTarget");
       return dayjs(storedDate);
     } else {
-      const newTargetDate = dayjs().add(8, "day");
+      const newTargetDate = dayjs().add(9, "day");
       localStorage.setItem("countdownTarget", newTargetDate.toISOString());
       return newTargetDate;
     }
