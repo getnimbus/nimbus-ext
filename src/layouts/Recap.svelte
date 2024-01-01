@@ -1,43 +1,38 @@
 <script lang="ts">
-  import { Swiper, SwiperSlide } from "swiper/svelte";
-  import SwiperCore, { Pagination, Navigation, Mousewheel } from "swiper";
-  SwiperCore.use([Pagination, Navigation, Mousewheel]);
-  import { chain, typeWallet, user, userPublicAddress, wallet } from "~/store";
-  import { nimbus } from "~/lib/network";
-  import { WalletProvider } from "@svelte-on-solana/wallet-adapter-ui";
   import {
     BackpackWalletAdapter,
     PhantomWalletAdapter,
     SolflareWalletAdapter,
   } from "@solana/wallet-adapter-wallets";
   import { walletStore } from "@svelte-on-solana/wallet-adapter-core";
-  import { useQueryClient, createQuery } from "@tanstack/svelte-query";
+  import { WalletProvider } from "@svelte-on-solana/wallet-adapter-ui";
+  import { createQuery, useQueryClient } from "@tanstack/svelte-query";
   import bs58 from "bs58";
-  import { onMount } from "svelte";
-  import onboard from "~/lib/web3-onboard";
   import mixpanel from "mixpanel-browser";
-  import { shorterAddress, clickOutside } from "~/utils";
+  import { onMount } from "svelte";
+  import { nimbus } from "~/lib/network";
+  import onboard from "~/lib/web3-onboard";
+  import { chain, typeWallet, user, userPublicAddress, wallet } from "~/store";
+  import { clickOutside, shorterAddress } from "~/utils";
+  import { inview } from "svelte-inview";
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
 
-  import "swiper/swiper.scss";
-  import "swiper/components/pagination/pagination.scss";
-
-  import TokenHolding from "~/UI/Recap/TokenHolding.svelte";
   import Airdrop from "~/UI/Recap/Airdrop.svelte";
   import MintNft from "~/UI/Recap/MintNFT.svelte";
   import NftHolding from "~/UI/Recap/NFTHolding.svelte";
   import Promote from "~/UI/Recap/Promote.svelte";
+  import TokenHolding from "~/UI/Recap/TokenHolding.svelte";
   import CardNftRecap from "~/components/CardNFTRecap.svelte";
   import Loading from "~/components/Loading.svelte";
 
   import WalletModal from "~/UI/SolanaCustomWalletBtn/WalletModal.svelte";
 
   import Logo from "~/assets/logo-1.svg";
-  import User from "~/assets/user.png";
+  import Arrow from "~/assets/recap/hero/arrow-right.svg";
   import SvgOne from "~/assets/recap/hero/svgOne.svg";
   import SvgTwo from "~/assets/recap/hero/svgTwo.svg";
-  import Arrow from "~/assets/recap/hero/arrow-right.svg";
+  import User from "~/assets/user.png";
 
   const NFTOne = {
     solHolding: 5.5,
@@ -250,19 +245,13 @@
       data = $query.data;
     }
   }
+
+  $: console.log({ data });
 </script>
 
 <ErrorBoundary>
-  <!-- <Swiper
-    direction="vertical"
-    mousewheel={true}
-    cssMode={true}
-    slidesPerView={1}
-    speed={2000}
-    pagination={{ clickable: true, dynamicBullets: true }}
-    class="h-screen"
-  >
-    <SwiperSlide>
+  <div class="recap-wrapper" id="recap-wrapper">
+    <div class="recap-container">
       <div class="bg-[#EBFDFF] h-full overflow-hidden py-10">
         <div class="flex flex-col gap-20 h-full max-w-[1400px] m-auto">
           <img
@@ -362,129 +351,48 @@
           </div>
         </div>
       </div>
-    </SwiperSlide>
+    </div>
 
     {#if userPublicAddressChain === "SOL" && userAddress}
-      <SwiperSlide>
-        <TokenHolding data={data?.tokens} loading={$query.isLoading} />
-      </SwiperSlide>
-
-      <SwiperSlide>
-        <NftHolding data={data?.nfts} loading={$query.isLoading} />
-      </SwiperSlide>
-
-      <SwiperSlide>
-        <Airdrop data={data?.airdrops} loading={$query.isLoading} />
-      </SwiperSlide>
-
-      <SwiperSlide>
-        <MintNft data={data?.mintNFT} />
-      </SwiperSlide>
-    {/if}
-
-    <SwiperSlide>
-      <Promote />
-    </SwiperSlide>
-  </Swiper> -->
-
-  <div class="bg-[#EBFDFF] h-full overflow-hidden py-10">
-    <div class="flex flex-col gap-20 h-full max-w-[1400px] m-auto">
-      <img
-        src={Logo}
-        alt="logo"
-        class="xl:w-[177px] w-[220px] xl:h-[75px] h-[100px]"
-      />
-      <div
-        class="flex-1 h-full flex xl:flex-row flex-col items-center item_start xl:justify-between justify-center gap-20 px-[35px]"
-      >
-        <div class="flex flex-col gap-10">
-          <div class="text-[#202025] text-[100px] text_title_lg_view font-bold">
-            2023 Solana Recap
-          </div>
-          <div class="flex flex-col gap-6">
-            {#if userPublicAddressChain === "SOL" && userAddress}
-              <div
-                class="relative w-max flex items-center justify-center gap-2 cursor-pointer p-[20px] rounded-[32px] min-w-[250px] bg-[#A7EB50] text-black text-2xl font-semibold"
-                on:click={() => {
-                  showPopover = true;
-                }}
-              >
-                {#if isLoading}
-                  <Loading />
-                {:else}
-                  {shorterAddress(userAddress)}
-                {/if}
-
-                {#if showPopover && $user && Object.keys($user).length !== 0}
-                  <div
-                    class="bg-white absolute top-20 right-0 z-50 flex flex-col gap-1 px-3 xl:py-2 py-3 text-sm transform rounded-lg w-full"
-                    style="box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);"
-                    use:clickOutside
-                    on:click_outside={() => (showPopover = false)}
-                  >
-                    <div
-                      class="text-2xl font-medium text-red-500 cursor-pointer xl:text-base rounded-md transition-all px-2 py-1 text-center"
-                      on:click={() => {
-                        handleSignOut();
-                        localStorage.removeItem("solana_token");
-                        $walletStore.disconnect();
-                        showPopover = false;
-                      }}
-                    >
-                      Log out
-                    </div>
-                  </div>
-                {/if}
-              </div>
-            {:else}
-              <div
-                class="w-max flex items-center justify-center gap-2 cursor-pointer p-[20px] rounded-[32px] min-w-[250px] bg-[#A7EB50] text-black text-2xl font-semibold"
-                on:click={() => {
-                  openModal();
-                }}
-              >
-                Connect My Wallet
-                <img src={Arrow} alt="" />
-              </div>
-            {/if}
-          </div>
-        </div>
-
-        <div class="flex flex-col gap-4">
-          <div class="text-black font-normal text-base">
-            2023 has proven to be a challenging year for every holder, but we've
-            managed to weather the storm and emerge from the bottom. This
-            resilience is a significant achievement, and now let's reflect on
-            the moments we've overcome together.
-          </div>
-
-          <div class="flex justify-center gap-10 py-10 px-16">
-            <div class="relative">
-              <div class="absolute top-[-80px] left-[-160px]">
-                <img src={SvgOne} alt="" class="w-full h-full object-contain" />
-              </div>
-              <CardNftRecap data={NFTOne} />
-            </div>
-            <div class="relative">
-              <div class="absolute bottom-[-130px] right-[-150px]">
-                <img src={SvgTwo} alt="" class="w-full h-full object-contain" />
-              </div>
-              <CardNftRecap data={NFTTwo} />
-            </div>
-          </div>
-        </div>
+      <div class="recap-container">
+        <TokenHolding
+          data={data?.tokens}
+          summary={data?.mintNFT}
+          loading={$query.isLoading}
+        />
       </div>
+      <div class="recap-container">
+        <NftHolding data={data?.nfts} loading={$query.isLoading} />
+      </div>
+      <div class="recap-container">
+        <Airdrop data={data?.airdrops} loading={$query.isLoading} />
+      </div>
+      <div class="recap-container">
+        <MintNft data={data?.mintNFT} />
+      </div>
+    {/if}
+    <div
+      class="no-snap"
+      use:inview={{
+        threshold: 0.3,
+      }}
+      on:inview_change={(event) => {
+        const { inView, entry, scrollDirection, observer, node } = event.detail;
+        console.log(inView);
+        if (inView) {
+          document
+            .getElementById("recap-wrapper")
+            ?.classList.remove("recap-wrapper");
+        } else {
+          document
+            .getElementById("recap-wrapper")
+            ?.classList.add("recap-wrapper");
+        }
+      }}
+    >
+      <Promote />
     </div>
   </div>
-
-  {#if userPublicAddressChain === "SOL" && userAddress}
-    <TokenHolding data={data?.tokens} loading={$query.isLoading} />
-    <NftHolding data={data?.nfts} loading={$query.isLoading} />
-    <Airdrop data={data?.airdrops} loading={$query.isLoading} />
-    <MintNft data={data?.mintNFT} />
-  {/if}
-
-  <Promote />
 </ErrorBoundary>
 
 <WalletProvider localStorageKey="walletAdapter" {wallets} autoConnect />
@@ -510,5 +418,24 @@
         align-items: flex-start;
       }
     }
+  }
+
+  :global(.recap-wrapper) {
+    scroll-snap-type: y mandatory;
+  }
+
+  :global(#recap-wrapper) {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    scroll-behavior: smooth;
+    overflow: auto;
+  }
+
+  :global(.recap-container) {
+    width: 100%;
+    height: 100vh;
+    background-size: cover;
+    scroll-snap-align: start;
   }
 </style>

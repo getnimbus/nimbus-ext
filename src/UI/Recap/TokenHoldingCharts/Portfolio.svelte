@@ -75,8 +75,9 @@
     legend: {
       type: "scroll",
       orient: "vertical",
-      top: "16%",
+      top: "middle",
       right: "right",
+      icon: "circle",
     },
     series: [
       {
@@ -244,7 +245,6 @@
           );
           return selected?.symbol || name;
         },
-        icon: "circle",
       },
       series: [
         {

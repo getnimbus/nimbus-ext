@@ -127,11 +127,15 @@
       </div>
 
       <div
-        class="flex-1 py-[40px] px-[60px] rounded-[20px] bg-black flex flex-col gap-10"
+        class="flex-1 py-[40px] px-[60px] min-h-[400px] rounded-[20px] bg-black flex flex-col gap-10"
       >
         {#if loading}
           <div class="flex justify-center items-center h-full h-[525px]">
             <Loading />
+          </div>
+        {:else if data?.stats?.total_holding === 0}
+          <div class="text-[#B7B7B7] font-normal text-2xl text-center pt-20">
+            You haven't collected any NFT, do you have any interesting thing?
           </div>
         {:else}
           <div

@@ -76,7 +76,7 @@
 </script>
 
 <div
-  class="bg-[#EFF4E8] relative pt-10 pb-20 overflow-hidden w-full"
+  class="bg-[#EFF4E8] relative pt-10 pb-20 h-full overflow-hidden w-full"
   id="target-slide-3"
 >
   <div class="flex flex-col gap-20 h-full max-w-[1400px] m-auto">
@@ -114,6 +114,12 @@
         </div>
       {:else}
         <div>
+          {#if !dataAirdropFormated.length}
+            <div class="text-[#4F4F4F] font-normal text-2xl text-center pt-16">
+              You haven't collected any airdrop 2023. No worries, there will be
+              more on 2024 🤘
+            </div>
+          {/if}
           {#if dataAirdropFormated && dataAirdropFormated.length !== 0}
             <div class="xl:flex hidden flex-col gap-3">
               <div class="flex justify-center gap-2 items-center xl:h-60">
