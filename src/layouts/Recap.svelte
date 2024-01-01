@@ -451,6 +451,10 @@
     }
   }
 
+  :global(img) {
+    display: inline-block;
+  }
+
   :global(.recap-wrapper) {
     scroll-snap-type: y mandatory;
   }
