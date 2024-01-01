@@ -258,7 +258,20 @@
 
 <ErrorBoundary>
   <div class="recap-wrapper" id="recap-wrapper">
-    <div class="recap-container">
+    <div
+      class="recap-container"
+      use:inview={{
+        threshold: 0.1,
+      }}
+      on:inview_change={(event) => {
+        const { inView, entry, scrollDirection, observer, node } = event.detail;
+        if (inView) {
+          document
+            .getElementById("recap-wrapper")
+            ?.classList.add("recap-wrapper");
+        }
+      }}
+    >
       <div class="bg-[#EBFDFF] h-full overflow-hidden py-10">
         <div class="flex flex-col gap-20 h-full max-w-[1400px] m-auto">
           <img
@@ -361,14 +374,42 @@
     </div>
 
     {#if userPublicAddressChain === "SOL" && userAddress}
-      <div class="recap-container">
+      <div
+        class="recap-container"
+        use:inview={{
+          threshold: 0.1,
+        }}
+        on:inview_change={(event) => {
+          const { inView, entry, scrollDirection, observer, node } =
+            event.detail;
+          if (inView) {
+            document
+              .getElementById("recap-wrapper")
+              ?.classList.add("recap-wrapper");
+          }
+        }}
+      >
         <TokenHolding
           data={data?.tokens}
           summary={data?.mintNFT}
           loading={$query.isLoading}
         />
       </div>
-      <div class="recap-container">
+      <div
+        class="recap-container"
+        use:inview={{
+          threshold: 0.1,
+        }}
+        on:inview_change={(event) => {
+          const { inView, entry, scrollDirection, observer, node } =
+            event.detail;
+          if (inView) {
+            document
+              .getElementById("recap-wrapper")
+              ?.classList.add("recap-wrapper");
+          }
+        }}
+      >
         <NftHolding data={data?.nfts} loading={$query.isLoading} />
       </div>
       <div
