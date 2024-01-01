@@ -42,7 +42,6 @@
   const getTargetDate = () => {
     const storedDate = localStorage.getItem("countdownTarget");
     if (storedDate) {
-      localStorage.removeItem("countdownTarget");
       return dayjs(storedDate);
     } else {
       const newTargetDate = dayjs().add(9, "day");
@@ -64,8 +63,6 @@
     minutes = duration.minutes();
     seconds = duration.seconds();
   };
-
-  $: console.log("days: ", days);
 
   let interval: ReturnType<typeof setInterval>;
 
