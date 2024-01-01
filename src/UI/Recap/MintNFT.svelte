@@ -169,7 +169,8 @@
   }
 
   const handleMintNFT = createMutation({
-    onError: () => {
+    onError: (error) => {
+      console.log(error);
       toastMsg = "Something wrong while minting. Please try again!";
       isSuccessToast = false;
       trigger();
