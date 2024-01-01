@@ -88,7 +88,7 @@
         <div class="flex flex-col gap-4">
           <div class="font-bold text-5xl">Your top collection</div>
           <div class="flex">
-            {#each data?.top_holding || [] as item, index}
+            {#each data?.top_collection || [] as item, index}
               <div
                 class={`w-[74px] h-[74px] rounded-full border-3 border-white overflow-hidden ${
                   index > 0 && "-ml-3"
@@ -108,7 +108,7 @@
                 0
               </div>
             {/if}
-            {#if data?.stats?.total_collection !== 0 && data?.top_holding?.length > 3}
+            {#if data?.stats?.total_collection !== 0 && data?.stats?.total_collection > 3}
               <div
                 class="flex items-center justify-center text-2xl bg-black text-white w-[74px] h-[74px] rounded-full border-3 border-white -ml-3"
               >
