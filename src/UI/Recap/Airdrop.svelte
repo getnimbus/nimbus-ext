@@ -129,7 +129,7 @@
                 {#each dataAirdropFormated.slice(0, 5) as item, index}
                   <div class="flex h-full">
                     <div
-                      class={`bg-black min-w-[240px] flex flex-col gap-4 card-shadow-airdrop justify-between rounded-3xl px-6 pt-5 ${
+                      class={`bg-black min-w-[240px] flex flex-col gap-4 card-shadow-airdrop justify-between rounded-3xl px-6 py-5 ${
                         dataAirdropFormated.slice(0, 5).length % 2 == 0
                           ? "self-center"
                           : index % 2 == 0
@@ -138,14 +138,16 @@
                       }`}
                     >
                       {#if item.upcoming}
-                        <div
-                          class="text-[#010101] text-[18px] font-bold bg-white px-3 py-1 rounded-[10px] w-max"
-                        >
-                          Upcoming
+                        <div>
+                          <span
+                            class="text-[#010101] text-[18px] font-bold bg-white px-3 py-1 rounded-[10px] inline-flex"
+                          >
+                            Upcoming
+                          </span>
                         </div>
                       {/if}
 
-                      <div class="flex flex-col gap-4 pb-5">
+                      <div class="flex flex-col gap-4">
                         <div
                           class="text-center text-gray-500 flex items-center gap-3"
                         >

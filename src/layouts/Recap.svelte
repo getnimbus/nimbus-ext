@@ -371,10 +371,38 @@
       <div class="recap-container">
         <NftHolding data={data?.nfts} loading={$query.isLoading} />
       </div>
-      <div class="recap-container">
+      <div
+        class="recap-container"
+        use:inview={{
+          threshold: 0.1,
+        }}
+        on:inview_change={(event) => {
+          const { inView, entry, scrollDirection, observer, node } =
+            event.detail;
+          if (inView) {
+            document
+              .getElementById("recap-wrapper")
+              ?.classList.add("recap-wrapper");
+          }
+        }}
+      >
         <Airdrop data={data?.airdrops} loading={$query.isLoading} />
       </div>
-      <div class="recap-container">
+      <div
+        class="recap-container"
+        use:inview={{
+          threshold: 0.1,
+        }}
+        on:inview_change={(event) => {
+          const { inView, entry, scrollDirection, observer, node } =
+            event.detail;
+          if (inView) {
+            document
+              .getElementById("recap-wrapper")
+              ?.classList.remove("recap-wrapper");
+          }
+        }}
+      >
         <MintNft data={data?.mintNFT} />
       </div>
     {/if}
@@ -390,10 +418,6 @@
           document
             .getElementById("recap-wrapper")
             ?.classList.remove("recap-wrapper");
-        } else {
-          document
-            .getElementById("recap-wrapper")
-            ?.classList.add("recap-wrapper");
         }
       }}
     >
