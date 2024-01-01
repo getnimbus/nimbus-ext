@@ -381,7 +381,7 @@
     <div
       class="no-snap"
       use:inview={{
-        threshold: 0.3,
+        threshold: 0.2,
       }}
       on:inview_change={(event) => {
         const { inView, entry, scrollDirection, observer, node } = event.detail;
