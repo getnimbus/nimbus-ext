@@ -40,6 +40,7 @@
     "@crownframework/svelte-error-boundary": "^1.0.3",
     "@popperjs/core": "^2.11.6",
     "@project-serum/anchor": "^0.26.0",
+    "@rollup/plugin-inject": "^5.0.5",
     "@sentry/svelte": "^7.64.0",
     "@solana/wallet-adapter-wallets": "^0.19.16",
     "@solana/web3.js": "^1.76.0",

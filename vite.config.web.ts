@@ -8,6 +8,7 @@ import sveltePreprocess from "svelte-preprocess";
 import AutoImport from "unplugin-auto-import/vite";
 import { viteStaticCopy } from "vite-plugin-static-copy";
 import { VitePWA } from "vite-plugin-pwa";
+import inject from "@rollup/plugin-inject";
 
 // https://vitejs.dev/config/
 /** @type {import('vite').UserConfig} */
@@ -123,6 +124,7 @@ export default defineConfig(({ mode }) => {
     build: {
       target: ["es2020"],
       rollupOptions: {
+        plugins: [inject({ Buffer: ["buffer/", "Buffer"] })],
         input: {
           app: path.resolve(__dirname, "./src/index.html"),
           options: path.resolve(__dirname, "./src/entries/options/index.html"),
