@@ -118,6 +118,7 @@
           ignoreElements: (el) => {
             return el.id === "btn-share";
           },
+          proxy: "https://htmlcanvas-proxy.getnimbus.io",
           logging: true,
           scale: 2,
         }).then((canvas) => {
@@ -228,7 +229,7 @@
           class="mx-auto relative p-[60px] h-full w-full flex xl:flex-row flex-col xl:justify-start justify-center items-center gap-20"
         >
           <div class="flex flex-col justify-between gap-[60px]">
-            <div class="text-[60px] font-bold">Mint You 2023 recap</div>
+            <div class="text-[60px] font-bold">Mint You 2023 Recap</div>
             <div class="flex flex-col justify-between gap-8">
               <div class="flex flex-col justify-between gap-5">
                 <div class="flex justify-between items-center">

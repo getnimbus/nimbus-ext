@@ -44,6 +44,7 @@
           ignoreElements: (el) => {
             return el.id === "btn-share";
           },
+          proxy: "https://htmlcanvas-proxy.getnimbus.io",
           logging: true,
           scale: 2,
         }).then((canvas) => {
