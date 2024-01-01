@@ -40,6 +40,7 @@
           ignoreElements: (el) => {
             return el.id === "btn-share";
           },
+          proxy: "https://htmlcanvas-proxy.getnimbus.io",
           logging: true,
           scale: 2,
         }).then((canvas) => {
@@ -115,7 +116,9 @@
       {:else}
         <div>
           {#if !dataAirdropFormated.length}
-            <div class="text-[#4F4F4F] font-normal text-2xl text-center pt-16">
+            <div
+              class="text-[#4F4F4F] font-normal text-2xl text-center pt-16 mx-8"
+            >
               You haven't collected any airdrop 2023. No worries, there will be
               more on 2024 🤘
             </div>

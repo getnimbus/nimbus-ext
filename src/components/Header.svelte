@@ -473,6 +473,59 @@
   }
 </script>
 
+<svelte:head>
+  <script src="/main-2.0.4.js" data-preload></script>
+  <script
+    defer
+    src="https://widget.mava.app"
+    id="MavaWebChat"
+    data-token="b379b36e08fcb3d988cd60fb45deb82f713f3daa4f18c66f8b9c479ff42bf3b5"
+  ></script>
+  <script>
+    !(function (e, t) {
+      const a = "featurebase-sdk";
+      function n() {
+        if (!t.getElementById(a)) {
+          var e = t.createElement("script");
+          (e.id = a),
+            (e.src = "https://do.featurebase.app/js/sdk.js"),
+            t
+              .getElementsByTagName("script")[0]
+              .parentNode.insertBefore(e, t.getElementsByTagName("script")[0]);
+        }
+      }
+      "function" != typeof e.Featurebase &&
+        (e.Featurebase = function () {
+          (e.Featurebase.q = e.Featurebase.q || []).push(arguments);
+        }),
+        "complete" === t.readyState || "interactive" === t.readyState
+          ? n()
+          : t.addEventListener("DOMContentLoaded", n);
+    })(window, document);
+
+    Featurebase("initialize_changelog_widget", {
+      organization: "nimbus",
+      placement: "bottom",
+      theme: "light",
+      initialPage: "MainView",
+      fullscreenPopup: true,
+      // fullScreen: false,
+    });
+  </script>
+
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <script>
+    Featurebase("initialize_feedback_widget", {
+      organization: "nimbus", // required
+      theme: "light", // required
+      placement: "right", // optional
+      // email: "youruser@example.com", // optional
+    });
+  </script>
+</svelte:head>
+
 <div
   class="mobile-header-container py-1 border-b-[1px] border-[#ffffff1a] relative"
 >

@@ -62,10 +62,6 @@
   });
 </script>
 
-<svelte:head>
-  <script src="/main-2.0.4.js" data-preload></script>
-</svelte:head>
-
 <ErrorBoundary>
   <QueryClientProvider client={queryClient}>
     <Mixpanel>

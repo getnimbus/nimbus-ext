@@ -245,9 +245,16 @@
       data = $query.data;
     }
   }
-
-  $: console.log({ data });
 </script>
+
+<svelte:head>
+  <title>Your Solana 2023 Recap</title>
+  <meta
+    name="description"
+    content="Recap your journey with Solana in 2023, mint your momemnt"
+  />
+  <meta property="twitter:image" content="/assets/logo/logoN.png" />
+</svelte:head>
 
 <ErrorBoundary>
   <div class="recap-wrapper" id="recap-wrapper">
@@ -318,7 +325,7 @@
             </div>
 
             <div class="flex flex-col gap-4">
-              <div class="text-black font-normal text-base">
+              <div class="text-black font-normal lg:text-base text-2xl">
                 2023 has proven to be a challenging year for every holder, but
                 we've managed to weather the storm and emerge from the bottom.
                 This resilience is a significant achievement, and now let's
@@ -374,7 +381,7 @@
     <div
       class="no-snap"
       use:inview={{
-        threshold: 0.3,
+        threshold: 0.2,
       }}
       on:inview_change={(event) => {
         const { inView, entry, scrollDirection, observer, node } = event.detail;

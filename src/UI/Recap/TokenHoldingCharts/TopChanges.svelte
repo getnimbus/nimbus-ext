@@ -79,7 +79,7 @@
     ],
     grid: {
       top: 15,
-      left: "15%",
+      left: "18%",
       right: 0,
       width: "auto",
       bottom: 20,
