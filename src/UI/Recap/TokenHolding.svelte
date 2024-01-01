@@ -128,7 +128,7 @@
               <div class="flex flex-col gap-1">
                 <div class="text-[#202025] font-semibold text-4xl">
                   <TooltipNumber
-                    number={0.5 * Number(data?.stats.total_txs)}
+                    number={1.5 * Number(data?.stats.total_txs)}
                     type="value"
                   />
                 </div>
