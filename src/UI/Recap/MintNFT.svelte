@@ -256,8 +256,16 @@
               </div>
               <div class="flex gap-10 items-center text-black">
                 <button
-                  class="p-5 font-semibold text-2xl flex items-center gap-4 rounded-[32px] bg-[#4DF6E2]"
+                  class={`p-5 font-semibold text-2xl flex items-center gap-4 rounded-[32px] ${
+                    days === 0 && hours === 0 && minutes === 0 && seconds === 0
+                      ? "bg-[#dddddd]"
+                      : "bg-[#4DF6E2]"
+                  }`}
                   on:click={$handleMintNFT.mutate()}
+                  disabled={days === 0 &&
+                    hours === 0 &&
+                    minutes === 0 &&
+                    seconds === 0}
                 >
                   {#if $handleMintNFT.isLoading}
                     Minting... <img src={HammerIcon} alt="" class="w-10 h-10" />
