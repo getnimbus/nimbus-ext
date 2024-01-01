@@ -10,6 +10,8 @@
   import { wait } from "~/entries/background/utils";
   import { userPublicAddress } from "~/store";
   import { walletStore } from "@svelte-on-solana/wallet-adapter-core";
+  import { Buffer as BufferPolyfill } from "buffer";
+
   import {
     Connection,
     Transaction,
@@ -184,7 +186,7 @@
       );
       const result = await $walletStore.sendTransaction(
         Transaction.from(
-          Buffer.from(data.data.result.encoded_transaction, "base64")
+          BufferPolyfill.from(data.data.result.encoded_transaction, "base64")
         ),
         connection
       );
