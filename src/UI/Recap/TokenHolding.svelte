@@ -89,14 +89,16 @@
       <div class="flex-1 flex flex-col gap-7">
         <div class="grid grid-cols-2 gap-10">
           <div class="flex flex-col gap-1">
-            <div class="text-xl text-[#4f4f4f]">You aped in tokens</div>
+            <div class="lg:text-xl text-2xl text-[#4f4f4f]">
+              You aped in tokens
+            </div>
             <div class="text-[64px] font-extrabold text-[#202025]">
               {data?.stats?.total_holding || 0}
             </div>
           </div>
 
           <div class="flex flex-col gap-1">
-            <div class="text-xl text-[#4f4f4f]">You're among</div>
+            <div class="lg:text-xl text-2xl text-[#4f4f4f]">You're among</div>
             <div
               class="flex items-center gap-1 text-[64px] font-extrabold text-[#202025]"
             >
@@ -105,14 +107,16 @@
           </div>
 
           <div class="flex flex-col gap-1">
-            <div class="text-xl text-[#4f4f4f]">Total transactions</div>
+            <div class="lg:text-xl text-2xl text-[#4f4f4f]">
+              Total transactions
+            </div>
             <div class="text-[64px] font-extrabold text-[#202025]">
               {data?.stats?.total_txs || 0}
             </div>
           </div>
 
           <div class="flex flex-col gap-1">
-            <div class="text-xl text-[#4f4f4f]">Paid fee</div>
+            <div class="lg:text-xl text-2xl text-[#4f4f4f]">Paid fee</div>
             <div class="flex flex-col gap-3">
               <div class="text-[64px] font-extrabold text-[#202025]">
                 <TooltipNumber
@@ -128,7 +132,9 @@
                     type="value"
                   />
                 </div>
-                <div class="text-[#4F4F4F] text-xl">(If you use Ethereum)</div>
+                <div class="text-[#4F4F4F] text-xl lg:text-xl text-2xl">
+                  (If you use Ethereum)
+                </div>
               </div>
             </div>
           </div>
