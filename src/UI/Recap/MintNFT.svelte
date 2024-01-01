@@ -41,10 +41,10 @@
 
   const getTargetDate = () => {
     const storedDate = localStorage.getItem("countdownTarget");
-    if (storedDate) {
+    if (storedDate && dayjs(storedDate).isAfter(dayjs())) {
       return dayjs(storedDate);
     } else {
-      const newTargetDate = dayjs().add(7, "day");
+      const newTargetDate = dayjs().add(9, "day");
       localStorage.setItem("countdownTarget", newTargetDate.toISOString());
       return newTargetDate;
     }
@@ -55,13 +55,20 @@
 
   const updateCountdown = () => {
     const now = dayjs();
+    if (now.isAfter(targetDate)) {
+      days = 0;
+      hours = 0;
+      minutes = 0;
+      seconds = 0;
+      clearInterval(interval);
+    } else {
+      const duration = dayjs.duration(targetDate.diff(now));
 
-    const duration = dayjs.duration(targetDate.diff(now));
-
-    days = duration.days();
-    hours = duration.hours();
-    minutes = duration.minutes();
-    seconds = duration.seconds();
+      days = duration.days();
+      hours = duration.hours();
+      minutes = duration.minutes();
+      seconds = duration.seconds();
+    }
   };
 
   let interval: ReturnType<typeof setInterval>;
@@ -253,8 +260,13 @@
               </div>
               <div class="flex gap-10 items-center text-black">
                 <button
-                  class="p-5 font-semibold text-2xl flex items-center gap-4 rounded-[32px] bg-[#4DF6E2]"
+                  class={`p-5 font-semibold text-2xl flex items-center gap-4 rounded-[32px] ${
+                    dayjs().isAfter(targetDate)
+                      ? "bg-[#dddddd]"
+                      : "bg-[#4DF6E2]"
+                  }`}
                   on:click={$handleMintNFT.mutate()}
+                  disabled={dayjs().isAfter(targetDate)}
                 >
                   {#if $handleMintNFT.isLoading}
                     Minting... <img src={HammerIcon} alt="" class="w-10 h-10" />

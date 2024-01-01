@@ -416,6 +416,26 @@
           queryClient.invalidateQueries(["users-me"]);
         }
       }
+      if (type === "solana-recap-2023") {
+        window.open(link, "_blank");
+        await wait(5000);
+        const res = await nimbus.post(
+          `/v2/checkin/${$userPublicAddress}/quest/solana-recap-2023`,
+          {}
+        );
+        if (res && res?.data === null) {
+          toastMsg = "You already post on Twitter";
+          isSuccessToast = false;
+          trigger();
+        }
+        if (res?.data?.bonus !== undefined) {
+          triggerBonusScore();
+          bonusScore = res?.data?.bonus;
+          isTriggerBonusScore = true;
+          queryClient.invalidateQueries([$userPublicAddress, "daily-checkin"]);
+          queryClient.invalidateQueries(["users-me"]);
+        }
+      }
       if (type === "sync-telegram") {
         window.open(link, "_blank");
         await wait(6000);
