@@ -77,7 +77,7 @@
 </script>
 
 <div
-  class="bg-[#EFF4E8] relative pt-10 pb-20 overflow-hidden w-full min-h-screen flex"
+  class="bg-[#EFF4E8] relative pt-10 pb-20 overflow-hidden w-full min-h-screen flex flex-col"
   id="target-slide-3"
 >
   <div class="flex-1 flex flex-col gap-20 h-full max-w-[1400px] m-auto">
@@ -263,6 +263,13 @@
         </div>
       {/if}
     </div>
+  </div>
+  <div class="text-right text-[#4F4F4F] text-sm mx-[35px]">
+    Data by <a
+      href="https://solana-airdrop-checker.solworks.dev/"
+      class="underline"
+      target="_blank">https://solworks.dev/</a
+    >
   </div>
 
   <div class="absolute bottom-[-95px] left-[-95px] z-10 rotate-93_74">
