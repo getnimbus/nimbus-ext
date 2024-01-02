@@ -10,6 +10,8 @@
   import { wait } from "~/entries/background/utils";
   import { userPublicAddress } from "~/store";
   import { walletStore } from "@svelte-on-solana/wallet-adapter-core";
+  import { Buffer as BufferPolyfill } from "buffer";
+
   import {
     Connection,
     Transaction,
@@ -40,6 +42,7 @@
   let seconds: number = 0;
 
   const getTargetDate = () => {
+    return dayjs("2024-01-10", "YYYY-MM-DD");
     const storedDate = localStorage.getItem("countdownTarget");
     if (storedDate && dayjs(storedDate).isAfter(dayjs())) {
       return dayjs(storedDate);
@@ -156,7 +159,9 @@
   const getDataRecapMintNFT = async () => {
     try {
       const response = await nimbus.get("/recap/mint-stats");
-      dataMint = response?.data;
+      if (response?.data?.totalMinted) {
+        dataMint = response?.data;
+      }
     } catch (e) {
       console.log(e);
     }
@@ -165,11 +170,12 @@
   $: {
     intervalId = setInterval(() => {
       getDataRecapMintNFT();
-    }, 10000); // 10s
+    }, 30_000); // 30s
   }
 
   const handleMintNFT = createMutation({
-    onError: () => {
+    onError: (error) => {
+      console.log(error);
       toastMsg = "Something wrong while minting. Please try again!";
       isSuccessToast = false;
       trigger();
@@ -183,7 +189,7 @@
       );
       const result = await $walletStore.sendTransaction(
         Transaction.from(
-          Buffer.from(data.data.result.encoded_transaction, "base64")
+          BufferPolyfill.from(data.data.result.encoded_transaction, "base64")
         ),
         connection
       );

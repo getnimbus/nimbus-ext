@@ -41,9 +41,19 @@
           class="shoutout-embed"
           data-widgetTitle="A personalized portfolio for Web3 investor"
           data-widgetId="17e2e05a-623b-4e59-9da0-4df04afd9fd3"
-        ></div>
+        >
+          <iframe
+            src="https://shoutout.io/embed/17e2e05a-623b-4e59-9da0-4df04afd9fd3/"
+            frameborder="0"
+            title="Shoutout.io testimonial embed"
+            scrolling="no"
+            id="shoutout-iframe-17e2e05a-623b-4e59-9da0-4df04afd9fd3-0"
+            width="100%"
+            style="outline: none; opacity: 1; overflow: hidden; height: 1667px;"
+          ></iframe>
+        </div>
 
-        <script src="https://shoutout.io/static/website/js/embed.js"></script>
+        <!-- <script src="https://shoutout.io/static/website/js/embed.js"></script> -->
       </div>
     </div>
   </div>

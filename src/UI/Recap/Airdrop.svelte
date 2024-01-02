@@ -73,7 +73,7 @@
     0
   );
 
-  $: dataAirdropFormated = (data || []).filter((item) => item.amount > 0);
+  $: dataAirdropFormated = (data || []).filter((item) => item?.eligible);
 </script>
 
 <div
@@ -129,7 +129,7 @@
                 {#each dataAirdropFormated.slice(0, 5) as item, index}
                   <div class="flex h-full">
                     <div
-                      class={`bg-black min-w-[240px] flex flex-col gap-4 card-shadow-airdrop justify-between rounded-3xl px-6 pt-5 ${
+                      class={`bg-black min-w-[240px] gap-4 card-shadow-airdrop rounded-3xl px-6 py-5 ${
                         dataAirdropFormated.slice(0, 5).length % 2 == 0
                           ? "self-center"
                           : index % 2 == 0
@@ -138,14 +138,16 @@
                       }`}
                     >
                       {#if item.upcoming}
-                        <div
-                          class="text-[#010101] text-[18px] font-bold bg-white px-3 py-1 rounded-[10px] w-max"
-                        >
-                          Upcoming
+                        <div class="mb-3">
+                          <span
+                            class="text-[#010101] text-[18px] leading-[20px] font-mono font-bold bg-white px-3 py-1 rounded-[10px] inline-flex shifted-text"
+                          >
+                            Upcoming
+                          </span>
                         </div>
                       {/if}
 
-                      <div class="flex flex-col gap-4 pb-5">
+                      <div class="">
                         <div
                           class="text-center text-gray-500 flex items-center gap-3"
                         >
@@ -161,7 +163,10 @@
                             {item.token}
                           </div>
                         </div>
-                        <div class="text-[#F7FBFA] text-[30px]">
+                        <div class="text-[#F7FBFA] text-[30px] mt-3">
+                          {#if item.upcoming}
+                            ~
+                          {/if}
                           <TooltipNumber number={item.value} type="value" />
                         </div>
                       </div>
@@ -217,10 +222,10 @@
                             </div>
                           </div>
                           <div class="text-[#F7FBFA] text-[30px]">
-                            $<TooltipNumber
-                              number={item.value}
-                              type="balance"
-                            />
+                            {#if item.upcoming}
+                              ~
+                            {/if}
+                            <TooltipNumber number={item.value} type="value" />
                           </div>
                         </div>
                       </div>

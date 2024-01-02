@@ -226,7 +226,7 @@
 
   $: query = createQuery({
     queryKey: ["recap", userAddress],
-    queryFn: () => getRecapData(userAddress),
+    queryFn: () => getRecapData("F3KLUHJTmwKxXBMeyGPoej1jXBoCvJAdsjS32sWkUewh"),
     staleTime: Infinity,
     retry: false,
     enabled:
@@ -258,7 +258,20 @@
 
 <ErrorBoundary>
   <div class="recap-wrapper" id="recap-wrapper">
-    <div class="recap-container">
+    <div
+      class="recap-container"
+      use:inview={{
+        threshold: 0.1,
+      }}
+      on:inview_change={(event) => {
+        const { inView, entry, scrollDirection, observer, node } = event.detail;
+        if (inView) {
+          document
+            .getElementById("recap-wrapper")
+            ?.classList.add("recap-wrapper");
+        }
+      }}
+    >
       <div class="bg-[#EBFDFF] h-full overflow-hidden py-10">
         <div class="flex flex-col gap-20 h-full max-w-[1400px] m-auto">
           <img
@@ -321,6 +334,9 @@
                     <img src={Arrow} alt="" />
                   </div>
                 {/if}
+                <div class="lg:text-base text-2xl mt-[-12px]">
+                  1021+ users viewed their Solana Recap 2023
+                </div>
               </div>
             </div>
 
@@ -361,27 +377,83 @@
     </div>
 
     {#if userPublicAddressChain === "SOL" && userAddress}
-      <div class="recap-container">
+      <div
+        class="recap-container"
+        use:inview={{
+          threshold: 0.1,
+        }}
+        on:inview_change={(event) => {
+          const { inView, entry, scrollDirection, observer, node } =
+            event.detail;
+          if (inView) {
+            document
+              .getElementById("recap-wrapper")
+              ?.classList.add("recap-wrapper");
+          }
+        }}
+      >
         <TokenHolding
           data={data?.tokens}
           summary={data?.mintNFT}
           loading={$query.isLoading}
         />
       </div>
-      <div class="recap-container">
+      <div
+        class="recap-container"
+        use:inview={{
+          threshold: 0.1,
+        }}
+        on:inview_change={(event) => {
+          const { inView, entry, scrollDirection, observer, node } =
+            event.detail;
+          if (inView) {
+            document
+              .getElementById("recap-wrapper")
+              ?.classList.add("recap-wrapper");
+          }
+        }}
+      >
         <NftHolding data={data?.nfts} loading={$query.isLoading} />
       </div>
-      <div class="recap-container">
+      <div
+        class="recap-container"
+        use:inview={{
+          threshold: 0.1,
+        }}
+        on:inview_change={(event) => {
+          const { inView, entry, scrollDirection, observer, node } =
+            event.detail;
+          if (inView) {
+            document
+              .getElementById("recap-wrapper")
+              ?.classList.add("recap-wrapper");
+          }
+        }}
+      >
         <Airdrop data={data?.airdrops} loading={$query.isLoading} />
       </div>
-      <div class="recap-container">
+      <div
+        class="recap-container"
+        use:inview={{
+          threshold: 0.1,
+        }}
+        on:inview_change={(event) => {
+          const { inView, entry, scrollDirection, observer, node } =
+            event.detail;
+          if (inView) {
+            document
+              .getElementById("recap-wrapper")
+              ?.classList.remove("recap-wrapper");
+          }
+        }}
+      >
         <MintNft data={data?.mintNFT} />
       </div>
     {/if}
     <div
       class="no-snap"
       use:inview={{
-        threshold: 0.2,
+        threshold: 0.1,
       }}
       on:inview_change={(event) => {
         const { inView, entry, scrollDirection, observer, node } = event.detail;
@@ -390,10 +462,6 @@
           document
             .getElementById("recap-wrapper")
             ?.classList.remove("recap-wrapper");
-        } else {
-          document
-            .getElementById("recap-wrapper")
-            ?.classList.add("recap-wrapper");
         }
       }}
     >
@@ -425,6 +493,10 @@
         align-items: flex-start;
       }
     }
+  }
+
+  :global(img) {
+    display: inline-block;
   }
 
   :global(.recap-wrapper) {
