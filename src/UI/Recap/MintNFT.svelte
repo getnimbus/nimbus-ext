@@ -365,12 +365,12 @@
         Thank you for Mint our recap NFT. Ready to receive exclusive benefit
         with us!
       </div>
-      <div class="flex flex-col items-center">
+      <!-- <div class="flex flex-col items-center">
         <img src={goldImg} alt="" class="w-40 h-40" />
         <div class="xl:text-2xl text-4xl text-white font-medium">
           You have received 50 GM Points
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
 {/if}
