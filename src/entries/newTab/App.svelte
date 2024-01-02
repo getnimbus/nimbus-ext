@@ -1,7 +1,7 @@
 <script lang="ts">
   import { QueryClient, QueryClientProvider } from "@tanstack/svelte-query";
   import { onMount } from "svelte";
-  import { Route, Router, useLocation, useParams } from "svelte-navigator";
+  import { Route, Router } from "svelte-navigator";
   import * as browser from "webextension-polyfill";
   import { detectParams, isDarkMode } from "~/store";
 
@@ -14,6 +14,7 @@
   import MobileHeaderTab from "~/components/MobileHeaderTab.svelte";
   import Loading from "~/components/Loading.svelte";
   import MobileAppIntroduce from "~/components/MobileAppIntroduce.svelte";
+  import UpdateParams from "~/components/UpdateParams.svelte";
 
   const queryClient = new QueryClient({
     defaultOptions: {
@@ -336,6 +337,8 @@
             <MobileAppIntroduce />
           {/if}
         {/if}
+
+        <UpdateParams />
       </Router>
     </Mixpanel>
   </QueryClientProvider>
