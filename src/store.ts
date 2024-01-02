@@ -18,6 +18,7 @@ export const userPublicAddress = writable("");
 export const triggerUpdateBundle = writable(false);
 export const isShowModalNftList = writable(false);
 export const selectedNftContractAddress = writable("");
+export const detectParams = writable(window.location.pathname);
 
 // let isFirstTime = true;
 // isOpenReport.subscribe((value) => {
