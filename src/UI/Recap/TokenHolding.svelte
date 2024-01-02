@@ -74,10 +74,10 @@
 </script>
 
 <div
-  class="bg-[#eff4e8] relative pt-10 pb-20 overflow-hidden w-full h-full"
+  class="bg-[#eff4e8] relative pt-10 pb-20 overflow-hidden w-full min-h-screen flex"
   id="target-slide-1"
 >
-  <div class="flex flex-col gap-20 h-full max-w-[1400px] m-auto">
+  <div class="flex-1 flex flex-col gap-20 h-full max-w-[1400px] m-auto">
     <img
       src={Logo}
       alt="logo"

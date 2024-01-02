@@ -200,10 +200,12 @@
 </script>
 
 <div
-  class="bg-[#E8F4EF] pt-10 pb-20 overflow-hidden w-full min-h-screen"
+  class="bg-[#E8F4EF] pt-10 pb-20 overflow-hidden w-full min-h-screen flex"
   id="target-slide-4"
 >
-  <div class="relative flex flex-col gap-20 h-full max-w-[1400px] m-auto">
+  <div
+    class="flex-1 relative flex flex-col gap-20 h-full max-w-[1400px] m-auto"
+  >
     <div class="flex justify-between items-center">
       <img
         src={Logo}
