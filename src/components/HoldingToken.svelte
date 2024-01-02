@@ -217,7 +217,7 @@
     const config = {
       displayMode: "integrated",
       integratedTargetId: `swap-${index}`,
-      endpoint: "https://rpc.shyft.to?api_key=gsusEvomKHQwwltu",
+      endpoint: "https://rpc.shyft.to?api_key=Gny0V25q6Y2kMjze",
       strictTokenList: false,
       defaultExplorer: "Solscan",
       formProps: {
