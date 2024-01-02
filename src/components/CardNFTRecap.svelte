@@ -83,7 +83,9 @@
         {/if}
         <div class="text-[#9a9a9a]">You're</div>
       </div>
-      <div class="text-[#f7fbfa] font-bold text-2xl">{data?.tag || "N/A"}</div>
+      <div class="text-[#f7fbfa] font-bold text-2xl">
+        {data?.tag || "N/A"}{data?.tag !== "Normal" ? "%" : ""}
+      </div>
     </div>
   </div>
 </div>

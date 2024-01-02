@@ -102,7 +102,7 @@
             <div
               class="flex items-center gap-1 text-[64px] font-extrabold text-[#202025]"
             >
-              {summary?.tag || "--"}
+              {summary?.tag || "--"}{summary?.tag !== "Normal" ? "%" : ""}
             </div>
           </div>
 
