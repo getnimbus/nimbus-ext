@@ -391,6 +391,7 @@
           Nimbus Recap NFT
         </div>
         <a
+          target="_blank"
           href="https://twitter.com/intent/tweet?text=2023%20has%20proven%20to%20be%20a%20challenging%20year%20for%20every%20holder%20and%20now%20let%27s%20reflect%20on%20my%20journey%20with%20%40solana%0Ahttps%3A%2F%2Fapp.getnimbus.io%2Frecap%0AIt%27s%20cool%20to%20be%20a%20part%20of%20Solana%0A%0A%23SolanaRE2023"
         >
           <Button>
