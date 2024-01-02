@@ -168,7 +168,7 @@
   $: {
     intervalId = setInterval(() => {
       getDataRecapMintNFT();
-    }, 10000); // 10s
+    }, 30_000); // 30s
   }
 
   const handleMintNFT = createMutation({
