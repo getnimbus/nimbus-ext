@@ -42,6 +42,7 @@
   let seconds: number = 0;
 
   const getTargetDate = () => {
+    return dayjs("2024-01-10", "YYYY-MM-DD");
     const storedDate = localStorage.getItem("countdownTarget");
     if (storedDate && dayjs(storedDate).isAfter(dayjs())) {
       return dayjs(storedDate);
