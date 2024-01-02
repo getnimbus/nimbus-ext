@@ -11,7 +11,6 @@
   import mixpanel from "mixpanel-browser";
   import { onMount } from "svelte";
   import { nimbus } from "~/lib/network";
-  import onboard from "~/lib/web3-onboard";
   import { chain, typeWallet, user, userPublicAddress, wallet } from "~/store";
   import { clickOutside, shorterAddress } from "~/utils";
   import { inview } from "svelte-inview";
@@ -61,8 +60,6 @@
     new SolflareWalletAdapter(),
     new BackpackWalletAdapter(),
   ];
-
-  const wallets$ = onboard.state.select("wallets");
 
   const queryClient = useQueryClient();
 
@@ -118,12 +115,6 @@
     }
   });
 
-  const disconnect = (value: any) => {
-    if (value && Object.keys(value).length !== 0) {
-      onboard.disconnectWallet({ label: value.label });
-    }
-  };
-
   const handleSignOut = () => {
     try {
       user.update((n) => (n = {}));
@@ -133,9 +124,7 @@
       userPublicAddress.update((n) => (n = ""));
 
       localStorage.removeItem("public_address");
-
-      localStorage.removeItem("evm_token");
-      disconnect($wallets$?.[0]);
+      localStorage.removeItem("solana_token");
 
       queryClient.invalidateQueries(["list-address"]);
       queryClient.invalidateQueries(["users-me"]);
@@ -147,17 +136,21 @@
 
   const handleSignSolanaAddressMessage = async (signatureString) => {
     if ($walletStore.connected) {
-      const res = await $walletStore?.signMessage(
-        Uint8Array.from(
-          Array.from(`I am signing my one-time nonce: ${signatureString}`).map(
-            (letter) => letter.charCodeAt(0)
+      try {
+        const res = await $walletStore?.signMessage(
+          Uint8Array.from(
+            Array.from(
+              `I am signing my one-time nonce: ${signatureString}`
+            ).map((letter) => letter.charCodeAt(0))
           )
-        )
-      );
-      if (res) {
-        return bs58.encode(res);
-      } else {
-        return "";
+        );
+        if (res) {
+          return bs58.encode(res);
+        } else {
+          return "";
+        }
+      } catch (error) {
+        isLoading = false;
       }
     }
   };
@@ -207,16 +200,26 @@
   };
 
   // trigger Solana wallet
-  const maxNumberOfWallets = 3;
+  const maxNumberOfWallets = 5;
   let modalVisible = false;
   const openModal = () => {
     modalVisible = true;
   };
   const closeModal = () => (modalVisible = false);
   async function connectWallet(event) {
+    // console.log(event);
     closeModal();
-    await $walletStore.select(event.detail);
-    await $walletStore.connect();
+    try {
+      localStorage.removeItem("walletAdapter");
+      await walletStore.resetWallet();
+      await walletStore.setConnecting(false);
+      await $walletStore.disconnect();
+      await $walletStore.select(event.detail);
+      await $walletStore.connect();
+    } catch (error) {
+      console.log(error);
+      isLoading = false;
+    }
   }
 
   const getRecapData = async (address: string) => {
@@ -226,7 +229,7 @@
 
   $: query = createQuery({
     queryKey: ["recap", userAddress],
-    queryFn: () => getRecapData("F3KLUHJTmwKxXBMeyGPoej1jXBoCvJAdsjS32sWkUewh"),
+    queryFn: () => getRecapData(userAddress),
     staleTime: Infinity,
     retry: false,
     enabled:
@@ -272,8 +275,8 @@
         }
       }}
     >
-      <div class="bg-[#EBFDFF] h-full overflow-hidden py-10">
-        <div class="flex flex-col gap-20 h-full max-w-[1400px] m-auto">
+      <div class="bg-[#EBFDFF] min-h-screen overflow-hidden py-10 flex">
+        <div class="flex 1 flex flex-col gap-20 h-full max-w-[1400px] m-auto">
           <img
             src={Logo}
             alt="logo"
@@ -284,7 +287,7 @@
           >
             <div class="flex flex-col gap-10">
               <div
-                class="text-[#202025] text-[100px] text_title_lg_view font-bold"
+                class="text-[#202025] text-[100px] text_title_lg_view font-bold mt-3"
               >
                 2023 Solana Recap
               </div>
@@ -457,7 +460,6 @@
       }}
       on:inview_change={(event) => {
         const { inView, entry, scrollDirection, observer, node } = event.detail;
-        console.log(inView);
         if (inView) {
           document
             .getElementById("recap-wrapper")
@@ -470,7 +472,12 @@
   </div>
 </ErrorBoundary>
 
-<WalletProvider localStorageKey="walletAdapter" {wallets} autoConnect />
+<WalletProvider
+  localStorageKey="walletAdapter"
+  {wallets}
+  autoConnect
+  onError={console.log}
+/>
 
 {#if modalVisible}
   <WalletModal
@@ -506,14 +513,14 @@
   :global(#recap-wrapper) {
     position: relative;
     width: 100%;
-    height: 100vh;
+    min-height: 100vh;
     scroll-behavior: smooth;
     overflow: auto;
   }
 
   :global(.recap-container) {
     width: 100%;
-    height: 100vh;
+    min-height: 100vh;
     background-size: cover;
     scroll-snap-align: start;
   }

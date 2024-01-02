@@ -74,10 +74,10 @@
 </script>
 
 <div
-  class="bg-[#eff4e8] relative pt-10 pb-20 overflow-hidden w-full h-full"
+  class="bg-[#eff4e8] relative pt-10 pb-20 overflow-hidden w-full min-h-screen flex"
   id="target-slide-1"
 >
-  <div class="flex flex-col gap-20 h-full max-w-[1400px] m-auto">
+  <div class="flex-1 flex flex-col gap-20 h-full max-w-[1400px] m-auto">
     <img
       src={Logo}
       alt="logo"
@@ -98,11 +98,13 @@
           </div>
 
           <div class="flex flex-col gap-1">
-            <div class="lg:text-xl text-2xl text-[#4f4f4f]">You're among</div>
+            <div class="lg:text-xl text-2xl text-[#4f4f4f]">
+              You're among <sup>(1)</sup>
+            </div>
             <div
               class="flex items-center gap-1 text-[64px] font-extrabold text-[#202025]"
             >
-              {summary?.tag || "--"}
+              {summary?.tag || "--"}{summary?.tag !== "Normal" ? "%" : ""}
             </div>
           </div>
 
@@ -130,7 +132,7 @@
                   ~<TooltipNumber
                     number={1.5 * Number(data?.stats.total_txs)}
                     type="value"
-                  />
+                  /> <sup class="text-[#4F4F4F]">(2)</sup>
                 </div>
                 <div class="text-[#4F4F4F] text-xl lg:text-xl text-2xl">
                   (If you use Ethereum)
@@ -151,7 +153,7 @@
       </div>
 
       <div class="flex-1 flex flex-col gap-6">
-        <div class="flex items-end gap-6">
+        <div class="flex items-end gap-6 justify-center">
           <Portfolio data={data?.holding} {loading} />
           <Price data={data?.stats} {loading} />
         </div>
@@ -160,6 +162,12 @@
         </div>
       </div>
     </div>
+
+    <div class="text-right text-[#4F4F4F] text-sm mx-[35px]">
+      <div>(1) Based on your paid fee</div>
+      <div>(2) Estimated that a transaction on ETH cost 1.5$</div>
+    </div>
+    <div class="text-right text-[#4F4F4F] text-sm mx-[35px]"></div>
   </div>
   <div class="absolute bottom-[-90px] left-[-100px] z-10">
     <img src={SvgOne} alt="" />

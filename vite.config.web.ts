@@ -124,7 +124,12 @@ export default defineConfig(({ mode }) => {
     build: {
       target: ["es2020"],
       rollupOptions: {
-        plugins: [inject({ Buffer: ["buffer/", "Buffer"] })],
+        plugins: [
+          inject({ Buffer: ["buffer/", "Buffer"] }),
+          // json(),
+          // globals(),
+          // builtins(),
+        ],
         input: {
           app: path.resolve(__dirname, "./src/index.html"),
           options: path.resolve(__dirname, "./src/entries/options/index.html"),
