@@ -359,7 +359,7 @@
   >
     <div class="flex flex-col items-center justify-center gap-6">
       <div class="text-4xl text-white font-bold">
-        Mint Nimbus recap NFT successfully
+        Mint Solana RE2023 NFT successfully
       </div>
       <div class="xl:text-2xl text-4xl text-white font-medium">
         Thank you for Mint our recap NFT. Ready to receive exclusive benefit
