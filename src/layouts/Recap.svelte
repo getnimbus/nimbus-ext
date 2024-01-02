@@ -272,8 +272,8 @@
         }
       }}
     >
-      <div class="bg-[#EBFDFF] min-h-screen overflow-hidden py-10">
-        <div class="flex flex-col gap-20 h-full max-w-[1400px] m-auto">
+      <div class="bg-[#EBFDFF] min-h-screen overflow-hidden py-10 flex">
+        <div class="flex 1 flex flex-col gap-20 h-full max-w-[1400px] m-auto">
           <img
             src={Logo}
             alt="logo"
