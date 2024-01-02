@@ -159,7 +159,9 @@
   const getDataRecapMintNFT = async () => {
     try {
       const response = await nimbus.get("/recap/mint-stats");
-      dataMint = response?.data;
+      if (response?.data?.totalMinted) {
+        dataMint = response?.data;
+      }
     } catch (e) {
       console.log(e);
     }
