@@ -73,7 +73,7 @@
     0
   );
 
-  $: dataAirdropFormated = (data || []).filter((item) => item.amount > 0);
+  $: dataAirdropFormated = (data || []).filter((item) => item?.eligible);
 </script>
 
 <div
