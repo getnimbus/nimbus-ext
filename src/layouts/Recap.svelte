@@ -75,6 +75,11 @@
 
   $: solanaPublicAddress = $walletStore?.publicKey?.toBase58();
 
+  onMount(() => {
+    // Logout on EVM
+    localStorage.removeItem("evm_token");
+  });
+
   $: {
     if (solanaPublicAddress) {
       userAddress = solanaPublicAddress;
