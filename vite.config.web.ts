@@ -9,9 +9,6 @@ import AutoImport from "unplugin-auto-import/vite";
 import { viteStaticCopy } from "vite-plugin-static-copy";
 import { VitePWA } from "vite-plugin-pwa";
 import inject from "@rollup/plugin-inject";
-import json from "@rollup/plugin-json";
-import builtins from "rollup-plugin-node-builtins";
-import globals from "rollup-plugin-node-globals";
 
 // https://vitejs.dev/config/
 /** @type {import('vite').UserConfig} */
@@ -129,9 +126,9 @@ export default defineConfig(({ mode }) => {
       rollupOptions: {
         plugins: [
           inject({ Buffer: ["buffer/", "Buffer"] }),
-          json(),
-          globals(),
-          builtins(),
+          // json(),
+          // globals(),
+          // builtins(),
         ],
         input: {
           app: path.resolve(__dirname, "./src/index.html"),
