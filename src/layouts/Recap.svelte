@@ -11,7 +11,6 @@
   import mixpanel from "mixpanel-browser";
   import { onMount } from "svelte";
   import { nimbus } from "~/lib/network";
-  import onboard from "~/lib/web3-onboard";
   import { chain, typeWallet, user, userPublicAddress, wallet } from "~/store";
   import { clickOutside, shorterAddress } from "~/utils";
   import { inview } from "svelte-inview";
@@ -61,8 +60,6 @@
     new SolflareWalletAdapter(),
     new BackpackWalletAdapter(),
   ];
-
-  const wallets$ = onboard.state.select("wallets");
 
   const queryClient = useQueryClient();
 
@@ -118,12 +115,6 @@
     }
   });
 
-  const disconnect = (value: any) => {
-    if (value && Object.keys(value).length !== 0) {
-      onboard.disconnectWallet({ label: value.label });
-    }
-  };
-
   const handleSignOut = () => {
     try {
       user.update((n) => (n = {}));
@@ -133,9 +124,7 @@
       userPublicAddress.update((n) => (n = ""));
 
       localStorage.removeItem("public_address");
-
-      localStorage.removeItem("evm_token");
-      disconnect($wallets$?.[0]);
+      localStorage.removeItem("solana_token");
 
       queryClient.invalidateQueries(["list-address"]);
       queryClient.invalidateQueries(["users-me"]);
@@ -218,9 +207,13 @@
   };
   const closeModal = () => (modalVisible = false);
   async function connectWallet(event) {
-    console.log(event);
+    // console.log(event);
     closeModal();
     try {
+      localStorage.removeItem("walletAdapter");
+      await walletStore.resetWallet();
+      await walletStore.setConnecting(false);
+      await $walletStore.disconnect();
       await $walletStore.select(event.detail);
       await $walletStore.connect();
     } catch (error) {
@@ -255,8 +248,6 @@
       data = $query.data;
     }
   }
-
-  $: console.log({ modalVisible });
 </script>
 
 <svelte:head>
@@ -481,7 +472,12 @@
   </div>
 </ErrorBoundary>
 
-<WalletProvider localStorageKey="walletAdapter" {wallets} autoConnect />
+<WalletProvider
+  localStorageKey="walletAdapter"
+  {wallets}
+  autoConnect
+  onError={console.log}
+/>
 
 {#if modalVisible}
   <WalletModal
