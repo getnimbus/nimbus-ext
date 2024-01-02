@@ -77,7 +77,7 @@
 </script>
 
 <div
-  class="bg-[#EFF4E8] relative pt-10 pb-20 h-full overflow-hidden w-full"
+  class="bg-[#EFF4E8] relative pt-10 pb-20 overflow-hidden w-full min-h-screen"
   id="target-slide-3"
 >
   <div class="flex flex-col gap-20 h-full max-w-[1400px] m-auto">

@@ -226,7 +226,7 @@
 
   $: query = createQuery({
     queryKey: ["recap", userAddress],
-    queryFn: () => getRecapData("F3KLUHJTmwKxXBMeyGPoej1jXBoCvJAdsjS32sWkUewh"),
+    queryFn: () => getRecapData(userAddress),
     staleTime: Infinity,
     retry: false,
     enabled:
@@ -284,7 +284,7 @@
           >
             <div class="flex flex-col gap-10">
               <div
-                class="text-[#202025] text-[100px] text_title_lg_view font-bold"
+                class="text-[#202025] text-[100px] text_title_lg_view font-bold mt-3"
               >
                 2023 Solana Recap
               </div>
@@ -506,14 +506,14 @@
   :global(#recap-wrapper) {
     position: relative;
     width: 100%;
-    height: 100vh;
+    min-height: 100vh;
     scroll-behavior: smooth;
     overflow: auto;
   }
 
   :global(.recap-container) {
     width: 100%;
-    height: 100vh;
+    min-height: 100vh;
     background-size: cover;
     scroll-snap-align: start;
   }

@@ -200,7 +200,7 @@
 </script>
 
 <div
-  class="bg-[#E8F4EF] pt-10 pb-20 overflow-hidden w-full h-screen"
+  class="bg-[#E8F4EF] pt-10 pb-20 overflow-hidden w-full min-h-screen"
   id="target-slide-4"
 >
   <div class="relative flex flex-col gap-20 h-full max-w-[1400px] m-auto">

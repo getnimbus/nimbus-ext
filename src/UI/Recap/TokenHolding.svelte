@@ -151,7 +151,7 @@
       </div>
 
       <div class="flex-1 flex flex-col gap-6">
-        <div class="flex items-end gap-6">
+        <div class="flex items-end gap-6 justify-center">
           <Portfolio data={data?.holding} {loading} />
           <Price data={data?.stats} {loading} />
         </div>

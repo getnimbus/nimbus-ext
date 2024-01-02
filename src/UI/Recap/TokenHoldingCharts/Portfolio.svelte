@@ -262,7 +262,7 @@
   }
 </script>
 
-<div class="flex-1 flex flex-col p-[24px] rounded-[20px] bg-black">
+<div class="flex flex-col p-[24px] rounded-[20px] bg-black w-[380px]">
   <div class="text-white text-xl font-medium">Your Portfolio</div>
   {#if loading}
     <div class="flex justify-center items-center h-full h-[225px]">
