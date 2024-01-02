@@ -164,6 +164,9 @@
                           </div>
                         </div>
                         <div class="text-[#F7FBFA] text-[30px] mt-3">
+                          {#if item.upcoming}
+                            ~
+                          {/if}
                           <TooltipNumber number={item.value} type="value" />
                         </div>
                       </div>
@@ -219,10 +222,10 @@
                             </div>
                           </div>
                           <div class="text-[#F7FBFA] text-[30px]">
-                            $<TooltipNumber
-                              number={item.value}
-                              type="balance"
-                            />
+                            {#if item.upcoming}
+                              ~
+                            {/if}
+                            <TooltipNumber number={item.value} type="value" />
                           </div>
                         </div>
                       </div>
