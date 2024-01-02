@@ -2,7 +2,7 @@
   import { Link } from "svelte-navigator";
 </script>
 
-<div class="relative sticky top-0 left-0 z-50 gap-x-6 bg-gray-50 py-2.5 w-full">
+<div class="relative sticky top-0 left-0 z-40 gap-x-6 bg-gray-50 py-2.5 w-full">
   <div class="max-w-[2000px] m-auto w-[90%] isolate flex items-center">
     <div
       class="absolute left-[max(-7rem,calc(50%-52rem))] top-1/2 -z-10 -translate-y-1/2 transform-gpu blur-2xl"
