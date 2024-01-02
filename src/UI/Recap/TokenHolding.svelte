@@ -98,7 +98,9 @@
           </div>
 
           <div class="flex flex-col gap-1">
-            <div class="lg:text-xl text-2xl text-[#4f4f4f]">You're among</div>
+            <div class="lg:text-xl text-2xl text-[#4f4f4f]">
+              You're among <sup>(1)</sup>
+            </div>
             <div
               class="flex items-center gap-1 text-[64px] font-extrabold text-[#202025]"
             >
@@ -130,7 +132,7 @@
                   ~<TooltipNumber
                     number={1.5 * Number(data?.stats.total_txs)}
                     type="value"
-                  />
+                  /> <sup class="text-[#4F4F4F]">(2)</sup>
                 </div>
                 <div class="text-[#4F4F4F] text-xl lg:text-xl text-2xl">
                   (If you use Ethereum)
@@ -160,6 +162,12 @@
         </div>
       </div>
     </div>
+
+    <div class="text-right text-[#4F4F4F] text-sm mx-[35px]">
+      <div>(1) Based on your paid fee</div>
+      <div>(2) Estimated that a transaction on ETH cost 1.5$</div>
+    </div>
+    <div class="text-right text-[#4F4F4F] text-sm mx-[35px]"></div>
   </div>
   <div class="absolute bottom-[-90px] left-[-100px] z-10">
     <img src={SvgOne} alt="" />
