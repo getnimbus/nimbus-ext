@@ -226,7 +226,7 @@
 
   $: query = createQuery({
     queryKey: ["recap", userAddress],
-    queryFn: () => getRecapData(userAddress),
+    queryFn: () => getRecapData("F3KLUHJTmwKxXBMeyGPoej1jXBoCvJAdsjS32sWkUewh"),
     staleTime: Infinity,
     retry: false,
     enabled:
@@ -334,6 +334,9 @@
                     <img src={Arrow} alt="" />
                   </div>
                 {/if}
+                <div class="lg:text-base text-2xl mt-[-12px]">
+                  1021+ users viewed their Solana Recap 2023
+                </div>
               </div>
             </div>
 
