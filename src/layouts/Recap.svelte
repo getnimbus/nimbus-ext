@@ -147,17 +147,21 @@
 
   const handleSignSolanaAddressMessage = async (signatureString) => {
     if ($walletStore.connected) {
-      const res = await $walletStore?.signMessage(
-        Uint8Array.from(
-          Array.from(`I am signing my one-time nonce: ${signatureString}`).map(
-            (letter) => letter.charCodeAt(0)
+      try {
+        const res = await $walletStore?.signMessage(
+          Uint8Array.from(
+            Array.from(
+              `I am signing my one-time nonce: ${signatureString}`
+            ).map((letter) => letter.charCodeAt(0))
           )
-        )
-      );
-      if (res) {
-        return bs58.encode(res);
-      } else {
-        return "";
+        );
+        if (res) {
+          return bs58.encode(res);
+        } else {
+          return "";
+        }
+      } catch (error) {
+        isLoading = false;
       }
     }
   };
@@ -207,16 +211,22 @@
   };
 
   // trigger Solana wallet
-  const maxNumberOfWallets = 3;
+  const maxNumberOfWallets = 5;
   let modalVisible = false;
   const openModal = () => {
     modalVisible = true;
   };
   const closeModal = () => (modalVisible = false);
   async function connectWallet(event) {
+    console.log(event);
     closeModal();
-    await $walletStore.select(event.detail);
-    await $walletStore.connect();
+    try {
+      await $walletStore.select(event.detail);
+      await $walletStore.connect();
+    } catch (error) {
+      console.log(error);
+      isLoading = false;
+    }
   }
 
   const getRecapData = async (address: string) => {
@@ -245,6 +255,8 @@
       data = $query.data;
     }
   }
+
+  $: console.log({ modalVisible });
 </script>
 
 <svelte:head>
@@ -457,7 +469,6 @@
       }}
       on:inview_change={(event) => {
         const { inView, entry, scrollDirection, observer, node } = event.detail;
-        console.log(inView);
         if (inView) {
           document
             .getElementById("recap-wrapper")
