@@ -1,4 +1,5 @@
 <script>
+  import mixpanel from "mixpanel-browser";
   import heroImage from "~/assets/recap/hero/heroimage.png";
   import Arrow from "~/assets/recap/hero/arrow-right.svg";
   import SvgOne from "~/assets/recap/hero/svgOne.svg";
@@ -17,11 +18,54 @@
         <div
           class="w-max flex items-center justify-center gap-2 cursor-pointer p-[20px] rounded-[32px] min-w-[250px] bg-[#A7EB50] text-black text-2xl font-semibold"
           on:click={() => {
+            mixpanel.track("recap_launch_app");
             window.open("https://app.getnimbus.io/", "_blank");
           }}
         >
           Launch app
           <img src={Arrow} alt="" />
+        </div>
+        <div class="flex flex-row gap-3">
+          Community
+          <a target="_blank" href="https://discord.gg/u5b9dTrSTr"
+            ><img
+              alt="link Discord"
+              loading="lazy"
+              width="30"
+              height="30"
+              decoding="async"
+              data-nimg="1"
+              class="dark:hidden"
+              style="color:transparent"
+              src="https://getnimbus.io/logoSocialMedia/discord.svg"
+            /></a
+          >
+          <a target="_blank" href="https://t.me/getnimbus"
+            ><img
+              alt="link Telegram"
+              loading="lazy"
+              width="30"
+              height="30"
+              decoding="async"
+              data-nimg="1"
+              class="dark:hidden"
+              style="color:transparent"
+              src="https://getnimbus.io/logoSocialMedia/telegram.svg"
+            /></a
+          >
+          <a target="_blank" href="https://twitter.com/get_nimbus"
+            ><img
+              alt="link Twitter"
+              loading="lazy"
+              width="30"
+              height="30"
+              decoding="async"
+              data-nimg="1"
+              class="dark:hidden w-[26px] h-[26px]"
+              style="color:transparent"
+              src="https://getnimbus.io/logoSocialMedia/twitterX1.svg"
+            /></a
+          >
         </div>
       </div>
       <div class="flex-1 relative z-20">

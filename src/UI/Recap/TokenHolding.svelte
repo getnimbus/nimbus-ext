@@ -2,6 +2,7 @@
   import html2canvas from "html2canvas";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
+  import mixpanel from "mixpanel-browser";
 
   import Logo from "~/assets/logo-1.svg";
   import Share from "~/assets/recap/hero/share.svg";
@@ -36,6 +37,7 @@
   };
 
   const downloadPage = async () => {
+    mixpanel.track("recap_share_tokenholding");
     const targetElement = document.getElementById("target-slide-1");
     const shareBtn = document.getElementById("btn-share");
     if (targetElement && shareBtn) {

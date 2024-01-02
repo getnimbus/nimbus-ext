@@ -11,6 +11,7 @@
   import { userPublicAddress } from "~/store";
   import { walletStore } from "@svelte-on-solana/wallet-adapter-core";
   import { Buffer as BufferPolyfill } from "buffer";
+  import mixpanel from "mixpanel-browser";
 
   import {
     Connection,
@@ -120,6 +121,7 @@
   };
 
   const downloadPage = async () => {
+    mixpanel.track("recap_share_mintnft");
     const targetElement = document.getElementById("target-slide-4");
     const shareBtn = document.getElementById("btn-share");
     if (targetElement && shareBtn) {
@@ -176,11 +178,13 @@
   const handleMintNFT = createMutation({
     onError: (error) => {
       console.log(error);
+      mixpanel.track("recap_mint_error");
       toastMsg = "Something wrong while minting. Please try again!";
       isSuccessToast = false;
       trigger();
     },
     mutationFn: async () => {
+      mixpanel.track("recap_mint");
       const data = await nimbus.post("/recap/mint-nft", {});
       // TODO: Update me once deployed
       const connection = new Connection(
@@ -193,6 +197,7 @@
         ),
         connection
       );
+      mixpanel.track("recap_mint_success");
       triggerScreenSuccess();
       return result;
     },

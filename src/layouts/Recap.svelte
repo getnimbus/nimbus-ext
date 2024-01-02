@@ -337,6 +337,7 @@
                   <div
                     class="w-max flex items-center justify-center gap-2 cursor-pointer p-[20px] rounded-[32px] min-w-[250px] bg-[#A7EB50] text-black text-2xl font-semibold"
                     on:click={() => {
+                      mixpanel.track("recap_connect_wallet");
                       openModal();
                     }}
                   >

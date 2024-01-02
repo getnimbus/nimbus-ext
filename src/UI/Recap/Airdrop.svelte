@@ -2,6 +2,7 @@
   import html2canvas from "html2canvas";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
+  import mixpanel from "mixpanel-browser";
 
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import Loading from "~/components/Loading.svelte";
@@ -32,6 +33,7 @@
   };
 
   const downloadPage = async () => {
+    mixpanel.track("recap_share_airdrop");
     const targetElement = document.getElementById("target-slide-3");
     const shareBtn = document.getElementById("btn-share");
     if (targetElement && shareBtn) {
