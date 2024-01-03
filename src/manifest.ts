@@ -43,7 +43,7 @@ const ManifestV3: Partial<chrome.runtime.ManifestV3> = {
       // 32: "icons/32.png",
       38: "icons/96.png",
     },
-    default_title: "Open Nimbus sidebar",
+    default_title: "Nimbus",
   },
   background: {
     service_worker: "src/entries/background/serviceWorker.ts",
