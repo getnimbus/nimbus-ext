@@ -32,6 +32,7 @@
   import SvgOne from "~/assets/recap/hero/svgOne.svg";
   import SvgTwo from "~/assets/recap/hero/svgTwo.svg";
   import User from "~/assets/user.png";
+  import SuperteamLogo from "~/assets/superteamvn.png";
 
   const NFTOne = {
     solHolding: 5.5,
@@ -346,7 +347,15 @@
                   </div>
                 {/if}
                 <div class="lg:text-base text-2xl mt-[-12px]">
-                  1021+ users viewed their Solana Recap 2023
+                  <div>1021+ users viewed their Solana Recap 2023</div>
+                  <div class="mt-3">
+                    Made with ❤️ from <img
+                      src={SuperteamLogo}
+                      width="24"
+                      height="24"
+                      class="rounded-full"
+                    /> Superteam Vietnam
+                  </div>
                 </div>
               </div>
             </div>
