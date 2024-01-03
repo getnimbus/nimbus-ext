@@ -35,7 +35,6 @@
               height="30"
               decoding="async"
               data-nimg="1"
-              class="dark:hidden"
               style="color:transparent"
               src="https://getnimbus.io/logoSocialMedia/discord.svg"
             /></a
@@ -48,7 +47,6 @@
               height="30"
               decoding="async"
               data-nimg="1"
-              class="dark:hidden"
               style="color:transparent"
               src="https://getnimbus.io/logoSocialMedia/telegram.svg"
             /></a
@@ -61,7 +59,7 @@
               height="30"
               decoding="async"
               data-nimg="1"
-              class="dark:hidden w-[26px] h-[26px]"
+              class="w-[26px] h-[26px]"
               style="color:transparent"
               src="https://getnimbus.io/logoSocialMedia/twitterX1.svg"
             /></a
