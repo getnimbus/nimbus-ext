@@ -346,7 +346,7 @@
                     <img src={Arrow} alt="" />
                   </div>
                 {/if}
-                <div class="lg:text-base text-2xl mt-[-12px]">
+                <div class="lg:text-base text-2xl mt-[-12px] text-black">
                   <div>1021+ users viewed their Solana Recap 2023</div>
                   <div class="mt-3">
                     Made with ❤️ from <img
