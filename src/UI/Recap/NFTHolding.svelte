@@ -81,7 +81,7 @@
     <img
       src={Logo}
       alt="logo"
-      class="xl:w-[177px] w-[220px] xl:h-[75px] h-[100px]"
+      class="xl:w-[177px] w-[220px] xl:h-[75px] h-[100px] transform translate-x-2"
     />
     <div
       class="flex-1 h-full flex xl:flex-row flex-col xl:items-center justify-between gap-20 px-[35px]"

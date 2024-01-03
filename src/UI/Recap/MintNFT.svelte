@@ -215,7 +215,7 @@
       <img
         src={Logo}
         alt="logo"
-        class="xl:w-[177px] w-[220px] xl:h-[75px] h-[100px]"
+        class="xl:w-[177px] w-[220px] xl:h-[75px] h-[100px] transform translate-x-2"
       />
       <div class="flex justify-end items-center gap-6 pr-[35px]">
         <div
