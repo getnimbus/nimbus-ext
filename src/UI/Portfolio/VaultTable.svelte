@@ -9,20 +9,30 @@
   import Button from "~/components/Button.svelte";
 
   export let data;
+  export let symbol;
 
   const navigate = useNavigate();
 
   let isShowTooltipProtocol = false;
+  let isSingle = false;
   let sortTVL = "default";
   let sortAPY = "default";
 
-  $: formatData = data?.map((item) => {
-    return {
-      ...item,
-      tvl: Number(item.tvl),
-      apy: item.apy * 100,
-    };
-  });
+  $: formatData = data
+    ?.map((item) => {
+      return {
+        ...item,
+        tvl: Number(item.tvl),
+        apy: item.apy * 100,
+      };
+    })
+    .filter((item) => {
+      if (isSingle) {
+        return item.name === symbol;
+      } else {
+        return item;
+      }
+    });
 
   const toggleSortTVL = () => {
     if ($selectedPackage === "FREE") {
@@ -174,8 +184,23 @@
 </script>
 
 <div class="h-[563px] flex flex-col gap-4">
-  <div class="text-4xl font-medium xl:text-2xl">
-    Yield farming opportunities
+  <div class="flex justify-between items-center xl:mt-6 mt-12">
+    <div class="text-4xl font-medium xl:text-2xl">
+      Yield farming opportunities
+    </div>
+    <div class="flex items-center">
+      <div class="xl:text-sm text-2xl px-2 font-medium">Single</div>
+      <label class="switch">
+        <input
+          type="checkbox"
+          checked={isSingle}
+          on:click={() => {
+            isSingle = !isSingle;
+          }}
+        />
+        <span class="slider" />
+      </label>
+    </div>
   </div>
   <div
     class={`rounded-[10px] overflow-x-auto overflow-y-auto h-[563px] relative ${
@@ -348,8 +373,8 @@
           <tr
             class={`absolute z-10 left-0 right-0 bottom-0 top-[220px] flex justify-center pt-10 backdrop-blur-md bg-gradient-to-t to-transparent ${
               $isDarkMode
-                ? "bg-[#222222e6] from-[#000] via-[#222222]"
-                : "bg-white/90 from-white via-white"
+                ? "bg-black/90 from-[#000] via-[#222222]"
+                : "bg-white/95 from-white via-white"
             } `}
           >
             <td colspan="5" class="flex flex-col items-center gap-1">
@@ -377,4 +402,74 @@
 </div>
 
 <style windi:preflights:global windi:safelist:global>
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 20px;
+  }
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: 0.4s;
+    transition: 0.4s;
+    border-radius: 34px;
+  }
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 4px;
+    bottom: 2px;
+    background-color: white;
+    -webkit-transition: 0.4s;
+    transition: 0.4s;
+    border-radius: 50%;
+  }
+  input:checked + .slider {
+    background-color: #2196f3;
+  }
+  input:checked + .slider {
+    box-shadow: 0 0 1px #2196f3;
+  }
+  input:checked + .slider:before {
+    -webkit-transform: translateX(16px);
+    -ms-transform: translateX(16px);
+    transform: translateX(16px);
+  }
+
+  @media screen and (max-width: 1280px) {
+    .switch {
+      width: 60px;
+      height: 30px;
+    }
+
+    .slider {
+      border-radius: 44px;
+    }
+
+    .slider:before {
+      height: 26px;
+      width: 26px;
+      left: 4px;
+      bottom: 2px;
+    }
+
+    input:checked + .slider:before {
+      -webkit-transform: translateX(26px);
+      -ms-transform: translateX(26px);
+      transform: translateX(26px);
+    }
+  }
 </style>

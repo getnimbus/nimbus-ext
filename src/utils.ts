@@ -11,7 +11,7 @@ import Solana from "~/assets/solana.png";
 import Aura from "~/assets/aura.png";
 import Bitcoin from "~/assets/bitcoin.png";
 
-import Move from "~/assets/move.png";
+import Ton from "~/assets/ton.png";
 import Sui from "~/assets/sui.png";
 
 import All from "~/assets/all.svg";
@@ -31,6 +31,7 @@ import Mantle from "~/assets/mantle.png";
 import Algorand from "~/assets/algorand.png";
 import Exzo from "~/assets/exzo.png";
 import Klaytn from "~/assets/klaytn.png";
+import Viction from "~/assets/viction.png";
 
 export const ETHAddressRegex = /(\b0x[a-fA-F0-9]{40}\b)/g;
 export const ETHTrxRegex = /(\b0x[a-fA-F0-9]{64}\b)/g;
@@ -439,6 +440,11 @@ export const chainList = [
     label: "Klaytn",
     value: "KLAY",
   },
+  {
+    logo: Viction,
+    label: "Viction",
+    value: "VIC",
+  },
 ];
 
 export const mobulaChainConfig: Record<string, string> = {
@@ -471,6 +477,9 @@ export const detectedChain = (type) => {
       break;
     case "SOL":
       chain = Solana;
+      break;
+    case "TON":
+      chain = Ton;
       break;
     case "ALGO":
       chain = Algorand;
@@ -519,6 +528,9 @@ export const detectedChain = (type) => {
       break;
     case "KLAY":
       chain = Klaytn;
+      break;
+    case "VIC":
+      chain = Viction;
       break;
   }
   return chain;
@@ -614,6 +626,12 @@ export const linkExplorer = (chain, hash) => {
         address: `https://solscan.io/address/${hash}`,
       };
       break;
+    case "TON":
+      links = {
+        trx: `https://tonscan.org/tx/${hash}`,
+        address: `https://tonscan.org/address/${hash}#transactions`,
+      };
+      break;
     case "SUI":
       links = {
         trx: `https://suiexplorer.com/txblock/${hash}`,
@@ -642,6 +660,12 @@ export const linkExplorer = (chain, hash) => {
       links = {
         trx: `https://klaytnscope.com/tx/${hash}`,
         address: `https://klaytnscope.com/account/${hash}`,
+      };
+      break;
+    case "VIC":
+      links = {
+        trx: `https://tomoscan.io/tx/${hash}`,
+        address: `https://tomoscan.io/address/${hash}`,
       };
       break;
     case "BTC":
@@ -728,9 +752,9 @@ export const exponentialToDecimal = (exponential: number) => {
       let i = 0;
       i <
       +exponentialSplitted[1] -
-      (exponentialSplitted[0].includes(".")
-        ? exponentialSplitted[0].split(".")[1].length
-        : 0);
+        (exponentialSplitted[0].includes(".")
+          ? exponentialSplitted[0].split(".")[1].length
+          : 0);
       i++
     ) {
       postfix += "0";
@@ -780,16 +804,16 @@ export const formatValue = (input: number) => {
   return numeral(input).format("0,0.00") === "NaN"
     ? formatNumberSmall(input)
     : input !== 0 && input > 0 && input < 0.01
-      ? "<$0.01"
-      : numeral(input).format("$0,0.00");
+    ? "<$0.01"
+    : numeral(input).format("$0,0.00");
 };
 
 export const formatCurrency = (input: number) => {
   return numeral(input).format("0,0.000000") === "NaN"
     ? formatNumberSmall(input)
     : input !== 0 && input > 0 && input < 0.01
-      ? numeral(input).format("0,0.000000")
-      : numeral(input).format("0,0.0000");
+    ? numeral(input).format("0,0.000000")
+    : numeral(input).format("0,0.0000");
 };
 
 export const formatBalance = (input: number) => {
@@ -993,6 +1017,45 @@ export const handleFormatDataTable = (data, type) => {
   };
 };
 
+export const handleFormatDataTableBundle = (data, bundles) => {
+  let formatData = data.map((item) => {
+    return {
+      ...item,
+      value: Number(item?.amount) * Number(item?.price?.price),
+      market_price: Number(item?.price?.price) || 0,
+    };
+  });
+
+  const formatDataByOwner = [];
+  formatData.forEach((item) => {
+    item.breakdown.forEach((breakdownItem) => {
+      formatDataByOwner.push({
+        ...item,
+        owner: breakdownItem.owner,
+      });
+    });
+  });
+
+  let groupData = groupBy(formatDataByOwner, "owner");
+
+  let formatGroupData = bundles.map((item) => {
+    return {
+      name: item.value,
+      data: groupData[item.value],
+    };
+  });
+
+  return {
+    select: bundles.map((item) => {
+      return {
+        value: item.value,
+        label: item.label,
+      };
+    }),
+    data: formatGroupData,
+  };
+};
+
 export const correlationsMatrixColor = (value: number) => {
   if (value < -1) value = -1;
   if (value > 1) value = 1;
@@ -1100,14 +1163,17 @@ export const getTooltipContent = (
   width?: string
 ) => {
   return `
-      <div style="padding: 8px; border-radius: 8px; background: ${darkMode ? "#0f0f0f" : "#000"
-    }; width: ${isMaxWidth ? "100%" : "560px"}; height: auto;">
-        ${text
-      ? `<div style="margin-bottom: 6px; font-size: 14px; line-height: 20px; color: #fff;">${text}</div>`
-      : ""
-    } 
-        <div style="border-radius: 6px; width: ${width ? width : "100%"
-    }; overflow: hidden">
+      <div style="padding: 8px; border-radius: 8px; background: ${
+        darkMode ? "#0f0f0f" : "#000"
+      }; width: ${isMaxWidth ? "100%" : "560px"}; height: auto;">
+        ${
+          text
+            ? `<div style="margin-bottom: 6px; font-size: 14px; line-height: 20px; color: #fff;">${text}</div>`
+            : ""
+        } 
+        <div style="border-radius: 6px; width: ${
+          width ? width : "100%"
+        }; overflow: hidden">
           <video autoplay muted playsinline disablepictureinpicture loop>
             <source type="video/mp4" src="${videoUrl}" />
           </video>
@@ -1175,7 +1241,7 @@ const fire = (particleRatio, opts) => {
   confetti({
     ...opts,
     origin: { y: 0.7 },
-    zIndex: 100,
+    zIndex: 99999,
     particleCount: Math.floor(200 * particleRatio),
   });
 };
@@ -1205,72 +1271,67 @@ export const triggerFirework = () => {
   });
 };
 
-export const driverObj = driver({
-  showProgress: true,
-  overlayColor: "#27326f",
-  onDestroyStarted: () => {
-    driverObj.destroy();
-    // if (!driverObj.hasNextStep() || confirm("Are you sure?")) {
-    //   driverObj.destroy();
-    // }
-  },
-  showButtons: ["next", "previous", "close"],
-  steps: [
-    // {
-    //   element: "#view-use-wallet-or-demo",
-    //   popover: {
-    //     title: "Introduce App",
-    //     description: "Add wallet or view Demo wallet",
-    //   },
+export const drivePortfolio = () =>
+  driver({
+    showProgress: true,
+    overlayColor: "#27326f",
+    // onDestroyStarted: () => {
+    //   if (drivePortfolio().isLastStep()) {
+    //     drivePortfolio().destroy();
+    //   } else {
+    //     drivePortfolio().moveNext();
+    //   }
     // },
-    {
-      element: ".view-the-pnl",
-      popover: {
-        title: "Track your token performance 📊",
-        description:
-          "View your Portfolio diversify, compare your invesment with Bitcoin or Ethereum",
+    showButtons: ["next", "previous", "close"],
+    steps: [
+      {
+        element: ".wellcome-portfolio",
+        popover: {
+          title: "Welcome to our portfolio tools 🤩",
+          description: "Allow me to guide you through our application",
+        },
       },
-    },
-    {
-      element: ".view-token-detail1",
-      popover: {
-        title: "Your profit and loss, in every token 💰",
-        description:
-          "We have the most important metrics for Investors - Profit and loss",
+      {
+        element: ".view-the-pnl",
+        popover: {
+          title: "Track your token performance 📊",
+          description:
+            "View your Portfolio diversify, compare your invesment with Bitcoin or Ethereum",
+        },
       },
-    },
-    {
-      element: ".view-token-detail2",
-      popover: {
-        title: "Your profit and loss, in every token 💰",
-        description:
-          "We have the most important metrics for Investors - Profit and loss",
+      {
+        element: ".view-token-detail1",
+        popover: {
+          title: "Your profit and loss, in every token 💰",
+          description:
+            "We have the most important metrics for Investors - Profit and loss",
+        },
       },
-    },
-    {
-      element: ".view-icon-detail",
-      popover: {
-        title: "Get your trading detail 🧐",
-        description:
-          "View your trading activities on the Price chart, get market bought distribution to make wise more",
+      {
+        element: ".view-token-detail2",
+        popover: {
+          title: "Your profit and loss, in every token 💰",
+          description:
+            "We have the most important metrics for Investors - Profit and loss",
+        },
       },
-    },
-    {
-      element: ".view-nft-detail",
-      popover: {
-        title: "Not just token, we track NFT as well 🌁",
-        description: "All of your NFTs, and of course, Profit and loss",
+      {
+        element: ".view-icon-detail",
+        popover: {
+          title: "Get your trading detail 🧐",
+          description:
+            "View your trading activities on the Price chart, get market bought distribution to make wise more",
+        },
       },
-    },
-    // {
-    //   element: "#view-closed-positions",
-    //   popover: {
-    //     title: "Introduce App",
-    //     description: "View closed positions",
-    //   },
-    // },
-  ],
-});
+      {
+        element: ".view-nft-detail",
+        popover: {
+          title: "Not just token, we track NFT as well 🌁",
+          description: "All of your NFTs, and of course, Profit and loss",
+        },
+      },
+    ],
+  });
 
 export const formatTransactionTime = (date: Date) => {
   if (dayjs().diff(date, "days") >= 1) {

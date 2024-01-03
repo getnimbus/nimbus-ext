@@ -6,11 +6,13 @@
   dayjs.extend(relativeTime);
   import { typeWallet, isDarkMode } from "~/store";
   import { chainList, formatTransactionTime, linkExplorer } from "~/utils";
-  import mobulaLogo from "~/assets/mobula-logo.png";
+
   import Button from "~/components/Button.svelte";
   import Copy from "~/components/Copy.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import Loading from "~/components/Loading.svelte";
+
+  import mobulaLogo from "~/assets/mobula-logo.png";
 
   export let data;
   export let isLoading;
@@ -101,7 +103,7 @@
                           (chain) => chain.value === item?.chain
                         )?.logo}
                         alt=""
-                        class="object-contain w-5 h-5"
+                        class="object-contain w-5 h-5 rounded-full"
                       />
                     {/if}
                     {#if $typeWallet === "EVM" || $typeWallet === "MOVE"}
@@ -288,7 +290,7 @@
   </div>
 {/if}
 
-{#if $typeWallet !== "SOL" && $typeWallet !== "AURA" && $typeWallet !== "ALGO" && $typeWallet !== "CEX"}
+{#if $typeWallet !== "SOL" && $typeWallet !== "TON" && $typeWallet !== "AURA" && $typeWallet !== "ALGO" && $typeWallet !== "CEX"}
   <div class="flex items-center gap-2">
     <a href="https://mobula.fi/" target="_blank">
       <img

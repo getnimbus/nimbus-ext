@@ -409,6 +409,7 @@
 
   $: colspan =
     $typeWallet === "SOL" ||
+    $typeWallet === "TON" ||
     $typeWallet === "AURA" ||
     $typeWallet === "ALGO" ||
     $typeWallet === "EVM" ||
@@ -489,7 +490,9 @@
                 <span class="xl:text-xl text-2xl font-medium text-gray-400">
                   <TooltipNumber
                     number={selectedDataPieChart?.series[0]?.data.filter(
-                      (item) => item.name === selectedTypeTable?.value
+                      (item) =>
+                        item.name === selectedTypeTable?.value ||
+                        item.name === selectedTypeTable?.label
                     )[0]?.value}
                     type="percent"
                   />%
@@ -517,7 +520,7 @@
                   : "bg-[#fff] border border_0000000d"
               }`}
             >
-              <table class="table-auto xl:w-full w-[1800px] h-full">
+              <table class="table-auto xl:w-full w-[2000px] h-full">
                 <thead
                   class={isStickyTableToken ? "sticky top-0 z-10" : ""}
                   bind:this={tableTokenHeader}
@@ -568,8 +571,9 @@
                       </div>
                     </th>
                     <th
-                      class={`py-3 ${
+                      class={`py-3 xl:pr-3 pr-6 ${
                         $typeWallet === "SOL" ||
+                        $typeWallet === "TON" ||
                         $typeWallet === "AURA" ||
                         $typeWallet === "ALGO" ||
                         $typeWallet === "EVM" ||
@@ -577,7 +581,7 @@
                         $typeWallet === "BUNDLE" ||
                         $typeWallet === "CEX"
                           ? ""
-                          : "pr-3 rounded-tr-[10px]"
+                          : "rounded-tr-[10px]"
                       }`}
                     >
                       <div
@@ -586,8 +590,14 @@
                         Unrealized PnL
                       </div>
                     </th>
-                    {#if $typeWallet === "SOL" || $typeWallet === "AURA" || $typeWallet === "ALGO" || $typeWallet === "EVM" || $typeWallet === "MOVE" || $typeWallet === "BUNDLE" || $typeWallet === "CEX"}
-                      <th class="py-3 xl:w-12 w-32 rounded-tr-[10px]" />
+                    {#if $typeWallet === "SOL" || $typeWallet === "TON" || $typeWallet === "AURA" || $typeWallet === "ALGO" || $typeWallet === "EVM" || $typeWallet === "MOVE" || $typeWallet === "BUNDLE" || $typeWallet === "CEX"}
+                      <th
+                        class={`py-3 rounded-tr-[10px] ${
+                          ["BUNDLE", "SOL"].includes($typeWallet)
+                            ? "xl:max-w-20 w-16"
+                            : "xl:max-w-14"
+                        }`}
+                      />
                     {/if}
                   </tr>
                 </thead>
@@ -616,6 +626,7 @@
                           index}
                         {selectedWallet}
                         sumAllTokens={totalAssets - sumNFT}
+                        index={index + 1}
                       />
                     {/each}
                   </tbody>
@@ -671,6 +682,7 @@
                               index}
                             {selectedWallet}
                             sumAllTokens={totalAssets - sumNFT}
+                            index={index + 1}
                           />
                         {/each}
                       {/if}

@@ -168,6 +168,8 @@
             </section>
 
             <RiskChart
+              {address}
+              {isShowSoon}
               {selectedTimeFrame}
               isSync={true}
               {enabledFetchAllData}

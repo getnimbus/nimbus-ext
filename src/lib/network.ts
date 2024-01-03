@@ -145,15 +145,6 @@ export const goplus = createAxiosInterface({
   getHeaderAuthorize: () => { },
 });
 
-export const mobula = createAxiosInterface({
-  baseURL: "https://api.mobula.io/api",
-  getHeaderAuthorize: () => {
-    return {
-      Authorization: "fe18f8be-644a-45a8-ad05-b088a5e61764",
-    };
-  },
-});
-
 export const nimbusApi = createAxiosInterface({
   baseURL: "https://nimbus-api-production.up.railway.app/api",
   getHeaderAuthorize: () => { },
@@ -161,5 +152,10 @@ export const nimbusApi = createAxiosInterface({
 
 export const aptos = createAxiosInterface({
   baseURL: "https://aptos-celebtron-api.getnimbus.io/api/v1",
+  getHeaderAuthorize: () => { },
+});
+
+export const sniperlabs = createAxiosInterface({
+  baseURL: "https://q911c3yhyc.execute-api.us-east-1.amazonaws.com/prod",
   getHeaderAuthorize: () => { },
 });

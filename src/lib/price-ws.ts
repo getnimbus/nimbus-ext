@@ -46,7 +46,7 @@ interface IPriceRealtime {
 
 const cached: Record<string, IPriceRealtime> = {};
 
-const chainSupport = ["ETH", "FTM", "ARB", "AVAX", "OP", "MATIC", "XDAI", "BNB", "BASE", "CRONOS", "KLAY"]
+const chainSupport = ["ETH", "FTM", "ARB", "AVAX", "OP", "MATIC", "XDAI", "BNB", "BASE", "CRONOS", "KLAY", "VIC"]
 
 export const priceSubscribe = (
   cmc_id: number[] | string[],

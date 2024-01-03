@@ -148,6 +148,7 @@
             $typeWallet === "MOVE" ||
             $typeWallet === "CEX" ||
             $typeWallet === "SOL" ||
+            $typeWallet === "TON" ||
             $typeWallet === "AURA" ||
             $typeWallet === "ALGO" ||
             $typeWallet === "BUNDLE") &&
@@ -183,11 +184,11 @@
     id="historical-activities-analytic"
     type="normal"
   />
-  {#if $typeWallet === "SOL" || $typeWallet === "AURA" || $typeWallet === "ALGO"}
+  {#if $typeWallet === "SOL" || $typeWallet === "TON" || $typeWallet === "AURA" || $typeWallet === "ALGO"}
     <div
-      class={`absolute top-0 left-0 rounded-[20px] z-30 w-full h-full flex items-center justify-center ${
-        darkMode ? "bg-[#222222e6]" : "bg-white/90"
-      } z-10 backdrop-blur-md`}
+      class={`absolute top-0 left-0 rounded-[20px] z-30 w-full h-full flex items-center justify-center z-10 backdrop-blur-md ${
+        darkMode ? "bg-black/90" : "bg-white/95"
+      }`}
     >
       <div class="text-2xl xl:text-lg">Coming soon 🚀</div>
     </div>

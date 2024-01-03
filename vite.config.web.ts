@@ -8,6 +8,7 @@ import sveltePreprocess from "svelte-preprocess";
 import AutoImport from "unplugin-auto-import/vite";
 import { viteStaticCopy } from "vite-plugin-static-copy";
 import { VitePWA } from "vite-plugin-pwa";
+import inject from "@rollup/plugin-inject";
 
 // https://vitejs.dev/config/
 /** @type {import('vite').UserConfig} */
@@ -32,14 +33,14 @@ export default defineConfig(({ mode }) => {
             src: "src/_locales",
             dest: "",
           },
-          {
-            src: path.resolve(__dirname, "./public"),
-            dest: "",
-          },
-          {
-            src: path.resolve(__dirname, "./public/robots.txt"),
-            dest: "",
-          },
+          // {
+          //   src: path.resolve(__dirname, "./public"),
+          //   dest: "",
+          // },
+          // {
+          //   src: path.resolve(__dirname, "./public/robots.txt"),
+          //   dest: "",
+          // },
           {
             src: path.resolve(__dirname, "./src/assets/logo/"),
             dest: "assets",
@@ -119,9 +120,16 @@ export default defineConfig(({ mode }) => {
         target: "es2020",
       },
     },
+    publicDir: path.resolve(__dirname, "./public"),
     build: {
       target: ["es2020"],
       rollupOptions: {
+        plugins: [
+          inject({ Buffer: ["buffer/", "Buffer"] }),
+          // json(),
+          // globals(),
+          // builtins(),
+        ],
         input: {
           app: path.resolve(__dirname, "./src/index.html"),
           options: path.resolve(__dirname, "./src/entries/options/index.html"),

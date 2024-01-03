@@ -1,6 +1,12 @@
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
-  import { Link, useMatch, useNavigate } from "svelte-navigator";
+  import {
+    Link,
+    useLocation,
+    useMatch,
+    useNavigate,
+    useParams,
+  } from "svelte-navigator";
   import { i18n } from "~/lib/i18n";
   import {
     chain,
@@ -13,6 +19,7 @@
     userId,
     userPublicAddress,
     triggerSync,
+    detectParams,
   } from "~/store";
   import { shorterAddress } from "~/utils";
   import mixpanel from "mixpanel-browser";
@@ -56,6 +63,9 @@
   import SolanaLogo from "~/assets/solana.png";
   import AuraLogo from "~/assets/aura.png";
   import AlgorandLogo from "~/assets/algorand.png";
+  import TonLogo from "~/assets/ton.png";
+  import NimbusBanner from "./NimbusBanner.svelte";
+  import { Log } from "ethers";
 
   const MultipleLang = {
     portfolio: i18n("newtabPage.portfolio", "Portfolio"),
@@ -125,6 +135,9 @@
       if (item?.type === "SOL") {
         logo = SolanaLogo;
       }
+      if (item?.type === "TON") {
+        logo = TonLogo;
+      }
       if (item?.type === "MOVE") {
         logo = Move;
       }
@@ -152,6 +165,9 @@
             if (account?.type === "SOL") {
               logo = SolanaLogo;
             }
+            if (item?.type === "TON") {
+              logo = TonLogo;
+            }
             if (item?.type === "MOVE") {
               logo = Move;
             }
@@ -174,10 +190,10 @@
     listAddress = structWalletData;
   };
 
-  const validateAddress = async (address: string) => {
+  const handleValidateAddress = async (address: string) => {
     try {
       const response = await nimbus.get(`/v2/address/${address}/validate`);
-      return response?.data?.type;
+      return response?.data;
     } catch (e) {
       console.error(e);
       return undefined;
@@ -209,41 +225,43 @@
 
   const handleSearchAddress = async (value: string) => {
     mixpanel.track("user_search");
-    const searchAccountType = await validateAddress(value);
+    const validateAccount = await handleValidateAddress(value);
     chain.update((n) => (n = "ALL"));
-    wallet.update((n) => (n = value));
-    typeWallet.update((n) => (n = searchAccountType));
+    wallet.update((n) => (n = validateAccount?.address));
+    typeWallet.update((n) => (n = validateAccount?.type));
 
     browser.storage.sync.set({
-      selectedWallet: value,
+      selectedWallet: validateAccount?.address,
     });
     browser.storage.sync.set({ selectedChain: "ALL" });
     browser.storage.sync.set({
-      typeWalletAddress: searchAccountType,
+      typeWalletAddress: validateAccount?.type,
     });
 
-    if (searchAccountType === "EVM" || searchAccountType === "MOVE") {
+    if (validateAccount?.type === "EVM" || validateAccount?.type === "MOVE") {
       window.history.replaceState(
         null,
         "",
         window.location.pathname +
-          `?type=${searchAccountType}&chain=ALL&address=${value}`
+          `?type=${validateAccount?.type}&chain=ALL&address=${validateAccount?.address}`
       );
     }
     if (
-      searchAccountType === "BTC" ||
-      searchAccountType === "SOL" ||
-      searchAccountType === "AURA" ||
-      searchAccountType === "ALGO" ||
-      searchAccountType === "CEX"
+      validateAccount?.type === "BTC" ||
+      validateAccount?.type === "SOL" ||
+      validateAccount?.type === "TON" ||
+      validateAccount?.type === "AURA" ||
+      validateAccount?.type === "ALGO" ||
+      validateAccount?.type === "CEX"
     ) {
       window.history.replaceState(
         null,
         "",
-        window.location.pathname + `?type=${searchAccountType}&address=${value}`
+        window.location.pathname +
+          `?type=${validateAccount?.type}&address=${validateAccount?.address}`
       );
     }
-    handleSaveSuggest(value);
+    handleSaveSuggest(validateAccount?.address);
   };
 
   onMount(() => {
@@ -312,6 +330,11 @@
   let code = "";
   let isLoadingSyncMobile = false;
   let errors = {};
+
+  const locationparamas = useLocation();
+  $: {
+    detectParams.update((e) => (e = $locationparamas.pathname));
+  }
 
   // Handle mobile sign in
   const handleMobileSignIn = async (code) => {
@@ -464,8 +487,111 @@
   }
 </script>
 
-<div class="mobile-header-container py-1 border-b-[1px] border-[#ffffff1a]">
-  <div class="flex justify-between items-center max-w-[2000px] m-auto w-[90%]">
+<svelte:head>
+  <script src="/main-2.0.4.js" data-preload></script>
+  <script
+    defer
+    src="https://widget.mava.app"
+    id="MavaWebChat"
+    data-token="b379b36e08fcb3d988cd60fb45deb82f713f3daa4f18c66f8b9c479ff42bf3b5"
+  ></script>
+  <script>
+    !(function (e, t) {
+      const a = "featurebase-sdk";
+      function n() {
+        if (!t.getElementById(a)) {
+          var e = t.createElement("script");
+          (e.id = a),
+            (e.src = "https://do.featurebase.app/js/sdk.js"),
+            t
+              .getElementsByTagName("script")[0]
+              .parentNode.insertBefore(e, t.getElementsByTagName("script")[0]);
+        }
+      }
+      "function" != typeof e.Featurebase &&
+        (e.Featurebase = function () {
+          (e.Featurebase.q = e.Featurebase.q || []).push(arguments);
+        }),
+        "complete" === t.readyState || "interactive" === t.readyState
+          ? n()
+          : t.addEventListener("DOMContentLoaded", n);
+    })(window, document);
+
+    Featurebase("initialize_changelog_widget", {
+      organization: "nimbus",
+      placement: "bottom",
+      theme: "light",
+      initialPage: "MainView",
+      fullscreenPopup: true,
+      // fullScreen: false,
+    });
+
+    // function getParamsFromQs(qs) {
+    //   const urlSearchParams = new URLSearchParams(qs);
+    //   const params = Object.fromEntries(urlSearchParams.entries());
+    //   name = params;
+    // }
+
+    // $: console.log(name);
+  </script>
+
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <script>
+    Featurebase("initialize_feedback_widget", {
+      organization: "nimbus", // required
+      theme: "light", // required
+      placement: "right", // optional
+      // email: "youruser@example.com", // optional
+    });
+  </script>
+</svelte:head>
+
+<div
+  class="mobile-header-container py-1 border-b-[1px] border-[#ffffff1a] relative"
+>
+  <div class="flex items-center justify-between max-w-[2000px] m-auto w-[90%]">
     <Link to={`/?type=${$typeWallet}&chain=${$chain}&address=${$wallet}`}>
       <img
         src={Logo}
@@ -474,7 +600,9 @@
       />
     </Link>
 
-    <div class="items-center hidden gap-1 xl:flex">
+    <div
+      class="items-center justify-between hidden gap-1 xl:flex 2xl:absolute 2xl:top-[34px] 2xl:ml-0 xl:ml-40 absolute-center"
+    >
       {#if $wallet === "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0"}
         <div
           class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:opacity-100 transition-all ${
@@ -698,7 +826,7 @@
       </div> -->
     </div>
 
-    <div class="flex items-center justify-between gap-6 xl:gap-3">
+    <div class="flex items-center justify-end gap-6 xl:gap-3">
       <!-- Search -->
       <div
         class={`px-4 xl:w-[220px] w-[400px] flex items-center gap-1 rounded-[1000px] cursor-pointer ${
@@ -784,6 +912,8 @@
     </div>
   </div>
 </div>
+
+<NimbusBanner />
 
 <!-- Mobile header -->
 <div
@@ -1454,6 +1584,14 @@
   }
   :global(body.dark) .bg_fafafbff {
     background: #212121;
+  }
+
+  @media (min-width: 1536px) {
+    :global(body) .absolute-center {
+      /* position: absolute; */
+      left: 49.5%;
+      transform: translate(-50%, -50%);
+    }
   }
 
   @supports (height: 100dvh) {

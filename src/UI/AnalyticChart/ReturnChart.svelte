@@ -122,6 +122,7 @@
             $typeWallet === "MOVE" ||
             $typeWallet === "CEX" ||
             $typeWallet === "SOL" ||
+            $typeWallet === "TON" ||
             $typeWallet === "AURA" ||
             $typeWallet === "ALGO" ||
             $typeWallet === "BUNDLE") &&
@@ -268,7 +269,7 @@
         {#if $query.isError}
           <div
             class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-30 backdrop-blur-md xl:text-xs text-lg ${
-              $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
+              $isDarkMode ? "bg-black/90" : "bg-white/95"
             }`}
           >
             {#if $typeWallet === "CEX"}
@@ -471,7 +472,7 @@
                 <span class="font-medium"
                   >{Math.abs(
                     data?.base?.netWorthChange?.networth30D -
-                      data?.btc?.netWorthChange?.networth30D
+                      data?.btc?.netWorthChange?.networth30D || 0
                   ).toFixed(2)}%</span
                 >
               </div>
@@ -492,7 +493,7 @@
         {#if $query.isError}
           <div
             class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-30 backdrop-blur-md xl:text-xs text-lg ${
-              $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
+              $isDarkMode ? "bg-black/90" : "bg-white/95"
             }`}
           >
             {#if $typeWallet === "CEX"}

@@ -7,7 +7,7 @@
   import { groupBy, isEmpty, flatten } from "lodash";
   import { onMount } from "svelte";
   import { i18n } from "~/lib/i18n";
-  import { chainList, chainMoveList, driverObj } from "~/utils";
+  import { chainList, chainMoveList, drivePortfolio } from "~/utils";
   import { wait } from "../entries/background/utils";
   import {
     wallet,
@@ -312,7 +312,10 @@
   // token holding
   const getVaults = async (address, chain) => {
     let type =
-      $typeWallet === "SOL" || $typeWallet === "AURA" || $typeWallet === "ALGO";
+      $typeWallet === "SOL" ||
+      $typeWallet === "TON" ||
+      $typeWallet === "AURA" ||
+      $typeWallet === "ALGO";
     const response = await nimbus.get(
       `/v2/investment/${address}/vaults?chain=${type ? $typeWallet : ""}`
     );
@@ -331,8 +334,7 @@
       ?.map((item) => {
         return {
           ...item,
-          value:
-            Number(item?.amount) * Number(item?.price?.price || item?.rate),
+          value: Number(item?.amount) * Number(item?.price?.price),
         };
       })
       .sort((a, b) => {
@@ -755,6 +757,17 @@
         $queryVaults.isFetching &&
         $queryOverview.isFetching;
 
+  $: isPortfolioReady =
+    $chain === "ALL"
+      ? $queryAllTokenHolding.every((item) => item.isFetched) &&
+        $queryAllNftHolding.every((item) => item.isFetched) &&
+        $queryVaults.isFetched &&
+        $queryOverview.isFetched
+      : $queryTokenHolding.isFetched &&
+        $queryNftHolding.isFetched &&
+        $queryVaults.isFetched &&
+        $queryOverview.isFetched;
+
   $: {
     if ($typeWallet?.length !== 0 && $typeWallet === "EVM") {
       chainListQueries = chainList.slice(1).map((item) => item.value);
@@ -773,8 +786,8 @@
   }
 
   $: {
-    if (!localStorage.getItem("view-portfolio-tour") && loading) {
-      driverObj.drive();
+    if (!localStorage.getItem("view-portfolio-tour") && isPortfolioReady) {
+      drivePortfolio().drive();
       localStorage.setItem("view-portfolio-tour", "true");
     }
   }

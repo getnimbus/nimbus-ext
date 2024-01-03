@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { useLocation } from "svelte-navigator";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { nimbus } from "~/lib/network";
@@ -8,6 +9,8 @@
   import { wait } from "~/entries/background/utils";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
+  import { driver } from "driver.js";
+  import "driver.js/dist/driver.css";
 
   import Button from "~/components/Button.svelte";
   import Loading from "~/components/Loading.svelte";
@@ -26,6 +29,56 @@
 
   const rank = [rank1, rank2, rank3];
 
+  const location = useLocation();
+
+  const driveCheckin = () =>
+    driver({
+      showProgress: true,
+      overlayColor: "#27326f",
+      onDestroyStarted: () => {
+        if (driveCheckin().isLastStep()) {
+          driveCheckin().destroy();
+          handleReceiveQuest("", "new-user-tutorial");
+        } else {
+          driveCheckin().moveTo(3);
+        }
+      },
+      showButtons: ["next", "previous", "close"],
+      steps: [
+        {
+          element: ".wellcome-checkin",
+          popover: {
+            title: "Welcome to our checkin page 🤩",
+            description:
+              "Checkin everyday to receive our exclusive offers and benefits 🥳",
+          },
+        },
+        {
+          element: ".view-checkin-page",
+          popover: {
+            title: "Daily Check-in Zone 🛑",
+            description: "Visit here regularly to check in and stay updated",
+          },
+        },
+        {
+          element: ".view-checkin-btn",
+          popover: {
+            title: "Button used for check-in 👇",
+            description:
+              "Tap the button here to mark your attendance every day and unlock exclusive rewards!",
+          },
+        },
+        {
+          element: ".view-checkin-quests",
+          popover: {
+            title: "Doing quests to gain more GM points 🤝",
+            description:
+              "Besides checking in, you can easily complete tasks to earn GM points",
+          },
+        },
+      ],
+    });
+
   let selectedType: "collectGMPoint" | "history" = "collectGMPoint";
   let openScreenSuccess: boolean = false;
   let openScreenBonusScore: boolean = false;
@@ -41,6 +94,7 @@
   let dataCheckinHistory = [];
   let sortTypeHistory = "default";
   let sortPointHistory = "default";
+  let isDisabledReceiveQuest = false;
 
   let toastMsg = "";
   let isSuccessToast = false;
@@ -166,8 +220,17 @@
     if (!$queryDailyCheckin.isError && $queryDailyCheckin.data !== undefined) {
       selectedCheckinIndex = $queryDailyCheckin?.data?.steak;
       isDisabledCheckin = $queryDailyCheckin?.data?.checkinable;
-      quests = $queryDailyCheckin?.data?.quests;
       dataCheckinHistory = $queryDailyCheckin?.data?.checkinLogs;
+      quests = $queryDailyCheckin?.data?.quests.map((item, index) => {
+        const selectedLogs = dataCheckinHistory
+          .filter((log) => log.type === "QUEST" && log.note !== "id-generate")
+          .find((log) => log.note === item.id);
+
+        return {
+          ...item,
+          isDone: !item.isInternalLink && selectedLogs,
+        };
+      });
     }
   }
 
@@ -350,16 +413,104 @@
           bonusScore = res?.data?.bonus;
           isTriggerBonusScore = true;
           queryClient.invalidateQueries([$userPublicAddress, "daily-checkin"]);
+          queryClient.invalidateQueries(["users-me"]);
         }
       }
+      if (type === "solana-recap-2023") {
+        window.open(link, "_blank");
+        await wait(5000);
+        const res = await nimbus.post(
+          `/v2/checkin/${$userPublicAddress}/quest/solana-recap-2023`,
+          {}
+        );
+        if (res && res?.data === null) {
+          toastMsg = "You already post on Twitter";
+          isSuccessToast = false;
+          trigger();
+        }
+        if (res?.data?.bonus !== undefined) {
+          triggerBonusScore();
+          bonusScore = res?.data?.bonus;
+          isTriggerBonusScore = true;
+          queryClient.invalidateQueries([$userPublicAddress, "daily-checkin"]);
+          queryClient.invalidateQueries(["users-me"]);
+        }
+      }
+      if (type === "sync-telegram") {
+        window.open(link, "_blank");
+        await wait(6000);
+        const res = await nimbus.post(
+          `/v2/checkin/${$userPublicAddress}/quest/sync-telegram`,
+          {}
+        );
+        if (res && res?.data === null) {
+          toastMsg = "You are not sync Telegram";
+          isSuccessToast = false;
+          trigger();
+        }
+        if (res?.data?.bonus !== undefined) {
+          triggerBonusScore();
+          bonusScore = res?.data?.bonus;
+          isTriggerBonusScore = true;
+          queryClient.invalidateQueries([$userPublicAddress, "daily-checkin"]);
+          queryClient.invalidateQueries(["users-me"]);
+        }
+      }
+      if (type === "new-user-tutorial") {
+        const res = await nimbus.post(
+          `/v2/checkin/${$userPublicAddress}/quest/new-user-tutorial`,
+          {}
+        );
+        if (res && res?.data === null) {
+          toastMsg = "You are already finished this quest";
+          isSuccessToast = false;
+          trigger();
+        }
+        if (res?.data?.bonus !== undefined) {
+          triggerBonusScore();
+          bonusScore = res?.data?.bonus;
+          isTriggerBonusScore = true;
+          queryClient.invalidateQueries([$userPublicAddress, "daily-checkin"]);
+          queryClient.invalidateQueries(["users-me"]);
+        }
+      }
+      if (type.includes("retweet-on-twitter")) {
+        window.open(link, "_blank");
+        await wait(5000);
+        const res = await nimbus.post(
+          `/v2/checkin/${$userPublicAddress}/quest/retweet-on-twitter`,
+          {}
+        );
+        if (res && res?.data === null) {
+          toastMsg = "You already retweet us on Twitter";
+          isSuccessToast = false;
+          trigger();
+        }
+        if (res?.data?.bonus !== undefined) {
+          triggerBonusScore();
+          bonusScore = res?.data?.bonus;
+          isTriggerBonusScore = true;
+          queryClient.invalidateQueries([$userPublicAddress, "daily-checkin"]);
+          queryClient.invalidateQueries(["users-me"]);
+        }
+      }
+      isDisabledReceiveQuest = true;
     } catch (e) {
       console.error(e);
+      isDisabledReceiveQuest = false;
     }
   };
 
-  $: disabledCollect = dataCheckinHistory.find(
-    (item) => item.type === "QUEST" && item.note === "first-share-on-twitter"
-  );
+  $: {
+    if (
+      !$queryDailyCheckin.isLoading &&
+      $location.pathname === "/daily-checkin" &&
+      !localStorage.getItem("view-checkin-tour")
+    ) {
+      driveCheckin().drive();
+      localStorage.setItem("view-checkin-tour", "true");
+    }
+  }
 </script>
 
 <div class="flex flex-col gap-4 min-h-screen">
@@ -375,7 +526,7 @@
       <Loading />
     </div>
   {:else}
-    <div class="flex flex-col gap-7 mt-2">
+    <div class="flex flex-col gap-7 mt-2 view-checkin-page">
       <div
         class="flex flex-col gap-3 bg-[#1589EB] py-4 px-6 rounded-lg min-w-[250px] w-max"
       >
@@ -433,7 +584,7 @@
                   Check in 7 days in a row, your rewards will grow
                 </div>
               </div>
-              <div class="w-[200px]">
+              <div class="w-[200px] view-checkin-btn">
                 {#if isDisabledCheckin}
                   <Button
                     variant="primary"
@@ -541,7 +692,7 @@
               {/if}
             </div>
 
-            <div class="flex flex-col gap-4 mt-5">
+            <div class="flex flex-col gap-4 mt-5 view-checkin-quests">
               <div class="xl:text-lg text-xl font-medium">
                 Want more GM Point? Complete these tasks!
               </div>
@@ -557,6 +708,8 @@
                             "https://s2.coinmarketcap.com/static/cloud/img/loyalty-program/Flags_3D_1.svg"}
                           alt=""
                           class="bg-yellow-200 rounded-lg mt-1"
+                          width="32"
+                          height="32"
                         />
                         <div class="flex-1 flex items-center gap-4">
                           <div class="flex-1 flex flex-col">
@@ -583,13 +736,16 @@
                         {:else}
                           <div
                             on:click={() => {
-                              if (!disabledCollect) {
+                              if (!quest.isDone) {
                                 handleReceiveQuest(quest?.url, quest?.id);
                               }
                             }}
                             class="py-1"
                           >
-                            <Button disabled={disabledCollect}>Collect!</Button>
+                            <Button
+                              disabled={isDisabledReceiveQuest || quest.isDone}
+                              >Collect!</Button
+                            >
                           </div>
                         {/if}
                       </div>

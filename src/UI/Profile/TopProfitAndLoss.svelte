@@ -27,8 +27,8 @@
     return response?.data;
   };
 
-  const formatDataTradingStats = (dataTokenHolding) => {
-    const formatData = dataTokenHolding.metadata
+  const formatDataTradingStats = (data) => {
+    const formatData = data?.metadata
       .filter(
         (item) => dayjs().subtract(30, "day").valueOf() < item.lastTrade * 1000
       )
@@ -116,7 +116,7 @@
         <div class="h-full flex flex-col gap-4">
           {#if top5ProfitToken.length === 0}
             <div class="h-full flex items-center justify-center text-center">
-              There is no closed holding position in the last 30 day
+              There are no closed holding position in the last 30 day
             </div>
           {:else}
             {#each top5ProfitToken as item}
@@ -161,7 +161,7 @@
         <div class="h-full flex flex-col gap-4">
           {#if top5LossToken.length === 0}
             <div class="h-full flex items-center justify-center text-center">
-              There is no closed holding position in the last 30 day
+              There are no closed holding position in the last 30 day
             </div>
           {:else}
             {#each top5LossToken as item}

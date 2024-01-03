@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from "svelte";
+  import { onMount, onDestroy } from "svelte";
   import mixpanel from "mixpanel-browser";
   import dayjs from "dayjs";
   import isBetween from "dayjs/plugin/isBetween";
@@ -13,14 +13,13 @@
   import Button from "~/components/Button.svelte";
   import Loading from "~/components/Loading.svelte";
 
-  import Crown from "~/assets/crown.svg";
-
   const currentDate = dayjs();
   const next7Days = currentDate.add(7, "day");
 
   // let listNft = [];
   // let isLoading = false;
 
+  let allowScroll = false;
   let isOpenModal = false;
   let isLoadingSendMail = false;
   let email = "";
@@ -96,6 +95,20 @@
     }
   };
 
+  const handleScroll = () => {
+    const scrollY = window.scrollY || window.pageYOffset;
+
+    if (!allowScroll) {
+      window.scrollTo(0, 0);
+    }
+
+    isOpenModal = scrollY > 1500;
+
+    if (allowScroll && isOpenModal) {
+      window.removeEventListener("scroll", handleScroll);
+    }
+  };
+
   onMount(() => {
     mixpanel.track("analytic_page");
 
@@ -104,23 +117,31 @@
     const isSubmitStorage = localStorage.getItem("isShowFormAnalytic");
 
     if ($selectedPackage === "FREE") {
-      if (currentDayStorage && next7DaysStorage) {
-        const isTodayBetween = currentDate.isBetween(
-          currentDayStorage,
-          next7DaysStorage,
-          "day",
-          "[]"
-        );
-        if (!isTodayBetween && isSubmitStorage === null) {
-          isOpenModal = true;
-        } else {
+      if (isSubmitStorage === null) {
+        allowScroll = true;
+        window.addEventListener("scroll", handleScroll);
+
+        if (currentDayStorage && next7DaysStorage) {
+          const isTodayBetween = currentDate.isBetween(
+            currentDayStorage,
+            next7DaysStorage,
+            "day",
+            "[]"
+          );
+          if (!isTodayBetween) {
+            isOpenModal = true;
+          }
         }
-      } else {
-        if (isSubmitStorage === null) {
+
+        if (!currentDayStorage && !next7DaysStorage) {
           isOpenModal = true;
         }
       }
     }
+  });
+
+  onDestroy(() => {
+    window.removeEventListener("scroll", handleScroll);
   });
 </script>
 
@@ -176,13 +197,10 @@
   >
     <div class="flex flex-col gap-4">
       <div class="flex flex-col">
-        <div class="xl:text-base text-2xl text-gray-500 text-center">
-          Our analysis is
-          <span class="font-medium text-[#ffb800]">Premium</span>
-          <img src={Crown} alt="" width="13" height="12" class="inline-block" />
-          feature is under beta<br /> which you can access for free now.
+        <div class="xl:title-3 title-1 font-semibold">
+          Let's us know your email.
         </div>
-        <div class="xl:text-base text-2xl text-gray-500">
+        <div class="xl:text-sm text-2xl text-gray-500">
           Add your email to get updates from us and receive exclusive benefits
           in the future.
         </div>

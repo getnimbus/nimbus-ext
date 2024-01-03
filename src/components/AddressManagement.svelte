@@ -24,7 +24,7 @@
     listLogoCEX,
     listProviderCEX,
     clickOutside,
-    driverObj,
+    drivePortfolio,
     chainMoveList,
   } from "~/utils";
   import mixpanel from "mixpanel-browser";
@@ -62,6 +62,7 @@
   import SolanaLogo from "~/assets/solana.png";
   import AuraLogo from "~/assets/aura.png";
   import AlgorandLogo from "~/assets/algorand.png";
+  import TonLogo from "~/assets/ton.png";
 
   const MultipleLang = {
     empty_wallet: i18n("newtabPage.empty-wallet", "No account added yet."),
@@ -176,10 +177,10 @@
     return value != null && value !== "";
   };
 
-  const validateAddress = async (address: string) => {
+  const handleValidateAddress = async (address: string) => {
     try {
       const response = await nimbus.get(`/v2/address/${address}/validate`);
-      return response?.data?.type;
+      return response?.data;
     } catch (e) {
       console.error(e);
       return undefined;
@@ -190,7 +191,7 @@
     const isDuplicatedAddress = listAddress.some((item) => {
       return item.value.toLowerCase() === data.address.toLowerCase();
     });
-    const addressValidate = await validateAddress(data.address);
+    const addressValidate = await handleValidateAddress(data.address);
 
     if (!isRequiredFieldValid(data.address)) {
       errors["address"] = {
@@ -199,7 +200,7 @@
         msg: MultipleLang.content.address_required,
       };
     } else {
-      if (data.address && !addressValidate) {
+      if (data.address && addressValidate === undefined) {
         errors["address"] = {
           ...errors["address"],
           required: true,
@@ -317,6 +318,7 @@
         typeParams === "BTC" ||
         typeParams === "SOL" ||
         typeParams === "AURA" ||
+        typeParams === "TON" ||
         typeParams === "ALGO"
       ) {
         window.history.replaceState(
@@ -345,6 +347,7 @@
         typeParams === "BTC" ||
         typeParams === "SOL" ||
         typeParams === "AURA" ||
+        typeParams === "TON" ||
         typeParams === "ALGO"
       ) {
         window.history.replaceState(
@@ -427,6 +430,17 @@
         );
       }
 
+      if (selected.type === "TON") {
+        typeWallet.update((n) => (n = "TON"));
+        browser.storage.sync.set({ typeWalletAddress: "TON" });
+        chain.update((n) => (n = "ALL"));
+        window.history.replaceState(
+          null,
+          "",
+          window.location.pathname + `?type=${$typeWallet}&address=${$wallet}`
+        );
+      }
+
       if (selected.type === "AURA") {
         typeWallet.update((n) => (n = "AURA"));
         browser.storage.sync.set({ typeWalletAddress: "AURA" });
@@ -471,6 +485,9 @@
       if (item?.type === "SOL") {
         logo = SolanaLogo;
       }
+      if (item?.type === "TON") {
+        logo = TonLogo;
+      }
       if (item?.type === "MOVE") {
         logo = Move;
       }
@@ -497,6 +514,9 @@
             }
             if (account?.type === "SOL") {
               logo = SolanaLogo;
+            }
+            if (account?.type === "TON") {
+              logo = TonLogo;
             }
             if (account?.type === "MOVE") {
               logo = Move;
@@ -578,10 +598,6 @@
           addresses: [$userPublicAddress],
         }),
       ]);
-      console.log({
-        resAddAccount,
-        resAddBundle,
-      });
       if (resAddAccount && resAddBundle) {
         wallet.update((n) => (n = $userPublicAddress));
         queryClient.invalidateQueries(["list-bundle"]);
@@ -616,12 +632,16 @@
           value: data.address,
         };
 
+        const validateAccount = await handleValidateAddress(dataFormat.value);
+
         if (groupedToBundles) {
           await nimbus.put(
             `/address/personalize/bundle?name=${"Your wallets"}`,
             {
               name: "Your wallets",
-              addresses: selectYourWalletsBundle.concat([dataFormat.value]),
+              addresses: selectYourWalletsBundle.concat([
+                validateAccount?.address,
+              ]),
             }
           );
           queryClient.invalidateQueries(["list-bundle"]);
@@ -629,45 +649,48 @@
 
         await nimbus.post("/accounts", {
           type: "DEX",
-          publicAddress: dataFormat.value,
-          accountId: dataFormat.value,
+          publicAddress: validateAccount?.address,
+          accountId: validateAccount?.address,
           label: dataFormat.label,
         });
 
-        const searchAccountType = await validateAddress(dataFormat.value);
         queryClient.invalidateQueries(["list-address"]);
-        wallet.update((n) => (n = dataFormat.value));
+        wallet.update((n) => (n = validateAccount?.address));
         chain.update((n) => (n = "ALL"));
-        typeWallet.update((n) => (n = searchAccountType));
+        typeWallet.update((n) => (n = validateAccount?.type));
 
         browser.storage.sync.set({ selectedChain: "ALL" });
         browser.storage.sync.set({
-          typeWalletAddress: searchAccountType,
+          typeWalletAddress: validateAccount?.type,
         });
         browser.storage.sync.set({
-          selectedWallet: dataFormat.value,
+          selectedWallet: validateAccount?.address,
         });
 
-        if (searchAccountType === "EVM" || searchAccountType === "MOVE") {
-          window.history.replaceState(
-            null,
-            "",
-            window.location.pathname +
-              `?type=${searchAccountType}&chain=ALL&address=${dataFormat.value}`
-          );
-        }
-
         if (
-          searchAccountType === "BTC" ||
-          searchAccountType === "SOL" ||
-          searchAccountType === "AURA" ||
-          searchAccountType === "ALGO"
+          validateAccount?.type === "EVM" ||
+          validateAccount?.type === "MOVE"
         ) {
           window.history.replaceState(
             null,
             "",
             window.location.pathname +
-              `?type=${searchAccountType}&address=${dataFormat.value}`
+              `?type=${validateAccount?.type}&chain=ALL&address=${validateAccount?.address}`
+          );
+        }
+
+        if (
+          validateAccount?.type === "BTC" ||
+          validateAccount?.type === "SOL" ||
+          validateAccount?.type === "AURA" ||
+          validateAccount?.type === "TON" ||
+          validateAccount?.type === "ALGO"
+        ) {
+          window.history.replaceState(
+            null,
+            "",
+            window.location.pathname +
+              `?type=${validateAccount?.type}&address=${validateAccount?.address}`
           );
         }
 
@@ -1006,7 +1029,7 @@
                   <Button
                     on:click={() => {
                       triggerConnectWallet.update((n) => (n = true));
-                      driverObj.destroy();
+                      drivePortfolio.destroy();
                     }}
                   >
                     <div class="text-2xl font-medium xl:text-base">
@@ -1018,7 +1041,7 @@
                   <Button
                     on:click={() => {
                       triggerSync.update((n) => (n = true));
-                      driverObj.destroy();
+                      drivePortfolio.destroy();
                     }}
                   >
                     <div class="text-2xl font-medium xl:text-base">
@@ -1038,7 +1061,7 @@
                     navigate(
                       `/?type=EVM&chain=ALL&address=0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0`
                     );
-                    driverObj.destroy();
+                    drivePortfolio.destroy();
                   }}
                 >
                   Try Demo account
@@ -1233,15 +1256,16 @@
                       width="24px"
                       viewBox="0 0 24 24"
                       class="sc-aef7b723-0 fKbUaI"
-                      ><path
+                    >
+                      <path
                         d="M15 6L9 12L15 18"
                         stroke="currentColor"
                         stroke-width="2"
                         stroke-miterlimit="10"
                         stroke-linecap="round"
                         stroke-linejoin="round"
-                      /></svg
-                    >
+                      />
+                    </svg>
                   </div>
                   <div
                     class="container flex gap-3 overflow-x-auto w-max whitespace-nowrap"
@@ -1292,15 +1316,16 @@
                         width="24px"
                         viewBox="0 0 24 24"
                         class="sc-aef7b723-0 fKbUaI"
-                        ><path
+                      >
+                        <path
                           d="M9 6L15 12L9 18"
                           stroke="currentColor"
                           stroke-width="2"
                           stroke-miterlimit="10"
                           stroke-linecap="round"
                           stroke-linejoin="round"
-                        /></svg
-                      >
+                        />
+                      </svg>
                     </div>
                   {/if}
                 </div>
@@ -1824,16 +1849,16 @@
           </label>
         </div>
         <div class="flex items-center justify-center gap-6 my-3">
-          {#each [{ logo: BitcoinLogo, label: "Bitcoin", value: "BTC" }, { logo: SolanaLogo, label: "Solana", value: "SOL" }, { logo: Move, label: "Move", value: "MOVE" }, { logo: AuraLogo, label: "Aura", value: "AURA" }, { logo: AlgorandLogo, label: "Algorand", value: "ALGO" }].concat(chainList
+          {#each [{ logo: BitcoinLogo, label: "Bitcoin", value: "BTC" }, { logo: SolanaLogo, label: "Solana", value: "SOL" }, { logo: Move, label: "Move", value: "MOVE" }, { logo: AuraLogo, label: "Aura", value: "AURA" }, { logo: AlgorandLogo, label: "Algorand", value: "ALGO" }, { logo: TonLogo, label: "TON", value: "TON" }].concat(chainList
               .slice(1)
-              .slice(0, -8)) as item}
+              .slice(0, -10)) as item}
             <img
               src={item.logo}
               alt=""
               class="xl:w-8 xl:h-8 w-10 h-10 overflow-hidden rounded-full"
             />
           {/each}
-          <div class="text-gray-400 xl:text-base text-2xl">+8 More</div>
+          <div class="text-gray-400 xl:text-base text-2xl">+10 More</div>
         </div>
         <div class="flex justify-end gap-6 lg:gap-2">
           <div class="lg:w-[120px] w-full">

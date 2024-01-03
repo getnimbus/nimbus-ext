@@ -248,7 +248,7 @@
         (item) => {
           return {
             timestamp: dayjs(item.date).format("YYYY-MM-DD"),
-            value: item.portfolio,
+            portfolio: item.portfolio,
           };
         }
       );
@@ -256,34 +256,42 @@
       const selectedDataPortfolioChart = formatDataPortfolioChart.find(
         (item) => item.timestamp === tooltipDateValue
       );
+
       const selectedDataPerformance = formatDataPerformance.find(
         (item) => item.timestamp === tooltipDateValue
       );
 
-      networth = selectedDataPortfolioChart.value;
+      if (selectedDataPortfolioChart) {
+        networth = selectedDataPortfolioChart?.value;
 
-      portfolioPercentChange = selectedDataPerformance.portfolio;
+        portfolioPercentChange = selectedDataPerformance?.portfolio;
 
-      networthValueChange = networth * (portfolioPercentChange / 100);
+        networthValueChange =
+          formatDataPortfolioChart[0]?.value * (portfolioPercentChange / 100);
+      }
     }
   }
 
   $: {
     if (
-      overviewDataPerformance?.performance?.length !== 0 ||
-      overviewDataPerformance?.portfolioChart?.length !== 0
+      (overviewDataPerformance?.performance &&
+        overviewDataPerformance?.performance?.length !== 0) ||
+      (overviewDataPerformance?.portfolioChart &&
+        overviewDataPerformance?.portfolioChart?.length !== 0)
     ) {
       networth =
         overviewDataPerformance?.portfolioChart[
-          overviewDataPerformance?.portfolioChart.length - 1
-        ].value;
+          overviewDataPerformance?.portfolioChart?.length - 1
+        ]?.value;
 
       portfolioPercentChange =
         overviewDataPerformance?.performance[
-          overviewDataPerformance?.performance.length - 1
-        ].portfolio;
+          overviewDataPerformance?.performance?.length - 1
+        ]?.portfolio;
 
-      networthValueChange = networth * (portfolioPercentChange / 100);
+      networthValueChange =
+        overviewDataPerformance?.portfolioChart[0]?.value *
+        (portfolioPercentChange / 100);
 
       const formatXAxisPerformance = overviewDataPerformance?.performance?.map(
         (item) => {
@@ -853,14 +861,14 @@
         </div>
         <div
           class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex items-center justify-center z-10 backdrop-blur-md ${
-            $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
+            $isDarkMode ? "bg-black/90" : "bg-white/95"
           }`}
         >
           <div class="text-2xl xl:text-lg">Coming soon 🚀</div>
         </div>
       {:else}
         <div class="flex justify-between mb-4">
-          {#if ($typeWallet === "EVM" && ($chain === "SCROLL" || $chain === "KLAY" || $chain === "XZO")) || $typeWallet === "CEX" || $typeWallet === "SOL" || $typeWallet === "ALGO" || $typeWallet === "AURA" || $typeWallet === "MOVE" || $selectedBundle?.accounts?.find((item) => item.type === "CEX") !== undefined}
+          {#if ($typeWallet === "EVM" && ($chain === "SCROLL" || $chain === "KLAY" || $chain === "XZO")) || $typeWallet === "CEX" || $typeWallet === "SOL" || $typeWallet === "TON" || $typeWallet === "ALGO" || $typeWallet === "AURA" || $typeWallet === "MOVE" || $selectedBundle?.accounts?.find((item) => item.type === "CEX") !== undefined}
             <TooltipTitle
               tooltipText="The performance data can only get after 7 days you connect to Nimbus"
               type="warning"
@@ -920,13 +928,18 @@
                 Empty
               </div>
             {:else}
-              <div class="flex flex-col gap-4">
-                <div class="ml-4 flex flex-col">
-                  <div class="xl:text-xl text-2xl font-medium">
+              <div class="flex flex-col gap-4 relative">
+                <div
+                  class={`absolute top-8 left-20 flex flex-col rounded-[4px] px-2 py-1 z-10 ${
+                    $isDarkMode ? "bg-[#131313]" : "bg-white"
+                  }`}
+                  style="box-shadow: rgba(0, 0, 0, 0.2) 1px 2px 10px;"
+                >
+                  <div class="xl:text-lg text-xl font-medium flex items-center">
                     $<TooltipNumber number={networth} type="balance" />
                   </div>
                   <div
-                    class={`xl:text-base text-lg flex gap-1 ${
+                    class={`xl:text-sm text-base flex gap-1 ${
                       portfolioPercentChange >= 0
                         ? "text-[#00A878]"
                         : "text-red-500"
@@ -945,9 +958,9 @@
                         class="mb-1"
                       />
                     {/if}
-                    <span>
-                      ($<TooltipNumber
-                        number={networthValueChange}
+                    <span class="flex">
+                      ({#if networthValueChange < 0}-{/if}$<TooltipNumber
+                        number={Math.abs(networthValueChange)}
                         type="balance"
                       />)
                     </span>

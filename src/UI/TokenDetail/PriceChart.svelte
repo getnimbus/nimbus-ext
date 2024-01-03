@@ -3,7 +3,7 @@
   import isBetween from "dayjs/plugin/isBetween";
   dayjs.extend(isBetween);
   import { createQuery } from "@tanstack/svelte-query";
-  import { mobula, defillama } from "~/lib/network";
+  import { mobula, defillama, nimbus } from "~/lib/network";
   import { isDarkMode, typeWallet } from "~/store";
   import {
     autoFontSize,
@@ -210,8 +210,7 @@
 
     const blockchain = mobulaChainConfig[chain] || undefined;
 
-    const response = await mobula.get("/1/market/history", {
-      // TODO: Map to mobula blockchain type
+    const response = await nimbus.get("/token/price/mobula", {
       params: {
         blockchain,
         symbol: chain === "CEX" ? symbol : undefined,

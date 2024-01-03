@@ -13,7 +13,7 @@
     equalizeArrayLengths,
     formatPercent,
   } from "~/utils";
-  import { nimbus } from "~/lib/network";
+  import { defillama, nimbus } from "~/lib/network";
   import dayjs from "dayjs";
 
   import type { HoldingTokenRes } from "~/types/HoldingTokenData";
@@ -91,14 +91,11 @@
 
   const getCoinPrice = async (coinName) => {
     try {
-      const result = await axios
-        .get(
-          `https://coins.llama.fi/chart/coingecko:${coinName}?start=${dayjs()
-            .startOf("d")
-            .subtract(30, "d")
-            .unix()}&span=30&period=1d&searchWidth=600`
-        )
-        .then((res) => res.data);
+      const result = await defillama.get(
+        `/chart/coingecko:${coinName}?start=${dayjs()
+          .subtract(30, "day")
+          .unix()}&span=${30}&period=1d&searchWidth=600`
+      );
       return result;
     } catch (e) {
       console.error(e);
@@ -376,6 +373,7 @@
             $typeWallet === "MOVE" ||
             $typeWallet === "CEX" ||
             $typeWallet === "SOL" ||
+            $typeWallet === "TON" ||
             $typeWallet === "AURA" ||
             $typeWallet === "ALGO" ||
             $typeWallet === "BUNDLE") &&
@@ -384,11 +382,7 @@
         );
 </script>
 
-<div
-  class={`flex flex-col gap-2 rounded-[20px] p-6 relative ${
-    $isDarkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
-  }`}
->
+<div class="flex flex-col gap-5">
   <div class="xl:text-2xl text-4xl font-medium">
     <TooltipTitle
       tooltipText={"Positively correlated variables tend to move together, negatively correlated variables move inversely to each other, and uncorrelated variables move independently of each other."}
@@ -397,225 +391,230 @@
       Correlations Matrix
     </TooltipTitle>
   </div>
-
   <div
-    class={`flex flex-col gap-1 xl:text-sm text-xl ${
-      $isDarkMode ? "text-[#ebebeb]" : "text-gray-700"
-    } `}
+    class={`flex flex-col gap-2 rounded-[20px] p-6 relative ${
+      $isDarkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
+    }`}
   >
-    <div class="flex items-start xl:gap-1 gap-5">
-      <div class="w-max">🟩</div>
-      <div class="flex-1">
-        Positive Value A positive value indicates a positive correlation between
-        two variables
-      </div>
-    </div>
-    <div class="flex items-start xl:gap-1 gap-5">
-      <div class="w-max">🟥</div>
-      <div class="flex-1">
-        Negative Value A negative value indicates a negative correlation between
-        two variables
-      </div>
-    </div>
-    <div>
-      Learn more <a
-        class="text-blue-500 hover:underline"
-        href="https://docs.getnimbus.io/metrics/correlation-matrix/"
-        target="blank">How to use correlation to reduce risk?</a
-      >
-    </div>
-  </div>
-
-  {#if $queryHoldingToken.isFetching && listTokenHolding && listTokenHolding.length === 0}
-    <div class="flex items-center justify-center h-[465px]">
-      <LoadingPremium />
-    </div>
-  {:else}
-    <div>
-      {#if $queryHoldingToken.isError}
-        <div
-          class="flex justify-center items-center p-[6px] text-lg text-gray-400"
-        >
-          Empty
-        </div>
-      {:else}
-        <div class="flex gap-9 relative">
-          <div class="flex flex-col xl:flex-[0.2] flex-[0.4]">
-            <div class="font-medium xl:text-base text-2xl py-[6px]">
-              Selected Coins
-            </div>
-            <div class="flex flex-col items-center justify-center w-full">
-              {#each listTokenHolding as item}
-                <div
-                  class={`border-b ${
-                    $isDarkMode ? "border-[#0f0f0f]" : "border-gray-200"
-                  } last:border-none py-2 px-1 w-full text-center flex items-center justify-between`}
-                >
-                  <div class="flex items-center gap-2">
-                    <div class="w-6 h-6 mx-auto rounded-full overflow-hidden">
-                      <Image logo={item.logo} defaultLogo={defaultToken} />
-                    </div>
-                    <div class="text-2xl xl:text-base">
-                      {item.name.toLocaleUpperCase()}
-                    </div>
-                  </div>
-                  <div
-                    class="cursor-pointer text-gray-500"
-                    on:click={handleRemoveCoin(item)}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="20"
-                      height="20"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      ><line x1="18" y1="6" x2="6" y2="18" /><line
-                        x1="6"
-                        y1="6"
-                        x2="18"
-                        y2="18"
-                      /></svg
-                    >
-                  </div>
-                </div>
-              {/each}
-            </div>
-
-            <div
-              class={`pt-4 border-t ${
-                $isDarkMode ? "border-[#0f0f0f]" : "border-gray-200"
-              }`}
-            >
-              <Button
-                variant="primary"
-                on:click={() => {
-                  isOpenModal = true;
-                }}
-              >
-                <div class="xl:text-sm text-2xl">Compare more</div>
-              </Button>
-            </div>
-          </div>
-
-          {#if listTokenHolding && listTokenHolding.length === 0}
-            <div
-              class="flex justify-center items-center p-[6px] text-lg text-gray-400 flex-1"
-            >
-              Empty
-            </div>
-          {:else}
-            <div class="overflow-x-auto w-full flex-1">
-              <table class="rounded-[10px] lg:w-full w-[1800px]">
-                <tbody on:mouseleave={() => (colIndex = undefined)}>
-                  {#each listTokenHolding as tokenItem, index}
-                    <th
-                      class={`py-[6px] text-2xl xl:text-base font-medium ${
-                        colIndex === index
-                          ? $isDarkMode
-                            ? "bg-[#cdcdcd26]"
-                            : "bg-[#dbeafe]"
-                          : ""
-                      }`}
-                      on:mouseenter={() => (colIndex = index)}
-                    >
-                      {tokenItem.name}
-                    </th>
-                  {/each}
-                  {#each matrix as data, indexY}
-                    <tr
-                      class={`border ${
-                        $isDarkMode ? "border-[#0f0f0f]" : "border-gray-200"
-                      } ${!colImg ? "active" : ""}`}
-                    >
-                      {#each data as item, indexX}
-                        {#if indexX == indexY}
-                          <td
-                            class={`py-2 px-1 ${
-                              colIndex === indexX
-                                ? $isDarkMode
-                                  ? "bg-[#cdcdcd26]"
-                                  : "bg-[#dbeafe]"
-                                : ""
-                            }`}
-                            on:mouseenter={() => {
-                              colIndex = undefined;
-                              colImg = true;
-                            }}
-                            on:mouseleave={() => {
-                              colImg = false;
-                            }}
-                          >
-                            <div
-                              class="w-6 h-6 mx-auto rounded-full overflow-hidden"
-                            >
-                              <Image
-                                logo={item.value}
-                                defaultLogo={defaultToken}
-                              />
-                            </div>
-                          </td>
-                        {:else}
-                          <td
-                            class={`py-2 px-1 text-2xl xl:text-base text-center border ${
-                              $isDarkMode
-                                ? "border-[#0f0f0f]"
-                                : "border-gray-200"
-                            } ${
-                              colIndex === indexX
-                                ? $isDarkMode
-                                  ? "bg-[#cdcdcd26]"
-                                  : "bg-[#dbeafe]"
-                                : ""
-                            }`}
-                            style={`background: ${
-                              item.value === "N/A"
-                                ? "transparent"
-                                : correlationsMatrixColor(item.value)
-                            }`}
-                            on:mouseenter={() => (colIndex = indexX)}
-                          >
-                            {item.value === "N/A"
-                              ? "N/A"
-                              : formatPercent(item.value)}
-                          </td>
-                        {/if}
-                      {/each}
-                    </tr>
-                  {/each}
-                </tbody>
-              </table>
-            </div>
-          {/if}
-        </div>
-      {/if}
-    </div>
-  {/if}
-
-  {#if isShowSoon && address !== "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0"}
     <div
-      class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col justify-center items-center gap-3 z-10 backdrop-blur-md ${
-        $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
-      }`}
+      class={`flex flex-col gap-1 xl:text-sm text-xl ${
+        $isDarkMode ? "text-[#ebebeb]" : "text-gray-700"
+      } `}
     >
-      {#if $selectedPackage === "FREE"}
-        <div class="flex flex-col items-center gap-1">
-          <div class="text-lg font-medium">
-            Use Nimbus at its full potential
-          </div>
-          <div class="text-base text-gray-500">
-            Upgrade to Premium to access Analytics feature
-          </div>
+      <div class="flex items-start xl:gap-1 gap-5">
+        <div class="w-max">🟩</div>
+        <div class="flex-1">
+          Positive Value A positive value indicates a positive correlation
+          between two variables
         </div>
-      {/if}
-      {#if $selectedPackage !== "FREE" && $typeWallet === "BTC"}
-        <div class="text-lg">Coming soon 🚀</div>
-      {/if}
+      </div>
+      <div class="flex items-start xl:gap-1 gap-5">
+        <div class="w-max">🟥</div>
+        <div class="flex-1">
+          Negative Value A negative value indicates a negative correlation
+          between two variables
+        </div>
+      </div>
+      <div>
+        Learn more <a
+          class="text-blue-500 hover:underline"
+          href="https://docs.getnimbus.io/metrics/correlation-matrix/"
+          target="blank">How to use correlation to reduce risk?</a
+        >
+      </div>
     </div>
-  {/if}
+
+    {#if $queryHoldingToken.isFetching && listTokenHolding && listTokenHolding.length === 0}
+      <div class="flex items-center justify-center h-[465px]">
+        <LoadingPremium />
+      </div>
+    {:else}
+      <div>
+        {#if $queryHoldingToken.isError}
+          <div
+            class="flex justify-center items-center p-[6px] text-lg text-gray-400"
+          >
+            Empty
+          </div>
+        {:else}
+          <div class="flex gap-9 relative">
+            <div class="flex flex-col xl:flex-[0.2] flex-[0.4]">
+              <div class="font-medium xl:text-base text-2xl py-[6px]">
+                Selected Coins
+              </div>
+              <div class="flex flex-col items-center justify-center w-full">
+                {#each listTokenHolding as item}
+                  <div
+                    class={`border-b ${
+                      $isDarkMode ? "border-[#0f0f0f]" : "border-gray-200"
+                    } last:border-none py-2 px-1 w-full text-center flex items-center justify-between`}
+                  >
+                    <div class="flex items-center gap-2">
+                      <div class="w-6 h-6 mx-auto rounded-full overflow-hidden">
+                        <Image logo={item.logo} defaultLogo={defaultToken} />
+                      </div>
+                      <div class="text-2xl xl:text-base">
+                        {item.name.toLocaleUpperCase()}
+                      </div>
+                    </div>
+                    <div
+                      class="cursor-pointer text-gray-500"
+                      on:click={handleRemoveCoin(item)}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        ><line x1="18" y1="6" x2="6" y2="18" /><line
+                          x1="6"
+                          y1="6"
+                          x2="18"
+                          y2="18"
+                        /></svg
+                      >
+                    </div>
+                  </div>
+                {/each}
+              </div>
+
+              <div
+                class={`pt-4 border-t ${
+                  $isDarkMode ? "border-[#0f0f0f]" : "border-gray-200"
+                }`}
+              >
+                <Button
+                  variant="primary"
+                  on:click={() => {
+                    isOpenModal = true;
+                  }}
+                >
+                  <div class="xl:text-sm text-2xl">Compare more</div>
+                </Button>
+              </div>
+            </div>
+
+            {#if listTokenHolding && listTokenHolding.length === 0}
+              <div
+                class="flex justify-center items-center p-[6px] text-lg text-gray-400 flex-1"
+              >
+                Empty
+              </div>
+            {:else}
+              <div class="overflow-x-auto w-full flex-1">
+                <table class="rounded-[10px] lg:w-full w-[1800px]">
+                  <tbody on:mouseleave={() => (colIndex = undefined)}>
+                    {#each listTokenHolding as tokenItem, index}
+                      <th
+                        class={`py-[6px] text-2xl xl:text-base font-medium ${
+                          colIndex === index
+                            ? $isDarkMode
+                              ? "bg-[#cdcdcd26]"
+                              : "bg-[#dbeafe]"
+                            : ""
+                        }`}
+                        on:mouseenter={() => (colIndex = index)}
+                      >
+                        {tokenItem.name}
+                      </th>
+                    {/each}
+                    {#each matrix as data, indexY}
+                      <tr
+                        class={`border ${
+                          $isDarkMode ? "border-[#0f0f0f]" : "border-gray-200"
+                        } ${!colImg ? "active" : ""}`}
+                      >
+                        {#each data as item, indexX}
+                          {#if indexX == indexY}
+                            <td
+                              class={`py-2 px-1 ${
+                                colIndex === indexX
+                                  ? $isDarkMode
+                                    ? "bg-[#cdcdcd26]"
+                                    : "bg-[#dbeafe]"
+                                  : ""
+                              }`}
+                              on:mouseenter={() => {
+                                colIndex = undefined;
+                                colImg = true;
+                              }}
+                              on:mouseleave={() => {
+                                colImg = false;
+                              }}
+                            >
+                              <div
+                                class="w-6 h-6 mx-auto rounded-full overflow-hidden"
+                              >
+                                <Image
+                                  logo={item.value}
+                                  defaultLogo={defaultToken}
+                                />
+                              </div>
+                            </td>
+                          {:else}
+                            <td
+                              class={`py-2 px-1 text-2xl xl:text-base text-center border ${
+                                $isDarkMode
+                                  ? "border-[#0f0f0f]"
+                                  : "border-gray-200"
+                              } ${
+                                colIndex === indexX
+                                  ? $isDarkMode
+                                    ? "bg-[#cdcdcd26]"
+                                    : "bg-[#dbeafe]"
+                                  : ""
+                              }`}
+                              style={`background: ${
+                                item.value === "N/A"
+                                  ? "transparent"
+                                  : correlationsMatrixColor(item.value)
+                              }`}
+                              on:mouseenter={() => (colIndex = indexX)}
+                            >
+                              {item.value === "N/A"
+                                ? "N/A"
+                                : formatPercent(item.value)}
+                            </td>
+                          {/if}
+                        {/each}
+                      </tr>
+                    {/each}
+                  </tbody>
+                </table>
+              </div>
+            {/if}
+          </div>
+        {/if}
+      </div>
+    {/if}
+
+    {#if isShowSoon && address !== "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0"}
+      <div
+        class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col justify-center items-center gap-3 z-10 backdrop-blur-md ${
+          $isDarkMode ? "bg-black/90" : "bg-white/95"
+        }`}
+      >
+        {#if $selectedPackage === "FREE"}
+          <div class="flex flex-col items-center gap-1">
+            <div class="text-lg font-medium">
+              Use Nimbus at its full potential
+            </div>
+            <div class="text-base text-gray-500">
+              Upgrade to Premium to access Analytics feature
+            </div>
+          </div>
+        {/if}
+        {#if $selectedPackage !== "FREE" && $typeWallet === "BTC"}
+          <div class="text-lg">Coming soon 🚀</div>
+        {/if}
+      </div>
+    {/if}
+  </div>
 </div>
 
 <!-- Modal search token -->

@@ -37,14 +37,20 @@
   import SolanaAuth from "./SolanaAuth.svelte";
   import { WalletProvider } from "@svelte-on-solana/wallet-adapter-ui";
   import {
+    BackpackWalletAdapter,
     PhantomWalletAdapter,
     SolflareWalletAdapter,
   } from "@solana/wallet-adapter-wallets";
   import jwt_decode from "jwt-decode";
   import bs58 from "bs58";
   import { walletStore } from "@svelte-on-solana/wallet-adapter-core";
+  import Button from "~/components/Button.svelte";
 
-  const wallets = [new PhantomWalletAdapter(), new SolflareWalletAdapter()];
+  const wallets = [
+    new PhantomWalletAdapter(),
+    new SolflareWalletAdapter(),
+    new BackpackWalletAdapter(),
+  ];
 
   const wallets$ = onboard.state.select("wallets");
 
@@ -451,7 +457,7 @@
 
     {#if showPopover}
       <div
-        class="select_content absolute top-15 right-0 z-50 flex flex-col gap-1 px-3 xl:py-2 py-3 text-sm transform rounded-lg w-max"
+        class="select_content absolute top-15 right-0 z-50 z-[51] flex flex-col gap-1 px-3 xl:py-2 py-3 text-sm transform rounded-lg w-max"
         style="box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);"
         use:clickOutside
         on:click_outside={() => (showPopover = false)}
@@ -519,7 +525,7 @@
             showPopover = false;
           }}
         >
-          Sync to mobile
+          Sync session
         </div>
 
         <div on:click={() => (showPopover = false)}>
@@ -585,7 +591,7 @@
 >
   <div class="flex flex-col gap-4">
     <div class="flex flex-col gap-1 items-start">
-      <div class="xl:title-3 title-1 font-semibold">Sync session to mobile</div>
+      <div class="xl:title-3 title-1 font-semibold">Sync session</div>
       <div class="xl:text-sm text-2xl text-gray-500">
         More convenience in managing your portfolio on mobile devices
       </div>
@@ -650,15 +656,6 @@
       </div>
     </div>
     <div class="flex flex-col items-center mt-2 gap-4">
-      <div class="border-t-[1px] relative w-[57%]">
-        <div
-          class={`absolute xl:top-[-10px] top-[-14px] left-1/2 transform -translate-x-1/2 text-gray-400 text-xs px-2 ${
-            $isDarkMode ? "bg-[#0f0f0f]" : "bg-white"
-          }`}
-        >
-          Or enter the code manually
-        </div>
-      </div>
       <div class="w-[57%]">
         <CopyToClipboard
           text={syncMobileCode}
@@ -734,6 +731,25 @@
         </CopyToClipboard>
       </div>
     </div>
+    <div class="flex flex-col items-center mt-2 gap-4">
+      <div class="border-t-[1px] relative w-[57%]">
+        <div
+          class={`absolute xl:top-[-10px] top-[-14px] left-1/2 transform -translate-x-1/2 text-gray-400 text-xs px-2 ${
+            $isDarkMode ? "bg-[#0f0f0f]" : "bg-white"
+          }`}
+        >
+          Or open Telegram
+        </div>
+      </div>
+      <div class="w-[57%]">
+        <a
+          href={`https://t.me/GetNimbusBot?start=${syncMobileCode}`}
+          target="_blank"
+        >
+          <Button variant="primary">Sync to Telegram</Button>
+        </a>
+      </div>
+    </div>
   </div>
 </AppOverlay>
 
@@ -744,12 +760,16 @@
   on:close={() => (isOpenAuthModal = false)}
 >
   <div class="flex flex-col gap-4">
-    <div class="xl:title-3 title-1 font-medium">
+    <div class="xl:title-3 title-1 font-medium text-center">
       Connect wallet to enjoy more features
     </div>
-    <div class="flex flex-col items-center justify-center gap-4">
+    <div class="flex items-center justify-center gap-4">
       <div
-        class="flex items-center gap-2 text-white bg-[#27326f] cursor-pointer py-3 px-6 rounded-[12px] w-[250px]"
+        class={`flex items-center gap-2 text-white border cursor-pointer py-3 px-6 rounded-[12px] w-[250px] ${
+          $isDarkMode
+            ? "border-white text-white"
+            : "border-[#27326f] text-[#27326f]"
+        }`}
         on:click={() => {
           connect();
           isOpenAuthModal = false;
@@ -758,7 +778,7 @@
         <img src={Evm} alt="" width="24" height="24" />
         <div class="font-semibold text-[15px]">Login with EVM</div>
       </div>
-      <SolanaAuth />
+      <SolanaAuth text="Login with Solana" />
     </div>
   </div>
 </AppOverlay>

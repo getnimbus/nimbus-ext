@@ -16,7 +16,7 @@ export const triggerSync = writable(false);
 export const userId = writable("");
 export const userPublicAddress = writable("");
 export const triggerUpdateBundle = writable(false);
-
+export const detectParams = writable(window.location.pathname);
 
 // let isFirstTime = true;
 // isOpenReport.subscribe((value) => {

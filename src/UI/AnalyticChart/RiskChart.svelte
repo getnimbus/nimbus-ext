@@ -43,6 +43,8 @@
   import MaxDrawdownExplain from "~/assets/explain/max-drawdown-explain.mp4";
   import defaultToken from "~/assets/defaultToken.png";
 
+  export let address;
+  export let isShowSoon;
   export let selectedTimeFrame;
   export let isSync = false;
   export let enabledFetchAllData = false;
@@ -266,6 +268,7 @@
             $typeWallet === "MOVE" ||
             $typeWallet === "CEX" ||
             $typeWallet === "SOL" ||
+            $typeWallet === "TON" ||
             $typeWallet === "AURA" ||
             $typeWallet === "ALGO" ||
             $typeWallet === "BUNDLE") &&
@@ -506,7 +509,7 @@
   $: theme = $isDarkMode ? "dark" : "white";
 </script>
 
-<AnalyticSection>
+<AnalyticSection {address} {isShowSoon}>
   <span slot="title">
     <div class="flex justify-start text-4xl font-medium xl:text-2xl">
       Volatility
@@ -526,7 +529,7 @@
         {#if $query.isError}
           <div
             class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-30 backdrop-blur-md xl:text-xs text-lg ${
-              $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
+              $isDarkMode ? "bg-black/90" : "bg-white/95"
             }`}
           >
             {#if $typeWallet === "CEX"}
@@ -691,7 +694,7 @@
         {#if $query.isError}
           <div
             class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-30 backdrop-blur-md xl:text-xs text-lg ${
-              $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
+              $isDarkMode ? "bg-black/90" : "bg-white/95"
             }`}
           >
             {#if $typeWallet === "CEX"}
