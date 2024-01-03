@@ -1,6 +1,12 @@
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
-  import { Link, useMatch, useNavigate } from "svelte-navigator";
+  import {
+    Link,
+    useLocation,
+    useMatch,
+    useNavigate,
+    useParams,
+  } from "svelte-navigator";
   import { i18n } from "~/lib/i18n";
   import {
     chain,
@@ -13,6 +19,7 @@
     userId,
     userPublicAddress,
     triggerSync,
+    detectParams,
   } from "~/store";
   import { shorterAddress } from "~/utils";
   import mixpanel from "mixpanel-browser";
@@ -57,6 +64,8 @@
   import AuraLogo from "~/assets/aura.png";
   import AlgorandLogo from "~/assets/algorand.png";
   import TonLogo from "~/assets/ton.png";
+  import NimbusBanner from "./NimbusBanner.svelte";
+  import { Log } from "ethers";
 
   const MultipleLang = {
     portfolio: i18n("newtabPage.portfolio", "Portfolio"),
@@ -322,6 +331,11 @@
   let isLoadingSyncMobile = false;
   let errors = {};
 
+  const locationparamas = useLocation();
+  $: {
+    detectParams.update((e) => (e = $locationparamas.pathname));
+  }
+
   // Handle mobile sign in
   const handleMobileSignIn = async (code) => {
     isLoadingSyncMobile = true;
@@ -472,6 +486,107 @@
     }
   }
 </script>
+
+<svelte:head>
+  <script src="/main-2.0.4.js" data-preload></script>
+  <script
+    defer
+    src="https://widget.mava.app"
+    id="MavaWebChat"
+    data-token="b379b36e08fcb3d988cd60fb45deb82f713f3daa4f18c66f8b9c479ff42bf3b5"
+  ></script>
+  <script>
+    !(function (e, t) {
+      const a = "featurebase-sdk";
+      function n() {
+        if (!t.getElementById(a)) {
+          var e = t.createElement("script");
+          (e.id = a),
+            (e.src = "https://do.featurebase.app/js/sdk.js"),
+            t
+              .getElementsByTagName("script")[0]
+              .parentNode.insertBefore(e, t.getElementsByTagName("script")[0]);
+        }
+      }
+      "function" != typeof e.Featurebase &&
+        (e.Featurebase = function () {
+          (e.Featurebase.q = e.Featurebase.q || []).push(arguments);
+        }),
+        "complete" === t.readyState || "interactive" === t.readyState
+          ? n()
+          : t.addEventListener("DOMContentLoaded", n);
+    })(window, document);
+
+    Featurebase("initialize_changelog_widget", {
+      organization: "nimbus",
+      placement: "bottom",
+      theme: "light",
+      initialPage: "MainView",
+      fullscreenPopup: true,
+      // fullScreen: false,
+    });
+
+    // function getParamsFromQs(qs) {
+    //   const urlSearchParams = new URLSearchParams(qs);
+    //   const params = Object.fromEntries(urlSearchParams.entries());
+    //   name = params;
+    // }
+
+    // $: console.log(name);
+  </script>
+
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <script>
+    Featurebase("initialize_feedback_widget", {
+      organization: "nimbus", // required
+      theme: "light", // required
+      placement: "right", // optional
+      // email: "youruser@example.com", // optional
+    });
+  </script>
+</svelte:head>
 
 <div
   class="mobile-header-container py-1 border-b-[1px] border-[#ffffff1a] relative"
@@ -797,6 +912,8 @@
     </div>
   </div>
 </div>
+
+<NimbusBanner />
 
 <!-- Mobile header -->
 <div

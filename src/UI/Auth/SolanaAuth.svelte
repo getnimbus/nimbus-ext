@@ -10,6 +10,7 @@
 
   import SolanaIcon from "~/assets/solana.png";
 
+  export let text;
   export let maxNumberOfWallets = 3;
   export let text;
 
