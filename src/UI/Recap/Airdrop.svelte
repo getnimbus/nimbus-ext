@@ -2,6 +2,7 @@
   import html2canvas from "html2canvas";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
+  import mixpanel from "mixpanel-browser";
 
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import Loading from "~/components/Loading.svelte";
@@ -32,6 +33,7 @@
   };
 
   const downloadPage = async () => {
+    mixpanel.track("recap_share_airdrop");
     const targetElement = document.getElementById("target-slide-3");
     const shareBtn = document.getElementById("btn-share");
     if (targetElement && shareBtn) {
@@ -77,14 +79,14 @@
 </script>
 
 <div
-  class="bg-[#EFF4E8] relative pt-10 pb-20 overflow-hidden w-full min-h-screen flex"
+  class="bg-[#EFF4E8] relative pt-10 pb-20 overflow-hidden w-full min-h-screen flex flex-col"
   id="target-slide-3"
 >
   <div class="flex-1 flex flex-col gap-20 h-full max-w-[1400px] m-auto">
     <img
       src={Logo}
       alt="logo"
-      class="xl:w-[177px] w-[220px] xl:h-[75px] h-[100px]"
+      class="xl:w-[177px] w-[220px] xl:h-[75px] h-[100px] transform translate-x-2"
     />
     <div
       class="flex-1 h-full px-[35px] flex flex-col justify-center gap-14 items-center text-black"
@@ -120,7 +122,8 @@
               class="text-[#4F4F4F] font-normal text-2xl text-center pt-16 mx-8"
             >
               You haven't collected any airdrop 2023. No worries, there will be
-              more on 2024 🤘
+              more on 2024 🤘. <br />
+              Have you tried SolBlaze?
             </div>
           {/if}
           {#if dataAirdropFormated && dataAirdropFormated.length !== 0}
@@ -262,6 +265,13 @@
         </div>
       {/if}
     </div>
+  </div>
+  <div class="text-right text-[#4F4F4F] text-sm mx-[35px]">
+    Data by <a
+      href="https://solana-airdrop-checker.solworks.dev/"
+      class="underline"
+      target="_blank">https://solworks.dev/</a
+    >
   </div>
 
   <div class="absolute bottom-[-95px] left-[-95px] z-10 rotate-93_74">

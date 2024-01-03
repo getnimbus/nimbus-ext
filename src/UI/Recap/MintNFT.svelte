@@ -11,6 +11,7 @@
   import { userPublicAddress } from "~/store";
   import { walletStore } from "@svelte-on-solana/wallet-adapter-core";
   import { Buffer as BufferPolyfill } from "buffer";
+  import mixpanel from "mixpanel-browser";
 
   import {
     Connection,
@@ -120,6 +121,7 @@
   };
 
   const downloadPage = async () => {
+    mixpanel.track("recap_share_mintnft");
     const targetElement = document.getElementById("target-slide-4");
     const shareBtn = document.getElementById("btn-share");
     if (targetElement && shareBtn) {
@@ -176,11 +178,13 @@
   const handleMintNFT = createMutation({
     onError: (error) => {
       console.log(error);
+      mixpanel.track("recap_mint_error");
       toastMsg = "Something wrong while minting. Please try again!";
       isSuccessToast = false;
       trigger();
     },
     mutationFn: async () => {
+      mixpanel.track("recap_mint");
       const data = await nimbus.post("/recap/mint-nft", {});
       // TODO: Update me once deployed
       const connection = new Connection(
@@ -193,6 +197,7 @@
         ),
         connection
       );
+      mixpanel.track("recap_mint_success");
       triggerScreenSuccess();
       return result;
     },
@@ -210,7 +215,7 @@
       <img
         src={Logo}
         alt="logo"
-        class="xl:w-[177px] w-[220px] xl:h-[75px] h-[100px]"
+        class="xl:w-[177px] w-[220px] xl:h-[75px] h-[100px] transform translate-x-2"
       />
       <div class="flex justify-end items-center gap-6 pr-[35px]">
         <div
@@ -359,18 +364,18 @@
   >
     <div class="flex flex-col items-center justify-center gap-6">
       <div class="text-4xl text-white font-bold">
-        Mint Nimbus recap NFT successfully
+        Mint Solana RE2023 NFT successfully
       </div>
       <div class="xl:text-2xl text-4xl text-white font-medium">
         Thank you for Mint our recap NFT. Ready to receive exclusive benefit
         with us!
       </div>
-      <div class="flex flex-col items-center">
+      <!-- <div class="flex flex-col items-center">
         <img src={goldImg} alt="" class="w-40 h-40" />
         <div class="xl:text-2xl text-4xl text-white font-medium">
           You have received 50 GM Points
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
 {/if}
@@ -391,6 +396,7 @@
           Nimbus Recap NFT
         </div>
         <a
+          target="_blank"
           href="https://twitter.com/intent/tweet?text=2023%20has%20proven%20to%20be%20a%20challenging%20year%20for%20every%20holder%20and%20now%20let%27s%20reflect%20on%20my%20journey%20with%20%40solana%0Ahttps%3A%2F%2Fapp.getnimbus.io%2Frecap%0AIt%27s%20cool%20to%20be%20a%20part%20of%20Solana%0A%0A%23SolanaRE2023"
         >
           <Button>

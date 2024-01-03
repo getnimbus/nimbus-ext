@@ -2,6 +2,7 @@
   import html2canvas from "html2canvas";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
+  import mixpanel from "mixpanel-browser";
 
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import NftCard from "./NFTHolding/NFTCard.svelte";
@@ -34,6 +35,7 @@
   };
 
   const downloadPage = async () => {
+    mixpanel.track("recap_share_nftholding");
     const targetElement = document.getElementById("target-slide-2");
     const shareBtn = document.getElementById("btn-share");
     if (targetElement && shareBtn) {
@@ -79,7 +81,7 @@
     <img
       src={Logo}
       alt="logo"
-      class="xl:w-[177px] w-[220px] xl:h-[75px] h-[100px]"
+      class="xl:w-[177px] w-[220px] xl:h-[75px] h-[100px] transform translate-x-2"
     />
     <div
       class="flex-1 h-full flex xl:flex-row flex-col xl:items-center justify-between gap-20 px-[35px]"
