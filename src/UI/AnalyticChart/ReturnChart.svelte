@@ -472,7 +472,7 @@
                 <span class="font-medium"
                   >{Math.abs(
                     data?.base?.netWorthChange?.networth30D -
-                      data?.btc?.netWorthChange?.networth30D
+                      data?.btc?.netWorthChange?.networth30D || 0
                   ).toFixed(2)}%</span
                 >
               </div>
