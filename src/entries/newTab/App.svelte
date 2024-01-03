@@ -1,9 +1,9 @@
 <script lang="ts">
   import { QueryClient, QueryClientProvider } from "@tanstack/svelte-query";
   import { onMount } from "svelte";
-  import { Route, Router } from "svelte-navigator";
+  import { Route, Router, useLocation, useParams } from "svelte-navigator";
   import * as browser from "webextension-polyfill";
-  import { isDarkMode } from "~/store";
+  import { detectParams, isDarkMode } from "~/store";
 
   import "flowbite/dist/flowbite.css";
 
@@ -80,7 +80,7 @@
           {/await}
         </Route>
 
-        {#if window.location.pathname !== "/recap"}
+        {#if $detectParams !== "/recap"}
           <div class="flex flex-col pb-40 xl:pb-14">
             <Header />
 
