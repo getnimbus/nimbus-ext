@@ -12,7 +12,6 @@
 
   export let text;
   export let maxNumberOfWallets = 3;
-  export let text;
 
   $: ({ publicKey, wallet, disconnect, connect, select } = $walletStore);
 
