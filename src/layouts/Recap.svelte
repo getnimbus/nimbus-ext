@@ -73,24 +73,26 @@
   let showPopover = false;
   let isLoading = false;
   let data;
+  let inputAddress;
 
   $: solanaPublicAddress = $walletStore?.publicKey?.toBase58();
 
   onMount(() => {
     // Logout on EVM
     localStorage.removeItem("evm_token");
+    $walletStore.disconnect();
   });
 
   $: {
     if (solanaPublicAddress) {
       userAddress = solanaPublicAddress;
 
-      const solanaToken = localStorage.getItem("solana_token");
-      if (!solanaToken) {
-        isLoading = true;
-        handleSignOut();
-        handleGetSolanaNonce(solanaPublicAddress);
-      }
+      // const solanaToken = localStorage.getItem("solana_token");
+      // if (!solanaToken) {
+      //   isLoading = true;
+      //   handleSignOut();
+      //   handleGetSolanaNonce(solanaPublicAddress);
+      // }
     } else {
       userAddress = $userPublicAddress;
     }
@@ -102,45 +104,45 @@
     }
   }
 
-  onMount(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const invitationParams = urlParams.get("invitation");
-    if (invitationParams) {
-      invitation = invitationParams;
-    }
-    const solanaToken = localStorage.getItem("solana_token");
+  // onMount(() => {
+  //   const urlParams = new URLSearchParams(window.location.search);
+  //   const invitationParams = urlParams.get("invitation");
+  //   if (invitationParams) {
+  //     invitation = invitationParams;
+  //   }
+  //   const solanaToken = localStorage.getItem("solana_token");
 
-    if (solanaToken) {
-      user.update(
-        (n) =>
-          (n = {
-            picture: User,
-          })
-      );
-      userAddress = $userPublicAddress;
-    } else {
-      handleSignOut();
-    }
-  });
+  //   if (solanaToken) {
+  //     user.update(
+  //       (n) =>
+  //         (n = {
+  //           picture: User,
+  //         })
+  //     );
+  //     userAddress = $userPublicAddress;
+  //   } else {
+  //     handleSignOut();
+  //   }
+  // });
 
-  const handleSignOut = () => {
-    try {
-      user.update((n) => (n = {}));
-      wallet.update((n) => (n = ""));
-      chain.update((n) => (n = ""));
-      typeWallet.update((n) => (n = ""));
-      userPublicAddress.update((n) => (n = ""));
+  // const handleSignOut = () => {
+  //   try {
+  //     user.update((n) => (n = {}));
+  //     wallet.update((n) => (n = ""));
+  //     chain.update((n) => (n = ""));
+  //     typeWallet.update((n) => (n = ""));
+  //     userPublicAddress.update((n) => (n = ""));
 
-      localStorage.removeItem("public_address");
-      localStorage.removeItem("solana_token");
+  //     localStorage.removeItem("public_address");
+  //     localStorage.removeItem("solana_token");
 
-      queryClient.invalidateQueries(["list-address"]);
-      queryClient.invalidateQueries(["users-me"]);
-      mixpanel.reset();
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  //     queryClient.invalidateQueries(["list-address"]);
+  //     queryClient.invalidateQueries(["users-me"]);
+  //     mixpanel.reset();
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   const handleSignSolanaAddressMessage = async (signatureString) => {
     if ($walletStore.connected) {
@@ -240,11 +242,7 @@
     queryFn: () => getRecapData(userAddress),
     staleTime: Infinity,
     retry: false,
-    enabled:
-      $user &&
-      Object.keys($user).length !== 0 &&
-      userPublicAddressChain === "SOL" &&
-      userAddress.length !== 0,
+    enabled: !!userAddress,
   });
 
   $: {
@@ -300,53 +298,27 @@
                 2023 Solana Recap
               </div>
               <div class="flex flex-col gap-6">
-                {#if userPublicAddressChain === "SOL" && userAddress}
-                  <div
-                    class="relative w-max flex items-center justify-center gap-2 cursor-pointer p-[20px] rounded-[32px] min-w-[250px] bg-[#A7EB50] text-black text-2xl font-semibold"
-                    on:click={() => {
-                      showPopover = true;
-                    }}
-                  >
-                    {#if isLoading}
-                      <Loading />
-                    {:else}
-                      {shorterAddress(userAddress)}
-                    {/if}
-
-                    {#if showPopover && $user && Object.keys($user).length !== 0}
-                      <div
-                        class="bg-white absolute top-20 right-0 z-50 flex flex-col gap-1 px-3 xl:py-2 py-3 text-sm transform rounded-lg w-full"
-                        style="box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);"
-                        use:clickOutside
-                        on:click_outside={() => (showPopover = false)}
-                      >
-                        <div
-                          class="text-2xl font-medium text-red-500 cursor-pointer xl:text-base rounded-md transition-all px-2 py-1 text-center"
-                          on:click={() => {
-                            handleSignOut();
-                            localStorage.removeItem("solana_token");
-                            $walletStore.disconnect();
-                            showPopover = false;
-                          }}
-                        >
-                          Log out
-                        </div>
-                      </div>
-                    {/if}
+                <div class="space-y-4">
+                  <div class="w-max">
+                    <input
+                      type="text"
+                      name="address"
+                      class="block w-full rounded-full border-0 py-4 px-6 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 text-3xl"
+                      placeholder="Your wallet address"
+                      bind:value={inputAddress}
+                    />
                   </div>
-                {:else}
                   <div
                     class="w-max flex items-center justify-center gap-2 cursor-pointer p-[20px] rounded-[32px] min-w-[250px] bg-[#A7EB50] text-black text-2xl font-semibold"
                     on:click={() => {
-                      mixpanel.track("recap_connect_wallet");
-                      openModal();
+                      userAddress = inputAddress;
                     }}
                   >
-                    Connect My Wallet
+                    View my Recap
                     <img src={Arrow} alt="" />
                   </div>
-                {/if}
-                <div class="lg:text-base text-2xl mt-[-12px] text-black">
+                </div>
+                <div class="lg:text-base text-2xl mt-[-12px]">
                   <div>1021+ users viewed their Solana Recap 2023</div>
                   <div class="mt-3">
                     Made with ❤️ from <img
@@ -467,7 +439,12 @@
           }
         }}
       >
-        <MintNft data={data?.mintNFT} />
+        <MintNft
+          data={data?.mintNFT}
+          on:connect={() => {
+            openModal();
+          }}
+        />
       </div>
     {/if}
     <div

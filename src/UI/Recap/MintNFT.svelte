@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onDestroy, onMount } from "svelte";
+  import { createEventDispatcher, onDestroy, onMount } from "svelte";
   import {
     createQuery,
     createMutation,
@@ -42,16 +42,10 @@
   let minutes: number = 0;
   let seconds: number = 0;
 
+  $: solanaPublicAddress = $walletStore?.publicKey?.toBase58();
+
   const getTargetDate = () => {
     return dayjs("2024-01-10", "YYYY-MM-DD");
-    const storedDate = localStorage.getItem("countdownTarget");
-    if (storedDate && dayjs(storedDate).isAfter(dayjs())) {
-      return dayjs(storedDate);
-    } else {
-      const newTargetDate = dayjs().add(9, "day");
-      localStorage.setItem("countdownTarget", newTargetDate.toISOString());
-      return newTargetDate;
-    }
   };
 
   // Set the target date for the countdown
@@ -104,6 +98,8 @@
     counter = 3;
     timeout();
   };
+
+  const dispatch = createEventDispatcher();
 
   const timeout = () => {
     if (--counter > 0) return setTimeout(timeout, 1000);
@@ -185,7 +181,9 @@
     },
     mutationFn: async () => {
       mixpanel.track("recap_mint");
-      const data = await nimbus.post("/recap/mint-nft", {});
+      const data = await nimbus.post("/recap/mint-nft-v2", {
+        owner: solanaPublicAddress,
+      });
       // TODO: Update me once deployed
       const connection = new Connection(
         // "https://devnet-rpc.shyft.to?api_key=gsusEvomKHQwwltu" // DEVNET
@@ -202,6 +200,15 @@
       return result;
     },
   });
+
+  const handleMintNFTClick = () => {
+    if (solanaPublicAddress) {
+      $handleMintNFT.mutate();
+      return;
+    }
+    dispatch("connect");
+    mixpanel.track("recap_connect_wallet");
+  };
 </script>
 
 <div
@@ -278,11 +285,13 @@
                       ? "bg-[#dddddd]"
                       : "bg-[#4DF6E2]"
                   }`}
-                  on:click={$handleMintNFT.mutate()}
+                  on:click={handleMintNFTClick}
                   disabled={dayjs().isAfter(targetDate)}
                 >
                   {#if $handleMintNFT.isLoading}
                     Minting... <img src={HammerIcon} alt="" class="w-10 h-10" />
+                  {:else if !solanaPublicAddress}
+                    Connect wallet
                   {:else}
                     Mint {dataMint?.mintFee && dataMint?.mintFee !== 0
                       ? dataMint?.mintFee + " SOL"
