@@ -275,9 +275,17 @@
 
                 <div class="w-full bg-gray-200 rounded-full h-6">
                   <div
-                    class="bg-[#4DF6E2] h-6 rounded-full"
-                    style={`width: ${dataMint?.totalMinted || 0}%`}
-                  />
+                    class="relative bg-gray-300 h-6 rounded-full w-full overflow-hidden"
+                  >
+                    <div
+                      class="absolute top-0 left-0 h-full bg-[#4DF6E2]"
+                      style={`width: ${
+                        dataMint?.next === 0
+                          ? 100
+                          : (dataMint?.totalMinted / dataMint?.next) * 100
+                      }%`}
+                    ></div>
+                  </div>
                 </div>
               </div>
               <div class="flex gap-10 items-center text-black">
