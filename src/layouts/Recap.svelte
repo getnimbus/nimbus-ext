@@ -317,6 +317,12 @@
                       } catch (error) {
                         console.log(error);
                       }
+
+                      window.scrollTo({
+                        top: 800,
+                        left: 0,
+                        behavior: "smooth",
+                      });
                     }}
                   >
                     View my Recap
@@ -376,6 +382,7 @@
     {#if userPublicAddressChain === "SOL" && userAddress}
       <div
         class="recap-container"
+        id="recap-holding"
         use:inview={{
           threshold: 0.1,
         }}
