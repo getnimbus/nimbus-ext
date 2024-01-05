@@ -17,9 +17,6 @@
     portfolio: i18n("newtabPage.portfolio", "Portfolio"),
     analytics: i18n("newtabPage.analytics", "Analytics"),
     transactions: i18n("newtabPage.transactions", "Transactions"),
-    news: i18n("newtabPage.news", "News"),
-    // whales: i18n("newtabPage.whales", "Whales"),
-    search_placeholder: i18n("newtabPage.search-placeholder", "Search address"),
   };
 
   const navigate = useNavigate();
@@ -38,8 +35,8 @@
             ? "opacity-100"
             : "opacity-40"
           : navActive === "portfolio"
-          ? "opacity-100"
-          : "opacity-40"
+            ? "opacity-100"
+            : "opacity-40"
       }`}
       on:click={() => {
         navActive = "portfolio";
@@ -91,8 +88,8 @@
                 ? "opacity-100"
                 : "opacity-40"
               : navActive === "analytic"
-              ? "opacity-100"
-              : "opacity-40"
+                ? "opacity-100"
+                : "opacity-40"
           }
           `}
       on:click={() => {
@@ -151,8 +148,8 @@
               ? "opacity-100"
               : "opacity-40"
             : navActive === "portfolio"
-            ? "opacity-100"
-            : "opacity-40"
+              ? "opacity-100"
+              : "opacity-40"
         }`}
         on:click={() => {
           navActive = "portfolio";
@@ -202,8 +199,8 @@
                 ? "opacity-100"
                 : "opacity-40"
               : navActive === "analytic"
-              ? "opacity-100"
-              : "opacity-40"
+                ? "opacity-100"
+                : "opacity-40"
           }
           `}
         on:click={() => {
@@ -271,8 +268,8 @@
                 ? "opacity-100"
                 : "opacity-40"
               : navActive === "transactions"
-              ? "opacity-100"
-              : "opacity-40"
+                ? "opacity-100"
+                : "opacity-40"
           }
           `}
       on:click={() => {
@@ -359,8 +356,8 @@
                 ? "opacity-100"
                 : "opacity-40"
               : navActive === "more"
-              ? "opacity-100"
-              : "opacity-40"
+                ? "opacity-100"
+                : "opacity-40"
           }
           `}
     on:click={() => {
