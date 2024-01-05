@@ -181,7 +181,7 @@
 </div>
 
 {#if showToast}
-  <div class="fixed top-3 right-3 w-full z-10">
+  <div class="fixed top-3 right-3 w-full z-50">
     <Toast
       transition={blur}
       params={{ amount: 10 }}
