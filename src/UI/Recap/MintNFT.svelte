@@ -156,7 +156,9 @@
 
   const getDataRecapMintNFT = async () => {
     try {
-      const response = await nimbus.get("/recap/mint-stats");
+      const response = await nimbus.get(
+        `/recap/mint-stats?address=${solanaPublicAddress}`
+      );
       if (response?.data?.totalMinted) {
         dataMint = response?.data;
       }
