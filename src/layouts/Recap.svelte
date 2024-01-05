@@ -79,7 +79,7 @@
 
   onMount(() => {
     // Logout on EVM
-    localStorage.removeItem("evm_token");
+    // localStorage.removeItem("evm_token");
     $walletStore.disconnect();
   });
 
