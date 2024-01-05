@@ -725,7 +725,7 @@
                     : "bg-[#fff] border border_0000000d"
                 }`}
               >
-                <table class="table-auto xl:w-full w-[1400px] h-full">
+                <table class="table-auto xl:w-full w-[2000px] h-full">
                   <thead
                     class={isStickyTableNFT ? "sticky top-0 z-10" : ""}
                     bind:this={tableNFTHeader}
