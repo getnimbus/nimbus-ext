@@ -61,6 +61,7 @@
   import Bundles from "~/assets/bundles.png";
   import BitcoinLogo from "~/assets/bitcoin.png";
   import SolanaLogo from "~/assets/solana.png";
+  import NearLogo from "~/assets/near.png";
   import AuraLogo from "~/assets/aura.png";
   import AlgorandLogo from "~/assets/algorand.png";
   import TonLogo from "~/assets/ton.png";
@@ -135,6 +136,9 @@
       if (item?.type === "SOL") {
         logo = SolanaLogo;
       }
+      if (item?.type === "NEAR") {
+        logo = NearLogo;
+      }
       if (item?.type === "TON") {
         logo = TonLogo;
       }
@@ -164,6 +168,9 @@
             }
             if (account?.type === "SOL") {
               logo = SolanaLogo;
+            }
+            if (account?.type === "NEAR") {
+              logo = NearLogo;
             }
             if (item?.type === "TON") {
               logo = TonLogo;
@@ -249,6 +256,7 @@
     if (
       validateAccount?.type === "BTC" ||
       validateAccount?.type === "SOL" ||
+      validateAccount?.type === "NEAR" ||
       validateAccount?.type === "TON" ||
       validateAccount?.type === "AURA" ||
       validateAccount?.type === "ALGO" ||
@@ -537,6 +545,22 @@
 
   <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
 
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
+  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
   <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
   <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
   <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->

@@ -60,6 +60,7 @@
   import Bundles from "~/assets/bundles.png";
   import BitcoinLogo from "~/assets/bitcoin.png";
   import SolanaLogo from "~/assets/solana.png";
+  import NearLogo from "~/assets/near.png";
   import AuraLogo from "~/assets/aura.png";
   import AlgorandLogo from "~/assets/algorand.png";
   import TonLogo from "~/assets/ton.png";
@@ -317,6 +318,7 @@
       if (
         typeParams === "BTC" ||
         typeParams === "SOL" ||
+        typeParams === "NEAR" ||
         typeParams === "AURA" ||
         typeParams === "TON" ||
         typeParams === "ALGO"
@@ -346,6 +348,7 @@
       if (
         typeParams === "BTC" ||
         typeParams === "SOL" ||
+        typeParams === "NEAR" ||
         typeParams === "AURA" ||
         typeParams === "TON" ||
         typeParams === "ALGO"
@@ -430,6 +433,17 @@
         );
       }
 
+      if (selected.type === "NEAR") {
+        typeWallet.update((n) => (n = "NEAR"));
+        browser.storage.sync.set({ typeWalletAddress: "NEAR" });
+        chain.update((n) => (n = "ALL"));
+        window.history.replaceState(
+          null,
+          "",
+          window.location.pathname + `?type=${$typeWallet}&address=${$wallet}`
+        );
+      }
+
       if (selected.type === "TON") {
         typeWallet.update((n) => (n = "TON"));
         browser.storage.sync.set({ typeWalletAddress: "TON" });
@@ -485,6 +499,9 @@
       if (item?.type === "SOL") {
         logo = SolanaLogo;
       }
+      if (item?.type === "NEAR") {
+        logo = NearLogo;
+      }
       if (item?.type === "TON") {
         logo = TonLogo;
       }
@@ -514,6 +531,9 @@
             }
             if (account?.type === "SOL") {
               logo = SolanaLogo;
+            }
+            if (account?.type === "NEAR") {
+              logo = NearLogo;
             }
             if (account?.type === "TON") {
               logo = TonLogo;
@@ -682,6 +702,7 @@
         if (
           validateAccount?.type === "BTC" ||
           validateAccount?.type === "SOL" ||
+          validateAccount?.type === "NEAR" ||
           validateAccount?.type === "AURA" ||
           validateAccount?.type === "TON" ||
           validateAccount?.type === "ALGO"
@@ -1849,16 +1870,16 @@
           </label>
         </div>
         <div class="flex items-center justify-center gap-6 my-3">
-          {#each [{ logo: BitcoinLogo, label: "Bitcoin", value: "BTC" }, { logo: SolanaLogo, label: "Solana", value: "SOL" }, { logo: Move, label: "Move", value: "MOVE" }, { logo: AuraLogo, label: "Aura", value: "AURA" }, { logo: AlgorandLogo, label: "Algorand", value: "ALGO" }, { logo: TonLogo, label: "TON", value: "TON" }].concat(chainList
+          {#each [{ logo: BitcoinLogo, label: "Bitcoin", value: "BTC" }, { logo: SolanaLogo, label: "Solana", value: "SOL" }, { logo: NearLogo, label: "Near", value: "NEAR" }, { logo: Move, label: "Move", value: "MOVE" }, { logo: AuraLogo, label: "Aura", value: "AURA" }, { logo: AlgorandLogo, label: "Algorand", value: "ALGO" }, { logo: TonLogo, label: "TON", value: "TON" }].concat(chainList
               .slice(1)
-              .slice(0, -10)) as item}
+              .slice(0, -11)) as item}
             <img
               src={item.logo}
               alt=""
               class="xl:w-8 xl:h-8 w-10 h-10 overflow-hidden rounded-full"
             />
           {/each}
-          <div class="text-gray-400 xl:text-base text-2xl">+10 More</div>
+          <div class="text-gray-400 xl:text-base text-2xl">+11 More</div>
         </div>
         <div class="flex justify-end gap-6 lg:gap-2">
           <div class="lg:w-[120px] w-full">

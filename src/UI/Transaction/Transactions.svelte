@@ -242,6 +242,7 @@
         $wallet?.length !== 0 &&
         $chain?.length !== 0 &&
         $typeWallet !== "SOL" &&
+        $typeWallet !== "NEAR" &&
         $typeWallet !== "TON" &&
         $typeWallet !== "AURA" &&
         $typeWallet !== "ALGO"
@@ -308,7 +309,7 @@
         </div>
       </div>
 
-      {#if $typeWallet === "BUNDLE" || $typeWallet === "SOL" || $typeWallet === "TON" || $typeWallet === "AURA" || $typeWallet === "ALGO"}
+      {#if $typeWallet === "BUNDLE" || $typeWallet === "SOL" || $typeWallet === "NEAR" || $typeWallet === "TON" || $typeWallet === "AURA" || $typeWallet === "ALGO"}
         <div
           class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center gap-3 justify-center z-30 backdrop-blur-md ${
             $isDarkMode ? "bg-black/90" : "bg-white/95"
