@@ -34,6 +34,7 @@
   import Bundles from "~/assets/bundles.png";
   import BitcoinLogo from "~/assets/bitcoin.png";
   import SolanaLogo from "~/assets/solana.png";
+  import NearLogo from "~/assets/near.png";
   import AuraLogo from "~/assets/aura.png";
   import AlgorandLogo from "~/assets/algorand.png";
   import TonLogo from "~/assets/ton.png";
@@ -199,6 +200,9 @@
       }
       if (item?.type === "SOL") {
         logo = SolanaLogo;
+      }
+      if (item?.type === "NEAR") {
+        logo = NearLogo;
       }
       if (item?.type === "TON") {
         logo = TonLogo;

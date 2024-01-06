@@ -63,6 +63,7 @@
 
   $: last24hTotalProfitPercent =
     $typeWallet === "SOL" ||
+    $typeWallet === "NEAR" ||
     $typeWallet === "TON" ||
     $typeWallet === "AURA" ||
     $typeWallet === "ALGO" ||
@@ -129,6 +130,7 @@
           class={`flex items-center gap-3 ${
             $typeWallet === "BTC" ||
             $typeWallet === "SOL" ||
+            $typeWallet === "NEAR" ||
             $typeWallet === "TON" ||
             $typeWallet === "AURA" ||
             $typeWallet === "ALGO" ||
@@ -176,6 +178,7 @@
             $typeWallet === "CEX" ||
             $typeWallet === "BTC" ||
             $typeWallet === "SOL" ||
+            $typeWallet === "NEAR" ||
             $typeWallet === "TON" || 
             $typeWallet === "AURA" ||
             $typeWallet === "ALGO"
@@ -222,6 +225,7 @@
             $typeWallet === "CEX" ||
             $typeWallet === "BTC" ||
             $typeWallet === "SOL" ||
+            $typeWallet === "NEAR" ||
             $typeWallet === "TON" || 
             $typeWallet === "AURA" ||
             $typeWallet === "ALGO"

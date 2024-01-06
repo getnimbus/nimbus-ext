@@ -440,6 +440,7 @@
 
   $: colspan =
     $typeWallet === "SOL" ||
+    $typeWallet === "NEAR" ||
     $typeWallet === "TON" ||
     $typeWallet === "AURA" ||
     $typeWallet === "ALGO" ||
@@ -682,6 +683,7 @@
                     <th
                       class={`py-3 xl:pr-3 pr-6 ${
                         $typeWallet === "SOL" ||
+                        $typeWallet === "NEAR" ||
                         $typeWallet === "TON" ||
                         $typeWallet === "AURA" ||
                         $typeWallet === "ALGO" ||
@@ -699,7 +701,7 @@
                         Unrealized PnL
                       </div>
                     </th>
-                    {#if $typeWallet === "SOL" || $typeWallet === "TON" || $typeWallet === "AURA" || $typeWallet === "ALGO" || $typeWallet === "EVM" || $typeWallet === "MOVE" || $typeWallet === "BUNDLE" || $typeWallet === "CEX"}
+                    {#if $typeWallet === "SOL" || $typeWallet === "NEAR" || $typeWallet === "TON" || $typeWallet === "AURA" || $typeWallet === "ALGO" || $typeWallet === "EVM" || $typeWallet === "MOVE" || $typeWallet === "BUNDLE" || $typeWallet === "CEX"}
                       <th
                         class={`py-3 rounded-tr-[10px] ${
                           ["BUNDLE", "SOL"].includes($typeWallet)

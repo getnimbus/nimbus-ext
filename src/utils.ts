@@ -10,6 +10,7 @@ import "driver.js/dist/driver.css";
 import Solana from "~/assets/solana.png";
 import Aura from "~/assets/aura.png";
 import Bitcoin from "~/assets/bitcoin.png";
+import Near from "~/assets/near.png";
 
 import Ton from "~/assets/ton.png";
 import Sui from "~/assets/sui.png";
@@ -478,6 +479,9 @@ export const detectedChain = (type) => {
     case "SOL":
       chain = Solana;
       break;
+    case "NEAR":
+      chain = Near;
+      break;
     case "TON":
       chain = Ton;
       break;
@@ -624,6 +628,12 @@ export const linkExplorer = (chain, hash) => {
       links = {
         trx: `https://solscan.io/tx/${hash}`,
         address: `https://solscan.io/address/${hash}`,
+      };
+      break;
+    case "NEAR":
+      links = {
+        trx: `https://nearblocks.io/txns/${hash}`,
+        address: `https://nearblocks.io/address/${hash}`,
       };
       break;
     case "TON":
