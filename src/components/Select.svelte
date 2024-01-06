@@ -155,7 +155,7 @@
   .content {
     overflow-y: overlay;
     position: absolute;
-    z-index: 2147483646;
+    z-index: 2147483645;
     box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);
     border-radius: 10px;
     padding: 8px;
