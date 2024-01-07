@@ -189,7 +189,7 @@
       // TODO: Update me once deployed
       const connection = new Connection(
         // "https://devnet-rpc.shyft.to?api_key=gsusEvomKHQwwltu" // DEVNET
-        "https://rpc.shyft.to?api_key=Gny0V25q6Y2kMjze" // PROD
+        "https://rpc.shyft.to?api_key=b4feHxaBppbRqTHc" // PROD
         // "https://rpc.shyft.to?api_key=gsusEvomKHQwwltu"
       );
       const result = await $walletStore.sendTransaction(
