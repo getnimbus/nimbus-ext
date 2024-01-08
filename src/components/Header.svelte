@@ -450,11 +450,6 @@
   }
 
   $: {
-    console.log("HELLO: ", {
-      searchListAddressResult,
-      search,
-    });
-
     if (
       search &&
       search?.length !== 0 &&
@@ -465,8 +460,6 @@
       selectedIndexAddress = 0;
     }
   }
-
-  $: console.log("selectedIndexAddress: ", selectedIndexAddress);
 
   $: {
     if (
