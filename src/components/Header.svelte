@@ -66,6 +66,7 @@
   import TonLogo from "~/assets/ton.png";
   import NimbusBanner from "./NimbusBanner.svelte";
   import { Log } from "ethers";
+  import { compactSignatureToHex } from "viem";
 
   const MultipleLang = {
     portfolio: i18n("newtabPage.portfolio", "Portfolio"),
@@ -224,44 +225,46 @@
   }
 
   const handleSearchAddress = async (value: string) => {
-    mixpanel.track("user_search");
-    const validateAccount = await handleValidateAddress(value);
-    chain.update((n) => (n = "ALL"));
-    wallet.update((n) => (n = validateAccount?.address));
-    typeWallet.update((n) => (n = validateAccount?.type));
+    if (value) {
+      mixpanel.track("user_search");
+      const validateAccount = await handleValidateAddress(value);
+      chain.update((n) => (n = "ALL"));
+      wallet.update((n) => (n = validateAccount?.address));
+      typeWallet.update((n) => (n = validateAccount?.type));
 
-    browser.storage.sync.set({
-      selectedWallet: validateAccount?.address,
-    });
-    browser.storage.sync.set({ selectedChain: "ALL" });
-    browser.storage.sync.set({
-      typeWalletAddress: validateAccount?.type,
-    });
+      browser.storage.sync.set({
+        selectedWallet: validateAccount?.address,
+      });
+      browser.storage.sync.set({ selectedChain: "ALL" });
+      browser.storage.sync.set({
+        typeWalletAddress: validateAccount?.type,
+      });
 
-    if (validateAccount?.type === "EVM" || validateAccount?.type === "MOVE") {
-      window.history.replaceState(
-        null,
-        "",
-        window.location.pathname +
-          `?type=${validateAccount?.type}&chain=ALL&address=${validateAccount?.address}`
-      );
+      if (validateAccount?.type === "EVM" || validateAccount?.type === "MOVE") {
+        window.history.replaceState(
+          null,
+          "",
+          window.location.pathname +
+            `?type=${validateAccount?.type}&chain=ALL&address=${validateAccount?.address}`
+        );
+      }
+      if (
+        validateAccount?.type === "BTC" ||
+        validateAccount?.type === "SOL" ||
+        validateAccount?.type === "TON" ||
+        validateAccount?.type === "AURA" ||
+        validateAccount?.type === "ALGO" ||
+        validateAccount?.type === "CEX"
+      ) {
+        window.history.replaceState(
+          null,
+          "",
+          window.location.pathname +
+            `?type=${validateAccount?.type}&address=${validateAccount?.address}`
+        );
+      }
+      handleSaveSuggest(validateAccount?.address);
     }
-    if (
-      validateAccount?.type === "BTC" ||
-      validateAccount?.type === "SOL" ||
-      validateAccount?.type === "TON" ||
-      validateAccount?.type === "AURA" ||
-      validateAccount?.type === "ALGO" ||
-      validateAccount?.type === "CEX"
-    ) {
-      window.history.replaceState(
-        null,
-        "",
-        window.location.pathname +
-          `?type=${validateAccount?.type}&address=${validateAccount?.address}`
-      );
-    }
-    handleSaveSuggest(validateAccount?.address);
   };
 
   onMount(() => {
@@ -447,6 +450,11 @@
   }
 
   $: {
+    console.log("HELLO: ", {
+      searchListAddressResult,
+      search,
+    });
+
     if (
       search &&
       search?.length !== 0 &&
@@ -457,6 +465,8 @@
       selectedIndexAddress = 0;
     }
   }
+
+  $: console.log("selectedIndexAddress: ", selectedIndexAddress);
 
   $: {
     if (
@@ -535,49 +545,6 @@
     // $: console.log(name);
   </script>
 
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
   <script>
     Featurebase("initialize_feedback_widget", {
       organization: "nimbus", // required
