@@ -45,7 +45,7 @@
   $: solanaPublicAddress = $walletStore?.publicKey?.toBase58();
 
   const getTargetDate = () => {
-    return dayjs("2024-01-10", "YYYY-MM-DD");
+    return dayjs("2024-01-15", "YYYY-MM-DD");
   };
 
   // Set the target date for the countdown
