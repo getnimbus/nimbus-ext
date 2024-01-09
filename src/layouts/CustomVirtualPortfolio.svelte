@@ -220,15 +220,16 @@
                 width="24px"
                 viewBox="0 0 24 24"
                 class="sc-aef7b723-0 fKbUaI"
-                ><path
+              >
+                <path
                   d="M15 6L9 12L15 18"
                   stroke="currentColor"
                   stroke-width="2"
                   stroke-miterlimit="10"
                   stroke-linecap="round"
                   stroke-linejoin="round"
-                /></svg
-              >
+                />
+              </svg>
             </div>
             <div
               class="w-max flex gap-3 overflow-x-auto whitespace-nowrap px-2"
