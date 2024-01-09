@@ -54,7 +54,6 @@
   import PlusBlack from "~/assets/plus-black.svg";
   import FollowWhale from "~/assets/whale-tracking.gif";
   import Success from "~/assets/shield-done.svg";
-  import heroImage from "~/assets/recap/hero/heroimage.png";
   import Arrow from "~/assets/recap/hero/arrow-right.svg";
 
   import Move from "~/assets/move.png";
@@ -65,6 +64,7 @@
   import AuraLogo from "~/assets/aura.png";
   import AlgorandLogo from "~/assets/algorand.png";
   import TonLogo from "~/assets/ton.png";
+  import Hero from "./Hero.svelte";
 
   const MultipleLang = {
     empty_wallet: i18n("newtabPage.empty-wallet", "No account added yet."),
@@ -993,7 +993,7 @@
 {:else}
   <div>
     {#if listAddress.length === 0 && $wallet?.length === 0}
-      <div class="flex items-center justify-center h-screen">
+      <div class="flex items-center justify-center h-[90vh]">
         <div
           class="flex flex-col items-center justify-center w-[70%] gap-4 p-6"
         >
@@ -1007,190 +1007,11 @@
                 {MultipleLang.addwallet}
               {:else}
                 <div class="xl:block hidden">
-                  <div class="flex items-start xl:flex-row flex-col gap-8">
-                    <div
-                      class="flex flex-col items-start gap-6 xl:flex-[0.5] flex-1 w-full"
-                    >
-                      <div class="flex flex-col gap-4">
-                        <div class="font-bold text-5xl">
-                          Your Personalized portfolio
-                        </div>
-                        <div class="text-sm">
-                          Track your Web3 investment across 60+ chains and CEX
-                          in one single place
-                        </div>
-                      </div>
-                      {#if Object.keys($user).length !== 0}
-                        <div class="w-max">
-                          <Button
-                            variant="tertiary"
-                            on:click={() => (isOpenAddModal = true)}
-                          >
-                            <img src={Plus} alt="" width="12" height="12" />
-                            <div
-                              class="text-2xl font-medium text-white xl:text-base"
-                            >
-                              {MultipleLang.content.btn_text}
-                            </div>
-                          </Button>
-                        </div>
-                      {:else}
-                        <div
-                          class="flex flex-col justify-center items-start gap-3 w-full"
-                        >
-                          <div class="relative flex-1 w-[80%]">
-                            <input
-                              type="text"
-                              id="address"
-                              name="address"
-                              placeholder="Type your wallet to see demo"
-                              bind:value={demoAddress}
-                              on:keydown={(event) => {
-                                if (
-                                  (event.which == 13 || event.keyCode == 13) &&
-                                  demoAddress.length > 24
-                                ) {
-                                  window.open(
-                                    `https://app.getnimbus.io/?type=EVM&chain=ALL&address=${demoAddress}`
-                                  );
-                                }
-                              }}
-                              class={`px-5 py-3 border focus:ring-0 xl:text-sm text-2xl font-normal rounded-xl w-full ${
-                                address && !$isDarkMode
-                                  ? "bg-[#F0F2F7]"
-                                  : "bg-transparent"
-                              } ${
-                                $isDarkMode
-                                  ? "text-white"
-                                  : "text-[#5E656B] placeholder-[#5E656B]"
-                              }`}
-                            />
-                            <a
-                              class={`absolute h-full w-10 top-0 right-0 z-10 flex justify-center items-center ${
-                                demoAddress.length < 24 && "hidden"
-                              }`}
-                              href={`https://app.getnimbus.io/?type=EVM&chain=ALL&address=${demoAddress}`}
-                            >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="15"
-                                height="15"
-                                viewBox="0 0 15 15"
-                              >
-                                <path
-                                  fill="currentColor"
-                                  d="M8.293 2.293a1 1 0 0 1 1.414 0l4.5 4.5a1 1 0 0 1 0 1.414l-4.5 4.5a1 1 0 0 1-1.414-1.414L11 8.5H1.5a1 1 0 0 1 0-2H11L8.293 3.707a1 1 0 0 1 0-1.414"
-                                />
-                              </svg>
-                            </a>
-                          </div>
-                          <div class="xl:block hidden">
-                            <Button
-                              on:click={() => {
-                                triggerConnectWallet.update((n) => (n = true));
-                                drivePortfolio.destroy();
-                              }}
-                            >
-                              <div class="text-2xl font-medium xl:text-base">
-                                Connect Wallet
-                              </div>
-                            </Button>
-                          </div>
-                          <div class="xl:hidden block">
-                            <Button
-                              on:click={() => {
-                                triggerSync.update((n) => (n = true));
-                                drivePortfolio.destroy();
-                              }}
-                            >
-                              <div class="text-2xl font-medium xl:text-base">
-                                Sync from Desktop
-                              </div>
-                            </Button>
-                          </div>
-                          <div
-                            class="text-2xl font-medium xl:text-base mt-2 hover:underline text-[#1E96FC] cursor-pointer"
-                            on:click={() => {
-                              mixpanel.track("user_search");
-                              chain.update((n) => (n = "ALL"));
-                              wallet.update(
-                                (n) =>
-                                  (n =
-                                    "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0")
-                              );
-                              typeWallet.update((n) => (n = "EVM"));
-                              navigate(
-                                `/?type=EVM&chain=ALL&address=0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0`
-                              );
-                              drivePortfolio.destroy();
-                            }}
-                          >
-                            Try Demo account
-                          </div>
-                        </div>
-                      {/if}
-                      <!-- <div
-                        class="w-max flex items-center justify-center gap-2 cursor-pointer p-[20px] rounded-[32px] min-w-[250px] bg-[#A7EB50] text-black text-2xl font-semibold"
-                        on:click={() => {
-                          mixpanel.track("recap_launch_app");
-                          window.open("https://app.getnimbus.io/", "_blank");
-                        }}
-                      >
-                        Launch app
-                        <img src={Arrow} alt="" />
-                      </div> -->
-                      <div class="flex flex-row gap-3">
-                        Community
-                        <a target="_blank" href="https://discord.gg/u5b9dTrSTr">
-                          <img
-                            alt="link Discord"
-                            loading="lazy"
-                            width="30"
-                            height="30"
-                            decoding="async"
-                            data-nimg="1"
-                            style="color:transparent"
-                            src="https://getnimbus.io/logoSocialMedia/discord.svg"
-                          />
-                        </a>
-                        <a target="_blank" href="https://t.me/getnimbus">
-                          <img
-                            alt="link Telegram"
-                            loading="lazy"
-                            width="30"
-                            height="30"
-                            decoding="async"
-                            data-nimg="1"
-                            style="color:transparent"
-                            src="https://getnimbus.io/logoSocialMedia/telegram.svg"
-                          />
-                        </a>
-                        <a
-                          target="_blank"
-                          href="https://twitter.com/get_nimbus"
-                        >
-                          <img
-                            alt="link Twitter"
-                            loading="lazy"
-                            width="30"
-                            height="30"
-                            decoding="async"
-                            data-nimg="1"
-                            class="w-[26px] h-[26px]"
-                            style="color:transparent"
-                            src="https://getnimbus.io/logoSocialMedia/twitterX1.svg"
-                          />
-                        </a>
-                      </div>
-                    </div>
-                    <div class="flex-1 relative z-20">
-                      <img
-                        src={heroImage}
-                        alt=""
-                        class="object-cover w-full h-full"
-                      />
-                    </div>
-                  </div>
+                  <Hero
+                    btntext={MultipleLang.content.btn_text}
+                    {address}
+                    {isOpenAddModal}
+                  />
                 </div>
                 <div class="xl:hidden block">
                   Sync from Desktop to start tracking your investments
