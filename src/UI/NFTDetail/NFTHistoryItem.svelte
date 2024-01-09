@@ -62,7 +62,7 @@
     }`}
   >
     <div class="xl:text-sm text-2xl text_00000099 font-medium text-right">
-      {withinLast24Hours < 24 && withinLast24Hours > 0
+      {withinLast24Hours < 24
         ? dayjs(data?.timestamp).fromNow()
         : dayjs(data?.timestamp).format("YYYY-MM-DD")}
     </div>

@@ -27,8 +27,8 @@
         </div>
         <div class="flex flex-row gap-3">
           Community
-          <a target="_blank" href="https://discord.gg/u5b9dTrSTr"
-            ><img
+          <a target="_blank" href="https://discord.gg/u5b9dTrSTr">
+            <img
               alt="link Discord"
               loading="lazy"
               width="30"
@@ -37,10 +37,10 @@
               data-nimg="1"
               style="color:transparent"
               src="https://getnimbus.io/logoSocialMedia/discord.svg"
-            /></a
-          >
-          <a target="_blank" href="https://t.me/getnimbus"
-            ><img
+            />
+          </a>
+          <a target="_blank" href="https://t.me/getnimbus">
+            <img
               alt="link Telegram"
               loading="lazy"
               width="30"
@@ -49,10 +49,10 @@
               data-nimg="1"
               style="color:transparent"
               src="https://getnimbus.io/logoSocialMedia/telegram.svg"
-            /></a
-          >
-          <a target="_blank" href="https://twitter.com/get_nimbus"
-            ><img
+            />
+          </a>
+          <a target="_blank" href="https://twitter.com/get_nimbus">
+            <img
               alt="link Twitter"
               loading="lazy"
               width="30"
@@ -62,8 +62,8 @@
               class="w-[26px] h-[26px]"
               style="color:transparent"
               src="https://getnimbus.io/logoSocialMedia/twitterX1.svg"
-            /></a
-          >
+            />
+          </a>
         </div>
       </div>
       <div class="flex-1 relative z-20">

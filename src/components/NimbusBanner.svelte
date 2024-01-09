@@ -7,7 +7,7 @@
   class={`relative sticky top-0 left-0 gap-x-6 py-2.5 w-full ${
     $isDarkMode ? "bg-[#0f0f0f]" : "bg-[#F8F9FF]"
   }`}
-  style="z-index: 2147483646;"
+  style="z-index: 99;"
 >
   <div class="max-w-[2000px] m-auto w-[90%] isolate flex items-center">
     <div
