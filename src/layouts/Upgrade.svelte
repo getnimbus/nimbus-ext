@@ -232,8 +232,7 @@
             with
             <span class="flex items-end gap-1 font-semibold">
               {selectedPackage.selectedTypePackage === "year"
-                ? "$" +
-                  `${
+                ? `${
                     discountPercent !== 0
                       ? Math.round(
                           (selectedPackage.price * 12 -
@@ -244,9 +243,9 @@
                         ) / 100
                       : selectedPackage.price * 12
                   }` +
+                  " USDC" +
                   " for 1 year"
-                : "$" +
-                  `${
+                : `${
                     discountPercent !== 0
                       ? Math.round(
                           (selectedPackage.price -
@@ -255,6 +254,7 @@
                         ) / 100
                       : selectedPackage.price
                   }` +
+                  " USDC" +
                   " for 1 month"}
             </span>
           </div>
