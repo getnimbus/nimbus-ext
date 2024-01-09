@@ -297,6 +297,7 @@
 
   $: colspan =
     $typeWallet === "SOL" ||
+    $typeWallet === "NEAR" ||
     $typeWallet === "TON" ||
     $typeWallet === "AURA" ||
     $typeWallet === "ALGO" ||
@@ -421,6 +422,7 @@
                 <th
                   class={`py-3 ${
                     $typeWallet === "SOL" ||
+                    $typeWallet === "NEAR" ||
                     $typeWallet === "TON" ||
                     $typeWallet === "AURA" ||
                     $typeWallet === "ALGO" ||
@@ -438,7 +440,7 @@
                     ROI
                   </div>
                 </th>
-                {#if $typeWallet === "SOL" || $typeWallet === "TON" || $typeWallet === "AURA" || $typeWallet === "ALGO" || $typeWallet === "EVM" || $typeWallet === "MOVE" || $typeWallet === "BUNDLE" || $typeWallet === "CEX"}
+                {#if $typeWallet === "SOL" || $typeWallet === "NEAR" || $typeWallet === "TON" || $typeWallet === "AURA" || $typeWallet === "ALGO" || $typeWallet === "EVM" || $typeWallet === "MOVE" || $typeWallet === "BUNDLE" || $typeWallet === "CEX"}
                   <th class="py-3 xl:w-14 w-32 rounded-tr-[10px]" />
                 {/if}
               </tr>
