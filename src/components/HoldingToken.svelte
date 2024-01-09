@@ -1809,7 +1809,7 @@
 </OverlaySidebarSwap>
 
 {#if showToast}
-  <div class="fixed z-50 w-full top-3 right-3">
+  <div class="fixed w-full top-3 right-3" style="z-index: 2147483648;">
     <Toast
       transition={blur}
       params={{ amount: 10 }}
