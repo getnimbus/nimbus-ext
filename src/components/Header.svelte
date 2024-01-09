@@ -313,21 +313,23 @@
     });
 
     Mousetrap.bindGlobal(["enter"], async function () {
-      if (selectedIndexAddress !== -1) {
-        let selectedAddress;
-        if (indexSelectedAddressResult === -1) {
-          selectedAddress = listAddress[selectedIndexAddress]?.value;
+      if (showPopoverSearch) {
+        if (selectedIndexAddress !== -1) {
+          let selectedAddress;
+          if (indexSelectedAddressResult === -1) {
+            selectedAddress = listAddress[selectedIndexAddress]?.value;
+          } else {
+            selectedAddress = listAddress[indexSelectedAddressResult]?.value;
+          }
+          handleSearchAddress(selectedAddress);
+          showPopoverSearch = false;
+          indexSelectedAddressResult = -1;
+          search = "";
+          searchListAddressResult = listAddress;
         } else {
-          selectedAddress = listAddress[indexSelectedAddressResult]?.value;
+          search = "";
+          searchListAddressResult = listAddress;
         }
-        handleSearchAddress(selectedAddress);
-        showPopoverSearch = false;
-        indexSelectedAddressResult = -1;
-        search = "";
-        searchListAddressResult = listAddress;
-      } else {
-        search = "";
-        searchListAddressResult = listAddress;
       }
     });
   });
