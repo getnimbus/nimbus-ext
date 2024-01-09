@@ -99,7 +99,7 @@
     } ${$isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"}`}
   >
     <div class="xl:text-sm text-2xl text_00000099 font-medium text-right">
-      {withinLast24Hours < 24 && withinLast24Hours > 0
+      {withinLast24Hours < 24
         ? dayjs(data?.created_at * 1000).fromNow()
         : dayjs(data?.created_at * 1000).format("YYYY-MM-DD")}
     </div>

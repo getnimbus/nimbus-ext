@@ -1032,7 +1032,7 @@ export const handleFormatDataTableBundle = (data, bundles) => {
   });
 
   return {
-    select: bundles.map((item) => {
+    select: (bundles || []).map((item) => {
       return {
         value: item.value,
         label: item.label,
