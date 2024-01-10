@@ -9,8 +9,6 @@
     selectedPackage,
     isDarkMode,
     selectedBundle,
-    triggerConnectWallet,
-    triggerSync,
     userPublicAddress,
   } from "~/store";
   import { i18n } from "~/lib/i18n";
@@ -24,7 +22,6 @@
     listLogoCEX,
     listProviderCEX,
     clickOutside,
-    drivePortfolio,
     chainMoveList,
   } from "~/utils";
   import mixpanel from "mixpanel-browser";
@@ -49,12 +46,12 @@
   import AppOverlay from "~/components/Overlay.svelte";
   import Copy from "~/components/Copy.svelte";
   import HiddenPortfolio from "./HiddenPortfolio.svelte";
+  import Hero from "./Hero.svelte";
 
   import Plus from "~/assets/plus.svg";
   import PlusBlack from "~/assets/plus-black.svg";
   import FollowWhale from "~/assets/whale-tracking.gif";
   import Success from "~/assets/shield-done.svg";
-  import Arrow from "~/assets/recap/hero/arrow-right.svg";
 
   import Move from "~/assets/move.png";
   import All from "~/assets/all.svg";
@@ -65,7 +62,6 @@
   import AuraLogo from "~/assets/aura.png";
   import AlgorandLogo from "~/assets/algorand.png";
   import TonLogo from "~/assets/ton.png";
-  import Hero from "./Hero.svelte";
 
   const MultipleLang = {
     empty_wallet: i18n("newtabPage.empty-wallet", "No account added yet."),
@@ -1014,33 +1010,24 @@
 {:else}
   <div>
     {#if listAddress.length === 0 && $wallet?.length === 0}
-      <div class="flex items-center justify-center h-[90vh]">
-        <div
-          class="flex flex-col items-center justify-center w-[70%] gap-4 p-6"
-        >
-          {#if $query.isError && Object.keys($user).length !== 0}
+      <div class="flex justify-center items-center h-screen">
+        {#if $query.isError && Object.keys($user).length !== 0}
+          <div
+            class="flex flex-col items-center justify-center w-[70%] gap-4 p-6"
+          >
             <div class="xl:text-lg text-2xl">
               {$query.error}
             </div>
-          {:else}
-            <div class="xl:text-lg text-2xl">
-              {#if Object.keys($user).length !== 0}
-                {MultipleLang.addwallet}
-              {:else}
-                <div class="xl:block hidden">
-                  <Hero
-                    btntext={MultipleLang.content.btn_text}
-                    {address}
-                    {isOpenAddModal}
-                  />
-                </div>
-                <div class="xl:hidden block">
-                  Sync from Desktop to start tracking your investments
-                </div>
-              {/if}
-            </div>
-          {/if}
-        </div>
+          </div>
+        {:else}
+          <div class="max-w-[2000px] m-auto w-[90%]">
+            <Hero
+              btntext={MultipleLang.content.btn_text}
+              {address}
+              {isOpenAddModal}
+            />
+          </div>
+        {/if}
       </div>
     {:else}
       <div class="header header-container">
