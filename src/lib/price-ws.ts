@@ -1,3 +1,5 @@
+import { prices } from "~/store";
+
 export let socket: null | WebSocket;
 let isReady = false;
 type iFN = () => void;
@@ -46,7 +48,20 @@ interface IPriceRealtime {
 
 const cached: Record<string, IPriceRealtime> = {};
 
-const chainSupport = ["ETH", "FTM", "ARB", "AVAX", "OP", "MATIC", "XDAI", "BNB", "BASE", "CRONOS", "KLAY", "VIC"]
+const chainSupport = [
+  "ETH",
+  "FTM",
+  "ARB",
+  "AVAX",
+  "OP",
+  "MATIC",
+  "XDAI",
+  "BNB",
+  "BASE",
+  "CRONOS",
+  "KLAY",
+  "VIC",
+];
 
 export const priceSubscribe = (
   cmc_id: number[] | string[],
@@ -68,11 +83,13 @@ export const priceSubscribe = (
       const key = `${cmc_id}-${chain}`;
 
       if (chain === "CEX") {
-        socket.send(JSON.stringify({
-          ids: cmc_id.join(","),
-          type: "mobula",
-          chain: "CEX",
-        }));
+        socket.send(
+          JSON.stringify({
+            ids: cmc_id.join(","),
+            type: "mobula",
+            chain: "CEX",
+          })
+        );
       }
 
       if (chain !== "CEX") {
@@ -111,6 +128,13 @@ export const priceSubscribe = (
           } else {
             callback(data);
           }
+
+          prices.update((value) => {
+            return {
+              ...value,
+              [key]: data?.price,
+            };
+          });
         }
       });
     }

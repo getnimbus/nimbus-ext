@@ -256,7 +256,7 @@
           </th>
         </tr>
       </thead>
-      <tbody class="relative">
+      <tbody>
         {#if formatData && formatData.length === 0}
           <tr>
             <td colspan="5">
@@ -370,31 +370,63 @@
           {/each}
         {/if}
         {#if $selectedPackage === "FREE"}
-          <tr
-            class={`absolute z-10 left-0 right-0 bottom-0 top-[220px] flex justify-center pt-10 backdrop-blur-md bg-gradient-to-t to-transparent ${
-              $isDarkMode
-                ? "bg-black/90 from-[#000] via-[#222222]"
-                : "bg-white/95 from-white via-white"
-            } `}
-          >
-            <td colspan="5" class="flex flex-col items-center gap-1">
-              <div class="text-lg font-medium">
-                Use Nimbus at its full potential
-              </div>
-              <div class="text-base text-gray-500">
-                Upgrade to Premium to access all other <span class="font-medium"
-                  >{formatData.length - 5 > 0
-                    ? formatData.length - 5
-                    : ""}</span
-                > opportunities
-              </div>
-              <div class="mt-2 w-max">
-                <Button variant="premium" on:click={() => navigate("/upgrade")}
-                  >Upgrade Plan</Button
-                >
-              </div>
-            </td>
-          </tr>
+          {#if formatData.length > 5}
+            <tr
+              class={`absolute z-10 left-0 right-0 bottom-0 top-[220px] flex justify-center pt-10 backdrop-blur-md bg-gradient-to-t to-transparent ${
+                $isDarkMode
+                  ? "bg-black/90 from-[#000] via-[#222222]"
+                  : "bg-white/95 from-white via-white"
+              }`}
+            >
+              <td colspan="5" class="flex flex-col items-center gap-1">
+                <div class="text-lg font-medium">
+                  Use Nimbus at its full potential
+                </div>
+                <div class="text-base text-gray-500">
+                  Upgrade to Premium to access all other <span
+                    class="font-medium"
+                    >{formatData.length - 5 > 0
+                      ? formatData.length - 5
+                      : ""}</span
+                  > opportunities
+                </div>
+                <div class="mt-2 w-max">
+                  <Button
+                    variant="premium"
+                    on:click={() => navigate("/upgrade")}>Upgrade Plan</Button
+                  >
+                </div>
+              </td>
+            </tr>
+          {:else}
+            <tr
+              class={`absolute z-10 left-0 right-0 bottom-0 top-[120px] flex justify-center pt-10 backdrop-blur-md bg-gradient-to-t to-transparent ${
+                $isDarkMode
+                  ? "bg-black/90 from-[#000] via-[#222222]"
+                  : "bg-white/95 from-white via-white"
+              }`}
+            >
+              <td colspan="5" class="flex flex-col items-center gap-1">
+                <div class="text-lg font-medium">
+                  Use Nimbus at its full potential
+                </div>
+                <div class="text-base text-gray-500">
+                  Upgrade to Premium to access all other <span
+                    class="font-medium"
+                    >{formatData.length - 5 > 0
+                      ? formatData.length - 5
+                      : ""}</span
+                  > opportunities
+                </div>
+                <div class="mt-2 w-max">
+                  <Button
+                    variant="premium"
+                    on:click={() => navigate("/upgrade")}>Upgrade Plan</Button
+                  >
+                </div>
+              </td>
+            </tr>
+          {/if}
         {/if}
       </tbody>
     </table>
