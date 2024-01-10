@@ -9,8 +9,6 @@
     selectedPackage,
     isDarkMode,
     selectedBundle,
-    triggerConnectWallet,
-    triggerSync,
     userPublicAddress,
   } from "~/store";
   import { i18n } from "~/lib/i18n";
@@ -24,7 +22,6 @@
     listLogoCEX,
     listProviderCEX,
     clickOutside,
-    drivePortfolio,
     chainMoveList,
   } from "~/utils";
   import mixpanel from "mixpanel-browser";
@@ -1013,32 +1010,24 @@
 {:else}
   <div>
     {#if listAddress.length === 0 && $wallet?.length === 0}
-      <div class="flex items-center justify-center h-[90vh]">
-        <div
-          class="flex flex-col items-center justify-center w-[70%] gap-4 p-6"
-        >
-          {#if $query.isError && Object.keys($user).length !== 0}
+      <div class="flex justify-center items-center h-screen">
+        {#if $query.isError && Object.keys($user).length !== 0}
+          <div
+            class="flex flex-col items-center justify-center w-[70%] gap-4 p-6"
+          >
             <div class="xl:text-lg text-2xl">
               {$query.error}
             </div>
-          {:else}
-            <div
-              class="xl:text-lg text-2xl border border-blue-500 w-full h-full"
-            >
-              {#if Object.keys($user).length !== 0}
-                <div>
-                  {MultipleLang.addwallet}
-                </div>
-              {:else}
-                <Hero
-                  btntext={MultipleLang.content.btn_text}
-                  {address}
-                  {isOpenAddModal}
-                />
-              {/if}
-            </div>
-          {/if}
-        </div>
+          </div>
+        {:else}
+          <div class="max-w-[2000px] m-auto w-[90%]">
+            <Hero
+              btntext={MultipleLang.content.btn_text}
+              {address}
+              {isOpenAddModal}
+            />
+          </div>
+        {/if}
       </div>
     {:else}
       <div class="header header-container">

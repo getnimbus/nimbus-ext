@@ -87,20 +87,26 @@
   };
 </script>
 
-<div class="flex gap-8 border border-red-500 w-full h-full">
-  <div class="flex flex-col items-start gap-6 xl:flex-[0.5] flex-1 w-full">
+<div class="flex xl:flex-row flex-col xl:gap-0 gap-10">
+  <div class="flex-[0.7] flex flex-col items-start gap-6">
     <div class="flex flex-col gap-4">
-      <div class="font-bold text-5xl">Your Personalized portfolio</div>
-      <div class="text-sm">
-        Track your Web3 investment across 60+ chains and CEX in one single place
+      <div class="font-bold xl:text-5xl text-6xl">
+        Your Personalized portfolio
       </div>
-      <div class="grid grid-cols-2 grid-rows-2 text-sm">
-        <div>✔️ Token & NFT</div>
-        <div>✔️ Profit and Loss</div>
-        <div>✔️ Risk Analysis</div>
-        <div>✔️ Whales list</div>
+      <div class="flex flex-col xl:gap-2 gap-4">
+        <div class="xl:text-lg text-3xl">
+          Track your Web3 investment across 60+ chains and CEX in one single
+          place
+        </div>
+        <div class="grid grid-cols-2 grid-rows-2 xl:text-base text-2xl">
+          <div>✔️ Token & NFT</div>
+          <div>✔️ Profit and Loss</div>
+          <div>✔️ Risk Analysis</div>
+          <div>✔️ Whales list</div>
+        </div>
       </div>
     </div>
+
     {#if Object.keys($user).length !== 0}
       <div class="w-max">
         <Button variant="tertiary" on:click={() => (isOpenAddModal = true)}>
@@ -111,134 +117,135 @@
         </Button>
       </div>
     {:else}
-      <div class="flex flex-col justify-center items-start gap-3 w-full">
-        <div class="relative flex-1 w-[80%]">
-          <input
-            type="text"
-            id="address"
-            name="address"
-            placeholder="Type your wallet to see demo"
-            on:keyup={({ target: { value } }) => debounceSearch(value)}
-            on:keydown={(event) => {
-              if (
-                search &&
-                search?.length !== 0 &&
-                (event.which == 13 || event.keyCode == 13)
-              ) {
-                handleSearchAddress(search);
-              }
-            }}
-            autofocus
-            value={search}
-            class={`px-5 py-3 border focus:ring-0 xl:text-sm text-2xl font-normal rounded-xl w-full ${
-              address && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
-            } ${
-              $isDarkMode
-                ? "text-white"
-                : "text-[#5E656B] placeholder-[#5E656B]"
-            }`}
-          />
-          {#if search.length !== 0}
-            <div
-              class="absolute h-full w-10 top-0 right-0 z-10 flex justify-center items-center"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="15"
-                height="15"
-                viewBox="0 0 15 15"
+      <div class="flex flex-col justify-center items-start gap-5 w-full">
+        <div class="w-full flex flex-col items-start xl:gap-1 gap-2">
+          <div class="relative flex-1 w-full">
+            <input
+              type="text"
+              id="address"
+              name="address"
+              placeholder="Type your wallet to see demo"
+              on:keyup={({ target: { value } }) => debounceSearch(value)}
+              on:keydown={(event) => {
+                if (
+                  search &&
+                  search?.length !== 0 &&
+                  (event.which == 13 || event.keyCode == 13)
+                ) {
+                  handleSearchAddress(search);
+                }
+              }}
+              autofocus
+              value={search}
+              class={`xl:px-5 xl:py-3 px-6 py-4 border border-gray-300 focus:ring-0 xl:text-sm text-lg font-normal rounded-xl w-full ${
+                address && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+              } ${
+                $isDarkMode
+                  ? "text-white"
+                  : "text-[#5E656B] placeholder-[#5E656B]"
+              }`}
+            />
+            {#if search.length !== 0}
+              <div
+                class="absolute h-full w-10 top-0 right-0 z-10 flex justify-center items-center"
               >
-                <path
-                  fill="currentColor"
-                  d="M8.293 2.293a1 1 0 0 1 1.414 0l4.5 4.5a1 1 0 0 1 0 1.414l-4.5 4.5a1 1 0 0 1-1.414-1.414L11 8.5H1.5a1 1 0 0 1 0-2H11L8.293 3.707a1 1 0 0 1 0-1.414"
-                />
-              </svg>
-            </div>
-          {/if}
-        </div>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="15"
+                  height="15"
+                  viewBox="0 0 15 15"
+                >
+                  <path
+                    fill="currentColor"
+                    d="M8.293 2.293a1 1 0 0 1 1.414 0l4.5 4.5a1 1 0 0 1 0 1.414l-4.5 4.5a1 1 0 0 1-1.414-1.414L11 8.5H1.5a1 1 0 0 1 0-2H11L8.293 3.707a1 1 0 0 1 0-1.414"
+                  />
+                </svg>
+              </div>
+            {/if}
+          </div>
 
-        <div class="xl:block hidden">
-          <Button
+          <div
+            class="hover:underline text-[#1E96FC] xl:text-base text-2xl cursor-pointer"
             on:click={() => {
-              triggerConnectWallet.update((n) => (n = true));
+              mixpanel.track("user_search");
+              chain.update((n) => (n = "ALL"));
+              wallet.update(
+                (n) => (n = "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0")
+              );
+              typeWallet.update((n) => (n = "EVM"));
+              navigate(
+                `/?type=EVM&chain=ALL&address=0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0`
+              );
               drivePortfolio.destroy();
             }}
           >
-            <div class="text-2xl font-medium xl:text-base">Connect Wallet</div>
-          </Button>
+            or try Demo account
+          </div>
         </div>
 
-        <div class="xl:hidden block">
-          <div>Sync from Desktop to start tracking your investments</div>
-          <Button
-            on:click={() => {
-              triggerSync.update((n) => (n = true));
-              drivePortfolio.destroy();
-            }}
-          >
-            <div class="text-2xl font-medium xl:text-base">
-              Sync from Desktop
-            </div>
-          </Button>
-        </div>
+        <div class="w-full flex justify-start">
+          <div class="xl:block hidden">
+            <Button
+              on:click={() => {
+                triggerConnectWallet.update((n) => (n = true));
+                drivePortfolio.destroy();
+              }}
+            >
+              <div class="text-2xl font-medium xl:text-base">
+                Connect Wallet
+              </div>
+            </Button>
+          </div>
 
-        <div
-          class="text-2xl font-medium xl:text-base mt-2 hover:underline text-[#1E96FC] cursor-pointer"
-          on:click={() => {
-            mixpanel.track("user_search");
-            chain.update((n) => (n = "ALL"));
-            wallet.update(
-              (n) => (n = "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0")
-            );
-            typeWallet.update((n) => (n = "EVM"));
-            navigate(
-              `/?type=EVM&chain=ALL&address=0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0`
-            );
-            drivePortfolio.destroy();
-          }}
-        >
-          Try Demo account
+          <div class="xl:hidden block">
+            <Button
+              on:click={() => {
+                triggerSync.update((n) => (n = true));
+                drivePortfolio.destroy();
+              }}
+            >
+              <div class="text-2xl font-medium xl:text-base">
+                Sync from Desktop
+              </div>
+            </Button>
+          </div>
         </div>
       </div>
     {/if}
 
-    <div class="flex flex-row gap-3">
-      Community
+    <div class="flex items-center xl:gap-3 gap-6">
+      <div class="xl:text-base text-lg">Community</div>
       <a target="_blank" href="https://discord.gg/u5b9dTrSTr">
         <img
           alt="link Discord"
           loading="lazy"
-          width="30"
-          height="30"
           decoding="async"
           data-nimg="1"
           style="color:transparent"
           src="https://getnimbus.io/logoSocialMedia/discord.svg"
+          class="xl:w-[30px] xl:h-[30px] w-[40px] h-[40px]"
         />
       </a>
       <a target="_blank" href="https://t.me/getnimbus">
         <img
           alt="link Telegram"
           loading="lazy"
-          width="30"
-          height="30"
           decoding="async"
           data-nimg="1"
           style="color:transparent"
           src="https://getnimbus.io/logoSocialMedia/telegram.svg"
+          class="xl:w-[30px] xl:h-[30px] w-[40px] h-[40px]"
         />
       </a>
       <a target="_blank" href="https://twitter.com/get_nimbus">
         <img
           alt="link Twitter"
           loading="lazy"
-          width="30"
-          height="30"
           decoding="async"
           data-nimg="1"
-          class="w-[26px] h-[26px]"
           style="color:transparent"
           src="https://getnimbus.io/logoSocialMedia/twitterX1.svg"
+          class="xl:w-[26px] xl:h-[26px] w-[36px] h-[36px]"
         />
       </a>
     </div>
@@ -249,4 +256,4 @@
   </div>
 </div>
 
-<style></style>
+<style windi:preflights:global windi:safelist:global></style>
