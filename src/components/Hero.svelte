@@ -88,7 +88,9 @@
 </script>
 
 <div class="flex xl:flex-row flex-col xl:gap-0 gap-10">
-  <div class="flex-[0.7] flex flex-col items-start gap-6">
+  <div
+    class="xl:order-1 order-2 xl:flex-[0.7] flex-1 flex flex-col items-start gap-6"
+  >
     <div class="flex flex-col gap-4">
       <div class="font-bold xl:text-5xl text-6xl">
         Your Personalized portfolio
@@ -251,7 +253,7 @@
     </div>
   </div>
 
-  <div class="flex-1">
+  <div class="xl:order-2 order-1 flex-1">
     <img src={heroImage} alt="" class="object-cover w-full h-full" />
   </div>
 </div>
