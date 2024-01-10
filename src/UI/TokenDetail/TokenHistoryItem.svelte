@@ -87,6 +87,7 @@
   <td
     class={`py-3 ${
       $typeWallet === "SOL" ||
+      $typeWallet === "NEAR" ||
       $typeWallet === "TON" ||
       $typeWallet === "AURA" ||
       $typeWallet === "ALGO" ||
@@ -104,7 +105,7 @@
     </div>
   </td>
 
-  {#if $typeWallet === "SOL" || $typeWallet === "TON" || $typeWallet === "AURA" || $typeWallet === "ALGO" || $typeWallet === "EVM" || $typeWallet === "MOVE" || ($typeWallet === "BUNDLE" && data?.chain !== "CEX")}
+  {#if $typeWallet === "SOL" || $typeWallet === "NEAR" || $typeWallet === "TON" || $typeWallet === "AURA" || $typeWallet === "ALGO" || $typeWallet === "EVM" || $typeWallet === "MOVE" || ($typeWallet === "BUNDLE" && data?.chain !== "CEX")}
     <td
       class={`py-3 w-10 ${
         $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"

@@ -313,6 +313,7 @@
   const getVaults = async (address, chain) => {
     let type =
       $typeWallet === "SOL" ||
+      $typeWallet === "NEAR" ||
       $typeWallet === "TON" ||
       $typeWallet === "AURA" ||
       $typeWallet === "ALGO";

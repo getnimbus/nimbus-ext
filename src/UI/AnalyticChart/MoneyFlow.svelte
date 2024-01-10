@@ -378,6 +378,7 @@
             $typeWallet === "MOVE" ||
             $typeWallet === "CEX" ||
             $typeWallet === "SOL" ||
+            $typeWallet === "NEAR" ||
             $typeWallet === "TON" ||
             $typeWallet === "AURA" ||
             $typeWallet === "ALGO" ||
@@ -455,7 +456,7 @@
           </div>
         </div>
       {/if}
-      {#if $typeWallet === "SOL" || $typeWallet === "TON" || $typeWallet === "AURA" || $typeWallet === "ALGO"}
+      {#if $typeWallet === "SOL" || $typeWallet === "NEAR" || $typeWallet === "TON" || $typeWallet === "AURA" || $typeWallet === "ALGO"}
         <div
           class={`absolute top-0 left-0 rounded-[20px] z-30 w-full h-full flex items-center justify-center z-10 backdrop-blur-md ${
             $isDarkMode ? "bg-black/90" : "bg-white/95"
@@ -506,7 +507,7 @@
           {/if}
         </div>
       {/if}
-      {#if $typeWallet === "SOL" || $typeWallet === "TON" || $typeWallet === "AURA" || $typeWallet === "ALGO"}
+      {#if $typeWallet === "SOL" || $typeWallet === "NEAR" || $typeWallet === "TON" || $typeWallet === "AURA" || $typeWallet === "ALGO"}
         <div
           class={`absolute top-0 left-0 rounded-[20px] z-30 w-full h-full flex items-center justify-center z-10 backdrop-blur-md ${
             $isDarkMode ? "bg-black/90" : "bg-white/95"
