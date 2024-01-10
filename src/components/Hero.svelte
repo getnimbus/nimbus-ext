@@ -1,6 +1,8 @@
-<script>
+<script lang="ts">
   import { navigate } from "svelte-navigator";
-  import { mixpanel } from "~/lib/network";
+  import mixpanel from "mixpanel-browser";
+  import * as browser from "webextension-polyfill";
+  import { nimbus } from "~/lib/network";
   import {
     chain,
     isDarkMode,
@@ -11,7 +13,8 @@
     user,
   } from "~/store";
   import { drivePortfolio } from "~/utils";
-  import Button from "./Button.svelte";
+
+  import Button from "~/components/Button.svelte";
 
   import Plus from "~/assets/plus.svg";
   import heroImage from "~/assets/recap/hero/heroimage.png";
@@ -20,10 +23,71 @@
   export let isOpenAddModal = false;
   export let btntext;
 
-  let demoAddress = "";
+  let search = "";
+  let timerDebounce;
+
+  const debounceSearch = (value) => {
+    clearTimeout(timerDebounce);
+    timerDebounce = setTimeout(() => {
+      search = value;
+    }, 300);
+  };
+
+  const handleValidateAddress = async (address: string) => {
+    try {
+      const response = await nimbus.get(`/v2/address/${address}/validate`);
+      return response?.data;
+    } catch (e) {
+      console.error(e);
+      return undefined;
+    }
+  };
+
+  const handleSearchAddress = async (value: string) => {
+    if (value) {
+      mixpanel.track("user_search");
+      const validateAccount = await handleValidateAddress(value);
+      chain.update((n) => (n = "ALL"));
+      wallet.update((n) => (n = validateAccount?.address));
+      typeWallet.update((n) => (n = validateAccount?.type));
+
+      browser.storage.sync.set({
+        selectedWallet: validateAccount?.address,
+      });
+      browser.storage.sync.set({ selectedChain: "ALL" });
+      browser.storage.sync.set({
+        typeWalletAddress: validateAccount?.type,
+      });
+
+      if (validateAccount?.type === "EVM" || validateAccount?.type === "MOVE") {
+        window.history.replaceState(
+          null,
+          "",
+          window.location.pathname +
+            `?type=${validateAccount?.type}&chain=ALL&address=${validateAccount?.address}`
+        );
+      }
+      if (
+        validateAccount?.type === "BTC" ||
+        validateAccount?.type === "SOL" ||
+        validateAccount?.type === "NEAR" ||
+        validateAccount?.type === "TON" ||
+        validateAccount?.type === "AURA" ||
+        validateAccount?.type === "ALGO" ||
+        validateAccount?.type === "CEX"
+      ) {
+        window.history.replaceState(
+          null,
+          "",
+          window.location.pathname +
+            `?type=${validateAccount?.type}&address=${validateAccount?.address}`
+        );
+      }
+    }
+  };
 </script>
 
-<div class="flex items-start xl:flex-row flex-col gap-8">
+<div class="flex gap-8 border border-red-500 w-full h-full">
   <div class="flex flex-col items-start gap-6 xl:flex-[0.5] flex-1 w-full">
     <div class="flex flex-col gap-4">
       <div class="font-bold text-5xl">Your Personalized portfolio</div>
@@ -54,17 +118,18 @@
             id="address"
             name="address"
             placeholder="Type your wallet to see demo"
-            bind:value={demoAddress}
+            on:keyup={({ target: { value } }) => debounceSearch(value)}
             on:keydown={(event) => {
               if (
-                (event.which == 13 || event.keyCode == 13) &&
-                demoAddress.length > 24
+                search &&
+                search?.length !== 0 &&
+                (event.which == 13 || event.keyCode == 13)
               ) {
-                window.open(
-                  `https://app.getnimbus.io/?type=EVM&chain=ALL&address=${demoAddress}`
-                );
+                handleSearchAddress(search);
               }
             }}
+            autofocus
+            value={search}
             class={`px-5 py-3 border focus:ring-0 xl:text-sm text-2xl font-normal rounded-xl w-full ${
               address && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
             } ${
@@ -73,10 +138,9 @@
                 : "text-[#5E656B] placeholder-[#5E656B]"
             }`}
           />
-          {#if demoAddress.length > 24}
-            <a
+          {#if search.length !== 0}
+            <div
               class="absolute h-full w-10 top-0 right-0 z-10 flex justify-center items-center"
-              href={`https://app.getnimbus.io/?type=EVM&chain=ALL&address=${demoAddress}`}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -89,9 +153,10 @@
                   d="M8.293 2.293a1 1 0 0 1 1.414 0l4.5 4.5a1 1 0 0 1 0 1.414l-4.5 4.5a1 1 0 0 1-1.414-1.414L11 8.5H1.5a1 1 0 0 1 0-2H11L8.293 3.707a1 1 0 0 1 0-1.414"
                 />
               </svg>
-            </a>
+            </div>
           {/if}
         </div>
+
         <div class="xl:block hidden">
           <Button
             on:click={() => {
@@ -102,7 +167,9 @@
             <div class="text-2xl font-medium xl:text-base">Connect Wallet</div>
           </Button>
         </div>
+
         <div class="xl:hidden block">
+          <div>Sync from Desktop to start tracking your investments</div>
           <Button
             on:click={() => {
               triggerSync.update((n) => (n = true));
@@ -114,6 +181,7 @@
             </div>
           </Button>
         </div>
+
         <div
           class="text-2xl font-medium xl:text-base mt-2 hover:underline text-[#1E96FC] cursor-pointer"
           on:click={() => {
@@ -133,16 +201,7 @@
         </div>
       </div>
     {/if}
-    <!-- <div
-        class="w-max flex items-center justify-center gap-2 cursor-pointer p-[20px] rounded-[32px] min-w-[250px] bg-[#A7EB50] text-black text-2xl font-semibold"
-        on:click={() => {
-          mixpanel.track("recap_launch_app");
-          window.open("https://app.getnimbus.io/", "_blank");
-        }}
-      >
-        Launch app
-        <img src={Arrow} alt="" />
-      </div> -->
+
     <div class="flex flex-row gap-3">
       Community
       <a target="_blank" href="https://discord.gg/u5b9dTrSTr">
@@ -184,7 +243,8 @@
       </a>
     </div>
   </div>
-  <div class="flex-1 relative z-20">
+
+  <div class="flex-1">
     <img src={heroImage} alt="" class="object-cover w-full h-full" />
   </div>
 </div>

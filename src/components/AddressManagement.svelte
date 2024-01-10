@@ -49,12 +49,12 @@
   import AppOverlay from "~/components/Overlay.svelte";
   import Copy from "~/components/Copy.svelte";
   import HiddenPortfolio from "./HiddenPortfolio.svelte";
+  import Hero from "./Hero.svelte";
 
   import Plus from "~/assets/plus.svg";
   import PlusBlack from "~/assets/plus-black.svg";
   import FollowWhale from "~/assets/whale-tracking.gif";
   import Success from "~/assets/shield-done.svg";
-  import Arrow from "~/assets/recap/hero/arrow-right.svg";
 
   import Move from "~/assets/move.png";
   import All from "~/assets/all.svg";
@@ -65,7 +65,6 @@
   import AuraLogo from "~/assets/aura.png";
   import AlgorandLogo from "~/assets/algorand.png";
   import TonLogo from "~/assets/ton.png";
-  import Hero from "./Hero.svelte";
 
   const MultipleLang = {
     empty_wallet: i18n("newtabPage.empty-wallet", "No account added yet."),
@@ -1023,20 +1022,19 @@
               {$query.error}
             </div>
           {:else}
-            <div class="xl:text-lg text-2xl">
+            <div
+              class="xl:text-lg text-2xl border border-blue-500 w-full h-full"
+            >
               {#if Object.keys($user).length !== 0}
-                {MultipleLang.addwallet}
+                <div>
+                  {MultipleLang.addwallet}
+                </div>
               {:else}
-                <div class="xl:block hidden">
-                  <Hero
-                    btntext={MultipleLang.content.btn_text}
-                    {address}
-                    {isOpenAddModal}
-                  />
-                </div>
-                <div class="xl:hidden block">
-                  Sync from Desktop to start tracking your investments
-                </div>
+                <Hero
+                  btntext={MultipleLang.content.btn_text}
+                  {address}
+                  {isOpenAddModal}
+                />
               {/if}
             </div>
           {/if}
