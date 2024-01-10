@@ -168,17 +168,18 @@
       ? 0
       : realizedProfit / Math.abs(Number(data?.avgCost));
 
+  $: pnl =
+    Number(data?.balance || 0) * Number(data?.market_price || 0) +
+    Number(data?.profit?.totalGain || 0) -
+    Number(data?.profit?.cost || 0);
+
   $: unrealizedProfit =
-    Number(data?.profit?.averageCost || 0) === 0
-      ? 0
-      : Number(data?.amount) *
-        (Number(data?.market_price) - Number(data?.profit.averageCost));
+    Number(data?.avgCost) === 0 ? 0 : Number(pnl) - realizedProfit;
 
   $: percentUnrealizedProfit =
-    Number(data?.profit?.averageCost || 0) === 0
+    Number(data?.avgCost) === 0
       ? 0
-      : (Number(data?.market_price) - Number(data?.profit?.averageCost)) /
-        Number(data?.profit?.averageCost || 0);
+      : unrealizedProfit / Math.abs(Number(data?.avgCost));
 
   $: ratio = (value / sumAllTokens) * 100;
 
@@ -820,7 +821,7 @@
           <div
             class={`flex justify-end ${
               unrealizedProfit !== 0
-                ? percentUnrealizedProfit >= 0
+                ? unrealizedProfit >= 0
                   ? "text-[#00A878]"
                   : "text-red-500"
                 : "text_00000099"
