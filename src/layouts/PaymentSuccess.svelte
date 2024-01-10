@@ -73,7 +73,9 @@
       }
     } catch (e) {
       console.error("error: ", e);
-      status = false;
+      status = true;
+      clearInterval(intervalId);
+      navigate("/payments/fail");
     }
   };
 
