@@ -100,7 +100,7 @@
 </ErrorBoundary>
 
 {#if showToast}
-  <div class="fixed top-3 right-3 w-full z-50">
+  <div class="fixed top-3 right-3 w-full" style="z-index: 2147483648;">
     <Toast
       transition={blur}
       params={{ amount: 10 }}

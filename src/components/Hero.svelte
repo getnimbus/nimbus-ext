@@ -73,24 +73,24 @@
                 : "text-[#5E656B] placeholder-[#5E656B]"
             }`}
           />
-          <a
-            class={`absolute h-full w-10 top-0 right-0 z-10 flex justify-center items-center ${
-              demoAddress.length < 24 && "hidden"
-            }`}
-            href={`https://app.getnimbus.io/?type=EVM&chain=ALL&address=${demoAddress}`}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="15"
-              height="15"
-              viewBox="0 0 15 15"
+          {#if demoAddress.length > 24}
+            <a
+              class="absolute h-full w-10 top-0 right-0 z-10 flex justify-center items-center"
+              href={`https://app.getnimbus.io/?type=EVM&chain=ALL&address=${demoAddress}`}
             >
-              <path
-                fill="currentColor"
-                d="M8.293 2.293a1 1 0 0 1 1.414 0l4.5 4.5a1 1 0 0 1 0 1.414l-4.5 4.5a1 1 0 0 1-1.414-1.414L11 8.5H1.5a1 1 0 0 1 0-2H11L8.293 3.707a1 1 0 0 1 0-1.414"
-              />
-            </svg>
-          </a>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="15"
+                height="15"
+                viewBox="0 0 15 15"
+              >
+                <path
+                  fill="currentColor"
+                  d="M8.293 2.293a1 1 0 0 1 1.414 0l4.5 4.5a1 1 0 0 1 0 1.414l-4.5 4.5a1 1 0 0 1-1.414-1.414L11 8.5H1.5a1 1 0 0 1 0-2H11L8.293 3.707a1 1 0 0 1 0-1.414"
+                />
+              </svg>
+            </a>
+          {/if}
         </div>
         <div class="xl:block hidden">
           <Button

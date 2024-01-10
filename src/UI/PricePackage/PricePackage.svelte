@@ -110,7 +110,7 @@
                   <div
                     class="text-white font-normal text-sm px-2 py-1 bg-[#10b981] rounded-lg"
                   >
-                    Save $17.5
+                    Save 1.75 USDC
                   </div>
                 {:else}
                   <div class="h-[28px]" />
@@ -125,7 +125,7 @@
                   <div
                     class="text-white font-normal text-sm px-2 py-1 bg-[#10b981] rounded-lg"
                   >
-                    Save $17.5
+                    Save 17.5 USDC
                   </div>
                 {:else}
                   <div class="h-[28px]" />
@@ -151,7 +151,7 @@
             <td class="py-3 pr-3">
               <div class="flex flex-col gap-4">
                 <div class="flex flex-col gap-2">
-                  <div class="text-3xl font-semibold">$0</div>
+                  <div class="text-3xl font-semibold">0 USDC</div>
                   <div class="text-base font-medium">
                     For those who starting to invest
                   </div>
@@ -178,7 +178,7 @@
               <div class="flex flex-col gap-4">
                 <div class="flex flex-col gap-2">
                   <div class="flex items-center gap-1 text-3xl font-semibold">
-                    {selectedTypePackage === "year" ? "$8.25" : "$9.99"}
+                    {selectedTypePackage === "year" ? "8.25 USDC" : "9.99 USDC"}
                     <div class="text-base font-medium text-[#6b7380]">
                       /month
                     </div>
@@ -291,7 +291,9 @@
               <div class="flex flex-col gap-4">
                 <div class="flex flex-col gap-2">
                   <div class="flex items-center gap-1 text-3xl font-semibold">
-                    {selectedTypePackage === "year" ? "$82.5" : "$99.99"}
+                    {selectedTypePackage === "year"
+                      ? "82.5 USDC"
+                      : "99.99 USDC"}
                     <div class="text-base font-medium text-[#6b7380]">
                       /month
                     </div>
@@ -567,7 +569,7 @@
             <div class="flex flex-col gap-4">
               <div class="flex flex-col gap-2 justify-center items-center">
                 <div class="text-2xl font-medium uppercase">Free</div>
-                <span class="text-5xl font-semibold">$0</span>
+                <span class="text-5xl font-semibold">0 USDC</span>
                 <div class="text-lg">For those who starting to invest</div>
               </div>
               <div class="flex justify-center min-h-[30px]">
@@ -598,7 +600,9 @@
                   {/if}
                 </div>
                 <div class="text-5xl font-medium">
-                  {selectedTypePackage === "year" ? "$8.25" : "$9.99"}{" "}
+                  {selectedTypePackage === "year"
+                    ? "8.25 USDC"
+                    : "9.99 USDC"}{" "}
                   <span class="text-[#6b7380] text-lg font-medium">
                     /month
                   </span>
@@ -708,12 +712,14 @@
                     <span
                       class="text-white px-2 py-1 font-normal text-lg ml-3 bg-[#10b981] rounded-lg"
                     >
-                      Save $17.5
+                      Save 17.5 USDC
                     </span>
                   {/if}
                 </div>
                 <div class="text-5xl font-medium">
-                  {selectedTypePackage === "year" ? "$82.5" : "$99.99"}{" "}
+                  {selectedTypePackage === "year"
+                    ? "82.5 USDC"
+                    : "99.99 USDC"}{" "}
                   <span class="text-[#6b7380] text-lg font-medium">
                     /month
                   </span>
