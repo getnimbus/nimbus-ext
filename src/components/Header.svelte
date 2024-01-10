@@ -32,11 +32,12 @@
   import addGlobalBinds from "bind-mousetrap-global";
   addGlobalBinds(Mousetrap);
 
+  import tooltip from "~/entries/contentScript/views/tooltip";
   import Auth from "~/UI/Auth/Auth.svelte";
   import DarkModeFooter from "./DarkModeFooter.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
   import Button from "~/components/Button.svelte";
-  import tooltip from "~/entries/contentScript/views/tooltip";
+  import NimbusBanner from "./NimbusBanner.svelte";
 
   import Logo from "~/assets/logo-white.svg";
   import PortfolioIcon from "~/assets/portfolio.svg";
@@ -65,9 +66,6 @@
   import AuraLogo from "~/assets/aura.png";
   import AlgorandLogo from "~/assets/algorand.png";
   import TonLogo from "~/assets/ton.png";
-  import NimbusBanner from "./NimbusBanner.svelte";
-  import { Log } from "ethers";
-  import { compactSignatureToHex } from "viem";
 
   const MultipleLang = {
     portfolio: i18n("newtabPage.portfolio", "Portfolio"),
@@ -538,14 +536,6 @@
       fullscreenPopup: true,
       // fullScreen: false,
     });
-
-    // function getParamsFromQs(qs) {
-    //   const urlSearchParams = new URLSearchParams(qs);
-    //   const params = Object.fromEntries(urlSearchParams.entries());
-    //   name = params;
-    // }
-
-    // $: console.log(name);
   </script>
   <script>
     Featurebase("initialize_feedback_widget", {

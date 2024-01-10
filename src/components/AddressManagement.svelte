@@ -9,8 +9,6 @@
     selectedPackage,
     isDarkMode,
     selectedBundle,
-    triggerConnectWallet,
-    triggerSync,
     userPublicAddress,
   } from "~/store";
   import { i18n } from "~/lib/i18n";
@@ -24,7 +22,6 @@
     listLogoCEX,
     listProviderCEX,
     clickOutside,
-    drivePortfolio,
     chainMoveList,
   } from "~/utils";
   import mixpanel from "mixpanel-browser";
@@ -49,6 +46,7 @@
   import AppOverlay from "~/components/Overlay.svelte";
   import Copy from "~/components/Copy.svelte";
   import HiddenPortfolio from "./HiddenPortfolio.svelte";
+  import Hero from "./Hero.svelte";
 
   import Plus from "~/assets/plus.svg";
   import PlusBlack from "~/assets/plus-black.svg";
@@ -152,6 +150,7 @@
   let listAddress = [];
   let address = "";
   let label = "";
+  let demoAddress = "";
   let errors: any = {};
   let isLoadingAddDEX = false;
   let isOpenAddModal = false;
@@ -1011,86 +1010,24 @@
 {:else}
   <div>
     {#if listAddress.length === 0 && $wallet?.length === 0}
-      <div class="flex items-center justify-center h-screen">
-        <div
-          class="flex flex-col items-center justify-center w-[70%] gap-4 p-6"
-        >
-          {#if $query.isError && Object.keys($user).length !== 0}
+      <div class="flex justify-center items-center h-screen">
+        {#if $query.isError && Object.keys($user).length !== 0}
+          <div
+            class="flex flex-col items-center justify-center w-[70%] gap-4 p-6"
+          >
             <div class="xl:text-lg text-2xl">
               {$query.error}
             </div>
-          {:else}
-            <div class="xl:text-lg text-2xl">
-              {#if Object.keys($user).length !== 0}
-                {MultipleLang.addwallet}
-              {:else}
-                <div class="xl:block hidden">
-                  Connect wallet to start tracking your investments
-                </div>
-                <div class="xl:hidden block">
-                  Sync from Desktop to start tracking your investments
-                </div>
-              {/if}
-            </div>
-            {#if Object.keys($user).length !== 0}
-              <div class="w-max">
-                <Button
-                  variant="tertiary"
-                  on:click={() => (isOpenAddModal = true)}
-                >
-                  <img src={Plus} alt="" width="12" height="12" />
-                  <div class="text-2xl font-medium text-white xl:text-base">
-                    {MultipleLang.content.btn_text}
-                  </div>
-                </Button>
-              </div>
-            {:else}
-              <div class="flex flex-col justify-center items-center gap-4">
-                <div class="xl:block hidden">
-                  <Button
-                    on:click={() => {
-                      triggerConnectWallet.update((n) => (n = true));
-                      drivePortfolio.destroy();
-                    }}
-                  >
-                    <div class="text-2xl font-medium xl:text-base">
-                      Connect Wallet
-                    </div>
-                  </Button>
-                </div>
-                <div class="xl:hidden block">
-                  <Button
-                    on:click={() => {
-                      triggerSync.update((n) => (n = true));
-                      drivePortfolio.destroy();
-                    }}
-                  >
-                    <div class="text-2xl font-medium xl:text-base">
-                      Sync from Desktop
-                    </div>
-                  </Button>
-                </div>
-                <div
-                  class="text-2xl font-medium xl:text-base mt-2 hover:underline text-[#1E96FC] cursor-pointer"
-                  on:click={() => {
-                    mixpanel.track("user_search");
-                    chain.update((n) => (n = "ALL"));
-                    wallet.update(
-                      (n) => (n = "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0")
-                    );
-                    typeWallet.update((n) => (n = "EVM"));
-                    navigate(
-                      `/?type=EVM&chain=ALL&address=0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0`
-                    );
-                    drivePortfolio.destroy();
-                  }}
-                >
-                  Try Demo account
-                </div>
-              </div>
-            {/if}
-          {/if}
-        </div>
+          </div>
+        {:else}
+          <div class="max-w-[2000px] m-auto w-[90%]">
+            <Hero
+              btntext={MultipleLang.content.btn_text}
+              {address}
+              {isOpenAddModal}
+            />
+          </div>
+        {/if}
       </div>
     {:else}
       <div class="header header-container">

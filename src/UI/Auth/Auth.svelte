@@ -570,7 +570,7 @@
       mixpanel.track("user_connect_wallet");
       isShowHeaderMobile.update((n) => (n = false));
     }}
-    class="xl:text-base text-2xl font-semibold text-white cursor-pointer"
+    class="button xl:text-base text-2xl font-semibold text-white cursor-pointer"
   >
     Connect Wallet
   </div>
@@ -784,6 +784,20 @@
 </AppOverlay>
 
 <style windi:preflights:global windi:safelist:global>
+  .button {
+    animation: pulse 0.5s infinite alternate; /* Adjust the duration and other parameters as needed */
+  }
+
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+    }
+
+    100% {
+      transform: scale(1.1); /* Adjust the scaling factor as needed */
+    }
+  }
+
   :global(body) .select_content {
     background: #ffffff;
     border: 0.5px solid transparent;
