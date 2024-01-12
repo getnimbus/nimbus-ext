@@ -76,7 +76,7 @@
 //   "MANTLE", // Mantle
 // ];
 
-// const authKey = import.meta.env.VITE_MOBULA_KEY
+// const authKey = import.meta.env.VITE_MOBULA_KEY || "fe18f8be-644a-45a8-ad05-b088a5e61764"
 
 // const handleFormatBlockChainId = (chain: string) => {
 //   let id = ""
