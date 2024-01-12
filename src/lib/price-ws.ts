@@ -1,5 +1,3 @@
-import { prices } from "~/store";
-
 export let socket: null | WebSocket;
 let isReady = false;
 type iFN = () => void;
@@ -86,13 +84,6 @@ export const priceSubscribe = (
           }
 
           callback(data);
-
-          prices.update((value) => {
-            return {
-              ...value,
-              [key]: data?.price,
-            };
-          });
         }
       });
     }

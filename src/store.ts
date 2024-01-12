@@ -17,7 +17,6 @@ export const userId = writable("");
 export const userPublicAddress = writable("");
 export const triggerUpdateBundle = writable(false);
 export const detectParams = writable(window.location.pathname);
-export const prices = writable({});
 
 // let isFirstTime = true;
 // isOpenReport.subscribe((value) => {
