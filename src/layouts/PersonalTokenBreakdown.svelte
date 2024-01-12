@@ -416,31 +416,35 @@
           $typeWallet === "CEX" &&
           filteredUndefinedCmcHoldingTokenData.length > 0
         ) {
-          filteredUndefinedCmcHoldingTokenData.map((item) => {
-            priceMobulaSubscribe([item?.symbol], "CEX", (data) => {
-              marketPriceToken = {
-                id: data.id,
-                market_price: data.price,
-              };
+          filteredUndefinedCmcHoldingTokenData
+            .filter((item) => item?.symbol)
+            .map((item) => {
+              priceMobulaSubscribe([item?.symbol], "CEX", (data) => {
+                marketPriceToken = {
+                  id: data.id,
+                  market_price: data.price,
+                };
+              });
             });
-          });
         }
 
         const chainList = Object.keys(groupFilteredNullCmcHoldingTokenData);
 
         chainList.map((chain) => {
-          groupFilteredNullCmcHoldingTokenData[chain].map((item) => {
-            priceMobulaSubscribe(
-              [item?.contractAddress],
-              item?.chain,
-              (data) => {
-                marketPriceToken = {
-                  id: data.id,
-                  market_price: data.price,
-                };
-              }
-            );
-          });
+          groupFilteredNullCmcHoldingTokenData[chain]
+            .filter((item) => item?.contractAddress)
+            .map((item) => {
+              priceMobulaSubscribe(
+                [item?.contractAddress],
+                item?.chain,
+                (data) => {
+                  marketPriceToken = {
+                    id: data.id,
+                    market_price: data.price,
+                  };
+                }
+              );
+            });
         });
 
         let filteredData = [];
@@ -454,7 +458,7 @@
         });
 
         filteredData?.map((item) => {
-          priceSubscribe([Number(item?.cmc_id)], (data) => {
+          priceSubscribe([Number(item?.cmc_id)], item?.chain, (data) => {
             marketPriceToken = {
               id: data.id,
               market_price: data.price,
@@ -501,7 +505,6 @@
         }
         return { ...item };
       });
-
       formatData = formatDataWithMarketPrice.sort((a, b) => {
         if (a.value < b.value) {
           return 1;
@@ -511,7 +514,6 @@
         }
         return 0;
       });
-
       sumTokens = formatDataWithMarketPrice.reduce(
         (prev, item: any) => prev + item.value,
         0

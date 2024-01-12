@@ -66,6 +66,7 @@
       ) {
         priceSubscribe(
           [Number(selectedCollection?.nativeToken?.cmcId)],
+          selectedCollection?.collection?.chain,
           (item) => {
             marketPriceNFT = {
               id: item.id,

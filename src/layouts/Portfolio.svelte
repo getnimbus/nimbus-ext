@@ -24,6 +24,8 @@
     createQueries,
     useQueryClient,
   } from "@tanstack/svelte-query";
+  import { priceMobulaSubscribe } from "~/lib/price-mobulaWs";
+  import { priceSubscribe } from "~/lib/price-ws";
 
   import type { NewData, NewDataRes } from "~/types/NewData";
   import type { OverviewData, OverviewDataRes } from "~/types/OverviewData";
@@ -93,10 +95,17 @@
     performance: [],
     updatedAt: "",
   };
+
   let newsData: NewData = [];
+
+  let marketPriceToken: any = {};
+  let dataSubWS: any = [];
   let holdingTokenData: TokenData = [];
   let closedHoldingPosition: TokenData = [];
   let holdingNFTData: NFTData = [];
+  let formatDataTokenHolding = [];
+  let formatDataNftHolding = [];
+
   let positionsData: PositionData = [];
   let overviewDataPerformance = {
     performance: [],
@@ -127,13 +136,538 @@
 
   let chainListQueries = [];
 
-  // overview
+  const getSync = async () => {
+    try {
+      await nimbus
+        .get(`/v2/address/${$wallet}/sync?chain=ALL`)
+        .then((response) => response);
+    } catch (e) {
+      console.error("e: ", e);
+    }
+  };
+
+  const getSyncStatus = async () => {
+    try {
+      const response = await nimbus
+        .get(`/v2/address/${$wallet}/sync-status?chain=${$chain}`)
+        .then((response) => response);
+      dataUpdatedTime = response?.data?.lastSync;
+      return response;
+    } catch (e) {
+      console.error("e: ", e);
+    }
+  };
+
+  const handleSync = async () => {
+    console.log("Going to full sync");
+    await getSync();
+    queryClient.invalidateQueries(["overview"]);
+    queryClient.invalidateQueries(["vaults"]);
+    queryClient.invalidateQueries(["token-holding"]);
+    queryClient.invalidateQueries(["nft-holding"]);
+    queryClient.invalidateQueries(["compare"]);
+  };
+
+  const handleGetAllData = async (type: string) => {
+    isLoadingSync = false;
+    enabledFetchAllData = false;
+
+    try {
+      let syncStatus = await getSyncStatus();
+
+      // sync data again
+      if (type === "reload" || !syncStatus?.data?.lastSync) {
+        await handleSync();
+      }
+
+      // already sync data from db
+      if (syncStatus?.data?.lastSync) {
+        console.log("start load data (already sync)");
+        enabledFetchAllData = true;
+        if (
+          !$queryOverview.isError &&
+          !$queryTokenHolding.isError &&
+          !$queryVaults.isError &&
+          !$queryNftHolding.isError &&
+          !$queryCompare.isError
+        ) {
+          syncMsg = "";
+          isLoadingSync = false;
+          isErrorAllData = false;
+        } else {
+          isErrorAllData = true;
+        }
+      }
+
+      // check data from db
+      if (!syncStatus?.data?.lastSync) {
+        if (syncStatus?.data?.canWait) {
+          syncMsg = syncStatus?.data?.error;
+          isLoadingSync = true;
+          // keep call api /sync-status until we can not wait
+          while (true) {
+            if (syncStatus?.data?.lastSync) {
+              console.log("start load data (newest sync)");
+              enabledFetchAllData = true;
+              if (
+                !$queryOverview.isError &&
+                !$queryTokenHolding.isError &&
+                !$queryVaults.isError &&
+                !$queryNftHolding.isError &&
+                !$queryCompare.isError
+              ) {
+                syncMsg = "";
+                isLoadingSync = false;
+                isErrorAllData = false;
+              } else {
+                isErrorAllData = true;
+              }
+              break;
+            } else {
+              isLoadingSync = true;
+              await wait(5000);
+              syncStatus = await getSyncStatus();
+            }
+          }
+        }
+
+        if (!syncStatus?.data?.canWait) {
+          // Cut call when we can not wait
+          syncMsg = syncStatus?.data?.error;
+          isLoadingSync = false;
+          isErrorAllData = true;
+        }
+      }
+    } catch (e) {
+      console.error("error: ", e);
+      isLoadingSync = false;
+      isErrorAllData = true;
+    }
+  };
+
+  //// POSITIONS
+  const getPositions = async (address, chain) => {
+    const response: PositionDataRes = await nimbus
+      .get(`/address/${address}/positions?chain=${chain}`)
+      .then((response) => response.data.positions);
+    return response;
+  };
+
+  const formatDataPositions = (data) => {
+    const formatData = data.map((item) => {
+      const groupPosition = groupBy(item.positions, "type");
+      return {
+        ...item,
+        positions: groupPosition,
+      };
+    });
+    positionsData = formatData;
+  };
+
+  //// OVERVIEW
   const getOverview = async (address, chain) => {
     const response: OverviewDataRes = await nimbus
       .get(`/v2/address/${address}/overview?chain=${chain}`)
       .then((response) => response?.data);
     return response;
   };
+
+  $: queryOverview = createQuery({
+    queryKey: ["overview", $wallet, $chain],
+    queryFn: () => getOverview($wallet, $chain),
+    staleTime: Infinity,
+    enabled: enabledFetchAllData && $wallet.length !== 0,
+  });
+
+  $: {
+    if (!$queryOverview.isError && $queryOverview.data !== undefined) {
+      overviewData = $queryOverview.data;
+      overviewDataPerformance = {
+        performance: $queryOverview?.data?.performance,
+        portfolioChart: $queryOverview?.data?.portfolioChart,
+      };
+
+      if (
+        $queryOverview?.data?.accounts &&
+        $queryOverview?.data?.accounts?.length !== 0
+      ) {
+        formatDataOverviewBundlePieChart($queryOverview?.data?.accounts);
+      }
+    }
+  }
+
+  const formatDataOverviewBundlePieChart = (data) => {
+    const networth = (data || []).reduce(
+      (prev, item) => prev + Number(item.value),
+      0
+    );
+    dataOverviewBundlePieChart = data
+      .map((item) => {
+        const selectAccount = $selectedBundle?.accounts.find(
+          (data) =>
+            data?.id?.toLowerCase() === item?.owner?.toLowerCase() ||
+            data?.value?.toLowerCase() === item?.owner?.toLowerCase()
+        );
+        return {
+          logo: selectAccount?.logo,
+          label: selectAccount?.label,
+          type: selectAccount?.type,
+          value: item?.value,
+        };
+      })
+      .map((item) => {
+        return {
+          logo: item?.logo,
+          name: item?.label,
+          name_balance: "",
+          name_ratio: "Ratio",
+          name_value: "Value",
+          symbol: item?.type,
+          value: (Number(item?.value || 0) / Number(networth || 0)) * 100,
+          value_balance: 0,
+          value_value: Number(item?.value || 0),
+        };
+      })
+      .sort((a, b) => {
+        if (a.value_value < b.value_value) {
+          return 1;
+        }
+        if (a.value_value > b.value_value) {
+          return -1;
+        }
+        return 0;
+      });
+  };
+
+  //// NFT HOLDING
+  const getHoldingNFT = async (address, chain) => {
+    const response: HoldingNFTRes = await nimbus
+      .get(`/v2/address/${address}/nft-holding?chain=${chain}`)
+      .then((response) => response?.data);
+    return response;
+  };
+
+  $: queryNftHolding = createQuery({
+    queryKey: ["nft-holding", $wallet, $chain],
+    queryFn: () => getHoldingNFT($wallet, $chain),
+    staleTime: Infinity,
+    enabled:
+      enabledFetchAllData &&
+      $wallet.length !== 0 &&
+      $chain.length !== 0 &&
+      $chain !== "ALL",
+  });
+
+  $: queryAllNftHolding = createQueries(
+    chainListQueries.map((item) => {
+      return {
+        queryKey: ["nft-holding", $wallet, $chain, item],
+        queryFn: () => getHoldingNFT($wallet, item),
+        staleTime: Infinity,
+        enabled:
+          enabledFetchAllData &&
+          $wallet.length !== 0 &&
+          $chain.length !== 0 &&
+          $chain === "ALL",
+      };
+    })
+  );
+
+  $: {
+    if ($queryAllNftHolding.length !== 0) {
+      const allNfts = flatten(
+        $queryAllNftHolding
+          ?.filter((item) => Array.isArray(item.data))
+          ?.map((item) => item.data)
+      );
+      if (allNfts && allNfts.length !== 0) {
+        formatDataHoldingNFT(allNfts);
+      }
+    }
+  }
+
+  $: {
+    if (!$queryNftHolding.isError && $queryNftHolding.data !== undefined) {
+      formatDataHoldingNFT($queryNftHolding.data);
+    }
+  }
+
+  const formatDataHoldingNFT = (data) => {
+    holdingNFTData = data;
+    formatDataNftHolding = data;
+    formatNFTBreakdown(holdingNFTData);
+  };
+
+  //// VAULTS
+  const getVaults = async (address, chain) => {
+    let type =
+      $typeWallet === "SOL" ||
+      $typeWallet === "NEAR" ||
+      $typeWallet === "TON" ||
+      $typeWallet === "AURA" ||
+      $typeWallet === "ALGO";
+    const response = await nimbus.get(
+      `/v2/investment/${address}/vaults?chain=${type ? $typeWallet : ""}`
+    );
+    return response?.data;
+  };
+
+  $: queryVaults = createQuery({
+    queryKey: ["vaults", $wallet, $chain],
+    queryFn: () => getVaults($wallet, $chain),
+    staleTime: Infinity,
+    enabled: enabledFetchAllData && $wallet.length !== 0,
+    placeholderData: [],
+  });
+
+  //// TOKEN HOLDING
+  const getHoldingToken = async (address, chain) => {
+    const response: HoldingTokenRes = await nimbus
+      .get(`/v2/address/${address}/holding?chain=${chain}`)
+      .then((response) => response.data);
+    return response;
+  };
+
+  $: queryTokenHolding = createQuery({
+    queryKey: ["token-holding", $wallet, $chain],
+    queryFn: () => getHoldingToken($wallet, $chain),
+    staleTime: Infinity,
+    enabled:
+      enabledFetchAllData &&
+      $wallet.length !== 0 &&
+      $chain.length !== 0 &&
+      $chain !== "ALL",
+  });
+
+  $: queryAllTokenHolding = createQueries(
+    chainListQueries.map((item) => {
+      return {
+        queryKey: ["token-holding", $wallet, $chain, item],
+        queryFn: () => getHoldingToken($wallet, item),
+        staleTime: Infinity,
+        enabled:
+          enabledFetchAllData &&
+          $wallet.length !== 0 &&
+          $chain.length !== 0 &&
+          $chain === "ALL",
+      };
+    })
+  );
+
+  $: {
+    if ($queryAllTokenHolding.length !== 0) {
+      const allTokens = flatten(
+        $queryAllTokenHolding
+          ?.filter((item) => Array.isArray(item.data))
+          ?.map((item) => item.data)
+      );
+      if (allTokens && allTokens.length !== 0) {
+        formatDataHoldingToken(allTokens);
+      }
+    }
+  }
+
+  $: {
+    if (!$queryTokenHolding.isError && $queryTokenHolding.data !== undefined) {
+      formatDataHoldingToken($queryTokenHolding.data);
+    }
+  }
+
+  const formatDataHoldingToken = (data) => {
+    const formatData = data
+      ?.map((item) => {
+        return {
+          ...item,
+          value: Number(item?.amount) * Number(item?.price?.price),
+        };
+      })
+      .sort((a, b) => {
+        if (a.value < b.value) {
+          return 1;
+        }
+        if (a.value > b.value) {
+          return -1;
+        }
+        return 0;
+      });
+
+    holdingTokenData = formatData?.filter((item) => Number(item.amount) > 0);
+    formatDataTokenHolding = formatData?.filter(
+      (item) => Number(item.amount) > 0
+    );
+
+    closedHoldingPosition = formatData
+      ?.filter((item) => item?.profit?.realizedProfit)
+      ?.filter((item) => Number(item.amount) === 0);
+
+    formatTokenBreakdown(holdingTokenData);
+  };
+
+  // subscribe to ws
+  $: {
+    if (
+      !($chain === "ALL"
+        ? $queryAllTokenHolding?.some((item) => item.isFetching === true)
+        : $queryTokenHolding.isFetching)
+    ) {
+      if (holdingTokenData?.length !== 0) {
+        const dataTokenHolding = holdingTokenData?.filter(
+          (item) =>
+            item?.price?.source === undefined ||
+            item?.price?.source !== "Modifed"
+        );
+
+        const filteredHoldingTokenData = dataTokenHolding?.filter(
+          (item) => item?.cmc_id
+        );
+
+        const filteredNullCmcHoldingTokenData = dataTokenHolding?.filter(
+          (item) => item?.cmc_id === null
+        );
+
+        const groupFilteredNullCmcHoldingTokenData = groupBy(
+          filteredNullCmcHoldingTokenData,
+          "chain"
+        );
+
+        const filteredUndefinedCmcHoldingTokenData = dataTokenHolding?.filter(
+          (item) => item?.cmc_id === undefined
+        );
+
+        if (
+          $typeWallet === "CEX" &&
+          filteredUndefinedCmcHoldingTokenData.length > 0
+        ) {
+          filteredUndefinedCmcHoldingTokenData
+            .filter((item) => item?.symbol)
+            .map((item) => {
+              priceMobulaSubscribe([item?.symbol], "CEX", (data) => {
+                marketPriceToken = {
+                  id: data.id,
+                  market_price: data.price,
+                };
+              });
+            });
+        }
+
+        const chainList = Object.keys(groupFilteredNullCmcHoldingTokenData);
+
+        chainList.map((chain) => {
+          groupFilteredNullCmcHoldingTokenData[chain]
+            .filter((item) => item?.contractAddress)
+            .map((item) => {
+              priceMobulaSubscribe(
+                [item?.contractAddress],
+                item?.chain,
+                (data) => {
+                  marketPriceToken = {
+                    id: data.id,
+                    market_price: data.price,
+                  };
+                }
+              );
+            });
+        });
+
+        dataSubWS = filteredHoldingTokenData?.map((item) => {
+          return {
+            symbol: item?.symbol,
+            cmcId: item?.cmc_id,
+          };
+        });
+      }
+    }
+    if (
+      !($chain === "ALL"
+        ? $queryAllNftHolding?.some((item) => item.isFetching === true)
+        : $queryNftHolding.isFetching)
+    ) {
+      if (holdingNFTData?.length !== 0) {
+        const formatHoldingNFTData = holdingNFTData
+          ?.filter((item) => item?.nativeToken?.cmcId)
+          ?.map((item) => {
+            return {
+              symbol: item?.nativeToken?.symbol,
+              cmcId: item?.nativeToken?.cmcId,
+            };
+          });
+
+        dataSubWS = dataSubWS.concat(formatHoldingNFTData);
+      }
+    }
+  }
+
+  $: {
+    if (
+      !($chain === "ALL"
+        ? $queryAllNftHolding?.some((item) => item.isFetching === true)
+        : $queryNftHolding.isFetching) &&
+      !($chain === "ALL"
+        ? $queryAllTokenHolding?.some((item) => item.isFetching === true)
+        : $queryTokenHolding.isFetching) &&
+      dataSubWS &&
+      dataSubWS.length !== 0
+    ) {
+      let filteredData = [];
+      const symbolSet = new Set();
+
+      dataSubWS.forEach((item) => {
+        if (!symbolSet.has(item.symbol)) {
+          symbolSet.add(item.symbol);
+          filteredData.push(item);
+        }
+      });
+
+      filteredData?.map((item) => {
+        priceSubscribe([Number(item?.cmcId)], item?.chain, (data) => {
+          marketPriceToken = {
+            id: data.id,
+            market_price: data.price,
+          };
+        });
+      });
+    }
+  }
+
+  // check market price and update price real-time
+  $: {
+    if (marketPriceToken) {
+      // update data token holding
+      formatDataTokenHolding = holdingTokenData.map((item) => {
+        if (
+          marketPriceToken?.id?.toString().toLowerCase() ===
+            item?.cmc_id?.toString().toLowerCase() ||
+          marketPriceToken?.id?.toString().toLowerCase() ===
+            item?.contractAddress?.toString().toLowerCase() ||
+          marketPriceToken?.id?.toString().toLowerCase() ===
+            item?.symbol?.toString().toLowerCase() ||
+          marketPriceToken?.id?.toString().toLowerCase() ===
+            item?.price?.symbol?.toString().toLowerCase()
+        ) {
+          return {
+            ...item,
+            market_price: Number(marketPriceToken.market_price),
+            value: Number(item?.amount) * Number(marketPriceToken.market_price),
+          };
+        }
+        return { ...item };
+      });
+
+      // update data nft holding
+      formatDataNftHolding = holdingNFTData.map((item) => {
+        if (
+          marketPriceToken?.id?.toString().toLowerCase() ===
+          item?.nativeToken?.cmcId?.toString().toLowerCase()
+        ) {
+          return {
+            ...item,
+            marketPrice: Number(marketPriceToken.market_price),
+          };
+        }
+        return { ...item };
+      });
+    }
+  }
 
   const formatNFTBreakdown = (data) => {
     if (data?.length === 0) {
@@ -301,7 +835,7 @@
     };
   };
 
-  // compare
+  //// COMPARE
   const getAnalyticCompare = async (address) => {
     const response: any = await nimbus.get(
       `/v2/analysis/${address}/compare?compareAddress=${""}`
@@ -309,365 +843,6 @@
     return response?.data || [];
   };
 
-  // token holding
-  const getVaults = async (address, chain) => {
-    let type =
-      $typeWallet === "SOL" ||
-      $typeWallet === "NEAR" ||
-      $typeWallet === "TON" ||
-      $typeWallet === "AURA" ||
-      $typeWallet === "ALGO";
-    const response = await nimbus.get(
-      `/v2/investment/${address}/vaults?chain=${type ? $typeWallet : ""}`
-    );
-    return response?.data;
-  };
-
-  const getHoldingToken = async (address, chain) => {
-    const response: HoldingTokenRes = await nimbus
-      .get(`/v2/address/${address}/holding?chain=${chain}`)
-      .then((response) => response.data);
-    return response;
-  };
-
-  const formatDataHoldingToken = (data) => {
-    const formatData = data
-      ?.map((item) => {
-        return {
-          ...item,
-          value: Number(item?.amount) * Number(item?.price?.price),
-        };
-      })
-      .sort((a, b) => {
-        if (a.value < b.value) {
-          return 1;
-        }
-        if (a.value > b.value) {
-          return -1;
-        }
-        return 0;
-      });
-
-    holdingTokenData = formatData?.filter((item) => Number(item.amount) > 0);
-
-    closedHoldingPosition = formatData
-      ?.filter((item) => item?.profit?.realizedProfit)
-      ?.filter((item) => Number(item.amount) === 0);
-
-    formatTokenBreakdown(holdingTokenData);
-  };
-
-  // nft holding
-  const getHoldingNFT = async (address, chain) => {
-    const response: HoldingNFTRes = await nimbus
-      .get(`/v2/address/${address}/nft-holding?chain=${chain}`)
-      .then((response) => response?.data);
-    return response;
-  };
-
-  const formatDataHoldingNFT = (data) => {
-    holdingNFTData = data;
-    formatNFTBreakdown(holdingNFTData);
-  };
-
-  // positions
-  const getPositions = async (address, chain) => {
-    const response: PositionDataRes = await nimbus
-      .get(`/address/${address}/positions?chain=${chain}`)
-      .then((response) => response.data.positions);
-    return response;
-  };
-
-  const formatDataPositions = (data) => {
-    const formatData = data.map((item) => {
-      const groupPosition = groupBy(item.positions, "type");
-      return {
-        ...item,
-        positions: groupPosition,
-      };
-    });
-    positionsData = formatData;
-  };
-
-  const getSync = async () => {
-    try {
-      await nimbus
-        .get(`/v2/address/${$wallet}/sync?chain=ALL`)
-        .then((response) => response);
-    } catch (e) {
-      console.error("e: ", e);
-    }
-  };
-
-  const getSyncStatus = async () => {
-    try {
-      const response = await nimbus
-        .get(`/v2/address/${$wallet}/sync-status?chain=${$chain}`)
-        .then((response) => response);
-      dataUpdatedTime = response?.data?.lastSync;
-      return response;
-    } catch (e) {
-      console.error("e: ", e);
-    }
-  };
-
-  const handleSync = async () => {
-    console.log("Going to full sync");
-    await getSync();
-    queryClient.invalidateQueries(["overview"]);
-    queryClient.invalidateQueries(["vaults"]);
-    queryClient.invalidateQueries(["token-holding"]);
-    queryClient.invalidateQueries(["nft-holding"]);
-    queryClient.invalidateQueries(["compare"]);
-  };
-
-  const handleGetAllData = async (type: string) => {
-    isLoadingSync = false;
-    enabledFetchAllData = false;
-
-    try {
-      let syncStatus = await getSyncStatus();
-
-      // sync data again
-      if (type === "reload" || !syncStatus?.data?.lastSync) {
-        await handleSync();
-      }
-
-      // already sync data from db
-      if (syncStatus?.data?.lastSync) {
-        console.log("start load data (already sync)");
-        enabledFetchAllData = true;
-        if (
-          !$queryOverview.isError &&
-          !$queryTokenHolding.isError &&
-          !$queryVaults.isError &&
-          !$queryNftHolding.isError &&
-          !$queryCompare.isError
-        ) {
-          syncMsg = "";
-          isLoadingSync = false;
-          isErrorAllData = false;
-        } else {
-          isErrorAllData = true;
-        }
-      }
-
-      // check data from db
-      if (!syncStatus?.data?.lastSync) {
-        if (syncStatus?.data?.canWait) {
-          syncMsg = syncStatus?.data?.error;
-          isLoadingSync = true;
-          // keep call api /sync-status until we can not wait
-          while (true) {
-            if (syncStatus?.data?.lastSync) {
-              console.log("start load data (newest sync)");
-              enabledFetchAllData = true;
-              if (
-                !$queryOverview.isError &&
-                !$queryTokenHolding.isError &&
-                !$queryVaults.isError &&
-                !$queryNftHolding.isError &&
-                !$queryCompare.isError
-              ) {
-                syncMsg = "";
-                isLoadingSync = false;
-                isErrorAllData = false;
-              } else {
-                isErrorAllData = true;
-              }
-              break;
-            } else {
-              isLoadingSync = true;
-              await wait(5000);
-              syncStatus = await getSyncStatus();
-            }
-          }
-        }
-
-        if (!syncStatus?.data?.canWait) {
-          // Cut call when we can not wait
-          syncMsg = syncStatus?.data?.error;
-          isLoadingSync = false;
-          isErrorAllData = true;
-        }
-      }
-    } catch (e) {
-      console.error("error: ", e);
-      isLoadingSync = false;
-      isErrorAllData = true;
-    }
-  };
-
-  const formatDataOverviewBundlePieChart = (data) => {
-    const networth = (data || []).reduce(
-      (prev, item) => prev + Number(item.value),
-      0
-    );
-    dataOverviewBundlePieChart = data
-      .map((item) => {
-        const selectAccount = $selectedBundle?.accounts.find(
-          (data) =>
-            data?.id?.toLowerCase() === item?.owner?.toLowerCase() ||
-            data?.value?.toLowerCase() === item?.owner?.toLowerCase()
-        );
-        return {
-          logo: selectAccount?.logo,
-          label: selectAccount?.label,
-          type: selectAccount?.type,
-          value: item?.value,
-        };
-      })
-      .map((item) => {
-        return {
-          logo: item?.logo,
-          name: item?.label,
-          name_balance: "",
-          name_ratio: "Ratio",
-          name_value: "Value",
-          symbol: item?.type,
-          value: (Number(item?.value || 0) / Number(networth || 0)) * 100,
-          value_balance: 0,
-          value_value: Number(item?.value || 0),
-        };
-      })
-      .sort((a, b) => {
-        if (a.value_value < b.value_value) {
-          return 1;
-        }
-        if (a.value_value > b.value_value) {
-          return -1;
-        }
-        return 0;
-      });
-  };
-
-  // query overview
-  $: queryOverview = createQuery({
-    queryKey: ["overview", $wallet, $chain],
-    queryFn: () => getOverview($wallet, $chain),
-    staleTime: Infinity,
-    enabled: enabledFetchAllData && $wallet.length !== 0,
-  });
-
-  $: {
-    if (!$queryOverview.isError && $queryOverview.data !== undefined) {
-      overviewData = $queryOverview.data;
-      overviewDataPerformance = {
-        performance: $queryOverview?.data?.performance,
-        portfolioChart: $queryOverview?.data?.portfolioChart,
-      };
-
-      if (
-        $queryOverview?.data?.accounts &&
-        $queryOverview?.data?.accounts?.length !== 0
-      ) {
-        formatDataOverviewBundlePieChart($queryOverview?.data?.accounts);
-      }
-    }
-  }
-
-  // query nft holding
-  $: queryNftHolding = createQuery({
-    queryKey: ["nft-holding", $wallet, $chain],
-    queryFn: () => getHoldingNFT($wallet, $chain),
-    staleTime: Infinity,
-    enabled:
-      enabledFetchAllData &&
-      $wallet.length !== 0 &&
-      $chain.length !== 0 &&
-      $chain !== "ALL",
-  });
-
-  $: queryAllNftHolding = createQueries(
-    chainListQueries.map((item) => {
-      return {
-        queryKey: ["nft-holding", $wallet, $chain, item],
-        queryFn: () => getHoldingNFT($wallet, item),
-        staleTime: Infinity,
-        enabled:
-          enabledFetchAllData &&
-          $wallet.length !== 0 &&
-          $chain.length !== 0 &&
-          $chain === "ALL",
-      };
-    })
-  );
-
-  $: {
-    if ($queryAllNftHolding.length !== 0) {
-      const allNfts = flatten(
-        $queryAllNftHolding
-          ?.filter((item) => Array.isArray(item.data))
-          ?.map((item) => item.data)
-      );
-      if (allNfts && allNfts.length !== 0) {
-        formatDataHoldingNFT(allNfts);
-      }
-    }
-  }
-
-  $: {
-    if (!$queryNftHolding.isError && $queryNftHolding.data !== undefined) {
-      formatDataHoldingNFT($queryNftHolding.data);
-    }
-  }
-
-  // query vaults token holding
-  $: queryVaults = createQuery({
-    queryKey: ["vaults", $wallet, $chain],
-    queryFn: () => getVaults($wallet, $chain),
-    staleTime: Infinity,
-    enabled: enabledFetchAllData && $wallet.length !== 0,
-    placeholderData: [],
-  });
-
-  // query token holding
-  $: queryTokenHolding = createQuery({
-    queryKey: ["token-holding", $wallet, $chain],
-    queryFn: () => getHoldingToken($wallet, $chain),
-    staleTime: Infinity,
-    enabled:
-      enabledFetchAllData &&
-      $wallet.length !== 0 &&
-      $chain.length !== 0 &&
-      $chain !== "ALL",
-  });
-
-  $: queryAllTokenHolding = createQueries(
-    chainListQueries.map((item) => {
-      return {
-        queryKey: ["token-holding", $wallet, $chain, item],
-        queryFn: () => getHoldingToken($wallet, item),
-        staleTime: Infinity,
-        enabled:
-          enabledFetchAllData &&
-          $wallet.length !== 0 &&
-          $chain.length !== 0 &&
-          $chain === "ALL",
-      };
-    })
-  );
-
-  $: {
-    if ($queryAllTokenHolding.length !== 0) {
-      const allTokens = flatten(
-        $queryAllTokenHolding
-          ?.filter((item) => Array.isArray(item.data))
-          ?.map((item) => item.data)
-      );
-      if (allTokens && allTokens.length !== 0) {
-        formatDataHoldingToken(allTokens);
-      }
-    }
-  }
-
-  $: {
-    if (!$queryTokenHolding.isError && $queryTokenHolding.data !== undefined) {
-      formatDataHoldingToken($queryTokenHolding.data);
-    }
-  }
-
-  // query compare
   $: queryCompare = createQuery({
     queryKey: ["compare", $wallet, $chain],
     queryFn: () => getAnalyticCompare($wallet),
@@ -735,6 +910,10 @@
         newsData = [];
         holdingNFTData = [];
         holdingTokenData = [];
+        formatDataTokenHolding = [];
+        formatDataNftHolding = [];
+        marketPriceToken = {};
+        dataSubWS = [];
         isErrorAllData = false;
         isLoadingSync = false;
         enabledFetchAllData = false;
@@ -822,7 +1001,7 @@
     {#if !isLoadingSync}
       <Overview
         data={overviewData}
-        dataTokenHolding={holdingTokenData}
+        dataTokenHolding={formatDataTokenHolding}
         {totalPositions}
         {totalAssets}
       />
@@ -864,7 +1043,7 @@
                 isLoadingBreakdownNfts={$queryAllNftHolding.some(
                   (item) => item.isFetching === true
                 )}
-                {holdingTokenData}
+                holdingTokenData={formatDataTokenHolding}
                 {overviewDataPerformance}
                 {dataPieChartToken}
                 {dataPieChartNft}
@@ -893,6 +1072,7 @@
                   : $queryTokenHolding.isFetching}
                 {holdingTokenData}
                 {holdingNFTData}
+                {marketPriceToken}
                 dataVaults={$queryVaults.data}
                 {selectedTokenHolding}
                 {selectedDataPieChart}
@@ -914,6 +1094,7 @@
                     : $queryTokenHolding.isFetching}
                   holdingTokenData={closedHoldingPosition}
                   {holdingNFTData}
+                  {marketPriceToken}
                 />
               {/if}
 

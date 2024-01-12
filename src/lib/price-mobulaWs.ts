@@ -1,28 +1,125 @@
-import { prices } from "~/store";
+// type iFN = () => void;
 
+// export let mobulaSocket: null | WebSocket;
+// let isMobulaReady = false;
+// let cbMobulaList: iFN[] = [];
+
+// export const initWS = (cb?: () => void) => {
+//   mobulaSocket = new WebSocket("wss://general-api-wss-fgpupeioaa-uc.a.run.app");
+
+//   mobulaSocket.onopen = () => {
+//     console.log("Mobula WS connection established");
+//     cb && cb();
+//     isMobulaReady = true;
+//     cbMobulaList.forEach((cbItem) => {
+//       cbItem();
+//     });
+//     cbMobulaList = [];
+//   };
+// };
+
+// export const disconnectWs = () => {
+//   if (mobulaSocket) {
+//     mobulaSocket.close();
+//   }
+// };
+
+// export const decodeEvent = (ev: MessageEvent) => {
+//   try {
+//     const data = JSON.parse(ev.data);
+
+//     return data;
+//   } catch (error) {
+//     console.log(ev.data);
+//     console.log(error);
+//     return null;
+//   }
+// };
+
+// interface IPriceRealtime {
+//   id: string;
+//   ath: number;
+//   atl: number;
+//   is_listed: boolean;
+//   liquidity: number;
+//   market_cap: number;
+//   market_cap_diluted: number;
+//   off_chain_volume: number;
+//   price: number;
+//   price_change_1h: number;
+//   price_change_1m: number;
+//   price_change_1y: number;
+//   price_change_7d: number;
+//   price_change_24h: number;
+//   rank: number;
+//   volume: number;
+//   volume_7d: number;
+//   volume_change_24h: number;
+// }
+
+// const cached: Record<string, IPriceRealtime> = {};
+
+// const chainSupport = [
+//   "FTM", //Fantom
+//   "XDAI", // Gnosis
+//   "AVAX", // Avalanche
+//   "CRONOS", // Cronos
+//   "ETH", // Ethereum
+//   "MATIC", // Polygon
+//   "BNB", // BNB
+//   "KLAY", // Klaytn
+//   "AURA", // Aurora
+//   "ARB", // Arbitrum
+//   "OP", // Optimistic
+//   "BASE", // Base
+//   "SUI", // Sui
+//   "MANTLE", // Mantle
+// ];
+
+// const authKey = import.meta.env.VITE_MOBULA_KEY
+
+// const handleFormatBlockChainId = (chain: string) => {
+//   let id = ""
+//   switch (chain) {
+//     case "FTM": id = "250"; break;
+//     case "XDAI": id = "100"; break;
+//     case "AVAX": id = "43114"; break;
+//     case "CRONOS": id = "25"; break;
+//     case "ETH": id = "1"; break;
+//     case "MATIC": id = "137"; break;
+//     case "BNB": id = "56"; break;
+//     case "KLAY": id = "8217"; break;
+//     case "AURA": id = "1313161554"; break;
+//     case "ARB": id = "42161"; break;
+//     case "OP": id = "10"; break;
+//     case "BASE": id = "8453"; break;
+//     case "SUI": id = "sui"; break;
+//     case "MANTLE": id = "5000"; break;
+//   }
+// }
+
+export let socket: null | WebSocket;
+let isReady = false;
 type iFN = () => void;
-
-export let mobulaSocket: null | WebSocket;
-let isMobulaReady = false;
-let cbMobulaList: iFN[] = [];
+let cbList: iFN[] = [];
 
 export const initWS = (cb?: () => void) => {
-  mobulaSocket = new WebSocket("wss://general-api-wss-fgpupeioaa-uc.a.run.app");
+  socket = new WebSocket("wss://ws.getnimbus.io/ws");
 
-  mobulaSocket.onopen = () => {
-    console.log("Mobula WS connection established");
+  socket.onopen = () => {
+    console.log("WS connection established");
     cb && cb();
-    isMobulaReady = true;
-    cbMobulaList.forEach((cbItem) => {
+    isReady = true;
+    cbList.forEach((cbItem) => {
       cbItem();
     });
-    cbMobulaList = [];
+    cbList = [];
   };
 };
 
 export const disconnectWs = () => {
-  if (mobulaSocket) {
-    mobulaSocket.close();
+  if (socket) {
+    socket.close();
   }
 };
 
@@ -40,65 +137,29 @@ export const decodeEvent = (ev: MessageEvent) => {
 
 interface IPriceRealtime {
   id: string;
-  ath: number;
-  atl: number;
-  is_listed: boolean;
-  liquidity: number;
-  market_cap: number;
-  market_cap_diluted: number;
-  off_chain_volume: number;
-  price: number;
-  price_change_1h: number;
-  price_change_1m: number;
-  price_change_1y: number;
-  price_change_7d: number;
-  price_change_24h: number;
-  rank: number;
-  volume: number;
-  volume_7d: number;
-  volume_change_24h: number;
+  price: string;
+  volume: string;
+  timestamp: number;
+  type: "mobula" | "cmc" | "ethereum";
+  chain: string;
 }
 
 const cached: Record<string, IPriceRealtime> = {};
 
 const chainSupport = [
-  "FTM", //Fantom
-  "XDAI", // Gnosis
-  "AVAX", // Avalanche
-  "CRONOS", // Cronos
-  "ETH", // Ethereum
-  "MATIC", // Polygon
-  "BNB", // BNB
-  "KLAY", // Klaytn
-  "AURA", // Aurora
-  "ARB", // Arbitrum
-  "OP", // Optimistic
-  "BASE", // Base
-  "SUI", // Sui
-  "MANTLE", // Mantle
+  "ETH",
+  "FTM",
+  "ARB",
+  "AVAX",
+  "OP",
+  "MATIC",
+  "XDAI",
+  "BNB",
+  "BASE",
+  "CRONOS",
+  "KLAY",
+  "VIC",
 ];
-
-const authKey = "fe18f8be-644a-45a8-ad05-b088a5e61764"
-
-const handleFormatBlockChainId = (chain: string) => {
-  let id = ""
-  switch (chain) {
-    case "FTM": id = "250"; break;
-    case "XDAI": id = "100"; break;
-    case "AVAX": id = "43114"; break;
-    case "CRONOS": id = "25"; break;
-    case "ETH": id = "1"; break;
-    case "MATIC": id = "137"; break;
-    case "BNB": id = "56"; break;
-    case "KLAY": id = "8217"; break;
-    case "AURA": id = "1313161554"; break;
-    case "ARB": id = "42161"; break;
-    case "OP": id = "10"; break;
-    case "BASE": id = "8453"; break;
-    case "SUI": id = "sui"; break;
-    case "MANTLE": id = "5000"; break;
-  }
-}
 
 export const priceMobulaSubscribe = (
   data: number[] | string[],
@@ -106,13 +167,13 @@ export const priceMobulaSubscribe = (
   callback: (any) => void
 ) => {
   try {
-    if (!mobulaSocket) {
+    if (!socket) {
       console.log("Mobula WS is not initiated");
       initWS(() => priceMobulaSubscribe(data, chain, callback));
     } else {
-      if (!isMobulaReady) {
+      if (!isReady) {
         console.log("Delay Mobula Subscribe");
-        cbMobulaList.push(() => priceMobulaSubscribe(data, chain, callback));
+        cbList.push(() => priceMobulaSubscribe(data, chain, callback));
         return;
       }
 
@@ -124,60 +185,79 @@ export const priceMobulaSubscribe = (
       }
 
       if (chain === "CEX") {
-        mobulaSocket.send(
+        // mobulaSocket.send(
+        //   JSON.stringify({
+        //     type: "market",
+        //     authorization: authKey,
+        //     payload: {
+        //       assets: [
+        //         { symbol: data.join(",") },
+        //       ],
+        //       interval: 15
+        //     }
+        //   })
+        // )
+        socket.send(
           JSON.stringify({
-            type: "market",
-            authorization: authKey,
-            payload: {
-              assets: [
-                { symbol: data.join(",") },
-              ],
-              interval: 15
-            }
+            ids: data.join(","),
+            type: "mobula",
+            chain: "CEX",
           })
-        )
+        );
       }
 
       if (chain !== "CEX" && chainSupport.includes(chain)) {
-        mobulaSocket.send(
+        // mobulaSocket.send(
+        //   JSON.stringify({
+        //     type: "market",
+        //     authorization: authKey,
+        //     payload: {
+        //       assets: [
+        //         {
+        //           address: data.join(","),
+        //           blockchain: handleFormatBlockChainId(chain)
+        //         },
+        //       ],
+        //       interval: 15
+        //     }
+        //   })
+        // )
+        socket.send(
           JSON.stringify({
-            type: "market",
-            authorization: authKey,
-            payload: {
-              assets: [
-                {
-                  address: data.join(","),
-                  blockchain: handleFormatBlockChainId(chain)
-                },
-              ],
-              interval: 15
-            }
+            ids: data.join(","),
+            type: "mobula",
+            chain: chain,
           })
-        )
+        );
       }
 
-      mobulaSocket.addEventListener("message", (ev) => {
-        const res = decodeEvent(ev);
-        if (res?.data && Object.keys(res?.data).length !== 0) {
-          const formatData = {
-            ...res,
-            id: data.join(","),
-          }
+      socket.addEventListener("message", (ev) => {
+        // const res = decodeEvent(ev);
+        // if (res?.data && Object.keys(res?.data).length !== 0) {
 
-          if (!cached[key]) {
-            // Only callback when we don't have data cached
-            cached[key] = formatData;
-          }
+        //   const keyData = Object.keys(res?.data)
 
-          callback(formatData);
+        //   const formatData = {
+        //     ...res?.data[keyData[0]],
+        //     id: keyData[0],
+        //   }
 
-          prices.update((value) => {
-            return {
-              ...value,
-              [key]: formatData?.price,
-            };
-          });
+        //   if (!cached[key]) {
+        //     // Only callback when we don't have data cached
+        //     cached[key] = formatData;
+        //   }
+
+        //   callback(formatData);
+        // }
+
+        const data = decodeEvent(ev);
+
+        if (!cached[key]) {
+          // Only callback when we don't have data cached
+          cached[key] = data;
         }
+
+        callback(data);
       });
     }
   } catch (error) {
