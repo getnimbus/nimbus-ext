@@ -258,7 +258,7 @@
   {/if}
 
   <Link
-    to={`${$user && Object.keys($user).length !== 0 ? "transactions" : "/"}`}
+    to={`/transactions?type=${$typeWallet}&chain=${$chain}&address=${$wallet}`}
   >
     <div
       class={`flex flex-col items-center gap-2 cursor-pointer py-2 hover:opacity-100 transition-all
@@ -273,16 +273,7 @@
           }
           `}
       on:click={() => {
-        if ($user && Object.keys($user).length !== 0) {
-          navActive = "transactions";
-          queryClient.invalidateQueries(["users-me"]);
-        } else {
-          user.update((n) => (n = {}));
-          wallet.update((n) => (n = ""));
-          chain.update((n) => (n = ""));
-          typeWallet.update((n) => (n = ""));
-          queryClient.invalidateQueries(["list-address"]);
-        }
+        navActive = "transactions";
       }}
     >
       <svg

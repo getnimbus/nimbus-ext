@@ -706,24 +706,34 @@
         });
 
         // logic data buy and data sell
-        const filteredDuplicateHistoryData = dataHistory
-          .map((item) => {
+        let filteredDuplicateHistoryData = [];
+        if (formatDataTrade && formatDataTrade.length !== 0) {
+          filteredDuplicateHistoryData = dataHistory
+            .map((item) => {
+              return {
+                ...item,
+                date: item.value[0],
+              };
+            })
+            .filter(
+              (elem) =>
+                !tradeHistoryData
+                  .map((item) => {
+                    return {
+                      ...item,
+                      date: item.value[0],
+                    };
+                  })
+                  .find((item) => elem.date === item.date)
+            );
+        } else {
+          filteredDuplicateHistoryData = dataHistory.map((item) => {
             return {
               ...item,
               date: item.value[0],
             };
-          })
-          .filter(
-            (elem) =>
-              !tradeHistoryData
-                .map((item) => {
-                  return {
-                    ...item,
-                    date: item.value[0],
-                  };
-                })
-                .find(({ date }) => elem.date === date)
-          );
+          });
+        }
         const groupBuyHistoryData = groupBy(
           filteredDuplicateHistoryData,
           "type"
