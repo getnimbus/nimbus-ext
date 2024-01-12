@@ -7,7 +7,6 @@
   import OverviewCard from "~/components/OverviewCard.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
-  import { priceSubscribe } from "~/lib/price-ws";
 
   export let data;
   export let dataTokenHolding;
@@ -25,7 +24,6 @@
   $: unrealizedProfit = (dataTokenHolding || [])
     ?.filter((item) => Number(item?.amount) > 0 && Number(item?.avgCost) !== 0)
     ?.map((item) => {
-      // console.log({ item });
       const price = Number(
         $prices[
           `${item.item?.cmc_id || item?.contractAddress}-${item.chain}`

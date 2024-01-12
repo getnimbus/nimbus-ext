@@ -160,7 +160,7 @@ export const priceMobulaSubscribe = (
         const res = decodeEvent(ev);
         if (res?.data && Object.keys(res?.data).length !== 0) {
           const formatData = {
-            ...res,
+            ...res?.data[data.join(",")],
             id: data.join(","),
           }
 

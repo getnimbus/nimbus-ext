@@ -50,20 +50,21 @@ const cached: Record<string, IPriceRealtime> = {};
 
 export const priceSubscribe = (
   cmc_id: number[] | string[],
+  chain: string,
   callback: (any) => void
 ) => {
   try {
     if (!socket) {
       console.log("WS is not initiated");
-      initWS(() => priceSubscribe(cmc_id, callback));
+      initWS(() => priceSubscribe(cmc_id, chain, callback));
     } else {
       if (!isReady) {
         console.log("Delay Subscribe");
-        cbList.push(() => priceSubscribe(cmc_id, callback));
+        cbList.push(() => priceSubscribe(cmc_id, chain, callback));
         return;
       }
 
-      const key = `${cmc_id}`;
+      const key = `${cmc_id}-${chain}`;
 
       if (cached[key]) {
         // Return from cache
