@@ -166,34 +166,34 @@
           $typeWallet === "CEX" &&
           filteredUndefinedCmcHoldingTokenData.length > 0
         ) {
-          // filteredUndefinedCmcHoldingTokenData
-          //   .filter((item) => item?.symbol)
-          //   .map((item) => {
-          //     priceMobulaSubscribe([item?.symbol], "CEX", (data) => {
-          //       marketPriceToken = {
-          //         id: data.id,
-          //         market_price: data.price,
-          //       };
-          //     });
-          //   });
+          filteredUndefinedCmcHoldingTokenData
+            .filter((item) => item?.symbol)
+            .map((item) => {
+              priceMobulaSubscribe([item?.symbol], "CEX", (data) => {
+                marketPriceToken = {
+                  id: data.id,
+                  market_price: data.price,
+                };
+              });
+            });
         }
         const chainList = Object.keys(groupFilteredNullCmcHoldingTokenData);
-        // chainList.map((chain) => {
-        //   groupFilteredNullCmcHoldingTokenData[chain]
-        //     .filter((item) => item?.contractAddress)
-        //     .map((item) => {
-        //       priceMobulaSubscribe(
-        //         [item?.contractAddress],
-        //         item?.chain,
-        //         (data) => {
-        //           marketPriceToken = {
-        //             id: data.id,
-        //             market_price: data.price,
-        //           };
-        //         }
-        //       );
-        //     });
-        // });
+        chainList.map((chain) => {
+          groupFilteredNullCmcHoldingTokenData[chain]
+            .filter((item) => item?.contractAddress)
+            .map((item) => {
+              priceMobulaSubscribe(
+                [item?.contractAddress],
+                item?.chain,
+                (data) => {
+                  marketPriceToken = {
+                    id: data.id,
+                    market_price: data.price,
+                  };
+                }
+              );
+            });
+        });
         dataSubWS = filteredHoldingTokenData.map((item) => {
           return {
             symbol: item.symbol,
