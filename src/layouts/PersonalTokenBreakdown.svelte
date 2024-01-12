@@ -1,8 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { Link } from "svelte-navigator";
-  import { sendMessage } from "webext-bridge";
-  import { priceSubscribe } from "~/lib/price-ws";
   import { i18n } from "~/lib/i18n";
   import { detectedChain, shorterName } from "~/utils";
   import { nimbus } from "~/lib/network";
@@ -12,6 +10,8 @@
   import { blur } from "svelte/transition";
   import { isDarkMode, typeWallet, wallet, chain } from "~/store";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
+  import { priceMobulaSubscribe } from "~/lib/price-mobulaWs";
+  import { priceSubscribe } from "~/lib/price-ws";
 
   import type { TokenData, HoldingTokenRes } from "~/types/HoldingTokenData";
 
@@ -417,7 +417,7 @@
           filteredUndefinedCmcHoldingTokenData.length > 0
         ) {
           filteredUndefinedCmcHoldingTokenData.map((item) => {
-            priceSubscribe([item?.symbol], false, "CEX", (data) => {
+            priceMobulaSubscribe([item?.symbol], "CEX", (data) => {
               marketPriceToken = {
                 id: data.id,
                 market_price: data.price,
@@ -430,12 +430,16 @@
 
         chainList.map((chain) => {
           groupFilteredNullCmcHoldingTokenData[chain].map((item) => {
-            priceSubscribe([item?.contractAddress], true, chain, (data) => {
-              marketPriceToken = {
-                id: data.id,
-                market_price: data.price,
-              };
-            });
+            priceMobulaSubscribe(
+              [item?.contractAddress],
+              item?.chain,
+              (data) => {
+                marketPriceToken = {
+                  id: data.id,
+                  market_price: data.price,
+                };
+              }
+            );
           });
         });
 
@@ -450,17 +454,12 @@
         });
 
         filteredData?.map((item) => {
-          priceSubscribe(
-            [Number(item?.cmc_id)],
-            false,
-            $typeWallet !== "CEX" ? "" : "CEX",
-            (data) => {
-              marketPriceToken = {
-                id: data.id,
-                market_price: data.price,
-              };
-            }
-          );
+          priceSubscribe([Number(item?.cmc_id)], (data) => {
+            marketPriceToken = {
+              id: data.id,
+              market_price: data.price,
+            };
+          });
         });
       }
     }
