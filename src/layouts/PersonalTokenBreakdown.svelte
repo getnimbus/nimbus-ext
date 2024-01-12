@@ -486,40 +486,38 @@
 
   $: {
     if (marketPriceToken) {
-      const formatDataWithMarketPrice = formatData.map((item) => {
-        if (
-          marketPriceToken?.id.toString().toLowerCase() ===
-            item?.cmc_id?.toString().toLowerCase() ||
-          marketPriceToken?.id.toString().toLowerCase() ===
-            item?.contractAddress.toString().toLowerCase() ||
-          marketPriceToken?.id.toString().toLowerCase() ===
-            item?.symbol?.toString().toLowerCase() ||
-          marketPriceToken?.id.toString().toLowerCase() ===
-            item?.price?.symbol?.toString().toLowerCase()
-        ) {
-          return {
-            ...item,
-            market_price: Number(marketPriceToken.market_price),
-            value: Number(item?.amount) * Number(marketPriceToken.market_price),
-          };
-        }
-        return { ...item };
-      });
-
-      formatData = formatDataWithMarketPrice.sort((a, b) => {
-        if (a.value < b.value) {
-          return 1;
-        }
-        if (a.value > b.value) {
-          return -1;
-        }
-        return 0;
-      });
-
-      sumTokens = formatDataWithMarketPrice.reduce(
-        (prev, item: any) => prev + item.value,
-        0
-      );
+      // const formatDataWithMarketPrice = formatData.map((item) => {
+      //   if (
+      //     marketPriceToken?.id.toString().toLowerCase() ===
+      //       item?.cmc_id?.toString().toLowerCase() ||
+      //     marketPriceToken?.id.toString().toLowerCase() ===
+      //       item?.contractAddress.toString().toLowerCase() ||
+      //     marketPriceToken?.id.toString().toLowerCase() ===
+      //       item?.symbol?.toString().toLowerCase() ||
+      //     marketPriceToken?.id.toString().toLowerCase() ===
+      //       item?.price?.symbol?.toString().toLowerCase()
+      //   ) {
+      //     return {
+      //       ...item,
+      //       market_price: Number(marketPriceToken.market_price),
+      //       value: Number(item?.amount) * Number(marketPriceToken.market_price),
+      //     };
+      //   }
+      //   return { ...item };
+      // });
+      // formatData = formatDataWithMarketPrice.sort((a, b) => {
+      //   if (a.value < b.value) {
+      //     return 1;
+      //   }
+      //   if (a.value > b.value) {
+      //     return -1;
+      //   }
+      //   return 0;
+      // });
+      // sumTokens = formatDataWithMarketPrice.reduce(
+      //   (prev, item: any) => prev + item.value,
+      //   0
+      // );
     }
   }
 
