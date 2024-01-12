@@ -3,15 +3,13 @@
   import { i18n } from "~/lib/i18n";
   import { chain, typeWallet, isDarkMode } from "~/store";
   import { filterTokenValueType } from "~/utils";
-  import { groupBy } from "lodash";
-  import { priceMobulaSubscribe } from "~/lib/price-mobulaWs";
-  import { priceSubscribe } from "~/lib/price-ws";
 
   export let selectedWallet;
   export let isLoadingNFT;
   export let isLoadingToken;
   export let holdingTokenData;
   export let holdingNFTData;
+  export let marketPriceToken;
 
   import ClosedHoldingTokenPosition from "~/components/ClosedHoldingTokenPosition.svelte";
   import HoldingNFT from "~/components/HoldingNFT.svelte";
@@ -21,10 +19,8 @@
   import Loading from "~/components/Loading.svelte";
   import Select from "~/components/Select.svelte";
 
-  let filteredHoldingToken = true;
   let filteredHoldingDataToken = [];
-  let dataSubWS = [];
-  let marketPriceToken;
+
   let formatData = [];
   let formatDataNFT = [];
   let sumAllTokens = 0;
@@ -73,101 +69,6 @@
       window.removeEventListener("scroll", handleScroll);
     };
   });
-
-  // subscribe to ws
-  $: {
-    if (!isLoadingToken) {
-      if (holdingTokenData?.length !== 0) {
-        const dataTokenHolding = holdingTokenData?.filter(
-          (item) =>
-            item?.price?.source === undefined ||
-            item?.price?.source !== "Modifed"
-        );
-
-        const filteredHoldingTokenData = dataTokenHolding?.filter(
-          (item) => item?.cmc_id
-        );
-
-        const filteredNullCmcHoldingTokenData = dataTokenHolding?.filter(
-          (item) => item?.cmc_id === null
-        );
-
-        const groupFilteredNullCmcHoldingTokenData = groupBy(
-          filteredNullCmcHoldingTokenData,
-          "chain"
-        );
-
-        const filteredUndefinedCmcHoldingTokenData = dataTokenHolding?.filter(
-          (item) => item?.cmc_id === undefined
-        );
-
-        if (
-          $typeWallet === "CEX" &&
-          filteredUndefinedCmcHoldingTokenData.length > 0
-        ) {
-          // filteredUndefinedCmcHoldingTokenData
-          //   .filter((item) => item?.symbol)
-          //   .map((item) => {
-          //     priceMobulaSubscribe([item?.symbol], "CEX", (data) => {
-          //       marketPriceToken = {
-          //         id: data.id,
-          //         market_price: data.price,
-          //       };
-          //     });
-          //   });
-        }
-
-        const chainList = Object.keys(groupFilteredNullCmcHoldingTokenData);
-
-        // chainList.map((chain) => {
-        //   groupFilteredNullCmcHoldingTokenData[chain]
-        //     .filter((item) => item?.contractAddress)
-        //     .map((item) => {
-        //       priceMobulaSubscribe(
-        //         [item?.contractAddress],
-        //         item?.chain,
-        //         (data) => {
-        //           marketPriceToken = {
-        //             id: data.id,
-        //             market_price: data.price,
-        //           };
-        //         }
-        //       );
-        //     });
-        // });
-
-        dataSubWS = filteredHoldingTokenData.map((item) => {
-          return {
-            symbol: item.symbol,
-            cmcId: item.cmc_id,
-          };
-        });
-      }
-    }
-  }
-
-  $: {
-    if (!isLoadingToken && dataSubWS && dataSubWS.length !== 0) {
-      let filteredData = [];
-      const symbolSet = new Set();
-
-      dataSubWS.forEach((item) => {
-        if (!symbolSet.has(item.symbol)) {
-          symbolSet.add(item.symbol);
-          filteredData.push(item);
-        }
-      });
-
-      filteredData?.map((item) => {
-        priceSubscribe([Number(item?.cmcId)], item?.chain, (data) => {
-          marketPriceToken = {
-            id: data.id,
-            market_price: data.price,
-          };
-        });
-      });
-    }
-  }
 
   // format initial data
   $: {

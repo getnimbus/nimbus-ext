@@ -1,7 +1,7 @@
 <script lang="ts">
   import { getChangeFromPercent, getChangePercent } from "~/chart-utils";
   import { i18n } from "~/lib/i18n";
-  import { wallet, typeWallet, isHidePortfolio, prices } from "~/store";
+  import { typeWallet, isHidePortfolio } from "~/store";
 
   import CountUpNumber from "~/components/CountUpNumber.svelte";
   import OverviewCard from "~/components/OverviewCard.svelte";
@@ -24,13 +24,7 @@
   $: unrealizedProfit = (dataTokenHolding || [])
     ?.filter((item) => Number(item?.amount) > 0 && Number(item?.avgCost) !== 0)
     ?.map((item) => {
-      const price = Number(
-        $prices[
-          `${item.item?.cmc_id || item?.contractAddress}-${item.chain}`
-        ] ||
-          item?.price?.price ||
-          0
-      );
+      const price = Number(item?.market_price || item?.price?.price || 0);
       const pnl =
         Number(item?.balance || 0) * price +
         Number(item?.profit?.totalGain || 0) -
