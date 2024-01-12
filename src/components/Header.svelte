@@ -692,22 +692,11 @@
 
       <div
         on:click={() => {
-          if ($user && Object.keys($user).length !== 0) {
-            navActive = "transactions";
-            queryClient.invalidateQueries(["users-me"]);
-          } else {
-            user.update((n) => (n = {}));
-            wallet.update((n) => (n = ""));
-            chain.update((n) => (n = ""));
-            typeWallet.update((n) => (n = ""));
-            queryClient.invalidateQueries(["list-address"]);
-          }
+          navActive = "transactions";
         }}
       >
         <Link
-          to={`${
-            $user && Object.keys($user).length !== 0 ? "transactions" : "/"
-          }`}
+          to={`/transactions?type=${$typeWallet}&chain=${$chain}&address=${$wallet}`}
         >
           <div
             class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:opacity-100 transition-all
@@ -1353,6 +1342,7 @@
   </div>
 </AppOverlay>
 
+<!-- Modal search -->
 <AppOverlay
   clickOutSideToClose
   isOpen={showPopoverSearch}
