@@ -231,7 +231,7 @@
           "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v", // USDC
       },
       onSuccess: ({ txid }) => {
-        toastMsg = `Swap token successful. Your tx id is ${txid}`;
+        toastMsg = `Swap token successful. Tx id is ${shorterAddress(txid)}`;
         isSuccessToast = true;
         trigger();
       },

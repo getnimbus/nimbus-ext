@@ -1,6 +1,5 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { priceSubscribe } from "~/lib/price-ws";
   import { i18n } from "~/lib/i18n";
   import {
     chain,
@@ -13,6 +12,8 @@
   } from "~/store";
   import { filterTokenValueType } from "~/utils";
   import { groupBy } from "lodash";
+  import { priceMobulaSubscribe } from "~/lib/price-mobulaWs";
+  import { priceSubscribe } from "~/lib/price-ws";
   import {
     Connection,
     clusterApiUrl,
@@ -147,7 +148,7 @@
           filteredUndefinedCmcHoldingTokenData.length > 0
         ) {
           filteredUndefinedCmcHoldingTokenData.map((item) => {
-            priceSubscribe([item?.symbol], false, "CEX", (data) => {
+            priceMobulaSubscribe([item?.symbol], "CEX", (data) => {
               marketPriceToken = {
                 id: data.id,
                 market_price: data.price,
@@ -160,12 +161,16 @@
 
         chainList.map((chain) => {
           groupFilteredNullCmcHoldingTokenData[chain].map((item) => {
-            priceSubscribe([item?.contractAddress], true, chain, (data) => {
-              marketPriceToken = {
-                id: data.id,
-                market_price: data.price,
-              };
-            });
+            priceMobulaSubscribe(
+              [item?.contractAddress],
+              item?.chain,
+              (data) => {
+                marketPriceToken = {
+                  id: data.id,
+                  market_price: data.price,
+                };
+              }
+            );
           });
         });
 
@@ -216,17 +221,12 @@
       });
 
       filteredData?.map((item) => {
-        priceSubscribe(
-          [Number(item?.cmcId)],
-          false,
-          $typeWallet !== "CEX" ? "" : "CEX",
-          (data) => {
-            marketPriceToken = {
-              id: data.id,
-              market_price: data.price,
-            };
-          }
-        );
+        priceSubscribe([Number(item?.cmcId)], (data) => {
+          marketPriceToken = {
+            id: data.id,
+            market_price: data.price,
+          };
+        });
       });
     }
   }
