@@ -78,7 +78,7 @@ const chainSupport = [
   "MANTLE", // Mantle
 ];
 
-const authKey = import.meta.env.VITE_MOBULA_KEY
+const authKey = import.meta.env.VITE_MOBULA_KEY || "fe18f8be-644a-45a8-ad05-b088a5e61764"
 
 const handleFormatBlockChainId = (chain: string) => {
   let id = ""
@@ -98,6 +98,7 @@ const handleFormatBlockChainId = (chain: string) => {
     case "SUI": id = "sui"; break;
     case "MANTLE": id = "5000"; break;
   }
+  return id
 }
 
 export const priceMobulaSubscribe = (

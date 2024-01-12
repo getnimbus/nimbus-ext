@@ -103,49 +103,59 @@
           (item) => item?.cmc_id === null
         );
 
+        const filteredUndefinedCmcHoldingTokenData = dataTokenHolding?.filter(
+          (item) => item?.cmc_id === undefined
+        );
+
         const groupFilteredNullCmcHoldingTokenData = groupBy(
           filteredNullCmcHoldingTokenData,
           "chain"
         );
 
-        const filteredUndefinedCmcHoldingTokenData = dataTokenHolding?.filter(
-          (item) => item?.cmc_id === undefined
+        console.log(
+          "filteredUndefinedCmcHoldingTokenData: ",
+          filteredUndefinedCmcHoldingTokenData
+        );
+
+        console.log(
+          "filteredNullCmcHoldingTokenData: ",
+          filteredNullCmcHoldingTokenData
         );
 
         if (
           $typeWallet === "CEX" &&
           filteredUndefinedCmcHoldingTokenData.length > 0
         ) {
-          // filteredUndefinedCmcHoldingTokenData
-          //   .filter((item) => item?.symbol)
-          //   .map((item) => {
-          //     priceMobulaSubscribe([item?.symbol], "CEX", (data) => {
-          //       marketPriceToken = {
-          //         id: data.id,
-          //         market_price: data.price,
-          //       };
-          //     });
-          //   });
+          filteredUndefinedCmcHoldingTokenData
+            .filter((item) => item?.symbol)
+            .map((item) => {
+              priceMobulaSubscribe([item?.symbol], "CEX", (data) => {
+                marketPriceToken = {
+                  id: data.id,
+                  market_price: data.price,
+                };
+              });
+            });
         }
 
         const chainList = Object.keys(groupFilteredNullCmcHoldingTokenData);
 
-        // chainList.map((chain) => {
-        //   groupFilteredNullCmcHoldingTokenData[chain]
-        //     .filter((item) => item?.contractAddress)
-        //     .map((item) => {
-        //       priceMobulaSubscribe(
-        //         [item?.contractAddress],
-        //         item?.chain,
-        //         (data) => {
-        //           marketPriceToken = {
-        //             id: data.id,
-        //             market_price: data.price,
-        //           };
-        //         }
-        //       );
-        //     });
-        // });
+        chainList.map((chain) => {
+          groupFilteredNullCmcHoldingTokenData[chain]
+            .filter((item) => item?.contractAddress)
+            .map((item) => {
+              priceMobulaSubscribe(
+                [item?.contractAddress],
+                item?.chain,
+                (data) => {
+                  marketPriceToken = {
+                    id: data.id,
+                    market_price: data.price,
+                  };
+                }
+              );
+            });
+        });
 
         dataSubWS = filteredHoldingTokenData.map((item) => {
           return {
@@ -193,14 +203,14 @@
         }
       });
 
-      filteredData?.map((item) => {
-        priceSubscribe([Number(item?.cmcId)], item?.chain, (data) => {
-          marketPriceToken = {
-            id: data.id,
-            market_price: data.price,
-          };
-        });
-      });
+      // filteredData?.map((item) => {
+      //   priceSubscribe([Number(item?.cmcId)], item?.chain, (data) => {
+      //     marketPriceToken = {
+      //       id: data.id,
+      //       market_price: data.price,
+      //     };
+      //   });
+      // });
     }
   }
 
@@ -261,6 +271,7 @@
 
   // check market price and update price real-time
   $: {
+    console.log("marketPriceToken: ", marketPriceToken);
     if (marketPriceToken) {
       // update data token holding
       const formatDataWithMarketPrice = formatData.map((item) => {
