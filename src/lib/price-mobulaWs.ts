@@ -96,6 +96,7 @@ const handleFormatBlockChainId = (chain: string) => {
     case "SUI": id = "sui"; break;
     case "MANTLE": id = "5000"; break;
   }
+  return id
 }
 
 
