@@ -163,6 +163,7 @@
   $: realizedProfit = data?.profit?.realizedProfit
     ? Number(data?.profit?.realizedProfit)
     : 0;
+
   $: percentRealizedProfit =
     Number(data?.avgCost) === 0
       ? 0

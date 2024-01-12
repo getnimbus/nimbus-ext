@@ -32,22 +32,24 @@
   $: realizedProfit = data?.profit?.realizedProfit
     ? Number(data?.profit?.realizedProfit)
     : 0;
+
   $: percentRealizedProfit =
     Number(data?.avgCost) === 0
       ? 0
       : realizedProfit / Math.abs(Number(data?.avgCost));
 
+  $: pnl =
+    Number(data?.balance || 0) * Number(data?.market_price || 0) +
+    Number(data?.profit?.totalGain || 0) -
+    Number(data?.profit?.cost || 0);
+
   $: unrealizedProfit =
-    Number(data?.profit?.averageCost || 0) === 0
-      ? 0
-      : Number(data?.amount) *
-        (Number(data?.market_price) - Number(data?.profit.averageCost));
+    Number(data?.avgCost) === 0 ? 0 : Number(pnl) - realizedProfit;
 
   $: percentUnrealizedProfit =
-    Number(data?.profit?.averageCost || 0) === 0
+    Number(data?.avgCost) === 0
       ? 0
-      : (Number(data?.market_price) - Number(data?.profit?.averageCost)) /
-        Number(data?.profit?.averageCost || 0);
+      : unrealizedProfit / Math.abs(Number(data?.avgCost));
 
   const handleGetTradeHistory = async (address) => {
     const response: any = await nimbus.get(
