@@ -1043,7 +1043,7 @@
                 isLoadingBreakdownNfts={$queryAllNftHolding.some(
                   (item) => item.isFetching === true
                 )}
-                holdingTokenData={formatDataTokenHolding}
+                {holdingTokenData}
                 {overviewDataPerformance}
                 {dataPieChartToken}
                 {dataPieChartNft}
@@ -1072,7 +1072,6 @@
                   : $queryTokenHolding.isFetching}
                 {holdingTokenData}
                 {holdingNFTData}
-                {marketPriceToken}
                 dataVaults={$queryVaults.data}
                 {selectedTokenHolding}
                 {selectedDataPieChart}
@@ -1094,7 +1093,6 @@
                     : $queryTokenHolding.isFetching}
                   holdingTokenData={closedHoldingPosition}
                   {holdingNFTData}
-                  {marketPriceToken}
                 />
               {/if}
 
