@@ -257,7 +257,6 @@
 
   // check market price and update price real-time
   $: {
-    console.log("marketPriceToken: ", marketPriceToken);
     if (marketPriceToken) {
       // update data token holding
       const formatDataWithMarketPrice = formatData.map((item) => {
