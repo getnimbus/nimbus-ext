@@ -159,9 +159,12 @@ export const priceMobulaSubscribe = (
       mobulaSocket.addEventListener("message", (ev) => {
         const res = decodeEvent(ev);
         if (res?.data && Object.keys(res?.data).length !== 0) {
+
+          const keyData = Object.keys(res?.data)
+
           const formatData = {
-            ...res?.data[data.join(",")],
-            id: data.join(","),
+            ...res?.data[keyData[0]],
+            id: keyData[0],
           }
 
           if (!cached[key]) {
