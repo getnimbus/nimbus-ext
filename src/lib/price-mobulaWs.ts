@@ -99,9 +99,8 @@ const handleFormatBlockChainId = (chain: string) => {
   return id
 }
 
-
 export const priceMobulaSubscribe = (
-  data: number[] | string[],
+  data: any,
   chain: string,
   callback: (any) => void
 ) => {
@@ -116,7 +115,7 @@ export const priceMobulaSubscribe = (
         return;
       }
 
-      const key = `${data}-${chain}`;
+      const key = `${data?.symbol || data?.contract_address}-${chain}`;
 
       if (cached[key]) {
         // Return from cache
@@ -130,7 +129,7 @@ export const priceMobulaSubscribe = (
             authorization: authKey,
             payload: {
               assets: [
-                { symbol: data.join(",") },
+                { symbol: data?.symbol },
               ],
               interval: 15
             }
@@ -146,7 +145,10 @@ export const priceMobulaSubscribe = (
             payload: {
               assets: [
                 {
-                  address: data.join(","),
+                  name: data?.symbol
+                },
+                {
+                  address: data?.contract_address,
                   blockchain: handleFormatBlockChainId(chain)
                 },
               ],
@@ -159,6 +161,7 @@ export const priceMobulaSubscribe = (
       mobulaSocket.addEventListener("message", (ev) => {
         const res = decodeEvent(ev);
         if (res?.data && Object.keys(res?.data).length !== 0) {
+          console.log("data: ", res?.data)
 
           const keyData = Object.keys(res?.data)
 
