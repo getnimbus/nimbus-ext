@@ -459,7 +459,21 @@ export const mobulaChainConfig: Record<string, string> = {
   XDAI: "XDAI",
   BNB: "BNB Smart Chain (BEP20)",
   CRONOS: "Cronos",
+  KLAY: "Klaytn",
+  AURA: "Aurora",
+  BASE: "Base",
+  SUI: "Sui",
+  MANTLE: "Mantle"
 };
+
+export const chunkArray = (array, chunkSize) => {
+  let result = [];
+  for (let i = 0; i < array.length; i += chunkSize) {
+    let chunk = array.slice(i, i + chunkSize);
+    result.push(chunk);
+  }
+  return result;
+}
 
 export const detectedChain = (type) => {
   let chain;
