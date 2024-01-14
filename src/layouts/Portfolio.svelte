@@ -4,7 +4,7 @@
   import "dayjs/locale/vi";
   import relativeTime from "dayjs/plugin/relativeTime";
   dayjs.extend(relativeTime);
-  import { groupBy, isEmpty, flatten } from "lodash";
+  import { groupBy, flatten } from "lodash";
   import { onMount } from "svelte";
   import { i18n } from "~/lib/i18n";
   import {
@@ -19,7 +19,6 @@
     chain,
     typeWallet,
     selectedBundle,
-    userPublicAddress,
     triggerUpdateBundle,
   } from "~/store";
   import mixpanel from "mixpanel-browser";
@@ -42,9 +41,9 @@
   import Overview from "~/UI/Portfolio/Overview.svelte";
   import Testimonial from "~/UI/Testimonial/Testimonial.svelte";
   import Charts from "~/UI/Portfolio/Charts.svelte";
-  import RiskReturn from "~/UI/Portfolio/RiskReturn.svelte";
   import Holding from "~/UI/Portfolio/Holding.svelte";
   import ClosedTokenPosition from "~/UI/Portfolio/ClosedTokenPosition.svelte";
+  import RiskReturn from "~/UI/Portfolio/RiskReturn.svelte";
   import News from "~/UI/Portfolio/News.svelte";
   import Positions from "~/UI/Portfolio/Positions.svelte";
   import Button from "~/components/Button.svelte";
@@ -80,7 +79,7 @@
   let isErrorAllData = false;
   let isLoadingSync = false;
 
-  let overviewData: OverviewData = {
+  let overviewData: any = {
     breakdownToken: [],
     breakdownNft: [],
     overview: {
@@ -101,17 +100,17 @@
     updatedAt: "",
   };
 
-  let newsData: NewData = [];
+  let newsData: any = [];
 
   let marketPriceToken: any = {};
   let dataSubWS: any = [];
-  let holdingTokenData: TokenData = [];
-  let closedHoldingPosition: TokenData = [];
-  let holdingNFTData: NFTData = [];
+  let holdingTokenData: any = [];
+  let closedHoldingPosition: any = [];
+  let holdingNFTData: any = [];
   let formatDataTokenHolding = [];
   let formatDataNftHolding = [];
 
-  let positionsData: PositionData = [];
+  let positionsData: any = [];
   let overviewDataPerformance = {
     performance: [],
     portfolioChart: [],
@@ -153,7 +152,7 @@
 
   const getSyncStatus = async () => {
     try {
-      const response = await nimbus
+      const response: any = await nimbus
         .get(`/v2/address/${$wallet}/sync-status?chain=${$chain}`)
         .then((response) => response);
       dataUpdatedTime = response?.data?.lastSync;
@@ -178,7 +177,7 @@
     enabledFetchAllData = false;
 
     try {
-      let syncStatus = await getSyncStatus();
+      let syncStatus: any = await getSyncStatus();
 
       // sync data again
       if (type === "reload" || !syncStatus?.data?.lastSync) {
@@ -252,9 +251,9 @@
 
   //// POSITIONS
   const getPositions = async (address, chain) => {
-    const response: PositionDataRes = await nimbus
+    const response: any = await nimbus
       .get(`/address/${address}/positions?chain=${chain}`)
-      .then((response) => response.data.positions);
+      .then((response) => response?.data?.positions);
     return response;
   };
 
@@ -271,7 +270,7 @@
 
   //// OVERVIEW
   const getOverview = async (address, chain) => {
-    const response: OverviewDataRes = await nimbus
+    const response: any = await nimbus
       .get(`/v2/address/${address}/overview?chain=${chain}`)
       .then((response) => response?.data);
     return response;
@@ -346,7 +345,7 @@
 
   //// NFT HOLDING
   const getHoldingNFT = async (address, chain) => {
-    const response: HoldingNFTRes = await nimbus
+    const response: any = await nimbus
       .get(`/v2/address/${address}/nft-holding?chain=${chain}`)
       .then((response) => response?.data);
     return response;
@@ -411,7 +410,7 @@
       $typeWallet === "TON" ||
       $typeWallet === "AURA" ||
       $typeWallet === "ALGO";
-    const response = await nimbus.get(
+    const response: any = await nimbus.get(
       `/v2/investment/${address}/vaults?chain=${type ? $typeWallet : ""}`
     );
     return response?.data;
@@ -427,9 +426,9 @@
 
   //// TOKEN HOLDING
   const getHoldingToken = async (address, chain) => {
-    const response: HoldingTokenRes = await nimbus
+    const response: any = await nimbus
       .get(`/v2/address/${address}/holding?chain=${chain}`)
-      .then((response) => response.data);
+      .then((response) => response?.data);
     return response;
   };
 
