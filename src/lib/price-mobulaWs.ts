@@ -139,17 +139,33 @@ export const priceMobulaSubscribe = (
 
       if (chain !== "CEX" && chainSupport.includes(chain)) {
         mobulaSocket.send(
+          // JSON.stringify({
+          //   type: "market",
+          //   authorization: authKey,
+          //   payload: {
+          //     assets: [
+          //       {
+          //         name: data?.symbol
+          //       },
+          //       {
+          //         address: data?.contract_address,
+          //         blockchain: handleFormatBlockChainId(chain)
+          //       },
+          //     ],
+          //     interval: 15
+          //   }
+          // })
           JSON.stringify({
             type: "market",
             authorization: authKey,
             payload: {
               assets: [
                 {
-                  name: data?.symbol
+                  name: "USDC"
                 },
                 {
-                  address: data?.contract_address,
-                  blockchain: handleFormatBlockChainId(chain)
+                  address: "0x3cec942e767e35c514d551a49ee0ed7049978b01",
+                  blockchain: "100"
                 },
               ],
               interval: 15
@@ -160,9 +176,8 @@ export const priceMobulaSubscribe = (
 
       mobulaSocket.addEventListener("message", (ev) => {
         const res = decodeEvent(ev);
+        console.log("HELLO: ", res?.data)
         if (res?.data && Object.keys(res?.data).length !== 0) {
-          console.log("data: ", res?.data)
-
           const keyData = Object.keys(res?.data)
 
           const formatData = {
