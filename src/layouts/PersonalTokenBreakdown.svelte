@@ -424,19 +424,12 @@
             chunk
               .filter((item) => item?.symbol)
               .map((item) => {
-                priceMobulaSubscribe(
-                  {
-                    symbol: item?.symbol,
-                    contract_address: item?.contractAddress,
-                  },
-                  "CEX",
-                  (data) => {
-                    marketPriceToken = {
-                      id: data.id,
-                      market_price: data.price,
-                    };
-                  }
-                );
+                priceMobulaSubscribe([item?.symbol], "CEX", (data) => {
+                  marketPriceToken = {
+                    id: data.id,
+                    market_price: data.price,
+                  };
+                });
               });
           });
         }
@@ -452,10 +445,7 @@
               .filter((item) => item?.contractAddress)
               .map((item) => {
                 priceMobulaSubscribe(
-                  {
-                    symbol: item?.symbol,
-                    contract_address: item?.contractAddress,
-                  },
+                  [item?.contractAddress],
                   item?.chain,
                   (data) => {
                     marketPriceToken = {

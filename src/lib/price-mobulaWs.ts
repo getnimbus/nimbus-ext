@@ -100,7 +100,7 @@ const handleFormatBlockChainId = (chain: string) => {
 }
 
 export const priceMobulaSubscribe = (
-  data: any,
+  data: string[] | number[],
   chain: string,
   callback: (any) => void
 ) => {
@@ -115,7 +115,7 @@ export const priceMobulaSubscribe = (
         return;
       }
 
-      const key = `${data?.symbol || data?.contract_address}-${chain}`;
+      const key = `${data}-${chain}`;
 
       if (cached[key]) {
         // Return from cache
@@ -129,7 +129,7 @@ export const priceMobulaSubscribe = (
             authorization: authKey,
             payload: {
               assets: [
-                { symbol: data?.symbol },
+                { symbol: data.join(",") },
               ],
               interval: 15
             }
@@ -139,33 +139,14 @@ export const priceMobulaSubscribe = (
 
       if (chain !== "CEX" && chainSupport.includes(chain)) {
         mobulaSocket.send(
-          // JSON.stringify({
-          //   type: "market",
-          //   authorization: authKey,
-          //   payload: {
-          //     assets: [
-          //       {
-          //         name: data?.symbol
-          //       },
-          //       {
-          //         address: data?.contract_address,
-          //         blockchain: handleFormatBlockChainId(chain)
-          //       },
-          //     ],
-          //     interval: 15
-          //   }
-          // })
           JSON.stringify({
             type: "market",
             authorization: authKey,
             payload: {
               assets: [
                 {
-                  name: "USDC"
-                },
-                {
-                  address: "0x3cec942e767e35c514d551a49ee0ed7049978b01",
-                  blockchain: "100"
+                  address: data.join(","),
+                  blockchain: handleFormatBlockChainId(chain)
                 },
               ],
               interval: 15
@@ -176,7 +157,6 @@ export const priceMobulaSubscribe = (
 
       mobulaSocket.addEventListener("message", (ev) => {
         const res = decodeEvent(ev);
-        console.log("HELLO: ", res?.data)
         if (res?.data && Object.keys(res?.data).length !== 0) {
           const keyData = Object.keys(res?.data)
 
