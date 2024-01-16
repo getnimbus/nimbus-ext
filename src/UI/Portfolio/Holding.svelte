@@ -6,6 +6,8 @@
     typeWallet,
     isDarkMode,
     isShowModalNftList,
+    isShowModalNftDeList,
+    listingNft,
     selectedNftContractAddress,
     wallet,
     userPublicAddress,
@@ -14,12 +16,7 @@
   import { groupBy } from "lodash";
   import { priceMobulaSubscribe } from "~/lib/price-mobulaWs";
   import { priceSubscribe } from "~/lib/price-ws";
-  import {
-    Connection,
-    clusterApiUrl,
-    Transaction,
-    PublicKey,
-  } from "@solana/web3.js";
+  import { Connection, Transaction } from "@solana/web3.js";
   import bs58 from "bs58";
   import { nimbus } from "~/lib/network";
   import { WalletProvider } from "@svelte-on-solana/wallet-adapter-ui";
@@ -29,6 +26,7 @@
     SolflareWalletAdapter,
   } from "@solana/wallet-adapter-wallets";
   import { walletStore } from "@svelte-on-solana/wallet-adapter-core";
+  import { Buffer as BufferPolyfill } from "buffer";
 
   export let selectedWallet;
   export let isLoadingNFT;
@@ -52,6 +50,13 @@
   import SolanaAuth from "../Auth/SolanaAuth.svelte";
 
   const marketList = [{ value: "SniperMarket", label: "Sniper Market" }];
+  const marketDeList = [
+    { value: "SniperMarket", label: "Sniper Market" },
+    { value: "MagicEden", label: "Magic Eden" },
+    { value: "CoralCube", label: "Coral Cube" },
+    { value: "Hyperspace", label: "Hyperspace" },
+    { value: "Tensorswap", label: "Tensorswap" },
+  ];
 
   let filteredHoldingDataToken = [];
   let filteredHoldingDataNFT = [];
@@ -495,8 +500,6 @@
     new BackpackWalletAdapter(),
   ];
 
-  const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
-
   let userPublicAddressChain = "EVM";
   let userAddress = $userPublicAddress;
 
@@ -511,28 +514,48 @@
         params,
       });
       console.log("res: ", res);
+      // sendTrxOnSolChain(
+      //   "22FSm6kJkxoonuybePQfJiAPRZA6M4262Qa3QWdiK5ykMmUQJR12azmXMZRD8FrG7s56ooiopVuv2RkJn9zabM8q861XADGyXmPmMe6mWGrvwVJUjeNpLjrRpdBUJhXWYvANn7dhGL1L8BJ4WVetLMjqJzdjkUva18A1J3KN9c8GkL6wRPCsGgRbtBH7CYX6WCsimK775hZoNJaPBBPSU98X3zqL5GwYXaCSeRYt2rXoyZs4BPpozM7Rbpvj2ZEwzpFzxeFXueoWEZtfxCVEYetNMEmpnXS3u7s6M6hue6FoYDF8eKPjK64Br22SwMcfWF3dxUp6NwdhiJp3p4n7UmGsYVSLmSk7PJULwqTsRMaQAxqqmwQMcSD5GPE12ZonSd2pQ3UesJU7dMsNcT8de57x2f4YduaSnC7iiZZrQLVLirzKRifvUqyqDx2yPwHLt5NTE5uGQodv6zsvSqh937iFarqjBj3ZGwRuj3StFm2hqVe176ePaoBCpaf5Mq23Hh4Ftn9T7z3Gf86U7Xo6X2vfAiFtkiSSmhh4WXzJgBUhgcGToc331wvASKBH9xq1BFmeEnc6QLWYUDygbZnZ8dtz4bWg9GwSVmT2vMS2xXQcaS18s58GyeYJkVFoP2yeTYMVvyQNo87tx7gUvuJcnucKvV5WwdgLinLGoDx6ZEwn3rHYwfyXvc631QRnux9N4ctZaYzfbEApnkLWSmYdKebi3H6GzE28Y1VfjkPrF7tZqUgszF885XvpmAKEyWNmt9ERrj1GwsGQZMfz3ACFno8qfRpcEGpmiYkRiyRrrfS3mHjTm2JCa1UbvPrvatvUwouYyRGFcVdNJZQSCS6u8zshQ4jZk3Nm8dXVUCUwrMwcELo1wHXtx5KzDswS65LJ4kCqi5UirrBDXY8goC5Rjrp7ReopB2NYgpv1BD9iJ9f8HxrTZH6KTtzuT3Spw3rafq2L6agkFtsTFiCUUq8KFfdYbXT"
+      // );
     } catch (e) {
       console.log(e);
     }
   };
 
-  const approveSolTrx = async (data: any) => {
+  const onSubmitDeListNFT = async () => {
+    const params = {
+      mintAddress: $selectedNftContractAddress,
+      marketplace: $listingNft?.marketplace,
+    };
     try {
-      // Serialized transaction data
-      const txBuffer = new Uint8Array([
-        /* your tx buffer data here */
-      ]);
+      const res = await nimbus.get(`/v2/address/${$wallet}/nft/delist`, {
+        params,
+      });
+      console.log("res: ", res);
+      // sendTrxOnSolChain(
+      //   "22FSm6kJkxoonuybePQfJiAPRZA6M4262Qa3QWdiK5ykMmUQJR12azmXMZRD8FrG7s56ooiopVuv2RkJn9zabM8q861XADGyXmPmMe6mWGrvwVJUjeNpLjrRpdBUJhXWYvANn7dhGL1L8BJ4WVetLMjqJzdjkUva18A1J3KN9c8GkL6wRPCsGgRbtBH7CYX6WCsimK775hZoNJaPBBPSU98X3zqL5GwYXaCSeRYt2rXoyZs4BPpozM7Rbpvj2ZEwzpFzxeFXueoWEZtfxCVEYetNMEmpnXS3u7s6M6hue6FoYDF8eKPjK64Br22SwMcfWF3dxUp6NwdhiJp3p4n7UmGsYVSLmSk7PJULwqTsRMaQAxqqmwQMcSD5GPE12ZonSd2pQ3UesJU7dMsNcT8de57x2f4YduaSnC7iiZZrQLVLirzKRifvUqyqDx2yPwHLt5NTE5uGQodv6zsvSqh937iFarqjBj3ZGwRuj3StFm2hqVe176ePaoBCpaf5Mq23Hh4Ftn9T7z3Gf86U7Xo6X2vfAiFtkiSSmhh4WXzJgBUhgcGToc331wvASKBH9xq1BFmeEnc6QLWYUDygbZnZ8dtz4bWg9GwSVmT2vMS2xXQcaS18s58GyeYJkVFoP2yeTYMVvyQNo87tx7gUvuJcnucKvV5WwdgLinLGoDx6ZEwn3rHYwfyXvc631QRnux9N4ctZaYzfbEApnkLWSmYdKebi3H6GzE28Y1VfjkPrF7tZqUgszF885XvpmAKEyWNmt9ERrj1GwsGQZMfz3ACFno8qfRpcEGpmiYkRiyRrrfS3mHjTm2JCa1UbvPrvatvUwouYyRGFcVdNJZQSCS6u8zshQ4jZk3Nm8dXVUCUwrMwcELo1wHXtx5KzDswS65LJ4kCqi5UirrBDXY8goC5Rjrp7ReopB2NYgpv1BD9iJ9f8HxrTZH6KTtzuT3Spw3rafq2L6agkFtsTFiCUUq8KFfdYbXT"
+      // );
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const sendTrxOnSolChain = async (trx: any) => {
+    try {
+      const txBuffer = BufferPolyfill.from(trx, "base64");
       const transaction = Transaction.from(txBuffer);
 
-      const signedTransaction = await $walletStore.signTransaction(transaction);
-
-      // Send the signed transaction
-      const signature = await connection.sendRawTransaction(
-        signedTransaction.serialize()
+      const connection = new Connection(
+        "https://devnet-rpc.shyft.to?api_key=gsusEvomKHQwwltu" // DEVNET
+        // "https://rpc.shyft.to?api_key=b4feHxaBppbRqTHc" // PROD
+        // "https://rpc.shyft.to?api_key=gsusEvomKHQwwltu"
       );
-      await connection.confirmTransaction(signature, "confirmed");
+      const result = await $walletStore.sendTransaction(
+        transaction,
+        connection
+      );
 
-      console.log("Transaction approved and sent. Signature:", signature);
+      console.log("result:", result);
     } catch (e) {
       console.log(e);
     }
@@ -553,9 +576,6 @@
       handleValidateAddress(userAddress);
     }
   }
-
-  $: console.log("userAddress: ", userAddress);
-  $: console.log("selectedNftContractAddress: ", $wallet);
 </script>
 
 <div
@@ -1062,11 +1082,12 @@
             >
           </div>
           <div class="xl:w-[120px] w-full">
-            <Button
+            <!-- <Button
               type="submit"
               isLoading={false}
               disabled={userAddress !== $wallet}>Submit</Button
-            >
+            > -->
+            <Button type="submit" isLoading={false}>Submit</Button>
           </div>
         </div>
       </form>
@@ -1075,6 +1096,92 @@
     <div class="flex flex-col items-center gap-4">
       <div class="font-medium xl:title-3 title-1">
         Connect your Solana wallet to list NFT
+      </div>
+      <SolanaAuth text="Connect wallet" />
+    </div>
+  {/if}
+</AppOverlay>
+
+<!-- Modal de-list nft  -->
+<AppOverlay
+  clickOutSideToClose
+  isOpen={$isShowModalNftDeList}
+  on:close={() => {
+    isShowModalNftDeList.update((n) => (n = false));
+  }}
+>
+  {#if userPublicAddressChain === "SOL" && solanaPublicAddress}
+    <div class="flex flex-col gap-4">
+      <div class="flex items-center gap-4">
+        <div class="font-medium xl:title-3 title-1">Your list NFT</div>
+        <SolanaAuth text="Connect wallet" />
+      </div>
+      <form
+        on:submit|preventDefault={onSubmitDeListNFT}
+        class="flex flex-col xl:gap-3 gap-10"
+      >
+        <div
+          class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
+            nftListPrice && !$isDarkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
+          }`}
+        >
+          <div class="xl:text-base text-2xl text-[#666666] font-medium">
+            Price ({$typeWallet})
+          </div>
+          <input
+            type="text"
+            id="price"
+            name="price"
+            required
+            placeholder="Your NFT price"
+            value={$listingNft?.price}
+            class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
+              !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+            }`}
+          />
+        </div>
+
+        <div class="flex items-center gap-3 px-3">
+          <div class="xl:text-base text-2xl text-[#666666] font-medium">
+            Market
+          </div>
+          <Select
+            type="chain"
+            disabled
+            positionSelectList="left-0"
+            listSelect={marketDeList}
+            selected={marketDeList.find(
+              (item) => item.value === $listingNft?.marketplace
+            )}
+          />
+        </div>
+
+        <div class="flex justify-end lg:gap-2 gap-6">
+          <div class="xl:w-[120px] w-full">
+            <Button
+              variant="secondary"
+              on:click={() => {
+                isShowModalNftList.update((n) => (n = false));
+              }}
+            >
+              Cancel</Button
+            >
+          </div>
+          <div class="xl:w-[120px] w-full">
+            <!-- <Button
+              type="submit"
+              isLoading={false}
+              disabled={userAddress !== $wallet}>Submit</Button
+            > -->
+            <Button type="submit" isLoading={false}>Submit</Button>
+          </div>
+        </div>
+      </form>
+    </div>
+  {:else}
+    <div class="flex flex-col items-center gap-4">
+      <div class="font-medium xl:title-3 title-1">
+        Connect your Solana wallet to de-list NFT
       </div>
       <SolanaAuth text="Connect wallet" />
     </div>

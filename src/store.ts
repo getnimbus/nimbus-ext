@@ -17,6 +17,8 @@ export const userId = writable("");
 export const userPublicAddress = writable("");
 export const triggerUpdateBundle = writable(false);
 export const isShowModalNftList = writable(false);
+export const isShowModalNftDeList = writable(false);
+export const listingNft = writable({});
 export const selectedNftContractAddress = writable("");
 export const detectParams = writable(window.location.pathname);
 

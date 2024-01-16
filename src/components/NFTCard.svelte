@@ -3,6 +3,8 @@
     typeWallet,
     isDarkMode,
     isShowModalNftList,
+    isShowModalNftDeList,
+    listingNft,
     selectedNftContractAddress,
   } from "~/store";
   import { shorterName } from "~/utils";
@@ -160,17 +162,32 @@
       >
         <div class="text-[#616b84]">Action</div>
         <div class="flex flex-col items-end">
-          <div
-            class="font-semibold text-blue-600 transition-all cursor-pointer hover:underline"
-            on:click={() => {
-              selectedNftContractAddress.update(
-                (n) => (n = data?.contractAddress)
-              );
-              isShowModalNftList.update((n) => (n = true));
-            }}
-          >
-            List
-          </div>
+          {#if data?.listing}
+            <div
+              class="font-semibold text-red-600 transition-all cursor-pointer hover:underline"
+              on:click={() => {
+                selectedNftContractAddress.update(
+                  (n) => (n = data?.contractAddress)
+                );
+                listingNft.update((n) => (n = data?.listing));
+                isShowModalNftDeList.update((n) => (n = true));
+              }}
+            >
+              De-list
+            </div>
+          {:else}
+            <div
+              class="font-semibold text-blue-600 transition-all cursor-pointer hover:underline"
+              on:click={() => {
+                selectedNftContractAddress.update(
+                  (n) => (n = data?.contractAddress)
+                );
+                isShowModalNftList.update((n) => (n = true));
+              }}
+            >
+              List
+            </div>
+          {/if}
         </div>
       </div>
     {/if}
