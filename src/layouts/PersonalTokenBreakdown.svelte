@@ -2,7 +2,7 @@
   import { onMount } from "svelte";
   import { Link } from "svelte-navigator";
   import { i18n } from "~/lib/i18n";
-  import { detectedChain, shorterName } from "~/utils";
+  import { detectedChain, shorterName, chunkArray } from "~/utils";
   import { nimbus } from "~/lib/network";
   import { groupBy, flatten, omit } from "lodash";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
@@ -416,30 +416,45 @@
           $typeWallet === "CEX" &&
           filteredUndefinedCmcHoldingTokenData.length > 0
         ) {
-          filteredUndefinedCmcHoldingTokenData.map((item) => {
-            priceMobulaSubscribe([item?.symbol], "CEX", (data) => {
-              marketPriceToken = {
-                id: data.id,
-                market_price: data.price,
-              };
-            });
+          const chunkedArray = chunkArray(
+            filteredUndefinedCmcHoldingTokenData,
+            100
+          );
+          chunkedArray.forEach((chunk) => {
+            chunk
+              .filter((item) => item?.symbol)
+              .map((item) => {
+                priceMobulaSubscribe([item?.symbol], "CEX", (data) => {
+                  marketPriceToken = {
+                    id: data.id,
+                    market_price: data.price,
+                  };
+                });
+              });
           });
         }
 
         const chainList = Object.keys(groupFilteredNullCmcHoldingTokenData);
-
         chainList.map((chain) => {
-          groupFilteredNullCmcHoldingTokenData[chain].map((item) => {
-            priceMobulaSubscribe(
-              [item?.contractAddress],
-              item?.chain,
-              (data) => {
-                marketPriceToken = {
-                  id: data.id,
-                  market_price: data.price,
-                };
-              }
-            );
+          const chunkedArray = chunkArray(
+            groupFilteredNullCmcHoldingTokenData[chain],
+            100
+          );
+          chunkedArray.forEach((chunk) => {
+            chunk
+              .filter((item) => item?.contractAddress)
+              .map((item) => {
+                priceMobulaSubscribe(
+                  [item?.contractAddress],
+                  item?.chain,
+                  (data) => {
+                    marketPriceToken = {
+                      id: data.id,
+                      market_price: data.price,
+                    };
+                  }
+                );
+              });
           });
         });
 
@@ -454,7 +469,7 @@
         });
 
         filteredData?.map((item) => {
-          priceSubscribe([Number(item?.cmc_id)], (data) => {
+          priceSubscribe([Number(item?.cmc_id)], item?.chain, (data) => {
             marketPriceToken = {
               id: data.id,
               market_price: data.price,
@@ -501,7 +516,6 @@
         }
         return { ...item };
       });
-
       formatData = formatDataWithMarketPrice.sort((a, b) => {
         if (a.value < b.value) {
           return 1;
@@ -511,7 +525,6 @@
         }
         return 0;
       });
-
       sumTokens = formatDataWithMarketPrice.reduce(
         (prev, item: any) => prev + item.value,
         0

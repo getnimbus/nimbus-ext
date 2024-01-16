@@ -1,5 +1,3 @@
-import { prices } from "~/store";
-
 type iFN = () => void;
 
 export let mobulaSocket: null | WebSocket;
@@ -78,7 +76,7 @@ const chainSupport = [
   "MANTLE", // Mantle
 ];
 
-const authKey = "fe18f8be-644a-45a8-ad05-b088a5e61764"
+const authKey = import.meta.env.VITE_MOBULA_KEY || "fe18f8be-644a-45a8-ad05-b088a5e61764"
 
 const handleFormatBlockChainId = (chain: string) => {
   let id = ""
@@ -98,10 +96,11 @@ const handleFormatBlockChainId = (chain: string) => {
     case "SUI": id = "sui"; break;
     case "MANTLE": id = "5000"; break;
   }
+  return id
 }
 
 export const priceMobulaSubscribe = (
-  data: number[] | string[],
+  data: string[] | number[],
   chain: string,
   callback: (any) => void
 ) => {
@@ -159,9 +158,11 @@ export const priceMobulaSubscribe = (
       mobulaSocket.addEventListener("message", (ev) => {
         const res = decodeEvent(ev);
         if (res?.data && Object.keys(res?.data).length !== 0) {
+          const keyData = Object.keys(res?.data)
+
           const formatData = {
-            ...res,
-            id: data.join(","),
+            ...res?.data[keyData[0]],
+            id: keyData[0],
           }
 
           if (!cached[key]) {
@@ -170,13 +171,6 @@ export const priceMobulaSubscribe = (
           }
 
           callback(formatData);
-
-          prices.update((value) => {
-            return {
-              ...value,
-              [key]: formatData?.price,
-            };
-          });
         }
       });
     }
