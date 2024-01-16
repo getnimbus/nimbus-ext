@@ -510,7 +510,6 @@
       const res = await nimbus.get(`/v2/address/${$wallet}/nft/list`, {
         params,
       });
-      console.log("res: ", res);
     } catch (e) {
       console.log(e);
     }
@@ -531,8 +530,6 @@
         signedTransaction.serialize()
       );
       await connection.confirmTransaction(signature, "confirmed");
-
-      console.log("Transaction approved and sent. Signature:", signature);
     } catch (e) {
       console.log(e);
     }
@@ -553,9 +550,6 @@
       handleValidateAddress(userAddress);
     }
   }
-
-  $: console.log("userAddress: ", userAddress);
-  $: console.log("selectedNftContractAddress: ", $wallet);
 </script>
 
 <div
