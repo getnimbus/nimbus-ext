@@ -2,7 +2,7 @@
   import { onMount } from "svelte";
   import { Link } from "svelte-navigator";
   import { i18n } from "~/lib/i18n";
-  import { detectedChain, shorterName } from "~/utils";
+  import { detectedChain, shorterName, chunkArray } from "~/utils";
   import { nimbus } from "~/lib/network";
   import { groupBy, flatten, omit } from "lodash";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
@@ -416,35 +416,46 @@
           $typeWallet === "CEX" &&
           filteredUndefinedCmcHoldingTokenData.length > 0
         ) {
-          filteredUndefinedCmcHoldingTokenData
-            .filter((item) => item?.symbol)
-            .map((item) => {
-              priceMobulaSubscribe([item?.symbol], "CEX", (data) => {
-                marketPriceToken = {
-                  id: data.id,
-                  market_price: data.price,
-                };
-              });
-            });
-        }
-
-        const chainList = Object.keys(groupFilteredNullCmcHoldingTokenData);
-
-        chainList.map((chain) => {
-          groupFilteredNullCmcHoldingTokenData[chain]
-            .filter((item) => item?.contractAddress)
-            .map((item) => {
-              priceMobulaSubscribe(
-                [item?.contractAddress],
-                item?.chain,
-                (data) => {
+          const chunkedArray = chunkArray(
+            filteredUndefinedCmcHoldingTokenData,
+            100
+          );
+          chunkedArray.forEach((chunk) => {
+            chunk
+              .filter((item) => item?.symbol)
+              .map((item) => {
+                priceMobulaSubscribe([item?.symbol], "CEX", (data) => {
                   marketPriceToken = {
                     id: data.id,
                     market_price: data.price,
                   };
-                }
-              );
-            });
+                });
+              });
+          });
+        }
+
+        const chainList = Object.keys(groupFilteredNullCmcHoldingTokenData);
+        chainList.map((chain) => {
+          const chunkedArray = chunkArray(
+            groupFilteredNullCmcHoldingTokenData[chain],
+            100
+          );
+          chunkedArray.forEach((chunk) => {
+            chunk
+              .filter((item) => item?.contractAddress)
+              .map((item) => {
+                priceMobulaSubscribe(
+                  [item?.contractAddress],
+                  item?.chain,
+                  (data) => {
+                    marketPriceToken = {
+                      id: data.id,
+                      market_price: data.price,
+                    };
+                  }
+                );
+              });
+          });
         });
 
         let filteredData = [];

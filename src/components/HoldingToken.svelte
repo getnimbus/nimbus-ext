@@ -247,6 +247,7 @@
       window.Jupiter.init(config);
     });
   };
+
   $: {
     if (showSideTokenDetail) {
       mixpanel.track("token_detail_page", {
