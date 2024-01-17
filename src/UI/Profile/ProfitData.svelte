@@ -33,9 +33,28 @@
     return response?.data;
   };
 
+  const handleValidateAddress = async (address: string) => {
+    try {
+      const response = await nimbus.get(`/v2/address/${address}/validate`);
+      return response?.data;
+    } catch (e) {
+      console.error(e);
+      return {
+        address: "",
+        type: "",
+      };
+    }
+  };
+
   const getHoldingToken = async (address) => {
+    const validateAccount = await handleValidateAddress(address);
+
     const response = await nimbus
-      .get(`/v2/address/${address}/holding?chain=ALL`)
+      .get(
+        `/v2/address/${address}/holding?chain=${
+          validateAccount?.type === "EVM" ? "ALL" : validateAccount?.type
+        }`
+      )
       .then((response) => response.data);
     return response;
   };
