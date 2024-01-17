@@ -17,7 +17,6 @@
   import { priceMobulaSubscribe } from "~/lib/price-mobulaWs";
   import { priceSubscribe } from "~/lib/price-ws";
   import { Connection, Transaction } from "@solana/web3.js";
-  import bs58 from "bs58";
   import { nimbus } from "~/lib/network";
   import { WalletProvider } from "@svelte-on-solana/wallet-adapter-ui";
   import {
@@ -513,10 +512,9 @@
       const res = await nimbus.get(`/v2/address/${$wallet}/nft/list`, {
         params,
       });
-      console.log("res: ", res);
-      // sendTrxOnSolChain(
-      //   "22FSm6kJkxoonuybePQfJiAPRZA6M4262Qa3QWdiK5ykMmUQJR12azmXMZRD8FrG7s56ooiopVuv2RkJn9zabM8q861XADGyXmPmMe6mWGrvwVJUjeNpLjrRpdBUJhXWYvANn7dhGL1L8BJ4WVetLMjqJzdjkUva18A1J3KN9c8GkL6wRPCsGgRbtBH7CYX6WCsimK775hZoNJaPBBPSU98X3zqL5GwYXaCSeRYt2rXoyZs4BPpozM7Rbpvj2ZEwzpFzxeFXueoWEZtfxCVEYetNMEmpnXS3u7s6M6hue6FoYDF8eKPjK64Br22SwMcfWF3dxUp6NwdhiJp3p4n7UmGsYVSLmSk7PJULwqTsRMaQAxqqmwQMcSD5GPE12ZonSd2pQ3UesJU7dMsNcT8de57x2f4YduaSnC7iiZZrQLVLirzKRifvUqyqDx2yPwHLt5NTE5uGQodv6zsvSqh937iFarqjBj3ZGwRuj3StFm2hqVe176ePaoBCpaf5Mq23Hh4Ftn9T7z3Gf86U7Xo6X2vfAiFtkiSSmhh4WXzJgBUhgcGToc331wvASKBH9xq1BFmeEnc6QLWYUDygbZnZ8dtz4bWg9GwSVmT2vMS2xXQcaS18s58GyeYJkVFoP2yeTYMVvyQNo87tx7gUvuJcnucKvV5WwdgLinLGoDx6ZEwn3rHYwfyXvc631QRnux9N4ctZaYzfbEApnkLWSmYdKebi3H6GzE28Y1VfjkPrF7tZqUgszF885XvpmAKEyWNmt9ERrj1GwsGQZMfz3ACFno8qfRpcEGpmiYkRiyRrrfS3mHjTm2JCa1UbvPrvatvUwouYyRGFcVdNJZQSCS6u8zshQ4jZk3Nm8dXVUCUwrMwcELo1wHXtx5KzDswS65LJ4kCqi5UirrBDXY8goC5Rjrp7ReopB2NYgpv1BD9iJ9f8HxrTZH6KTtzuT3Spw3rafq2L6agkFtsTFiCUUq8KFfdYbXT"
-      // );
+      if (res?.data && res?.data?.tx) {
+        sendTrxOnSolChain(res?.data?.tx);
+      }
     } catch (e) {
       console.log(e);
     }
@@ -531,10 +529,9 @@
       const res = await nimbus.get(`/v2/address/${$wallet}/nft/delist`, {
         params,
       });
-      console.log("res: ", res);
-      // sendTrxOnSolChain(
-      //   "22FSm6kJkxoonuybePQfJiAPRZA6M4262Qa3QWdiK5ykMmUQJR12azmXMZRD8FrG7s56ooiopVuv2RkJn9zabM8q861XADGyXmPmMe6mWGrvwVJUjeNpLjrRpdBUJhXWYvANn7dhGL1L8BJ4WVetLMjqJzdjkUva18A1J3KN9c8GkL6wRPCsGgRbtBH7CYX6WCsimK775hZoNJaPBBPSU98X3zqL5GwYXaCSeRYt2rXoyZs4BPpozM7Rbpvj2ZEwzpFzxeFXueoWEZtfxCVEYetNMEmpnXS3u7s6M6hue6FoYDF8eKPjK64Br22SwMcfWF3dxUp6NwdhiJp3p4n7UmGsYVSLmSk7PJULwqTsRMaQAxqqmwQMcSD5GPE12ZonSd2pQ3UesJU7dMsNcT8de57x2f4YduaSnC7iiZZrQLVLirzKRifvUqyqDx2yPwHLt5NTE5uGQodv6zsvSqh937iFarqjBj3ZGwRuj3StFm2hqVe176ePaoBCpaf5Mq23Hh4Ftn9T7z3Gf86U7Xo6X2vfAiFtkiSSmhh4WXzJgBUhgcGToc331wvASKBH9xq1BFmeEnc6QLWYUDygbZnZ8dtz4bWg9GwSVmT2vMS2xXQcaS18s58GyeYJkVFoP2yeTYMVvyQNo87tx7gUvuJcnucKvV5WwdgLinLGoDx6ZEwn3rHYwfyXvc631QRnux9N4ctZaYzfbEApnkLWSmYdKebi3H6GzE28Y1VfjkPrF7tZqUgszF885XvpmAKEyWNmt9ERrj1GwsGQZMfz3ACFno8qfRpcEGpmiYkRiyRrrfS3mHjTm2JCa1UbvPrvatvUwouYyRGFcVdNJZQSCS6u8zshQ4jZk3Nm8dXVUCUwrMwcELo1wHXtx5KzDswS65LJ4kCqi5UirrBDXY8goC5Rjrp7ReopB2NYgpv1BD9iJ9f8HxrTZH6KTtzuT3Spw3rafq2L6agkFtsTFiCUUq8KFfdYbXT"
-      // );
+      if (res?.data && res?.data?.tx) {
+        sendTrxOnSolChain(res?.data?.tx);
+      }
     } catch (e) {
       console.log(e);
     }
@@ -1082,12 +1079,12 @@
             >
           </div>
           <div class="xl:w-[120px] w-full">
-            <!-- <Button
+            <Button
               type="submit"
               isLoading={false}
               disabled={userAddress !== $wallet}>Submit</Button
-            > -->
-            <Button type="submit" isLoading={false}>Submit</Button>
+            >
+            <!-- <Button type="submit" isLoading={false}>Submit</Button> -->
           </div>
         </div>
       </form>
@@ -1168,12 +1165,12 @@
             >
           </div>
           <div class="xl:w-[120px] w-full">
-            <!-- <Button
+            <Button
               type="submit"
               isLoading={false}
               disabled={userAddress !== $wallet}>Submit</Button
-            > -->
-            <Button type="submit" isLoading={false}>Submit</Button>
+            >
+            <!-- <Button type="submit" isLoading={false}>Submit</Button> -->
           </div>
         </div>
       </form>
