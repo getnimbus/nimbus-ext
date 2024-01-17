@@ -512,6 +512,12 @@
     id="MavaWebChat"
     data-token="b379b36e08fcb3d988cd60fb45deb82f713f3daa4f18c66f8b9c479ff42bf3b5"
   ></script> -->
+  <!-- <script
+    defer
+    src="https://widget.mava.app"
+    id="MavaWebChat"
+    data-token="b379b36e08fcb3d988cd60fb45deb82f713f3daa4f18c66f8b9c479ff42bf3b5"
+  ></script> -->
   <script>
     !(function (e, t) {
       const a = "featurebase-sdk";
@@ -867,7 +873,7 @@
   </div>
 </div>
 
-<NimbusBanner />
+<!-- <NimbusBanner /> -->
 
 <!-- Mobile header -->
 <div
