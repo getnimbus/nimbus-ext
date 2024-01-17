@@ -127,6 +127,19 @@
     };
   });
 
+  const handleValidateAddress = async (address: string) => {
+    try {
+      const response = await nimbus.get(`/v2/address/${address}/validate`);
+      return response?.data;
+    } catch (e) {
+      console.error(e);
+      return {
+        address: "",
+        type: "",
+      };
+    }
+  };
+
   const getPersonalizeTag = async (address) => {
     const response = await nimbus
       .get(`/address/${address}/personalize/tag`)
@@ -181,8 +194,15 @@
   };
 
   const getHoldingToken = async (address, chain) => {
+    let addressChain = chain;
+
+    if (addressChain === "ALL") {
+      const validateAccount = await handleValidateAddress(address);
+      addressChain = validateAccount?.type;
+    }
+
     const response: HoldingTokenRes = await nimbus
-      .get(`/v2/address/${address}/holding?chain=${chain}`)
+      .get(`/v2/address/${address}/holding?chain=${addressChain}`)
       .then((response) => response.data);
     return response;
   };

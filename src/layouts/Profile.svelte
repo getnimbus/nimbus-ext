@@ -177,14 +177,31 @@
     }
   };
 
+  const handleValidateAddress = async (address: string) => {
+    try {
+      const response = await nimbus.get(`/v2/address/${address}/validate`);
+      return response?.data;
+    } catch (e) {
+      console.error(e);
+      return {
+        address: "",
+        type: "",
+      };
+    }
+  };
+
   const getListAddress = async () => {
     const response: any = await nimbus.get("/accounts/list");
     return response?.data;
   };
 
   const getHoldingNFT = async (address) => {
+    const validateAccount = await handleValidateAddress(address);
+
     const response = await nimbus.get(
-      `/v2/address/${address}/nft-holding?chain=ALL`
+      `/v2/address/${address}/nft-holding?chain=${
+        validateAccount?.type === "EVM" ? "ALL" : validateAccount?.type
+      }`
     );
     return response?.data;
   };
