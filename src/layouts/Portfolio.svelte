@@ -431,14 +431,15 @@
 
   //// VAULTS
   const getVaults = async (address, chain) => {
-    let type =
-      $typeWallet === "SOL" ||
-      $typeWallet === "NEAR" ||
-      $typeWallet === "TON" ||
-      $typeWallet === "AURA" ||
-      $typeWallet === "ALGO";
+    let addressChain = chain;
+
+    if (addressChain === "ALL") {
+      const validateAccount = await handleValidateAddress(address);
+      addressChain = validateAccount?.type;
+    }
+
     const response: any = await nimbus.get(
-      `/v2/investment/${address}/vaults?chain=${type ? $typeWallet : ""}`
+      `/v2/investment/${address}/vaults?chain=${addressChain}`
     );
     return response?.data;
   };
