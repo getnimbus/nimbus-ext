@@ -140,6 +140,19 @@
 
   let chainListQueries = [];
 
+  const handleValidateAddress = async (address: string) => {
+    try {
+      const response = await nimbus.get(`/v2/address/${address}/validate`);
+      return response?.data;
+    } catch (e) {
+      console.error(e);
+      return {
+        address: "",
+        type: "",
+      };
+    }
+  };
+
   const getSync = async () => {
     try {
       await nimbus
@@ -270,8 +283,15 @@
 
   //// OVERVIEW
   const getOverview = async (address, chain) => {
+    let addressChain = chain;
+
+    if (addressChain === "ALL") {
+      const validateAccount = await handleValidateAddress(address);
+      addressChain = validateAccount?.type;
+    }
+
     const response: any = await nimbus
-      .get(`/v2/address/${address}/overview?chain=${chain}`)
+      .get(`/v2/address/${address}/overview?chain=${addressChain}`)
       .then((response) => response?.data);
     return response;
   };
@@ -345,8 +365,15 @@
 
   //// NFT HOLDING
   const getHoldingNFT = async (address, chain) => {
+    let addressChain = chain;
+
+    if (addressChain === "ALL") {
+      const validateAccount = await handleValidateAddress(address);
+      addressChain = validateAccount?.type;
+    }
+
     const response: any = await nimbus
-      .get(`/v2/address/${address}/nft-holding?chain=${chain}`)
+      .get(`/v2/address/${address}/nft-holding?chain=${addressChain}`)
       .then((response) => response?.data);
     return response;
   };
@@ -426,8 +453,15 @@
 
   //// TOKEN HOLDING
   const getHoldingToken = async (address, chain) => {
+    let addressChain = chain;
+
+    if (addressChain === "ALL") {
+      const validateAccount = await handleValidateAddress(address);
+      addressChain = validateAccount?.type;
+    }
+
     const response: any = await nimbus
-      .get(`/v2/address/${address}/holding?chain=${chain}`)
+      .get(`/v2/address/${address}/holding?chain=${addressChain}`)
       .then((response) => response?.data);
     return response;
   };
