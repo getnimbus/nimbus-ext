@@ -12,12 +12,13 @@
     wallet,
     userPublicAddress,
   } from "~/store";
+  import { Toast } from "flowbite-svelte";
+  import { blur } from "svelte/transition";
   import { filterTokenValueType, chunkArray } from "~/utils";
   import { groupBy } from "lodash";
   import { priceMobulaSubscribe } from "~/lib/price-mobulaWs";
   import { priceSubscribe } from "~/lib/price-ws";
   import { Connection, Transaction } from "@solana/web3.js";
-  import bs58 from "bs58";
   import { nimbus } from "~/lib/network";
   import { WalletProvider } from "@svelte-on-solana/wallet-adapter-ui";
   import {
@@ -500,6 +501,23 @@
     new BackpackWalletAdapter(),
   ];
 
+  let toastMsg = "";
+  let isSuccessToast = false;
+  let counter = 5;
+  let showToast = false;
+
+  const trigger = () => {
+    showToast = true;
+    counter = 5;
+    timeout();
+  };
+
+  const timeout = () => {
+    if (--counter > 0) return setTimeout(timeout, 1000);
+    showToast = false;
+    isSuccessToast = false;
+  };
+
   let userPublicAddressChain = "EVM";
   let userAddress = $userPublicAddress;
 
@@ -513,10 +531,9 @@
       const res = await nimbus.get(`/v2/address/${$wallet}/nft/list`, {
         params,
       });
-      console.log("res: ", res);
-      // sendTrxOnSolChain(
-      //   "22FSm6kJkxoonuybePQfJiAPRZA6M4262Qa3QWdiK5ykMmUQJR12azmXMZRD8FrG7s56ooiopVuv2RkJn9zabM8q861XADGyXmPmMe6mWGrvwVJUjeNpLjrRpdBUJhXWYvANn7dhGL1L8BJ4WVetLMjqJzdjkUva18A1J3KN9c8GkL6wRPCsGgRbtBH7CYX6WCsimK775hZoNJaPBBPSU98X3zqL5GwYXaCSeRYt2rXoyZs4BPpozM7Rbpvj2ZEwzpFzxeFXueoWEZtfxCVEYetNMEmpnXS3u7s6M6hue6FoYDF8eKPjK64Br22SwMcfWF3dxUp6NwdhiJp3p4n7UmGsYVSLmSk7PJULwqTsRMaQAxqqmwQMcSD5GPE12ZonSd2pQ3UesJU7dMsNcT8de57x2f4YduaSnC7iiZZrQLVLirzKRifvUqyqDx2yPwHLt5NTE5uGQodv6zsvSqh937iFarqjBj3ZGwRuj3StFm2hqVe176ePaoBCpaf5Mq23Hh4Ftn9T7z3Gf86U7Xo6X2vfAiFtkiSSmhh4WXzJgBUhgcGToc331wvASKBH9xq1BFmeEnc6QLWYUDygbZnZ8dtz4bWg9GwSVmT2vMS2xXQcaS18s58GyeYJkVFoP2yeTYMVvyQNo87tx7gUvuJcnucKvV5WwdgLinLGoDx6ZEwn3rHYwfyXvc631QRnux9N4ctZaYzfbEApnkLWSmYdKebi3H6GzE28Y1VfjkPrF7tZqUgszF885XvpmAKEyWNmt9ERrj1GwsGQZMfz3ACFno8qfRpcEGpmiYkRiyRrrfS3mHjTm2JCa1UbvPrvatvUwouYyRGFcVdNJZQSCS6u8zshQ4jZk3Nm8dXVUCUwrMwcELo1wHXtx5KzDswS65LJ4kCqi5UirrBDXY8goC5Rjrp7ReopB2NYgpv1BD9iJ9f8HxrTZH6KTtzuT3Spw3rafq2L6agkFtsTFiCUUq8KFfdYbXT"
-      // );
+      if (res?.data && res?.data?.tx) {
+        sendTrxOnSolChain(res?.data?.tx, "List");
+      }
     } catch (e) {
       console.log(e);
     }
@@ -531,16 +548,15 @@
       const res = await nimbus.get(`/v2/address/${$wallet}/nft/delist`, {
         params,
       });
-      console.log("res: ", res);
-      // sendTrxOnSolChain(
-      //   "22FSm6kJkxoonuybePQfJiAPRZA6M4262Qa3QWdiK5ykMmUQJR12azmXMZRD8FrG7s56ooiopVuv2RkJn9zabM8q861XADGyXmPmMe6mWGrvwVJUjeNpLjrRpdBUJhXWYvANn7dhGL1L8BJ4WVetLMjqJzdjkUva18A1J3KN9c8GkL6wRPCsGgRbtBH7CYX6WCsimK775hZoNJaPBBPSU98X3zqL5GwYXaCSeRYt2rXoyZs4BPpozM7Rbpvj2ZEwzpFzxeFXueoWEZtfxCVEYetNMEmpnXS3u7s6M6hue6FoYDF8eKPjK64Br22SwMcfWF3dxUp6NwdhiJp3p4n7UmGsYVSLmSk7PJULwqTsRMaQAxqqmwQMcSD5GPE12ZonSd2pQ3UesJU7dMsNcT8de57x2f4YduaSnC7iiZZrQLVLirzKRifvUqyqDx2yPwHLt5NTE5uGQodv6zsvSqh937iFarqjBj3ZGwRuj3StFm2hqVe176ePaoBCpaf5Mq23Hh4Ftn9T7z3Gf86U7Xo6X2vfAiFtkiSSmhh4WXzJgBUhgcGToc331wvASKBH9xq1BFmeEnc6QLWYUDygbZnZ8dtz4bWg9GwSVmT2vMS2xXQcaS18s58GyeYJkVFoP2yeTYMVvyQNo87tx7gUvuJcnucKvV5WwdgLinLGoDx6ZEwn3rHYwfyXvc631QRnux9N4ctZaYzfbEApnkLWSmYdKebi3H6GzE28Y1VfjkPrF7tZqUgszF885XvpmAKEyWNmt9ERrj1GwsGQZMfz3ACFno8qfRpcEGpmiYkRiyRrrfS3mHjTm2JCa1UbvPrvatvUwouYyRGFcVdNJZQSCS6u8zshQ4jZk3Nm8dXVUCUwrMwcELo1wHXtx5KzDswS65LJ4kCqi5UirrBDXY8goC5Rjrp7ReopB2NYgpv1BD9iJ9f8HxrTZH6KTtzuT3Spw3rafq2L6agkFtsTFiCUUq8KFfdYbXT"
-      // );
+      if (res?.data && res?.data?.tx) {
+        sendTrxOnSolChain(res?.data?.tx, "De-list");
+      }
     } catch (e) {
       console.log(e);
     }
   };
 
-  const sendTrxOnSolChain = async (trx: any) => {
+  const sendTrxOnSolChain = async (trx: any, type: string) => {
     try {
       const txBuffer = BufferPolyfill.from(trx, "base64");
       const transaction = Transaction.from(txBuffer);
@@ -554,8 +570,17 @@
         transaction,
         connection
       );
-
       console.log("result:", result);
+
+      if (result) {
+        toastMsg = `${type} your NFT successful`;
+        isSuccessToast = true;
+        trigger();
+      } else {
+        toastMsg = `Something wrong when ${type} your NFT. Please try again!`;
+        isSuccessToast = false;
+        trigger();
+      }
     } catch (e) {
       console.log(e);
     }
@@ -1082,12 +1107,12 @@
             >
           </div>
           <div class="xl:w-[120px] w-full">
-            <!-- <Button
+            <Button
               type="submit"
               isLoading={false}
               disabled={userAddress !== $wallet}>Submit</Button
-            > -->
-            <Button type="submit" isLoading={false}>Submit</Button>
+            >
+            <!-- <Button type="submit" isLoading={false}>Submit</Button> -->
           </div>
         </div>
       </form>
@@ -1168,12 +1193,12 @@
             >
           </div>
           <div class="xl:w-[120px] w-full">
-            <!-- <Button
+            <Button
               type="submit"
               isLoading={false}
               disabled={userAddress !== $wallet}>Submit</Button
-            > -->
-            <Button type="submit" isLoading={false}>Submit</Button>
+            >
+            <!-- <Button type="submit" isLoading={false}>Submit</Button> -->
           </div>
         </div>
       </form>
@@ -1189,6 +1214,51 @@
 </AppOverlay>
 
 <WalletProvider localStorageKey="walletAdapter" {wallets} autoConnect />
+
+{#if showToast}
+  <div class="fixed w-full top-3 right-3" style="z-index: 2147483648;">
+    <Toast
+      transition={blur}
+      params={{ amount: 10 }}
+      position="top-right"
+      color={isSuccessToast ? "green" : "red"}
+      bind:open={showToast}
+    >
+      <svelte:fragment slot="icon">
+        {#if isSuccessToast}
+          <svg
+            aria-hidden="true"
+            class="w-5 h-5"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+            ><path
+              fill-rule="evenodd"
+              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+              clip-rule="evenodd"
+            /></svg
+          >
+          <span class="sr-only">Check icon</span>
+        {:else}
+          <svg
+            aria-hidden="true"
+            class="w-5 h-5"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+            ><path
+              fill-rule="evenodd"
+              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+              clip-rule="evenodd"
+            /></svg
+          >
+          <span class="sr-only">Error icon</span>
+        {/if}
+      </svelte:fragment>
+      {toastMsg}
+    </Toast>
+  </div>
+{/if}
 
 <style>
 </style>
