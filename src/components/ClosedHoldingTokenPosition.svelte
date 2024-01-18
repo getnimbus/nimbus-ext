@@ -1,6 +1,11 @@
 <script>
   import { typeWallet, isDarkMode, isHidePortfolio } from "~/store";
-  import { detectedChain, shorterName, shorterAddress } from "~/utils";
+  import {
+    detectedChain,
+    shorterName,
+    shorterAddress,
+    chainSupportedList,
+  } from "~/utils";
   import CopyToClipboard from "svelte-copy-to-clipboard";
   import { wait } from "../entries/background/utils";
 
@@ -395,18 +400,9 @@
   </td>
 
   <td
-    class={`py-3 ${
-      $typeWallet === "SOL" ||
-      $typeWallet === "NEAR" ||
-      $typeWallet === "TON" ||
-      $typeWallet === "AURA" ||
-      $typeWallet === "ALGO" ||
-      $typeWallet === "EVM" ||
-      $typeWallet === "MOVE" ||
-      $typeWallet === "BUNDLE"
-        ? ""
-        : "pr-3"
-    } ${$isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"}`}
+    class={`py-3 ${chainSupportedList.includes($typeWallet) ? "" : "pr-3"} ${
+      $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
+    }`}
   >
     <div
       class="flex items-center justify-end gap-1 xl:text-sm text-2xl font-medium"
@@ -455,14 +451,14 @@
     </div>
   </td>
 
-  {#if $typeWallet === "SOL" || $typeWallet === "NEAR" || $typeWallet === "TON" || $typeWallet === "AURA" || $typeWallet === "ALGO" || $typeWallet === "EVM" || $typeWallet === "MOVE" || $typeWallet === "BUNDLE" || $typeWallet === "CEX"}
+  {#if chainSupportedList.includes($typeWallet)}
     <td
       class={`py-3 xl:w-14 w-32 h-full flex justify-center items-center xl:gap-3 gap-6 ${
         $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
       }`}
       style={`${lastIndex ? "border-bottom-right-radius: 10px;" : ""}`}
     >
-      {#if $typeWallet === "SOL" || $typeWallet === "NEAR" || $typeWallet === "TON" || $typeWallet === "AURA" || $typeWallet === "ALGO" || $typeWallet === "EVM" || $typeWallet === "MOVE" || $typeWallet === "BUNDLE" || $typeWallet === "CEX"}
+      {#if chainSupportedList.includes($typeWallet)}
         <div
           class="flex justify-center cursor-pointer"
           on:click={() => {
