@@ -2,7 +2,11 @@
   import { onMount } from "svelte";
   import { i18n } from "~/lib/i18n";
   import { chain, typeWallet, isDarkMode } from "~/store";
-  import { filterTokenValueType, chunkArray } from "~/utils";
+  import {
+    filterTokenValueType,
+    chunkArray,
+    chainSupportedList,
+  } from "~/utils";
   import { groupBy } from "lodash";
   import { priceMobulaSubscribe } from "~/lib/price-mobulaWs";
   import { priceSubscribe } from "~/lib/price-ws";
@@ -301,18 +305,7 @@
     }
   }
 
-  $: colspan =
-    $typeWallet === "SOL" ||
-    $typeWallet === "NEAR" ||
-    $typeWallet === "TON" ||
-    $typeWallet === "AURA" ||
-    $typeWallet === "ALGO" ||
-    $typeWallet === "EVM" ||
-    $typeWallet === "MOVE" ||
-    $typeWallet === "BUNDLE" ||
-    $typeWallet === "CEX"
-      ? 5
-      : 4;
+  $: colspan = chainSupportedList.includes($typeWallet) ? 5 : 4;
 
   $: {
     if (selectedWallet || $chain) {
@@ -427,15 +420,7 @@
                 </th>
                 <th
                   class={`py-3 ${
-                    $typeWallet === "SOL" ||
-                    $typeWallet === "NEAR" ||
-                    $typeWallet === "TON" ||
-                    $typeWallet === "AURA" ||
-                    $typeWallet === "ALGO" ||
-                    $typeWallet === "EVM" ||
-                    $typeWallet === "MOVE" ||
-                    $typeWallet === "BUNDLE" ||
-                    $typeWallet === "CEX"
+                    chainSupportedList.includes($typeWallet)
                       ? ""
                       : "pr-3 rounded-tr-[10px]"
                   }`}
@@ -446,7 +431,7 @@
                     ROI
                   </div>
                 </th>
-                {#if $typeWallet === "SOL" || $typeWallet === "NEAR" || $typeWallet === "TON" || $typeWallet === "AURA" || $typeWallet === "ALGO" || $typeWallet === "EVM" || $typeWallet === "MOVE" || $typeWallet === "BUNDLE" || $typeWallet === "CEX"}
+                {#if chainSupportedList.includes($typeWallet)}
                   <th class="py-3 xl:w-14 w-32 rounded-tr-[10px]" />
                 {/if}
               </tr>
