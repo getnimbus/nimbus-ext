@@ -749,7 +749,7 @@
                     </th>
                     {#if $typeWallet === "SOL" || $typeWallet === "NEAR" || $typeWallet === "TON" || $typeWallet === "AURA" || $typeWallet === "ALGO" || $typeWallet === "EVM" || $typeWallet === "MOVE" || $typeWallet === "BUNDLE" || $typeWallet === "CEX"}
                       <th
-                        class={`py-3 rounded-tr-[10px] ${
+                        class={`py-3 rounded-tr-[10px] pr-3 ${
                           ["BUNDLE", "SOL"].includes($typeWallet)
                             ? "xl:max-w-20 w-16"
                             : "xl:max-w-14"
