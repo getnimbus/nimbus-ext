@@ -78,7 +78,7 @@ const chainSupport = [
 
 const authKey = import.meta.env.VITE_MOBULA_KEY
 
-const handleFormatBlockChainId = (chain: string) => {
+export const handleFormatBlockChainId = (chain: string) => {
   let id = ""
   switch (chain) {
     case "FTM": id = "250"; break;

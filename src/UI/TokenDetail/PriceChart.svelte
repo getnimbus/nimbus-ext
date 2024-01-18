@@ -3,7 +3,7 @@
   import isBetween from "dayjs/plugin/isBetween";
   dayjs.extend(isBetween);
   import { createQuery } from "@tanstack/svelte-query";
-  import { mobula, defillama, nimbus } from "~/lib/network";
+  import { defillama, nimbus } from "~/lib/network";
   import { isDarkMode, typeWallet } from "~/store";
   import {
     autoFontSize,
@@ -15,6 +15,7 @@
   import numeral from "numeral";
   import { groupBy } from "lodash";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
+  import { handleFormatBlockChainId } from "~/lib/price-mobulaWs";
 
   import EChart from "~/components/EChart.svelte";
   import Loading from "~/components/Loading.svelte";
@@ -206,28 +207,31 @@
         return [item.timestamp * 1000, item.price];
       });
       return formatRes || [];
-    }
+    } else {
+      const blockchain = contractAddress
+        ? handleFormatBlockChainId(symbol)
+        : undefined;
 
-    const blockchain = mobulaChainConfig[chain] || undefined;
-
-    const response = await nimbus.get("/token/price/mobula", {
-      params: {
+      const params = {
         blockchain,
-        symbol: chain === "CEX" ? symbol : undefined,
-        asset: chain === "CEX" ? undefined : contractAddress,
+        asset: contractAddress ? contractAddress : symbol,
         from: time === "ALL" ? "" : dayjs().subtract(time, "day").valueOf(),
-      },
-    });
+      };
 
-    return response?.data?.price_history || [];
+      const response = await nimbus.get("/token/price/mobula", {
+        params,
+      });
+
+      return response?.data?.price_history || [];
+    }
   };
 
   $: queryTokenPrice = createQuery({
-    queryKey: ["token-price", contractAddress, cgId, chain, time],
+    queryKey: ["token-price", contractAddress, symbol, cgId, chain, time],
     queryFn: () => handleGetTokenPrice(),
     staleTime: Infinity,
     retry: false,
-    enabled: Boolean(contractAddress || cgId),
+    enabled: Boolean(contractAddress || symbol || cgId || chain),
   });
 
   $: {
