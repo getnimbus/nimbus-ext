@@ -866,7 +866,7 @@
 
   {#if $typeWallet === "SOL" || $typeWallet === "NEAR" || $typeWallet === "TON" || $typeWallet === "AURA" || $typeWallet === "ALGO" || $typeWallet === "EVM" || $typeWallet === "MOVE" || $typeWallet === "BUNDLE" || $typeWallet === "CEX"}
     <td
-      class={`py-3 w-full h-full flex justify-start items-center xl:gap-4 gap-7 ${
+      class={`py-3 pr-3 w-full h-full flex justify-start items-center xl:gap-4 gap-7 ${
         $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
       }`}
       style={`${lastIndex ? "border-bottom-right-radius: 10px;" : ""}`}
