@@ -15,6 +15,7 @@
   import numeral from "numeral";
   import { groupBy } from "lodash";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
+  import { handleFormatBlockChainId } from "~/lib/price-mobulaWs";
 
   import EChart from "~/components/EChart.svelte";
   import Loading from "~/components/Loading.svelte";
@@ -208,7 +209,7 @@
       return formatRes || [];
     } else {
       const blockchain = contractAddress
-        ? mobulaChainConfig[symbol]
+        ? handleFormatBlockChainId(symbol)
         : undefined;
 
       const params = {
