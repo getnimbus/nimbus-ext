@@ -15,6 +15,7 @@
 
   import CalendarChart from "~/components/CalendarChart.svelte";
   import Button from "~/components/Button.svelte";
+  import { chainSupportedList } from "~/utils";
 
   let option = {
     tooltip: {
@@ -180,15 +181,7 @@
   };
 
   $: enabledQuery = Boolean(
-    ($typeWallet === "EVM" ||
-      $typeWallet === "MOVE" ||
-      $typeWallet === "CEX" ||
-      $typeWallet === "SOL" ||
-      $typeWallet === "NEAR" ||
-      $typeWallet === "TON" ||
-      $typeWallet === "AURA" ||
-      $typeWallet === "ALGO" ||
-      $typeWallet === "BUNDLE") &&
+    chainSupportedList.includes($typeWallet) &&
       $wallet.length !== 0 &&
       $selectedPackage !== "FREE"
   );

@@ -14,7 +14,11 @@
   } from "~/store";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
-  import { filterTokenValueType, chunkArray } from "~/utils";
+  import {
+    filterTokenValueType,
+    chunkArray,
+    chainSupportedList,
+  } from "~/utils";
   import { groupBy } from "lodash";
   import { priceMobulaSubscribe } from "~/lib/price-mobulaWs";
   import { priceSubscribe } from "~/lib/price-ws";
@@ -445,18 +449,7 @@
     }
   }
 
-  $: colspan =
-    $typeWallet === "SOL" ||
-    $typeWallet === "NEAR" ||
-    $typeWallet === "TON" ||
-    $typeWallet === "AURA" ||
-    $typeWallet === "ALGO" ||
-    $typeWallet === "EVM" ||
-    $typeWallet === "MOVE" ||
-    $typeWallet === "BUNDLE" ||
-    $typeWallet === "CEX"
-      ? 8
-      : 7;
+  $: colspan = chainSupportedList.includes($typeWallet) ? 8 : 7;
 
   $: {
     if (selectedWallet || $chain) {
@@ -728,15 +721,7 @@
                     </th>
                     <th
                       class={`py-3 xl:pr-3 pr-6 ${
-                        $typeWallet === "SOL" ||
-                        $typeWallet === "NEAR" ||
-                        $typeWallet === "TON" ||
-                        $typeWallet === "AURA" ||
-                        $typeWallet === "ALGO" ||
-                        $typeWallet === "EVM" ||
-                        $typeWallet === "MOVE" ||
-                        $typeWallet === "BUNDLE" ||
-                        $typeWallet === "CEX"
+                        chainSupportedList.includes($typeWallet)
                           ? ""
                           : "rounded-tr-[10px]"
                       }`}
@@ -747,7 +732,7 @@
                         Unrealized PnL
                       </div>
                     </th>
-                    {#if $typeWallet === "SOL" || $typeWallet === "NEAR" || $typeWallet === "TON" || $typeWallet === "AURA" || $typeWallet === "ALGO" || $typeWallet === "EVM" || $typeWallet === "MOVE" || $typeWallet === "BUNDLE" || $typeWallet === "CEX"}
+                    {#if chainSupportedList.includes($typeWallet)}
                       <th
                         class={`py-3 rounded-tr-[10px] pr-3 ${
                           ["BUNDLE", "SOL"].includes($typeWallet)

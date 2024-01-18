@@ -1,6 +1,11 @@
 <script lang="ts">
   import { typeWallet, isDarkMode, user, selectedBundle } from "~/store";
-  import { detectedChain, shorterName, shorterAddress } from "~/utils";
+  import {
+    detectedChain,
+    shorterName,
+    shorterAddress,
+    chainSupportedList,
+  } from "~/utils";
   import numeral from "numeral";
   import { Progressbar, Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
@@ -864,7 +869,7 @@
     </div>
   </td>
 
-  {#if $typeWallet === "SOL" || $typeWallet === "NEAR" || $typeWallet === "TON" || $typeWallet === "AURA" || $typeWallet === "ALGO" || $typeWallet === "EVM" || $typeWallet === "MOVE" || $typeWallet === "BUNDLE" || $typeWallet === "CEX"}
+  {#if chainSupportedList.includes($typeWallet)}
     <td
       class={`py-3 pr-3 w-full h-full flex justify-start items-center xl:gap-4 gap-7 ${
         $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
@@ -920,7 +925,7 @@
         </div>
       {/if}
 
-      {#if $typeWallet === "EVM" || $typeWallet === "MOVE" || $typeWallet === "SOL" || $typeWallet === "NEAR" || $typeWallet === "TON" || $typeWallet === "AURA" || $typeWallet === "ALGO" || $typeWallet === "BUNDLE" || $typeWallet === "CEX"}
+      {#if chainSupportedList.includes($typeWallet)}
         <div
           class="flex justify-center cursor-pointer view-icon-detail"
           on:click={() => {

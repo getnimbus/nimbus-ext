@@ -9,6 +9,7 @@
     isDarkMode,
   } from "~/store";
   import {
+    chainSupportedList,
     correlationsMatrixColor,
     equalizeArrayLengths,
     formatPercent,
@@ -389,15 +390,7 @@
     $wallet === "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0"
       ? true
       : Boolean(
-          ($typeWallet === "EVM" ||
-            $typeWallet === "MOVE" ||
-            $typeWallet === "CEX" ||
-            $typeWallet === "SOL" ||
-            $typeWallet === "NEAR" ||
-            $typeWallet === "TON" ||
-            $typeWallet === "AURA" ||
-            $typeWallet === "ALGO" ||
-            $typeWallet === "BUNDLE") &&
+          chainSupportedList.includes($typeWallet) &&
             $wallet.length !== 0 &&
             $selectedPackage !== "FREE"
         );

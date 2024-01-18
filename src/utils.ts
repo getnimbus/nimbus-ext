@@ -69,6 +69,8 @@ export const regexList = [
   // }
 ];
 
+export const chainSupportedList = ["BUNDLE", "CEX", "EVM", "MOVE", "SOL", "NEAR", "TON", "ALGO", "AURA"]
+
 export const netWorthFilter = [
   {
     label: "1k - 50K",
