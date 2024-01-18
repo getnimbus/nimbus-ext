@@ -9,7 +9,6 @@
     autoFontSize,
     formatBalance,
     formatCurrency,
-    mobulaChainConfig,
     timeFrame,
   } from "~/utils";
   import numeral from "numeral";
