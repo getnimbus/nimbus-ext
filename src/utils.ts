@@ -424,24 +424,6 @@ export const chainList = [
   },
 ];
 
-export const mobulaChainConfig: Record<string, string> = {
-  ALL: "Ethereum",
-  ETH: "Ethereum",
-  // 'FTM': 'Fantom',
-  ARB: "Arbitrum",
-  AVAX: "Avalanche C-Chain",
-  OP: "Optimistic",
-  MATIC: "Polygon",
-  XDAI: "XDAI",
-  BNB: "BNB Smart Chain (BEP20)",
-  CRONOS: "Cronos",
-  KLAY: "Klaytn",
-  AURA: "Aurora",
-  BASE: "Base",
-  SUI: "Sui",
-  MANTLE: "Mantle"
-};
-
 export const chunkArray = (array, chunkSize) => {
   let result = [];
   for (let i = 0; i < array.length; i += chunkSize) {
