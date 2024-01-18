@@ -231,6 +231,7 @@
     queryFn: () => handleGetTokenPrice(),
     staleTime: Infinity,
     retry: false,
+    enabled: Boolean(contractAddress || symbol || cgId || chain),
   });
 
   $: {
