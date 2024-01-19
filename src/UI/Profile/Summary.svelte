@@ -32,7 +32,7 @@
     const response = await nimbus
       .get(
         `/v2/address/${address}/holding?chain=${
-          validateAccount?.type === "EVM" ? "ALL" : validateAccount?.type
+          validateAccount?.type === "BUNDLE" ? "" : validateAccount?.type
         }`
       )
       .then((response) => response.data);
