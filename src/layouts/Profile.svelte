@@ -200,7 +200,7 @@
 
     const response = await nimbus.get(
       `/v2/address/${address}/nft-holding?chain=${
-        validateAccount?.type === "EVM" ? "ALL" : validateAccount?.type
+        validateAccount?.type === "BUNDLE" ? "" : validateAccount?.type
       }`
     );
     return response?.data;
