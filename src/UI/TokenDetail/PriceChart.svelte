@@ -14,7 +14,7 @@
   import numeral from "numeral";
   import { groupBy } from "lodash";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
-  import { handleFormatBlockChainId } from "~/lib/price-mobulaWs";
+  import { chainSupport, handleFormatBlockChainId } from "~/lib/price-mobulaWs";
 
   import EChart from "~/components/EChart.svelte";
   import Loading from "~/components/Loading.svelte";
@@ -192,7 +192,7 @@
   }
 
   const handleGetTokenPrice = async () => {
-    if (chain === "SOL" || cgId) {
+    if (chain === "SOL") {
       const params = cgId ? `coingecko:${cgId}` : `solana:${contractAddress}`;
 
       const response = await defillama.get(
@@ -207,13 +207,15 @@
       });
       return formatRes || [];
     } else {
-      const blockchain = contractAddress
-        ? handleFormatBlockChainId(symbol)
-        : undefined;
-
       const params = {
-        blockchain,
-        asset: contractAddress ? contractAddress : symbol,
+        blockchain:
+          chain === "CEX"
+            ? handleFormatBlockChainId(symbol)
+            : handleFormatBlockChainId(chain),
+        asset:
+          chain !== "CEX" && chainSupport.includes(chain)
+            ? contractAddress
+            : symbol,
         from: time === "ALL" ? "" : dayjs().subtract(time, "day").valueOf(),
       };
 

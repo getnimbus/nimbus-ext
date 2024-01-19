@@ -14,6 +14,8 @@
     formatPercent,
     formatValue,
     autoFontSize,
+    evmChainNotSupportHistoricalBalances,
+    chainSupportedList,
   } from "~/utils";
   import dayjs from "dayjs";
   import numeral from "numeral";
@@ -39,6 +41,7 @@
 
   import TrendDown from "~/assets/trend-down.svg";
   import TrendUp from "~/assets/trend-up.svg";
+  import { slice } from "viem";
 
   const MultipleLang = {
     token_allocation: i18n("newtabPage.token-allocation", "Token Allocation"),
@@ -868,7 +871,9 @@
         </div>
       {:else}
         <div class="flex justify-between mb-4">
-          {#if ($typeWallet === "EVM" && ($chain === "SCROLL" || $chain === "KLAY" || $chain === "XZO")) || $typeWallet === "CEX" || $typeWallet === "SOL" || $typeWallet === "NEAR" || $typeWallet === "TON" || $typeWallet === "ALGO" || $typeWallet === "AURA" || $typeWallet === "MOVE" || $selectedBundle?.accounts?.find((item) => item.type === "CEX") !== undefined}
+          {#if ($typeWallet === "EVM" && evmChainNotSupportHistoricalBalances.includes($chain)) || chainSupportedList
+              .slice(2)
+              .includes($typeWallet) || $selectedBundle?.accounts?.find((item) => item.type === "CEX") !== undefined}
             <TooltipTitle
               tooltipText="The performance data can only get after 7 days you connect to Nimbus"
               type="warning"

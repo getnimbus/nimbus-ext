@@ -66,7 +66,7 @@
   <QueryClientProvider client={queryClient}>
     <Mixpanel>
       <Router history={undefined}>
-        <!-- <Route path="recap">
+        <Route path="recap">
           {#await import("~/layouts/Recap.svelte")}
             <div class="flex items-center justify-center h-screen">
               <Loading />
@@ -78,7 +78,7 @@
               Something when wrong! Please reload your browser to try again
             </div>
           {/await}
-        </Route> -->
+        </Route>
 
         {#if $detectParams !== "/recap"}
           <div class="flex flex-col pb-40 xl:pb-14">
