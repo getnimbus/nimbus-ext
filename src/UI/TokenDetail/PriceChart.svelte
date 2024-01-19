@@ -193,7 +193,7 @@
 
   const handleGetTokenPrice = async () => {
     if (chain === "SOL") {
-      const params = cgId ? `coingecko:${cgId}` : `solana:${contractAddress}`;
+      const params = `solana:${contractAddress}`;
 
       const response = await defillama.get(
         `/chart/${params}?start=${dayjs()
