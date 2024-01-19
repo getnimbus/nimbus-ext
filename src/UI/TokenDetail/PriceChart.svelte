@@ -207,17 +207,39 @@
       });
       return formatRes || [];
     } else {
-      const params = {
-        blockchain:
-          chain === "CEX"
-            ? handleFormatBlockChainId(symbol)
-            : handleFormatBlockChainId(chain),
-        asset:
-          chain !== "CEX" && chainSupport.includes(chain)
-            ? contractAddress
-            : symbol,
-        from: time === "ALL" ? "" : dayjs().subtract(time, "day").valueOf(),
+      let params = {
+        blockchain: "",
+        symbol: "",
+        asset: "",
+        from: null,
       };
+
+      if (chain === "CEX") {
+        params = {
+          blockchain: handleFormatBlockChainId(symbol),
+          symbol,
+          asset: "",
+          from: time === "ALL" ? "" : dayjs().subtract(time, "day").valueOf(),
+        };
+      }
+
+      if (chain !== "CEX") {
+        if (contractAddress) {
+          params = {
+            blockchain: handleFormatBlockChainId(chain),
+            symbol: "",
+            asset: contractAddress,
+            from: time === "ALL" ? "" : dayjs().subtract(time, "day").valueOf(),
+          };
+        } else {
+          params = {
+            blockchain: handleFormatBlockChainId(chain),
+            symbol,
+            asset: "",
+            from: time === "ALL" ? "" : dayjs().subtract(time, "day").valueOf(),
+          };
+        }
+      }
 
       const response = await nimbus.get("/token/price/mobula", {
         params,
