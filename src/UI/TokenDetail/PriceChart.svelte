@@ -245,7 +245,7 @@
         params,
       });
 
-      return response?.data?.price_history || [];
+      return response?.data || [];
     }
   };
 
