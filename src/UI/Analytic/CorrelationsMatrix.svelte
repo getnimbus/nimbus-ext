@@ -126,7 +126,11 @@
     }
 
     const response: HoldingTokenRes = await nimbus
-      .get(`/v2/address/${address}/holding?chain=${addressChain}`)
+      .get(
+        `/v2/address/${address}/holding?chain=${
+          addressChain === "BUNDLE" ? "" : addressChain
+        }`
+      )
       .then((response) => response.data);
     return response;
   };

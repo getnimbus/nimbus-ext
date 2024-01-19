@@ -291,7 +291,11 @@
     }
 
     const response: any = await nimbus
-      .get(`/v2/address/${address}/overview?chain=${addressChain}`)
+      .get(
+        `/v2/address/${address}/overview?chain=${
+          addressChain === "BUNDLE" ? "" : addressChain
+        }`
+      )
       .then((response) => response?.data);
     return response;
   };
@@ -373,7 +377,11 @@
     }
 
     const response: any = await nimbus
-      .get(`/v2/address/${address}/nft-holding?chain=${addressChain}`)
+      .get(
+        `/v2/address/${address}/nft-holding?chain=${
+          addressChain === "BUNDLE" ? "" : addressChain
+        }`
+      )
       .then((response) => response?.data);
     return response;
   };
@@ -439,7 +447,9 @@
     }
 
     const response: any = await nimbus.get(
-      `/v2/investment/${address}/vaults?chain=${addressChain}`
+      `/v2/investment/${address}/vaults?chain=${
+        addressChain === "BUNDLE" ? "" : addressChain
+      }`
     );
     return response?.data;
   };
@@ -462,7 +472,11 @@
     }
 
     const response: any = await nimbus
-      .get(`/v2/address/${address}/holding?chain=${addressChain}`)
+      .get(
+        `/v2/address/${address}/holding?chain=${
+          addressChain === "BUNDLE" ? "" : addressChain
+        }`
+      )
       .then((response) => response?.data);
     return response;
   };
