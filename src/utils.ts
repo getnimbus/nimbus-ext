@@ -33,6 +33,16 @@ import Algorand from "~/assets/algorand.png";
 import Exzo from "~/assets/exzo.png";
 import Klaytn from "~/assets/klaytn.png";
 import Viction from "~/assets/viction.png";
+import Moonbeam from "~/assets/moonbeam.png";
+import Aurora from "~/assets/aurora.png";
+import Evmos from "~/assets/evmos.png";
+import Fantom from "~/assets/fantom.png";
+import Harmony from "~/assets/harmony.png";
+import Metis from "~/assets/metis.png";
+import Ronin from "~/assets/ronin.png";
+import Zeta from "~/assets/zeta.png";
+import zkEVM from "~/assets/zkEVM.png";
+import opBNB from "~/assets/opbnb.png";
 
 export const ETHAddressRegex = /(\b0x[a-fA-F0-9]{40}\b)/g;
 export const ETHTrxRegex = /(\b0x[a-fA-F0-9]{64}\b)/g;
@@ -69,7 +79,8 @@ export const regexList = [
   // }
 ];
 
-export const chainSupportedList = ["BUNDLE", "CEX", "EVM", "MOVE", "SOL", "NEAR", "TON", "ALGO", "AURA"]
+export const chainSupportedList = ["BUNDLE", "EVM", "CEX", "MOVE", "SOL", "NEAR", "TON", "ALGO", "AURA"]
+export const evmChainNotSupportHistoricalBalances = ["VIC", "MANTLE", "CRONOS", "LINEA", "ZKSYNC", "XDAI", "ARB", "AVAX", "OP", "BASE", "SCROLL", "KLAY", "XZO", "ZETA", "RON", "FANTOM", "AURORA", "EVMOS", "ONE", "GLMR", "METIS", "POLYGON_ZKEVM", "OPBNB"]
 
 export const netWorthFilter = [
   {
@@ -379,9 +390,19 @@ export const chainList = [
     value: "BNB",
   },
   {
+    logo: opBNB,
+    label: "opBNB",
+    value: "OPBNB",
+  },
+  {
     logo: Matic,
     label: "Polygon",
     value: "MATIC",
+  },
+  {
+    logo: zkEVM,
+    label: "Polygon zkEVM",
+    value: "POLYGON_ZKEVM",
   },
   {
     logo: Optimism,
@@ -448,16 +469,47 @@ export const chainList = [
     label: "Viction",
     value: "VIC",
   },
+  {
+    logo: Zeta,
+    label: "Zeta",
+    value: "ZETA",
+  },
+  {
+    logo: Fantom,
+    label: "Fantom",
+    value: "FANTOM",
+  },
+  {
+    logo: Evmos,
+    label: "Evmos",
+    value: "EVMOS",
+  },
+  {
+    logo: Harmony,
+    label: "Harmony",
+    value: "ONE",
+  },
+  {
+    logo: Moonbeam,
+    label: "Moonbeam",
+    value: "GLMR",
+  },
+  {
+    logo: Metis,
+    label: "Metis",
+    value: "METIS",
+  },
+  {
+    logo: Aurora,
+    label: "Aurora",
+    value: "AURORA",
+  },
+  {
+    logo: Ronin,
+    label: "Ronin",
+    value: "RON",
+  },
 ];
-
-export const chunkArray = (array, chunkSize) => {
-  let result = [];
-  for (let i = 0; i < array.length; i += chunkSize) {
-    let chunk = array.slice(i, i + chunkSize);
-    result.push(chunk);
-  }
-  return result;
-}
 
 export const detectedChain = (type) => {
   let chain;
@@ -534,6 +586,36 @@ export const detectedChain = (type) => {
     case "VIC":
       chain = Viction;
       break;
+    case "ZETA":
+      chain = Zeta;
+      break;
+    case "FANTOM":
+      chain = Fantom;
+      break;
+    case "EVMOS":
+      chain = Evmos;
+      break;
+    case "ONE":
+      chain = Harmony;
+      break;
+    case "GLMR":
+      chain = Moonbeam;
+      break;
+    case "METIS":
+      chain = Metis;
+      break;
+    case "AURORA":
+      chain = Aurora;
+      break;
+    case "RON":
+      chain = Ronin;
+      break;
+    case "POLYGON_ZKEVM":
+      chain = zkEVM;
+      break;
+    case "OPBNB":
+      chain = opBNB;
+      break;
   }
   return chain;
 };
@@ -544,6 +626,48 @@ export const linkExplorer = (chain, hash) => {
     address: "",
   };
   switch (chain) {
+    case "BTC":
+      links = {
+        trx: `https://www.oklink.com/btc/tx/${hash}`,
+        address: `https://www.oklink.com/btc/address/${hash}`,
+      };
+      break;
+    case "SOL":
+      links = {
+        trx: `https://solscan.io/tx/${hash}`,
+        address: `https://solscan.io/address/${hash}`,
+      };
+      break;
+    case "NEAR":
+      links = {
+        trx: `https://nearblocks.io/txns/${hash}`,
+        address: `https://nearblocks.io/address/${hash}`,
+      };
+      break;
+    case "TON":
+      links = {
+        trx: `https://tonscan.org/tx/${hash}`,
+        address: `https://tonscan.org/address/${hash}#transactions`,
+      };
+      break;
+    case "SUI":
+      links = {
+        trx: `https://suiexplorer.com/txblock/${hash}`,
+        address: `https://suiexplorer.com/address/${hash}`,
+      };
+      break;
+    case "AURA":
+      links = {
+        trx: `https://aurascan.io/transaction/${hash}`,
+        address: `https://aurascan.io/account/${hash}`,
+      };
+      break;
+    case "ALGO":
+      links = {
+        trx: `https://algoexplorer.io/tx/${hash}`,
+        address: `https://algoexplorer.io/address/${hash}`,
+      };
+      break;
     case "ETH":
       links = {
         trx: `https://etherscan.io/tx/${hash}`,
@@ -622,42 +746,6 @@ export const linkExplorer = (chain, hash) => {
         address: `https://mantlescan.info/address/${hash}`,
       };
       break;
-    case "SOL":
-      links = {
-        trx: `https://solscan.io/tx/${hash}`,
-        address: `https://solscan.io/address/${hash}`,
-      };
-      break;
-    case "NEAR":
-      links = {
-        trx: `https://nearblocks.io/txns/${hash}`,
-        address: `https://nearblocks.io/address/${hash}`,
-      };
-      break;
-    case "TON":
-      links = {
-        trx: `https://tonscan.org/tx/${hash}`,
-        address: `https://tonscan.org/address/${hash}#transactions`,
-      };
-      break;
-    case "SUI":
-      links = {
-        trx: `https://suiexplorer.com/txblock/${hash}`,
-        address: `https://suiexplorer.com/address/${hash}`,
-      };
-      break;
-    case "AURA":
-      links = {
-        trx: `https://aurascan.io/transaction/${hash}`,
-        address: `https://aurascan.io/account/${hash}`,
-      };
-      break;
-    case "ALGO":
-      links = {
-        trx: `https://algoexplorer.io/tx/${hash}`,
-        address: `https://algoexplorer.io/address/${hash}`,
-      };
-      break;
     case "XZO":
       links = {
         trx: `https://evm.exzoscan.io/tx/${hash}`,
@@ -676,10 +764,64 @@ export const linkExplorer = (chain, hash) => {
         address: `https://tomoscan.io/address/${hash}`,
       };
       break;
-    case "BTC":
+    case "ZETA":
       links = {
-        trx: `https://www.oklink.com/btc/tx/${hash}`,
-        address: `https://www.oklink.com/btc/address/${hash}`,
+        trx: `https://explorer.zetachain.com/evm/tx/${hash}`,
+        address: `https://explorer.zetachain.com/address/${hash}`
+      };
+      break;
+    case "FANTOM":
+      links = {
+        trx: `https://ftmscan.com/tx/${hash}`,
+        address: `https://ftmscan.com/address/${hash}`,
+      };
+      break;
+    case "EVMOS":
+      links = {
+        trx: `https://escan.live/tx/${hash}`,
+        address: `https://escan.live/address/${hash}`,
+      };
+      break;
+    case "ONE":
+      links = {
+        trx: `https://explorer.harmony.one/tx/${hash}`,
+        address: `https://explorer.harmony.one/address/${hash}`,
+      };
+      break;
+    case "GLMR":
+      links = {
+        trx: `https://moonscan.io/tx/${hash}`,
+        address: `https://moonscan.io/address/${hash}`,
+      };
+      break;
+    case "METIS":
+      links = {
+        trx: `https://andromeda-explorer.metis.io/tx/${hash}`,
+        address: `https://andromeda-explorer.metis.io/address/${hash}`,
+      };
+      break;
+    case "POLYGON_ZKEVM":
+      links = {
+        trx: `https://zkevm.polygonscan.com/tx/${hash}`,
+        address: `https://zkevm.polygonscan.com/address/${hash}`,
+      };
+      break;
+    case "OPBNB":
+      links = {
+        trx: `https://opbnbscan.com/tx/${hash}`,
+        address: `https://opbnbscan.com/address/${hash}`,
+      };
+      break;
+    case "AURORA":
+      links = {
+        trx: `https://explorer.aurora.dev/tx/${hash}`,
+        address: `https://explorer.aurora.dev/address/${hash}`,
+      };
+      break;
+    case "RON":
+      links = {
+        trx: `https://app.roninchain.com/tx/${hash}`,
+        address: `https://app.roninchain.com/address/${hash}`,
       };
       break;
     default:
@@ -735,6 +877,15 @@ export const listLogoCEX = [
   "https://s2.coinmarketcap.com/static/img/exchanges/64x64/70.png",
   "https://s2.coinmarketcap.com/static/img/exchanges/64x64/37.png",
 ];
+
+export const chunkArray = (array, chunkSize) => {
+  let result = [];
+  for (let i = 0; i < array.length; i += chunkSize) {
+    let chunk = array.slice(i, i + chunkSize);
+    result.push(chunk);
+  }
+  return result;
+}
 
 export const showChatAnimationVariants = {
   visible: { opacity: 1, y: 0, display: "flex" },
