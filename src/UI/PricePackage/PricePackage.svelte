@@ -672,7 +672,7 @@
                   </div>
 
                   <div class="font-medium text-2xl">
-                    {#if buyPackage === "Free" || (buyPackage === "Explorer" && interval === "month") || (buyPackage === "Professional" && interval === "month")}
+                    {#if buyPackage === "Free"}
                       <div
                         class="flex items-center gap-2 cursor-pointer text-[#1E96FC]"
                         on:click={() => {
@@ -745,7 +745,7 @@
                   </div>
 
                   <div class="font-medium text-2xl w-max">
-                    {#if buyPackage === "Free" || (buyPackage === "Explorer" && interval === "month")}
+                    {#if buyPackage === "Free"}
                       <div
                         class="flex items-center gap-2 cursor-pointer text-[#1E96FC]"
                         on:click={() => {
@@ -789,7 +789,7 @@
                   </div>
 
                   <div class="font-medium text-2xl w-max">
-                    {#if buyPackage === "Free" || (buyPackage === "Professional" && interval === "month") || (buyPackage === "Explorer" && interval === "month") || (buyPackage === "Explorer" && interval === "year")}
+                    {#if buyPackage === "Free"}
                       <div
                         class="flex items-center gap-2 cursor-pointer text-[#1E96FC]"
                         on:click={() => {
