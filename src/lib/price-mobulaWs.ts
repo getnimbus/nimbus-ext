@@ -59,7 +59,7 @@ interface IPriceRealtime {
 
 const cached: Record<string, IPriceRealtime> = {};
 
-const chainSupport = [
+export const chainSupport = [
   "FTM", //Fantom
   "XDAI", // Gnosis
   "AVAX", // Avalanche
