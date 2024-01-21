@@ -291,7 +291,7 @@
 </AppOverlay>
 
 {#if show}
-  <div class="fixed z-10 w-full top-3 right-3">
+  <div class="fixed z-50 w-full top-3 right-3">
     <Toast
       transition={blur}
       params={{ amount: 10 }}

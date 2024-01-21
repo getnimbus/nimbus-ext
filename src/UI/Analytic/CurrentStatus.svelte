@@ -1,15 +1,8 @@
 <script lang="ts">
-  import {
-    wallet,
-    chain,
-    typeWallet,
-    isDarkMode,
-    selectedPackage,
-  } from "~/store";
+  import { wallet, chain, typeWallet, isDarkMode } from "~/store";
   import { groupBy, flatten } from "lodash";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import {
-    formatBalance,
     formatCurrency,
     typeList,
     handleFormatDataPieChart,
@@ -18,6 +11,7 @@
     formatValue,
     autoFontSize,
   } from "~/utils";
+  import { chainSupportedList } from "~/lib/chains";
   import { i18n } from "~/lib/i18n";
   import { useNavigate } from "svelte-navigator";
   import { nimbus } from "~/lib/network";
@@ -27,7 +21,6 @@
 
   import type { HoldingTokenRes } from "~/types/HoldingTokenData";
 
-  import Button from "~/components/Button.svelte";
   import EChart from "~/components/EChart.svelte";
   import LoadingPremium from "~/components/LoadingPremium.svelte";
   import TooltipTitle from "~/components/TooltipTitle.svelte";
@@ -333,6 +326,19 @@
 
   const queryClient = useQueryClient();
 
+  const handleValidateAddress = async (address: string) => {
+    try {
+      const response = await nimbus.get(`/v2/address/${address}/validate`);
+      return response?.data;
+    } catch (e) {
+      console.error(e);
+      return {
+        address: "",
+        type: "",
+      };
+    }
+  };
+
   // query personalize tag
   const getPersonalizeTag = async (address) => {
     const response = await nimbus.get(`/address/${address}/personalize/tag`);
@@ -378,8 +384,19 @@
 
   // query holding token
   const getHoldingToken = async (address, chain) => {
+    let addressChain = chain;
+
+    if (addressChain === "ALL") {
+      const validateAccount = await handleValidateAddress(address);
+      addressChain = validateAccount?.type;
+    }
+
     const response: HoldingTokenRes = await nimbus
-      .get(`/v2/address/${address}/holding?chain=${chain}`)
+      .get(
+        `/v2/address/${address}/holding?chain=${
+          addressChain === "BUNDLE" ? "" : addressChain
+        }`
+      )
       .then((response) => response.data);
     return response;
   };
@@ -726,15 +743,7 @@
     $wallet === "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0"
       ? true
       : Boolean(
-          ($typeWallet === "EVM" ||
-            $typeWallet === "MOVE" ||
-            $typeWallet === "CEX" ||
-            $typeWallet === "SOL" ||
-            $typeWallet === "TON" ||
-            $typeWallet === "AURA" ||
-            $typeWallet === "ALGO" ||
-            $typeWallet === "BUNDLE") &&
-            $wallet.length !== 0
+          chainSupportedList.includes($typeWallet) && $wallet.length !== 0
         );
 
   $: theme = $isDarkMode ? "dark" : "white";
@@ -910,7 +919,7 @@
   >
     <div class="flex justify-between items-start mb-6">
       <div class="flex justify-start">
-        {#if $typeWallet === "CEX" || $typeWallet === "SOL" || $typeWallet === "TON" || $typeWallet === "AURA" || $typeWallet === "ALGO"}
+        {#if chainSupportedList.slice(2).includes($typeWallet)}
           <TooltipTitle
             tooltipText="The performance data can only get after 7 days you connect to Nimbus"
             type="warning"

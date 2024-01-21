@@ -598,7 +598,6 @@
             },
           ],
         };
-        console.log(tokenDataChain);
         handleSelectedTableTokenHolding(tokenDataChain.dataTable, optionPie);
       } else {
         const indexOfType = tokenDataCustomCategory

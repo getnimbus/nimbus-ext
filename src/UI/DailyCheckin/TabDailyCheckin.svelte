@@ -4,7 +4,7 @@
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { nimbus } from "~/lib/network";
   import { isDarkMode, user, userPublicAddress } from "~/store";
-  import { dailyCheckinTypePortfolio, triggerFirework } from "~/utils";
+  import { triggerFirework } from "~/utils";
   import dayjs from "dayjs";
   import { wait } from "~/entries/background/utils";
   import { Toast } from "flowbite-svelte";
@@ -24,6 +24,17 @@
   import rank3 from "~/assets/dailycheckin/3rd.png";
 
   import goldImg from "~/assets/Gold4.svg";
+
+  const dailyCheckinTypePortfolio = [
+    {
+      label: "Collect GM Point",
+      value: "collectGMPoint",
+    },
+    {
+      label: "History",
+      value: "history",
+    },
+  ];
 
   const rankBackground = [img1stframe, img2stframe, img3stframe];
 
@@ -892,7 +903,7 @@
 {/if}
 
 {#if showToast}
-  <div class="fixed top-3 right-3 w-full z-10">
+  <div class="fixed top-3 right-3 w-full" style="z-index: 2147483648;">
     <Toast
       transition={blur}
       params={{ amount: 10 }}

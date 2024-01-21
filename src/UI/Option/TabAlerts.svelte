@@ -17,13 +17,14 @@
   import Copy from "~/components/Copy.svelte";
 
   import FollowWhale from "~/assets/whale-tracking.gif";
-  import Move from "~/assets/move.png";
+  import Move from "~/assets/chains/move.png";
   import All from "~/assets/all.svg";
-  import BitcoinLogo from "~/assets/bitcoin.png";
-  import SolanaLogo from "~/assets/solana.png";
-  import AuraLogo from "~/assets/aura.png";
-  import AlgorandLogo from "~/assets/algorand.png";
-  import TonLogo from "~/assets/ton.png";
+  import BitcoinLogo from "~/assets/chains/bitcoin.png";
+  import SolanaLogo from "~/assets/chains/solana.png";
+  import NearLogo from "~/assets/chains/near.png";
+  import AuraLogo from "~/assets/chains/aura.png";
+  import AlgorandLogo from "~/assets/chains/algorand.png";
+  import TonLogo from "~/assets/chains/ton.png";
 
   const MultipleLang = {
     content: {
@@ -171,6 +172,9 @@
       }
       if (item?.type === "SOL") {
         logo = SolanaLogo;
+      }
+      if (item?.type === "NEAR") {
+        logo = NearLogo;
       }
       if (item?.type === "TON") {
         logo = TonLogo;
@@ -753,7 +757,7 @@
 </div>
 
 {#if show}
-  <div class="fixed z-10 w-full top-3 right-3">
+  <div class="fixed z-50 w-full top-3 right-3">
     <Toast
       transition={blur}
       params={{ amount: 10 }}

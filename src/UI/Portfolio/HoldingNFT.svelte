@@ -1,6 +1,7 @@
 <script lang="ts">
   import { useNavigate } from "svelte-navigator";
-  import { shorterName, detectedChain } from "~/utils";
+  import { shorterName } from "~/utils";
+  import { detectedChain } from "~/lib/chains";
   import { typeWallet, isDarkMode, user } from "~/store";
   import mixpanel from "mixpanel-browser";
   import { i18n } from "~/lib/i18n";
@@ -8,16 +9,16 @@
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
 
+  import tooltip from "~/entries/contentScript/views/tooltip";
   import Tooltip from "~/components/Tooltip.svelte";
   import "~/components/Tooltip.custom.svelte";
-  import tooltip from "~/entries/contentScript/views/tooltip";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
-  import OverlaySidebar from "./OverlaySidebar.svelte";
-  import NftDetailSidebar from "~/UI/NFTDetail/NFTDetailSidebar.svelte";
+  import OverlaySidebar from "~/components/OverlaySidebar.svelte";
   import Copy from "~/components/Copy.svelte";
   import Image from "~/components/Image.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
-  import Button from "./Button.svelte";
+  import Button from "~/components/Button.svelte";
+  import NftDetailSidebar from "~/UI/NFTDetail/NFTDetailSidebar.svelte";
 
   import TrendUp from "~/assets/trend-up.svg";
   import TrendDown from "~/assets/trend-down.svg";
@@ -726,7 +727,7 @@
 </OverlaySidebar>
 
 {#if showToast}
-  <div class="fixed z-30 w-full top-3 right-3">
+  <div class="fixed w-full top-3 right-3" style="z-index: 2147483648;">
     <Toast
       transition={blur}
       params={{ amount: 10 }}

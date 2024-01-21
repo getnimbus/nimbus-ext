@@ -5,7 +5,7 @@
   import relativeTime from "dayjs/plugin/relativeTime";
   dayjs.extend(relativeTime);
   import { typeWallet, isDarkMode } from "~/store";
-  import { chainList, formatTransactionTime, linkExplorer } from "~/utils";
+  import { chainList, linkExplorer } from "~/lib/chains";
 
   import Button from "~/components/Button.svelte";
   import Copy from "~/components/Copy.svelte";
@@ -18,6 +18,13 @@
   export let isLoading;
   export let pageToken;
   export let loadMore = (pageToken) => {};
+
+  const formatTransactionTime = (date: Date) => {
+    if (dayjs().diff(date, "days") >= 1) {
+      return dayjs(date).format("YYYY-MM-DD, hh:mm A");
+    }
+    return dayjs(date).fromNow();
+  };
 </script>
 
 <div
@@ -290,7 +297,7 @@
   </div>
 {/if}
 
-{#if $typeWallet !== "SOL" && $typeWallet !== "TON" && $typeWallet !== "AURA" && $typeWallet !== "ALGO" && $typeWallet !== "CEX"}
+{#if $typeWallet !== "SOL" && $typeWallet !== "NEAR" && $typeWallet !== "TON" && $typeWallet !== "AURA" && $typeWallet !== "ALGO" && $typeWallet !== "CEX"}
   <div class="flex items-center gap-2">
     <a href="https://mobula.fi/" target="_blank">
       <img

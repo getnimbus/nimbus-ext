@@ -10,18 +10,19 @@
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { createQuery } from "@tanstack/svelte-query";
   import { nimbus } from "~/lib/network";
-  import All from "~/assets/all.svg";
-  import Select from "~/components/Select.svelte";
   import type { TrxHistoryDataRes } from "~/types/TrxHistoryData";
   import type {
     AnalyticHistoricalRes,
     AnalyticHistoricalFormat,
   } from "~/types/AnalyticHistoricalData";
 
+  import HistoricalTransactions from "./HistoricalTransactions.svelte";
   import AddressManagement from "~/components/AddressManagement.svelte";
   import CalendarChart from "~/components/CalendarChart.svelte";
-  import HistoricalTransactions from "./HistoricalTransactions.svelte";
   import CoinSelector from "~/components/CoinSelector.svelte";
+  import Select from "~/components/Select.svelte";
+
+  import All from "~/assets/all.svg";
 
   const types = [
     {
@@ -242,6 +243,7 @@
         $wallet?.length !== 0 &&
         $chain?.length !== 0 &&
         $typeWallet !== "SOL" &&
+        $typeWallet !== "NEAR" &&
         $typeWallet !== "TON" &&
         $typeWallet !== "AURA" &&
         $typeWallet !== "ALGO"
@@ -308,7 +310,7 @@
         </div>
       </div>
 
-      {#if $typeWallet === "BUNDLE" || $typeWallet === "SOL" || $typeWallet === "TON" || $typeWallet === "AURA" || $typeWallet === "ALGO"}
+      {#if $typeWallet === "BUNDLE" || $typeWallet === "SOL" || $typeWallet === "NEAR" || $typeWallet === "TON" || $typeWallet === "AURA" || $typeWallet === "ALGO"}
         <div
           class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center gap-3 justify-center z-30 backdrop-blur-md ${
             $isDarkMode ? "bg-black/90" : "bg-white/95"

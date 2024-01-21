@@ -26,10 +26,29 @@
 
   let selectedTypeDisplay: "grid" | "table" = "grid";
 
+  const handleValidateAddress = async (address: string) => {
+    try {
+      const response = await nimbus.get(`/v2/address/${address}/validate`);
+      return response?.data;
+    } catch (e) {
+      console.error(e);
+      return {
+        address: "",
+        type: "",
+      };
+    }
+  };
+
   // nft holding
   const getHoldingNFT = async (address) => {
+    const validateAccount = await handleValidateAddress(address);
+
     const response = await nimbus
-      .get(`/v2/address/${address}/nft-holding?chain=ALL`)
+      .get(
+        `/v2/address/${address}/nft-holding?chain=${
+          validateAccount?.type === "BUNDLE" ? "" : validateAccount?.type
+        }`
+      )
       .then((response) => response?.data);
     return response;
   };
@@ -66,8 +85,7 @@
       ) {
         priceSubscribe(
           [Number(selectedCollection?.nativeToken?.cmcId)],
-          false,
-          "",
+          selectedCollection?.collection?.chain,
           (item) => {
             marketPriceNFT = {
               id: item.id,

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onDestroy, onMount } from "svelte";
+  import { createEventDispatcher, onDestroy, onMount } from "svelte";
   import {
     createQuery,
     createMutation,
@@ -42,16 +42,10 @@
   let minutes: number = 0;
   let seconds: number = 0;
 
+  $: solanaPublicAddress = $walletStore?.publicKey?.toBase58();
+
   const getTargetDate = () => {
-    return dayjs("2024-01-10", "YYYY-MM-DD");
-    const storedDate = localStorage.getItem("countdownTarget");
-    if (storedDate && dayjs(storedDate).isAfter(dayjs())) {
-      return dayjs(storedDate);
-    } else {
-      const newTargetDate = dayjs().add(9, "day");
-      localStorage.setItem("countdownTarget", newTargetDate.toISOString());
-      return newTargetDate;
-    }
+    return dayjs("2024-01-15", "YYYY-MM-DD");
   };
 
   // Set the target date for the countdown
@@ -104,6 +98,8 @@
     counter = 3;
     timeout();
   };
+
+  const dispatch = createEventDispatcher();
 
   const timeout = () => {
     if (--counter > 0) return setTimeout(timeout, 1000);
@@ -160,7 +156,9 @@
 
   const getDataRecapMintNFT = async () => {
     try {
-      const response = await nimbus.get("/recap/mint-stats");
+      const response = await nimbus.get(
+        `/recap/mint-stats?address=${solanaPublicAddress}`
+      );
       if (response?.data?.totalMinted) {
         dataMint = response?.data;
       }
@@ -185,11 +183,14 @@
     },
     mutationFn: async () => {
       mixpanel.track("recap_mint");
-      const data = await nimbus.post("/recap/mint-nft", {});
+      const data = await nimbus.post("/recap/mint-nft-v2", {
+        owner: solanaPublicAddress,
+      });
       // TODO: Update me once deployed
       const connection = new Connection(
         // "https://devnet-rpc.shyft.to?api_key=gsusEvomKHQwwltu" // DEVNET
-        "https://rpc.shyft.to?api_key=Gny0V25q6Y2kMjze" // PROD
+        "https://rpc.shyft.to?api_key=b4feHxaBppbRqTHc" // PROD
+        // "https://rpc.shyft.to?api_key=gsusEvomKHQwwltu"
       );
       const result = await $walletStore.sendTransaction(
         Transaction.from(
@@ -202,6 +203,15 @@
       return result;
     },
   });
+
+  const handleMintNFTClick = () => {
+    if (solanaPublicAddress) {
+      $handleMintNFT.mutate();
+      return;
+    }
+    dispatch("connect");
+    mixpanel.track("recap_connect_wallet");
+  };
 </script>
 
 <div
@@ -266,9 +276,17 @@
 
                 <div class="w-full bg-gray-200 rounded-full h-6">
                   <div
-                    class="bg-[#4DF6E2] h-6 rounded-full"
-                    style={`width: ${dataMint?.totalMinted || 0}%`}
-                  />
+                    class="relative bg-gray-300 h-6 rounded-full w-full overflow-hidden"
+                  >
+                    <div
+                      class="absolute top-0 left-0 h-full bg-[#4DF6E2]"
+                      style={`width: ${
+                        dataMint?.next === 0
+                          ? 100
+                          : (dataMint?.totalMinted / dataMint?.next) * 100
+                      }%`}
+                    ></div>
+                  </div>
                 </div>
               </div>
               <div class="flex gap-10 items-center text-black">
@@ -278,11 +296,13 @@
                       ? "bg-[#dddddd]"
                       : "bg-[#4DF6E2]"
                   }`}
-                  on:click={$handleMintNFT.mutate()}
+                  on:click={handleMintNFTClick}
                   disabled={dayjs().isAfter(targetDate)}
                 >
                   {#if $handleMintNFT.isLoading}
                     Minting... <img src={HammerIcon} alt="" class="w-10 h-10" />
+                  {:else if !solanaPublicAddress}
+                    Connect wallet
                   {:else}
                     Mint {dataMint?.mintFee && dataMint?.mintFee !== 0
                       ? dataMint?.mintFee + " SOL"
@@ -309,7 +329,7 @@
 </div>
 
 {#if showToast}
-  <div class="fixed top-3 right-3 w-full z-10">
+  <div class="fixed top-3 right-3 w-full" style="z-index: 2147483648;">
     <Toast
       transition={blur}
       params={{ amount: 10 }}

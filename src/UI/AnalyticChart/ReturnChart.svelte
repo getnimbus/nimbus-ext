@@ -8,8 +8,9 @@
     isDarkMode,
   } from "~/store";
   import { autoFontSize, formatPercent } from "~/utils";
+  import { chainSupportedList } from "~/lib/chains";
   import dayjs from "dayjs";
-  import { calculateVolatility, getChangePercent } from "~/chart-utils";
+  import { getChangePercent } from "~/chart-utils";
   import { createQuery } from "@tanstack/svelte-query";
 
   import AnalyticSection from "~/components/AnalyticSection.svelte";
@@ -17,8 +18,6 @@
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import TooltipTitle from "~/components/TooltipTitle.svelte";
   import EChart from "~/components/EChart.svelte";
-  import CheckIcon from "~/components/CheckIcon.svelte";
-  import DangerIcon from "~/components/DangerIcon.svelte";
   import CtaIcon from "~/components/CtaIcon.svelte";
 
   import TrendUp from "~/assets/trend-up.svg";
@@ -118,14 +117,7 @@
     $wallet === "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0"
       ? true
       : Boolean(
-          ($typeWallet === "EVM" ||
-            $typeWallet === "MOVE" ||
-            $typeWallet === "CEX" ||
-            $typeWallet === "SOL" ||
-            $typeWallet === "TON" ||
-            $typeWallet === "AURA" ||
-            $typeWallet === "ALGO" ||
-            $typeWallet === "BUNDLE") &&
+          chainSupportedList.includes($typeWallet) &&
             $wallet.length !== 0 &&
             $selectedPackage !== "FREE"
         );

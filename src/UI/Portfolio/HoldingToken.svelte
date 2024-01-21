@@ -1,6 +1,7 @@
 <script lang="ts">
   import { typeWallet, isDarkMode, user, selectedBundle } from "~/store";
-  import { detectedChain, shorterName, shorterAddress } from "~/utils";
+  import { shorterName, shorterAddress } from "~/utils";
+  import { chainSupportedList, detectedChain } from "~/lib/chains";
   import numeral from "numeral";
   import { Progressbar, Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
@@ -8,20 +9,20 @@
   import { nimbus } from "~/lib/network";
   import { i18n } from "~/lib/i18n";
   import CopyToClipboard from "svelte-copy-to-clipboard";
-  import { wait } from "../entries/background/utils";
+  import { wait } from "../../entries/background/utils";
   import mixpanel from "mixpanel-browser";
 
-  import Tooltip from "~/components/Tooltip.svelte";
   import "~/components/Tooltip.custom.svelte";
   import tooltip from "~/entries/contentScript/views/tooltip";
+  import Tooltip from "~/components/Tooltip.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
-  import AppOverlay from "~/components/Overlay.svelte";
-  import VaultTable from "~/UI/Portfolio/VaultTable.svelte";
-  import Button from "./Button.svelte";
+  import Button from "~/components/Button.svelte";
   import Copy from "~/components/Copy.svelte";
   import Image from "~/components/Image.svelte";
-  import OverlaySidebar from "./OverlaySidebar.svelte";
-  import OverlaySidebarSwap from "./OverlaySidebarSwap.svelte";
+  import OverlaySidebar from "~/components/OverlaySidebar.svelte";
+  import OverlaySidebarSwap from "~/components/OverlaySidebarSwap.svelte";
+  import AppOverlay from "~/components/Overlay.svelte";
+  import VaultTable from "~/UI/Portfolio/VaultTable.svelte";
   import TokenDetailSidebar from "~/UI/TokenDetail/TokenDetailSidebar.svelte";
 
   import TrendUp from "~/assets/trend-up.svg";
@@ -163,22 +164,24 @@
   $: realizedProfit = data?.profit?.realizedProfit
     ? Number(data?.profit?.realizedProfit)
     : 0;
+
   $: percentRealizedProfit =
     Number(data?.avgCost) === 0
       ? 0
       : realizedProfit / Math.abs(Number(data?.avgCost));
 
+  $: pnl =
+    Number(data?.balance || 0) * Number(data?.market_price || 0) +
+    Number(data?.profit?.totalGain || 0) -
+    Number(data?.profit?.cost || 0);
+
   $: unrealizedProfit =
-    Number(data?.profit?.averageCost || 0) === 0
-      ? 0
-      : Number(data?.amount) *
-        (Number(data?.market_price) - Number(data?.profit.averageCost));
+    Number(data?.avgCost) === 0 ? 0 : Number(pnl) - realizedProfit;
 
   $: percentUnrealizedProfit =
-    Number(data?.profit?.averageCost || 0) === 0
+    Number(data?.avgCost) === 0
       ? 0
-      : (Number(data?.market_price) - Number(data?.profit?.averageCost)) /
-        Number(data?.profit?.averageCost || 0);
+      : unrealizedProfit / Math.abs(Number(data?.avgCost));
 
   $: ratio = (value / sumAllTokens) * 100;
 
@@ -229,7 +232,7 @@
           "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v", // USDC
       },
       onSuccess: ({ txid }) => {
-        toastMsg = `Swap token successful. Your tx id is ${txid}`;
+        toastMsg = `Swap token successful. Tx id is ${shorterAddress(txid)}`;
         isSuccessToast = true;
         trigger();
       },
@@ -245,6 +248,7 @@
       window.Jupiter.init(config);
     });
   };
+
   $: {
     if (showSideTokenDetail) {
       mixpanel.track("token_detail_page", {
@@ -820,7 +824,7 @@
           <div
             class={`flex justify-end ${
               unrealizedProfit !== 0
-                ? percentUnrealizedProfit >= 0
+                ? unrealizedProfit >= 0
                   ? "text-[#00A878]"
                   : "text-red-500"
                 : "text_00000099"
@@ -861,9 +865,9 @@
     </div>
   </td>
 
-  {#if $typeWallet === "SOL" || $typeWallet === "TON" || $typeWallet === "AURA" || $typeWallet === "ALGO" || $typeWallet === "EVM" || $typeWallet === "MOVE" || $typeWallet === "BUNDLE" || $typeWallet === "CEX"}
+  {#if chainSupportedList.includes($typeWallet)}
     <td
-      class={`py-3 w-full h-full flex justify-start items-center xl:gap-4 gap-7 ${
+      class={`py-3 pr-3 w-full h-full flex justify-start items-center xl:gap-4 gap-7 ${
         $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
       }`}
       style={`${lastIndex ? "border-bottom-right-radius: 10px;" : ""}`}
@@ -917,7 +921,7 @@
         </div>
       {/if}
 
-      {#if $typeWallet === "EVM" || $typeWallet === "MOVE" || $typeWallet === "SOL" || $typeWallet === "TON" || $typeWallet === "AURA" || $typeWallet === "ALGO" || $typeWallet === "BUNDLE" || $typeWallet === "CEX"}
+      {#if chainSupportedList.includes($typeWallet)}
         <div
           class="flex justify-center cursor-pointer view-icon-detail"
           on:click={() => {
@@ -1809,7 +1813,7 @@
 </OverlaySidebarSwap>
 
 {#if showToast}
-  <div class="fixed z-30 w-full top-3 right-3">
+  <div class="fixed w-full top-3 right-3" style="z-index: 2147483648;">
     <Toast
       transition={blur}
       params={{ amount: 10 }}

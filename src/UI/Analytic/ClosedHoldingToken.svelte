@@ -17,6 +17,7 @@
     shorterName,
     typeClosedHoldingTokenChart,
   } from "~/utils";
+  import { chainSupportedList } from "~/lib/chains";
 
   import type { HoldingTokenRes } from "~/types/HoldingTokenData";
 
@@ -224,9 +225,33 @@
   let worseLose = {};
   let sumRealizedProfit = 0;
 
+  const handleValidateAddress = async (address: string) => {
+    try {
+      const response = await nimbus.get(`/v2/address/${address}/validate`);
+      return response?.data;
+    } catch (e) {
+      console.error(e);
+      return {
+        address: "",
+        type: "",
+      };
+    }
+  };
+
   const getHoldingToken = async (address, chain) => {
+    let addressChain = chain;
+
+    if (addressChain === "ALL") {
+      const validateAccount = await handleValidateAddress(address);
+      addressChain = validateAccount?.type;
+    }
+
     const response: HoldingTokenRes = await nimbus
-      .get(`/v2/address/${address}/holding?chain=${chain}`)
+      .get(
+        `/v2/address/${address}/holding?chain=${
+          addressChain === "BUNDLE" ? "" : addressChain
+        }`
+      )
       .then((response) => response?.data || []);
 
     return response;
@@ -395,14 +420,7 @@
     $wallet === "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0"
       ? true
       : Boolean(
-          ($typeWallet === "EVM" ||
-            $typeWallet === "MOVE" ||
-            $typeWallet === "CEX" ||
-            $typeWallet === "SOL" ||
-            $typeWallet === "TON" ||
-            $typeWallet === "AURA" ||
-            $typeWallet === "ALGO" ||
-            $typeWallet === "BUNDLE") &&
+          chainSupportedList.includes($typeWallet) &&
             $wallet.length !== 0 &&
             $selectedPackage !== "FREE"
         );

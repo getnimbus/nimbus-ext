@@ -1,10 +1,12 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { priceSubscribe } from "~/lib/price-ws";
   import { i18n } from "~/lib/i18n";
   import { chain, typeWallet, isDarkMode } from "~/store";
-  import { filterTokenValueType } from "~/utils";
+  import { filterTokenValueType, chunkArray } from "~/utils";
+  import { chainSupportedList } from "~/lib/chains";
   import { groupBy } from "lodash";
+  import { priceMobulaSubscribe } from "~/lib/price-mobulaWs";
+  import { priceSubscribe } from "~/lib/price-ws";
 
   export let selectedWallet;
   export let isLoadingNFT;
@@ -16,9 +18,9 @@
   export let selectedDataPieChart;
   export let totalAssets;
 
+  import HoldingToken from "~/UI/Portfolio/HoldingToken.svelte";
+  import HoldingNFT from "~/UI/Portfolio/HoldingNFT.svelte";
   import Select from "~/components/Select.svelte";
-  import HoldingToken from "~/components/HoldingToken.svelte";
-  import HoldingNFT from "~/components/HoldingNFT.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import TooltipTitle from "~/components/TooltipTitle.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
@@ -84,122 +86,6 @@
     };
   });
 
-  // subscribe to ws
-  $: {
-    if (!isLoadingToken) {
-      if (holdingTokenData?.length !== 0) {
-        const dataTokenHolding = holdingTokenData?.filter(
-          (item) =>
-            item?.price?.source === undefined ||
-            item?.price?.source !== "Modifed"
-        );
-
-        const filteredHoldingTokenData = dataTokenHolding?.filter(
-          (item) => item?.cmc_id
-        );
-
-        const filteredNullCmcHoldingTokenData = dataTokenHolding?.filter(
-          (item) => item?.cmc_id === null
-        );
-
-        const groupFilteredNullCmcHoldingTokenData = groupBy(
-          filteredNullCmcHoldingTokenData,
-          "chain"
-        );
-
-        const filteredUndefinedCmcHoldingTokenData = dataTokenHolding?.filter(
-          (item) => item?.cmc_id === undefined
-        );
-
-        if (
-          $typeWallet === "CEX" &&
-          filteredUndefinedCmcHoldingTokenData.length > 0
-        ) {
-          filteredUndefinedCmcHoldingTokenData.map((item) => {
-            priceSubscribe([item?.symbol], false, "CEX", (data) => {
-              marketPriceToken = {
-                id: data.id,
-                market_price: data.price,
-              };
-            });
-          });
-        }
-
-        const chainList = Object.keys(groupFilteredNullCmcHoldingTokenData);
-
-        chainList.map((chain) => {
-          groupFilteredNullCmcHoldingTokenData[chain].map((item) => {
-            priceSubscribe([item?.contractAddress], true, chain, (data) => {
-              marketPriceToken = {
-                id: data.id,
-                market_price: data.price,
-              };
-            });
-          });
-        });
-
-        dataSubWS = filteredHoldingTokenData.map((item) => {
-          return {
-            symbol: item.symbol,
-            cmcId: item.cmc_id,
-          };
-        });
-
-        sumAllTokens = holdingTokenData?.reduce(
-          (prev, item) => prev + item.value,
-          0
-        );
-      }
-    }
-    if (!isLoadingNFT) {
-      if (holdingNFTData?.length !== 0) {
-        const formatHoldingNFTData = holdingNFTData
-          ?.filter((item) => item?.nativeToken?.cmcId)
-          ?.map((item) => {
-            return {
-              symbol: item.nativeToken.symbol,
-              cmcId: item.nativeToken.cmcId,
-            };
-          });
-
-        dataSubWS = dataSubWS.concat(formatHoldingNFTData);
-      }
-    }
-  }
-
-  $: {
-    if (
-      !isLoadingNFT &&
-      !isLoadingToken &&
-      dataSubWS &&
-      dataSubWS.length !== 0
-    ) {
-      let filteredData = [];
-      const symbolSet = new Set();
-
-      dataSubWS.forEach((item) => {
-        if (!symbolSet.has(item.symbol)) {
-          symbolSet.add(item.symbol);
-          filteredData.push(item);
-        }
-      });
-
-      filteredData?.map((item) => {
-        priceSubscribe(
-          [Number(item?.cmcId)],
-          false,
-          $typeWallet !== "CEX" ? "" : "CEX",
-          (data) => {
-            marketPriceToken = {
-              id: data.id,
-              market_price: data.price,
-            };
-          }
-        );
-      });
-    }
-  }
-
   // format initial data
   $: {
     if (
@@ -255,6 +141,129 @@
     }
   }
 
+  // subscribe to ws
+  $: {
+    if (!isLoadingToken) {
+      if (holdingTokenData?.length !== 0) {
+        const dataTokenHolding = holdingTokenData?.filter(
+          (item) =>
+            item?.price?.source === undefined ||
+            item?.price?.source !== "Modifed"
+        );
+        const filteredHoldingTokenData = dataTokenHolding?.filter(
+          (item) => item?.cmc_id
+        );
+        const filteredNullCmcHoldingTokenData = dataTokenHolding?.filter(
+          (item) => item?.cmc_id === null
+        );
+        const groupFilteredNullCmcHoldingTokenData = groupBy(
+          filteredNullCmcHoldingTokenData,
+          "chain"
+        );
+        const filteredUndefinedCmcHoldingTokenData = dataTokenHolding?.filter(
+          (item) => item?.cmc_id === undefined
+        );
+
+        if (
+          $typeWallet === "CEX" &&
+          filteredUndefinedCmcHoldingTokenData.length > 0
+        ) {
+          const chunkedArray = chunkArray(
+            filteredUndefinedCmcHoldingTokenData,
+            100
+          );
+          chunkedArray.forEach((chunk) => {
+            chunk
+              .filter((item) => item?.symbol)
+              .map((item) => {
+                priceMobulaSubscribe([item?.symbol], "CEX", (data) => {
+                  marketPriceToken = {
+                    id: data.id,
+                    market_price: data.price,
+                  };
+                });
+              });
+          });
+        }
+
+        const chainList = Object.keys(groupFilteredNullCmcHoldingTokenData);
+        chainList.map((chain) => {
+          const chunkedArray = chunkArray(
+            groupFilteredNullCmcHoldingTokenData[chain],
+            100
+          );
+          chunkedArray.forEach((chunk) => {
+            chunk
+              .filter((item) => item?.contractAddress)
+              .map((item) => {
+                priceMobulaSubscribe(
+                  [item?.contractAddress],
+                  item?.chain,
+                  (data) => {
+                    marketPriceToken = {
+                      id: data.id,
+                      market_price: data.price,
+                    };
+                  }
+                );
+              });
+          });
+        });
+
+        dataSubWS = filteredHoldingTokenData.map((item) => {
+          return {
+            symbol: item.symbol,
+            cmcId: item.cmc_id,
+          };
+        });
+
+        sumAllTokens = holdingTokenData?.reduce(
+          (prev, item) => prev + item.value,
+          0
+        );
+      }
+    }
+    if (!isLoadingNFT) {
+      if (holdingNFTData?.length !== 0) {
+        const formatHoldingNFTData = holdingNFTData
+          ?.filter((item) => item?.nativeToken?.cmcId)
+          ?.map((item) => {
+            return {
+              symbol: item.nativeToken.symbol,
+              cmcId: item.nativeToken.cmcId,
+            };
+          });
+        dataSubWS = dataSubWS.concat(formatHoldingNFTData);
+      }
+    }
+  }
+
+  $: {
+    if (
+      !isLoadingNFT &&
+      !isLoadingToken &&
+      dataSubWS &&
+      dataSubWS.length !== 0
+    ) {
+      let filteredData = [];
+      const symbolSet = new Set();
+      dataSubWS.forEach((item) => {
+        if (!symbolSet.has(item.symbol)) {
+          symbolSet.add(item.symbol);
+          filteredData.push(item);
+        }
+      });
+      filteredData?.map((item) => {
+        priceSubscribe([Number(item?.cmcId)], item?.chain, (data) => {
+          marketPriceToken = {
+            id: data.id,
+            market_price: data.price,
+          };
+        });
+      });
+    }
+  }
+
   // check market price and update price real-time
   $: {
     if (marketPriceToken) {
@@ -278,7 +287,6 @@
         }
         return { ...item };
       });
-
       formatData = formatDataWithMarketPrice.sort((a, b) => {
         if (a.value < b.value) {
           return 1;
@@ -288,19 +296,15 @@
         }
         return 0;
       });
-
       filteredHoldingDataToken = formatData.filter((item) => item.value > 1);
-
       sumTokens = formatDataWithMarketPrice.reduce(
         (prev, item) => prev + item.value,
         0
       );
-
       sumAllTokens = formatDataWithMarketPrice.reduce(
         (prev, item) => prev + item.value,
         0
       );
-
       // update data nft holding
       const formatDataNFTWithMarketPrice = formatDataNFT.map((item) => {
         if (
@@ -319,7 +323,6 @@
         }
         return { ...item };
       });
-
       formatDataNFT = formatDataNFTWithMarketPrice.sort((a, b) => {
         if (a.current_native_token < b.current_native_token) {
           return 1;
@@ -329,7 +332,6 @@
         }
         return 0;
       });
-
       sumNFT = formatDataNFTWithMarketPrice.reduce(
         (prev, item) => prev + item.current_value,
         0
@@ -407,17 +409,7 @@
     }
   }
 
-  $: colspan =
-    $typeWallet === "SOL" ||
-    $typeWallet === "TON" ||
-    $typeWallet === "AURA" ||
-    $typeWallet === "ALGO" ||
-    $typeWallet === "EVM" ||
-    $typeWallet === "MOVE" ||
-    $typeWallet === "BUNDLE" ||
-    $typeWallet === "CEX"
-      ? 8
-      : 7;
+  $: colspan = chainSupportedList.includes($typeWallet) ? 8 : 7;
 
   $: {
     if (selectedWallet || $chain) {
@@ -572,14 +564,7 @@
                     </th>
                     <th
                       class={`py-3 xl:pr-3 pr-6 ${
-                        $typeWallet === "SOL" ||
-                        $typeWallet === "TON" ||
-                        $typeWallet === "AURA" ||
-                        $typeWallet === "ALGO" ||
-                        $typeWallet === "EVM" ||
-                        $typeWallet === "MOVE" ||
-                        $typeWallet === "BUNDLE" ||
-                        $typeWallet === "CEX"
+                        chainSupportedList.includes($typeWallet)
                           ? ""
                           : "rounded-tr-[10px]"
                       }`}
@@ -590,9 +575,9 @@
                         Unrealized PnL
                       </div>
                     </th>
-                    {#if $typeWallet === "SOL" || $typeWallet === "TON" || $typeWallet === "AURA" || $typeWallet === "ALGO" || $typeWallet === "EVM" || $typeWallet === "MOVE" || $typeWallet === "BUNDLE" || $typeWallet === "CEX"}
+                    {#if chainSupportedList.includes($typeWallet)}
                       <th
-                        class={`py-3 rounded-tr-[10px] ${
+                        class={`py-3 rounded-tr-[10px] pr-3 ${
                           ["BUNDLE", "SOL"].includes($typeWallet)
                             ? "xl:max-w-20 w-16"
                             : "xl:max-w-14"
@@ -725,7 +710,7 @@
                     : "bg-[#fff] border border_0000000d"
                 }`}
               >
-                <table class="table-auto xl:w-full w-[1400px] h-full">
+                <table class="table-auto xl:w-full w-[2000px] h-full">
                   <thead
                     class={isStickyTableNFT ? "sticky top-0 z-10" : ""}
                     bind:this={tableNFTHeader}

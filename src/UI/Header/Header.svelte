@@ -32,11 +32,12 @@
   import addGlobalBinds from "bind-mousetrap-global";
   addGlobalBinds(Mousetrap);
 
+  import tooltip from "~/entries/contentScript/views/tooltip";
   import Auth from "~/UI/Auth/Auth.svelte";
-  import DarkModeFooter from "./DarkModeFooter.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
   import Button from "~/components/Button.svelte";
-  import tooltip from "~/entries/contentScript/views/tooltip";
+  import DarkModeFooter from "../Footer/DarkModeFooter.svelte";
+  import Banner from "~/UI/Banner/Banner.svelte";
 
   import Logo from "~/assets/logo-white.svg";
   import PortfolioIcon from "~/assets/portfolio.svg";
@@ -56,16 +57,15 @@
   import User from "~/assets/user.png";
   import goldImg from "~/assets/Gold4.svg";
 
-  import Move from "~/assets/move.png";
+  import Move from "~/assets/chains/move.png";
   import All from "~/assets/all.svg";
   import Bundles from "~/assets/bundles.png";
-  import BitcoinLogo from "~/assets/bitcoin.png";
-  import SolanaLogo from "~/assets/solana.png";
-  import AuraLogo from "~/assets/aura.png";
-  import AlgorandLogo from "~/assets/algorand.png";
-  import TonLogo from "~/assets/ton.png";
-  import NimbusBanner from "./NimbusBanner.svelte";
-  import { Log } from "ethers";
+  import BitcoinLogo from "~/assets/chains/bitcoin.png";
+  import SolanaLogo from "~/assets/chains/solana.png";
+  import NearLogo from "~/assets/chains/near.png";
+  import AuraLogo from "~/assets/chains/aura.png";
+  import AlgorandLogo from "~/assets/chains/algorand.png";
+  import TonLogo from "~/assets/chains/ton.png";
 
   const MultipleLang = {
     portfolio: i18n("newtabPage.portfolio", "Portfolio"),
@@ -135,6 +135,9 @@
       if (item?.type === "SOL") {
         logo = SolanaLogo;
       }
+      if (item?.type === "NEAR") {
+        logo = NearLogo;
+      }
       if (item?.type === "TON") {
         logo = TonLogo;
       }
@@ -164,6 +167,9 @@
             }
             if (account?.type === "SOL") {
               logo = SolanaLogo;
+            }
+            if (account?.type === "NEAR") {
+              logo = NearLogo;
             }
             if (item?.type === "TON") {
               logo = TonLogo;
@@ -224,44 +230,47 @@
   }
 
   const handleSearchAddress = async (value: string) => {
-    mixpanel.track("user_search");
-    const validateAccount = await handleValidateAddress(value);
-    chain.update((n) => (n = "ALL"));
-    wallet.update((n) => (n = validateAccount?.address));
-    typeWallet.update((n) => (n = validateAccount?.type));
+    if (value) {
+      mixpanel.track("user_search");
+      const validateAccount = await handleValidateAddress(value);
+      chain.update((n) => (n = "ALL"));
+      wallet.update((n) => (n = validateAccount?.address));
+      typeWallet.update((n) => (n = validateAccount?.type));
 
-    browser.storage.sync.set({
-      selectedWallet: validateAccount?.address,
-    });
-    browser.storage.sync.set({ selectedChain: "ALL" });
-    browser.storage.sync.set({
-      typeWalletAddress: validateAccount?.type,
-    });
+      browser.storage.sync.set({
+        selectedWallet: validateAccount?.address,
+      });
+      browser.storage.sync.set({ selectedChain: "ALL" });
+      browser.storage.sync.set({
+        typeWalletAddress: validateAccount?.type,
+      });
 
-    if (validateAccount?.type === "EVM" || validateAccount?.type === "MOVE") {
-      window.history.replaceState(
-        null,
-        "",
-        window.location.pathname +
-          `?type=${validateAccount?.type}&chain=ALL&address=${validateAccount?.address}`
-      );
+      if (validateAccount?.type === "EVM" || validateAccount?.type === "MOVE") {
+        window.history.replaceState(
+          null,
+          "",
+          window.location.pathname +
+            `?type=${validateAccount?.type}&chain=ALL&address=${validateAccount?.address}`
+        );
+      }
+      if (
+        validateAccount?.type === "BTC" ||
+        validateAccount?.type === "SOL" ||
+        validateAccount?.type === "NEAR" ||
+        validateAccount?.type === "TON" ||
+        validateAccount?.type === "AURA" ||
+        validateAccount?.type === "ALGO" ||
+        validateAccount?.type === "CEX"
+      ) {
+        window.history.replaceState(
+          null,
+          "",
+          window.location.pathname +
+            `?type=${validateAccount?.type}&address=${validateAccount?.address}`
+        );
+      }
+      handleSaveSuggest(validateAccount?.address);
     }
-    if (
-      validateAccount?.type === "BTC" ||
-      validateAccount?.type === "SOL" ||
-      validateAccount?.type === "TON" ||
-      validateAccount?.type === "AURA" ||
-      validateAccount?.type === "ALGO" ||
-      validateAccount?.type === "CEX"
-    ) {
-      window.history.replaceState(
-        null,
-        "",
-        window.location.pathname +
-          `?type=${validateAccount?.type}&address=${validateAccount?.address}`
-      );
-    }
-    handleSaveSuggest(validateAccount?.address);
   };
 
   onMount(() => {
@@ -302,21 +311,23 @@
     });
 
     Mousetrap.bindGlobal(["enter"], async function () {
-      if (selectedIndexAddress !== -1) {
-        let selectedAddress;
-        if (indexSelectedAddressResult === -1) {
-          selectedAddress = listAddress[selectedIndexAddress]?.value;
+      if (showPopoverSearch) {
+        if (selectedIndexAddress !== -1) {
+          let selectedAddress;
+          if (indexSelectedAddressResult === -1) {
+            selectedAddress = listAddress[selectedIndexAddress]?.value;
+          } else {
+            selectedAddress = listAddress[indexSelectedAddressResult]?.value;
+          }
+          handleSearchAddress(selectedAddress);
+          showPopoverSearch = false;
+          indexSelectedAddressResult = -1;
+          search = "";
+          searchListAddressResult = listAddress;
         } else {
-          selectedAddress = listAddress[indexSelectedAddressResult]?.value;
+          search = "";
+          searchListAddressResult = listAddress;
         }
-        handleSearchAddress(selectedAddress);
-        showPopoverSearch = false;
-        indexSelectedAddressResult = -1;
-        search = "";
-        searchListAddressResult = listAddress;
-      } else {
-        search = "";
-        searchListAddressResult = listAddress;
       }
     });
   });
@@ -489,12 +500,6 @@
 
 <svelte:head>
   <script src="/main-2.0.4.js" data-preload></script>
-  <script
-    defer
-    src="https://widget.mava.app"
-    id="MavaWebChat"
-    data-token="b379b36e08fcb3d988cd60fb45deb82f713f3daa4f18c66f8b9c479ff42bf3b5"
-  ></script>
   <script>
     !(function (e, t) {
       const a = "featurebase-sdk";
@@ -525,59 +530,7 @@
       fullscreenPopup: true,
       // fullScreen: false,
     });
-
-    // function getParamsFromQs(qs) {
-    //   const urlSearchParams = new URLSearchParams(qs);
-    //   const params = Object.fromEntries(urlSearchParams.entries());
-    //   name = params;
-    // }
-
-    // $: console.log(name);
   </script>
-
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
-  <!-- <script src="https://tag.safary.club/stag.js?id=prd_hFzVSk8Y6M"></script> -->
   <script>
     Featurebase("initialize_feedback_widget", {
       organization: "nimbus", // required
@@ -733,22 +686,11 @@
 
       <div
         on:click={() => {
-          if ($user && Object.keys($user).length !== 0) {
-            navActive = "transactions";
-            queryClient.invalidateQueries(["users-me"]);
-          } else {
-            user.update((n) => (n = {}));
-            wallet.update((n) => (n = ""));
-            chain.update((n) => (n = ""));
-            typeWallet.update((n) => (n = ""));
-            queryClient.invalidateQueries(["list-address"]);
-          }
+          navActive = "transactions";
         }}
       >
         <Link
-          to={`${
-            $user && Object.keys($user).length !== 0 ? "transactions" : "/"
-          }`}
+          to={`/transactions?type=${$typeWallet}&chain=${$chain}&address=${$wallet}`}
         >
           <div
             class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:opacity-100 transition-all
@@ -913,7 +855,7 @@
   </div>
 </div>
 
-<NimbusBanner />
+<!-- <Banner /> -->
 
 <!-- Mobile header -->
 <div
@@ -1394,6 +1336,7 @@
   </div>
 </AppOverlay>
 
+<!-- Modal search -->
 <AppOverlay
   clickOutSideToClose
   isOpen={showPopoverSearch}

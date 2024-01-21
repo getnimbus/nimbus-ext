@@ -8,7 +8,7 @@
 
   import "~/UI/SolanaCustomWalletBtn/style.css";
 
-  import SolanaIcon from "~/assets/solana.png";
+  import SolanaIcon from "~/assets/chains/solana.png";
 
   export let text;
   export let maxNumberOfWallets = 3;

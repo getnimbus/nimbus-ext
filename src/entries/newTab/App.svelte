@@ -1,19 +1,20 @@
 <script lang="ts">
   import { QueryClient, QueryClientProvider } from "@tanstack/svelte-query";
   import { onMount } from "svelte";
-  import { Route, Router, useLocation, useParams } from "svelte-navigator";
+  import { Route, Router } from "svelte-navigator";
   import * as browser from "webextension-polyfill";
   import { detectParams, isDarkMode } from "~/store";
 
   import "flowbite/dist/flowbite.css";
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
-  import Footer from "~/components/Footer.svelte";
-  import Header from "~/components/Header.svelte";
   import Mixpanel from "~/components/Mixpanel.svelte";
-  import MobileHeaderTab from "~/components/MobileHeaderTab.svelte";
   import Loading from "~/components/Loading.svelte";
-  import MobileAppIntroduce from "~/components/MobileAppIntroduce.svelte";
+  import UpdateParams from "~/components/UpdateParams.svelte";
+  import MobileIntroModalPWA from "~/UI/MobileIntroModalPWA/MobileIntroModalPWA.svelte";
+  import Header from "~/UI/Header/Header.svelte";
+  import MobileHeaderTab from "~/UI/Header/MobileHeaderTab.svelte";
+  import Footer from "~/UI/Footer/Footer.svelte";
 
   const queryClient = new QueryClient({
     defaultOptions: {
@@ -333,9 +334,11 @@
             </div>
           </div>
           {#if isTouchDevice}
-            <MobileAppIntroduce />
+            <MobileIntroModalPWA />
           {/if}
         {/if}
+
+        <UpdateParams />
       </Router>
     </Mixpanel>
   </QueryClientProvider>

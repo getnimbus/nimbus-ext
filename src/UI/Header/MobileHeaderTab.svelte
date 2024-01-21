@@ -17,9 +17,6 @@
     portfolio: i18n("newtabPage.portfolio", "Portfolio"),
     analytics: i18n("newtabPage.analytics", "Analytics"),
     transactions: i18n("newtabPage.transactions", "Transactions"),
-    news: i18n("newtabPage.news", "News"),
-    // whales: i18n("newtabPage.whales", "Whales"),
-    search_placeholder: i18n("newtabPage.search-placeholder", "Search address"),
   };
 
   const navigate = useNavigate();
@@ -38,8 +35,8 @@
             ? "opacity-100"
             : "opacity-40"
           : navActive === "portfolio"
-          ? "opacity-100"
-          : "opacity-40"
+            ? "opacity-100"
+            : "opacity-40"
       }`}
       on:click={() => {
         navActive = "portfolio";
@@ -91,8 +88,8 @@
                 ? "opacity-100"
                 : "opacity-40"
               : navActive === "analytic"
-              ? "opacity-100"
-              : "opacity-40"
+                ? "opacity-100"
+                : "opacity-40"
           }
           `}
       on:click={() => {
@@ -151,8 +148,8 @@
               ? "opacity-100"
               : "opacity-40"
             : navActive === "portfolio"
-            ? "opacity-100"
-            : "opacity-40"
+              ? "opacity-100"
+              : "opacity-40"
         }`}
         on:click={() => {
           navActive = "portfolio";
@@ -202,8 +199,8 @@
                 ? "opacity-100"
                 : "opacity-40"
               : navActive === "analytic"
-              ? "opacity-100"
-              : "opacity-40"
+                ? "opacity-100"
+                : "opacity-40"
           }
           `}
         on:click={() => {
@@ -261,7 +258,7 @@
   {/if}
 
   <Link
-    to={`${$user && Object.keys($user).length !== 0 ? "transactions" : "/"}`}
+    to={`/transactions?type=${$typeWallet}&chain=${$chain}&address=${$wallet}`}
   >
     <div
       class={`flex flex-col items-center gap-2 cursor-pointer py-2 hover:opacity-100 transition-all
@@ -271,21 +268,12 @@
                 ? "opacity-100"
                 : "opacity-40"
               : navActive === "transactions"
-              ? "opacity-100"
-              : "opacity-40"
+                ? "opacity-100"
+                : "opacity-40"
           }
           `}
       on:click={() => {
-        if ($user && Object.keys($user).length !== 0) {
-          navActive = "transactions";
-          queryClient.invalidateQueries(["users-me"]);
-        } else {
-          user.update((n) => (n = {}));
-          wallet.update((n) => (n = ""));
-          chain.update((n) => (n = ""));
-          typeWallet.update((n) => (n = ""));
-          queryClient.invalidateQueries(["list-address"]);
-        }
+        navActive = "transactions";
       }}
     >
       <svg
@@ -359,8 +347,8 @@
                 ? "opacity-100"
                 : "opacity-40"
               : navActive === "more"
-              ? "opacity-100"
-              : "opacity-40"
+                ? "opacity-100"
+                : "opacity-40"
           }
           `}
     on:click={() => {

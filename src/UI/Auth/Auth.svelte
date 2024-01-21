@@ -32,7 +32,7 @@
   import Logo from "~/assets/logo-1.svg";
   import Reload from "~/assets/reload-black.svg";
   import ReloadWhite from "~/assets/reload-white.svg";
-  import Evm from "~/assets/ethereum.png";
+  import Evm from "~/assets/chains/ethereum.png";
 
   import SolanaAuth from "./SolanaAuth.svelte";
   import { WalletProvider } from "@svelte-on-solana/wallet-adapter-ui";
@@ -457,8 +457,8 @@
 
     {#if showPopover}
       <div
-        class="select_content absolute top-15 right-0 z-50 z-[51] flex flex-col gap-1 px-3 xl:py-2 py-3 text-sm transform rounded-lg w-max"
-        style="box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);"
+        class="select_content absolute top-15 right-0 z-50 flex flex-col gap-1 px-3 xl:py-2 py-3 text-sm transform rounded-lg w-max"
+        style="box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15); z-index: 2147483647;"
         use:clickOutside
         on:click_outside={() => (showPopover = false)}
       >
@@ -570,7 +570,7 @@
       mixpanel.track("user_connect_wallet");
       isShowHeaderMobile.update((n) => (n = false));
     }}
-    class="xl:text-base text-2xl font-semibold text-white cursor-pointer"
+    class="button xl:text-base text-2xl font-semibold text-white cursor-pointer"
   >
     Connect Wallet
   </div>
@@ -784,6 +784,20 @@
 </AppOverlay>
 
 <style windi:preflights:global windi:safelist:global>
+  .button {
+    animation: pulse 0.5s infinite alternate; /* Adjust the duration and other parameters as needed */
+  }
+
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+    }
+
+    100% {
+      transform: scale(1.1); /* Adjust the scaling factor as needed */
+    }
+  }
+
   :global(body) .select_content {
     background: #ffffff;
     border: 0.5px solid transparent;
