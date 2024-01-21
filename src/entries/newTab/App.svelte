@@ -1,7 +1,7 @@
 <script lang="ts">
   import { QueryClient, QueryClientProvider } from "@tanstack/svelte-query";
   import { onMount } from "svelte";
-  import { Route, Router, useLocation, useParams } from "svelte-navigator";
+  import { Route, Router } from "svelte-navigator";
   import * as browser from "webextension-polyfill";
   import { detectParams, isDarkMode } from "~/store";
 
@@ -10,6 +10,7 @@
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import Mixpanel from "~/components/Mixpanel.svelte";
   import Loading from "~/components/Loading.svelte";
+  import UpdateParams from "~/components/UpdateParams.svelte";
   import MobileIntroModalPWA from "~/UI/MobileIntroModalPWA/MobileIntroModalPWA.svelte";
   import Header from "~/UI/Header/Header.svelte";
   import MobileHeaderTab from "~/UI/Header/MobileHeaderTab.svelte";
@@ -336,6 +337,8 @@
             <MobileIntroModalPWA />
           {/if}
         {/if}
+
+        <UpdateParams />
       </Router>
     </Mixpanel>
   </QueryClientProvider>
