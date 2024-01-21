@@ -45,8 +45,8 @@
   import Select from "~/components/Select.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
   import Copy from "~/components/Copy.svelte";
-  import HiddenPortfolio from "./HiddenPortfolio.svelte";
-  import Hero from "./Hero.svelte";
+  import HiddenValue from "../UI/HiddenValue/HiddenValue.svelte";
+  import Hero from "../UI/Hero/Hero.svelte";
 
   import Plus from "~/assets/plus.svg";
   import PlusBlack from "~/assets/plus-black.svg";
@@ -1387,7 +1387,7 @@
                   </div>
                   {#if type === "portfolio"}
                     <span class="xl:pb-0 pb-3 xl:-ml-2">
-                      <HiddenPortfolio />
+                      <HiddenValue />
                     </span>
                     <div class="xl:block hidden">
                       <slot name="reload" />
