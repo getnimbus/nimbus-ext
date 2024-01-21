@@ -13,7 +13,7 @@
     equalizeArrayLengths,
     formatPercent,
   } from "~/utils";
-  import { chainSupportedList } from "~/lib/utils";
+  import { chainSupportedList } from "~/lib/chains";
   import { defillama, nimbus } from "~/lib/network";
   import dayjs from "dayjs";
 

@@ -17,7 +17,7 @@
     shorterName,
     typePieChart,
   } from "~/utils";
-  import { getAddressContext } from "~/lib/utils";
+  import { getAddressContext } from "~/lib/chains";
   import { track } from "~/lib/data-tracking";
   import { isSaveAddressLabel } from "../../../store";
 

@@ -17,7 +17,7 @@
     shorterName,
     typeClosedHoldingTokenChart,
   } from "~/utils";
-  import { chainSupportedList } from "~/lib/utils";
+  import { chainSupportedList } from "~/lib/chains";
 
   import type { HoldingTokenRes } from "~/types/HoldingTokenData";
 

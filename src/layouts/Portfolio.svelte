@@ -8,7 +8,7 @@
   import { onMount } from "svelte";
   import { i18n } from "~/lib/i18n";
   import { drivePortfolio, chunkArray } from "~/utils";
-  import { chainList, chainMoveList } from "~/lib/utils";
+  import { chainList, chainMoveList } from "~/lib/chains";
   import { wait } from "../entries/background/utils";
   import {
     wallet,

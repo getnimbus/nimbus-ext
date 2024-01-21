@@ -2,7 +2,7 @@
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import { typeWallet, isDarkMode } from "~/store";
   import { shorterName } from "~/utils";
-  import { detectedChain } from "~/lib/utils";
+  import { detectedChain } from "~/lib/chains";
   import tooltip from "~/entries/contentScript/views/tooltip";
 
   export let data;

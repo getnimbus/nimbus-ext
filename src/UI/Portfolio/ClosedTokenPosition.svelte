@@ -3,7 +3,7 @@
   import { i18n } from "~/lib/i18n";
   import { chain, typeWallet, isDarkMode } from "~/store";
   import { filterTokenValueType, chunkArray } from "~/utils";
-  import { chainSupportedList } from "~/lib/utils";
+  import { chainSupportedList } from "~/lib/chains";
   import { groupBy } from "lodash";
   import { priceMobulaSubscribe } from "~/lib/price-mobulaWs";
   import { priceSubscribe } from "~/lib/price-ws";

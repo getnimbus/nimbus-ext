@@ -8,7 +8,7 @@
     getTooltipContent,
     sharpeRatioColorChart,
   } from "~/utils";
-  import { chainSupportedList } from "~/lib/utils";
+  import { chainSupportedList } from "~/lib/chains";
   import maxBy from "lodash/maxBy";
   import minBy from "lodash/minBy";
   import groupBy from "lodash/groupBy";

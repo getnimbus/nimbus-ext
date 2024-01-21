@@ -23,7 +23,7 @@
     chainMoveList,
     listProviderCEX,
     listLogoCEX,
-  } from "~/lib/utils";
+  } from "~/lib/chains";
   import mixpanel from "mixpanel-browser";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import CopyToClipboard from "svelte-copy-to-clipboard";

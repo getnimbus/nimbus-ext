@@ -1,6 +1,6 @@
 <script lang="ts">
   import { isDarkMode, typeWallet } from "~/store";
-  import { detectedChain, linkExplorer } from "~/lib/utils";
+  import { detectedChain, linkExplorer } from "~/lib/chains";
   import dayjs from "dayjs";
   import "dayjs/locale/en";
   import "dayjs/locale/vi";

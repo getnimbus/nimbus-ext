@@ -12,7 +12,7 @@
   import {
     chainSupportedList,
     evmChainNotSupportHistoricalBalances,
-  } from "~/lib/utils";
+  } from "~/lib/chains";
   import dayjs from "dayjs";
   import numeral from "numeral";
 

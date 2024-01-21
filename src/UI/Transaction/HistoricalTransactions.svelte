@@ -5,7 +5,7 @@
   import relativeTime from "dayjs/plugin/relativeTime";
   dayjs.extend(relativeTime);
   import { typeWallet, isDarkMode } from "~/store";
-  import { chainList, linkExplorer } from "~/lib/utils";
+  import { chainList, linkExplorer } from "~/lib/chains";
 
   import Button from "~/components/Button.svelte";
   import Copy from "~/components/Copy.svelte";

@@ -3,7 +3,7 @@
   import { shorterName, shorterAddress } from "~/utils";
   import CopyToClipboard from "svelte-copy-to-clipboard";
   import { wait } from "../entries/background/utils";
-  import { chainSupportedList, detectedChain } from "~/lib/utils";
+  import { chainSupportedList, detectedChain } from "~/lib/chains";
 
   import Tooltip from "~/components/Tooltip.svelte";
   import "~/components/Tooltip.custom.svelte";

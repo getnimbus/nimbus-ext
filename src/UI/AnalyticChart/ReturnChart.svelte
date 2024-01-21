@@ -8,7 +8,7 @@
     isDarkMode,
   } from "~/store";
   import { autoFontSize, formatPercent } from "~/utils";
-  import { chainSupportedList } from "~/lib/utils";
+  import { chainSupportedList } from "~/lib/chains";
   import dayjs from "dayjs";
   import { getChangePercent } from "~/chart-utils";
   import { createQuery } from "@tanstack/svelte-query";

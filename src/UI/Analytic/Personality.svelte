@@ -7,7 +7,7 @@
   dayjs.extend(relativeTime);
   import { createQuery } from "@tanstack/svelte-query";
   import { nimbus } from "~/lib/network";
-  import { chainSupportedList } from "~/lib/utils";
+  import { chainSupportedList } from "~/lib/chains";
   import type { AnalyticHistoricalFormat } from "~/types/AnalyticHistoricalData";
 
   import CalendarChart from "~/components/CalendarChart.svelte";

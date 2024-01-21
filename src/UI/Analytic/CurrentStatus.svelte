@@ -11,7 +11,7 @@
     formatValue,
     autoFontSize,
   } from "~/utils";
-  import { chainSupportedList } from "~/lib/utils";
+  import { chainSupportedList } from "~/lib/chains";
   import { i18n } from "~/lib/i18n";
   import { useNavigate } from "svelte-navigator";
   import { nimbus } from "~/lib/network";

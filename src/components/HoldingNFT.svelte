@@ -1,7 +1,7 @@
 <script lang="ts">
   import { useNavigate } from "svelte-navigator";
   import { shorterName } from "~/utils";
-  import { detectedChain } from "~/lib/utils";
+  import { detectedChain } from "~/lib/chains";
   import { typeWallet, isDarkMode, user } from "~/store";
   import mixpanel from "mixpanel-browser";
   import { i18n } from "~/lib/i18n";

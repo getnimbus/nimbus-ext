@@ -15,7 +15,7 @@ import { sendMessage } from "webext-bridge";
 import { track } from "~/lib/data-tracking";
 import * as dg from "~/lib/debug";
 import * as browser from "webextension-polyfill";
-import { regexList } from "../../lib/utils";
+import { regexList } from "../../lib/chains";
 
 // Firefox `browser.tabs.executeScript()` requires scripts return a primitive value
 (async () => {
