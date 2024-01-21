@@ -237,10 +237,10 @@ export const chainList = [
 export const detectedChain = (type) => {
   let chain;
   switch (type) {
-    case "BTC":
-      chain = Bitcoin;
-      break;
     case "ALL":
+      chain = All;
+      break;
+    case "BTC":
       chain = Bitcoin;
       break;
     case "AURA":
