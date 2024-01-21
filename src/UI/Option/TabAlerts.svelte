@@ -17,14 +17,14 @@
   import Copy from "~/components/Copy.svelte";
 
   import FollowWhale from "~/assets/whale-tracking.gif";
-  import Move from "~/assets/move.png";
+  import Move from "~/assets/chains/move.png";
   import All from "~/assets/all.svg";
-  import BitcoinLogo from "~/assets/bitcoin.png";
-  import SolanaLogo from "~/assets/solana.png";
-  import NearLogo from "~/assets/near.png";
-  import AuraLogo from "~/assets/aura.png";
-  import AlgorandLogo from "~/assets/algorand.png";
-  import TonLogo from "~/assets/ton.png";
+  import BitcoinLogo from "~/assets/chains/bitcoin.png";
+  import SolanaLogo from "~/assets/chains/solana.png";
+  import NearLogo from "~/assets/chains/near.png";
+  import AuraLogo from "~/assets/chains/aura.png";
+  import AlgorandLogo from "~/assets/chains/algorand.png";
+  import TonLogo from "~/assets/chains/ton.png";
 
   const MultipleLang = {
     content: {
