@@ -1,13 +1,7 @@
 <script lang="ts">
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { i18n } from "~/lib/i18n";
-  import {
-    chain,
-    wallet,
-    typeWallet,
-    isDarkMode,
-    selectedBundle,
-  } from "~/store";
+  import { chain, typeWallet, isDarkMode, selectedBundle } from "~/store";
   import {
     performanceTypeChartPortfolio,
     typePieChart,
@@ -15,6 +9,10 @@
     formatValue,
     autoFontSize,
   } from "~/utils";
+  import {
+    chainSupportedList,
+    evmChainNotSupportHistoricalBalances,
+  } from "~/lib/chains";
   import dayjs from "dayjs";
   import numeral from "numeral";
 
@@ -35,9 +33,11 @@
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import TokenAllocation from "~/components/TokenAllocation.svelte";
   import TooltipTitle from "~/components/TooltipTitle.svelte";
+  import TooltipNumber from "~/components/TooltipNumber.svelte";
 
   import TrendDown from "~/assets/trend-down.svg";
   import TrendUp from "~/assets/trend-up.svg";
+  import { slice } from "viem";
 
   const MultipleLang = {
     token_allocation: i18n("newtabPage.token-allocation", "Token Allocation"),
@@ -228,11 +228,70 @@
     formatXAxis: [],
   };
 
+  let networth = 0;
+  let portfolioPercentChange = 0;
+  let networthValueChange = 0;
+  let tooltipDateValue;
+
+  $: {
+    if (tooltipDateValue) {
+      const formatDataPortfolioChart =
+        overviewDataPerformance?.portfolioChart.map((item) => {
+          return {
+            timestamp: dayjs(item.timestamp * 1000).format("YYYY-MM-DD"),
+            value: item.value,
+          };
+        });
+
+      const formatDataPerformance = overviewDataPerformance?.performance.map(
+        (item) => {
+          return {
+            timestamp: dayjs(item.date).format("YYYY-MM-DD"),
+            portfolio: item.portfolio,
+          };
+        }
+      );
+
+      const selectedDataPortfolioChart = formatDataPortfolioChart.find(
+        (item) => item.timestamp === tooltipDateValue
+      );
+
+      const selectedDataPerformance = formatDataPerformance.find(
+        (item) => item.timestamp === tooltipDateValue
+      );
+
+      if (selectedDataPortfolioChart) {
+        networth = selectedDataPortfolioChart?.value;
+
+        portfolioPercentChange = selectedDataPerformance?.portfolio;
+
+        networthValueChange =
+          formatDataPortfolioChart[0]?.value * (portfolioPercentChange / 100);
+      }
+    }
+  }
+
   $: {
     if (
-      overviewDataPerformance?.performance?.length !== 0 ||
-      overviewDataPerformance?.portfolioChart?.length !== 0
+      (overviewDataPerformance?.performance &&
+        overviewDataPerformance?.performance?.length !== 0) ||
+      (overviewDataPerformance?.portfolioChart &&
+        overviewDataPerformance?.portfolioChart?.length !== 0)
     ) {
+      networth =
+        overviewDataPerformance?.portfolioChart[
+          overviewDataPerformance?.portfolioChart?.length - 1
+        ]?.value;
+
+      portfolioPercentChange =
+        overviewDataPerformance?.performance[
+          overviewDataPerformance?.performance?.length - 1
+        ]?.portfolio;
+
+      networthValueChange =
+        overviewDataPerformance?.portfolioChart[0]?.value *
+        (portfolioPercentChange / 100);
+
       const formatXAxisPerformance = overviewDataPerformance?.performance?.map(
         (item) => {
           return dayjs(item.date).format("YYYY-MM-DD");
@@ -382,6 +441,7 @@
             trigger: "axis",
             extraCssText: "z-index: 9997",
             formatter: function (params) {
+              tooltipDateValue = params[0].axisValue;
               return `
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 260px;">
               <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
@@ -493,6 +553,7 @@
             trigger: "axis",
             extraCssText: "z-index: 9997",
             formatter: function (params) {
+              tooltipDateValue = params[0].axisValue;
               return `
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 320px;">
               <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
@@ -799,14 +860,16 @@
         </div>
         <div
           class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex items-center justify-center z-10 backdrop-blur-md ${
-            $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
+            $isDarkMode ? "bg-black/90" : "bg-white/95"
           }`}
         >
           <div class="text-2xl xl:text-lg">Coming soon 🚀</div>
         </div>
       {:else}
-        <div class="flex justify-between mb-6">
-          {#if ($typeWallet === "EVM" && ($chain === "SCROLL" || $chain === "KLAY" || $chain === "XZO")) || $typeWallet === "CEX" || $typeWallet === "SOL" || $typeWallet === "ALGO" || $typeWallet === "AURA" || $typeWallet === "MOVE" || $selectedBundle?.accounts?.find((item) => item.type === "CEX") !== undefined}
+        <div class="flex justify-between mb-4">
+          {#if ($typeWallet === "EVM" && evmChainNotSupportHistoricalBalances.includes($chain)) || chainSupportedList
+              .slice(2)
+              .includes($typeWallet) || $selectedBundle?.accounts?.find((item) => item.type === "CEX") !== undefined}
             <TooltipTitle
               tooltipText="The performance data can only get after 7 days you connect to Nimbus"
               type="warning"
@@ -866,13 +929,52 @@
                 Empty
               </div>
             {:else}
-              <EChart
-                id="line-chart"
-                {theme}
-                notMerge={true}
-                option={optionLine}
-                height={465}
-              />
+              <div class="flex flex-col gap-4 relative">
+                <div
+                  class={`absolute top-8 left-20 flex flex-col rounded-[4px] px-2 py-1 z-10 ${
+                    $isDarkMode ? "bg-[#131313]" : "bg-white"
+                  }`}
+                  style="box-shadow: rgba(0, 0, 0, 0.2) 1px 2px 10px;"
+                >
+                  <div class="xl:text-lg text-xl font-medium flex items-center">
+                    $<TooltipNumber number={networth} type="balance" />
+                  </div>
+                  <div
+                    class={`xl:text-sm text-base flex gap-1 ${
+                      portfolioPercentChange >= 0
+                        ? "text-[#00A878]"
+                        : "text-red-500"
+                    }`}
+                  >
+                    <span>
+                      <TooltipNumber
+                        number={Math.abs(portfolioPercentChange)}
+                        type="percent"
+                      />%
+                    </span>
+                    {#if portfolioPercentChange !== 0}
+                      <img
+                        src={portfolioPercentChange >= 0 ? TrendUp : TrendDown}
+                        alt="trend"
+                        class="mb-1"
+                      />
+                    {/if}
+                    <span class="flex">
+                      ({#if networthValueChange < 0}-{/if}$<TooltipNumber
+                        number={Math.abs(networthValueChange)}
+                        type="balance"
+                      />)
+                    </span>
+                  </div>
+                </div>
+                <EChart
+                  id="line-chart"
+                  {theme}
+                  notMerge={true}
+                  option={optionLine}
+                  height={465}
+                />
+              </div>
             {/if}
           </div>
         {/if}

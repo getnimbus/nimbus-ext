@@ -46,54 +46,29 @@ interface IPriceRealtime {
 
 const cached: Record<string, IPriceRealtime> = {};
 
-const chainSupport = ["ETH", "FTM", "ARB", "AVAX", "OP", "MATIC", "XDAI", "BNB", "BASE", "CRONOS", "KLAY"]
-
 export const priceSubscribe = (
   cmc_id: number[] | string[],
-  isNullCmcId: boolean,
   chain: string,
   callback: (any) => void
 ) => {
   try {
     if (!socket) {
       console.log("WS is not initiated");
-      initWS(() => priceSubscribe(cmc_id, isNullCmcId, chain, callback));
+      initWS(() => priceSubscribe(cmc_id, chain, callback));
     } else {
       if (!isReady) {
         console.log("Delay Subscribe");
-        cbList.push(() => priceSubscribe(cmc_id, isNullCmcId, chain, callback));
+        cbList.push(() => priceSubscribe(cmc_id, chain, callback));
         return;
       }
 
       const key = `${cmc_id}-${chain}`;
 
-      if (chain === "CEX") {
-        socket.send(JSON.stringify({
-          ids: cmc_id.join(","),
-          type: "mobula",
-          chain: "CEX",
-        }));
-      }
-
-      if (chain !== "CEX") {
-        if (isNullCmcId) {
-          if (cached[key]) {
-            // Return from cache
-            callback(cached[key]);
-          } else {
-            if (chainSupport.includes(chain)) {
-              socket.send(
-                JSON.stringify({
-                  ids: cmc_id.join(","),
-                  type: "mobula",
-                  chain: chain,
-                })
-              );
-            }
-          }
-        } else {
-          socket.send(JSON.stringify({ ids: cmc_id.join(",") }));
-        }
+      if (cached[key]) {
+        // Return from cache
+        callback(cached[key]);
+      } else {
+        socket.send(JSON.stringify({ ids: cmc_id.join(",") }));
       }
 
       socket.addEventListener("message", (ev) => {
@@ -102,15 +77,13 @@ export const priceSubscribe = (
           data?.id &&
           cmc_id[0].toString().toLowerCase() === data?.id.toLowerCase()
         ) {
-          if (isNullCmcId) {
-            if (!cached[key]) {
-              // Only callback when we don't have data cached
-              cached[key] = data;
-              callback(data);
-            }
-          } else {
-            callback(data);
+
+          if (!cached[key]) {
+            // Only callback when we don't have data cached
+            cached[key] = data;
           }
+
+          callback(data);
         }
       });
     }

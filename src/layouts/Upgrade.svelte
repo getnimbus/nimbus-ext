@@ -4,7 +4,7 @@
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
   import { wagmiAbi } from "~/lib/viem-evm-abi";
-  import { publicClient } from "~/lib/viem-client";
+  import publicClient from "~/lib/viem-client";
   import { mainnet } from "viem/chains";
   import { useNavigate } from "svelte-navigator";
 
@@ -12,10 +12,8 @@
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import Button from "~/components/Button.svelte";
 
-  import Ethereum from "~/assets/ethereum.png";
-  import Solana from "~/assets/solana.png";
-  import Bnb from "~/assets/bnb.png";
-  import Matic from "~/assets/matic.png";
+  import Ethereum from "~/assets/chains/ethereum.png";
+  import Solana from "~/assets/chains/solana.png";
 
   const navigate = useNavigate();
 
@@ -32,16 +30,6 @@
     //   logo: Solana,
     //   label: "Solana",
     //   value: "SOL",
-    // },
-    // {
-    //   logo: Bnb,
-    //   label: "Binance",
-    //   value: "BSC",
-    // },
-    // {
-    //   logo: Matic,
-    //   label: "Polygon",
-    //   value: "POL",
     // },
   ];
 
@@ -232,8 +220,7 @@
             with
             <span class="flex items-end gap-1 font-semibold">
               {selectedPackage.selectedTypePackage === "year"
-                ? "$" +
-                  `${
+                ? `${
                     discountPercent !== 0
                       ? Math.round(
                           (selectedPackage.price * 12 -
@@ -244,9 +231,9 @@
                         ) / 100
                       : selectedPackage.price * 12
                   }` +
+                  " USDC" +
                   " for 1 year"
-                : "$" +
-                  `${
+                : `${
                     discountPercent !== 0
                       ? Math.round(
                           (selectedPackage.price -
@@ -255,6 +242,7 @@
                         ) / 100
                       : selectedPackage.price
                   }` +
+                  " USDC" +
                   " for 1 month"}
             </span>
           </div>
@@ -381,7 +369,7 @@
 </ErrorBoundary>
 
 {#if showToast}
-  <div class="fixed top-3 right-3 w-full z-10">
+  <div class="fixed top-3 right-3 w-full" style="z-index: 2147483648;">
     <Toast
       transition={blur}
       params={{ amount: 10 }}

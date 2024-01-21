@@ -6,9 +6,7 @@
   display: flex;
   align-items: center;
   font-size: 17px;
-  line-height: 24px;
   font-weight: 500;
-  border-radius: 8px;
   width: 250px;
 }
 
@@ -16,8 +14,8 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  background-color: white;
-  border: 1px solid #e5e7eb;
+  background-color: #27326f !important;
+  border-radius: 12px !important;
 }
 
 .wallet-adapter-button:not([disabled]):focus-visible {
@@ -64,14 +62,15 @@
 
 .wallet-adapter-dropdown-list {
   position: absolute;
+  top: 100%;
+  left: 0;
+  margin: 0;
+  width: max-content;
   z-index: 99;
   display: grid;
   grid-template-rows: 1fr;
   grid-row-gap: 10px;
   padding: 10px;
-  top: 100%;
-  right: 0;
-  margin: 0;
   list-style: none;
   background: #2c2d30;
   border-radius: 10px;

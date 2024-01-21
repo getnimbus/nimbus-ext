@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { sendMessage } from "webext-bridge";
   import { wallet, chain, typeWallet, selectedPackage } from "~/store";
   import { groupBy, intersection, flatten } from "lodash";
   import dayjs from "dayjs";
   import { autoFontSize, formatCurrency } from "~/utils";
+  import { chainSupportedList } from "~/lib/chains";
   import { createQuery } from "@tanstack/svelte-query";
   import { nimbus } from "~/lib/network";
 
@@ -348,13 +348,7 @@
   }
 
   $: enabledQuery = Boolean(
-    ($typeWallet === "EVM" ||
-      $typeWallet === "MOVE" ||
-      $typeWallet === "CEX" ||
-      $typeWallet === "SOL" ||
-      $typeWallet === "AURA" ||
-      $typeWallet === "ALGO" ||
-      $typeWallet === "BUNDLE") &&
+    chainSupportedList.includes($typeWallet) &&
       $wallet.length !== 0 &&
       $selectedPackage !== "FREE"
   );

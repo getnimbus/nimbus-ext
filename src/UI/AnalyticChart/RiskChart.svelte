@@ -15,15 +15,11 @@
     getTooltipContent,
     volatilityColorChart,
   } from "~/utils";
+  import { chainSupportedList } from "~/lib/chains";
   import groupBy from "lodash/groupBy";
   import sumBy from "lodash/sumBy";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
-  import dayjs from "dayjs";
-  import {
-    calculateVolatility,
-    getChangePercent,
-    getPostionInRange,
-  } from "~/chart-utils";
+  import { getChangePercent, getPostionInRange } from "~/chart-utils";
   import { createQuery } from "@tanstack/svelte-query";
 
   import AnalyticSection from "~/components/AnalyticSection.svelte";
@@ -33,8 +29,6 @@
   import EChart from "~/components/EChart.svelte";
   import CtaIcon from "~/components/CtaIcon.svelte";
   import ProgressBar from "~/components/ProgressBar.svelte";
-  import CheckIcon from "~/components/CheckIcon.svelte";
-  import DangerIcon from "~/components/DangerIcon.svelte";
 
   import Logo from "~/assets/logo-1.svg";
   import LogoWhite from "~/assets/logo-white.svg";
@@ -43,6 +37,8 @@
   import MaxDrawdownExplain from "~/assets/explain/max-drawdown-explain.mp4";
   import defaultToken from "~/assets/defaultToken.png";
 
+  export let address;
+  export let isShowSoon;
   export let selectedTimeFrame;
   export let isSync = false;
   export let enabledFetchAllData = false;
@@ -262,13 +258,7 @@
     $wallet === "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0"
       ? true
       : Boolean(
-          ($typeWallet === "EVM" ||
-            $typeWallet === "MOVE" ||
-            $typeWallet === "CEX" ||
-            $typeWallet === "SOL" ||
-            $typeWallet === "AURA" ||
-            $typeWallet === "ALGO" ||
-            $typeWallet === "BUNDLE") &&
+          chainSupportedList.includes($typeWallet) &&
             $wallet.length !== 0 &&
             $selectedPackage !== "FREE"
         );
@@ -506,7 +496,7 @@
   $: theme = $isDarkMode ? "dark" : "white";
 </script>
 
-<AnalyticSection>
+<AnalyticSection {address} {isShowSoon}>
   <span slot="title">
     <div class="flex justify-start text-4xl font-medium xl:text-2xl">
       Volatility
@@ -526,7 +516,7 @@
         {#if $query.isError}
           <div
             class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-30 backdrop-blur-md xl:text-xs text-lg ${
-              $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
+              $isDarkMode ? "bg-black/90" : "bg-white/95"
             }`}
           >
             {#if $typeWallet === "CEX"}
@@ -691,7 +681,7 @@
         {#if $query.isError}
           <div
             class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-30 backdrop-blur-md xl:text-xs text-lg ${
-              $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
+              $isDarkMode ? "bg-black/90" : "bg-white/95"
             }`}
           >
             {#if $typeWallet === "CEX"}

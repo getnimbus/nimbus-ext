@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { getTooltipContent, dateDiffInDays } from "~/utils";
+  import { getTooltipContent } from "~/utils";
   import { nimbus } from "~/lib/network";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
   import { isDarkMode, user, wallet, chain, typeWallet } from "~/store";
@@ -18,6 +18,15 @@
   let endDatePackage = "";
   let checkedTypePackage = true;
 
+  const dateDiffInDays = (a, b) => {
+    const _MS_PER_DAY = 1000 * 60 * 60 * 24;
+    // Discard the time and time-zone information.
+    const utc1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
+    const utc2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
+
+    return Math.floor((utc2 - utc1) / _MS_PER_DAY);
+  };
+
   const getUserInfo = async () => {
     const response: any = await nimbus.get("/users/me");
     return response?.data;
@@ -29,6 +38,7 @@
     staleTime: Infinity,
     retry: false,
     onError(err) {
+      localStorage.removeItem("solana_token");
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
       wallet.update((n) => (n = ""));
@@ -62,8 +72,8 @@
       selectedPricePackage === "Free"
         ? item.content.free
         : selectedPricePackage === "Explorer"
-        ? item.content.explorer
-        : item.content.alpha;
+          ? item.content.explorer
+          : item.content.alpha;
 
     return `
       <div class="text-xl">
@@ -109,7 +119,7 @@
                   <div
                     class="text-white font-normal text-sm px-2 py-1 bg-[#10b981] rounded-lg"
                   >
-                    Save $17.5
+                    Save 1.75 USDC
                   </div>
                 {:else}
                   <div class="h-[28px]" />
@@ -124,7 +134,7 @@
                   <div
                     class="text-white font-normal text-sm px-2 py-1 bg-[#10b981] rounded-lg"
                   >
-                    Save $17.5
+                    Save 17.5 USDC
                   </div>
                 {:else}
                   <div class="h-[28px]" />
@@ -150,7 +160,7 @@
             <td class="py-3 pr-3">
               <div class="flex flex-col gap-4">
                 <div class="flex flex-col gap-2">
-                  <div class="text-3xl font-semibold">$0</div>
+                  <div class="text-3xl font-semibold">0 USDC</div>
                   <div class="text-base font-medium">
                     For those who starting to invest
                   </div>
@@ -177,7 +187,7 @@
               <div class="flex flex-col gap-4">
                 <div class="flex flex-col gap-2">
                   <div class="flex items-center gap-1 text-3xl font-semibold">
-                    {selectedTypePackage === "year" ? "$8.25" : "$9.99"}
+                    {selectedTypePackage === "year" ? "8.25 USDC" : "9.99 USDC"}
                     <div class="text-base font-medium text-[#6b7380]">
                       /month
                     </div>
@@ -290,7 +300,9 @@
               <div class="flex flex-col gap-4">
                 <div class="flex flex-col gap-2">
                   <div class="flex items-center gap-1 text-3xl font-semibold">
-                    {selectedTypePackage === "year" ? "$82.5" : "$99.99"}
+                    {selectedTypePackage === "year"
+                      ? "82.5 USDC"
+                      : "99.99 USDC"}
                     <div class="text-base font-medium text-[#6b7380]">
                       /month
                     </div>
@@ -514,10 +526,10 @@
               selectedPricePackage === "Free" && !$isDarkMode
                 ? "bg-blue-100 text-primary"
                 : selectedPricePackage === "Free" && $isDarkMode
-                ? "bg-gray-500 text-white"
-                : $isDarkMode
-                ? "text-white"
-                : "text-black"
+                  ? "bg-gray-500 text-white"
+                  : $isDarkMode
+                    ? "text-white"
+                    : "text-black"
             }`}
             on:click={() => {
               selectedPricePackage = "Free";
@@ -531,10 +543,10 @@
               selectedPricePackage === "Explorer" && !$isDarkMode
                 ? "bg-blue-100 text-primary"
                 : selectedPricePackage === "Explorer" && $isDarkMode
-                ? "bg-gray-500 text-white"
-                : $isDarkMode
-                ? "text-white"
-                : "text-black"
+                  ? "bg-gray-500 text-white"
+                  : $isDarkMode
+                    ? "text-white"
+                    : "text-black"
             }`}
             on:click={() => {
               selectedPricePackage = "Explorer";
@@ -548,10 +560,10 @@
               selectedPricePackage === "Professional" && !$isDarkMode
                 ? "bg-blue-100 text-primary"
                 : selectedPricePackage === "Professional" && $isDarkMode
-                ? "bg-gray-500 text-white"
-                : $isDarkMode
-                ? "text-white"
-                : "text-black"
+                  ? "bg-gray-500 text-white"
+                  : $isDarkMode
+                    ? "text-white"
+                    : "text-black"
             }`}
             on:click={() => {
               selectedPricePackage = "Professional";
@@ -566,7 +578,7 @@
             <div class="flex flex-col gap-4">
               <div class="flex flex-col gap-2 justify-center items-center">
                 <div class="text-2xl font-medium uppercase">Free</div>
-                <span class="text-5xl font-semibold">$0</span>
+                <span class="text-5xl font-semibold">0 USDC</span>
                 <div class="text-lg">For those who starting to invest</div>
               </div>
               <div class="flex justify-center min-h-[30px]">
@@ -597,7 +609,9 @@
                   {/if}
                 </div>
                 <div class="text-5xl font-medium">
-                  {selectedTypePackage === "year" ? "$8.25" : "$9.99"}{" "}
+                  {selectedTypePackage === "year"
+                    ? "8.25 USDC"
+                    : "9.99 USDC"}{" "}
                   <span class="text-[#6b7380] text-lg font-medium">
                     /month
                   </span>
@@ -667,7 +681,7 @@
                   </div>
 
                   <div class="font-medium text-2xl">
-                    {#if buyPackage === "Free" || (buyPackage === "Explorer" && interval === "month") || (buyPackage === "Professional" && interval === "month")}
+                    {#if buyPackage === "Free"}
                       <div
                         class="flex items-center gap-2 cursor-pointer text-[#1E96FC]"
                         on:click={() => {
@@ -707,12 +721,14 @@
                     <span
                       class="text-white px-2 py-1 font-normal text-lg ml-3 bg-[#10b981] rounded-lg"
                     >
-                      Save $17.5
+                      Save 17.5 USDC
                     </span>
                   {/if}
                 </div>
                 <div class="text-5xl font-medium">
-                  {selectedTypePackage === "year" ? "$82.5" : "$99.99"}{" "}
+                  {selectedTypePackage === "year"
+                    ? "82.5 USDC"
+                    : "99.99 USDC"}{" "}
                   <span class="text-[#6b7380] text-lg font-medium">
                     /month
                   </span>
@@ -738,7 +754,7 @@
                   </div>
 
                   <div class="font-medium text-2xl w-max">
-                    {#if buyPackage === "Free" || (buyPackage === "Explorer" && interval === "month")}
+                    {#if buyPackage === "Free"}
                       <div
                         class="flex items-center gap-2 cursor-pointer text-[#1E96FC]"
                         on:click={() => {
@@ -782,7 +798,7 @@
                   </div>
 
                   <div class="font-medium text-2xl w-max">
-                    {#if buyPackage === "Free" || (buyPackage === "Professional" && interval === "month") || (buyPackage === "Explorer" && interval === "month") || (buyPackage === "Explorer" && interval === "year")}
+                    {#if buyPackage === "Free"}
                       <div
                         class="flex items-center gap-2 cursor-pointer text-[#1E96FC]"
                         on:click={() => {

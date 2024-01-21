@@ -2,16 +2,11 @@
   import dayjs from "dayjs";
   import relativeTime from "dayjs/plugin/relativeTime";
   dayjs.extend(relativeTime);
-  import { add3Dots } from "~/utils";
+  import { add3Dots, handleImgError } from "~/utils";
 
   export let data;
 
   import imgDefault from "~/assets/new-default-img.png";
-
-  const handleImgError = (e) => {
-    e.target.src = imgDefault;
-    e.onerror = null;
-  };
 </script>
 
 <div class="flex flex-col gap-6">
@@ -21,7 +16,7 @@
     class="w-full h-[250px] overflow-hidden rounded-[10px]"
   >
     <img
-      on:error={(e) => handleImgError(e)}
+      on:error={(e) => handleImgError(e, imgDefault)}
       class="w-full h-full object-cover"
       src={data.imgURL}
       alt={data.title}

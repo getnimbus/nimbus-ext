@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { isDarkMode } from "~/store";
   import { walletStore } from "@svelte-on-solana/wallet-adapter-core";
 
   import WalletButton from "~/UI/SolanaCustomWalletBtn/WalletButton.svelte";
@@ -7,8 +8,9 @@
 
   import "~/UI/SolanaCustomWalletBtn/style.css";
 
-  import SolanaIcon from "~/assets/solana.png";
+  import SolanaIcon from "~/assets/chains/solana.png";
 
+  export let text;
   export let maxNumberOfWallets = 3;
 
   $: ({ publicKey, wallet, disconnect, connect, select } = $walletStore);
@@ -85,18 +87,17 @@
 </script>
 
 {#if !wallet}
-  <WalletButton class="wallet-adapter-button-trigger" on:click={openModal}>
-    <slot>
-      <div style="display: flex; align-items: center; gap: 8px">
-        <img
-          src={SolanaIcon}
-          alt=""
-          style="width: 24px; height: 24px; border-radius: 100%"
-        />
-        Login with Solana
-      </div>
-    </slot>
-  </WalletButton>
+  <div
+    class={`flex items-center justify-center gap-2 text-white border cursor-pointer py-3 px-6 rounded-[12px] min-w-[250px] ${
+      $isDarkMode
+        ? "border-white text-white"
+        : "border-[#27326f] text-[#27326f]"
+    }`}
+    on:click={openModal}
+  >
+    <img src={SolanaIcon} alt="" width="24" height="24" class="rounded-full" />
+    <div class="font-semibold text-[15px]">{text}</div>
+  </div>
 {:else if !base58}
   <WalletConnectButton />
 {:else}
@@ -152,4 +153,4 @@
   />
 {/if}
 
-<style></style>
+<style windi:preflights:global windi:safelist:global></style>

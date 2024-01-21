@@ -73,7 +73,9 @@
       }
     } catch (e) {
       console.error("error: ", e);
-      status = false;
+      status = true;
+      clearInterval(intervalId);
+      navigate("/payments/fail");
     }
   };
 
@@ -88,6 +90,7 @@
     staleTime: Infinity,
     retry: false,
     onError(err) {
+      localStorage.removeItem("solana_token");
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
       wallet.update((n) => (n = ""));
@@ -167,7 +170,7 @@
 </ErrorBoundary>
 
 {#if showToast}
-  <div class="fixed top-3 right-3 w-full z-10">
+  <div class="fixed top-3 right-3 w-full" style="z-index: 2147483648;">
     <Toast
       transition={blur}
       params={{ amount: 10 }}

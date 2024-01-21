@@ -32,22 +32,24 @@
   $: realizedProfit = data?.profit?.realizedProfit
     ? Number(data?.profit?.realizedProfit)
     : 0;
+
   $: percentRealizedProfit =
     Number(data?.avgCost) === 0
       ? 0
       : realizedProfit / Math.abs(Number(data?.avgCost));
 
+  $: pnl =
+    Number(data?.balance || 0) * Number(data?.market_price || 0) +
+    Number(data?.profit?.totalGain || 0) -
+    Number(data?.profit?.cost || 0);
+
   $: unrealizedProfit =
-    Number(data?.profit?.averageCost || 0) === 0
-      ? 0
-      : Number(data?.amount) *
-        (Number(data?.market_price) - Number(data?.profit.averageCost));
+    Number(data?.avgCost) === 0 ? 0 : Number(pnl) - realizedProfit;
 
   $: percentUnrealizedProfit =
-    Number(data?.profit?.averageCost || 0) === 0
+    Number(data?.avgCost) === 0
       ? 0
-      : (Number(data?.market_price) - Number(data?.profit?.averageCost)) /
-        Number(data?.profit?.averageCost || 0);
+      : unrealizedProfit / Math.abs(Number(data?.avgCost));
 
   const handleGetTradeHistory = async (address) => {
     const response: any = await nimbus.get(
@@ -98,6 +100,8 @@
 
   $: colspan =
     $typeWallet === "SOL" ||
+    $typeWallet === "NEAR" ||
+    $typeWallet === "TON" ||
     $typeWallet === "AURA" ||
     $typeWallet === "ALGO" ||
     $typeWallet === "EVM" ||
@@ -264,7 +268,7 @@
         {#if $typeWallet !== "EVM" && $typeWallet !== "MOVE" && $typeWallet !== "BUNDLE"}
           <div
             class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center gap-3 pt-62 z-30 backdrop-blur-md ${
-              $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
+              $isDarkMode ? "bg-black/90" : "bg-white/95"
             }`}
           >
             <div class="text-lg">Coming soon 🚀</div>
@@ -274,7 +278,7 @@
         {#if $selectedPackage === "FREE"}
           <div
             class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center justify-center gap-3 z-30 backdrop-blur-md ${
-              $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
+              $isDarkMode ? "bg-black/90" : "bg-white/95"
             }`}
           >
             <div class="flex flex-col items-center gap-1">
@@ -336,6 +340,8 @@
               <th
                 class={`py-3 rounded-tr-[10px] ${
                   $typeWallet === "SOL" ||
+                  $typeWallet === "NEAR" ||
+                  $typeWallet === "TON" ||
                   $typeWallet === "AURA" ||
                   $typeWallet === "ALGO" ||
                   $typeWallet === "EVM" ||
@@ -352,7 +358,7 @@
                 </div>
               </th>
 
-              {#if $typeWallet === "SOL" || $typeWallet === "AURA" || $typeWallet === "ALGO" || $typeWallet === "EVM" || $typeWallet === "MOVE" || ($typeWallet === "BUNDLE" && data?.chain !== "CEX")}
+              {#if $typeWallet === "SOL" || $typeWallet === "NEAR" || $typeWallet === "TON" || $typeWallet === "AURA" || $typeWallet === "ALGO" || $typeWallet === "EVM" || $typeWallet === "MOVE" || ($typeWallet === "BUNDLE" && data?.chain !== "CEX")}
                 <th class="py-3 w-10" />
               {/if}
             </tr>

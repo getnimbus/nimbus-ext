@@ -1,20 +1,14 @@
 <script lang="ts">
   import { nimbus } from "~/lib/network";
-  import {
-    wallet,
-    chain,
-    selectedPackage,
-    typeWallet,
-    isDarkMode,
-  } from "~/store";
+  import { wallet, chain, typeWallet, isDarkMode } from "~/store";
   import {
     autoFontSize,
-    formatCurrency,
     formatPercent,
     formatValue,
     getTooltipContent,
     sharpeRatioColorChart,
   } from "~/utils";
+  import { chainSupportedList } from "~/lib/chains";
   import maxBy from "lodash/maxBy";
   import minBy from "lodash/minBy";
   import groupBy from "lodash/groupBy";
@@ -251,15 +245,7 @@
     $wallet === "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0"
       ? true
       : Boolean(
-          ($typeWallet === "EVM" ||
-            $typeWallet === "MOVE" ||
-            $typeWallet === "CEX" ||
-            $typeWallet === "SOL" ||
-            $typeWallet === "AURA" ||
-            $typeWallet === "ALGO" ||
-            $typeWallet === "BUNDLE") &&
-            $wallet.length !== 0 &&
-            $selectedPackage !== "FREE"
+          chainSupportedList.includes($typeWallet) && $wallet.length !== 0
         );
 
   $: query = createQuery({
@@ -461,11 +447,11 @@
   );
 
   $: badPerfValue =
-    Number(badPerf?.profit?.averageCost || 0) *
+    Number(badPerf?.price?.price || 0) *
     (Number(badPerf?.change30DPercent) / 100);
 
   $: goodPerfValue =
-    Number(goodPerf?.profit?.averageCost || 0) *
+    Number(goodPerf?.price?.price || 0) *
     (Number(goodPerf?.change30DPercent) / 100);
 
   $: sharpeRatioAvgMarket = (
@@ -497,7 +483,7 @@
         {#if $query.isError}
           <div
             class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-30 backdrop-blur-md xl:text-xs text-lg ${
-              $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
+              $isDarkMode ? "bg-black/90" : "bg-white/95"
             }`}
           >
             {#if $typeWallet === "CEX"}
@@ -566,7 +552,7 @@
 
                     <div class="flex flex-col">
                       <div
-                        class={`text-2xl xl:text-lg ${
+                        class={`flex text-2xl xl:text-lg ${
                           badPerfValue >= 0 ? "text-[#00A878]" : "text-red-500"
                         }`}
                       >
@@ -613,7 +599,7 @@
 
                     <div class="flex flex-col">
                       <div
-                        class={`text-2xl xl:text-lg ${
+                        class={`flex text-2xl xl:text-lg ${
                           goodPerfValue >= 0 ? "text-[#00A878]" : "text-red-500"
                         }`}
                       >
@@ -683,7 +669,7 @@
         {#if $query.isError}
           <div
             class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-30 backdrop-blur-md xl:text-xs text-lg ${
-              $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
+              $isDarkMode ? "bg-black/90" : "bg-white/95"
             }`}
           >
             {#if $typeWallet === "CEX"}

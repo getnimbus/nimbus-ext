@@ -1,7 +1,7 @@
 <script lang="ts">
   import { getChangeFromPercent, getChangePercent } from "~/chart-utils";
   import { i18n } from "~/lib/i18n";
-  import { wallet, typeWallet, isHidePortfolio } from "~/store";
+  import { typeWallet, isHidePortfolio } from "~/store";
 
   import CountUpNumber from "~/components/CountUpNumber.svelte";
   import OverviewCard from "~/components/OverviewCard.svelte";
@@ -24,10 +24,18 @@
   $: unrealizedProfit = (dataTokenHolding || [])
     ?.filter((item) => Number(item?.amount) > 0 && Number(item?.avgCost) !== 0)
     ?.map((item) => {
+      const price = Number(item?.market_price || item?.price?.price || 0);
+      const pnl =
+        Number(item?.balance || 0) * price +
+        Number(item?.profit?.totalGain || 0) -
+        Number(item?.profit?.cost || 0);
+      const realizedProfit = item?.profit?.realizedProfit
+        ? Number(item?.profit?.realizedProfit)
+        : 0;
+
       return {
         unrealized_profit:
-          Number(item?.amount) *
-          (Number(item?.price?.price) - Number(item?.profit?.averageCost)), // TODO: Use price from realtime
+          Number(item?.avgCost) === 0 ? 0 : Number(pnl) - realizedProfit,
       };
     })
     .reduce((prev, item) => prev + Number(item.unrealized_profit), 0);
@@ -63,6 +71,8 @@
 
   $: last24hTotalProfitPercent =
     $typeWallet === "SOL" ||
+    $typeWallet === "NEAR" ||
+    $typeWallet === "TON" ||
     $typeWallet === "AURA" ||
     $typeWallet === "ALGO" ||
     $typeWallet === "CEX"
@@ -128,6 +138,8 @@
           class={`flex items-center gap-3 ${
             $typeWallet === "BTC" ||
             $typeWallet === "SOL" ||
+            $typeWallet === "NEAR" ||
+            $typeWallet === "TON" ||
             $typeWallet === "AURA" ||
             $typeWallet === "ALGO" ||
             $typeWallet === "CEX"
@@ -174,6 +186,8 @@
             $typeWallet === "CEX" ||
             $typeWallet === "BTC" ||
             $typeWallet === "SOL" ||
+            $typeWallet === "NEAR" ||
+            $typeWallet === "TON" || 
             $typeWallet === "AURA" ||
             $typeWallet === "ALGO"
               ? "opacity-50"
@@ -219,6 +233,8 @@
             $typeWallet === "CEX" ||
             $typeWallet === "BTC" ||
             $typeWallet === "SOL" ||
+            $typeWallet === "NEAR" ||
+            $typeWallet === "TON" || 
             $typeWallet === "AURA" ||
             $typeWallet === "ALGO"
               ? "opacity-50"

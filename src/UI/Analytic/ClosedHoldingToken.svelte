@@ -17,6 +17,7 @@
     shorterName,
     typeClosedHoldingTokenChart,
   } from "~/utils";
+  import { chainSupportedList } from "~/lib/chains";
 
   import type { HoldingTokenRes } from "~/types/HoldingTokenData";
 
@@ -224,9 +225,33 @@
   let worseLose = {};
   let sumRealizedProfit = 0;
 
+  const handleValidateAddress = async (address: string) => {
+    try {
+      const response = await nimbus.get(`/v2/address/${address}/validate`);
+      return response?.data;
+    } catch (e) {
+      console.error(e);
+      return {
+        address: "",
+        type: "",
+      };
+    }
+  };
+
   const getHoldingToken = async (address, chain) => {
+    let addressChain = chain;
+
+    if (addressChain === "ALL") {
+      const validateAccount = await handleValidateAddress(address);
+      addressChain = validateAccount?.type;
+    }
+
     const response: HoldingTokenRes = await nimbus
-      .get(`/v2/address/${address}/holding?chain=${chain}`)
+      .get(
+        `/v2/address/${address}/holding?chain=${
+          addressChain === "BUNDLE" ? "" : addressChain
+        }`
+      )
       .then((response) => response?.data || []);
 
     return response;
@@ -237,8 +262,7 @@
       .map((item) => {
         return {
           ...item,
-          value:
-            Number(item?.amount) * Number(item?.price?.price || item?.rate),
+          value: Number(item?.amount) * Number(item?.price?.price),
         };
       })
       .sort((a, b) => {
@@ -396,13 +420,7 @@
     $wallet === "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0"
       ? true
       : Boolean(
-          ($typeWallet === "EVM" ||
-            $typeWallet === "MOVE" ||
-            $typeWallet === "CEX" ||
-            $typeWallet === "SOL" ||
-            $typeWallet === "AURA" ||
-            $typeWallet === "ALGO" ||
-            $typeWallet === "BUNDLE") &&
+          chainSupportedList.includes($typeWallet) &&
             $wallet.length !== 0 &&
             $selectedPackage !== "FREE"
         );
@@ -433,7 +451,7 @@
           {#if $queryTokenHolding.isError}
             <div
               class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-30 backdrop-blur-md xl:text-xs text-lg ${
-                $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
+                $isDarkMode ? "bg-black/90" : "bg-white/95"
               }`}
             >
               {#if $typeWallet === "CEX"}
@@ -507,7 +525,7 @@
       {#if $typeWallet === "CEX"}
         <div
           class={`absolute top-0 left-0 rounded-[20px] z-30 w-full h-full flex items-center justify-center z-10 backdrop-blur-md ${
-            $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
+            $isDarkMode ? "bg-black/90" : "bg-white/95"
           }`}
         >
           <div class="text-2xl xl:text-lg">Coming soon 🚀</div>
@@ -527,7 +545,7 @@
           {#if $queryTokenHolding.isError}
             <div
               class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-30 backdrop-blur-md xl:text-xs text-lg ${
-                $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
+                $isDarkMode ? "bg-black/90" : "bg-white/95"
               }`}
             >
               {#if $typeWallet === "CEX"}
@@ -603,7 +621,7 @@
       {#if $typeWallet === "CEX"}
         <div
           class={`absolute top-0 left-0 rounded-[20px] z-30 w-full h-full flex items-center justify-center z-10 backdrop-blur-md ${
-            $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
+            $isDarkMode ? "bg-black/90" : "bg-white/95"
           }`}
         >
           <div class="text-2xl xl:text-lg">Coming soon 🚀</div>

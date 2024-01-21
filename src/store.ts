@@ -12,10 +12,11 @@ export const isShowHeaderMobile = writable(false);
 export const selectedBundle = writable({});
 export const isHidePortfolio = writable(false);
 export const triggerConnectWallet = writable(false);
+export const triggerSync = writable(false);
 export const userId = writable("");
 export const userPublicAddress = writable("");
 export const triggerUpdateBundle = writable(false);
-
+export const detectParams = writable(window.location.pathname);
 
 // let isFirstTime = true;
 // isOpenReport.subscribe((value) => {

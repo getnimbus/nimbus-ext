@@ -1,11 +1,16 @@
 <script lang="ts">
+  import { useLocation } from "svelte-navigator";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { nimbus } from "~/lib/network";
   import { isDarkMode, user, userPublicAddress } from "~/store";
-  import { dailyCheckinTypePortfolio, triggerFirework } from "~/utils";
+  import { triggerFirework } from "~/utils";
   import dayjs from "dayjs";
   import { wait } from "~/entries/background/utils";
+  import { Toast } from "flowbite-svelte";
+  import { blur } from "svelte/transition";
+  import { driver } from "driver.js";
+  import "driver.js/dist/driver.css";
 
   import Button from "~/components/Button.svelte";
   import Loading from "~/components/Loading.svelte";
@@ -20,9 +25,70 @@
 
   import goldImg from "~/assets/Gold4.svg";
 
+  const dailyCheckinTypePortfolio = [
+    {
+      label: "Collect GM Point",
+      value: "collectGMPoint",
+    },
+    {
+      label: "History",
+      value: "history",
+    },
+  ];
+
   const rankBackground = [img1stframe, img2stframe, img3stframe];
 
   const rank = [rank1, rank2, rank3];
+
+  const location = useLocation();
+
+  const driveCheckin = () =>
+    driver({
+      showProgress: true,
+      overlayColor: "#27326f",
+      onDestroyStarted: () => {
+        if (driveCheckin().isLastStep()) {
+          driveCheckin().destroy();
+          handleReceiveQuest("", "new-user-tutorial");
+        } else {
+          driveCheckin().moveTo(3);
+        }
+      },
+      showButtons: ["next", "previous", "close"],
+      steps: [
+        {
+          element: ".wellcome-checkin",
+          popover: {
+            title: "Welcome to our checkin page 🤩",
+            description:
+              "Checkin everyday to receive our exclusive offers and benefits 🥳",
+          },
+        },
+        {
+          element: ".view-checkin-page",
+          popover: {
+            title: "Daily Check-in Zone 🛑",
+            description: "Visit here regularly to check in and stay updated",
+          },
+        },
+        {
+          element: ".view-checkin-btn",
+          popover: {
+            title: "Button used for check-in 👇",
+            description:
+              "Tap the button here to mark your attendance every day and unlock exclusive rewards!",
+          },
+        },
+        {
+          element: ".view-checkin-quests",
+          popover: {
+            title: "Doing quests to gain more GM points 🤝",
+            description:
+              "Besides checking in, you can easily complete tasks to earn GM points",
+          },
+        },
+      ],
+    });
 
   let selectedType: "collectGMPoint" | "history" = "collectGMPoint";
   let openScreenSuccess: boolean = false;
@@ -39,6 +105,25 @@
   let dataCheckinHistory = [];
   let sortTypeHistory = "default";
   let sortPointHistory = "default";
+  let isDisabledReceiveQuest = false;
+
+  let toastMsg = "";
+  let isSuccessToast = false;
+  let counter = 3;
+  let showToast = false;
+
+  const trigger = () => {
+    showToast = true;
+    counter = 3;
+    timeout();
+  };
+
+  const timeout = () => {
+    if (--counter > 0) return setTimeout(timeout, 1000);
+    showToast = false;
+    toastMsg = "";
+    isSuccessToast = false;
+  };
 
   const queryClient = useQueryClient();
 
@@ -121,6 +206,7 @@
       Object.keys($user).length !== 0 &&
       $userPublicAddress.length !== 0,
     onError(err) {
+      localStorage.removeItem("solana_token");
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
     },
@@ -135,6 +221,7 @@
       Object.keys($user).length !== 0 &&
       $userPublicAddress.length !== 0,
     onError(err) {
+      localStorage.removeItem("solana_token");
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
     },
@@ -144,8 +231,17 @@
     if (!$queryDailyCheckin.isError && $queryDailyCheckin.data !== undefined) {
       selectedCheckinIndex = $queryDailyCheckin?.data?.steak;
       isDisabledCheckin = $queryDailyCheckin?.data?.checkinable;
-      quests = $queryDailyCheckin?.data?.quests;
       dataCheckinHistory = $queryDailyCheckin?.data?.checkinLogs;
+      quests = $queryDailyCheckin?.data?.quests.map((item, index) => {
+        const selectedLogs = dataCheckinHistory
+          .filter((log) => log.type === "QUEST" && log.note !== "id-generate")
+          .find((log) => log.note === item.id);
+
+        return {
+          ...item,
+          isDone: !item.isInternalLink && selectedLogs,
+        };
+      });
     }
   }
 
@@ -308,6 +404,124 @@
                     </g>
                   </svg>`;
   };
+
+  const handleReceiveQuest = async (link: string, type: string) => {
+    try {
+      if (type === "first-share-on-twitter") {
+        window.open(link, "_blank");
+        await wait(5000);
+        const res = await nimbus.post(
+          `/v2/checkin/${$userPublicAddress}/quest/first-share-on-twitter`,
+          {}
+        );
+        if (res && res?.data === null) {
+          toastMsg = "You already post us on Twitter";
+          isSuccessToast = false;
+          trigger();
+        }
+        if (res?.data?.bonus !== undefined) {
+          triggerBonusScore();
+          bonusScore = res?.data?.bonus;
+          isTriggerBonusScore = true;
+          queryClient.invalidateQueries([$userPublicAddress, "daily-checkin"]);
+          queryClient.invalidateQueries(["users-me"]);
+        }
+      }
+      if (type === "solana-recap-2023") {
+        window.open(link, "_blank");
+        await wait(5000);
+        const res = await nimbus.post(
+          `/v2/checkin/${$userPublicAddress}/quest/solana-recap-2023`,
+          {}
+        );
+        if (res && res?.data === null) {
+          toastMsg = "You already post on Twitter";
+          isSuccessToast = false;
+          trigger();
+        }
+        if (res?.data?.bonus !== undefined) {
+          triggerBonusScore();
+          bonusScore = res?.data?.bonus;
+          isTriggerBonusScore = true;
+          queryClient.invalidateQueries([$userPublicAddress, "daily-checkin"]);
+          queryClient.invalidateQueries(["users-me"]);
+        }
+      }
+      if (type === "sync-telegram") {
+        window.open(link, "_blank");
+        await wait(6000);
+        const res = await nimbus.post(
+          `/v2/checkin/${$userPublicAddress}/quest/sync-telegram`,
+          {}
+        );
+        if (res && res?.data === null) {
+          toastMsg = "You are not sync Telegram";
+          isSuccessToast = false;
+          trigger();
+        }
+        if (res?.data?.bonus !== undefined) {
+          triggerBonusScore();
+          bonusScore = res?.data?.bonus;
+          isTriggerBonusScore = true;
+          queryClient.invalidateQueries([$userPublicAddress, "daily-checkin"]);
+          queryClient.invalidateQueries(["users-me"]);
+        }
+      }
+      if (type === "new-user-tutorial") {
+        const res = await nimbus.post(
+          `/v2/checkin/${$userPublicAddress}/quest/new-user-tutorial`,
+          {}
+        );
+        if (res && res?.data === null) {
+          toastMsg = "You are already finished this quest";
+          isSuccessToast = false;
+          trigger();
+        }
+        if (res?.data?.bonus !== undefined) {
+          triggerBonusScore();
+          bonusScore = res?.data?.bonus;
+          isTriggerBonusScore = true;
+          queryClient.invalidateQueries([$userPublicAddress, "daily-checkin"]);
+          queryClient.invalidateQueries(["users-me"]);
+        }
+      }
+      if (type.includes("retweet-on-twitter")) {
+        window.open(link, "_blank");
+        await wait(5000);
+        const res = await nimbus.post(
+          `/v2/checkin/${$userPublicAddress}/quest/retweet-on-twitter`,
+          {}
+        );
+        if (res && res?.data === null) {
+          toastMsg = "You already retweet us on Twitter";
+          isSuccessToast = false;
+          trigger();
+        }
+        if (res?.data?.bonus !== undefined) {
+          triggerBonusScore();
+          bonusScore = res?.data?.bonus;
+          isTriggerBonusScore = true;
+          queryClient.invalidateQueries([$userPublicAddress, "daily-checkin"]);
+          queryClient.invalidateQueries(["users-me"]);
+        }
+      }
+      isDisabledReceiveQuest = true;
+    } catch (e) {
+      console.error(e);
+      isDisabledReceiveQuest = false;
+    }
+  };
+
+  $: {
+    if (
+      !$queryDailyCheckin.isLoading &&
+      $location.pathname === "/daily-checkin" &&
+      !localStorage.getItem("view-checkin-tour")
+    ) {
+      driveCheckin().drive();
+      localStorage.setItem("view-checkin-tour", "true");
+    }
+  }
 </script>
 
 <div class="flex flex-col gap-4 min-h-screen">
@@ -323,7 +537,7 @@
       <Loading />
     </div>
   {:else}
-    <div class="flex flex-col gap-7 mt-2">
+    <div class="flex flex-col gap-7 mt-2 view-checkin-page">
       <div
         class="flex flex-col gap-3 bg-[#1589EB] py-4 px-6 rounded-lg min-w-[250px] w-max"
       >
@@ -381,7 +595,7 @@
                   Check in 7 days in a row, your rewards will grow
                 </div>
               </div>
-              <div class="w-[200px]">
+              <div class="w-[200px] view-checkin-btn">
                 {#if isDisabledCheckin}
                   <Button
                     variant="primary"
@@ -427,12 +641,12 @@
                         selectedCheckinIndex > index && $isDarkMode
                           ? "grayscale bg-gray-700"
                           : selectedCheckinIndex > index && !$isDarkMode
-                          ? "grayscale bg-gray-100"
-                          : selectedCheckinIndex === index
-                          ? "bg-black text-white scale-100 drop-shadow-lg"
-                          : $isDarkMode
-                          ? "bg-gray-700"
-                          : "bg-gray-100"
+                            ? "grayscale bg-gray-100"
+                            : selectedCheckinIndex === index
+                              ? "bg-black text-white scale-100 drop-shadow-lg"
+                              : $isDarkMode
+                                ? "bg-gray-700"
+                                : "bg-gray-100"
                       }`}
                     >
                       <div class="xl:text-lg text-xl font-medium">
@@ -478,8 +692,8 @@
                           {index + 1}{index === 0
                             ? "st"
                             : index == 1
-                            ? "nd"
-                            : "rd"}
+                              ? "nd"
+                              : "rd"}
                           Rank
                         </div>
                       </div>
@@ -489,7 +703,7 @@
               {/if}
             </div>
 
-            <div class="flex flex-col gap-4 mt-5">
+            <div class="flex flex-col gap-4 mt-5 view-checkin-quests">
               <div class="xl:text-lg text-xl font-medium">
                 Want more GM Point? Complete these tasks!
               </div>
@@ -505,8 +719,10 @@
                             "https://s2.coinmarketcap.com/static/cloud/img/loyalty-program/Flags_3D_1.svg"}
                           alt=""
                           class="bg-yellow-200 rounded-lg mt-1"
+                          width="32"
+                          height="32"
                         />
-                        <div class="flex-1 flex items-center">
+                        <div class="flex-1 flex items-center gap-4">
                           <div class="flex-1 flex flex-col">
                             <div class="xl:text-base text-lg font-medium">
                               {quest?.title}
@@ -524,11 +740,25 @@
                         </div>
                       </div>
                       <div class="w-[170px]">
-                        <a href={quest?.url}>
-                          <Button>
-                            <div class="py-1">Collect!</div>
-                          </Button>
-                        </a>
+                        {#if quest?.isInternalLink}
+                          <a href={quest?.url} class="py-1">
+                            <Button>Collect!</Button>
+                          </a>
+                        {:else}
+                          <div
+                            on:click={() => {
+                              if (!quest.isDone) {
+                                handleReceiveQuest(quest?.url, quest?.id);
+                              }
+                            }}
+                            class="py-1"
+                          >
+                            <Button
+                              disabled={isDisabledReceiveQuest || quest.isDone}
+                              >Collect!</Button
+                            >
+                          </div>
+                        {/if}
                       </div>
                     </div>
                   {/each}
@@ -611,8 +841,8 @@
                             point > 0
                               ? "text-green-500"
                               : point < 0
-                              ? "text-red-500"
-                              : ""
+                                ? "text-red-500"
+                                : ""
                           }`}
                         >
                           {point}
@@ -669,6 +899,51 @@
         You have received {bonusScore} Bonus GM Points
       </div>
     </div>
+  </div>
+{/if}
+
+{#if showToast}
+  <div class="fixed top-3 right-3 w-full" style="z-index: 2147483648;">
+    <Toast
+      transition={blur}
+      params={{ amount: 10 }}
+      position="top-right"
+      color={isSuccessToast ? "green" : "red"}
+      bind:open={showToast}
+    >
+      <svelte:fragment slot="icon">
+        {#if isSuccessToast}
+          <svg
+            aria-hidden="true"
+            class="w-5 h-5"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+            ><path
+              fill-rule="evenodd"
+              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+              clip-rule="evenodd"
+            /></svg
+          >
+          <span class="sr-only">Check icon</span>
+        {:else}
+          <svg
+            aria-hidden="true"
+            class="w-5 h-5"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+            ><path
+              fill-rule="evenodd"
+              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+              clip-rule="evenodd"
+            /></svg
+          >
+          <span class="sr-only">Error icon</span>
+        {/if}
+      </svelte:fragment>
+      {toastMsg}
+    </Toast>
   </div>
 {/if}
 

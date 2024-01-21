@@ -8,8 +8,9 @@
     isDarkMode,
   } from "~/store";
   import { autoFontSize, formatPercent } from "~/utils";
+  import { chainSupportedList } from "~/lib/chains";
   import dayjs from "dayjs";
-  import { calculateVolatility, getChangePercent } from "~/chart-utils";
+  import { getChangePercent } from "~/chart-utils";
   import { createQuery } from "@tanstack/svelte-query";
 
   import AnalyticSection from "~/components/AnalyticSection.svelte";
@@ -17,8 +18,6 @@
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import TooltipTitle from "~/components/TooltipTitle.svelte";
   import EChart from "~/components/EChart.svelte";
-  import CheckIcon from "~/components/CheckIcon.svelte";
-  import DangerIcon from "~/components/DangerIcon.svelte";
   import CtaIcon from "~/components/CtaIcon.svelte";
 
   import TrendUp from "~/assets/trend-up.svg";
@@ -118,13 +117,7 @@
     $wallet === "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0"
       ? true
       : Boolean(
-          ($typeWallet === "EVM" ||
-            $typeWallet === "MOVE" ||
-            $typeWallet === "CEX" ||
-            $typeWallet === "SOL" ||
-            $typeWallet === "AURA" ||
-            $typeWallet === "ALGO" ||
-            $typeWallet === "BUNDLE") &&
+          chainSupportedList.includes($typeWallet) &&
             $wallet.length !== 0 &&
             $selectedPackage !== "FREE"
         );
@@ -268,7 +261,7 @@
         {#if $query.isError}
           <div
             class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-30 backdrop-blur-md xl:text-xs text-lg ${
-              $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
+              $isDarkMode ? "bg-black/90" : "bg-white/95"
             }`}
           >
             {#if $typeWallet === "CEX"}
@@ -471,7 +464,7 @@
                 <span class="font-medium"
                   >{Math.abs(
                     data?.base?.netWorthChange?.networth30D -
-                      data?.btc?.netWorthChange?.networth30D
+                      data?.btc?.netWorthChange?.networth30D || 0
                   ).toFixed(2)}%</span
                 >
               </div>
@@ -492,7 +485,7 @@
         {#if $query.isError}
           <div
             class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-30 backdrop-blur-md xl:text-xs text-lg ${
-              $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
+              $isDarkMode ? "bg-black/90" : "bg-white/95"
             }`}
           >
             {#if $typeWallet === "CEX"}

@@ -24,7 +24,7 @@
   const getSync = async () => {
     try {
       await nimbus
-        .post(`/v2/address/${address}/sync?chain=ALL`, {})
+        .get(`/v2/address/${address}/sync?chain=ALL`)
         .then((response) => response);
     } catch (e) {
       console.error("e: ", e);
@@ -34,7 +34,7 @@
   const getSyncStatus = async () => {
     try {
       const response = await nimbus
-        .get(`/address/${address}/sync-status?chain=${$chain}`)
+        .get(`/v2/address/${address}/sync-status?chain=${$chain}`)
         .then((response) => response);
       return response;
     } catch (e) {
