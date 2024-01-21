@@ -2,7 +2,8 @@
   import { onMount } from "svelte";
   import { Link } from "svelte-navigator";
   import { i18n } from "~/lib/i18n";
-  import { detectedChain, shorterName, chunkArray } from "~/utils";
+  import { shorterName, chunkArray } from "~/utils";
+  import { detectedChain } from "~/lib/chains";
   import { nimbus } from "~/lib/network";
   import { groupBy, flatten, omit } from "lodash";
   import { AnimateSharedLayout, Motion } from "svelte-motion";

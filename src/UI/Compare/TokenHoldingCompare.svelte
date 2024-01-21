@@ -1,7 +1,8 @@
 <script lang="ts">
   import TooltipNumber from "~/components/TooltipNumber.svelte";
-  import { typeWallet, wallet, isDarkMode } from "~/store";
-  import { detectedChain, shorterName } from "~/utils";
+  import { typeWallet, isDarkMode } from "~/store";
+  import { shorterName } from "~/utils";
+  import { detectedChain } from "~/lib/chains";
   import tooltip from "~/entries/contentScript/views/tooltip";
 
   export let data;
@@ -114,8 +115,8 @@
           amountChange === 0
             ? "text_00000099"
             : amountChange > 0
-            ? "text-[#00A878]"
-            : "text-red-500"
+              ? "text-[#00A878]"
+              : "text-red-500"
         } font-medium`}
         use:tooltip={{
           content: `<tooltip-detail text="${
@@ -145,8 +146,8 @@
           valueChange === 0
             ? "text_00000099"
             : valueChange > 0
-            ? "text-[#00A878]"
-            : "text-red-500"
+              ? "text-[#00A878]"
+              : "text-red-500"
         }`}
         use:tooltip={{
           content: `<tooltip-detail text="$${
@@ -176,8 +177,8 @@
           data?.ratio === 0
             ? "text_00000099"
             : data?.ratio > 0
-            ? "text-[#00A878]"
-            : "text-red-500"
+              ? "text-[#00A878]"
+              : "text-red-500"
         } font-medium`}
         use:tooltip={{
           content: `<tooltip-detail text="${data?.ratio > 0 ? "+" : ""}${

@@ -12,12 +12,12 @@
   import numeral from "numeral";
   import {
     autoFontSize,
-    chainSupportedList,
     formatPercent,
     formatValue,
     shorterName,
     typeClosedHoldingTokenChart,
   } from "~/utils";
+  import { chainSupportedList } from "~/lib/chains";
 
   import type { HoldingTokenRes } from "~/types/HoldingTokenData";
 

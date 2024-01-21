@@ -2,7 +2,7 @@
   import { onMount } from "svelte";
   import { i18n } from "~/lib/i18n";
   import { dndzone } from "svelte-dnd-action";
-  import { listLogoCEX, listProviderCEX, chainList } from "~/utils";
+  import { chainList, listProviderCEX, listLogoCEX } from "~/lib/chains";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
   import {
@@ -34,14 +34,14 @@
   import User from "~/assets/user.png";
   import Success from "~/assets/shield-done.svg";
 
-  import Move from "~/assets/move.png";
+  import Move from "~/assets/chains/move.png";
   import All from "~/assets/all.svg";
-  import BitcoinLogo from "~/assets/bitcoin.png";
-  import SolanaLogo from "~/assets/solana.png";
-  import NearLogo from "~/assets/near.png";
-  import AuraLogo from "~/assets/aura.png";
-  import AlgorandLogo from "~/assets/algorand.png";
-  import TonLogo from "~/assets/ton.png";
+  import BitcoinLogo from "~/assets/chains/bitcoin.png";
+  import SolanaLogo from "~/assets/chains/solana.png";
+  import NearLogo from "~/assets/chains/near.png";
+  import AuraLogo from "~/assets/chains/aura.png";
+  import AlgorandLogo from "~/assets/chains/algorand.png";
+  import TonLogo from "~/assets/chains/ton.png";
 
   const MultipleLang = {
     title: i18n("optionsPage.accounts-page-title", "Account Settings"),

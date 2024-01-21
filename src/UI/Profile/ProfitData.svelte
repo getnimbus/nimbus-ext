@@ -384,7 +384,9 @@
                 <div class="flex flex-col">
                   <div
                     class={`flex text-2xl xl:text-lg ${
-                      0 >= 0 ? "text-[#00A878]" : "text-red-500"
+                      badPerf?.realizedProfit >= 0
+                        ? "text-[#00A878]"
+                        : "text-red-500"
                     }`}
                   >
                     $<TooltipNumber

@@ -1,20 +1,16 @@
 <script>
-  import { typeWallet, isDarkMode, isHidePortfolio } from "~/store";
-  import {
-    detectedChain,
-    shorterName,
-    shorterAddress,
-    chainSupportedList,
-  } from "~/utils";
+  import { typeWallet, isDarkMode } from "~/store";
+  import { shorterName, shorterAddress } from "~/utils";
   import CopyToClipboard from "svelte-copy-to-clipboard";
-  import { wait } from "../entries/background/utils";
+  import { wait } from "../../entries/background/utils";
+  import { chainSupportedList, detectedChain } from "~/lib/chains";
 
   import Tooltip from "~/components/Tooltip.svelte";
   import "~/components/Tooltip.custom.svelte";
   import tooltip from "~/entries/contentScript/views/tooltip";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import Image from "~/components/Image.svelte";
-  import OverlaySidebar from "./OverlaySidebar.svelte";
+  import OverlaySidebar from "~/components/OverlaySidebar.svelte";
   import TokenDetailSidebar from "~/UI/TokenDetail/TokenDetailSidebar.svelte";
 
   import TrendUp from "~/assets/trend-up.svg";

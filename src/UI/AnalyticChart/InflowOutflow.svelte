@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { sendMessage } from "webext-bridge";
   import { wallet, chain, typeWallet, selectedPackage } from "~/store";
   import { groupBy, intersection, flatten } from "lodash";
   import dayjs from "dayjs";
-  import { autoFontSize, chainSupportedList, formatCurrency } from "~/utils";
+  import { autoFontSize, formatCurrency } from "~/utils";
+  import { chainSupportedList } from "~/lib/chains";
   import { createQuery } from "@tanstack/svelte-query";
   import { nimbus } from "~/lib/network";
 

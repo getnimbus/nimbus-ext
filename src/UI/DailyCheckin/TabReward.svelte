@@ -3,12 +3,22 @@
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { nimbus } from "~/lib/network";
   import { user, userPublicAddress } from "~/store";
-  import { dailyCheckinRewardsTypePortfolio } from "~/utils";
 
   import Loading from "~/components/Loading.svelte";
   import RedeemCard from "~/components/RedeemCard.svelte";
 
   import goldImg from "~/assets/Gold4.svg";
+
+  const dailyCheckinRewardsTypePortfolio = [
+    {
+      label: "Redeem Gift",
+      value: "redeemGift",
+    },
+    {
+      label: "Your gift",
+      value: "yourGift",
+    },
+  ];
 
   let selectedType: "redeemGift" | "yourGift" = "redeemGift";
 

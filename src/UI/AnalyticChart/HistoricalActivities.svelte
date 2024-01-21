@@ -2,13 +2,9 @@
   import { wallet, chain, typeWallet } from "~/store";
   import dayjs from "dayjs";
   import { nimbus } from "~/lib/network";
-  import { chainSupportedList, formatCurrency } from "~/utils";
+  import { chainSupportedList } from "~/lib/chains";
   import { createQuery } from "@tanstack/svelte-query";
-
-  import type {
-    AnalyticHistoricalRes,
-    AnalyticHistoricalFormat,
-  } from "~/types/AnalyticHistoricalData";
+  import type { AnalyticHistoricalFormat } from "~/types/AnalyticHistoricalData";
 
   import CalendarChart from "~/components/CalendarChart.svelte";
 

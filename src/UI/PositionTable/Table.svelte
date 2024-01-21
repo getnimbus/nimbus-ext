@@ -1,5 +1,5 @@
 <script>
-  import { detectedChain } from "~/utils";
+  import { detectedChain } from "~/lib/chains";
 
   import LpProvider from "./LPProvider.svelte";
   import LpProviderV2 from "./LPProviderV2.svelte";

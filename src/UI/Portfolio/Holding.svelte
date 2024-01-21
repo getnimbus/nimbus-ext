@@ -14,11 +14,8 @@
   } from "~/store";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
-  import {
-    filterTokenValueType,
-    chunkArray,
-    chainSupportedList,
-  } from "~/utils";
+  import { filterTokenValueType, chunkArray } from "~/utils";
+  import { chainSupportedList } from "~/lib/chains";
   import { groupBy } from "lodash";
   import { priceMobulaSubscribe } from "~/lib/price-mobulaWs";
   import { priceSubscribe } from "~/lib/price-ws";
@@ -43,9 +40,9 @@
   export let selectedDataPieChart;
   export let totalAssets;
 
+  import HoldingToken from "~/UI/Portfolio/HoldingToken.svelte";
+  import HoldingNFT from "~/UI/Portfolio/HoldingNFT.svelte";
   import Select from "~/components/Select.svelte";
-  import HoldingToken from "~/components/HoldingToken.svelte";
-  import HoldingNFT from "~/components/HoldingNFT.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import TooltipTitle from "~/components/TooltipTitle.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
