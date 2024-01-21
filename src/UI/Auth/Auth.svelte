@@ -32,7 +32,7 @@
   import Logo from "~/assets/logo-1.svg";
   import Reload from "~/assets/reload-black.svg";
   import ReloadWhite from "~/assets/reload-white.svg";
-  import Evm from "~/assets/ethereum.png";
+  import Evm from "~/assets/chains/ethereum.png";
 
   import SolanaAuth from "./SolanaAuth.svelte";
   import { WalletProvider } from "@svelte-on-solana/wallet-adapter-ui";
