@@ -1,6 +1,7 @@
 import numeral from "numeral";
 import jwt_decode from "jwt-decode";
 import { nimbus } from "./lib/network";
+import { detectedChain } from "./lib/chains";
 import { groupBy } from "lodash";
 import confetti from "canvas-confetti";
 import { driver } from "driver.js";
@@ -491,7 +492,7 @@ export const handleFormatDataPieChart = (data, type) => {
 
   return formatGroupData.map((item) => {
     return {
-      logo: item.logo,
+      logo: type === "chain" ? detectedChain(item.name) : item.logo,
       name: item.name,
       symbol: "",
       name_ratio: item.name_ratio,
