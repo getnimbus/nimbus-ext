@@ -17,13 +17,13 @@
   import "dayjs/locale/vi";
   import relativeTime from "dayjs/plugin/relativeTime";
   dayjs.extend(relativeTime);
+  import { clickOutside } from "~/utils";
   import {
     chainList,
-    listLogoCEX,
-    listProviderCEX,
-    clickOutside,
     chainMoveList,
-  } from "~/utils";
+    listProviderCEX,
+    listLogoCEX,
+  } from "~/lib/chains";
   import mixpanel from "mixpanel-browser";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import CopyToClipboard from "svelte-copy-to-clipboard";
@@ -45,23 +45,23 @@
   import Select from "~/components/Select.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
   import Copy from "~/components/Copy.svelte";
-  import HiddenPortfolio from "./HiddenPortfolio.svelte";
-  import Hero from "./Hero.svelte";
+  import HiddenValue from "../UI/HiddenValue/HiddenValue.svelte";
+  import Hero from "../UI/Hero/Hero.svelte";
 
   import Plus from "~/assets/plus.svg";
   import PlusBlack from "~/assets/plus-black.svg";
   import FollowWhale from "~/assets/whale-tracking.gif";
   import Success from "~/assets/shield-done.svg";
 
-  import Move from "~/assets/move.png";
+  import Move from "~/assets/chains/move.png";
   import All from "~/assets/all.svg";
   import Bundles from "~/assets/bundles.png";
-  import BitcoinLogo from "~/assets/bitcoin.png";
-  import SolanaLogo from "~/assets/solana.png";
-  import NearLogo from "~/assets/near.png";
-  import AuraLogo from "~/assets/aura.png";
-  import AlgorandLogo from "~/assets/algorand.png";
-  import TonLogo from "~/assets/ton.png";
+  import BitcoinLogo from "~/assets/chains/bitcoin.png";
+  import SolanaLogo from "~/assets/chains/solana.png";
+  import NearLogo from "~/assets/chains/near.png";
+  import AuraLogo from "~/assets/chains/aura.png";
+  import AlgorandLogo from "~/assets/chains/algorand.png";
+  import TonLogo from "~/assets/chains/ton.png";
 
   const MultipleLang = {
     empty_wallet: i18n("newtabPage.empty-wallet", "No account added yet."),
@@ -1387,7 +1387,7 @@
                   </div>
                   {#if type === "portfolio"}
                     <span class="xl:pb-0 pb-3 xl:-ml-2">
-                      <HiddenPortfolio />
+                      <HiddenValue />
                     </span>
                     <div class="xl:block hidden">
                       <slot name="reload" />

@@ -27,10 +27,10 @@
 
   import tooltip from "~/entries/contentScript/views/tooltip";
   import Auth from "~/UI/Auth/Auth.svelte";
-  import DarkModeFooter from "./DarkModeFooter.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
   import Button from "~/components/Button.svelte";
-  import NimbusBanner from "./NimbusBanner.svelte";
+  import DarkModeFooter from "../Footer/DarkModeFooter.svelte";
+  import Banner from "~/UI/Banner/Banner.svelte";
 
   import Logo from "~/assets/logo-white.svg";
   import PortfolioIcon from "~/assets/portfolio.svg";
@@ -50,15 +50,15 @@
   import User from "~/assets/user.png";
   import goldImg from "~/assets/Gold4.svg";
 
-  import Move from "~/assets/move.png";
+  import Move from "~/assets/chains/move.png";
   import All from "~/assets/all.svg";
   import Bundles from "~/assets/bundles.png";
-  import BitcoinLogo from "~/assets/bitcoin.png";
-  import SolanaLogo from "~/assets/solana.png";
-  import NearLogo from "~/assets/near.png";
-  import AuraLogo from "~/assets/aura.png";
-  import AlgorandLogo from "~/assets/algorand.png";
-  import TonLogo from "~/assets/ton.png";
+  import BitcoinLogo from "~/assets/chains/bitcoin.png";
+  import SolanaLogo from "~/assets/chains/solana.png";
+  import NearLogo from "~/assets/chains/near.png";
+  import AuraLogo from "~/assets/chains/aura.png";
+  import AlgorandLogo from "~/assets/chains/algorand.png";
+  import TonLogo from "~/assets/chains/ton.png";
 
   const MultipleLang = {
     portfolio: i18n("newtabPage.portfolio", "Portfolio"),
@@ -513,24 +513,6 @@
 
 <svelte:head>
   <script src="/main-2.0.4.js" data-preload></script>
-  <!-- <script
-    defer
-    src="https://widget.mava.app"
-    id="MavaWebChat"
-    data-token="b379b36e08fcb3d988cd60fb45deb82f713f3daa4f18c66f8b9c479ff42bf3b5"
-  ></script> -->
-  <!-- <script
-    defer
-    src="https://widget.mava.app"
-    id="MavaWebChat"
-    data-token="b379b36e08fcb3d988cd60fb45deb82f713f3daa4f18c66f8b9c479ff42bf3b5"
-  ></script> -->
-  <!-- <script
-    defer
-    src="https://widget.mava.app"
-    id="MavaWebChat"
-    data-token="b379b36e08fcb3d988cd60fb45deb82f713f3daa4f18c66f8b9c479ff42bf3b5"
-  ></script> -->
   <script>
     !(function (e, t) {
       const a = "featurebase-sdk";
@@ -887,7 +869,7 @@
   </div>
 </div>
 
-<!-- <NimbusBanner /> -->
+<!-- <Banner /> -->
 
 <!-- Mobile header -->
 <div

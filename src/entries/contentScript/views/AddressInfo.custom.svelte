@@ -7,21 +7,18 @@
   import { isEmpty, groupBy } from "lodash";
   import * as echarts from "echarts";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
-  import numeral from "numeral";
   import { i18n } from "~/lib/i18n";
   import {
     formatValue,
     formatPercent,
     formatBalance,
-    formatCurrency,
-    getAddressContext,
     getLocalImg,
     shorterAddress,
     shorterName,
     typePieChart,
   } from "~/utils";
+  import { getAddressContext } from "~/lib/chains";
   import { track } from "~/lib/data-tracking";
-  import { nimbus } from "../../../lib/network";
   import { isSaveAddressLabel } from "../../../store";
 
   import "~/components/Loading.custom.svelte";
@@ -34,12 +31,12 @@
   import Image from "~/components/Image.svelte";
   import tooltip from "~/entries/contentScript/views/tooltip";
 
+  import Edit from "../../../assets/edit.svg";
+  import defaultToken from "../../../assets/defaultToken.png";
   import SmartContractIcon from "../assets/smart-contract.png";
+  import CoinDefaultIcon from "../assets/coin-default.svg";
   // import MetaMaskIcon from "../assets/metamask-icon.png";
   // import CoinMarketCapIcon from "../assets/CoinMarketCap_logo.png";
-  import CoinDefaultIcon from "../assets/coin-default.svg";
-  import Edit from "../../../assets/edit.svg";
-  import defaultToken from "~/assets/defaultToken.png";
 
   export let address;
   export let popup: boolean = true;
@@ -273,8 +270,8 @@
               name: item.name
                 ? shorterName(item.name)
                 : item.symbol
-                ? item.symbol
-                : "--",
+                  ? item.symbol
+                  : "--",
               symbol: item.symbol,
               name_ratio: "Ratio",
               value: (Number(item.value) / sum) * 100,

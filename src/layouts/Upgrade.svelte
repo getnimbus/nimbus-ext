@@ -12,10 +12,8 @@
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import Button from "~/components/Button.svelte";
 
-  import Ethereum from "~/assets/ethereum.png";
-  import Solana from "~/assets/solana.png";
-  import Bnb from "~/assets/bnb.png";
-  import Matic from "~/assets/matic.png";
+  import Ethereum from "~/assets/chains/ethereum.png";
+  import Solana from "~/assets/chains/solana.png";
 
   const navigate = useNavigate();
 
@@ -32,16 +30,6 @@
     //   logo: Solana,
     //   label: "Solana",
     //   value: "SOL",
-    // },
-    // {
-    //   logo: Bnb,
-    //   label: "Binance",
-    //   value: "BSC",
-    // },
-    // {
-    //   logo: Matic,
-    //   label: "Polygon",
-    //   value: "POL",
     // },
   ];
 

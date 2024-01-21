@@ -10,18 +10,19 @@
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { createQuery } from "@tanstack/svelte-query";
   import { nimbus } from "~/lib/network";
-  import All from "~/assets/all.svg";
-  import Select from "~/components/Select.svelte";
   import type { TrxHistoryDataRes } from "~/types/TrxHistoryData";
   import type {
     AnalyticHistoricalRes,
     AnalyticHistoricalFormat,
   } from "~/types/AnalyticHistoricalData";
 
+  import HistoricalTransactions from "./HistoricalTransactions.svelte";
   import AddressManagement from "~/components/AddressManagement.svelte";
   import CalendarChart from "~/components/CalendarChart.svelte";
-  import HistoricalTransactions from "./HistoricalTransactions.svelte";
   import CoinSelector from "~/components/CoinSelector.svelte";
+  import Select from "~/components/Select.svelte";
+
+  import All from "~/assets/all.svg";
 
   const types = [
     {

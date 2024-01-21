@@ -1,7 +1,8 @@
 <script lang="ts">
   import { wallet, chain, typeWallet } from "~/store";
   import dayjs from "dayjs";
-  import { chainSupportedList, formatBalance, formatCurrency } from "~/utils";
+  import { formatBalance, formatCurrency } from "~/utils";
+  import { chainSupportedList } from "~/lib/chains";
   import { createQuery } from "@tanstack/svelte-query";
   import { nimbus } from "~/lib/network";
 

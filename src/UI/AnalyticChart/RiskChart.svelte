@@ -9,22 +9,17 @@
   } from "~/store";
   import {
     autoFontSize,
-    chainSupportedList,
     formatCurrency,
     formatPercent,
     formatValue,
     getTooltipContent,
     volatilityColorChart,
   } from "~/utils";
+  import { chainSupportedList } from "~/lib/chains";
   import groupBy from "lodash/groupBy";
   import sumBy from "lodash/sumBy";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
-  import dayjs from "dayjs";
-  import {
-    calculateVolatility,
-    getChangePercent,
-    getPostionInRange,
-  } from "~/chart-utils";
+  import { getChangePercent, getPostionInRange } from "~/chart-utils";
   import { createQuery } from "@tanstack/svelte-query";
 
   import AnalyticSection from "~/components/AnalyticSection.svelte";
@@ -34,8 +29,6 @@
   import EChart from "~/components/EChart.svelte";
   import CtaIcon from "~/components/CtaIcon.svelte";
   import ProgressBar from "~/components/ProgressBar.svelte";
-  import CheckIcon from "~/components/CheckIcon.svelte";
-  import DangerIcon from "~/components/DangerIcon.svelte";
 
   import Logo from "~/assets/logo-1.svg";
   import LogoWhite from "~/assets/logo-white.svg";

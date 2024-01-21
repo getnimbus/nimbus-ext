@@ -1,15 +1,8 @@
 <script lang="ts">
-  import {
-    wallet,
-    chain,
-    typeWallet,
-    isDarkMode,
-    selectedPackage,
-  } from "~/store";
+  import { wallet, chain, typeWallet, isDarkMode } from "~/store";
   import { groupBy, flatten } from "lodash";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import {
-    formatBalance,
     formatCurrency,
     typeList,
     handleFormatDataPieChart,
@@ -17,8 +10,8 @@
     performanceTypeChartPortfolio,
     formatValue,
     autoFontSize,
-    chainSupportedList,
   } from "~/utils";
+  import { chainSupportedList } from "~/lib/chains";
   import { i18n } from "~/lib/i18n";
   import { useNavigate } from "svelte-navigator";
   import { nimbus } from "~/lib/network";
@@ -28,7 +21,6 @@
 
   import type { HoldingTokenRes } from "~/types/HoldingTokenData";
 
-  import Button from "~/components/Button.svelte";
   import EChart from "~/components/EChart.svelte";
   import LoadingPremium from "~/components/LoadingPremium.svelte";
   import TooltipTitle from "~/components/TooltipTitle.svelte";

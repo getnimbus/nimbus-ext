@@ -9,11 +9,11 @@
     isDarkMode,
   } from "~/store";
   import {
-    chainSupportedList,
     correlationsMatrixColor,
     equalizeArrayLengths,
     formatPercent,
   } from "~/utils";
+  import { chainSupportedList } from "~/lib/chains";
   import { defillama, nimbus } from "~/lib/network";
   import dayjs from "dayjs";
 
@@ -164,10 +164,8 @@
 
   // get list all token
   const getListAllToken = async () => {
-    const result = await axios
-      .get("https://api.coingecko.com/api/v3/search")
-      .then((res) => res.data);
-    return result;
+    const res = await nimbus.get("/tokens/coingecko").then((res) => res?.data);
+    return res || [];
   };
 
   $: queryListToken = createQuery({
@@ -179,7 +177,7 @@
 
   $: {
     if (!$queryListToken.isError && $queryListToken?.data) {
-      formatListAllToken($queryListToken?.data?.coins);
+      formatListAllToken($queryListToken?.data);
     }
   }
 
@@ -188,8 +186,8 @@
       return {
         name: item?.symbol,
         full_name: item?.name,
-        value: item?.api_symbol,
-        logo: item?.large,
+        value: item?.cg_id,
+        logo: item?.image_url,
       };
     });
   };
