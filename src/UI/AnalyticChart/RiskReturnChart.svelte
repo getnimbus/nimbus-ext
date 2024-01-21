@@ -1,20 +1,14 @@
 <script lang="ts">
   import { nimbus } from "~/lib/network";
-  import {
-    wallet,
-    chain,
-    selectedPackage,
-    typeWallet,
-    isDarkMode,
-  } from "~/store";
+  import { wallet, chain, typeWallet, isDarkMode } from "~/store";
   import {
     autoFontSize,
-    formatCurrency,
     formatPercent,
     formatValue,
     getTooltipContent,
     sharpeRatioColorChart,
   } from "~/utils";
+  import { chainSupportedList } from "~/lib/chains";
   import maxBy from "lodash/maxBy";
   import minBy from "lodash/minBy";
   import groupBy from "lodash/groupBy";
@@ -251,14 +245,7 @@
     $wallet === "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0"
       ? true
       : Boolean(
-          ($typeWallet === "EVM" ||
-            $typeWallet === "MOVE" ||
-            $typeWallet === "CEX" ||
-            $typeWallet === "SOL" ||
-            $typeWallet === "AURA" ||
-            $typeWallet === "ALGO" ||
-            $typeWallet === "BUNDLE") &&
-            $wallet.length !== 0
+          chainSupportedList.includes($typeWallet) && $wallet.length !== 0
         );
 
   $: query = createQuery({

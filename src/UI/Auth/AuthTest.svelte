@@ -225,10 +225,11 @@
       Connect wallet to enjoy more features
     </div>
     <div class="flex flex-col items-center justify-center xl:gap-2 gap-4">
-      <SolanaAuth />
+      <SolanaAuth text="Login with Solana" />
       <!-- <GoogleAuth /> -->
     </div>
   </div>
 </AppOverlay>
 
-<style></style>
+<style>
+</style>

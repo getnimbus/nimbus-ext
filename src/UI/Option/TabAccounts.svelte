@@ -2,7 +2,7 @@
   import { onMount } from "svelte";
   import { i18n } from "~/lib/i18n";
   import { dndzone } from "svelte-dnd-action";
-  import { listLogoCEX, listProviderCEX, chainList } from "~/utils";
+  import { chainList, listProviderCEX, listLogoCEX } from "~/lib/chains";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
   import {
@@ -34,13 +34,14 @@
   import User from "~/assets/user.png";
   import Success from "~/assets/shield-done.svg";
 
-  import Move from "~/assets/move.png";
+  import Move from "~/assets/chains/move.png";
   import All from "~/assets/all.svg";
-  import BitcoinLogo from "~/assets/bitcoin.png";
-  import SolanaLogo from "~/assets/solana.png";
-  import SuiLogo from "~/assets/sui.png";
-  import AuraLogo from "~/assets/aura.png";
-  import AlgorandLogo from "~/assets/algorand.png";
+  import BitcoinLogo from "~/assets/chains/bitcoin.png";
+  import SolanaLogo from "~/assets/chains/solana.png";
+  import NearLogo from "~/assets/chains/near.png";
+  import AuraLogo from "~/assets/chains/aura.png";
+  import AlgorandLogo from "~/assets/chains/algorand.png";
+  import TonLogo from "~/assets/chains/ton.png";
 
   const MultipleLang = {
     title: i18n("optionsPage.accounts-page-title", "Account Settings"),
@@ -200,10 +201,10 @@
     return value != null && value !== "";
   };
 
-  const validateAddress = async (address: string) => {
+  const handleValidateAddress = async (address: string) => {
     try {
       const response = await nimbus.get(`/v2/address/${address}/validate`);
-      return response?.data?.type;
+      return response?.data;
     } catch (e) {
       console.error(e);
       return undefined;
@@ -214,7 +215,7 @@
     const isDuplicatedAddress = listAddress.some((item) => {
       return item.address.toLowerCase() === data.address.toLowerCase();
     });
-    const addressValidate = await validateAddress(data.address);
+    const addressValidate = await handleValidateAddress(data.address);
 
     if (!isRequiredFieldValid(data.address)) {
       errors["address"] = {
@@ -223,7 +224,7 @@
         msg: MultipleLang.content.address_required,
       };
     } else {
-      if (data.address && !addressValidate) {
+      if (data.address && addressValidate === undefined) {
         errors["address"] = {
           ...errors["address"],
           required: true,
@@ -277,6 +278,12 @@
       }
       if (item?.type === "SOL") {
         logo = SolanaLogo;
+      }
+      if (item?.type === "NEAR") {
+        logo = NearLogo;
+      }
+      if (item?.type === "TON") {
+        logo = TonLogo;
       }
       if (item?.type === "MOVE") {
         logo = Move;
@@ -370,21 +377,25 @@
       ) {
         Object.assign(data, { id: data.address });
 
+        const validateAccount = await handleValidateAddress(data.address);
+
         if (groupedToBundles) {
           await nimbus.put(
             `/address/personalize/bundle?name=${"Your wallets"}`,
             {
               name: "Your wallets",
-              addresses: selectYourWalletsBundle.concat([data.address]),
+              addresses: selectYourWalletsBundle.concat([
+                validateAccount?.address,
+              ]),
             }
           );
           queryClient.invalidateQueries(["list-bundle"]);
         }
 
-        const response = await nimbus.post("/accounts", {
+        await nimbus.post("/accounts", {
           type: "DEX",
-          publicAddress: data.address,
-          accountId: data.address,
+          publicAddress: validateAccount?.address,
+          accountId: validateAccount?.address,
           label: data.label,
         });
 
@@ -393,21 +404,17 @@
         isOpenAddModal = false;
         queryClient.refetchQueries(["list-address"]);
 
-        const searchAccountType = await validateAddress(
-          response?.data?.accountId
-        );
-
         browser.storage.sync.set({ selectedChain: "ALL" });
         browser.storage.sync.set({
-          typeWalletAddress: searchAccountType,
+          typeWalletAddress: validateAccount?.type,
         });
         browser.storage.sync.set({
-          selectedWallet: response?.data?.accountId,
+          selectedWallet: validateAccount?.address,
         });
 
         chain.update((n) => (n = "ALL"));
-        typeWallet.update((n) => (n = searchAccountType));
-        wallet.update((n) => (n = response?.data?.accountId));
+        typeWallet.update((n) => (n = validateAccount?.type));
+        wallet.update((n) => (n = validateAccount?.address));
 
         toastMsg = "Successfully add On-chain account!";
         isSuccess = true;
@@ -1716,16 +1723,16 @@
           </label>
         </div>
         <div class="flex items-center justify-center gap-6 my-3">
-          {#each [{ logo: BitcoinLogo, label: "Bitcoin", value: "BTC" }, { logo: SolanaLogo, label: "Solana", value: "SOL" }, { logo: Move, label: "Move", value: "MOVE" }, { logo: AuraLogo, label: "Aura", value: "AURA" }, { logo: AlgorandLogo, label: "Algorand", value: "ALGO" }].concat(chainList
+          {#each [{ logo: BitcoinLogo, label: "Bitcoin", value: "BTC" }, { logo: SolanaLogo, label: "Solana", value: "SOL" }, { logo: NearLogo, label: "Near", value: "NEAR" }, { logo: Move, label: "Move", value: "MOVE" }, { logo: AuraLogo, label: "Aura", value: "AURA" }, { logo: AlgorandLogo, label: "Algorand", value: "ALGO" }, { logo: TonLogo, label: "TON", value: "TON" }].concat(chainList
               .slice(1)
-              .slice(0, -8)) as item}
+              .slice(0, -20)) as item}
             <img
               src={item.logo}
               alt=""
               class="xl:w-8 xl:h-8 w-10 h-10 overflow-hidden rounded-full"
             />
           {/each}
-          <div class="text-gray-400 xl:text-base text-2xl">+8 More</div>
+          <div class="text-gray-400 xl:text-base text-2xl">+20 More</div>
         </div>
         <div class="flex justify-end gap-6 lg:gap-2">
           <div class="lg:w-[120px] w-full">
@@ -2022,7 +2029,7 @@
 </AppOverlay>
 
 {#if show}
-  <div class="fixed z-10 w-full top-3 right-3">
+  <div class="fixed z-50 w-full top-3 right-3">
     <Toast
       transition={blur}
       params={{ amount: 10 }}

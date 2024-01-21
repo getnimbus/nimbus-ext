@@ -3,18 +3,18 @@
   import isBetween from "dayjs/plugin/isBetween";
   dayjs.extend(isBetween);
   import { createQuery } from "@tanstack/svelte-query";
-  import { mobula, defillama } from "~/lib/network";
+  import { defillama, nimbus } from "~/lib/network";
   import { isDarkMode, typeWallet } from "~/store";
   import {
     autoFontSize,
     formatBalance,
     formatCurrency,
-    mobulaChainConfig,
     timeFrame,
   } from "~/utils";
   import numeral from "numeral";
   import { groupBy } from "lodash";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
+  import { chainSupport, handleFormatBlockChainId } from "~/lib/price-mobulaWs";
 
   import EChart from "~/components/EChart.svelte";
   import Loading from "~/components/Loading.svelte";
@@ -192,8 +192,8 @@
   }
 
   const handleGetTokenPrice = async () => {
-    if (chain === "SOL" || cgId) {
-      const params = cgId ? `coingecko:${cgId}` : `solana:${contractAddress}`;
+    if (chain === "SOL") {
+      const params = `solana:${contractAddress}`;
 
       const response = await defillama.get(
         `/chart/${params}?start=${dayjs()
@@ -206,29 +206,55 @@
         return [item.timestamp * 1000, item.price];
       });
       return formatRes || [];
+    } else {
+      let params = {
+        blockchain: "",
+        symbol: "",
+        asset: "",
+        from: null,
+      };
+
+      if (chain === "CEX") {
+        params = {
+          blockchain: handleFormatBlockChainId(symbol),
+          symbol,
+          asset: "",
+          from: time === "ALL" ? "" : dayjs().subtract(time, "day").valueOf(),
+        };
+      }
+
+      if (chain !== "CEX") {
+        if (contractAddress) {
+          params = {
+            blockchain: handleFormatBlockChainId(chain),
+            symbol: "",
+            asset: contractAddress,
+            from: time === "ALL" ? "" : dayjs().subtract(time, "day").valueOf(),
+          };
+        } else {
+          params = {
+            blockchain: handleFormatBlockChainId(chain),
+            symbol,
+            asset: "",
+            from: time === "ALL" ? "" : dayjs().subtract(time, "day").valueOf(),
+          };
+        }
+      }
+
+      const response = await nimbus.get("/token/price/mobula", {
+        params,
+      });
+
+      return response?.data || [];
     }
-
-    const blockchain = mobulaChainConfig[chain] || undefined;
-
-    const response = await mobula.get("/1/market/history", {
-      // TODO: Map to mobula blockchain type
-      params: {
-        blockchain,
-        symbol: chain === "CEX" ? symbol : undefined,
-        asset: chain === "CEX" ? undefined : contractAddress,
-        from: time === "ALL" ? "" : dayjs().subtract(time, "day").valueOf(),
-      },
-    });
-
-    return response?.data?.price_history || [];
   };
 
   $: queryTokenPrice = createQuery({
-    queryKey: ["token-price", contractAddress, cgId, chain, time],
+    queryKey: ["token-price", contractAddress, symbol, cgId, chain, time],
     queryFn: () => handleGetTokenPrice(),
     staleTime: Infinity,
     retry: false,
-    enabled: Boolean(contractAddress || cgId),
+    enabled: Boolean(contractAddress || symbol || cgId || chain),
   });
 
   $: {
@@ -707,24 +733,34 @@
         });
 
         // logic data buy and data sell
-        const filteredDuplicateHistoryData = dataHistory
-          .map((item) => {
+        let filteredDuplicateHistoryData = [];
+        if (formatDataTrade && formatDataTrade.length !== 0) {
+          filteredDuplicateHistoryData = dataHistory
+            .map((item) => {
+              return {
+                ...item,
+                date: item.value[0],
+              };
+            })
+            .filter(
+              (elem) =>
+                !tradeHistoryData
+                  .map((item) => {
+                    return {
+                      ...item,
+                      date: item.value[0],
+                    };
+                  })
+                  .find((item) => elem.date === item.date)
+            );
+        } else {
+          filteredDuplicateHistoryData = dataHistory.map((item) => {
             return {
               ...item,
               date: item.value[0],
             };
-          })
-          .filter(
-            (elem) =>
-              !tradeHistoryData
-                .map((item) => {
-                  return {
-                    ...item,
-                    date: item.value[0],
-                  };
-                })
-                .find(({ date }) => elem.date === date)
-          );
+          });
+        }
         const groupBuyHistoryData = groupBy(
           filteredDuplicateHistoryData,
           "type"

@@ -15,15 +15,11 @@
     getTooltipContent,
     volatilityColorChart,
   } from "~/utils";
+  import { chainSupportedList } from "~/lib/chains";
   import groupBy from "lodash/groupBy";
   import sumBy from "lodash/sumBy";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
-  import dayjs from "dayjs";
-  import {
-    calculateVolatility,
-    getChangePercent,
-    getPostionInRange,
-  } from "~/chart-utils";
+  import { getChangePercent, getPostionInRange } from "~/chart-utils";
   import { createQuery } from "@tanstack/svelte-query";
 
   import AnalyticSection from "~/components/AnalyticSection.svelte";
@@ -33,8 +29,6 @@
   import EChart from "~/components/EChart.svelte";
   import CtaIcon from "~/components/CtaIcon.svelte";
   import ProgressBar from "~/components/ProgressBar.svelte";
-  import CheckIcon from "~/components/CheckIcon.svelte";
-  import DangerIcon from "~/components/DangerIcon.svelte";
 
   import Logo from "~/assets/logo-1.svg";
   import LogoWhite from "~/assets/logo-white.svg";
@@ -264,13 +258,7 @@
     $wallet === "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0"
       ? true
       : Boolean(
-          ($typeWallet === "EVM" ||
-            $typeWallet === "MOVE" ||
-            $typeWallet === "CEX" ||
-            $typeWallet === "SOL" ||
-            $typeWallet === "AURA" ||
-            $typeWallet === "ALGO" ||
-            $typeWallet === "BUNDLE") &&
+          chainSupportedList.includes($typeWallet) &&
             $wallet.length !== 0 &&
             $selectedPackage !== "FREE"
         );

@@ -1,13 +1,7 @@
 <script lang="ts">
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { i18n } from "~/lib/i18n";
-  import {
-    chain,
-    wallet,
-    typeWallet,
-    isDarkMode,
-    selectedBundle,
-  } from "~/store";
+  import { chain, typeWallet, isDarkMode, selectedBundle } from "~/store";
   import {
     performanceTypeChartPortfolio,
     typePieChart,
@@ -15,6 +9,10 @@
     formatValue,
     autoFontSize,
   } from "~/utils";
+  import {
+    chainSupportedList,
+    evmChainNotSupportHistoricalBalances,
+  } from "~/lib/chains";
   import dayjs from "dayjs";
   import numeral from "numeral";
 
@@ -39,6 +37,7 @@
 
   import TrendDown from "~/assets/trend-down.svg";
   import TrendUp from "~/assets/trend-up.svg";
+  import { slice } from "viem";
 
   const MultipleLang = {
     token_allocation: i18n("newtabPage.token-allocation", "Token Allocation"),
@@ -868,7 +867,9 @@
         </div>
       {:else}
         <div class="flex justify-between mb-4">
-          {#if ($typeWallet === "EVM" && ($chain === "SCROLL" || $chain === "KLAY" || $chain === "XZO")) || $typeWallet === "CEX" || $typeWallet === "SOL" || $typeWallet === "ALGO" || $typeWallet === "AURA" || $typeWallet === "MOVE" || $selectedBundle?.accounts?.find((item) => item.type === "CEX") !== undefined}
+          {#if ($typeWallet === "EVM" && evmChainNotSupportHistoricalBalances.includes($chain)) || chainSupportedList
+              .slice(2)
+              .includes($typeWallet) || $selectedBundle?.accounts?.find((item) => item.type === "CEX") !== undefined}
             <TooltipTitle
               tooltipText="The performance data can only get after 7 days you connect to Nimbus"
               type="warning"
@@ -935,7 +936,7 @@
                   }`}
                   style="box-shadow: rgba(0, 0, 0, 0.2) 1px 2px 10px;"
                 >
-                  <div class="xl:text-lg text-xl font-medium">
+                  <div class="xl:text-lg text-xl font-medium flex items-center">
                     $<TooltipNumber number={networth} type="balance" />
                   </div>
                   <div

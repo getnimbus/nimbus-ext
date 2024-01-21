@@ -7,11 +7,18 @@
     typeList,
     handleFormatDataPieChart,
     handleFormatDataTable,
+    handleFormatDataTableBundle,
     formatPercent,
     formatValue,
   } from "~/utils";
   import { flatten, groupBy } from "lodash";
-  import { wallet, chain, isDarkMode, typeWallet } from "~/store";
+  import {
+    wallet,
+    chain,
+    isDarkMode,
+    typeWallet,
+    selectedBundle,
+  } from "~/store";
 
   export let handleSelectedTableTokenHolding = (data, selectDataPieChart) => {};
   export let holdingTokenData;
@@ -226,13 +233,10 @@
       dataAccounts = {
         value: "Account",
         dataPie: dataOverviewBundlePieChart,
-        dataTable: {
-          data: {
-            name: "All",
-            data: holdingTokenData,
-          },
-          select: [],
-        },
+        dataTable: handleFormatDataTableBundle(
+          holdingTokenData,
+          $selectedBundle?.accounts
+        ),
       };
     }
   }

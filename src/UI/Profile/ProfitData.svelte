@@ -33,9 +33,28 @@
     return response?.data;
   };
 
+  const handleValidateAddress = async (address: string) => {
+    try {
+      const response = await nimbus.get(`/v2/address/${address}/validate`);
+      return response?.data;
+    } catch (e) {
+      console.error(e);
+      return {
+        address: "",
+        type: "",
+      };
+    }
+  };
+
   const getHoldingToken = async (address) => {
+    const validateAccount = await handleValidateAddress(address);
+
     const response = await nimbus
-      .get(`/v2/address/${address}/holding?chain=ALL`)
+      .get(
+        `/v2/address/${address}/holding?chain=${
+          validateAccount?.type === "BUNDLE" ? "" : validateAccount?.type
+        }`
+      )
       .then((response) => response.data);
     return response;
   };
@@ -365,7 +384,9 @@
                 <div class="flex flex-col">
                   <div
                     class={`flex text-2xl xl:text-lg ${
-                      0 >= 0 ? "text-[#00A878]" : "text-red-500"
+                      badPerf?.realizedProfit >= 0
+                        ? "text-[#00A878]"
+                        : "text-red-500"
                     }`}
                   >
                     $<TooltipNumber

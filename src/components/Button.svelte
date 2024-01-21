@@ -6,6 +6,7 @@
     | "primary"
     | "secondary"
     | "premium"
+    | "recap"
     | "tertiary"
     | "no-outlined"
     | "underlined"
@@ -26,6 +27,7 @@
     ["secondary"]: variant === "secondary",
     ["premium"]: variant === "premium",
     ["tertiary"]: variant === "tertiary",
+    ["recap"]: variant === "recap",
     ["no_outlined"]: variant === "no-outlined",
     ["delete"]: variant === "delete",
     ["twitter"]: variant === "Twitter",
@@ -246,5 +248,16 @@
   .underlined[type="submit"],
   .underlined[type="button"] {
     background: #fff;
+  }
+
+  .recap {
+    background-color: #00bdd6;
+    color: white;
+    border-radius: 9999099999 !important;
+    padding: 12px 20px 12px 20px;
+  }
+  .recap[type="submit"],
+  .recap[type="button"] {
+    background: #4dcedf;
   }
 </style>

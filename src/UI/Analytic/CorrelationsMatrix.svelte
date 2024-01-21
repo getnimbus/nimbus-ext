@@ -13,7 +13,8 @@
     equalizeArrayLengths,
     formatPercent,
   } from "~/utils";
-  import { nimbus } from "~/lib/network";
+  import { chainSupportedList } from "~/lib/chains";
+  import { defillama, nimbus } from "~/lib/network";
   import dayjs from "dayjs";
 
   import type { HoldingTokenRes } from "~/types/HoldingTokenData";
@@ -89,16 +90,26 @@
     }, 300);
   };
 
+  const handleValidateAddress = async (address: string) => {
+    try {
+      const response = await nimbus.get(`/v2/address/${address}/validate`);
+      return response?.data;
+    } catch (e) {
+      console.error(e);
+      return {
+        address: "",
+        type: "",
+      };
+    }
+  };
+
   const getCoinPrice = async (coinName) => {
     try {
-      const result = await axios
-        .get(
-          `https://coins.llama.fi/chart/coingecko:${coinName}?start=${dayjs()
-            .startOf("d")
-            .subtract(30, "d")
-            .unix()}&span=30&period=1d&searchWidth=600`
-        )
-        .then((res) => res.data);
+      const result = await defillama.get(
+        `/chart/coingecko:${coinName}?start=${dayjs()
+          .subtract(30, "day")
+          .unix()}&span=${30}&period=1d&searchWidth=600`
+      );
       return result;
     } catch (e) {
       console.error(e);
@@ -107,8 +118,19 @@
 
   // query token holding
   const getHoldingToken = async (address, chain) => {
+    let addressChain = chain;
+
+    if (addressChain === "ALL") {
+      const validateAccount = await handleValidateAddress(address);
+      addressChain = validateAccount?.type;
+    }
+
     const response: HoldingTokenRes = await nimbus
-      .get(`/v2/address/${address}/holding?chain=${chain}`)
+      .get(
+        `/v2/address/${address}/holding?chain=${
+          addressChain === "BUNDLE" ? "" : addressChain
+        }`
+      )
       .then((response) => response.data);
     return response;
   };
@@ -142,10 +164,8 @@
 
   // get list all token
   const getListAllToken = async () => {
-    const result = await axios
-      .get("https://api.coingecko.com/api/v3/search")
-      .then((res) => res.data);
-    return result;
+    const res = await nimbus.get("/tokens/coingecko").then((res) => res?.data);
+    return res || [];
   };
 
   $: queryListToken = createQuery({
@@ -157,7 +177,7 @@
 
   $: {
     if (!$queryListToken.isError && $queryListToken?.data) {
-      formatListAllToken($queryListToken?.data?.coins);
+      formatListAllToken($queryListToken?.data);
     }
   }
 
@@ -166,8 +186,8 @@
       return {
         name: item?.symbol,
         full_name: item?.name,
-        value: item?.api_symbol,
-        logo: item?.large,
+        value: item?.cg_id,
+        logo: item?.image_url,
       };
     });
   };
@@ -372,13 +392,7 @@
     $wallet === "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0"
       ? true
       : Boolean(
-          ($typeWallet === "EVM" ||
-            $typeWallet === "MOVE" ||
-            $typeWallet === "CEX" ||
-            $typeWallet === "SOL" ||
-            $typeWallet === "AURA" ||
-            $typeWallet === "ALGO" ||
-            $typeWallet === "BUNDLE") &&
+          chainSupportedList.includes($typeWallet) &&
             $wallet.length !== 0 &&
             $selectedPackage !== "FREE"
         );

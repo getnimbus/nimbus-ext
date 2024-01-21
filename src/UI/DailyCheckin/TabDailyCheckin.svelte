@@ -4,7 +4,7 @@
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { nimbus } from "~/lib/network";
   import { isDarkMode, user, userPublicAddress } from "~/store";
-  import { dailyCheckinTypePortfolio, triggerFirework } from "~/utils";
+  import { triggerFirework } from "~/utils";
   import dayjs from "dayjs";
   import { wait } from "~/entries/background/utils";
   import { Toast } from "flowbite-svelte";
@@ -24,6 +24,17 @@
   import rank3 from "~/assets/dailycheckin/3rd.png";
 
   import goldImg from "~/assets/Gold4.svg";
+
+  const dailyCheckinTypePortfolio = [
+    {
+      label: "Collect GM Point",
+      value: "collectGMPoint",
+    },
+    {
+      label: "History",
+      value: "history",
+    },
+  ];
 
   const rankBackground = [img1stframe, img2stframe, img3stframe];
 
@@ -94,6 +105,7 @@
   let dataCheckinHistory = [];
   let sortTypeHistory = "default";
   let sortPointHistory = "default";
+  let isDisabledReceiveQuest = false;
 
   let toastMsg = "";
   let isSuccessToast = false;
@@ -223,11 +235,7 @@
       quests = $queryDailyCheckin?.data?.quests.map((item, index) => {
         const selectedLogs = dataCheckinHistory
           .filter((log) => log.type === "QUEST" && log.note !== "id-generate")
-          .find(
-            (log) =>
-              log.note === item.id ||
-              log.note === `retweet-on-twitter${index + 1}`
-          );
+          .find((log) => log.note === item.id);
 
         return {
           ...item,
@@ -419,6 +427,26 @@
           queryClient.invalidateQueries(["users-me"]);
         }
       }
+      if (type === "solana-recap-2023") {
+        window.open(link, "_blank");
+        await wait(5000);
+        const res = await nimbus.post(
+          `/v2/checkin/${$userPublicAddress}/quest/solana-recap-2023`,
+          {}
+        );
+        if (res && res?.data === null) {
+          toastMsg = "You already post on Twitter";
+          isSuccessToast = false;
+          trigger();
+        }
+        if (res?.data?.bonus !== undefined) {
+          triggerBonusScore();
+          bonusScore = res?.data?.bonus;
+          isTriggerBonusScore = true;
+          queryClient.invalidateQueries([$userPublicAddress, "daily-checkin"]);
+          queryClient.invalidateQueries(["users-me"]);
+        }
+      }
       if (type === "sync-telegram") {
         window.open(link, "_blank");
         await wait(6000);
@@ -477,8 +505,10 @@
           queryClient.invalidateQueries(["users-me"]);
         }
       }
+      isDisabledReceiveQuest = true;
     } catch (e) {
       console.error(e);
+      isDisabledReceiveQuest = false;
     }
   };
 
@@ -723,7 +753,10 @@
                             }}
                             class="py-1"
                           >
-                            <Button disabled={quest.isDone}>Collect!</Button>
+                            <Button
+                              disabled={isDisabledReceiveQuest || quest.isDone}
+                              >Collect!</Button
+                            >
                           </div>
                         {/if}
                       </div>
@@ -870,7 +903,7 @@
 {/if}
 
 {#if showToast}
-  <div class="fixed top-3 right-3 w-full z-10">
+  <div class="fixed top-3 right-3 w-full" style="z-index: 2147483648;">
     <Toast
       transition={blur}
       params={{ amount: 10 }}

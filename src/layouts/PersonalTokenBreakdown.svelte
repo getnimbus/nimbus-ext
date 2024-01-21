@@ -1,10 +1,9 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { Link } from "svelte-navigator";
-  import { sendMessage } from "webext-bridge";
-  import { priceSubscribe } from "~/lib/price-ws";
   import { i18n } from "~/lib/i18n";
-  import { detectedChain, shorterName } from "~/utils";
+  import { shorterName, chunkArray } from "~/utils";
+  import { detectedChain } from "~/lib/chains";
   import { nimbus } from "~/lib/network";
   import { groupBy, flatten, omit } from "lodash";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
@@ -12,6 +11,8 @@
   import { blur } from "svelte/transition";
   import { isDarkMode, typeWallet, wallet, chain } from "~/store";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
+  import { priceMobulaSubscribe } from "~/lib/price-mobulaWs";
+  import { priceSubscribe } from "~/lib/price-ws";
 
   import type { TokenData, HoldingTokenRes } from "~/types/HoldingTokenData";
 
@@ -127,6 +128,19 @@
     };
   });
 
+  const handleValidateAddress = async (address: string) => {
+    try {
+      const response = await nimbus.get(`/v2/address/${address}/validate`);
+      return response?.data;
+    } catch (e) {
+      console.error(e);
+      return {
+        address: "",
+        type: "",
+      };
+    }
+  };
+
   const getPersonalizeTag = async (address) => {
     const response = await nimbus
       .get(`/address/${address}/personalize/tag`)
@@ -181,8 +195,19 @@
   };
 
   const getHoldingToken = async (address, chain) => {
+    let addressChain = chain;
+
+    if (addressChain === "ALL") {
+      const validateAccount = await handleValidateAddress(address);
+      addressChain = validateAccount?.type;
+    }
+
     const response: HoldingTokenRes = await nimbus
-      .get(`/v2/address/${address}/holding?chain=${chain}`)
+      .get(
+        `/v2/address/${address}/holding?chain=${
+          addressChain === "BUNDLE" ? "" : addressChain
+        }`
+      )
       .then((response) => response.data);
     return response;
   };
@@ -416,26 +441,45 @@
           $typeWallet === "CEX" &&
           filteredUndefinedCmcHoldingTokenData.length > 0
         ) {
-          filteredUndefinedCmcHoldingTokenData.map((item) => {
-            priceSubscribe([item?.symbol], false, "CEX", (data) => {
-              marketPriceToken = {
-                id: data.id,
-                market_price: data.price,
-              };
-            });
+          const chunkedArray = chunkArray(
+            filteredUndefinedCmcHoldingTokenData,
+            100
+          );
+          chunkedArray.forEach((chunk) => {
+            chunk
+              .filter((item) => item?.symbol)
+              .map((item) => {
+                priceMobulaSubscribe([item?.symbol], "CEX", (data) => {
+                  marketPriceToken = {
+                    id: data.id,
+                    market_price: data.price,
+                  };
+                });
+              });
           });
         }
 
         const chainList = Object.keys(groupFilteredNullCmcHoldingTokenData);
-
         chainList.map((chain) => {
-          groupFilteredNullCmcHoldingTokenData[chain].map((item) => {
-            priceSubscribe([item?.contractAddress], true, chain, (data) => {
-              marketPriceToken = {
-                id: data.id,
-                market_price: data.price,
-              };
-            });
+          const chunkedArray = chunkArray(
+            groupFilteredNullCmcHoldingTokenData[chain],
+            100
+          );
+          chunkedArray.forEach((chunk) => {
+            chunk
+              .filter((item) => item?.contractAddress)
+              .map((item) => {
+                priceMobulaSubscribe(
+                  [item?.contractAddress],
+                  item?.chain,
+                  (data) => {
+                    marketPriceToken = {
+                      id: data.id,
+                      market_price: data.price,
+                    };
+                  }
+                );
+              });
           });
         });
 
@@ -450,17 +494,12 @@
         });
 
         filteredData?.map((item) => {
-          priceSubscribe(
-            [Number(item?.cmc_id)],
-            false,
-            $typeWallet !== "CEX" ? "" : "CEX",
-            (data) => {
-              marketPriceToken = {
-                id: data.id,
-                market_price: data.price,
-              };
-            }
-          );
+          priceSubscribe([Number(item?.cmc_id)], item?.chain, (data) => {
+            marketPriceToken = {
+              id: data.id,
+              market_price: data.price,
+            };
+          });
         });
       }
     }
@@ -502,7 +541,6 @@
         }
         return { ...item };
       });
-
       formatData = formatDataWithMarketPrice.sort((a, b) => {
         if (a.value < b.value) {
           return 1;
@@ -512,7 +550,6 @@
         }
         return 0;
       });
-
       sumTokens = formatDataWithMarketPrice.reduce(
         (prev, item: any) => prev + item.value,
         0
@@ -1488,7 +1525,7 @@
 </AppOverlay>
 
 {#if showToast}
-  <div class="fixed top-3 right-3 w-full z-10">
+  <div class="fixed top-3 right-3 w-full" style="z-index: 2147483648;">
     <Toast
       transition={blur}
       params={{ amount: 10 }}

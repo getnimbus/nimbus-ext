@@ -29,13 +29,15 @@
   import User from "~/assets/user.png";
   import UpArrow from "~/assets/up-arrow.svg";
 
-  import Move from "~/assets/move.png";
+  import Move from "~/assets/chains/move.png";
   import All from "~/assets/all.svg";
   import Bundles from "~/assets/bundles.png";
-  import BitcoinLogo from "~/assets/bitcoin.png";
-  import SolanaLogo from "~/assets/solana.png";
-  import AuraLogo from "~/assets/aura.png";
-  import AlgorandLogo from "~/assets/algorand.png";
+  import BitcoinLogo from "~/assets/chains/bitcoin.png";
+  import SolanaLogo from "~/assets/chains/solana.png";
+  import NearLogo from "~/assets/chains/near.png";
+  import AuraLogo from "~/assets/chains/aura.png";
+  import AlgorandLogo from "~/assets/chains/algorand.png";
+  import TonLogo from "~/assets/chains/ton.png";
 
   let toastMsg = "";
   let isSuccessToast = false;
@@ -175,14 +177,31 @@
     }
   };
 
+  const handleValidateAddress = async (address: string) => {
+    try {
+      const response = await nimbus.get(`/v2/address/${address}/validate`);
+      return response?.data;
+    } catch (e) {
+      console.error(e);
+      return {
+        address: "",
+        type: "",
+      };
+    }
+  };
+
   const getListAddress = async () => {
     const response: any = await nimbus.get("/accounts/list");
     return response?.data;
   };
 
   const getHoldingNFT = async (address) => {
+    const validateAccount = await handleValidateAddress(address);
+
     const response = await nimbus.get(
-      `/v2/address/${address}/nft-holding?chain=ALL`
+      `/v2/address/${address}/nft-holding?chain=${
+        validateAccount?.type === "BUNDLE" ? "" : validateAccount?.type
+      }`
     );
     return response?.data;
   };
@@ -198,6 +217,12 @@
       }
       if (item?.type === "SOL") {
         logo = SolanaLogo;
+      }
+      if (item?.type === "NEAR") {
+        logo = NearLogo;
+      }
+      if (item?.type === "TON") {
+        logo = TonLogo;
       }
       if (item?.type === "MOVE") {
         logo = Move;
@@ -622,7 +647,7 @@
 </AppOverlay>
 
 {#if showToast}
-  <div class="fixed top-3 right-3 w-full z-10">
+  <div class="fixed top-3 right-3 w-full" style="z-index: 2147483648;">
     <Toast
       transition={blur}
       params={{ amount: 10 }}

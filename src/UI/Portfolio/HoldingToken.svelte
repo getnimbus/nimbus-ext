@@ -1,6 +1,7 @@
 <script lang="ts">
   import { typeWallet, isDarkMode, user, selectedBundle } from "~/store";
-  import { detectedChain, shorterName, shorterAddress } from "~/utils";
+  import { shorterName, shorterAddress } from "~/utils";
+  import { chainSupportedList, detectedChain } from "~/lib/chains";
   import numeral from "numeral";
   import { Progressbar, Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
@@ -8,20 +9,20 @@
   import { nimbus } from "~/lib/network";
   import { i18n } from "~/lib/i18n";
   import CopyToClipboard from "svelte-copy-to-clipboard";
-  import { wait } from "../entries/background/utils";
+  import { wait } from "../../entries/background/utils";
   import mixpanel from "mixpanel-browser";
 
-  import Tooltip from "~/components/Tooltip.svelte";
   import "~/components/Tooltip.custom.svelte";
   import tooltip from "~/entries/contentScript/views/tooltip";
+  import Tooltip from "~/components/Tooltip.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
-  import AppOverlay from "~/components/Overlay.svelte";
-  import VaultTable from "~/UI/Portfolio/VaultTable.svelte";
-  import Button from "./Button.svelte";
+  import Button from "~/components/Button.svelte";
   import Copy from "~/components/Copy.svelte";
   import Image from "~/components/Image.svelte";
-  import OverlaySidebar from "./OverlaySidebar.svelte";
-  import OverlaySidebarSwap from "./OverlaySidebarSwap.svelte";
+  import OverlaySidebar from "~/components/OverlaySidebar.svelte";
+  import OverlaySidebarSwap from "~/components/OverlaySidebarSwap.svelte";
+  import AppOverlay from "~/components/Overlay.svelte";
+  import VaultTable from "~/UI/Portfolio/VaultTable.svelte";
   import TokenDetailSidebar from "~/UI/TokenDetail/TokenDetailSidebar.svelte";
 
   import TrendUp from "~/assets/trend-up.svg";
@@ -163,22 +164,24 @@
   $: realizedProfit = data?.profit?.realizedProfit
     ? Number(data?.profit?.realizedProfit)
     : 0;
+
   $: percentRealizedProfit =
     Number(data?.avgCost) === 0
       ? 0
       : realizedProfit / Math.abs(Number(data?.avgCost));
 
+  $: pnl =
+    Number(data?.balance || 0) * Number(data?.market_price || 0) +
+    Number(data?.profit?.totalGain || 0) -
+    Number(data?.profit?.cost || 0);
+
   $: unrealizedProfit =
-    Number(data?.profit?.averageCost || 0) === 0
-      ? 0
-      : Number(data?.amount) *
-        (Number(data?.market_price) - Number(data?.profit.averageCost));
+    Number(data?.avgCost) === 0 ? 0 : Number(pnl) - realizedProfit;
 
   $: percentUnrealizedProfit =
-    Number(data?.profit?.averageCost || 0) === 0
+    Number(data?.avgCost) === 0
       ? 0
-      : (Number(data?.market_price) - Number(data?.profit?.averageCost)) /
-        Number(data?.profit?.averageCost || 0);
+      : unrealizedProfit / Math.abs(Number(data?.avgCost));
 
   $: ratio = (value / sumAllTokens) * 100;
 
@@ -217,7 +220,7 @@
     const config = {
       displayMode: "integrated",
       integratedTargetId: `swap-${index}`,
-      endpoint: "https://rpc.shyft.to?api_key=Qjb6SubTTbLrkmNo",
+      endpoint: "https://rpc.shyft.to?api_key=Gny0V25q6Y2kMjze",
       strictTokenList: false,
       defaultExplorer: "Solscan",
       formProps: {
@@ -229,7 +232,7 @@
           "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v", // USDC
       },
       onSuccess: ({ txid }) => {
-        toastMsg = `Swap token successful. Your tx id is ${txid}`;
+        toastMsg = `Swap token successful. Tx id is ${shorterAddress(txid)}`;
         isSuccessToast = true;
         trigger();
       },
@@ -245,6 +248,7 @@
       window.Jupiter.init(config);
     });
   };
+
   $: {
     if (showSideTokenDetail) {
       mixpanel.track("token_detail_page", {
@@ -820,7 +824,7 @@
           <div
             class={`flex justify-end ${
               unrealizedProfit !== 0
-                ? percentUnrealizedProfit >= 0
+                ? unrealizedProfit >= 0
                   ? "text-[#00A878]"
                   : "text-red-500"
                 : "text_00000099"
@@ -861,9 +865,9 @@
     </div>
   </td>
 
-  {#if $typeWallet === "SOL" || $typeWallet === "AURA" || $typeWallet === "ALGO" || $typeWallet === "EVM" || $typeWallet === "MOVE" || $typeWallet === "BUNDLE" || $typeWallet === "CEX"}
+  {#if chainSupportedList.includes($typeWallet)}
     <td
-      class={`py-3 w-full h-full flex justify-start items-center xl:gap-4 gap-7 ${
+      class={`py-3 pr-3 w-full h-full flex justify-start items-center xl:gap-4 gap-7 ${
         $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
       }`}
       style={`${lastIndex ? "border-bottom-right-radius: 10px;" : ""}`}
@@ -917,7 +921,7 @@
         </div>
       {/if}
 
-      {#if $typeWallet === "EVM" || $typeWallet === "MOVE" || $typeWallet === "SOL" || $typeWallet === "AURA" || $typeWallet === "ALGO" || $typeWallet === "BUNDLE" || $typeWallet === "CEX"}
+      {#if chainSupportedList.includes($typeWallet)}
         <div
           class="flex justify-center cursor-pointer view-icon-detail"
           on:click={() => {
@@ -1665,153 +1669,151 @@
     >
       &times;
     </div>
-    <div class="flex flex-col gap-6">
-      {#if selectedTokenDetail && Object.keys(selectedTokenDetail).length !== 0}
-        <div class="flex items-center justify-end gap-4">
-          <div class="relative">
-            <div class="rounded-full w-[46px] h-[46px] overflow-hidden">
-              <Image logo={data.logo} defaultLogo={defaultToken} />
-            </div>
-            {#if ($typeWallet === "EVM" || $typeWallet === "MOVE" || $typeWallet === "BUNDLE") && selectedTokenDetail?.chain !== "CEX"}
-              <div class="absolute -top-2 -right-1">
-                <img
-                  src={detectedChain(selectedTokenDetail?.chain)}
-                  alt=""
-                  width="26"
-                  height="26"
-                  class="rounded-full"
-                />
-              </div>
-            {/if}
+    {#if selectedTokenDetail && Object.keys(selectedTokenDetail).length !== 0}
+      <div class="flex items-center justify-end gap-4">
+        <div class="relative">
+          <div class="rounded-full w-[46px] h-[46px] overflow-hidden">
+            <Image logo={data.logo} defaultLogo={defaultToken} />
           </div>
-          <div class="flex flex-col">
-            <div class="flex items-start gap-2">
-              <div
-                class="relative font-medium xl:text-xl text-2xl"
-                on:mouseover={() => {
-                  isShowTooltipName = true;
-                }}
-                on:mouseleave={() => (isShowTooltipName = false)}
-              >
-                {#if selectedTokenDetail.name === undefined}
-                  N/A
-                {:else}
-                  {selectedTokenDetail?.name?.length > 20
-                    ? shorterName(selectedTokenDetail.name, 20)
-                    : selectedTokenDetail.name}
-                {/if}
-                {#if isShowTooltipName && selectedTokenDetail?.name?.length > 20}
-                  <div
-                    class="absolute left-0 -top-8"
-                    style="z-index: 2147483648;"
-                  >
-                    <Tooltip text={selectedTokenDetail.name} />
-                  </div>
-                {/if}
-              </div>
+          {#if ($typeWallet === "EVM" || $typeWallet === "MOVE" || $typeWallet === "BUNDLE") && selectedTokenDetail?.chain !== "CEX"}
+            <div class="absolute -top-2 -right-1">
+              <img
+                src={detectedChain(selectedTokenDetail?.chain)}
+                alt=""
+                width="26"
+                height="26"
+                class="rounded-full"
+              />
             </div>
-
-            <div class="flex items-center gap-2">
-              <div
-                class="relative font-medium text_00000080 xl:text-base text-lg"
-                on:mouseover={() => {
-                  isShowTooltipSymbol = true;
-                }}
-                on:mouseleave={() => (isShowTooltipSymbol = false)}
-              >
-                {#if selectedTokenDetail.symbol === undefined}
-                  N/A
-                {:else}
-                  {shorterName(selectedTokenDetail.symbol, 20)}
-                {/if}
-                {#if isShowTooltipSymbol && selectedTokenDetail.symbol.length > 20}
-                  <div
-                    class="absolute left-0 -top-8"
-                    style="z-index: 2147483648;"
-                  >
-                    <Tooltip text={selectedTokenDetail.symbol} />
-                  </div>
-                {/if}
-              </div>
-              <CopyToClipboard
-                text={selectedTokenDetail?.contractAddress}
-                let:copy
-                on:copy={async () => {
-                  isCopied = true;
-                  await wait(1000);
-                  isCopied = false;
-                }}
-              >
+          {/if}
+        </div>
+        <div class="flex flex-col">
+          <div class="flex items-start gap-2">
+            <div
+              class="relative font-medium xl:text-xl text-2xl"
+              on:mouseover={() => {
+                isShowTooltipName = true;
+              }}
+              on:mouseleave={() => (isShowTooltipName = false)}
+            >
+              {#if selectedTokenDetail.name === undefined}
+                N/A
+              {:else}
+                {selectedTokenDetail?.name?.length > 20
+                  ? shorterName(selectedTokenDetail.name, 20)
+                  : selectedTokenDetail.name}
+              {/if}
+              {#if isShowTooltipName && selectedTokenDetail?.name?.length > 20}
                 <div
-                  class="cursor-pointer relative"
-                  on:mouseover={() => {
-                    isShowTooltipContractAddress = true;
-                  }}
-                  on:mouseleave={() => (isShowTooltipContractAddress = false)}
-                  on:click={copy}
+                  class="absolute left-0 -top-8"
+                  style="z-index: 2147483648;"
                 >
-                  {#if isCopied}
-                    <svg
-                      width={20}
-                      height={20}
-                      id="Layer_1"
-                      data-name="Layer 1"
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 122.88 74.46"
-                      fill={$isDarkMode ? "#d1d5db" : "#00000080"}
-                      ><path
-                        fill-rule="evenodd"
-                        d="M1.87,47.2a6.33,6.33,0,1,1,8.92-9c8.88,8.85,17.53,17.66,26.53,26.45l-3.76,4.45-.35.37a6.33,6.33,0,0,1-8.95,0L1.87,47.2ZM30,43.55a6.33,6.33,0,1,1,8.82-9.07l25,24.38L111.64,2.29c5.37-6.35,15,1.84,9.66,8.18L69.07,72.22l-.3.33a6.33,6.33,0,0,1-8.95.12L30,43.55Zm28.76-4.21-.31.33-9.07-8.85L71.67,4.42c5.37-6.35,15,1.83,9.67,8.18L58.74,39.34Z"
-                      /></svg
-                    >
-                  {:else}
-                    <svg
-                      width={20}
-                      height={20}
-                      viewBox="0 0 12 11"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M8.1875 3.3125H10.6875V10.1875H3.8125V7.6875"
-                        stroke={$isDarkMode ? "#d1d5db" : "#00000080"}
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      />
-                      <path
-                        d="M8.1875 0.8125H1.3125V7.6875H8.1875V0.8125Z"
-                        stroke={$isDarkMode ? "#d1d5db" : "#00000080"}
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      />
-                    </svg>
-                  {/if}
-
-                  {#if isShowTooltipContractAddress}
-                    <div
-                      class="absolute right-0 -top-8"
-                      style="z-index: 2147483648;"
-                    >
-                      <Tooltip
-                        text={shorterAddress(
-                          selectedTokenDetail?.contractAddress
-                        )}
-                      />
-                    </div>
-                  {/if}
+                  <Tooltip text={selectedTokenDetail.name} />
                 </div>
-              </CopyToClipboard>
+              {/if}
             </div>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <div
+              class="relative font-medium text_00000080 xl:text-base text-lg"
+              on:mouseover={() => {
+                isShowTooltipSymbol = true;
+              }}
+              on:mouseleave={() => (isShowTooltipSymbol = false)}
+            >
+              {#if selectedTokenDetail.symbol === undefined}
+                N/A
+              {:else}
+                {shorterName(selectedTokenDetail.symbol, 20)}
+              {/if}
+              {#if isShowTooltipSymbol && selectedTokenDetail.symbol.length > 20}
+                <div
+                  class="absolute left-0 -top-8"
+                  style="z-index: 2147483648;"
+                >
+                  <Tooltip text={selectedTokenDetail.symbol} />
+                </div>
+              {/if}
+            </div>
+            <CopyToClipboard
+              text={selectedTokenDetail?.contractAddress}
+              let:copy
+              on:copy={async () => {
+                isCopied = true;
+                await wait(1000);
+                isCopied = false;
+              }}
+            >
+              <div
+                class="cursor-pointer relative"
+                on:mouseover={() => {
+                  isShowTooltipContractAddress = true;
+                }}
+                on:mouseleave={() => (isShowTooltipContractAddress = false)}
+                on:click={copy}
+              >
+                {#if isCopied}
+                  <svg
+                    width={20}
+                    height={20}
+                    id="Layer_1"
+                    data-name="Layer 1"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 122.88 74.46"
+                    fill={$isDarkMode ? "#d1d5db" : "#00000080"}
+                    ><path
+                      fill-rule="evenodd"
+                      d="M1.87,47.2a6.33,6.33,0,1,1,8.92-9c8.88,8.85,17.53,17.66,26.53,26.45l-3.76,4.45-.35.37a6.33,6.33,0,0,1-8.95,0L1.87,47.2ZM30,43.55a6.33,6.33,0,1,1,8.82-9.07l25,24.38L111.64,2.29c5.37-6.35,15,1.84,9.66,8.18L69.07,72.22l-.3.33a6.33,6.33,0,0,1-8.95.12L30,43.55Zm28.76-4.21-.31.33-9.07-8.85L71.67,4.42c5.37-6.35,15,1.83,9.67,8.18L58.74,39.34Z"
+                    /></svg
+                  >
+                {:else}
+                  <svg
+                    width={20}
+                    height={20}
+                    viewBox="0 0 12 11"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M8.1875 3.3125H10.6875V10.1875H3.8125V7.6875"
+                      stroke={$isDarkMode ? "#d1d5db" : "#00000080"}
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      d="M8.1875 0.8125H1.3125V7.6875H8.1875V0.8125Z"
+                      stroke={$isDarkMode ? "#d1d5db" : "#00000080"}
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                {/if}
+
+                {#if isShowTooltipContractAddress}
+                  <div
+                    class="absolute right-0 -top-8"
+                    style="z-index: 2147483648;"
+                  >
+                    <Tooltip
+                      text={shorterAddress(
+                        selectedTokenDetail?.contractAddress
+                      )}
+                    />
+                  </div>
+                {/if}
+              </div>
+            </CopyToClipboard>
           </div>
         </div>
-      {/if}
-      <div class="mr-7" id={`swap-${index}`}></div>
-    </div>
+      </div>
+    {/if}
   </div>
+  <div id={`swap-${index}`}></div>
 </OverlaySidebarSwap>
 
 {#if showToast}
-  <div class="fixed z-30 w-full top-3 right-3">
+  <div class="fixed w-full top-3 right-3" style="z-index: 2147483648;">
     <Toast
       transition={blur}
       params={{ amount: 10 }}

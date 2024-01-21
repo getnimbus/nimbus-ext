@@ -1,7 +1,7 @@
 <script>
   import { onMount } from "svelte";
 
-  import Button from "./Button.svelte";
+  import Button from "~/components/Button.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
 
   let isShow = true;

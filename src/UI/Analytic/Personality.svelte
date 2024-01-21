@@ -7,14 +7,10 @@
   dayjs.extend(relativeTime);
   import { createQuery } from "@tanstack/svelte-query";
   import { nimbus } from "~/lib/network";
-
-  import type {
-    AnalyticHistoricalRes,
-    AnalyticHistoricalFormat,
-  } from "~/types/AnalyticHistoricalData";
+  import { chainSupportedList } from "~/lib/chains";
+  import type { AnalyticHistoricalFormat } from "~/types/AnalyticHistoricalData";
 
   import CalendarChart from "~/components/CalendarChart.svelte";
-  import Button from "~/components/Button.svelte";
 
   let option = {
     tooltip: {
@@ -180,13 +176,7 @@
   };
 
   $: enabledQuery = Boolean(
-    ($typeWallet === "EVM" ||
-      $typeWallet === "MOVE" ||
-      $typeWallet === "CEX" ||
-      $typeWallet === "SOL" ||
-      $typeWallet === "AURA" ||
-      $typeWallet === "ALGO" ||
-      $typeWallet === "BUNDLE") &&
+    chainSupportedList.includes($typeWallet) &&
       $wallet.length !== 0 &&
       $selectedPackage !== "FREE"
   );

@@ -68,7 +68,7 @@
     >
       <div class="text-[#616b84]">Cost</div>
       <div class="flex xl:flex-row flex-col xl:items-center items-end gap-1">
-        <span>
+        <span class="flex items-center">
           <TooltipNumber
             number={Number(data?.price || 0)}
             type="balance"
@@ -88,7 +88,7 @@
       <div class="flex flex-col items-end">
         <div class="flex xl:flex-row flex-col xl:items-center items-end gap-1">
           <div
-            class={`${
+            class={`flex items-center ${
               Number(profitAndLoss) !== 0
                 ? Number(profitAndLoss) >= 0
                   ? "text-[#00A878]"

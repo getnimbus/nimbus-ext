@@ -9,8 +9,6 @@
     selectedPackage,
     isDarkMode,
     selectedBundle,
-    triggerConnectWallet,
-    triggerSync,
     userPublicAddress,
   } from "~/store";
   import { i18n } from "~/lib/i18n";
@@ -19,14 +17,13 @@
   import "dayjs/locale/vi";
   import relativeTime from "dayjs/plugin/relativeTime";
   dayjs.extend(relativeTime);
+  import { clickOutside } from "~/utils";
   import {
     chainList,
-    listLogoCEX,
-    listProviderCEX,
-    clickOutside,
-    drivePortfolio,
     chainMoveList,
-  } from "~/utils";
+    listProviderCEX,
+    listLogoCEX,
+  } from "~/lib/chains";
   import mixpanel from "mixpanel-browser";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import CopyToClipboard from "svelte-copy-to-clipboard";
@@ -48,20 +45,23 @@
   import Select from "~/components/Select.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
   import Copy from "~/components/Copy.svelte";
-  import HiddenPortfolio from "./HiddenPortfolio.svelte";
+  import HiddenValue from "../UI/HiddenValue/HiddenValue.svelte";
+  import Hero from "../UI/Hero/Hero.svelte";
 
   import Plus from "~/assets/plus.svg";
   import PlusBlack from "~/assets/plus-black.svg";
   import FollowWhale from "~/assets/whale-tracking.gif";
   import Success from "~/assets/shield-done.svg";
 
-  import Move from "~/assets/move.png";
+  import Move from "~/assets/chains/move.png";
   import All from "~/assets/all.svg";
   import Bundles from "~/assets/bundles.png";
-  import BitcoinLogo from "~/assets/bitcoin.png";
-  import SolanaLogo from "~/assets/solana.png";
-  import AuraLogo from "~/assets/aura.png";
-  import AlgorandLogo from "~/assets/algorand.png";
+  import BitcoinLogo from "~/assets/chains/bitcoin.png";
+  import SolanaLogo from "~/assets/chains/solana.png";
+  import NearLogo from "~/assets/chains/near.png";
+  import AuraLogo from "~/assets/chains/aura.png";
+  import AlgorandLogo from "~/assets/chains/algorand.png";
+  import TonLogo from "~/assets/chains/ton.png";
 
   const MultipleLang = {
     empty_wallet: i18n("newtabPage.empty-wallet", "No account added yet."),
@@ -150,6 +150,7 @@
   let listAddress = [];
   let address = "";
   let label = "";
+  let demoAddress = "";
   let errors: any = {};
   let isLoadingAddDEX = false;
   let isOpenAddModal = false;
@@ -176,10 +177,10 @@
     return value != null && value !== "";
   };
 
-  const validateAddress = async (address: string) => {
+  const handleValidateAddress = async (address: string) => {
     try {
       const response = await nimbus.get(`/v2/address/${address}/validate`);
-      return response?.data?.type;
+      return response?.data;
     } catch (e) {
       console.error(e);
       return undefined;
@@ -190,7 +191,7 @@
     const isDuplicatedAddress = listAddress.some((item) => {
       return item.value.toLowerCase() === data.address.toLowerCase();
     });
-    const addressValidate = await validateAddress(data.address);
+    const addressValidate = await handleValidateAddress(data.address);
 
     if (!isRequiredFieldValid(data.address)) {
       errors["address"] = {
@@ -199,7 +200,7 @@
         msg: MultipleLang.content.address_required,
       };
     } else {
-      if (data.address && !addressValidate) {
+      if (data.address && addressValidate === undefined) {
         errors["address"] = {
           ...errors["address"],
           required: true,
@@ -316,7 +317,9 @@
       if (
         typeParams === "BTC" ||
         typeParams === "SOL" ||
+        typeParams === "NEAR" ||
         typeParams === "AURA" ||
+        typeParams === "TON" ||
         typeParams === "ALGO"
       ) {
         window.history.replaceState(
@@ -344,7 +347,9 @@
       if (
         typeParams === "BTC" ||
         typeParams === "SOL" ||
+        typeParams === "NEAR" ||
         typeParams === "AURA" ||
+        typeParams === "TON" ||
         typeParams === "ALGO"
       ) {
         window.history.replaceState(
@@ -427,6 +432,28 @@
         );
       }
 
+      if (selected.type === "NEAR") {
+        typeWallet.update((n) => (n = "NEAR"));
+        browser.storage.sync.set({ typeWalletAddress: "NEAR" });
+        chain.update((n) => (n = "ALL"));
+        window.history.replaceState(
+          null,
+          "",
+          window.location.pathname + `?type=${$typeWallet}&address=${$wallet}`
+        );
+      }
+
+      if (selected.type === "TON") {
+        typeWallet.update((n) => (n = "TON"));
+        browser.storage.sync.set({ typeWalletAddress: "TON" });
+        chain.update((n) => (n = "ALL"));
+        window.history.replaceState(
+          null,
+          "",
+          window.location.pathname + `?type=${$typeWallet}&address=${$wallet}`
+        );
+      }
+
       if (selected.type === "AURA") {
         typeWallet.update((n) => (n = "AURA"));
         browser.storage.sync.set({ typeWalletAddress: "AURA" });
@@ -471,6 +498,12 @@
       if (item?.type === "SOL") {
         logo = SolanaLogo;
       }
+      if (item?.type === "NEAR") {
+        logo = NearLogo;
+      }
+      if (item?.type === "TON") {
+        logo = TonLogo;
+      }
       if (item?.type === "MOVE") {
         logo = Move;
       }
@@ -497,6 +530,12 @@
             }
             if (account?.type === "SOL") {
               logo = SolanaLogo;
+            }
+            if (account?.type === "NEAR") {
+              logo = NearLogo;
+            }
+            if (account?.type === "TON") {
+              logo = TonLogo;
             }
             if (account?.type === "MOVE") {
               logo = Move;
@@ -612,12 +651,16 @@
           value: data.address,
         };
 
+        const validateAccount = await handleValidateAddress(dataFormat.value);
+
         if (groupedToBundles) {
           await nimbus.put(
             `/address/personalize/bundle?name=${"Your wallets"}`,
             {
               name: "Your wallets",
-              addresses: selectYourWalletsBundle.concat([dataFormat.value]),
+              addresses: selectYourWalletsBundle.concat([
+                validateAccount?.address,
+              ]),
             }
           );
           queryClient.invalidateQueries(["list-bundle"]);
@@ -625,45 +668,49 @@
 
         await nimbus.post("/accounts", {
           type: "DEX",
-          publicAddress: dataFormat.value,
-          accountId: dataFormat.value,
+          publicAddress: validateAccount?.address,
+          accountId: validateAccount?.address,
           label: dataFormat.label,
         });
 
-        const searchAccountType = await validateAddress(dataFormat.value);
         queryClient.invalidateQueries(["list-address"]);
-        wallet.update((n) => (n = dataFormat.value));
+        wallet.update((n) => (n = validateAccount?.address));
         chain.update((n) => (n = "ALL"));
-        typeWallet.update((n) => (n = searchAccountType));
+        typeWallet.update((n) => (n = validateAccount?.type));
 
         browser.storage.sync.set({ selectedChain: "ALL" });
         browser.storage.sync.set({
-          typeWalletAddress: searchAccountType,
+          typeWalletAddress: validateAccount?.type,
         });
         browser.storage.sync.set({
-          selectedWallet: dataFormat.value,
+          selectedWallet: validateAccount?.address,
         });
 
-        if (searchAccountType === "EVM" || searchAccountType === "MOVE") {
-          window.history.replaceState(
-            null,
-            "",
-            window.location.pathname +
-              `?type=${searchAccountType}&chain=ALL&address=${dataFormat.value}`
-          );
-        }
-
         if (
-          searchAccountType === "BTC" ||
-          searchAccountType === "SOL" ||
-          searchAccountType === "AURA" ||
-          searchAccountType === "ALGO"
+          validateAccount?.type === "EVM" ||
+          validateAccount?.type === "MOVE"
         ) {
           window.history.replaceState(
             null,
             "",
             window.location.pathname +
-              `?type=${searchAccountType}&address=${dataFormat.value}`
+              `?type=${validateAccount?.type}&chain=ALL&address=${validateAccount?.address}`
+          );
+        }
+
+        if (
+          validateAccount?.type === "BTC" ||
+          validateAccount?.type === "SOL" ||
+          validateAccount?.type === "NEAR" ||
+          validateAccount?.type === "AURA" ||
+          validateAccount?.type === "TON" ||
+          validateAccount?.type === "ALGO"
+        ) {
+          window.history.replaceState(
+            null,
+            "",
+            window.location.pathname +
+              `?type=${validateAccount?.type}&address=${validateAccount?.address}`
           );
         }
 
@@ -963,86 +1010,24 @@
 {:else}
   <div>
     {#if listAddress.length === 0 && $wallet?.length === 0}
-      <div class="flex items-center justify-center h-screen">
-        <div
-          class="flex flex-col items-center justify-center w-[70%] gap-4 p-6"
-        >
-          {#if $query.isError && Object.keys($user).length !== 0}
+      <div class="flex justify-center items-center h-screen">
+        {#if $query.isError && Object.keys($user).length !== 0}
+          <div
+            class="flex flex-col items-center justify-center w-[70%] gap-4 p-6"
+          >
             <div class="xl:text-lg text-2xl">
               {$query.error}
             </div>
-          {:else}
-            <div class="xl:text-lg text-2xl">
-              {#if Object.keys($user).length !== 0}
-                {MultipleLang.addwallet}
-              {:else}
-                <div class="xl:block hidden">
-                  Connect wallet to start tracking your investments
-                </div>
-                <div class="xl:hidden block">
-                  Sync from Desktop to start tracking your investments
-                </div>
-              {/if}
-            </div>
-            {#if Object.keys($user).length !== 0}
-              <div class="w-max">
-                <Button
-                  variant="tertiary"
-                  on:click={() => (isOpenAddModal = true)}
-                >
-                  <img src={Plus} alt="" width="12" height="12" />
-                  <div class="text-2xl font-medium text-white xl:text-base">
-                    {MultipleLang.content.btn_text}
-                  </div>
-                </Button>
-              </div>
-            {:else}
-              <div class="flex flex-col justify-center items-center gap-4">
-                <div class="xl:block hidden">
-                  <Button
-                    on:click={() => {
-                      triggerConnectWallet.update((n) => (n = true));
-                      drivePortfolio.destroy();
-                    }}
-                  >
-                    <div class="text-2xl font-medium xl:text-base">
-                      Connect Wallet
-                    </div>
-                  </Button>
-                </div>
-                <div class="xl:hidden block">
-                  <Button
-                    on:click={() => {
-                      triggerSync.update((n) => (n = true));
-                      drivePortfolio.destroy();
-                    }}
-                  >
-                    <div class="text-2xl font-medium xl:text-base">
-                      Sync from Desktop
-                    </div>
-                  </Button>
-                </div>
-                <div
-                  class="text-2xl font-medium xl:text-base mt-2 hover:underline text-[#1E96FC] cursor-pointer"
-                  on:click={() => {
-                    mixpanel.track("user_search");
-                    chain.update((n) => (n = "ALL"));
-                    wallet.update(
-                      (n) => (n = "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0")
-                    );
-                    typeWallet.update((n) => (n = "EVM"));
-                    navigate(
-                      `/?type=EVM&chain=ALL&address=0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0`
-                    );
-                    drivePortfolio.destroy();
-                  }}
-                >
-                  Try Demo account
-                </div>
-              </div>
-            {/if}
-          {/if}
-        </div>
+          </div>
+        {:else}
+          <div class="max-w-[2000px] m-auto w-[90%]">
+            <Hero
+              btntext={MultipleLang.content.btn_text}
+              {address}
+              {isOpenAddModal}
+            />
+          </div>
+        {/if}
       </div>
     {:else}
       <div class="header header-container">
@@ -1402,7 +1387,7 @@
                   </div>
                   {#if type === "portfolio"}
                     <span class="xl:pb-0 pb-3 xl:-ml-2">
-                      <HiddenPortfolio />
+                      <HiddenValue />
                     </span>
                     <div class="xl:block hidden">
                       <slot name="reload" />
@@ -1822,16 +1807,16 @@
           </label>
         </div>
         <div class="flex items-center justify-center gap-6 my-3">
-          {#each [{ logo: BitcoinLogo, label: "Bitcoin", value: "BTC" }, { logo: SolanaLogo, label: "Solana", value: "SOL" }, { logo: Move, label: "Move", value: "MOVE" }, { logo: AuraLogo, label: "Aura", value: "AURA" }, { logo: AlgorandLogo, label: "Algorand", value: "ALGO" }].concat(chainList
+          {#each [{ logo: BitcoinLogo, label: "Bitcoin", value: "BTC" }, { logo: SolanaLogo, label: "Solana", value: "SOL" }, { logo: NearLogo, label: "Near", value: "NEAR" }, { logo: Move, label: "Move", value: "MOVE" }, { logo: AuraLogo, label: "Aura", value: "AURA" }, { logo: AlgorandLogo, label: "Algorand", value: "ALGO" }, { logo: TonLogo, label: "TON", value: "TON" }].concat(chainList
               .slice(1)
-              .slice(0, -8)) as item}
+              .slice(0, -20)) as item}
             <img
               src={item.logo}
               alt=""
               class="xl:w-8 xl:h-8 w-10 h-10 overflow-hidden rounded-full"
             />
           {/each}
-          <div class="text-gray-400 xl:text-base text-2xl">+8 More</div>
+          <div class="text-gray-400 xl:text-base text-2xl">+20 More</div>
         </div>
         <div class="flex justify-end gap-6 lg:gap-2">
           <div class="lg:w-[120px] w-full">
@@ -1992,7 +1977,7 @@
 </AppOverlay>
 
 {#if showToast}
-  <div class="fixed top-3 right-3 w-full z-10">
+  <div class="fixed top-3 right-3 w-full" style="z-index: 2147483648;">
     <Toast
       transition={blur}
       params={{ amount: 10 }}

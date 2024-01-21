@@ -1,6 +1,12 @@
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
-  import { Link, useMatch, useNavigate } from "svelte-navigator";
+  import {
+    Link,
+    useLocation,
+    useMatch,
+    useNavigate,
+    useParams,
+  } from "svelte-navigator";
   import { i18n } from "~/lib/i18n";
   import {
     chain,
@@ -13,6 +19,7 @@
     userId,
     userPublicAddress,
     triggerSync,
+    detectParams,
   } from "~/store";
   import { shorterAddress } from "~/utils";
   import mixpanel from "mixpanel-browser";
@@ -25,11 +32,12 @@
   import addGlobalBinds from "bind-mousetrap-global";
   addGlobalBinds(Mousetrap);
 
+  import tooltip from "~/entries/contentScript/views/tooltip";
   import Auth from "~/UI/Auth/Auth.svelte";
-  import DarkModeFooter from "./DarkModeFooter.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
   import Button from "~/components/Button.svelte";
-  import tooltip from "~/entries/contentScript/views/tooltip";
+  import DarkModeFooter from "../Footer/DarkModeFooter.svelte";
+  import Banner from "~/UI/Banner/Banner.svelte";
 
   import Logo from "~/assets/logo-white.svg";
   import PortfolioIcon from "~/assets/portfolio.svg";
@@ -49,13 +57,15 @@
   import User from "~/assets/user.png";
   import goldImg from "~/assets/Gold4.svg";
 
-  import Move from "~/assets/move.png";
+  import Move from "~/assets/chains/move.png";
   import All from "~/assets/all.svg";
   import Bundles from "~/assets/bundles.png";
-  import BitcoinLogo from "~/assets/bitcoin.png";
-  import SolanaLogo from "~/assets/solana.png";
-  import AuraLogo from "~/assets/aura.png";
-  import AlgorandLogo from "~/assets/algorand.png";
+  import BitcoinLogo from "~/assets/chains/bitcoin.png";
+  import SolanaLogo from "~/assets/chains/solana.png";
+  import NearLogo from "~/assets/chains/near.png";
+  import AuraLogo from "~/assets/chains/aura.png";
+  import AlgorandLogo from "~/assets/chains/algorand.png";
+  import TonLogo from "~/assets/chains/ton.png";
 
   const MultipleLang = {
     portfolio: i18n("newtabPage.portfolio", "Portfolio"),
@@ -125,6 +135,12 @@
       if (item?.type === "SOL") {
         logo = SolanaLogo;
       }
+      if (item?.type === "NEAR") {
+        logo = NearLogo;
+      }
+      if (item?.type === "TON") {
+        logo = TonLogo;
+      }
       if (item?.type === "MOVE") {
         logo = Move;
       }
@@ -152,6 +168,12 @@
             if (account?.type === "SOL") {
               logo = SolanaLogo;
             }
+            if (account?.type === "NEAR") {
+              logo = NearLogo;
+            }
+            if (item?.type === "TON") {
+              logo = TonLogo;
+            }
             if (item?.type === "MOVE") {
               logo = Move;
             }
@@ -174,10 +196,10 @@
     listAddress = structWalletData;
   };
 
-  const validateAddress = async (address: string) => {
+  const handleValidateAddress = async (address: string) => {
     try {
       const response = await nimbus.get(`/v2/address/${address}/validate`);
-      return response?.data?.type;
+      return response?.data;
     } catch (e) {
       console.error(e);
       return undefined;
@@ -208,42 +230,47 @@
   }
 
   const handleSearchAddress = async (value: string) => {
-    mixpanel.track("user_search");
-    const searchAccountType = await validateAddress(value);
-    chain.update((n) => (n = "ALL"));
-    wallet.update((n) => (n = value));
-    typeWallet.update((n) => (n = searchAccountType));
+    if (value) {
+      mixpanel.track("user_search");
+      const validateAccount = await handleValidateAddress(value);
+      chain.update((n) => (n = "ALL"));
+      wallet.update((n) => (n = validateAccount?.address));
+      typeWallet.update((n) => (n = validateAccount?.type));
 
-    browser.storage.sync.set({
-      selectedWallet: value,
-    });
-    browser.storage.sync.set({ selectedChain: "ALL" });
-    browser.storage.sync.set({
-      typeWalletAddress: searchAccountType,
-    });
+      browser.storage.sync.set({
+        selectedWallet: validateAccount?.address,
+      });
+      browser.storage.sync.set({ selectedChain: "ALL" });
+      browser.storage.sync.set({
+        typeWalletAddress: validateAccount?.type,
+      });
 
-    if (searchAccountType === "EVM" || searchAccountType === "MOVE") {
-      window.history.replaceState(
-        null,
-        "",
-        window.location.pathname +
-          `?type=${searchAccountType}&chain=ALL&address=${value}`
-      );
+      if (validateAccount?.type === "EVM" || validateAccount?.type === "MOVE") {
+        window.history.replaceState(
+          null,
+          "",
+          window.location.pathname +
+            `?type=${validateAccount?.type}&chain=ALL&address=${validateAccount?.address}`
+        );
+      }
+      if (
+        validateAccount?.type === "BTC" ||
+        validateAccount?.type === "SOL" ||
+        validateAccount?.type === "NEAR" ||
+        validateAccount?.type === "TON" ||
+        validateAccount?.type === "AURA" ||
+        validateAccount?.type === "ALGO" ||
+        validateAccount?.type === "CEX"
+      ) {
+        window.history.replaceState(
+          null,
+          "",
+          window.location.pathname +
+            `?type=${validateAccount?.type}&address=${validateAccount?.address}`
+        );
+      }
+      handleSaveSuggest(validateAccount?.address);
     }
-    if (
-      searchAccountType === "BTC" ||
-      searchAccountType === "SOL" ||
-      searchAccountType === "AURA" ||
-      searchAccountType === "ALGO" ||
-      searchAccountType === "CEX"
-    ) {
-      window.history.replaceState(
-        null,
-        "",
-        window.location.pathname + `?type=${searchAccountType}&address=${value}`
-      );
-    }
-    handleSaveSuggest(value);
   };
 
   onMount(() => {
@@ -284,21 +311,23 @@
     });
 
     Mousetrap.bindGlobal(["enter"], async function () {
-      if (selectedIndexAddress !== -1) {
-        let selectedAddress;
-        if (indexSelectedAddressResult === -1) {
-          selectedAddress = listAddress[selectedIndexAddress]?.value;
+      if (showPopoverSearch) {
+        if (selectedIndexAddress !== -1) {
+          let selectedAddress;
+          if (indexSelectedAddressResult === -1) {
+            selectedAddress = listAddress[selectedIndexAddress]?.value;
+          } else {
+            selectedAddress = listAddress[indexSelectedAddressResult]?.value;
+          }
+          handleSearchAddress(selectedAddress);
+          showPopoverSearch = false;
+          indexSelectedAddressResult = -1;
+          search = "";
+          searchListAddressResult = listAddress;
         } else {
-          selectedAddress = listAddress[indexSelectedAddressResult]?.value;
+          search = "";
+          searchListAddressResult = listAddress;
         }
-        handleSearchAddress(selectedAddress);
-        showPopoverSearch = false;
-        indexSelectedAddressResult = -1;
-        search = "";
-        searchListAddressResult = listAddress;
-      } else {
-        search = "";
-        searchListAddressResult = listAddress;
       }
     });
   });
@@ -312,6 +341,11 @@
   let code = "";
   let isLoadingSyncMobile = false;
   let errors = {};
+
+  const locationparamas = useLocation();
+  $: {
+    detectParams.update((e) => (e = $locationparamas.pathname));
+  }
 
   // Handle mobile sign in
   const handleMobileSignIn = async (code) => {
@@ -464,6 +498,49 @@
   }
 </script>
 
+<svelte:head>
+  <script src="/main-2.0.4.js" data-preload></script>
+  <script>
+    !(function (e, t) {
+      const a = "featurebase-sdk";
+      function n() {
+        if (!t.getElementById(a)) {
+          var e = t.createElement("script");
+          (e.id = a),
+            (e.src = "https://do.featurebase.app/js/sdk.js"),
+            t
+              .getElementsByTagName("script")[0]
+              .parentNode.insertBefore(e, t.getElementsByTagName("script")[0]);
+        }
+      }
+      "function" != typeof e.Featurebase &&
+        (e.Featurebase = function () {
+          (e.Featurebase.q = e.Featurebase.q || []).push(arguments);
+        }),
+        "complete" === t.readyState || "interactive" === t.readyState
+          ? n()
+          : t.addEventListener("DOMContentLoaded", n);
+    })(window, document);
+
+    Featurebase("initialize_changelog_widget", {
+      organization: "nimbus",
+      placement: "bottom",
+      theme: "light",
+      initialPage: "MainView",
+      fullscreenPopup: true,
+      // fullScreen: false,
+    });
+  </script>
+  <script>
+    Featurebase("initialize_feedback_widget", {
+      organization: "nimbus", // required
+      theme: "light", // required
+      placement: "right", // optional
+      // email: "youruser@example.com", // optional
+    });
+  </script>
+</svelte:head>
+
 <div
   class="mobile-header-container py-1 border-b-[1px] border-[#ffffff1a] relative"
 >
@@ -609,22 +686,11 @@
 
       <div
         on:click={() => {
-          if ($user && Object.keys($user).length !== 0) {
-            navActive = "transactions";
-            queryClient.invalidateQueries(["users-me"]);
-          } else {
-            user.update((n) => (n = {}));
-            wallet.update((n) => (n = ""));
-            chain.update((n) => (n = ""));
-            typeWallet.update((n) => (n = ""));
-            queryClient.invalidateQueries(["list-address"]);
-          }
+          navActive = "transactions";
         }}
       >
         <Link
-          to={`${
-            $user && Object.keys($user).length !== 0 ? "transactions" : "/"
-          }`}
+          to={`/transactions?type=${$typeWallet}&chain=${$chain}&address=${$wallet}`}
         >
           <div
             class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:opacity-100 transition-all
@@ -788,6 +854,8 @@
     </div>
   </div>
 </div>
+
+<!-- <Banner /> -->
 
 <!-- Mobile header -->
 <div
@@ -1268,6 +1336,7 @@
   </div>
 </AppOverlay>
 
+<!-- Modal search -->
 <AppOverlay
   clickOutSideToClose
   isOpen={showPopoverSearch}

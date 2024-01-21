@@ -1,15 +1,16 @@
 <script>
-  import { typeWallet, isDarkMode, isHidePortfolio } from "~/store";
-  import { detectedChain, shorterName, shorterAddress } from "~/utils";
+  import { typeWallet, isDarkMode } from "~/store";
+  import { shorterName, shorterAddress } from "~/utils";
   import CopyToClipboard from "svelte-copy-to-clipboard";
-  import { wait } from "../entries/background/utils";
+  import { wait } from "../../entries/background/utils";
+  import { chainSupportedList, detectedChain } from "~/lib/chains";
 
   import Tooltip from "~/components/Tooltip.svelte";
   import "~/components/Tooltip.custom.svelte";
   import tooltip from "~/entries/contentScript/views/tooltip";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import Image from "~/components/Image.svelte";
-  import OverlaySidebar from "./OverlaySidebar.svelte";
+  import OverlaySidebar from "~/components/OverlaySidebar.svelte";
   import TokenDetailSidebar from "~/UI/TokenDetail/TokenDetailSidebar.svelte";
 
   import TrendUp from "~/assets/trend-up.svg";
@@ -395,16 +396,9 @@
   </td>
 
   <td
-    class={`py-3 ${
-      $typeWallet === "SOL" ||
-      $typeWallet === "AURA" ||
-      $typeWallet === "ALGO" ||
-      $typeWallet === "EVM" ||
-      $typeWallet === "MOVE" ||
-      $typeWallet === "BUNDLE"
-        ? ""
-        : "pr-3"
-    } ${$isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"}`}
+    class={`py-3 ${chainSupportedList.includes($typeWallet) ? "" : "pr-3"} ${
+      $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
+    }`}
   >
     <div
       class="flex items-center justify-end gap-1 xl:text-sm text-2xl font-medium"
@@ -453,14 +447,14 @@
     </div>
   </td>
 
-  {#if $typeWallet === "SOL" || $typeWallet === "AURA" || $typeWallet === "ALGO" || $typeWallet === "EVM" || $typeWallet === "MOVE" || $typeWallet === "BUNDLE" || $typeWallet === "CEX"}
+  {#if chainSupportedList.includes($typeWallet)}
     <td
       class={`py-3 xl:w-14 w-32 h-full flex justify-center items-center xl:gap-3 gap-6 ${
         $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
       }`}
       style={`${lastIndex ? "border-bottom-right-radius: 10px;" : ""}`}
     >
-      {#if $typeWallet === "SOL" || $typeWallet === "AURA" || $typeWallet === "ALGO" || $typeWallet === "EVM" || $typeWallet === "MOVE" || $typeWallet === "BUNDLE" || $typeWallet === "CEX"}
+      {#if chainSupportedList.includes($typeWallet)}
         <div
           class="flex justify-center cursor-pointer"
           on:click={() => {
