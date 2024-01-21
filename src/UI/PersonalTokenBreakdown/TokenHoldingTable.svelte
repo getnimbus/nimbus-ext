@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { detectedChain, shorterName } from "~/utils";
+  import { shorterName } from "~/utils";
+  import { detectedChain } from "~/lib/utils";
   import { i18n } from "~/lib/i18n";
   import { isDarkMode, typeWallet } from "~/store";
   import { Progressbar } from "flowbite-svelte";

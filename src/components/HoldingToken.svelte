@@ -1,11 +1,7 @@
 <script lang="ts">
   import { typeWallet, isDarkMode, user, selectedBundle } from "~/store";
-  import {
-    detectedChain,
-    shorterName,
-    shorterAddress,
-    chainSupportedList,
-  } from "~/utils";
+  import { shorterName, shorterAddress } from "~/utils";
+  import { chainSupportedList, detectedChain } from "~/lib/utils";
   import numeral from "numeral";
   import { Progressbar, Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";

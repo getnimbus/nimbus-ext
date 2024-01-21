@@ -9,11 +9,11 @@
     isDarkMode,
   } from "~/store";
   import {
-    chainSupportedList,
     correlationsMatrixColor,
     equalizeArrayLengths,
     formatPercent,
   } from "~/utils";
+  import { chainSupportedList } from "~/lib/utils";
   import { defillama, nimbus } from "~/lib/network";
   import dayjs from "dayjs";
 

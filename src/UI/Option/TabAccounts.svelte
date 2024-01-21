@@ -2,7 +2,7 @@
   import { onMount } from "svelte";
   import { i18n } from "~/lib/i18n";
   import { dndzone } from "svelte-dnd-action";
-  import { listLogoCEX, listProviderCEX, chainList } from "~/utils";
+  import { chainList, listProviderCEX, listLogoCEX } from "~/lib/utils";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
   import {

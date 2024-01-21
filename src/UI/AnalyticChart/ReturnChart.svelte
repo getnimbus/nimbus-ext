@@ -7,9 +7,10 @@
     selectedPackage,
     isDarkMode,
   } from "~/store";
-  import { autoFontSize, chainSupportedList, formatPercent } from "~/utils";
+  import { autoFontSize, formatPercent } from "~/utils";
+  import { chainSupportedList } from "~/lib/utils";
   import dayjs from "dayjs";
-  import { calculateVolatility, getChangePercent } from "~/chart-utils";
+  import { getChangePercent } from "~/chart-utils";
   import { createQuery } from "@tanstack/svelte-query";
 
   import AnalyticSection from "~/components/AnalyticSection.svelte";
@@ -17,8 +18,6 @@
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import TooltipTitle from "~/components/TooltipTitle.svelte";
   import EChart from "~/components/EChart.svelte";
-  import CheckIcon from "~/components/CheckIcon.svelte";
-  import DangerIcon from "~/components/DangerIcon.svelte";
   import CtaIcon from "~/components/CtaIcon.svelte";
 
   import TrendUp from "~/assets/trend-up.svg";

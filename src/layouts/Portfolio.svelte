@@ -7,12 +7,8 @@
   import { groupBy, flatten } from "lodash";
   import { onMount } from "svelte";
   import { i18n } from "~/lib/i18n";
-  import {
-    chainList,
-    chainMoveList,
-    drivePortfolio,
-    chunkArray,
-  } from "~/utils";
+  import { drivePortfolio, chunkArray } from "~/utils";
+  import { chainList, chainMoveList } from "~/lib/utils";
   import { wait } from "../entries/background/utils";
   import {
     wallet,

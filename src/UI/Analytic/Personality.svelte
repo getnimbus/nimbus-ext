@@ -7,15 +7,10 @@
   dayjs.extend(relativeTime);
   import { createQuery } from "@tanstack/svelte-query";
   import { nimbus } from "~/lib/network";
-
-  import type {
-    AnalyticHistoricalRes,
-    AnalyticHistoricalFormat,
-  } from "~/types/AnalyticHistoricalData";
+  import { chainSupportedList } from "~/lib/utils";
+  import type { AnalyticHistoricalFormat } from "~/types/AnalyticHistoricalData";
 
   import CalendarChart from "~/components/CalendarChart.svelte";
-  import Button from "~/components/Button.svelte";
-  import { chainSupportedList } from "~/utils";
 
   let option = {
     tooltip: {

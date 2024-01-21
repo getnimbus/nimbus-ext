@@ -17,13 +17,13 @@
   import "dayjs/locale/vi";
   import relativeTime from "dayjs/plugin/relativeTime";
   dayjs.extend(relativeTime);
+  import { clickOutside } from "~/utils";
   import {
     chainList,
-    listLogoCEX,
-    listProviderCEX,
-    clickOutside,
     chainMoveList,
-  } from "~/utils";
+    listProviderCEX,
+    listLogoCEX,
+  } from "~/lib/utils";
   import mixpanel from "mixpanel-browser";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import CopyToClipboard from "svelte-copy-to-clipboard";

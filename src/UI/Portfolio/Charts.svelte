@@ -1,22 +1,18 @@
 <script lang="ts">
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { i18n } from "~/lib/i18n";
-  import {
-    chain,
-    wallet,
-    typeWallet,
-    isDarkMode,
-    selectedBundle,
-  } from "~/store";
+  import { chain, typeWallet, isDarkMode, selectedBundle } from "~/store";
   import {
     performanceTypeChartPortfolio,
     typePieChart,
     formatPercent,
     formatValue,
     autoFontSize,
-    evmChainNotSupportHistoricalBalances,
-    chainSupportedList,
   } from "~/utils";
+  import {
+    chainSupportedList,
+    evmChainNotSupportHistoricalBalances,
+  } from "~/lib/utils";
   import dayjs from "dayjs";
   import numeral from "numeral";
 

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
   import * as echarts from "echarts";
-  import { isDarkMode } from "~/store";
+  import { autoFontSize } from "~/utils";
 
   export let id;
   export let theme;
@@ -14,26 +14,6 @@
   export let lazyUpdate = false;
 
   let chart; // our chart instance
-
-  const autoFontSize = () => {
-    const windowWidth =
-      window.innerWidth ||
-      document.documentElement.clientWidth ||
-      document.body.clientWidth;
-    const element = document.getElementById(id);
-    if (element && windowWidth) {
-      if (windowWidth < 768) {
-        // mobile
-        return 20;
-      } else if (windowWidth >= 768 && windowWidth < 1024) {
-        // tablet
-        return 16;
-      } else {
-        // pc
-        return 14;
-      }
-    }
-  };
 
   const setOption = () => {
     if (chart && !chart.isDisposed()) {
@@ -74,7 +54,7 @@
       if (echarts) {
         chart = echarts?.init(document.getElementById(id), theme);
         if (!window.echarts) {
-          window.echarts = {
+          window?.echarts = {
             [id]: chart,
           };
         } else {

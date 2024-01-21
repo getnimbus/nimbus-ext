@@ -1,21 +1,14 @@
 <script lang="ts">
   import { nimbus } from "~/lib/network";
-  import {
-    wallet,
-    chain,
-    selectedPackage,
-    typeWallet,
-    isDarkMode,
-  } from "~/store";
+  import { wallet, chain, typeWallet, isDarkMode } from "~/store";
   import {
     autoFontSize,
-    chainSupportedList,
-    formatCurrency,
     formatPercent,
     formatValue,
     getTooltipContent,
     sharpeRatioColorChart,
   } from "~/utils";
+  import { chainSupportedList } from "~/lib/utils";
   import maxBy from "lodash/maxBy";
   import minBy from "lodash/minBy";
   import groupBy from "lodash/groupBy";

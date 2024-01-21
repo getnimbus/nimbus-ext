@@ -1,12 +1,8 @@
 <script lang="ts">
-  import { groupBy, intersection, flatten, sumBy } from "lodash";
+  import { groupBy, sumBy } from "lodash";
   import { wallet, chain, typeWallet, isDarkMode } from "~/store";
-  import {
-    autoFontSize,
-    chainSupportedList,
-    formatCurrency,
-    formatValue,
-  } from "~/utils";
+  import { autoFontSize, formatValue } from "~/utils";
+  import { chainSupportedList } from "~/lib/utils";
   import dayjs from "dayjs";
   import { createQuery } from "@tanstack/svelte-query";
   import { nimbus } from "~/lib/network";
