@@ -147,8 +147,13 @@
 
   const getSync = async () => {
     try {
+      const validateAccount = await handleValidateAddress($wallet);
       await nimbus
-        .get(`/v2/address/${$wallet}/sync?chain=ALL`)
+        .get(
+          `/v2/address/${$wallet}/sync?chain=${
+            validateAccount?.type === "BUNDLE" ? "" : validateAccount?.type
+          }`
+        )
         .then((response) => response);
     } catch (e) {
       console.error("e: ", e);
@@ -157,8 +162,13 @@
 
   const getSyncStatus = async () => {
     try {
+      const validateAccount = await handleValidateAddress($wallet);
       const response: any = await nimbus
-        .get(`/v2/address/${$wallet}/sync-status?chain=${$chain}`)
+        .get(
+          `/v2/address/${$wallet}/sync-status?chain=${
+            validateAccount?.type === "BUNDLE" ? "" : validateAccount?.type
+          }`
+        )
         .then((response) => response);
       dataUpdatedTime = response?.data?.lastSync;
       return response;
