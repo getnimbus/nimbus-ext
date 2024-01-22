@@ -36,6 +36,7 @@ import zkEVM from "~/assets/chains/zkEVM.png";
 import opBNB from "~/assets/chains/opbnb.png";
 import Manta from "~/assets/chains/manta.png";
 import zkSyncEra from "~/assets/chains/zksyncEra.avif";
+import Moonriver from "~/assets/chains/moonriver.png";
 
 export const listProviderCEX = [
   "binance",
@@ -83,7 +84,7 @@ export const listLogoCEX = [
 ];
 
 export const chainSupportedList = ["BUNDLE", "EVM", "CEX", "MOVE", "SOL", "NEAR", "TON", "ALGO", "AURA"];
-export const evmChainNotSupportHistoricalBalances = ["ZKSYNC_ERA", "MANTA", "VIC", "MANTLE", "CRONOS", "LINEA", "ZKSYNC", "XDAI", "ARB", "AVAX", "OP", "BASE", "SCROLL", "KLAY", "XZO", "ZETA", "RON", "FANTOM", "AURORA", "EVMOS", "ONE", "GLMR", "METIS", "POLYGON_ZKEVM", "OPBNB"];
+export const evmChainNotSupportHistoricalBalances = ["MOVR", "ZKSYNC_ERA", "MANTA", "VIC", "MANTLE", "CRONOS", "LINEA", "ZKSYNC", "XDAI", "ARB", "AVAX", "OP", "BASE", "SCROLL", "KLAY", "XZO", "ZETA", "RON", "FANTOM", "AURORA", "EVMOS", "ONE", "GLMR", "METIS", "POLYGON_ZKEVM", "OPBNB"];
 
 export const chainMoveList = [
   {
@@ -244,6 +245,11 @@ export const chainList = [
     label: "ZkSync Era",
     value: "ZKSYNC_ERA",
   },
+  {
+    logo: Moonriver,
+    label: "Moonriver",
+    value: "MOVR",
+  },
 ];
 
 export const detectedChain = (type) => {
@@ -356,6 +362,9 @@ export const detectedChain = (type) => {
       break;
     case "ZKSYNC_ERA":
       chain = zkSyncEra;
+      break;
+    case "MOVR":
+      chain = Moonriver;
       break;
   }
   return chain;
@@ -575,6 +584,12 @@ export const linkExplorer = (chain, hash) => {
       links = {
         trx: `https://explorer.zksync.io/tx/${hash}`,
         address: `https://explorer.zksync.io/address/${hash}`,
+      };
+      break;
+    case "MOVR":
+      links = {
+        trx: `https://moonriver.moonscan.io/tx/${hash}`,
+        address: `https://moonriver.moonscan.io/address/${hash}`,
       };
       break;
     default:

@@ -1628,7 +1628,9 @@
                     <Select
                       type="chain"
                       positionSelectList="right-0"
-                      listSelect={chainList}
+                      listSelect={chainList.sort((a, b) =>
+                        a.label.localeCompare(b.label)
+                      )}
                       bind:selected={$chain}
                     />
                   {/if}
@@ -1636,7 +1638,9 @@
                     <Select
                       type="chain"
                       positionSelectList="right-0"
-                      listSelect={chainMoveList}
+                      listSelect={chainMoveList.sort((a, b) =>
+                        a.label.localeCompare(b.label)
+                      )}
                       bind:selected={$chain}
                     />
                   {/if}
