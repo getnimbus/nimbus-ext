@@ -40,8 +40,6 @@
   export let selectedDataPieChart;
   export let totalAssets;
 
-  $: console.log("holdingTokenData: ", holdingTokenData);
-
   import HoldingToken from "~/UI/Portfolio/HoldingToken.svelte";
   import HoldingNFT from "~/UI/Portfolio/HoldingNFT.svelte";
   import Select from "~/components/Select.svelte";
