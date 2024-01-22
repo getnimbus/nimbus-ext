@@ -35,6 +35,8 @@ import Zeta from "~/assets/chains/zeta.png";
 import zkEVM from "~/assets/chains/zkEVM.png";
 import opBNB from "~/assets/chains/opbnb.png";
 import Moonriver from "~/assets/chains/moonriver.png";
+import Canto from "~/assets/chains/canto.png";
+import Oasis from "~/assets/chains/oasis.png";
 // import Manta from "~/assets/chains/manta.png";
 
 export const listProviderCEX = [
@@ -83,7 +85,7 @@ export const listLogoCEX = [
 ];
 
 export const chainSupportedList = ["BUNDLE", "EVM", "CEX", "MOVE", "SOL", "NEAR", "TON", "ALGO", "AURA"];
-export const evmChainNotSupportHistoricalBalances = ["MOVR", "MANTA", "VIC", "MANTLE", "CRONOS", "LINEA", "ZKSYNC", "XDAI", "ARB", "AVAX", "OP", "BASE", "SCROLL", "KLAY", "XZO", "ZETA", "RON", "FANTOM", "AURORA", "EVMOS", "ONE", "GLMR", "METIS", "POLYGON_ZKEVM", "OPBNB"];
+export const evmChainNotSupportHistoricalBalances = ["ROSE", "CANTO", "MOVR", "MANTA", "VIC", "MANTLE", "CRONOS", "LINEA", "ZKSYNC", "XDAI", "ARB", "AVAX", "OP", "BASE", "SCROLL", "KLAY", "XZO", "ZETA", "RON", "FANTOM", "AURORA", "EVMOS", "ONE", "GLMR", "METIS", "POLYGON_ZKEVM", "OPBNB"];
 
 export const chainMoveList = [
   {
@@ -239,6 +241,16 @@ export const chainList = [
     label: "Moonriver",
     value: "MOVR",
   },
+  {
+    logo: Canto,
+    label: "Canto",
+    value: "CANTO",
+  },
+  {
+    logo: Oasis,
+    label: "Oasis",
+    value: "ROSE",
+  },
   // {
   //   logo: Manta,
   //   label: "Manta",
@@ -353,6 +365,12 @@ export const detectedChain = (type) => {
       break;
     case "MOVR":
       chain = Moonriver;
+      break;
+    case "CANTO":
+      chain = Canto;
+      break;
+    case "ROSE":
+      chain = Oasis;
       break;
     // case "MANTA":
     //   chain = Manta;
@@ -569,6 +587,18 @@ export const linkExplorer = (chain, hash) => {
       links = {
         trx: `https://moonriver.moonscan.io/tx/${hash}`,
         address: `https://moonriver.moonscan.io/address/${hash}`,
+      };
+      break;
+    case "CANTO":
+      links = {
+        trx: `https://cantoscan.com/tx/${hash}`,
+        address: `https://cantoscan.com/address/${hash}`,
+      };
+      break;
+    case "ROSE":
+      links = {
+        trx: `https://explorer.emerald.oasis.dev/tx/${hash}/internal-transactions`,
+        address: `https://explorer.emerald.oasis.dev/address/${hash}/transactions`,
       };
       break;
     // case "MANTA":
