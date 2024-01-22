@@ -504,7 +504,10 @@
   );
 
   $: {
-    if ($queryAllTokenHolding.length !== 0) {
+    if (
+      $queryAllTokenHolding.some((item) => item.isFetching === true) &&
+      $queryAllTokenHolding.length !== 0
+    ) {
       const allTokens = flatten(
         $queryAllTokenHolding
           ?.filter((item) => Array.isArray(item.data))
@@ -544,8 +547,6 @@
     formatDataTokenHolding = formatData?.filter(
       (item) => Number(item.amount) > 0
     );
-
-    console.log("holdingTokenData: ", holdingTokenData);
 
     closedHoldingPosition = formatData
       ?.filter((item) => item?.profit?.realizedProfit)
