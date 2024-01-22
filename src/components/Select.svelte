@@ -118,7 +118,7 @@
             {#if type === "chain" && disabledChains.includes(item.value)}
               (Soon)
             {/if}
-            {#if type === "chain" && item.value === "ZETA"}
+            {#if type === "chain" && (item.value === "ZETA" || item.value === "MANTA")}
               (Testnet)
             {/if}
           </div>
