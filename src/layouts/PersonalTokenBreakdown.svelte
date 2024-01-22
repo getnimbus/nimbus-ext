@@ -43,8 +43,11 @@
 
   const queryClient = useQueryClient();
 
-  let holdingTokenData: TokenData = [];
+  let dataSubWS = [];
+  let filteredUndefinedCmcHoldingTokenData = [];
+  let filteredNullCmcHoldingTokenData = [];
   let marketPriceToken;
+  let holdingTokenData: TokenData = [];
   let formatData = [];
   let sumTokens = 0;
   let tableTokenHeader;
@@ -411,100 +414,7 @@
     }
   }
 
-  $: {
-    if (!$queryTokenHolding.isFetching) {
-      if (holdingTokenData?.length !== 0) {
-        const dataTokenHolding = holdingTokenData?.filter(
-          (item) =>
-            item?.price?.source === undefined ||
-            item?.price?.source !== "Modifed"
-        );
-
-        const filteredHoldingTokenData = dataTokenHolding?.filter(
-          (item) => item?.cmc_id
-        );
-
-        const filteredNullCmcHoldingTokenData = dataTokenHolding?.filter(
-          (item) => item?.cmc_id === null
-        );
-
-        const groupFilteredNullCmcHoldingTokenData = groupBy(
-          filteredNullCmcHoldingTokenData,
-          "chain"
-        );
-
-        const filteredUndefinedCmcHoldingTokenData = dataTokenHolding?.filter(
-          (item) => item?.cmc_id === undefined
-        );
-
-        if (
-          $typeWallet === "CEX" &&
-          filteredUndefinedCmcHoldingTokenData.length > 0
-        ) {
-          const chunkedArray = chunkArray(
-            filteredUndefinedCmcHoldingTokenData,
-            100
-          );
-          chunkedArray.forEach((chunk) => {
-            chunk
-              .filter((item) => item?.symbol)
-              .map((item) => {
-                priceMobulaSubscribe([item?.symbol], "CEX", (data) => {
-                  marketPriceToken = {
-                    id: data.id,
-                    market_price: data.price,
-                  };
-                });
-              });
-          });
-        }
-
-        const chainList = Object.keys(groupFilteredNullCmcHoldingTokenData);
-        chainList.map((chain) => {
-          const chunkedArray = chunkArray(
-            groupFilteredNullCmcHoldingTokenData[chain],
-            100
-          );
-          chunkedArray.forEach((chunk) => {
-            chunk
-              .filter((item) => item?.contractAddress)
-              .map((item) => {
-                priceMobulaSubscribe(
-                  [item?.contractAddress],
-                  item?.chain,
-                  (data) => {
-                    marketPriceToken = {
-                      id: data.id,
-                      market_price: data.price,
-                    };
-                  }
-                );
-              });
-          });
-        });
-
-        let filteredData = [];
-        const symbolSet = new Set();
-
-        filteredHoldingTokenData.forEach((item) => {
-          if (!symbolSet.has(item.symbol)) {
-            symbolSet.add(item.symbol);
-            filteredData.push(item);
-          }
-        });
-
-        filteredData?.map((item) => {
-          priceSubscribe([Number(item?.cmc_id)], item?.chain, (data) => {
-            marketPriceToken = {
-              id: data.id,
-              market_price: data.price,
-            };
-          });
-        });
-      }
-    }
-  }
-
+  // format initial data
   $: {
     if (holdingTokenData) {
       formatData = holdingTokenData.map((item) => {
@@ -520,6 +430,125 @@
     }
   }
 
+  // subscribe to ws
+  $: {
+    if (!$queryTokenHolding.isFetching) {
+      if (holdingTokenData?.length !== 0) {
+        const dataTokenHolding = holdingTokenData?.filter(
+          (item) =>
+            item?.price?.source === undefined ||
+            item?.price?.source !== "Modifed"
+        );
+
+        const filteredHoldingTokenData = dataTokenHolding?.filter(
+          (item) => item?.cmc_id
+        );
+
+        dataSubWS = filteredHoldingTokenData.map((item) => {
+          return {
+            symbol: item.symbol,
+            cmcId: item.cmc_id,
+          };
+        });
+
+        filteredNullCmcHoldingTokenData = dataTokenHolding?.filter(
+          (item) => item?.cmc_id === null
+        );
+
+        filteredUndefinedCmcHoldingTokenData = dataTokenHolding?.filter(
+          (item) => item?.cmc_id === undefined
+        );
+      }
+    }
+  }
+
+  $: {
+    if (
+      !$queryTokenHolding.isFetching &&
+      filteredUndefinedCmcHoldingTokenData &&
+      filteredUndefinedCmcHoldingTokenData.length !== 0 &&
+      $typeWallet === "CEX"
+    ) {
+      const chunkedArray = chunkArray(
+        filteredUndefinedCmcHoldingTokenData,
+        100
+      );
+      chunkedArray.forEach((chunk) => {
+        const listTokenSubWs = chunk.filter((item) => item?.symbol);
+        if (listTokenSubWs && listTokenSubWs.length !== 0) {
+          priceMobulaSubscribe(
+            listTokenSubWs.map((item) => item?.symbol),
+            "CEX",
+            (data) => {
+              marketPriceToken = {
+                id: data.id,
+                market_price: data.price,
+              };
+            }
+          );
+        }
+      });
+    }
+  }
+
+  $: {
+    if (
+      !$queryTokenHolding.isFetching &&
+      filteredNullCmcHoldingTokenData &&
+      filteredNullCmcHoldingTokenData.length !== 0
+    ) {
+      const groupFilteredNullCmcHoldingTokenData = groupBy(
+        filteredNullCmcHoldingTokenData,
+        "chain"
+      );
+
+      const chainList = Object.keys(groupFilteredNullCmcHoldingTokenData);
+      chainList.map((chain) => {
+        const chunkedArray = chunkArray(
+          groupFilteredNullCmcHoldingTokenData[chain],
+          100
+        );
+        chunkedArray.forEach((chunk) => {
+          const listTokenSubWs = chunk.filter((item) => item?.contractAddress);
+          if (listTokenSubWs && listTokenSubWs.length !== 0) {
+            priceMobulaSubscribe(
+              listTokenSubWs.map((item) => item.contractAddress),
+              listTokenSubWs[0]?.chain,
+              (data) => {
+                marketPriceToken = {
+                  id: data.id,
+                  market_price: data.price,
+                };
+              }
+            );
+          }
+        });
+      });
+    }
+  }
+
+  $: {
+    if (!$queryTokenHolding.isFetching && dataSubWS && dataSubWS.length !== 0) {
+      let filteredData = [];
+      const symbolSet = new Set();
+      dataSubWS.forEach((item) => {
+        if (!symbolSet.has(item.symbol)) {
+          symbolSet.add(item.symbol);
+          filteredData.push(item);
+        }
+      });
+      filteredData?.map((item) => {
+        priceSubscribe([Number(item?.cmcId)], item?.chain, (data) => {
+          marketPriceToken = {
+            id: data.id,
+            market_price: data.price,
+          };
+        });
+      });
+    }
+  }
+
+  // check market price and update price real-time
   $: {
     if (marketPriceToken) {
       const formatDataWithMarketPrice = formatData.map((item) => {
