@@ -24,8 +24,6 @@
     createQueries,
     useQueryClient,
   } from "@tanstack/svelte-query";
-  import { priceMobulaSubscribe } from "~/lib/price-mobulaWs";
-  import { priceSubscribe } from "~/lib/price-ws";
 
   import type { NewData, NewDataRes } from "~/types/NewData";
   import type { OverviewData, OverviewDataRes } from "~/types/OverviewData";
@@ -98,8 +96,6 @@
 
   let newsData: any = [];
 
-  let marketPriceToken: any = {};
-  let dataSubWS: any = [];
   let holdingTokenData: any = [];
   let closedHoldingPosition: any = [];
   let holdingNFTData: any = [];
@@ -550,148 +546,6 @@
     formatTokenBreakdown(holdingTokenData);
   };
 
-  // subscribe to ws
-  $: {
-    if (
-      !($chain === "ALL"
-        ? $queryAllTokenHolding?.some((item) => item.isFetching === true)
-        : $queryTokenHolding.isFetching)
-    ) {
-      if (holdingTokenData?.length !== 0) {
-        const dataTokenHolding = holdingTokenData?.filter(
-          (item) =>
-            item?.price?.source === undefined ||
-            item?.price?.source !== "Modifed"
-        );
-
-        const filteredHoldingTokenData = dataTokenHolding?.filter(
-          (item) => item?.cmc_id
-        );
-
-        const filteredNullCmcHoldingTokenData = dataTokenHolding?.filter(
-          (item) => item?.cmc_id === null
-        );
-
-        const groupFilteredNullCmcHoldingTokenData = groupBy(
-          filteredNullCmcHoldingTokenData,
-          "chain"
-        );
-
-        const filteredUndefinedCmcHoldingTokenData = dataTokenHolding?.filter(
-          (item) => item?.cmc_id === undefined
-        );
-
-        if (
-          $typeWallet === "CEX" &&
-          filteredUndefinedCmcHoldingTokenData.length > 0
-        ) {
-          const chunkedArray = chunkArray(
-            filteredUndefinedCmcHoldingTokenData,
-            100
-          );
-          chunkedArray.forEach((chunk) => {
-            chunk
-              .filter((item) => item?.symbol)
-              .map((item) => {
-                priceMobulaSubscribe([item?.symbol], "CEX", (data) => {
-                  marketPriceToken = {
-                    id: data.id,
-                    market_price: data.price,
-                  };
-                });
-              });
-          });
-        }
-
-        const chainList = Object.keys(groupFilteredNullCmcHoldingTokenData);
-        chainList.map((chain) => {
-          const chunkedArray = chunkArray(
-            groupFilteredNullCmcHoldingTokenData[chain],
-            100
-          );
-          chunkedArray.forEach((chunk) => {
-            chunk
-              .filter((item) => item?.contractAddress)
-              .map((item) => {
-                priceMobulaSubscribe(
-                  [item?.contractAddress],
-                  item?.chain,
-                  (data) => {
-                    marketPriceToken = {
-                      id: data.id,
-                      market_price: data.price,
-                    };
-                  }
-                );
-              });
-          });
-        });
-
-        dataSubWS = filteredHoldingTokenData?.map((item) => {
-          return {
-            symbol: item?.symbol,
-            cmcId: item?.cmc_id,
-          };
-        });
-      }
-    }
-  }
-
-  $: {
-    if (
-      !($chain === "ALL"
-        ? $queryAllTokenHolding?.some((item) => item.isFetching === true)
-        : $queryTokenHolding.isFetching) &&
-      dataSubWS &&
-      dataSubWS.length !== 0
-    ) {
-      let filteredData = [];
-      const symbolSet = new Set();
-
-      dataSubWS.forEach((item) => {
-        if (!symbolSet.has(item.symbol)) {
-          symbolSet.add(item.symbol);
-          filteredData.push(item);
-        }
-      });
-
-      filteredData?.map((item) => {
-        priceSubscribe([Number(item?.cmcId)], item?.chain, (data) => {
-          marketPriceToken = {
-            id: data.id,
-            market_price: data.price,
-          };
-        });
-      });
-    }
-  }
-
-  // check market price and update price real-time
-  $: {
-    if (marketPriceToken) {
-      // update data token holding
-      formatDataTokenHolding = holdingTokenData.map((item) => {
-        if (
-          marketPriceToken?.id?.toString().toLowerCase() ===
-            item?.cmc_id?.toString().toLowerCase() ||
-          marketPriceToken?.id?.toString().toLowerCase() ===
-            item?.contractAddress?.toString().toLowerCase() ||
-          marketPriceToken?.id?.toString().toLowerCase() ===
-            item?.symbol?.toString().toLowerCase() ||
-          marketPriceToken?.id?.toString().toLowerCase() ===
-            item?.price?.symbol?.toString().toLowerCase()
-        ) {
-          return {
-            ...item,
-            market_price: Number(marketPriceToken.market_price),
-            value: Number(item?.amount) * Number(marketPriceToken.market_price),
-          };
-        }
-        return { ...item };
-      });
-    }
-  }
-
   const formatNFTBreakdown = (data) => {
     if (data?.length === 0) {
       isEmptyDataPieNfts = true;
@@ -934,8 +788,6 @@
         holdingNFTData = [];
         holdingTokenData = [];
         formatDataTokenHolding = [];
-        marketPriceToken = {};
-        dataSubWS = [];
         isErrorAllData = false;
         isLoadingSync = false;
         enabledFetchAllData = false;
@@ -1026,6 +878,9 @@
         dataTokenHolding={formatDataTokenHolding}
         {totalPositions}
         {totalAssets}
+        isLoading={$chain === "ALL"
+          ? $queryAllTokenHolding.some((item) => item.isFetching === true)
+          : $queryTokenHolding.isFetching}
       />
     {/if}
   </span>
