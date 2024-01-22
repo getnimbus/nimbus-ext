@@ -34,8 +34,8 @@ import Ronin from "~/assets/chains/ronin.png";
 import Zeta from "~/assets/chains/zeta.png";
 import zkEVM from "~/assets/chains/zkEVM.png";
 import opBNB from "~/assets/chains/opbnb.png";
-import Manta from "~/assets/chains/manta.png";
-import zkSyncEra from "~/assets/chains/zksyncEra.avif";
+// import Manta from "~/assets/chains/manta.png";
+// import zkSyncEra from "~/assets/chains/zksyncEra.avif";
 import Moonriver from "~/assets/chains/moonriver.png";
 
 export const listProviderCEX = [
@@ -235,16 +235,16 @@ export const chainList = [
     label: "Ronin",
     value: "RON",
   },
-  {
-    logo: Manta,
-    label: "Manta",
-    value: "MANTA",
-  },
-  {
-    logo: zkSyncEra,
-    label: "ZkSync Era",
-    value: "ZKSYNC_ERA",
-  },
+  // {
+  //   logo: Manta,
+  //   label: "Manta",
+  //   value: "MANTA",
+  // },
+  // {
+  //   logo: zkSyncEra,
+  //   label: "ZkSync Era",
+  //   value: "ZKSYNC_ERA",
+  // },
   {
     logo: Moonriver,
     label: "Moonriver",
@@ -357,12 +357,12 @@ export const detectedChain = (type) => {
     case "OPBNB":
       chain = opBNB;
       break;
-    case "MANTA":
-      chain = Manta;
-      break;
-    case "ZKSYNC_ERA":
-      chain = zkSyncEra;
-      break;
+    // case "MANTA":
+    //   chain = Manta;
+    //   break;
+    // case "ZKSYNC_ERA":
+    //   chain = zkSyncEra;
+    //   break;
     case "MOVR":
       chain = Moonriver;
       break;
