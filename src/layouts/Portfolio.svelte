@@ -7,7 +7,7 @@
   import { groupBy, flatten } from "lodash";
   import { onMount } from "svelte";
   import { i18n } from "~/lib/i18n";
-  import { drivePortfolio, chunkArray } from "~/utils";
+  import { drivePortfolio } from "~/utils";
   import { chainList, chainMoveList } from "~/lib/chains";
   import { wait } from "../entries/background/utils";
   import {
@@ -99,7 +99,6 @@
   let holdingTokenData: any = [];
   let closedHoldingPosition: any = [];
   let holdingNFTData: any = [];
-  let formatDataTokenHolding = [];
 
   let positionsData: any = [];
   let overviewDataPerformance = {
@@ -110,6 +109,8 @@
   let dataUpdatedTime;
   let totalPositions = 0;
   let totalAssets = 0;
+  let realizedProfit = 0;
+  let unrealizedProfit = 0;
   let isEmptyDataPieTokens = false;
   let isEmptyDataPieNfts = false;
   let syncMsg = "";
@@ -535,9 +536,6 @@
       });
 
     holdingTokenData = formatData?.filter((item) => Number(item.amount) > 0);
-    formatDataTokenHolding = formatData?.filter(
-      (item) => Number(item.amount) > 0
-    );
 
     closedHoldingPosition = formatData
       ?.filter((item) => item?.profit?.realizedProfit)
@@ -787,7 +785,6 @@
         newsData = [];
         holdingNFTData = [];
         holdingTokenData = [];
-        formatDataTokenHolding = [];
         isErrorAllData = false;
         isLoadingSync = false;
         enabledFetchAllData = false;
@@ -875,12 +872,10 @@
     {#if !isLoadingSync}
       <Overview
         data={overviewData}
-        dataTokenHolding={formatDataTokenHolding}
         {totalPositions}
         {totalAssets}
-        isLoading={$chain === "ALL"
-          ? $queryAllTokenHolding.some((item) => item.isFetching === true)
-          : $queryTokenHolding.isFetching}
+        {unrealizedProfit}
+        {realizedProfit}
       />
     {/if}
   </span>
@@ -953,6 +948,8 @@
                 {selectedTokenHolding}
                 {selectedDataPieChart}
                 bind:totalAssets
+                bind:unrealizedProfit
+                bind:realizedProfit
               />
 
               {#if $typeWallet !== "BTC"}

@@ -2,10 +2,6 @@
   import { getChangeFromPercent, getChangePercent } from "~/chart-utils";
   import { i18n } from "~/lib/i18n";
   import { typeWallet, isHidePortfolio } from "~/store";
-  import { groupBy } from "lodash";
-  import { chunkArray } from "~/utils";
-  import { priceMobulaSubscribe } from "~/lib/price-mobulaWs";
-  import { priceSubscribe } from "~/lib/price-ws";
 
   import CountUpNumber from "~/components/CountUpNumber.svelte";
   import OverviewCard from "~/components/OverviewCard.svelte";
@@ -13,10 +9,10 @@
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
 
   export let data;
-  export let dataTokenHolding;
   export let totalPositions;
   export let totalAssets;
-  export let isLoading;
+  export let unrealizedProfit;
+  export let realizedProfit;
 
   const MultipleLang = {
     networth: i18n("newtabPage.networth", "Net Worth"),
@@ -27,173 +23,6 @@
     realizedProfit: i18n("newtabPage.realizedProfit", "Realized PnL"),
     unrealizedProfit: i18n("newtabPage.unrealizedProfit", "Unrealized PnL"),
   };
-
-  let marketPriceToken: any = {};
-  let dataSubWS: any = [];
-  let formatDataTokenHolding = [];
-
-  // format initial data
-  $: {
-    if (!isLoading && dataTokenHolding?.length !== 0) {
-      formatDataTokenHolding = dataTokenHolding;
-    }
-  }
-
-  // subscribe to ws
-  $: {
-    if (!isLoading && dataTokenHolding?.length !== 0) {
-      const formatData = dataTokenHolding?.filter(
-        (item) =>
-          item?.price?.source === undefined || item?.price?.source !== "Modifed"
-      );
-
-      const filteredHoldingTokenData = formatData?.filter(
-        (item) => item?.cmc_id
-      );
-
-      const filteredNullCmcHoldingTokenData = formatData?.filter(
-        (item) => item?.cmc_id === null
-      );
-
-      const groupFilteredNullCmcHoldingTokenData = groupBy(
-        filteredNullCmcHoldingTokenData,
-        "chain"
-      );
-
-      const filteredUndefinedCmcHoldingTokenData = formatData?.filter(
-        (item) => item?.cmc_id === undefined
-      );
-
-      if (
-        $typeWallet === "CEX" &&
-        filteredUndefinedCmcHoldingTokenData.length > 0
-      ) {
-        const chunkedArray = chunkArray(
-          filteredUndefinedCmcHoldingTokenData,
-          100
-        );
-        chunkedArray.forEach((chunk) => {
-          chunk
-            .filter((item) => item?.symbol)
-            .map((item) => {
-              priceMobulaSubscribe([item?.symbol], "CEX", (data) => {
-                marketPriceToken = {
-                  id: data.id,
-                  market_price: data.price,
-                };
-              });
-            });
-        });
-      }
-
-      const chainList = Object.keys(groupFilteredNullCmcHoldingTokenData);
-      chainList.map((chain) => {
-        const chunkedArray = chunkArray(
-          groupFilteredNullCmcHoldingTokenData[chain],
-          100
-        );
-        chunkedArray.forEach((chunk) => {
-          chunk
-            .filter((item) => item?.contractAddress)
-            .map((item) => {
-              priceMobulaSubscribe(
-                [item?.contractAddress],
-                item?.chain,
-                (data) => {
-                  marketPriceToken = {
-                    id: data.id,
-                    market_price: data.price,
-                  };
-                }
-              );
-            });
-        });
-      });
-
-      dataSubWS = filteredHoldingTokenData?.map((item) => {
-        return {
-          symbol: item?.symbol,
-          cmcId: item?.cmc_id,
-        };
-      });
-    }
-  }
-
-  $: {
-    if (!isLoading && dataSubWS && dataSubWS.length !== 0) {
-      let filteredData = [];
-      const symbolSet = new Set();
-
-      dataSubWS.forEach((item) => {
-        if (!symbolSet.has(item.symbol)) {
-          symbolSet.add(item.symbol);
-          filteredData.push(item);
-        }
-      });
-
-      filteredData?.map((item) => {
-        priceSubscribe([Number(item?.cmcId)], item?.chain, (data) => {
-          marketPriceToken = {
-            id: data.id,
-            market_price: data.price,
-          };
-        });
-      });
-    }
-  }
-
-  // check market price and update price real-time
-  $: {
-    if (marketPriceToken) {
-      // update data token holding
-      formatDataTokenHolding = dataTokenHolding.map((item) => {
-        if (
-          marketPriceToken?.id?.toString().toLowerCase() ===
-            item?.cmc_id?.toString().toLowerCase() ||
-          marketPriceToken?.id?.toString().toLowerCase() ===
-            item?.contractAddress?.toString().toLowerCase() ||
-          marketPriceToken?.id?.toString().toLowerCase() ===
-            item?.symbol?.toString().toLowerCase() ||
-          marketPriceToken?.id?.toString().toLowerCase() ===
-            item?.price?.symbol?.toString().toLowerCase()
-        ) {
-          return {
-            ...item,
-            market_price: Number(marketPriceToken.market_price),
-            value: Number(item?.amount) * Number(marketPriceToken.market_price),
-          };
-        }
-        return { ...item };
-      });
-    }
-  }
-
-  $: realizedProfit = (formatDataTokenHolding || [])
-    .map((item) => {
-      return {
-        realized_profit: item?.profit?.realizedProfit || 0,
-      };
-    })
-    .reduce((prev, item) => prev + Number(item.realized_profit), 0);
-
-  $: unrealizedProfit = (formatDataTokenHolding || [])
-    ?.filter((item) => Number(item?.amount) > 0 && Number(item?.avgCost) !== 0)
-    ?.map((item) => {
-      const price = Number(item?.market_price || item?.price?.price || 0);
-      const pnl =
-        Number(item?.balance || 0) * price +
-        Number(item?.profit?.totalGain || 0) -
-        Number(item?.profit?.cost || 0);
-      const realizedProfit = item?.profit?.realizedProfit
-        ? Number(item?.profit?.realizedProfit)
-        : 0;
-
-      return {
-        unrealized_profit:
-          Number(item?.avgCost) === 0 ? 0 : Number(pnl) - realizedProfit,
-      };
-    })
-    .reduce((prev, item) => prev + Number(item.unrealized_profit), 0);
 
   $: networth = totalAssets + totalPositions;
 
