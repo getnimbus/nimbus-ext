@@ -504,10 +504,7 @@
   );
 
   $: {
-    if (
-      $queryAllTokenHolding.some((item) => item.isFetching === true) &&
-      $queryAllTokenHolding.length !== 0
-    ) {
+    if ($queryAllTokenHolding.length !== 0) {
       const allTokens = flatten(
         $queryAllTokenHolding
           ?.filter((item) => Array.isArray(item.data))
