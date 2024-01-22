@@ -2,11 +2,8 @@
   import { onMount } from "svelte";
   import { i18n } from "~/lib/i18n";
   import { chain, typeWallet, isDarkMode } from "~/store";
-  import { filterTokenValueType, chunkArray } from "~/utils";
+  import { filterTokenValueType } from "~/utils";
   import { chainSupportedList } from "~/lib/chains";
-  import { groupBy } from "lodash";
-  import { priceMobulaSubscribe } from "~/lib/price-mobulaWs";
-  import { priceSubscribe } from "~/lib/price-ws";
 
   export let selectedWallet;
   export let isLoadingNFT;
@@ -24,8 +21,6 @@
 
   let filteredHoldingDataToken = [];
 
-  let dataSubWS = [];
-  let marketPriceToken;
   let formatData = [];
   let formatDataNFT = [];
   let sumAllTokens = 0;
@@ -131,147 +126,6 @@
     }
   }
 
-  // subscribe to ws
-  $: {
-    if (!isLoadingToken) {
-      if (holdingTokenData?.length !== 0) {
-        const dataTokenHolding = holdingTokenData?.filter(
-          (item) =>
-            item?.price?.source === undefined ||
-            item?.price?.source !== "Modifed"
-        );
-        const filteredHoldingTokenData = dataTokenHolding?.filter(
-          (item) => item?.cmc_id
-        );
-        const filteredNullCmcHoldingTokenData = dataTokenHolding?.filter(
-          (item) => item?.cmc_id === null
-        );
-        const groupFilteredNullCmcHoldingTokenData = groupBy(
-          filteredNullCmcHoldingTokenData,
-          "chain"
-        );
-        const filteredUndefinedCmcHoldingTokenData = dataTokenHolding?.filter(
-          (item) => item?.cmc_id === undefined
-        );
-
-        if (
-          $typeWallet === "CEX" &&
-          filteredUndefinedCmcHoldingTokenData.length > 0
-        ) {
-          const chunkedArray = chunkArray(
-            filteredUndefinedCmcHoldingTokenData,
-            100
-          );
-          chunkedArray.forEach((chunk) => {
-            chunk
-              .filter((item) => item?.symbol)
-              .map((item) => {
-                priceMobulaSubscribe([item?.symbol], "CEX", (data) => {
-                  marketPriceToken = {
-                    id: data.id,
-                    market_price: data.price,
-                  };
-                });
-              });
-          });
-        }
-
-        const chainList = Object.keys(groupFilteredNullCmcHoldingTokenData);
-        chainList.map((chain) => {
-          const chunkedArray = chunkArray(
-            groupFilteredNullCmcHoldingTokenData[chain],
-            100
-          );
-          chunkedArray.forEach((chunk) => {
-            chunk
-              .filter((item) => item?.contractAddress)
-              .map((item) => {
-                priceMobulaSubscribe(
-                  [item?.contractAddress],
-                  item?.chain,
-                  (data) => {
-                    marketPriceToken = {
-                      id: data.id,
-                      market_price: data.price,
-                    };
-                  }
-                );
-              });
-          });
-        });
-
-        dataSubWS = filteredHoldingTokenData.map((item) => {
-          return {
-            symbol: item.symbol,
-            cmcId: item.cmc_id,
-          };
-        });
-      }
-    }
-  }
-
-  $: {
-    if (!isLoadingToken && dataSubWS && dataSubWS.length !== 0) {
-      let filteredData = [];
-      const symbolSet = new Set();
-      dataSubWS.forEach((item) => {
-        if (!symbolSet.has(item.symbol)) {
-          symbolSet.add(item.symbol);
-          filteredData.push(item);
-        }
-      });
-      filteredData?.map((item) => {
-        priceSubscribe([Number(item?.cmcId)], item?.chain, (data) => {
-          marketPriceToken = {
-            id: data.id,
-            market_price: data.price,
-          };
-        });
-      });
-    }
-  }
-
-  // check market price and update price real-time
-  $: {
-    if (marketPriceToken) {
-      const formatDataWithMarketPrice = formatData.map((item) => {
-        if (
-          marketPriceToken?.id.toString().toLowerCase() ===
-            item?.cmc_id?.toString().toLowerCase() ||
-          marketPriceToken?.id.toString().toLowerCase() ===
-            item?.contractAddress.toString().toLowerCase() ||
-          marketPriceToken?.id.toString().toLowerCase() ===
-            item?.symbol?.toString().toLowerCase() ||
-          marketPriceToken?.id.toString().toLowerCase() ===
-            item?.price?.symbol?.toString().toLowerCase()
-        ) {
-          return {
-            ...item,
-            market_price: Number(marketPriceToken.market_price),
-            value: Number(item?.amount) * Number(marketPriceToken.market_price),
-          };
-        }
-        return { ...item };
-      });
-      formatData = formatDataWithMarketPrice.sort((a, b) => {
-        if (a.value < b.value) {
-          return 1;
-        }
-        if (a.value > b.value) {
-          return -1;
-        }
-        return 0;
-      });
-      filteredHoldingDataToken = formatData.filter(
-        (item) => Math.abs(Number(item?.profit.realizedProfit)) > 1
-      );
-      sumAllTokens = formatData.reduce(
-        (prev, item) => prev + Number(item?.profit.realizedProfit),
-        0
-      );
-    }
-  }
-
   $: {
     if (filterTokenType) {
       if (filterTokenType.value === 0) {
@@ -312,7 +166,6 @@
         formatData = [];
         formatDataNFT = [];
         filteredHoldingDataToken = [];
-        marketPriceToken = undefined;
       }
     }
   }
