@@ -34,6 +34,8 @@ import Ronin from "~/assets/chains/ronin.png";
 import Zeta from "~/assets/chains/zeta.png";
 import zkEVM from "~/assets/chains/zkEVM.png";
 import opBNB from "~/assets/chains/opbnb.png";
+import Moonriver from "~/assets/chains/moonriver.png";
+// import Manta from "~/assets/chains/manta.png";
 
 export const listProviderCEX = [
   "binance",
@@ -81,7 +83,7 @@ export const listLogoCEX = [
 ];
 
 export const chainSupportedList = ["BUNDLE", "EVM", "CEX", "MOVE", "SOL", "NEAR", "TON", "ALGO", "AURA"];
-export const evmChainNotSupportHistoricalBalances = ["VIC", "MANTLE", "CRONOS", "LINEA", "ZKSYNC", "XDAI", "ARB", "AVAX", "OP", "BASE", "SCROLL", "KLAY", "XZO", "ZETA", "RON", "FANTOM", "AURORA", "EVMOS", "ONE", "GLMR", "METIS", "POLYGON_ZKEVM", "OPBNB"];
+export const evmChainNotSupportHistoricalBalances = ["MOVR", "MANTA", "VIC", "MANTLE", "CRONOS", "LINEA", "ZKSYNC", "XDAI", "ARB", "AVAX", "OP", "BASE", "SCROLL", "KLAY", "XZO", "ZETA", "RON", "FANTOM", "AURORA", "EVMOS", "ONE", "GLMR", "METIS", "POLYGON_ZKEVM", "OPBNB"];
 
 export const chainMoveList = [
   {
@@ -232,15 +234,25 @@ export const chainList = [
     label: "Ronin",
     value: "RON",
   },
+  {
+    logo: Moonriver,
+    label: "Moonriver",
+    value: "MOVR",
+  },
+  // {
+  //   logo: Manta,
+  //   label: "Manta",
+  //   value: "MANTA",
+  // },
 ];
 
 export const detectedChain = (type) => {
   let chain;
   switch (type) {
-    case "BTC":
-      chain = Bitcoin;
-      break;
     case "ALL":
+      chain = All;
+      break;
+    case "BTC":
       chain = Bitcoin;
       break;
     case "AURA":
@@ -339,6 +351,12 @@ export const detectedChain = (type) => {
     case "OPBNB":
       chain = opBNB;
       break;
+    case "MOVR":
+      chain = Moonriver;
+      break;
+    // case "MANTA":
+    //   chain = Manta;
+    //   break;
   }
   return chain;
 };
@@ -547,6 +565,18 @@ export const linkExplorer = (chain, hash) => {
         address: `https://app.roninchain.com/address/${hash}`,
       };
       break;
+    case "MOVR":
+      links = {
+        trx: `https://moonriver.moonscan.io/tx/${hash}`,
+        address: `https://moonriver.moonscan.io/address/${hash}`,
+      };
+      break;
+    // case "MANTA":
+    //   links = {
+    //     trx: `https://pacific-explorer.manta.network/tx/${hash}`,
+    //     address: `https://pacific-explorer.manta.network/address/${hash}`,
+    //   };
+    //   break;
     default:
       links = {
         trx: "",

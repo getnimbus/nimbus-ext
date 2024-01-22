@@ -104,7 +104,6 @@
   let closedHoldingPosition: any = [];
   let holdingNFTData: any = [];
   let formatDataTokenHolding = [];
-  let formatDataNftHolding = [];
 
   let positionsData: any = [];
   let overviewDataPerformance = {
@@ -429,7 +428,6 @@
 
   const formatDataHoldingNFT = (data) => {
     holdingNFTData = data;
-    formatDataNftHolding = data;
     formatNFTBreakdown(holdingNFTData);
   };
 
@@ -637,31 +635,10 @@
         });
       }
     }
-    if (
-      !($chain === "ALL"
-        ? $queryAllNftHolding?.some((item) => item.isFetching === true)
-        : $queryNftHolding.isFetching)
-    ) {
-      if (holdingNFTData?.length !== 0) {
-        const formatHoldingNFTData = holdingNFTData
-          ?.filter((item) => item?.nativeToken?.cmcId)
-          ?.map((item) => {
-            return {
-              symbol: item?.nativeToken?.symbol,
-              cmcId: item?.nativeToken?.cmcId,
-            };
-          });
-
-        dataSubWS = dataSubWS.concat(formatHoldingNFTData);
-      }
-    }
   }
 
   $: {
     if (
-      !($chain === "ALL"
-        ? $queryAllNftHolding?.some((item) => item.isFetching === true)
-        : $queryNftHolding.isFetching) &&
       !($chain === "ALL"
         ? $queryAllTokenHolding?.some((item) => item.isFetching === true)
         : $queryTokenHolding.isFetching) &&
@@ -708,20 +685,6 @@
             ...item,
             market_price: Number(marketPriceToken.market_price),
             value: Number(item?.amount) * Number(marketPriceToken.market_price),
-          };
-        }
-        return { ...item };
-      });
-
-      // update data nft holding
-      formatDataNftHolding = holdingNFTData.map((item) => {
-        if (
-          marketPriceToken?.id?.toString().toLowerCase() ===
-          item?.nativeToken?.cmcId?.toString().toLowerCase()
-        ) {
-          return {
-            ...item,
-            marketPrice: Number(marketPriceToken.market_price),
           };
         }
         return { ...item };
@@ -971,7 +934,6 @@
         holdingNFTData = [];
         holdingTokenData = [];
         formatDataTokenHolding = [];
-        formatDataNftHolding = [];
         marketPriceToken = {};
         dataSubWS = [];
         isErrorAllData = false;
