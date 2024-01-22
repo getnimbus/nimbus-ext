@@ -17,6 +17,8 @@
   export let selectedTokenHolding;
   export let selectedDataPieChart;
   export let totalAssets;
+  export let unrealizedProfit;
+  export let realizedProfit;
 
   import HoldingToken from "~/UI/Portfolio/HoldingToken.svelte";
   import HoldingNFT from "~/UI/Portfolio/HoldingNFT.svelte";
@@ -386,15 +388,47 @@
       totalAssets = 0;
       sumTokens = 0;
       sumNFT = 0;
+      unrealizedProfit = 0;
+      realizedProfit = 0;
     } else {
       sumTokens = (formatData || []).reduce(
         (prev, item) => prev + item?.amount * item.market_price,
         0
       );
+
       sumNFT = (formatDataNFT || []).reduce(
         (prev, item) => prev + item?.current_value,
         0
       );
+
+      realizedProfit = (formatData || [])
+        .map((item) => {
+          return {
+            realized_profit: item?.profit?.realizedProfit || 0,
+          };
+        })
+        .reduce((prev, item) => prev + Number(item.realized_profit), 0);
+
+      unrealizedProfit = (formatData || [])
+        ?.filter(
+          (item) => Number(item?.amount) > 0 && Number(item?.avgCost) !== 0
+        )
+        ?.map((item) => {
+          const price = Number(item?.market_price || item?.price?.price || 0);
+          const pnl =
+            Number(item?.balance || 0) * price +
+            Number(item?.profit?.totalGain || 0) -
+            Number(item?.profit?.cost || 0);
+          const realizedProfit = item?.profit?.realizedProfit
+            ? Number(item?.profit?.realizedProfit)
+            : 0;
+
+          return {
+            unrealized_profit:
+              Number(item?.avgCost) === 0 ? 0 : Number(pnl) - realizedProfit,
+          };
+        })
+        .reduce((prev, item) => prev + Number(item.unrealized_profit), 0);
     }
   }
 
