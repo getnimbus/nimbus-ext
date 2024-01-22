@@ -28,10 +28,12 @@
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import Loading from "~/components/Loading.svelte";
 
+  let dataSubWS = [];
+  let filteredUndefinedCmcHoldingTokenData = [];
+  let filteredNullCmcHoldingTokenData = [];
+  let marketPriceToken;
   let filteredHoldingDataToken = [];
   let filteredHoldingDataNFT = [];
-  let dataSubWS = [];
-  let marketPriceToken;
   let formatData = [];
   let formatDataNFT = [];
   let sumTokens = 0;
@@ -155,62 +157,6 @@
         const filteredHoldingTokenData = dataTokenHolding?.filter(
           (item) => item?.cmc_id
         );
-        const filteredNullCmcHoldingTokenData = dataTokenHolding?.filter(
-          (item) => item?.cmc_id === null
-        );
-        const groupFilteredNullCmcHoldingTokenData = groupBy(
-          filteredNullCmcHoldingTokenData,
-          "chain"
-        );
-        const filteredUndefinedCmcHoldingTokenData = dataTokenHolding?.filter(
-          (item) => item?.cmc_id === undefined
-        );
-
-        if (
-          $typeWallet === "CEX" &&
-          filteredUndefinedCmcHoldingTokenData.length > 0
-        ) {
-          const chunkedArray = chunkArray(
-            filteredUndefinedCmcHoldingTokenData,
-            100
-          );
-          chunkedArray.forEach((chunk) => {
-            chunk
-              .filter((item) => item?.symbol)
-              .map((item) => {
-                priceMobulaSubscribe([item?.symbol], "CEX", (data) => {
-                  marketPriceToken = {
-                    id: data.id,
-                    market_price: data.price,
-                  };
-                });
-              });
-          });
-        }
-
-        const chainList = Object.keys(groupFilteredNullCmcHoldingTokenData);
-        chainList.map((chain) => {
-          const chunkedArray = chunkArray(
-            groupFilteredNullCmcHoldingTokenData[chain],
-            100
-          );
-          chunkedArray.forEach((chunk) => {
-            chunk
-              .filter((item) => item?.contractAddress)
-              .map((item) => {
-                priceMobulaSubscribe(
-                  [item?.contractAddress],
-                  item?.chain,
-                  (data) => {
-                    marketPriceToken = {
-                      id: data.id,
-                      market_price: data.price,
-                    };
-                  }
-                );
-              });
-          });
-        });
 
         dataSubWS = filteredHoldingTokenData.map((item) => {
           return {
@@ -218,6 +164,14 @@
             cmcId: item.cmc_id,
           };
         });
+
+        filteredNullCmcHoldingTokenData = dataTokenHolding?.filter(
+          (item) => item?.cmc_id === null
+        );
+
+        filteredUndefinedCmcHoldingTokenData = dataTokenHolding?.filter(
+          (item) => item?.cmc_id === undefined
+        );
 
         sumAllTokens = holdingTokenData?.reduce(
           (prev, item) => prev + item.value,
@@ -237,6 +191,73 @@
           });
         dataSubWS = dataSubWS.concat(formatHoldingNFTData);
       }
+    }
+  }
+
+  $: {
+    if (
+      !isLoadingNFT &&
+      !isLoadingToken &&
+      filteredUndefinedCmcHoldingTokenData &&
+      filteredUndefinedCmcHoldingTokenData.length !== 0 &&
+      $typeWallet === "CEX"
+    ) {
+      const chunkedArray = chunkArray(
+        filteredUndefinedCmcHoldingTokenData,
+        100
+      );
+      chunkedArray.forEach((chunk) => {
+        const listTokenSubWs = chunk.filter((item) => item?.symbol);
+        if (listTokenSubWs && listTokenSubWs.length !== 0) {
+          priceMobulaSubscribe(
+            listTokenSubWs.map((item) => item?.symbol),
+            "CEX",
+            (data) => {
+              marketPriceToken = {
+                id: data.id,
+                market_price: data.price,
+              };
+            }
+          );
+        }
+      });
+    }
+  }
+
+  $: {
+    if (
+      !isLoadingNFT &&
+      !isLoadingToken &&
+      filteredNullCmcHoldingTokenData &&
+      filteredNullCmcHoldingTokenData.length !== 0
+    ) {
+      const groupFilteredNullCmcHoldingTokenData = groupBy(
+        filteredNullCmcHoldingTokenData,
+        "chain"
+      );
+
+      const chainList = Object.keys(groupFilteredNullCmcHoldingTokenData);
+      chainList.map((chain) => {
+        const chunkedArray = chunkArray(
+          groupFilteredNullCmcHoldingTokenData[chain],
+          100
+        );
+        chunkedArray.forEach((chunk) => {
+          const listTokenSubWs = chunk.filter((item) => item?.contractAddress);
+          if (listTokenSubWs && listTokenSubWs.length !== 0) {
+            priceMobulaSubscribe(
+              listTokenSubWs.map((item) => item.contractAddress),
+              listTokenSubWs[0]?.chain,
+              (data) => {
+                marketPriceToken = {
+                  id: data.id,
+                  market_price: data.price,
+                };
+              }
+            );
+          }
+        });
+      });
     }
   }
 
