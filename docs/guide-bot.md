@@ -33,8 +33,8 @@ Welcome to the world of Nimbus, your friendly chat bot designed to make your dig
 ## Access Nimbus bot
 
 <div class="grid-cols-1 md:grid-cols-2">
-<img src="/img/guideBot/start_bot.png" alt="" style="height: 60vh; margin-left: auto; margin-right: auto; " />
-<img src="/img/guideBot/access_bot.png" alt="" style="height: 60vh; margin-left: auto; margin-right: auto;" />
+<img src="/img/guidebot/start_bot.png" alt="" style="height: 60vh; margin-left: auto; margin-right: auto; " />
+<img src="/img/guidebot/access_bot.png" alt="" style="height: 60vh; margin-left: auto; margin-right: auto;" />
 </div>
 
 ---
@@ -42,18 +42,18 @@ Welcome to the world of Nimbus, your friendly chat bot designed to make your dig
 ## Login to Nimbus bot
 
 <div class="grid-cols-1  md:grid-cols-2">
-<img src="/img/guideBot/get_sync_code_1.png" alt="" style="height: 60vh; margin-left: auto; margin-right: auto;" />
-<img src="/img/guideBot/sync_code_to_login.png" alt="" style="height: 60vh; margin-left: auto; margin-right: auto;" />
+<img src="/img/guidebot/get_sync_code_1.png" alt="" style="height: 60vh; margin-left: auto; margin-right: auto;" />
+<img src="/img/guidebot/sync_code_to_login.png" alt="" style="height: 60vh; margin-left: auto; margin-right: auto;" />
 </div>
-<img src="/img/guideBot/get_sync_code.png" alt="" style="height: 60vh; margin-left: auto; margin-right: auto;" />
+<img src="/img/guidebot/get_sync_code.png" alt="" style="height: 60vh; margin-left: auto; margin-right: auto;" />
 
 ---
 
 ## Setting alert
 
 <div class="grid-cols-1  md:grid-cols-2">
-    <img src="/img/guideBot/choose_alert.png" alt="" style="height: 60vh; margin-left: auto; margin-right: auto;" />
-    <img src="/img/guideBot/alert_setting.png" alt="" style="height: 60vh; margin-left: auto; margin-right: auto;" />
+    <img src="/img/guidebot/choose_alert.png" alt="" style="height: 60vh; margin-left: auto; margin-right: auto;" />
+    <img src="/img/guidebot/alert_setting.png" alt="" style="height: 60vh; margin-left: auto; margin-right: auto;" />
 </div>
 
 ---
@@ -61,8 +61,8 @@ Welcome to the world of Nimbus, your friendly chat bot designed to make your dig
 ## The bot can also show the summary data and the portfolio info
 
 <div class="grid-cols-1  md:grid-cols-2">
-    <img src="/img/guideBot/click_on_summary.png" alt="" style="height: 60vh; margin-left: auto; margin-right: auto;" />
-    <img src="/img/guideBot/get_data_summary.png" alt="" style="height: 60vh; margin-left: auto; margin-right: auto;" />
+    <img src="/img/guidebot/click_on_summary.png" alt="" style="height: 60vh; margin-left: auto; margin-right: auto;" />
+    <img src="/img/guidebot/get_data_summary.png" alt="" style="height: 60vh; margin-left: auto; margin-right: auto;" />
 </div>
 
 ---
@@ -70,7 +70,7 @@ Welcome to the world of Nimbus, your friendly chat bot designed to make your dig
 ## Tracking your portfolio value with Nimbus bot
 
 <div class="grid-cols-1 md:grid-cols-3">
-    <img src="/img/guideBot/clickon_portfolio_btn.png" alt="" style="height: 50vh; margin-left: auto; margin-right: auto;" />
-    <img src="/img/guideBot/bot_show_portfolio_to_choose.png" alt="" style="height: 25vh; margin-left: auto; margin-right: auto; margin-top: auto; margin-bottom:auto;" />
-    <img src="/img/guideBot/choose_portfolio.png" alt="" style="height: 50vh; margin-left: auto; margin-right: auto;" />
+    <img src="/img/guidebot/clickon_portfolio_btn.png" alt="" style="height: 50vh; margin-left: auto; margin-right: auto;" />
+    <img src="/img/guidebot/bot_show_portfolio_to_choose.png" alt="" style="height: 25vh; margin-left: auto; margin-right: auto; margin-top: auto; margin-bottom:auto;" />
+    <img src="/img/guidebot/choose_portfolio.png" alt="" style="height: 50vh; margin-left: auto; margin-right: auto;" />
 </div>
