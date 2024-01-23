@@ -1,6 +1,6 @@
 {
   "version": "3.5.0",
-  "created": "2023-11-11T02:11:35Z",
+  "created": "2024-01-23T03:56:36Z",
   "files": [
     {
       "path": ".nojekyll"
@@ -13,6 +13,24 @@
     },
     {
       "path": "faqs/index.html"
+    },
+    {
+      "path": "guide-bot/index.html"
+    },
+    {
+      "path": "guide/optimizeportfolio/index.html"
+    },
+    {
+      "path": "guide/tracknft/index.html"
+    },
+    {
+      "path": "guide/trackpnl/index.html"
+    },
+    {
+      "path": "guide/tracktoken/index.html"
+    },
+    {
+      "path": "guide/whaletracking/index.html"
     },
     {
       "path": "img/chains/arbitrum.png"
@@ -37,6 +55,135 @@
     },
     {
       "path": "img/chains/solana.png"
+    },
+    {
+      "path": "img/guidebot/access_bot.png"
+    },
+    {
+      "path": "img/guidebot/alert_setting.png"
+    },
+    {
+      "path": "img/guidebot/bot_show_portfolio_to_choose.png"
+    },
+    {
+      "path": "img/guidebot/choose_alert.png"
+    },
+    {
+      "path": "img/guidebot/choose_portfolio.png"
+    },
+    {
+      "path": "img/guidebot/click_on_summary.png"
+    },
+    {
+      "path": "img/guidebot/clickon_portfolio_btn.png"
+    },
+    {
+      "path": "img/guidebot/get_data_summary.png"
+    },
+    {
+      "path": "img/guidebot/get_sync_code_1.png"
+    },
+    {
+      "path": "img/guidebot/get_sync_code.png"
+    },
+    {
+      "path": "img/guidebot/start_bot.png"
+    },
+    {
+      "path": "img/guidebot/sync_code_to_login.png"
+    },
+    {
+      "path": "img/guidepost/optimizeportfolio/step1d.png"
+    },
+    {
+      "path": "img/guidepost/optimizeportfolio/step1m.jpeg"
+    },
+    {
+      "path": "img/guidepost/optimizeportfolio/step2d.png"
+    },
+    {
+      "path": "img/guidepost/optimizeportfolio/step2m.jpeg"
+    },
+    {
+      "path": "img/guidepost/optimizeportfolio/step3d.png"
+    },
+    {
+      "path": "img/guidepost/optimizeportfolio/step3m.jpeg"
+    },
+    {
+      "path": "img/guidepost/optimizeportfolio/step4d.png"
+    },
+    {
+      "path": "img/guidepost/optimizeportfolio/step4m.jpeg"
+    },
+    {
+      "path": "img/guidepost/optimizeportfolio/step5d.png"
+    },
+    {
+      "path": "img/guidepost/optimizeportfolio/step5m.jpeg"
+    },
+    {
+      "path": "img/guidepost/optimizeportfolio/step6d.png"
+    },
+    {
+      "path": "img/guidepost/optimizeportfolio/step7d.png"
+    },
+    {
+      "path": "img/guidepost/optimizeportfolio/step8d.png"
+    },
+    {
+      "path": "img/guidepost/tracknft/tracknft.png"
+    },
+    {
+      "path": "img/guidepost/trackpnl/trackpnl.png"
+    },
+    {
+      "path": "img/guidepost/tracktoken/step1d.png"
+    },
+    {
+      "path": "img/guidepost/tracktoken/step1m.jpeg"
+    },
+    {
+      "path": "img/guidepost/tracktoken/step2d.png"
+    },
+    {
+      "path": "img/guidepost/tracktoken/step2m.jpeg"
+    },
+    {
+      "path": "img/guidepost/tracktoken/step3d.png"
+    },
+    {
+      "path": "img/guidepost/tracktoken/step3m.jpg"
+    },
+    {
+      "path": "img/guidepost/whaletracking/step1d.png"
+    },
+    {
+      "path": "img/guidepost/whaletracking/step1m.jpeg"
+    },
+    {
+      "path": "img/guidepost/whaletracking/step2d.png"
+    },
+    {
+      "path": "img/guidepost/whaletracking/step2m.jpeg"
+    },
+    {
+      "path": "img/guidepost/whaletracking/step3d.png"
+    },
+    {
+      "path": "img/guidepost/whaletracking/step3m.jpeg"
+    },
+    {
+      "path": "img/guidepost/whaletracking/step4d.png"
+    },
+    {
+      "path": "img/guidepost/whaletracking/step4m.jpeg"
+    },
+    {
+      "path": "img/guidepost/whaletracking/step5d.png"
+    },
+    {
+      "path": "img/guidepost/whaletracking/step6d.png"
     },
     {
       "path": "img/overview.png"
