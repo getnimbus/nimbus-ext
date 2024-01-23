@@ -28,6 +28,7 @@
   import TrendUp from "~/assets/trend-up.svg";
   import TrendDown from "~/assets/trend-down.svg";
   import defaultToken from "~/assets/defaultToken.png";
+  import TooltipTitle from "~/components/TooltipTitle.svelte";
 
   export let data;
   export let selectedWallet;
@@ -687,7 +688,18 @@
     }`}
   >
     <div class="flex justify-end text-2xl font-medium xl:text-sm text_00000099">
-      $<TooltipNumber number={data.market_price} type="balance" />
+      {#if data?.chain === "ZETA"}
+        <TooltipTitle
+          tooltipText="Because ZETA chain is test-net so we hardcode price to $10."
+          type="warning"
+        >
+          <div class="pl-4">
+            $<TooltipNumber number={data.market_price} type="balance" />
+          </div>
+        </TooltipTitle>
+      {:else}
+        $<TooltipNumber number={data.market_price} type="balance" />
+      {/if}
     </div>
   </td>
 
