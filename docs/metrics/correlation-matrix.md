@@ -5,7 +5,7 @@ icon: table
 order: 100
 ---
 
-Correlation measures how closely two assets move together over time.
+# Correlation measures how closely two assets move together over time.
 
 A correlation of 🟩 1 means that two assets move perfectly in sync, while a correlation of 🟥 -1 means that they move in opposite directions. A correlation of 0 means that there is no relationship between the movements of the two assets.
 
