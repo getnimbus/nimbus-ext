@@ -695,7 +695,7 @@
                 Custom Token Breakdown
               </div>
             </div>
-            {#if $wallet && $wallet.length !== 0}
+            {#if $wallet && $wallet?.length !== 0}
               <div class="text-base">
                 <Copy address={$wallet} iconColor="#fff" color="#fff" />
               </div>

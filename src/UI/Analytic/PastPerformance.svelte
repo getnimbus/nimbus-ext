@@ -42,7 +42,8 @@
     ($typeWallet === "EVM" ||
       $typeWallet === "CEX" ||
       $typeWallet === "BUNDLE") &&
-      $wallet.length !== 0 &&
+      $wallet &&
+      $wallet?.length !== 0 &&
       $selectedPackage !== "FREE"
   );
 
