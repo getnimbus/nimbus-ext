@@ -751,7 +751,7 @@ export const triggerFirework = () => {
   });
 };
 
-export const drivePortfolio = () => {
+export const drivePortfolio = () =>
   driver({
     showProgress: true,
     overlayColor: "#27326f",
@@ -812,7 +812,6 @@ export const drivePortfolio = () => {
       },
     ],
   });
-};
 
 export const handleGetAccessToken = async (code: string) => {
   const res = await nimbus
