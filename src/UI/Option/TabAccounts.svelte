@@ -36,6 +36,7 @@
 
   import Move from "~/assets/chains/move.png";
   import All from "~/assets/all.svg";
+  import Ethereum from "~/assets/chains/ethereum.png";
   import BitcoinLogo from "~/assets/chains/bitcoin.png";
   import SolanaLogo from "~/assets/chains/solana.png";
   import NearLogo from "~/assets/chains/near.png";
@@ -1620,7 +1621,12 @@
               class="xl:w-8 xl:h-8 w-10 h-10 rounded-full"
             />
           {/each}
-          <div class="text-gray-400 text-2xl xl:text-base">+22 More</div>
+          <a
+            href="https://getnimbus.io/chains-support"
+            target="_blank"
+            class="text-blue-500 hover:underline cursor-pointer xl:text-base text-2xl"
+            >More chains</a
+          >
         </div>
       </div>
       <div class="border-t-[1px] relative">
@@ -1723,16 +1729,19 @@
           </label>
         </div>
         <div class="flex items-center justify-center gap-6 my-3">
-          {#each [{ logo: BitcoinLogo, label: "Bitcoin", value: "BTC" }, { logo: SolanaLogo, label: "Solana", value: "SOL" }, { logo: NearLogo, label: "Near", value: "NEAR" }, { logo: Move, label: "Move", value: "MOVE" }, { logo: AuraLogo, label: "Aura", value: "AURA" }, { logo: AlgorandLogo, label: "Algorand", value: "ALGO" }, { logo: TonLogo, label: "TON", value: "TON" }].concat(chainList
-              .slice(1)
-              .slice(0, -20)) as item}
+          {#each [{ logo: Ethereum }, { logo: BitcoinLogo }, { logo: SolanaLogo }, { logo: NearLogo }, { logo: Move }, { logo: AuraLogo }, { logo: AlgorandLogo }, { logo: TonLogo }] as item}
             <img
               src={item.logo}
               alt=""
               class="xl:w-8 xl:h-8 w-10 h-10 overflow-hidden rounded-full"
             />
           {/each}
-          <div class="text-gray-400 xl:text-base text-2xl">+20 More</div>
+          <a
+            href="https://getnimbus.io/chains-support"
+            target="_blank"
+            class="text-blue-500 hover:underline cursor-pointer xl:text-base text-2xl"
+            >More chains</a
+          >
         </div>
         <div class="flex justify-end gap-6 lg:gap-2">
           <div class="lg:w-[120px] w-full">
