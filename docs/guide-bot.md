@@ -52,7 +52,7 @@ Welcome to the world of Nimbus, your friendly chat bot designed to make your dig
 ## Setting alert
 
 <div class="grid-cols-1  md:grid-cols-2">
-    <img src="/img/guideBot/choose_alert.png" alt="" style="height: auto; margin-left: auto; margin-right: auto;" />
+    <img src="/img/guideBot/choose_alert.png" alt="" style="height: 60vh; margin-left: auto; margin-right: auto;" />
     <img src="/img/guideBot/alert_setting.png" alt="" style="height: 60vh; margin-left: auto; margin-right: auto;" />
 </div>
 
@@ -71,6 +71,6 @@ Welcome to the world of Nimbus, your friendly chat bot designed to make your dig
 
 <div class="grid-cols-1 md:grid-cols-3">
     <img src="/img/guideBot/clickon_portfolio_btn.png" alt="" style="height: 50vh; margin-left: auto; margin-right: auto;" />
-    <img src="/img/guideBot/bot_show_portfolio_to_choose.png" alt="" style="height: 50vh; margin-left: auto; margin-right: auto;" />
+    <img src="/img/guideBot/bot_show_portfolio_to_choose.png" alt="" style="height: 25vh; margin-left: auto; margin-right: auto; margin-top: auto; margin-bottom:auto;" />
     <img src="/img/guideBot/choose_portfolio.png" alt="" style="height: 50vh; margin-left: auto; margin-right: auto;" />
 </div>
