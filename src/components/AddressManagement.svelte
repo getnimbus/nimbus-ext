@@ -151,7 +151,6 @@
   let listAddress = [];
   let address = "";
   let label = "";
-  let demoAddress = "";
   let errors: any = {};
   let isLoadingAddDEX = false;
   let isOpenAddModal = false;
