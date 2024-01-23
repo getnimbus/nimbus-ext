@@ -16,6 +16,52 @@
 
   let isShowSymbol = false;
   let selectedToken;
+
+  let currentTimestamp = dayjs();
+
+  function formatActiveTime(timestamp) {
+    const currentTime = dayjs();
+    const activityTime = dayjs(timestamp);
+
+    const minutesDiff = currentTime.diff(activityTime, "minute");
+    const hoursDiff = currentTime.diff(activityTime, "hour");
+    const daysDiff = currentTime.diff(activityTime, "day");
+    const monthsDiff = currentTime.diff(activityTime, "month");
+
+    if (minutesDiff < 60) {
+      return `${minutesDiff} ${minutesDiff === 1 ? "minute" : "minutes"} ago`;
+    } else if (hoursDiff < 24) {
+      return `${hoursDiff} ${hoursDiff === 1 ? "hour" : "hours"} ago`;
+    } else if (daysDiff < 30) {
+      return `${daysDiff} ${daysDiff === 1 ? "day" : "days"} ago`;
+    } else if (monthsDiff < 12) {
+      return `${monthsDiff} ${monthsDiff === 1 ? "month" : "months"} ago`;
+    } else {
+      return "More than a year ago";
+    }
+  }
+
+  function formatAHT(timestamp) {
+    const currentTime = dayjs();
+    const activityTime = dayjs(Number(currentTime) - timestamp);
+
+    const minutesDiff = currentTime.diff(activityTime, "minute");
+    const hoursDiff = currentTime.diff(activityTime, "hour");
+    const daysDiff = currentTime.diff(activityTime, "day");
+    const monthsDiff = currentTime.diff(activityTime, "month");
+
+    if (minutesDiff < 60) {
+      return `${minutesDiff}m`;
+    } else if (hoursDiff < 24) {
+      return `${hoursDiff}h`;
+    } else if (daysDiff < 30) {
+      return `${daysDiff}d`;
+    } else if (monthsDiff < 12) {
+      return `${monthsDiff}mo`;
+    } else {
+      return "More than a year";
+    }
+  }
 </script>
 
 <tr class="group transition-all">
@@ -44,98 +90,8 @@
       $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
-    <div class="xl:flex justify-start hidden">
-      {#each data?.metadata
-        ?.filter((item) => item.logo)
-        .sort((a, b) => a.value - b.value)
-        .slice(0, 3) || [] as token, index}
-        <div
-          class={`relative z-1 ${index > 0 && "-ml-2"}`}
-          on:mouseover={() => {
-            isShowSymbol = true;
-            selectedToken = token;
-          }}
-          on:mouseleave={() => {
-            isShowSymbol = false;
-            selectedToken = undefined;
-          }}
-        >
-          <img
-            class="xl:w-[30px] xl:h-[30px] w-[50px] h-[50px] border-2 border-white bg-white rounded-full"
-            src={token.logo}
-            alt=""
-          />
-          {#if isShowSymbol && selectedToken === token}
-            <div
-              class="absolute -top-8 left-1/2 transform -translate-x-1/2"
-              style="z-index: 2147483648;"
-            >
-              <Tooltip text={token.symbol.toUpperCase()} />
-            </div>
-          {/if}
-        </div>
-      {/each}
-      {#if data?.metadata?.length > 3}
-        <div
-          class="z-2 -ml-2 flex items-center justify-center xl:w-[30px] xl:h-[30px] w-[50px] h-[50px] bg-gray-700 border-2 border-white rounded-full hover:bg-gray-600"
-        >
-          <div class="xl:text-[10px] text-lg font-medium text-white">
-            +{data?.metadata?.length - 3}
-          </div>
-        </div>
-      {/if}
-    </div>
-
-    <div class="xl:hidden flex justify-start">
-      {#each data?.metadata
-        ?.filter((item) => item.logo)
-        .sort((a, b) => a.value - b.value)
-        .slice(0, 18) || [] as token, index}
-        <div
-          class={`relative z-1 ${index > 0 && "-ml-2"}`}
-          on:mouseover={() => {
-            isShowSymbol = true;
-            selectedToken = token;
-          }}
-          on:mouseleave={() => {
-            isShowSymbol = false;
-            selectedToken = undefined;
-          }}
-        >
-          <img
-            class="xl:w-[30px] xl:h-[30px] w-[50px] h-[50px] border-2 border-white bg-white rounded-full"
-            src={token.logo}
-            alt=""
-          />
-          {#if isShowSymbol && selectedToken === token}
-            <div
-              class="absolute -top-8 left-1/2 transform -translate-x-1/2"
-              style="z-index: 2147483648;"
-            >
-              <Tooltip text={token.symbol.toUpperCase()} />
-            </div>
-          {/if}
-        </div>
-      {/each}
-      {#if data?.metadata?.length > 18}
-        <div
-          class="z-2 -ml-2 flex items-center justify-center xl:w-[30px] xl:h-[30px] w-[50px] h-[50px] bg-gray-700 border-2 border-white rounded-full hover:bg-gray-600"
-        >
-          <div class="xl:text-[10px] text-lg font-medium text-white">
-            +{data?.metadata?.length - 18}
-          </div>
-        </div>
-      {/if}
-    </div>
-  </td>
-
-  <td
-    class={`py-3 ${
-      $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
-    }`}
-  >
     <div class="text-right xl:text-sm text-2xl font-medium flex justify-end">
-      $<TooltipNumber number={Number(data?.networth)} type="balance" />
+      $<TooltipNumber number={Number(data?.ethBalance)} type="balance" />
     </div>
   </td>
 
@@ -149,18 +105,16 @@
     >
       <div
         class={`flex items-center ${
-          data?.change1D >= 0 ? "text-[#00A878]" : "text-red-500"
+          data?.pnl_1d >= 0 ? "text-[#00A878]" : "text-red-500"
         }`}
       >
         <TooltipNumber
-          number={Math.abs(Number(data?.change1D))}
-          type={Math.abs(Number(data?.change1D)) > 999999
-            ? "balance"
-            : "percent"}
+          number={Math.abs(Number(data?.pnl_1d))}
+          type={Math.abs(Number(data?.pnl_1d)) > 999999 ? "balance" : "percent"}
         />
         <span>%</span>
         <img
-          src={data?.change1D >= 0 ? TrendUp : TrendDown}
+          src={data?.pnl_1d >= 0 ? TrendUp : TrendDown}
           alt="trend"
           class="ml-1 mb-1 w-4 h-4"
         />
@@ -178,18 +132,16 @@
     >
       <div
         class={`flex items-center ${
-          data?.change7D >= 0 ? "text-[#00A878]" : "text-red-500"
+          data?.pnl_7d >= 0 ? "text-[#00A878]" : "text-red-500"
         }`}
       >
         <TooltipNumber
-          number={Math.abs(Number(data?.change7D))}
-          type={Math.abs(Number(data?.change7D)) > 999999
-            ? "balance"
-            : "percent"}
+          number={Math.abs(Number(data?.pnl_7d))}
+          type={Math.abs(Number(data?.pnl_7d)) > 999999 ? "balance" : "percent"}
         />
         <span>%</span>
         <img
-          src={data?.change7D >= 0 ? TrendUp : TrendDown}
+          src={data?.pnl_7d >= 0 ? TrendUp : TrendDown}
           alt="trend"
           class="ml-1 mb-1 w-4 h-4"
         />
@@ -207,18 +159,18 @@
     >
       <div
         class={`flex items-center ${
-          data?.change30D >= 0 ? "text-[#00A878]" : "text-red-500"
+          data?.pnl_30d >= 0 ? "text-[#00A878]" : "text-red-500"
         }`}
       >
         <TooltipNumber
-          number={Math.abs(Number(data?.change30D))}
-          type={Math.abs(Number(data?.change30D)) > 999999
+          number={Math.abs(Number(data?.pnl_30d))}
+          type={Math.abs(Number(data?.pnl_30d)) > 999999
             ? "balance"
             : "percent"}
         />
         <span>%</span>
         <img
-          src={data?.change30D >= 0 ? TrendUp : TrendDown}
+          src={data?.pnl_30d >= 0 ? TrendUp : TrendDown}
           alt="trend"
           class="ml-1 mb-1 w-4 h-4"
         />
@@ -234,22 +186,10 @@
     <div
       class="xl:text-sm text-2xl text-right font-medium flex flex-col items-end gap-1"
     >
-      <div
-        class={`flex items-center ${
-          data?.change1Y >= 0 ? "text-[#00A878]" : "text-red-500"
-        }`}
-      >
-        <TooltipNumber
-          number={Math.abs(Number(data?.change1Y))}
-          type={Math.abs(Number(data?.change1Y)) > 999999
-            ? "balance"
-            : "percent"}
-        />
-        <span>%</span>
-        <img
-          src={data?.change1Y >= 0 ? TrendUp : TrendDown}
-          alt="trend"
-          class="ml-1 mb-1 w-4 h-4"
+      <div class="flex items-center">
+        $<TooltipNumber
+          number={Math.abs(Number(data?.realized_profit))}
+          type="balance"
         />
       </div>
     </div>
@@ -263,11 +203,7 @@
     <div
       class="xl:text-sm text-2xl text-right font-medium flex justify-end items-center"
     >
-      <TooltipNumber
-        number={Number(data?.volatility)}
-        type={Number(data?.volatility) > 999999 ? "balance" : "percent"}
-      />
-      <span>%</span>
+      {Number(data?.txs_30d)}
     </div>
   </td>
 
@@ -279,36 +215,19 @@
     <div
       class="xl:text-sm text-2xl text-right font-medium flex justify-end items-center"
     >
-      <TooltipNumber
-        number={Number(data?.drawDown)}
-        type={Number(data?.drawDown) > 999999 ? "balance" : "percent"}
-      />
-      <span>%</span>
+      {formatAHT(Number(data?.avg_hold_time * 1000))}
     </div>
   </td>
 
   <td
-    class={`py-3 ${
+    class={`py-3 pr-3 ${
       $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
     <div
       class="xl:text-sm text-2xl text-right font-medium flex justify-end items-center"
     >
-      <TooltipNumber
-        number={Number(data?.sharpeRatio)}
-        type={Number(data?.sharpeRatio) > 999999 ? "balance" : "percent"}
-      />
-    </div>
-  </td>
-
-  <td
-    class={`pr-3 py-3 ${
-      $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
-    }`}
-  >
-    <div class="flex items-center justify-end gap-3">
-      <SparkLine data={data?.sparkline || []} />
+      {formatActiveTime(Number(data?.last_active * 1000))}
     </div>
   </td>
 </tr>
