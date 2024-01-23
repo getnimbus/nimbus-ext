@@ -76,7 +76,7 @@
     }
 
     try {
-      const res = await nimbus.post(
+      await nimbus.post(
         "/subscription/analysis",
         {
           email: data.email,
@@ -111,31 +111,12 @@
 
   onMount(() => {
     mixpanel.track("analytic_page");
-
-    const currentDayStorage = localStorage.getItem("currentDay");
-    const next7DaysStorage = localStorage.getItem("next7Days");
     const isSubmitStorage = localStorage.getItem("isShowFormAnalytic");
 
     if ($selectedPackage === "FREE") {
       if (isSubmitStorage === null) {
         allowScroll = true;
         window.addEventListener("scroll", handleScroll);
-
-        if (currentDayStorage && next7DaysStorage) {
-          const isTodayBetween = currentDate.isBetween(
-            currentDayStorage,
-            next7DaysStorage,
-            "day",
-            "[]"
-          );
-          if (!isTodayBetween) {
-            isOpenModal = true;
-          }
-        }
-
-        if (!currentDayStorage && !next7DaysStorage) {
-          isOpenModal = true;
-        }
       }
     }
   });
