@@ -7,7 +7,7 @@
   import { groupBy, flatten } from "lodash";
   import { onMount } from "svelte";
   import { i18n } from "~/lib/i18n";
-  import { drivePortfolio, chunkArray } from "~/utils";
+  import { drivePortfolio } from "~/utils";
   import { chainList, chainMoveList } from "~/lib/chains";
   import { wait } from "../entries/background/utils";
   import {
@@ -24,8 +24,6 @@
     createQueries,
     useQueryClient,
   } from "@tanstack/svelte-query";
-  import { priceMobulaSubscribe } from "~/lib/price-mobulaWs";
-  import { priceSubscribe } from "~/lib/price-ws";
 
   import type { NewData, NewDataRes } from "~/types/NewData";
   import type { OverviewData, OverviewDataRes } from "~/types/OverviewData";
@@ -98,12 +96,9 @@
 
   let newsData: any = [];
 
-  let marketPriceToken: any = {};
-  let dataSubWS: any = [];
   let holdingTokenData: any = [];
   let closedHoldingPosition: any = [];
   let holdingNFTData: any = [];
-  let formatDataTokenHolding = [];
 
   let positionsData: any = [];
   let overviewDataPerformance = {
@@ -114,6 +109,8 @@
   let dataUpdatedTime;
   let totalPositions = 0;
   let totalAssets = 0;
+  let realizedProfit = 0;
+  let unrealizedProfit = 0;
   let isEmptyDataPieTokens = false;
   let isEmptyDataPieNfts = false;
   let syncMsg = "";
@@ -150,8 +147,13 @@
 
   const getSync = async () => {
     try {
+      const validateAccount = await handleValidateAddress($wallet);
       await nimbus
-        .get(`/v2/address/${$wallet}/sync?chain=ALL`)
+        .get(
+          `/v2/address/${$wallet}/sync?chain=${
+            validateAccount?.type === "BUNDLE" ? "" : validateAccount?.type
+          }`
+        )
         .then((response) => response);
     } catch (e) {
       console.error("e: ", e);
@@ -160,8 +162,13 @@
 
   const getSyncStatus = async () => {
     try {
+      const validateAccount = await handleValidateAddress($wallet);
       const response: any = await nimbus
-        .get(`/v2/address/${$wallet}/sync-status?chain=${$chain}`)
+        .get(
+          `/v2/address/${$wallet}/sync-status?chain=${
+            validateAccount?.type === "BUNDLE" ? "" : validateAccount?.type
+          }`
+        )
         .then((response) => response);
       dataUpdatedTime = response?.data?.lastSync;
       return response;
@@ -539,9 +546,6 @@
       });
 
     holdingTokenData = formatData?.filter((item) => Number(item.amount) > 0);
-    formatDataTokenHolding = formatData?.filter(
-      (item) => Number(item.amount) > 0
-    );
 
     closedHoldingPosition = formatData
       ?.filter((item) => item?.profit?.realizedProfit)
@@ -549,148 +553,6 @@
 
     formatTokenBreakdown(holdingTokenData);
   };
-
-  // subscribe to ws
-  $: {
-    if (
-      !($chain === "ALL"
-        ? $queryAllTokenHolding?.some((item) => item.isFetching === true)
-        : $queryTokenHolding.isFetching)
-    ) {
-      if (holdingTokenData?.length !== 0) {
-        const dataTokenHolding = holdingTokenData?.filter(
-          (item) =>
-            item?.price?.source === undefined ||
-            item?.price?.source !== "Modifed"
-        );
-
-        const filteredHoldingTokenData = dataTokenHolding?.filter(
-          (item) => item?.cmc_id
-        );
-
-        const filteredNullCmcHoldingTokenData = dataTokenHolding?.filter(
-          (item) => item?.cmc_id === null
-        );
-
-        const groupFilteredNullCmcHoldingTokenData = groupBy(
-          filteredNullCmcHoldingTokenData,
-          "chain"
-        );
-
-        const filteredUndefinedCmcHoldingTokenData = dataTokenHolding?.filter(
-          (item) => item?.cmc_id === undefined
-        );
-
-        if (
-          $typeWallet === "CEX" &&
-          filteredUndefinedCmcHoldingTokenData.length > 0
-        ) {
-          const chunkedArray = chunkArray(
-            filteredUndefinedCmcHoldingTokenData,
-            100
-          );
-          chunkedArray.forEach((chunk) => {
-            chunk
-              .filter((item) => item?.symbol)
-              .map((item) => {
-                priceMobulaSubscribe([item?.symbol], "CEX", (data) => {
-                  marketPriceToken = {
-                    id: data.id,
-                    market_price: data.price,
-                  };
-                });
-              });
-          });
-        }
-
-        const chainList = Object.keys(groupFilteredNullCmcHoldingTokenData);
-        chainList.map((chain) => {
-          const chunkedArray = chunkArray(
-            groupFilteredNullCmcHoldingTokenData[chain],
-            100
-          );
-          chunkedArray.forEach((chunk) => {
-            chunk
-              .filter((item) => item?.contractAddress)
-              .map((item) => {
-                priceMobulaSubscribe(
-                  [item?.contractAddress],
-                  item?.chain,
-                  (data) => {
-                    marketPriceToken = {
-                      id: data.id,
-                      market_price: data.price,
-                    };
-                  }
-                );
-              });
-          });
-        });
-
-        dataSubWS = filteredHoldingTokenData?.map((item) => {
-          return {
-            symbol: item?.symbol,
-            cmcId: item?.cmc_id,
-          };
-        });
-      }
-    }
-  }
-
-  $: {
-    if (
-      !($chain === "ALL"
-        ? $queryAllTokenHolding?.some((item) => item.isFetching === true)
-        : $queryTokenHolding.isFetching) &&
-      dataSubWS &&
-      dataSubWS.length !== 0
-    ) {
-      let filteredData = [];
-      const symbolSet = new Set();
-
-      dataSubWS.forEach((item) => {
-        if (!symbolSet.has(item.symbol)) {
-          symbolSet.add(item.symbol);
-          filteredData.push(item);
-        }
-      });
-
-      filteredData?.map((item) => {
-        priceSubscribe([Number(item?.cmcId)], item?.chain, (data) => {
-          marketPriceToken = {
-            id: data.id,
-            market_price: data.price,
-          };
-        });
-      });
-    }
-  }
-
-  // check market price and update price real-time
-  $: {
-    if (marketPriceToken) {
-      // update data token holding
-      formatDataTokenHolding = holdingTokenData.map((item) => {
-        if (
-          marketPriceToken?.id?.toString().toLowerCase() ===
-            item?.cmc_id?.toString().toLowerCase() ||
-          marketPriceToken?.id?.toString().toLowerCase() ===
-            item?.contractAddress?.toString().toLowerCase() ||
-          marketPriceToken?.id?.toString().toLowerCase() ===
-            item?.symbol?.toString().toLowerCase() ||
-          marketPriceToken?.id?.toString().toLowerCase() ===
-            item?.price?.symbol?.toString().toLowerCase()
-        ) {
-          return {
-            ...item,
-            market_price: Number(marketPriceToken.market_price),
-            value: Number(item?.amount) * Number(marketPriceToken.market_price),
-          };
-        }
-        return { ...item };
-      });
-    }
-  }
 
   const formatNFTBreakdown = (data) => {
     if (data?.length === 0) {
@@ -933,9 +795,6 @@
         newsData = [];
         holdingNFTData = [];
         holdingTokenData = [];
-        formatDataTokenHolding = [];
-        marketPriceToken = {};
-        dataSubWS = [];
         isErrorAllData = false;
         isLoadingSync = false;
         enabledFetchAllData = false;
@@ -1023,9 +882,10 @@
     {#if !isLoadingSync}
       <Overview
         data={overviewData}
-        dataTokenHolding={formatDataTokenHolding}
         {totalPositions}
         {totalAssets}
+        {unrealizedProfit}
+        {realizedProfit}
       />
     {/if}
   </span>
@@ -1098,6 +958,8 @@
                 {selectedTokenHolding}
                 {selectedDataPieChart}
                 bind:totalAssets
+                bind:unrealizedProfit
+                bind:realizedProfit
               />
 
               {#if $typeWallet !== "BTC"}

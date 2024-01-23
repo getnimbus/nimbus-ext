@@ -21,10 +21,28 @@
     }
   });
 
+  const handleValidateAddress = async (address: string) => {
+    try {
+      const response = await nimbus.get(`/v2/address/${address}/validate`);
+      return response?.data;
+    } catch (e) {
+      console.error(e);
+      return {
+        address: "",
+        type: "",
+      };
+    }
+  };
+
   const getSync = async () => {
     try {
+      const validateAccount = await handleValidateAddress($wallet);
       await nimbus
-        .get(`/v2/address/${address}/sync?chain=ALL`)
+        .get(
+          `/v2/address/${address}/sync?chain=${
+            validateAccount?.type === "BUNDLE" ? "" : validateAccount?.type
+          }`
+        )
         .then((response) => response);
     } catch (e) {
       console.error("e: ", e);
@@ -33,8 +51,13 @@
 
   const getSyncStatus = async () => {
     try {
+      const validateAccount = await handleValidateAddress($wallet);
       const response = await nimbus
-        .get(`/v2/address/${address}/sync-status?chain=${$chain}`)
+        .get(
+          `/v2/address/${address}/sync-status?chain=${
+            validateAccount?.type === "BUNDLE" ? "" : validateAccount?.type
+          }`
+        )
         .then((response) => response);
       return response;
     } catch (e) {
