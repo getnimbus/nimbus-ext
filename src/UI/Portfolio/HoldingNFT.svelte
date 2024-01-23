@@ -237,7 +237,7 @@
 
       {#if ($typeWallet === "EVM" || $typeWallet === "BUNDLE") && data?.nativeToken?.symbol !== "CEX"}
         <img
-          src={detectedChain(data?.nativeToken?.symbol)}
+          src={detectedChain(data?.nativeToken?.symbol)?.logo}
           alt=""
           width="20"
           height="20"
