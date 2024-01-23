@@ -1,6 +1,7 @@
 <script lang="ts">
   import { timeFrame } from "~/utils";
   import {
+    user,
     chain,
     wallet,
     selectedPackage,
@@ -64,7 +65,7 @@
       <SyncData let:address let:enabledFetchAllData>
         <div class="analytic_container rounded-[20px] xl:p-8 p-6 space-y-4">
           <div class="flex justify-between items-center">
-            {#if isShowSoon && address !== "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0"}
+            {#if isShowSoon && $user && Object.keys($user).length === 0}
               <div class="w-full xl:w-[230px]">
                 <Button disabled>Performance Summary</Button>
               </div>
@@ -87,7 +88,8 @@
                     on:click={() => {
                       if (
                         isShowSoon &&
-                        address !== "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0"
+                        $user &&
+                        Object.keys($user).length === 0
                       ) {
                         return;
                       }
@@ -110,8 +112,8 @@
                         <div
                           class={`absolute inset-0 rounded-full z-1 ${
                             isShowSoon &&
-                            address !==
-                              "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0"
+                            $user &&
+                            Object.keys($user).length === 0
                               ? "bg-[#dddddd]"
                               : "bg-[#1E96FC]"
                           }`}
@@ -147,7 +149,7 @@
                   Minimize risk & maximize return by rebalance your portfolio 🚀
                 </div>
                 <div class="xl:w-[164px] w-[284px]">
-                  {#if isShowSoon && address !== "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0"}
+                  {#if isShowSoon && $user && Object.keys($user).length === 0}
                     <Button disabled>
                       <div class="xl:text-base text-2xl">Get suggestion</div>
                     </Button>

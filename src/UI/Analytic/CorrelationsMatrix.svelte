@@ -1,7 +1,7 @@
 <script lang="ts">
   import { createQuery } from "@tanstack/svelte-query";
-  import axios from "axios";
   import {
+    user,
     chain,
     wallet,
     selectedPackage,
@@ -388,14 +388,9 @@
     }
   }
 
-  $: enabledQuery =
-    $wallet === "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0"
-      ? true
-      : Boolean(
-          chainSupportedList.includes($typeWallet) &&
-            $wallet.length !== 0 &&
-            $selectedPackage !== "FREE"
-        );
+  $: enabledQuery = Boolean(
+    chainSupportedList.includes($typeWallet) && $wallet.length !== 0
+  );
 </script>
 
 <div class="flex flex-col gap-5">
@@ -609,7 +604,7 @@
       </div>
     {/if}
 
-    {#if isShowSoon && address !== "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0"}
+    {#if isShowSoon && $user && Object.keys($user).length === 0}
       <div
         class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col justify-center items-center gap-3 z-10 backdrop-blur-md ${
           $isDarkMode ? "bg-black/90" : "bg-white/95"
