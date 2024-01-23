@@ -2,7 +2,7 @@
   import { getTooltipContent } from "~/utils";
   import { nimbus } from "~/lib/network";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
-  import { isDarkMode, user, wallet, chain, typeWallet } from "~/store";
+  import { isDarkMode, user } from "~/store";
 
   import tooltip from "~/entries/contentScript/views/tooltip";
   import { priceTable } from "~/UI/PricePackage/DataTable";
@@ -40,11 +40,6 @@
     onError(err) {
       localStorage.removeItem("solana_token");
       localStorage.removeItem("evm_token");
-      user.update((n) => (n = {}));
-      wallet.update((n) => (n = ""));
-      chain.update((n) => (n = ""));
-      typeWallet.update((n) => (n = ""));
-      queryClient.invalidateQueries(["list-address"]);
     },
   });
 

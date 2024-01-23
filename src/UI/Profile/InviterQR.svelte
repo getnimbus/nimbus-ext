@@ -2,7 +2,6 @@
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
   import QRCode from "qrcode-generator";
   import { nimbus } from "~/lib/network";
-  import { user, wallet, chain, typeWallet } from "~/store";
 
   let qrImageDataUrl = undefined;
   let userAddress = "";
@@ -24,11 +23,6 @@
     onError(err) {
       localStorage.removeItem("solana_token");
       localStorage.removeItem("evm_token");
-      user.update((n) => (n = {}));
-      wallet.update((n) => (n = ""));
-      chain.update((n) => (n = ""));
-      typeWallet.update((n) => (n = ""));
-      queryClient.invalidateQueries(["list-address"]);
     },
   });
 

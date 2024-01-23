@@ -254,15 +254,6 @@
     return response?.data || [];
   };
 
-  $: enabledQuery =
-    $wallet === "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0"
-      ? true
-      : Boolean(
-          chainSupportedList.includes($typeWallet) &&
-            $wallet.length !== 0 &&
-            $selectedPackage !== "FREE"
-        );
-
   $: query = createQuery({
     queryKey: ["compare", $wallet, $chain, selectedTimeFrame],
     enabled: enabledQuery && isFetch,
@@ -276,6 +267,12 @@
     queryFn: () => getRiskBreakdown($wallet, selectedTimeFrame),
     staleTime: Infinity,
   });
+
+  $: enabledQuery = Boolean(
+    chainSupportedList.includes($typeWallet) &&
+      $wallet.length !== 0 &&
+      $selectedPackage !== "FREE"
+  );
 
   $: {
     if ($query.data) {

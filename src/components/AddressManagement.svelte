@@ -855,17 +855,7 @@
       if ($wallet?.length !== 0 && $chain?.length !== 0) {
         browser.storage.sync.set({ selectedWallet: $wallet });
         browser.storage.sync.set({ selectedChain: $chain });
-
-        if ($wallet === "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0") {
-          window.history.replaceState(
-            null,
-            "",
-            window.location.pathname +
-              `?type=EVM&chain=${$chain}&address=${$wallet}`
-          );
-        } else {
-          handleUpdateParams();
-        }
+        handleUpdateParams();
       }
     }
   }
@@ -939,11 +929,6 @@
     if (Object.keys($user).length === 0) {
       tooltipDisableAddBtn = "Connect wallet to add account";
       listAddress = [];
-      const urlParams = new URLSearchParams(window.location.search);
-      const addressParams = urlParams.get("address");
-      if (!addressParams) {
-        window.history.replaceState(null, "", "/");
-      }
     }
   }
 

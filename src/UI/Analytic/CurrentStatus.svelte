@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { wallet, chain, typeWallet, isDarkMode } from "~/store";
+  import { user, wallet, chain, typeWallet, isDarkMode } from "~/store";
   import { groupBy, flatten } from "lodash";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import {
@@ -739,12 +739,9 @@
     }
   }
 
-  $: enabledQuery =
-    $wallet === "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0"
-      ? true
-      : Boolean(
-          chainSupportedList.includes($typeWallet) && $wallet.length !== 0
-        );
+  $: enabledQuery = Boolean(
+    chainSupportedList.includes($typeWallet) && $wallet.length !== 0
+  );
 
   $: theme = $isDarkMode ? "dark" : "white";
 </script>
@@ -849,7 +846,7 @@
         {/if}
       </div>
       <div class="flex-1">
-        {#if $wallet !== "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0"}
+        {#if $user && Object.keys($user).length === 0}
           <div
             on:click={() => {
               navigate(
