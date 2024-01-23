@@ -149,7 +149,7 @@
         formatData = data.map((item) => {
           return {
             ...item,
-            market_price: item?.rate || 0,
+            market_price: item.chain === "ZETA" ? 10 : item?.rate || 0,
           };
         });
         filteredHoldingDataToken = formatData.filter((item) => item.value > 1);

@@ -27,7 +27,11 @@
 </script>
 
 <div class="grid grid-cols-4 justify-center items-center pt-4 pb-8">
-  {#if $wallet === "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0"}
+  <Link
+    to={`${
+      $wallet ? `/?type=${$typeWallet}&chain=${$chain}&address=${$wallet}` : "/"
+    }`}
+  >
     <div
       class={`flex flex-col items-center gap-2 cursor-pointer hover:opacity-100 transition-all ${
         $isDarkMode
@@ -40,11 +44,7 @@
       }`}
       on:click={() => {
         navActive = "portfolio";
-        navigate(
-          `/?type=EVM&chain=${
-            $chain || "All"
-          }&address=0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0`
-        );
+        queryClient.invalidateQueries(["users-me"]);
       }}
     >
       <svg
@@ -80,8 +80,17 @@
         {MultipleLang.portfolio}
       </span>
     </div>
+  </Link>
+
+  <Link
+    to={`${
+      $wallet
+        ? `/analytic?type=${$typeWallet}&chain=${$chain}&address=${$wallet}`
+        : "/"
+    }`}
+  >
     <div
-      class={`flex flex-col items-center gap-2 cursor-pointer py-2 hover:opacity-100 transition-all
+      class={`flex flex-col items-center gap-2 cursor-pointer hover:opacity-100 transition-all
           ${
             $isDarkMode
               ? navActive === "analytic"
@@ -93,12 +102,16 @@
           }
           `}
       on:click={() => {
-        navActive = "analytic";
-        navigate(
-          `/analytic?type=EVM&chain=${
-            $chain || "All"
-          }&address=0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0`
-        );
+        if ($user && Object.keys($user).length !== 0) {
+          navActive = "analytic";
+          queryClient.invalidateQueries(["users-me"]);
+        } else {
+          user.update((n) => (n = {}));
+          wallet.update((n) => (n = ""));
+          chain.update((n) => (n = ""));
+          typeWallet.update((n) => (n = ""));
+          queryClient.invalidateQueries(["list-address"]);
+        }
       }}
     >
       <svg
@@ -139,126 +152,14 @@
         </span>
       </span>
     </div>
-  {:else}
-    <Link to={`/?type=${$typeWallet}&chain=${$chain}&address=${$wallet}`}>
-      <div
-        class={`flex flex-col items-center gap-2 cursor-pointer hover:opacity-100 transition-all ${
-          $isDarkMode
-            ? navActive === "portfolio"
-              ? "opacity-100"
-              : "opacity-40"
-            : navActive === "portfolio"
-              ? "opacity-100"
-              : "opacity-40"
-        }`}
-        on:click={() => {
-          navActive = "portfolio";
-          queryClient.invalidateQueries(["users-me"]);
-        }}
-      >
-        <svg
-          width="50"
-          height="50"
-          viewBox="0 0 20 20"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M5 10.8333L7.5 5.83333L13.3333 10L18.3333 2.5"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-          <path
-            d="M1.66666 17.5L3.53832 13.7567"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-          <path
-            d="M1.66666 10.8334H4.99999L13.3333 15L18.3333 11.6667"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
-        <span class="font-medium text-2xl">
-          {MultipleLang.portfolio}
-        </span>
-      </div>
-    </Link>
-    <Link to={`${$user && Object.keys($user).length !== 0 ? "analytic" : "/"}`}>
-      <div
-        class={`flex flex-col items-center gap-2 cursor-pointer hover:opacity-100 transition-all
-          ${
-            $isDarkMode
-              ? navActive === "analytic"
-                ? "opacity-100"
-                : "opacity-40"
-              : navActive === "analytic"
-                ? "opacity-100"
-                : "opacity-40"
-          }
-          `}
-        on:click={() => {
-          if ($user && Object.keys($user).length !== 0) {
-            navActive = "analytic";
-            queryClient.invalidateQueries(["users-me"]);
-          } else {
-            user.update((n) => (n = {}));
-            wallet.update((n) => (n = ""));
-            chain.update((n) => (n = ""));
-            typeWallet.update((n) => (n = ""));
-            queryClient.invalidateQueries(["list-address"]);
-          }
-        }}
-      >
-        <svg
-          width="45"
-          height="45"
-          viewBox="0 0 20 20"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <g clip-path="url(#clip0_101_68)">
-            <path
-              d="M0.833328 10H5.83333L8.33333 5.83337L11.6667 14.1667L14.1667 10H19.1667"
-              stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-            <path
-              d="M10 19.1667C15.0626 19.1667 19.1667 15.0627 19.1667 10C19.1667 4.93743 15.0626 0.833374 10 0.833374C4.93738 0.833374 0.833328 4.93743 0.833328 10C0.833328 15.0627 4.93738 19.1667 10 19.1667Z"
-              stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-          </g>
-          <defs>
-            <clipPath id="clip0_101_68">
-              <rect width="20" height="20" fill="currentColor" />
-            </clipPath>
-          </defs>
-        </svg>
-        <span class="flex gap-[1px]">
-          <span class="font-medium text-2xl">
-            {MultipleLang.analytics}
-          </span>
-          <span class="flex items-center gap-[1px] -mt-2">
-            <img src={Crown} alt="" width="19" height="18" />
-          </span>
-        </span>
-      </div>
-    </Link>
-  {/if}
+  </Link>
 
   <Link
-    to={`/transactions?type=${$typeWallet}&chain=${$chain}&address=${$wallet}`}
+    to={`${
+      $wallet
+        ? `/transactions?type=${$typeWallet}&chain=${$chain}&address=${$wallet}`
+        : "/"
+    }`}
   >
     <div
       class={`flex flex-col items-center gap-2 cursor-pointer py-2 hover:opacity-100 transition-all

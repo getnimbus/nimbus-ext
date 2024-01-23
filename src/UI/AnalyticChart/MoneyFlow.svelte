@@ -371,14 +371,11 @@
     }
   }
 
-  $: enabledQuery =
-    $wallet === "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0"
-      ? true
-      : Boolean(
-          chainSupportedList.includes($typeWallet) &&
-            $wallet.length !== 0 &&
-            packageSelected !== "FREE"
-        );
+  $: enabledQuery = Boolean(
+    chainSupportedList.includes($typeWallet) &&
+      $wallet.length !== 0 &&
+      packageSelected !== "FREE"
+  );
 
   $: theme = $isDarkMode ? "dark" : "white";
 </script>

@@ -633,7 +633,7 @@
             dataPriceChart.map((item) => {
               return {
                 ...item,
-                date: item.value[0],
+                date: item?.value[0] || 0,
               };
             })
           );
@@ -641,9 +641,9 @@
             quantity_in: item.quantity_in,
             quantity_out: item.quantity_out,
             itemStyle: { color: "#00b580" },
-            value: [item.created_at * 1000, selected.value[1]],
+            value: [item?.created_at * 1000, selected?.value[1] || 0],
             type: "buy",
-            past_price: item.to_price,
+            past_price: item?.to_price,
           };
         });
         const formatDataSellHistory = sellHistoryTradeList?.map((item) => {
@@ -652,7 +652,7 @@
             dataPriceChart.map((item) => {
               return {
                 ...item,
-                date: item.value[0],
+                date: item?.value[0] || 0,
               };
             })
           );
@@ -660,7 +660,7 @@
             quantity_in: item.quantity_in,
             quantity_out: item.quantity_out,
             itemStyle: { color: "#ef4444" },
-            value: [item.created_at * 1000, selected.value[1]],
+            value: [item.created_at * 1000, selected?.value[1] || 0],
             type: "sell",
             past_price: item.from_price,
           };
@@ -717,8 +717,8 @@
             data: groupBuyTradeHistoryData[item],
             itemStyle: { color },
             value: [
-              groupBuyTradeHistoryData[item][0].value[0],
-              selected.value[1],
+              groupBuyTradeHistoryData[item][0]?.value[0],
+              selected?.value[1] || 0,
             ],
             type: "trade",
           };
