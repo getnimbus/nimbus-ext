@@ -9,6 +9,7 @@
     user,
     selectedPackage,
   } from "~/store";
+  import { listSupported } from "~/lib/chains";
   import { filterAvgCostType } from "~/utils";
   import { useNavigate } from "svelte-navigator";
 
@@ -99,17 +100,7 @@
     }
   }
 
-  $: colspan =
-    $typeWallet === "SOL" ||
-    $typeWallet === "NEAR" ||
-    $typeWallet === "TON" ||
-    $typeWallet === "AURA" ||
-    $typeWallet === "ALGO" ||
-    $typeWallet === "EVM" ||
-    $typeWallet === "MOVE" ||
-    ($typeWallet === "BUNDLE" && data?.chain !== "CEX")
-      ? 5
-      : 4;
+  $: colspan = listSupported.includes($typeWallet) ? 5 : 4;
 </script>
 
 <ErrorBoundary>
@@ -340,16 +331,7 @@
 
               <th
                 class={`py-3 rounded-tr-[10px] ${
-                  $typeWallet === "SOL" ||
-                  $typeWallet === "NEAR" ||
-                  $typeWallet === "TON" ||
-                  $typeWallet === "AURA" ||
-                  $typeWallet === "ALGO" ||
-                  $typeWallet === "EVM" ||
-                  $typeWallet === "MOVE" ||
-                  ($typeWallet === "BUNDLE" && data?.chain !== "CEX")
-                    ? ""
-                    : "pr-3"
+                  listSupported.includes($typeWallet) ? "" : "pr-3"
                 }`}
               >
                 <div
@@ -359,7 +341,7 @@
                 </div>
               </th>
 
-              {#if $typeWallet === "SOL" || $typeWallet === "NEAR" || $typeWallet === "TON" || $typeWallet === "AURA" || $typeWallet === "ALGO" || $typeWallet === "EVM" || $typeWallet === "MOVE" || ($typeWallet === "BUNDLE" && data?.chain !== "CEX")}
+              {#if listSupported.includes($typeWallet)}
                 <th class="py-3 w-10" />
               {/if}
             </tr>

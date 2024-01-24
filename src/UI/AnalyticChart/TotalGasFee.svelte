@@ -2,7 +2,7 @@
   import { wallet, chain, typeWallet } from "~/store";
   import dayjs from "dayjs";
   import { formatBalance, formatCurrency } from "~/utils";
-  import { listSupported } from "~/lib/chains";
+  import { listSupported, otherGeneration } from "~/lib/chains";
   import { createQuery } from "@tanstack/svelte-query";
   import { nimbus } from "~/lib/network";
 
@@ -227,7 +227,7 @@
     {sum}
     type="primary"
   />
-  {#if $typeWallet === "SOL" || $typeWallet === "NEAR" || $typeWallet === "TON" || $typeWallet === "AURA" || $typeWallet === "ALGO"}
+  {#if otherGeneration.includes($typeWallet)}
     <div
       class={`absolute top-0 left-0 rounded-[20px] z-30 w-full h-full flex items-center justify-center z-10 backdrop-blur-md ${
         darkMode ? "bg-black/90" : "bg-white/95"
