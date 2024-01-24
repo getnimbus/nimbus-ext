@@ -1,12 +1,12 @@
+import All from "~/assets/all.svg";
+import Bundles from "~/assets/bundles.png";
+
 import Bitcoin from "~/assets/chains/bitcoin.png";
 import Solana from "~/assets/chains/solana.png";
 import Aura from "~/assets/chains/aura.png";
 import Algorand from "~/assets/chains/algorand.png";
 import Near from "~/assets/chains/near.png";
 import Ton from "~/assets/chains/ton.png";
-
-import All from "~/assets/all.svg";
-import Bundles from "~/assets/bundles.png";
 
 // MOVE
 import Move from "~/assets/chains/move.png";
@@ -90,7 +90,7 @@ export const listLogoCEX = [
   "https://s2.coinmarketcap.com/static/img/exchanges/64x64/37.png",
 ];
 
-export const evmChainNotSupportHistoricalBalances = ["ROSE", "CANTO", "MOVR", "MANTA", "VIC", "MANTLE", "CRONOS", "LINEA", "ZKSYNC", "XDAI", "ARB", "AVAX", "OP", "BASE", "SCROLL", "KLAY", "XZO", "ZETA", "RON", "FANTOM", "AURORA", "EVMOS", "ONE", "GLMR", "METIS", "POLYGON_ZKEVM", "OPBNB"];
+export const chainNotSupportHistoricalBalances = ["ROSE", "CANTO", "MOVR", "MANTA", "VIC", "MANTLE", "CRONOS", "LINEA", "ZKSYNC", "XDAI", "ARB", "AVAX", "OP", "BASE", "SCROLL", "KLAY", "XZO", "ZETA", "RON", "FANTOM", "AURORA", "EVMOS", "ONE", "GLMR", "METIS", "POLYGON_ZKEVM", "OPBNB"];
 export const chainSupportedList = ["BUNDLE", "EVM", "CEX", "MOVE", "SOL", "NEAR", "TON", "ALGO", "AURA"];
 export const chainSupportedLogo = [
   {

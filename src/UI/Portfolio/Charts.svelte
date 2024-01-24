@@ -11,7 +11,7 @@
   } from "~/utils";
   import {
     chainSupportedList,
-    evmChainNotSupportHistoricalBalances,
+    chainNotSupportHistoricalBalances,
   } from "~/lib/chains";
   import dayjs from "dayjs";
   import numeral from "numeral";
@@ -866,7 +866,7 @@
         </div>
       {:else}
         <div class="flex justify-between mb-4">
-          {#if ($typeWallet === "EVM" && evmChainNotSupportHistoricalBalances.includes($chain)) || chainSupportedList
+          {#if ($typeWallet === "EVM" && chainNotSupportHistoricalBalances.includes($chain)) || chainSupportedList
               .slice(2)
               .includes($typeWallet) || $selectedBundle?.accounts?.find((item) => item.type === "CEX") !== undefined}
             <TooltipTitle
