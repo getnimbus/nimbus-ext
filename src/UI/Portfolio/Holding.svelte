@@ -62,6 +62,12 @@
     { value: "Hyperspace", label: "Hyperspace" },
     { value: "Tensorswap", label: "Tensorswap" },
   ];
+  const wallets = [
+    new PhantomWalletAdapter(),
+    new SolflareWalletAdapter(),
+    new BackpackWalletAdapter(),
+  ];
+  const maxNumberOfWallets = 5;
 
   let dataSubWS = [];
   let filteredUndefinedCmcHoldingTokenData = [];
@@ -560,12 +566,6 @@
     isSuccessToast = false;
   };
 
-  const wallets = [
-    new PhantomWalletAdapter(),
-    new SolflareWalletAdapter(),
-    new BackpackWalletAdapter(),
-  ];
-
   let modalVisible = false;
   let userPublicAddressChain = "EVM";
   let userAddress = $userPublicAddress;
@@ -573,8 +573,6 @@
   onMount(() => {
     $walletStore.disconnect();
   });
-
-  const maxNumberOfWallets = 5;
 
   const openModal = () => {
     modalVisible = true;
