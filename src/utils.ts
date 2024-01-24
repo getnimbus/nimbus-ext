@@ -6,6 +6,7 @@ import { groupBy } from "lodash";
 import confetti from "canvas-confetti";
 import { driver } from "driver.js";
 import "driver.js/dist/driver.css";
+import dayjs from "dayjs";
 
 export const netWorthFilter = [
   {
@@ -852,3 +853,60 @@ export const handleGetAccessToken = async (code: string) => {
     return jwt_decode(res.data.id_token);
   }
 };
+
+export function filterDuplicates(arr) {
+  const seen = new Set();
+  return arr.filter((obj) => {
+    const stringifiedObj = JSON.stringify(obj);
+    if (seen.has(stringifiedObj)) {
+      return false;
+    } else {
+      seen.add(stringifiedObj);
+      return true;
+    }
+  });
+}
+
+export function formatActiveTime(timestamp) {
+  const currentTime = dayjs();
+  const activityTime = dayjs(timestamp);
+
+  const minutesDiff = currentTime.diff(activityTime, "minute");
+  const hoursDiff = currentTime.diff(activityTime, "hour");
+  const daysDiff = currentTime.diff(activityTime, "day");
+  const monthsDiff = currentTime.diff(activityTime, "month");
+
+  if (minutesDiff < 60) {
+    return `${minutesDiff} ${minutesDiff === 1 ? "minute" : "minutes"} ago`;
+  } else if (hoursDiff < 24) {
+    return `${hoursDiff} ${hoursDiff === 1 ? "hour" : "hours"} ago`;
+  } else if (daysDiff < 30) {
+    return `${daysDiff} ${daysDiff === 1 ? "day" : "days"} ago`;
+  } else if (monthsDiff < 12) {
+    return `${monthsDiff} ${monthsDiff === 1 ? "month" : "months"} ago`;
+  } else {
+    return "More than a year ago";
+  }
+}
+
+export function formatAHT(timestamp) {
+  const currentTime = dayjs();
+  const activityTime = dayjs(Number(currentTime) - timestamp);
+
+  const minutesDiff = currentTime.diff(activityTime, "minute");
+  const hoursDiff = currentTime.diff(activityTime, "hour");
+  const daysDiff = currentTime.diff(activityTime, "day");
+  const monthsDiff = currentTime.diff(activityTime, "month");
+
+  if (minutesDiff < 60) {
+    return `${minutesDiff}m`;
+  } else if (hoursDiff < 24) {
+    return `${hoursDiff}h`;
+  } else if (daysDiff < 30) {
+    return `${daysDiff}d`;
+  } else if (monthsDiff < 12) {
+    return `${monthsDiff}mo`;
+  } else {
+    return "More than a year";
+  }
+}
