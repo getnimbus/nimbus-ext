@@ -1,23 +1,27 @@
 <script>
   import dayjs from "dayjs";
   import relativeTime from "dayjs/plugin/relativeTime";
+
+  import tooltip from "~/entries/contentScript/views/tooltip";
   import { isDarkMode } from "~/store";
+  import { formatAHT, formatActiveTime, handleImgError } from "~/utils";
   dayjs.extend(relativeTime);
 
   export let data;
 
   import TooltipNumber from "./TooltipNumber.svelte";
-  import tooltip from "~/entries/contentScript/views/tooltip";
   import Copy from "./Copy.svelte";
 
   import TrendUp from "~/assets/trend-up.svg";
   import TrendDown from "~/assets/trend-down.svg";
   import defaultToken from "~/assets/defaultToken.png";
-
-  import { formatAHT, formatActiveTime, handleImgError } from "~/utils";
 </script>
 
-<tr class="group transition-all">
+<tr
+  class={`group transition-all ${
+    $isDarkMode ? "text-gray-400" : "text-[#666666]"
+  }`}
+>
   <td
     class={`pl-3 py-4 xl:static xl:bg-transparent text-left sticky left-0 z-9 ${
       $isDarkMode
@@ -29,22 +33,27 @@
       {#if data?.avatar}
         <img src={data?.avatar} alt="" class="w-5 h-5 rounded-full" />
       {/if}
-      <div class="xl:text-sm text-2xl font-medium">
-        <Copy
-          address={data?.address}
-          textTooltip="Copy address to clipboard"
-          iconColor={$isDarkMode ? "#fff" : "#000"}
-          color={$isDarkMode ? "#fff" : "#000"}
-          isShorten={true}
-          isLink={true}
-          link={`/?type=EVM&chain=ALL&address=${data?.address}`}
-        />
-      </div>
       {#if data?.name}
-        <div
-          class="text-ellipsis max-w-[150px] overflow-hidden whitespace-nowrap xl:text-sm text-2xl font-medium"
+        <a
+          class={`text-ellipsis max-w-[150px] overflow-hidden whitespace-nowrap xl:text-sm text-2xl hover:text-blue-500 ${
+            $isDarkMode ? "text-white" : "text-black"
+          }`}
+          href={`/?type=EVM&chain=ALL&address=${data?.address}`}
+          target="_blank"
         >
           {data?.name}
+        </a>
+      {:else}
+        <div class="xl:text-sm text-2xl">
+          <Copy
+            address={data?.address}
+            textTooltip="Copy address to clipboard"
+            iconColor={$isDarkMode ? "#fff" : "#000"}
+            color={$isDarkMode ? "#fff" : "#000"}
+            isShorten={true}
+            isLink={true}
+            link={`/?type=EVM&chain=ALL&address=${data?.address}`}
+          />
         </div>
       {/if}
       {#if data?.twitter_username}
