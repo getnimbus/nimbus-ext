@@ -1,14 +1,18 @@
+import Bitcoin from "~/assets/chains/bitcoin.png";
 import Solana from "~/assets/chains/solana.png";
 import Aura from "~/assets/chains/aura.png";
-import Bitcoin from "~/assets/chains/bitcoin.png";
+import Algorand from "~/assets/chains/algorand.png";
 import Near from "~/assets/chains/near.png";
-
 import Ton from "~/assets/chains/ton.png";
-import Sui from "~/assets/chains/sui.png";
 
 import All from "~/assets/all.svg";
-import Bnb from "~/assets/chains/bnb.png";
+
+// MOVE
+import Sui from "~/assets/chains/sui.png";
+
+// EVM
 import Ethereum from "~/assets/chains/ethereum.png";
+import Bnb from "~/assets/chains/bnb.png";
 import Matic from "~/assets/chains/matic.png";
 import Optimism from "~/assets/chains/optimism.png";
 import Avax from "~/assets/chains/avax.png";
@@ -20,7 +24,6 @@ import ZkSync from "~/assets/chains/zksync.png";
 import Linea from "~/assets/chains/linea.png";
 import Cronos from "~/assets/chains/cronos.png";
 import Mantle from "~/assets/chains/mantle.png";
-import Algorand from "~/assets/chains/algorand.png";
 import Exzo from "~/assets/chains/exzo.png";
 import Klaytn from "~/assets/chains/klaytn.png";
 import Viction from "~/assets/chains/viction.png";
@@ -264,12 +267,6 @@ export const detectedChain = (type) => {
     name: "All"
   };
   switch (type) {
-    case "ALL":
-      chain = {
-        logo: All,
-        name: "All"
-      };
-      break;
     case "BTC":
       chain = {
         logo: Bitcoin,
