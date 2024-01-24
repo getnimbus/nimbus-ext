@@ -29,13 +29,13 @@
         : "bg-white group-hover:bg-gray-100"
     }`}
   >
-    <div class="flex gap-2 items-center">
+    <div class="flex gap-2 items-center max-w-[250px]">
       {#if data?.avatar}
         <img src={data?.avatar} alt="" class="w-5 h-5 rounded-full" />
       {/if}
       {#if data?.name}
         <a
-          class={`text-ellipsis max-w-[150px] overflow-hidden whitespace-nowrap xl:text-sm text-2xl hover:text-blue-500 ${
+          class={`text-ellipsis overflow-hidden whitespace-nowrap xl:text-sm text-2xl hover:text-blue-500 ${
             $isDarkMode ? "text-white" : "text-black"
           }`}
           href={`/?type=EVM&chain=ALL&address=${data?.address}`}

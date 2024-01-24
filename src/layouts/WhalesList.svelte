@@ -36,12 +36,12 @@
   };
 
   let whalesFilter: {
-    value: "ALL" | "SMART" | "FRESH" | "KOL";
+    value: string;
     label: "ALL" | "SMART" | "FRESH" | "KOL";
   }[] = [
-    { value: "ALL", label: "ALL" },
-    { value: "SMART", label: "SMART" },
-    { value: "FRESH", label: "FRESH" },
+    { value: "All", label: "ALL" },
+    { value: "Smart Wallet", label: "SMART" },
+    { value: "Fresh Wallet", label: "FRESH" },
     { value: "KOL", label: "KOL" },
   ];
   let selectedFilter = whalesFilter[0];
@@ -152,7 +152,7 @@
         <AnimateSharedLayout>
           {#each whalesFilter as item}
             <div
-              id={item.value}
+              id={item.label}
               class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
               on:click={() => {
                 selectedFilter = item;
