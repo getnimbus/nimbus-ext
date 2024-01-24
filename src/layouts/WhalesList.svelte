@@ -83,16 +83,6 @@
     getPublicPortfolio(selectedFilter.value);
   });
 
-  const closeModal = () => {
-    isOpenFilterModal = false;
-  };
-
-  const resetFilter = () => {
-    filterParams = "";
-    search = "";
-    getPublicPortfolio(selectedFilter.value);
-  };
-
   $: {
     if (selectedFilter) {
       getPublicPortfolio(selectedFilter.value);
@@ -214,11 +204,6 @@
                 Address
               </div>
             </th>
-            <!-- <th class="py-3">
-              <div class="text-left xl:text-xs text-xl uppercase font-medium">
-                Tokens
-              </div>
-            </th> -->
             <th class="py-3">
               <div
                 class="flex items-center justify-end xl:gap-2 gap-4 text-right xl:text-xs text-xl uppercase font-medium"

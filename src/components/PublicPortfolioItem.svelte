@@ -261,7 +261,7 @@
         <img
           src={token.logo || defaultToken}
           use:tooltip={{
-            content: `${token.name}`,
+            content: `${token.symbol}`,
             allowHTML: true,
             placement: "top",
             interactive: true,
