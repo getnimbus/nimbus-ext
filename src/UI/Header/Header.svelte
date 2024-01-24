@@ -24,6 +24,7 @@
   import Mousetrap from "mousetrap";
   import addGlobalBinds from "bind-mousetrap-global";
   addGlobalBinds(Mousetrap);
+  import { detectedGeneration } from "~/lib/chains";
 
   import tooltip from "~/entries/contentScript/views/tooltip";
   import Auth from "~/UI/Auth/Auth.svelte";
@@ -49,16 +50,6 @@
   import Chat from "~/assets/chat.svg";
   import User from "~/assets/user.png";
   import goldImg from "~/assets/Gold4.svg";
-
-  import EVM from "~/assets/chains/evm.png";
-  import Move from "~/assets/chains/move.png";
-  import Bundles from "~/assets/bundles.png";
-  import BitcoinLogo from "~/assets/chains/bitcoin.png";
-  import SolanaLogo from "~/assets/chains/solana.png";
-  import NearLogo from "~/assets/chains/near.png";
-  import AuraLogo from "~/assets/chains/aura.png";
-  import AlgorandLogo from "~/assets/chains/algorand.png";
-  import TonLogo from "~/assets/chains/ton.png";
 
   const MultipleLang = {
     portfolio: i18n("newtabPage.portfolio", "Portfolio"),
@@ -121,67 +112,23 @@
 
   const formatDataListAddress = (data) => {
     const structWalletData = data.map((item) => {
-      let logo = EVM;
-      if (item?.type === "BTC") {
-        logo = BitcoinLogo;
-      }
-      if (item?.type === "SOL") {
-        logo = SolanaLogo;
-      }
-      if (item?.type === "NEAR") {
-        logo = NearLogo;
-      }
-      if (item?.type === "TON") {
-        logo = TonLogo;
-      }
-      if (item?.type === "MOVE") {
-        logo = Move;
-      }
-      if (item?.type === "AURA") {
-        logo = AuraLogo;
-      }
-      if (item?.type === "ALGO") {
-        logo = AlgorandLogo;
-      }
-      if (item?.type === "BUNDLE") {
-        logo = Bundles;
-      }
       return {
         id: item.id,
         type: item.type,
         label: item.label,
         value: item.type === "CEX" ? item.id : item.accountId,
-        logo: item.type === "CEX" ? item.logo : logo,
+        logo: item.type === "CEX" ? item.logo : detectedGeneration(item.type),
         accounts:
           item?.accounts?.map((account) => {
-            let logo = EVM;
-            if (account?.type === "BTC") {
-              logo = BitcoinLogo;
-            }
-            if (account?.type === "SOL") {
-              logo = SolanaLogo;
-            }
-            if (account?.type === "NEAR") {
-              logo = NearLogo;
-            }
-            if (item?.type === "TON") {
-              logo = TonLogo;
-            }
-            if (item?.type === "MOVE") {
-              logo = Move;
-            }
-            if (item?.type === "AURA") {
-              logo = AuraLogo;
-            }
-            if (account?.type === "ALGO") {
-              logo = AlgorandLogo;
-            }
             return {
               id: account?.id,
               type: account?.type,
               label: account?.label,
               value: account?.type === "CEX" ? account?.id : account?.accountId,
-              logo: account?.type === "CEX" ? account?.logo : logo,
+              logo:
+                account?.type === "CEX"
+                  ? account?.logo
+                  : detectedGeneration(account?.type),
             };
           }) || [],
       };
@@ -351,7 +298,7 @@
               picture: User,
             })
         );
-        queryClient.invalidateQueries(["users-me"]);
+        queryClient?.invalidateQueries(["users-me"]);
         isOpenModalSync = false;
       }
       errors["code"] = {
@@ -567,7 +514,7 @@
           }`}
           on:click={() => {
             navActive = "portfolio";
-            queryClient.invalidateQueries(["users-me"]);
+            queryClient?.invalidateQueries(["users-me"]);
           }}
         >
           <img src={PortfolioIcon} alt="" width="20" height="20" />
@@ -598,7 +545,7 @@
           `}
           on:click={() => {
             navActive = "analytic";
-            queryClient.invalidateQueries(["users-me"]);
+            queryClient?.invalidateQueries(["users-me"]);
           }}
         >
           <img src={AnalyticIcon} alt="" width="20" height="20" />
@@ -826,7 +773,7 @@
             <div
               on:click={() => {
                 navActive = "upgrade";
-                queryClient.invalidateQueries(["users-me"]);
+                queryClient?.invalidateQueries(["users-me"]);
                 isShowHeaderMobile.update((n) => (n = false));
               }}
             >
@@ -879,7 +826,7 @@
             <div
               on:click={() => {
                 navActive = "profile";
-                queryClient.invalidateQueries(["users-me"]);
+                queryClient?.invalidateQueries(["users-me"]);
                 isShowHeaderMobile.update((n) => (n = false));
               }}
             >
@@ -976,7 +923,7 @@
             <div
               on:click={() => {
                 navActive = "invitation";
-                queryClient.invalidateQueries(["users-me"]);
+                queryClient?.invalidateQueries(["users-me"]);
                 isShowHeaderMobile.update((n) => (n = false));
               }}
             >

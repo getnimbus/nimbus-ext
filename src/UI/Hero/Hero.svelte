@@ -19,7 +19,6 @@
   import Plus from "~/assets/plus.svg";
   import heroImage from "~/assets/recap/hero/heroimage.png";
 
-  export let address = "";
   export let isOpenAddModal = false;
   export let btntext;
 
@@ -67,6 +66,7 @@
             `?type=${validateAccount?.type}&chain=ALL&address=${validateAccount?.address}`
         );
       }
+
       if (
         validateAccount?.type === "BTC" ||
         validateAccount?.type === "SOL" ||
@@ -140,7 +140,7 @@
               autofocus
               value={search}
               class={`xl:px-5 xl:py-3 px-6 py-4 border border-gray-300 focus:ring-0 xl:text-sm text-lg font-normal rounded-xl w-full ${
-                address && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+                !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
               } ${
                 $isDarkMode
                   ? "text-white"

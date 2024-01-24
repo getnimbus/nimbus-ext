@@ -9,6 +9,7 @@
     chain,
     typeWallet,
     user,
+    selectedPackage,
     isDarkMode,
     isShowHeaderMobile,
     triggerConnectWallet,
@@ -175,6 +176,7 @@
       chain.update((n) => (n = ""));
       typeWallet.update((n) => (n = ""));
       userPublicAddress.update((n) => (n = ""));
+      selectedPackage.update((n) => (n = "FREE"));
       showPopover = false;
 
       localStorage.removeItem("public_address");
@@ -185,8 +187,8 @@
       localStorage.removeItem("solana_token");
       $walletStore.disconnect();
 
-      queryClient.invalidateQueries(["list-address"]);
-      queryClient.invalidateQueries(["users-me"]);
+      queryClient?.invalidateQueries(["list-address"]);
+      queryClient?.invalidateQueries(["users-me"]);
       mixpanel.reset();
     } catch (error) {
       console.log(error);
@@ -265,7 +267,7 @@
               picture: User,
             })
         );
-        queryClient.invalidateQueries(["users-me"]);
+        queryClient?.invalidateQueries(["users-me"]);
         queryClient.invalidateQueries(["list-address"]);
       }
     } catch (e) {
@@ -337,7 +339,7 @@
               picture: User,
             })
         );
-        queryClient.invalidateQueries(["users-me"]);
+        queryClient?.invalidateQueries(["users-me"]);
         queryClient.invalidateQueries(["list-address"]);
       }
     } catch (e) {
@@ -760,7 +762,7 @@
     </div>
     <div class="flex items-center justify-center gap-4">
       <div
-        class={`flex items-center gap-2 text-white border cursor-pointer py-3 px-6 rounded-[12px] w-[250px] ${
+        class={`flex items-center justify-center gap-2 text-white border cursor-pointer py-3 px-6 rounded-[12px] min-w-[250px] ${
           $isDarkMode
             ? "border-white text-white"
             : "border-[#27326f] text-[#27326f]"
