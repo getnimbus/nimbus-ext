@@ -933,8 +933,6 @@
       handleUpdateParams();
     }
   };
-
-  $: console.log("HELLO: ", $wallet);
 </script>
 
 {#if $query.isFetching}

@@ -186,8 +186,8 @@
       return {
         name: item?.symbol,
         full_name: item?.name,
-        value: item?.cg_id,
-        logo: item?.image_url,
+        value: item?.api_symbol,
+        logo: item?.large,
       };
     });
   };
