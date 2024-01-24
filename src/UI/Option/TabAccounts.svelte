@@ -3,7 +3,7 @@
   import { i18n } from "~/lib/i18n";
   import { dndzone } from "svelte-dnd-action";
   import {
-    chainSupportedLogo,
+    generationLogo,
     listProviderCEX,
     listLogoCEX,
     detectedGeneration,
@@ -1706,7 +1706,7 @@
           </label>
         </div>
         <div class="flex items-center justify-center gap-6 my-3">
-          {#each chainSupportedLogo as item}
+          {#each generationLogo as item}
             <img
               src={item.logo}
               alt=""

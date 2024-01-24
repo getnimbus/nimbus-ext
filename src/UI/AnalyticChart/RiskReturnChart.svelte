@@ -8,7 +8,7 @@
     getTooltipContent,
     sharpeRatioColorChart,
   } from "~/utils";
-  import { chainSupportedList } from "~/lib/chains";
+  import { listSupported } from "~/lib/chains";
   import maxBy from "lodash/maxBy";
   import minBy from "lodash/minBy";
   import groupBy from "lodash/groupBy";
@@ -242,7 +242,7 @@
   };
 
   $: enabledQuery = Boolean(
-    chainSupportedList.includes($typeWallet) && $wallet && $wallet?.length !== 0
+    listSupported.includes($typeWallet) && $wallet && $wallet?.length !== 0
   );
 
   $: query = createQuery({

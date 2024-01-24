@@ -3,7 +3,7 @@
   import { groupBy, intersection, flatten } from "lodash";
   import dayjs from "dayjs";
   import { autoFontSize, formatCurrency } from "~/utils";
-  import { chainSupportedList } from "~/lib/chains";
+  import { listSupported } from "~/lib/chains";
   import { createQuery } from "@tanstack/svelte-query";
   import { nimbus } from "~/lib/network";
 
@@ -348,7 +348,7 @@
   }
 
   $: enabledQuery = Boolean(
-    chainSupportedList.includes($typeWallet) &&
+    listSupported.includes($typeWallet) &&
       $wallet &&
       $wallet?.length !== 0 &&
       $selectedPackage !== "FREE"
