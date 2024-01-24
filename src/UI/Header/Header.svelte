@@ -351,7 +351,7 @@
               picture: User,
             })
         );
-        queryClient.invalidateQueries(["users-me"]);
+        queryClient?.invalidateQueries(["users-me"]);
         isOpenModalSync = false;
       }
       errors["code"] = {
@@ -567,7 +567,7 @@
           }`}
           on:click={() => {
             navActive = "portfolio";
-            queryClient.invalidateQueries(["users-me"]);
+            queryClient?.invalidateQueries(["users-me"]);
           }}
         >
           <img src={PortfolioIcon} alt="" width="20" height="20" />
@@ -598,7 +598,7 @@
           `}
           on:click={() => {
             navActive = "analytic";
-            queryClient.invalidateQueries(["users-me"]);
+            queryClient?.invalidateQueries(["users-me"]);
           }}
         >
           <img src={AnalyticIcon} alt="" width="20" height="20" />
@@ -826,7 +826,7 @@
             <div
               on:click={() => {
                 navActive = "upgrade";
-                queryClient.invalidateQueries(["users-me"]);
+                queryClient?.invalidateQueries(["users-me"]);
                 isShowHeaderMobile.update((n) => (n = false));
               }}
             >
@@ -879,7 +879,7 @@
             <div
               on:click={() => {
                 navActive = "profile";
-                queryClient.invalidateQueries(["users-me"]);
+                queryClient?.invalidateQueries(["users-me"]);
                 isShowHeaderMobile.update((n) => (n = false));
               }}
             >
@@ -976,7 +976,7 @@
             <div
               on:click={() => {
                 navActive = "invitation";
-                queryClient.invalidateQueries(["users-me"]);
+                queryClient?.invalidateQueries(["users-me"]);
                 isShowHeaderMobile.update((n) => (n = false));
               }}
             >

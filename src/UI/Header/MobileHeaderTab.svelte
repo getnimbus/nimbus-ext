@@ -44,7 +44,7 @@
       }`}
       on:click={() => {
         navActive = "portfolio";
-        queryClient.invalidateQueries(["users-me"]);
+        queryClient?.invalidateQueries(["users-me"]);
       }}
     >
       <svg
@@ -102,16 +102,8 @@
           }
           `}
       on:click={() => {
-        if ($user && Object.keys($user).length !== 0) {
-          navActive = "analytic";
-          queryClient.invalidateQueries(["users-me"]);
-        } else {
-          user.update((n) => (n = {}));
-          wallet.update((n) => (n = ""));
-          chain.update((n) => (n = ""));
-          typeWallet.update((n) => (n = ""));
-          queryClient.invalidateQueries(["list-address"]);
-        }
+        navActive = "analytic";
+        queryClient?.invalidateQueries(["users-me"]);
       }}
     >
       <svg

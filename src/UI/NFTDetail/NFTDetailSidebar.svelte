@@ -1,7 +1,7 @@
 <script lang="ts">
   import { nimbus } from "~/lib/network";
   import { priceSubscribe } from "~/lib/price-ws";
-  import { isDarkMode } from "~/store";
+  import { isDarkMode, typeWallet } from "~/store";
   import { createQuery } from "@tanstack/svelte-query";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
 
@@ -415,6 +415,36 @@
                       </TooltipTitle>
                     </div>
                   </th>
+
+                  <!-- <th
+                    class={`py-3 ${
+                      $typeWallet === "SOL" ||
+                      ($typeWallet === "BUNDLE" &&
+                        data?.nativeToken?.symbol === "SOL")
+                        ? ""
+                        : "pr-3 rounded-tr-[10px]"
+                    }`}
+                  >
+                    <div
+                      class="text-right xl:text-xs text-xl uppercase font-medium"
+                    >
+                      <TooltipTitle
+                        tooltipText="Price NFTs now - Price NFTs at time you spent"
+                      >
+                        Profit & Loss
+                      </TooltipTitle>
+                    </div>
+                  </th> -->
+
+                  <!-- {#if $typeWallet === "SOL" || ($typeWallet === "BUNDLE" && data?.nativeToken?.symbol === "SOL")}
+                    <th class="py-3 pr-3 rounded-tr-[10px]">
+                      <div
+                        class="text-right xl:text-xs text-xl uppercase font-medium"
+                      >
+                        Action
+                      </div>
+                    </th>
+                  {/if} -->
                 </tr>
               </thead>
               <tbody>

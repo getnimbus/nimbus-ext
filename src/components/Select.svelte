@@ -9,6 +9,7 @@
   export let selected;
   export let type: "chain" | "wallet" | "lang" | "filter";
   export let positionSelectList = "left-0";
+  export let disabled = false;
 
   let open = false;
 
@@ -37,7 +38,11 @@
       type === "lang" || type === "filter" ? "bg-[#1E96FC]" : ""
     }`}
     class:active={open}
-    on:click={() => (open = !open)}
+    on:click={() => {
+      if (!disabled) {
+        open = !open;
+      }
+    }}
   >
     <div class="flex items-center gap-2">
       {#if type === "chain" || type === "lang" || type === "filter"}

@@ -306,7 +306,7 @@
     queryKey: ["overview", $wallet, $chain],
     queryFn: () => getOverview($wallet, $chain),
     staleTime: Infinity,
-    enabled: enabledFetchAllData && $wallet && $wallet?.length !== 0,
+    enabled: Boolean(enabledFetchAllData && $wallet && $wallet?.length !== 0),
   });
 
   $: {
@@ -392,12 +392,13 @@
     queryKey: ["nft-holding", $wallet, $chain],
     queryFn: () => getHoldingNFT($wallet, $chain),
     staleTime: Infinity,
-    enabled:
+    enabled: Boolean(
       enabledFetchAllData &&
-      $wallet &&
-      $wallet?.length !== 0 &&
-      $chain.length !== 0 &&
-      $chain !== "ALL",
+        $wallet &&
+        $wallet?.length !== 0 &&
+        $chain.length !== 0 &&
+        $chain !== "ALL"
+    ),
   });
 
   $: queryAllNftHolding = createQueries(
@@ -406,12 +407,13 @@
         queryKey: ["nft-holding", $wallet, $chain, item],
         queryFn: () => getHoldingNFT($wallet, item),
         staleTime: Infinity,
-        enabled:
+        enabled: Boolean(
           enabledFetchAllData &&
-          $wallet &&
-          $wallet?.length !== 0 &&
-          $chain.length !== 0 &&
-          $chain === "ALL",
+            $wallet &&
+            $wallet?.length !== 0 &&
+            $chain.length !== 0 &&
+            $chain === "ALL"
+        ),
       };
     })
   );
@@ -461,7 +463,7 @@
     queryKey: ["vaults", $wallet, $chain],
     queryFn: () => getVaults($wallet, $chain),
     staleTime: Infinity,
-    enabled: enabledFetchAllData && $wallet && $wallet?.length !== 0,
+    enabled: Boolean(enabledFetchAllData && $wallet && $wallet?.length !== 0),
     placeholderData: [],
   });
 
@@ -488,12 +490,13 @@
     queryKey: ["token-holding", $wallet, $chain],
     queryFn: () => getHoldingToken($wallet, $chain),
     staleTime: Infinity,
-    enabled:
+    enabled: Boolean(
       enabledFetchAllData &&
-      $wallet &&
-      $wallet?.length !== 0 &&
-      $chain.length !== 0 &&
-      $chain !== "ALL",
+        $wallet &&
+        $wallet?.length !== 0 &&
+        $chain.length !== 0 &&
+        $chain !== "ALL"
+    ),
   });
 
   $: queryAllTokenHolding = createQueries(
@@ -502,12 +505,13 @@
         queryKey: ["token-holding", $wallet, $chain, item],
         queryFn: () => getHoldingToken($wallet, item),
         staleTime: Infinity,
-        enabled:
+        enabled: Boolean(
           enabledFetchAllData &&
-          $wallet &&
-          $wallet?.length !== 0 &&
-          $chain.length !== 0 &&
-          $chain === "ALL",
+            $wallet &&
+            $wallet?.length !== 0 &&
+            $chain.length !== 0 &&
+            $chain === "ALL"
+        ),
       };
     })
   );
@@ -756,6 +760,7 @@
   $: {
     if ($wallet || $chain) {
       if ($wallet?.length !== 0 && $chain?.length !== 0) {
+        console.log("HELLO WORLD");
         overviewDataPerformance = {
           performance: [],
           portfolioChart: [],
