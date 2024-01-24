@@ -42,7 +42,7 @@
         {#if ($typeWallet === "EVM" || $typeWallet === "BUNDLE") && data?.chain !== "CEX"}
           <div class="absolute -top-2 -right-1">
             <img
-              src={detectedChain(data?.chain)}
+              src={detectedChain(data?.chain)?.logo}
               alt=""
               width="15"
               height="15"

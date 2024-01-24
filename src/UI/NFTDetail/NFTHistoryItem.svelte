@@ -82,7 +82,7 @@
         class="cursor-pointer"
       >
         <img
-          src={detectedChain(data?.chain)}
+          src={detectedChain(data?.chain)?.logo}
           alt=""
           width="22"
           height="22"

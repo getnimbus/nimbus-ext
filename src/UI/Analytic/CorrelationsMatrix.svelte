@@ -389,7 +389,7 @@
   }
 
   $: enabledQuery = Boolean(
-    chainSupportedList.includes($typeWallet) && $wallet.length !== 0
+    chainSupportedList.includes($typeWallet) && $wallet && $wallet?.length !== 0
   );
 </script>
 
