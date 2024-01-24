@@ -21,7 +21,7 @@
       <img src={data.logo} alt="" width={50} height={50} />
       <!-- <div class="absolute -top-2 -right-1">
         <img
-          src={detectedChain(data?.chain)}
+          src={detectedChain(data?.chain)?.logo}
           alt=""
           width="20"
           height="20"

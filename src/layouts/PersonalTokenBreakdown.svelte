@@ -695,7 +695,7 @@
                 Custom Token Breakdown
               </div>
             </div>
-            {#if $wallet && $wallet.length !== 0}
+            {#if $wallet && $wallet?.length !== 0}
               <div class="text-base">
                 <Copy address={$wallet} iconColor="#fff" color="#fff" />
               </div>
@@ -1316,7 +1316,7 @@
                                   {#if ($typeWallet === "EVM" || $typeWallet === "BUNDLE") && data?.chain !== "CEX"}
                                     <div class="absolute -top-2 -right-1">
                                       <img
-                                        src={detectedChain(data?.chain)}
+                                        src={detectedChain(data?.chain)?.logo}
                                         alt=""
                                         width="15"
                                         height="15"

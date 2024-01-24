@@ -152,7 +152,8 @@
       $selectedPackage !== "FREE" &&
       data !== undefined &&
       Object.keys(data).length !== 0 &&
-      $wallet.length !== 0 &&
+      $wallet &&
+      $wallet?.length !== 0 &&
       ($typeWallet === "EVM" || $typeWallet === "BUNDLE"),
   });
 

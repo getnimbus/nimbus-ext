@@ -1,5 +1,6 @@
 <script lang="ts">
   import {
+    user,
     wallet,
     chain,
     typeWallet,
@@ -37,16 +38,14 @@
     return response.data;
   };
 
-  $: enabledQuery =
-    $wallet === "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0"
-      ? true
-      : Boolean(
-          ($typeWallet === "EVM" ||
-            $typeWallet === "CEX" ||
-            $typeWallet === "BUNDLE") &&
-            $wallet.length !== 0 &&
-            packageSelected !== "FREE"
-        );
+  $: enabledQuery = Boolean(
+    ($typeWallet === "EVM" ||
+      $typeWallet === "CEX" ||
+      $typeWallet === "BUNDLE") &&
+      $wallet &&
+      $wallet?.length !== 0 &&
+      $selectedPackage !== "FREE"
+  );
 
   $: query = createQuery({
     queryKey: ["holding-history", $wallet, $chain],
@@ -77,7 +76,7 @@
       />
     {/if}
 
-    {#if isShowSoon && address !== "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0"}
+    {#if isShowSoon && $user && Object.keys($user).length === 0}
       <div
         class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col justify-center items-center gap-3 z-10 backdrop-blur-md ${
           $isDarkMode ? "bg-black/90" : "bg-white/95"

@@ -28,6 +28,7 @@
   import TrendUp from "~/assets/trend-up.svg";
   import TrendDown from "~/assets/trend-down.svg";
   import defaultToken from "~/assets/defaultToken.png";
+  import TooltipTitle from "~/components/TooltipTitle.svelte";
 
   export let data;
   export let selectedWallet;
@@ -336,7 +337,7 @@
         {#if ($typeWallet === "EVM" || $typeWallet === "MOVE" || $typeWallet === "BUNDLE") && data?.chain !== "CEX"}
           <div class="absolute -top-2 -right-1">
             <img
-              src={detectedChain(data?.chain)}
+              src={detectedChain(data?.chain)?.logo}
               alt=""
               width="15"
               height="15"
@@ -687,7 +688,18 @@
     }`}
   >
     <div class="flex justify-end text-2xl font-medium xl:text-sm text_00000099">
-      $<TooltipNumber number={data.market_price} type="balance" />
+      {#if data?.chain === "ZETA"}
+        <TooltipTitle
+          tooltipText="Because ZETA chain is test-net so we hardcode price to $10."
+          type="warning"
+        >
+          <div class="pl-4">
+            $<TooltipNumber number={data.market_price} type="balance" />
+          </div>
+        </TooltipTitle>
+      {:else}
+        $<TooltipNumber number={data.market_price} type="balance" />
+      {/if}
     </div>
   </td>
 
@@ -1516,7 +1528,7 @@
             {#if ($typeWallet === "EVM" || $typeWallet === "MOVE" || $typeWallet === "BUNDLE") && selectedTokenDetail?.chain !== "CEX"}
               <div class="absolute -top-2 -right-1">
                 <img
-                  src={detectedChain(selectedTokenDetail?.chain)}
+                  src={detectedChain(selectedTokenDetail?.chain)?.logo}
                   alt=""
                   width="26"
                   height="26"
@@ -1678,7 +1690,7 @@
           {#if ($typeWallet === "EVM" || $typeWallet === "MOVE" || $typeWallet === "BUNDLE") && selectedTokenDetail?.chain !== "CEX"}
             <div class="absolute -top-2 -right-1">
               <img
-                src={detectedChain(selectedTokenDetail?.chain)}
+                src={detectedChain(selectedTokenDetail?.chain)?.logo}
                 alt=""
                 width="26"
                 height="26"

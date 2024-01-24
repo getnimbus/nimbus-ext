@@ -110,11 +110,6 @@
     onError(err) {
       localStorage.removeItem("solana_token");
       localStorage.removeItem("evm_token");
-      user.update((n) => (n = {}));
-      wallet.update((n) => (n = ""));
-      chain.update((n) => (n = ""));
-      typeWallet.update((n) => (n = ""));
-      queryClient.invalidateQueries(["list-address"]);
     },
     onSuccess(data) {
       if (data.publicAddress) {

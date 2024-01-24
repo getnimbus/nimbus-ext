@@ -36,7 +36,8 @@
     enabled:
       selectedNftCollectionChain !== undefined &&
       selectedNftCollectionId !== undefined &&
-      $wallet.length !== 0,
+      $wallet &&
+      $wallet?.length !== 0,
   });
 
   $: {
