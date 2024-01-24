@@ -13,8 +13,6 @@
   import PublicPortfolioItem from "~/components/PublicPortfolioItem.svelte";
   import TooltipTitle from "~/components/TooltipTitle.svelte";
   import Button from "~/components/Button.svelte";
-  import FilterModal from "~/UI/WhalesList/FilterModal.svelte";
-  import AppOverlay from "~/components/Overlay.svelte";
   import { filterDuplicates } from "~/utils";
 
   const navigate = useNavigate();
