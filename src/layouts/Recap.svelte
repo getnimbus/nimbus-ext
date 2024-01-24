@@ -6,32 +6,26 @@
   } from "@solana/wallet-adapter-wallets";
   import { walletStore } from "@svelte-on-solana/wallet-adapter-core";
   import { WalletProvider } from "@svelte-on-solana/wallet-adapter-ui";
-  import { createQuery, useQueryClient } from "@tanstack/svelte-query";
-  import bs58 from "bs58";
+  import { createQuery } from "@tanstack/svelte-query";
   import mixpanel from "mixpanel-browser";
   import { onMount } from "svelte";
   import { nimbus } from "~/lib/network";
-  import { chain, typeWallet, user, userPublicAddress, wallet } from "~/store";
-  import { clickOutside, shorterAddress } from "~/utils";
+  import { userPublicAddress } from "~/store";
   import { inview } from "svelte-inview";
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
-
+  import CardNftRecap from "~/components/CardNFTRecap.svelte";
   import Airdrop from "~/UI/Recap/Airdrop.svelte";
   import MintNft from "~/UI/Recap/MintNFT.svelte";
   import NftHolding from "~/UI/Recap/NFTHolding.svelte";
   import Promote from "~/UI/Recap/Promote.svelte";
   import TokenHolding from "~/UI/Recap/TokenHolding.svelte";
-  import CardNftRecap from "~/components/CardNFTRecap.svelte";
-  import Loading from "~/components/Loading.svelte";
-
   import WalletModal from "~/UI/SolanaCustomWalletBtn/WalletModal.svelte";
 
   import Logo from "~/assets/logo-1.svg";
   import Arrow from "~/assets/recap/hero/arrow-right.svg";
   import SvgOne from "~/assets/recap/hero/svgOne.svg";
   import SvgTwo from "~/assets/recap/hero/svgTwo.svg";
-  import User from "~/assets/user.png";
   import SuperteamLogo from "~/assets/superteamvn.png";
 
   const NFTOne = {
@@ -64,160 +58,26 @@
     new BackpackWalletAdapter(),
   ];
 
-  const queryClient = useQueryClient();
-
   let userPublicAddressChain = "EVM";
   let userAddress = $userPublicAddress;
-  let invitation = "";
 
-  let showPopover = false;
-  let isLoading = false;
   let data;
   let inputAddress;
 
-  $: solanaPublicAddress = $walletStore?.publicKey?.toBase58();
-
   onMount(() => {
-    // Logout on EVM
-    // localStorage.removeItem("evm_token");
     $walletStore.disconnect();
   });
 
-  $: {
-    if (solanaPublicAddress) {
-      userAddress = solanaPublicAddress;
-
-      // const solanaToken = localStorage.getItem("solana_token");
-      // if (!solanaToken) {
-      //   isLoading = true;
-      //   handleSignOut();
-      //   handleGetSolanaNonce(solanaPublicAddress);
-      // }
-    } else {
-      userAddress = $userPublicAddress;
-    }
-  }
-
-  $: {
-    if (userAddress) {
-      handleValidateAddress(userAddress);
-    }
-  }
-
-  // onMount(() => {
-  //   const urlParams = new URLSearchParams(window.location.search);
-  //   const invitationParams = urlParams.get("invitation");
-  //   if (invitationParams) {
-  //     invitation = invitationParams;
-  //   }
-  //   const solanaToken = localStorage.getItem("solana_token");
-
-  //   if (solanaToken) {
-  //     user.update(
-  //       (n) =>
-  //         (n = {
-  //           picture: User,
-  //         })
-  //     );
-  //     userAddress = $userPublicAddress;
-  //   } else {
-  //     handleSignOut();
-  //   }
-  // });
-
-  // const handleSignOut = () => {
-  //   try {
-  //     user.update((n) => (n = {}));
-  //     wallet.update((n) => (n = ""));
-  //     chain.update((n) => (n = ""));
-  //     typeWallet.update((n) => (n = ""));
-  //     userPublicAddress.update((n) => (n = ""));
-
-  //     localStorage.removeItem("public_address");
-  //     localStorage.removeItem("solana_token");
-
-  //     queryClient.invalidateQueries(["list-address"]);
-  //     queryClient.invalidateQueries(["users-me"]);
-  //     mixpanel.reset();
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
-  const handleSignSolanaAddressMessage = async (signatureString) => {
-    if ($walletStore.connected) {
-      try {
-        const res = await $walletStore?.signMessage(
-          Uint8Array.from(
-            Array.from(
-              `I am signing my one-time nonce: ${signatureString}`
-            ).map((letter) => letter.charCodeAt(0))
-          )
-        );
-        if (res) {
-          return bs58.encode(res);
-        } else {
-          return "";
-        }
-      } catch (error) {
-        isLoading = false;
-      }
-    }
-  };
-
-  const handleGetSolanaNonce = async (address) => {
-    try {
-      const res: any = await nimbus.post("/users/nonce", {
-        publicAddress: address,
-        referrer: invitation.length !== 0 ? invitation : undefined,
-      });
-      if (res && res.data) {
-        const signatureString = await handleSignSolanaAddressMessage(
-          res?.data?.nonce
-        );
-        if (signatureString) {
-          const payload = {
-            signature: signatureString,
-            publicAddress: address,
-          };
-          handleGetSolanaToken(payload);
-        }
-      }
-    } catch (e) {
-      console.error("error: ", e);
-    }
-  };
-
-  const handleGetSolanaToken = async (data) => {
-    try {
-      const res = await nimbus.post("/auth/solana", data);
-      if (res?.data?.result) {
-        localStorage.setItem("solana_token", res?.data?.result);
-        user.update(
-          (n) =>
-            (n = {
-              picture: User,
-            })
-        );
-        queryClient.invalidateQueries(["users-me"]);
-        queryClient.invalidateQueries(["list-address"]);
-      }
-    } catch (e) {
-      console.error("error: ", e);
-    } finally {
-      isLoading = false;
-    }
-  };
-
   // trigger Solana wallet
-  const maxNumberOfWallets = 5;
   let modalVisible = false;
+  const maxNumberOfWallets = 5;
   const openModal = () => {
     modalVisible = true;
   };
+
   const closeModal = () => (modalVisible = false);
-  async function connectWallet(event) {
-    // console.log(event);
+
+  const connectWallet = async (event) => {
     closeModal();
     try {
       localStorage.removeItem("walletAdapter");
@@ -228,7 +88,22 @@
       await $walletStore.connect();
     } catch (error) {
       console.log(error);
-      isLoading = false;
+    }
+  };
+
+  $: solanaPublicAddress = $walletStore?.publicKey?.toBase58();
+
+  $: {
+    if (solanaPublicAddress) {
+      userAddress = solanaPublicAddress;
+    } else {
+      userAddress = $userPublicAddress;
+    }
+  }
+
+  $: {
+    if (userAddress) {
+      handleValidateAddress(userAddress);
     }
   }
 
