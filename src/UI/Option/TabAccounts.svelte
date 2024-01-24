@@ -34,9 +34,8 @@
   import User from "~/assets/user.png";
   import Success from "~/assets/shield-done.svg";
 
+  import EVM from "~/assets/chains/evm.png";
   import Move from "~/assets/chains/move.png";
-  import All from "~/assets/all.svg";
-  import Ethereum from "~/assets/chains/ethereum.png";
   import BitcoinLogo from "~/assets/chains/bitcoin.png";
   import SolanaLogo from "~/assets/chains/solana.png";
   import NearLogo from "~/assets/chains/near.png";
@@ -273,7 +272,7 @@
 
   const formatDataListAddress = (data) => {
     const structWalletData = data.map((item) => {
-      let logo = All;
+      let logo = EVM;
       if (item?.type === "BTC") {
         logo = BitcoinLogo;
       }
@@ -1729,7 +1728,7 @@
           </label>
         </div>
         <div class="flex items-center justify-center gap-6 my-3">
-          {#each [{ logo: Ethereum }, { logo: BitcoinLogo }, { logo: SolanaLogo }, { logo: NearLogo }, { logo: Move }, { logo: AuraLogo }, { logo: AlgorandLogo }, { logo: TonLogo }] as item}
+          {#each [{ logo: EVM }, { logo: BitcoinLogo }, { logo: SolanaLogo }, { logo: NearLogo }, { logo: Move }, { logo: AuraLogo }, { logo: AlgorandLogo }, { logo: TonLogo }] as item}
             <img
               src={item.logo}
               alt=""
