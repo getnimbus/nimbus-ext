@@ -17,7 +17,7 @@
     shorterName,
     typeClosedHoldingTokenChart,
   } from "~/utils";
-  import { chainSupportedList } from "~/lib/chains";
+  import { listSupported } from "~/lib/chains";
 
   import type { HoldingTokenRes } from "~/types/HoldingTokenData";
 
@@ -417,7 +417,7 @@
   }
 
   $: enabledQuery = Boolean(
-    chainSupportedList.includes($typeWallet) &&
+    listSupported.includes($typeWallet) &&
       $wallet &&
       $wallet?.length !== 0 &&
       $selectedPackage !== "FREE"

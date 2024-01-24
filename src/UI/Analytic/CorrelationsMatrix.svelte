@@ -13,7 +13,7 @@
     equalizeArrayLengths,
     formatPercent,
   } from "~/utils";
-  import { chainSupportedList } from "~/lib/chains";
+  import { listSupported } from "~/lib/chains";
   import { defillama, nimbus } from "~/lib/network";
   import dayjs from "dayjs";
 
@@ -186,8 +186,8 @@
       return {
         name: item?.symbol,
         full_name: item?.name,
-        value: item?.cg_id,
-        logo: item?.image_url,
+        value: item?.api_symbol,
+        logo: item?.large,
       };
     });
   };
@@ -389,7 +389,7 @@
   }
 
   $: enabledQuery = Boolean(
-    chainSupportedList.includes($typeWallet) && $wallet && $wallet?.length !== 0
+    listSupported.includes($typeWallet) && $wallet && $wallet?.length !== 0
   );
 </script>
 

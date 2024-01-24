@@ -1,3 +1,6 @@
+import All from "~/assets/all.svg";
+import Bundles from "~/assets/bundles.png";
+
 import Bitcoin from "~/assets/chains/bitcoin.png";
 import Solana from "~/assets/chains/solana.png";
 import Aura from "~/assets/chains/aura.png";
@@ -5,12 +8,12 @@ import Algorand from "~/assets/chains/algorand.png";
 import Near from "~/assets/chains/near.png";
 import Ton from "~/assets/chains/ton.png";
 
-import All from "~/assets/all.svg";
-
 // MOVE
+import Move from "~/assets/chains/move.png";
 import Sui from "~/assets/chains/sui.png";
 
 // EVM
+import EVM from "~/assets/chains/evm.png";
 import Ethereum from "~/assets/chains/ethereum.png";
 import Bnb from "~/assets/chains/bnb.png";
 import Matic from "~/assets/chains/matic.png";
@@ -87,8 +90,38 @@ export const listLogoCEX = [
   "https://s2.coinmarketcap.com/static/img/exchanges/64x64/37.png",
 ];
 
-export const chainSupportedList = ["BUNDLE", "EVM", "CEX", "MOVE", "SOL", "NEAR", "TON", "ALGO", "AURA"];
-export const evmChainNotSupportHistoricalBalances = ["ROSE", "CANTO", "MOVR", "MANTA", "VIC", "MANTLE", "CRONOS", "LINEA", "ZKSYNC", "XDAI", "ARB", "AVAX", "OP", "BASE", "SCROLL", "KLAY", "XZO", "ZETA", "RON", "FANTOM", "AURORA", "EVMOS", "ONE", "GLMR", "METIS", "POLYGON_ZKEVM", "OPBNB"];
+export const listNotSupportHistoricalBalances = ["ROSE", "CANTO", "MOVR", "MANTA", "VIC", "MANTLE", "CRONOS", "LINEA", "ZKSYNC", "XDAI", "ARB", "AVAX", "OP", "BASE", "SCROLL", "KLAY", "XZO", "ZETA", "RON", "FANTOM", "AURORA", "EVMOS", "ONE", "GLMR", "METIS", "POLYGON_ZKEVM", "OPBNB"];
+
+export const listSupported = ["BUNDLE", "EVM", "CEX", "MOVE", "SOL", "NEAR", "TON", "ALGO", "AURA"];
+
+export const bigGeneration = ["EVM", "MOVE"];
+export const otherGeneration = ["BTC", "SOL", "NEAR", "ALGO", "AURA", "TON"];
+export const generationLogo = [
+  {
+    logo: EVM
+  },
+  {
+    logo: Move
+  },
+  {
+    logo: Bitcoin
+  },
+  {
+    logo: Solana
+  },
+  {
+    logo: Near
+  },
+  {
+    logo: Aura
+  },
+  {
+    logo: Algorand
+  },
+  {
+    logo: Ton
+  }
+]
 
 export const chainMoveList = [
   {
@@ -260,6 +293,40 @@ export const chainList = [
   //   value: "MANTA",
   // },
 ];
+
+export const detectedGeneration = (type) => {
+  let logo = All;
+  switch (type) {
+    case "BUNDLE":
+      logo = Bundles
+      break;
+    case "EVM":
+      logo = EVM
+      break;
+    case "MOVE":
+      logo = Move
+      break;
+    case "BTC":
+      logo = Bitcoin
+      break;
+    case "SOL":
+      logo = Solana
+      break;
+    case "NEAR":
+      logo = Near
+      break;
+    case "TON":
+      logo = Ton
+      break;
+    case "AURA":
+      logo = Aura
+      break;
+    case "ALGO":
+      logo = Algorand
+      break;
+  }
+  return logo
+}
 
 export const detectedChain = (type) => {
   let chain = {

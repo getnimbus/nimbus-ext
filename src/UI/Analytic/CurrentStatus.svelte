@@ -11,7 +11,7 @@
     formatValue,
     autoFontSize,
   } from "~/utils";
-  import { chainSupportedList } from "~/lib/chains";
+  import { listSupported } from "~/lib/chains";
   import { i18n } from "~/lib/i18n";
   import { useNavigate } from "svelte-navigator";
   import { nimbus } from "~/lib/network";
@@ -740,7 +740,7 @@
   }
 
   $: enabledQuery = Boolean(
-    chainSupportedList.includes($typeWallet) && $wallet && $wallet?.length !== 0
+    listSupported.includes($typeWallet) && $wallet && $wallet?.length !== 0
   );
 
   $: theme = $isDarkMode ? "dark" : "white";
@@ -916,7 +916,7 @@
   >
     <div class="flex justify-between items-start mb-6">
       <div class="flex justify-start">
-        {#if chainSupportedList.slice(2).includes($typeWallet)}
+        {#if listSupported.slice(2).includes($typeWallet)}
           <TooltipTitle
             tooltipText="The performance data can only get after 7 days you connect to Nimbus"
             type="warning"

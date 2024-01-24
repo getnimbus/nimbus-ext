@@ -2,7 +2,12 @@
   import { onMount } from "svelte";
   import { i18n } from "~/lib/i18n";
   import { dndzone } from "svelte-dnd-action";
-  import { chainList, listProviderCEX, listLogoCEX } from "~/lib/chains";
+  import {
+    generationLogo,
+    listProviderCEX,
+    listLogoCEX,
+    detectedGeneration,
+  } from "~/lib/chains";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
   import {
@@ -33,15 +38,6 @@
   import PlusBlack from "~/assets/plus-black.svg";
   import User from "~/assets/user.png";
   import Success from "~/assets/shield-done.svg";
-
-  import EVM from "~/assets/chains/evm.png";
-  import Move from "~/assets/chains/move.png";
-  import BitcoinLogo from "~/assets/chains/bitcoin.png";
-  import SolanaLogo from "~/assets/chains/solana.png";
-  import NearLogo from "~/assets/chains/near.png";
-  import AuraLogo from "~/assets/chains/aura.png";
-  import AlgorandLogo from "~/assets/chains/algorand.png";
-  import TonLogo from "~/assets/chains/ton.png";
 
   const MultipleLang = {
     title: i18n("optionsPage.accounts-page-title", "Account Settings"),
@@ -272,34 +268,12 @@
 
   const formatDataListAddress = (data) => {
     const structWalletData = data.map((item) => {
-      let logo = EVM;
-      if (item?.type === "BTC") {
-        logo = BitcoinLogo;
-      }
-      if (item?.type === "SOL") {
-        logo = SolanaLogo;
-      }
-      if (item?.type === "NEAR") {
-        logo = NearLogo;
-      }
-      if (item?.type === "TON") {
-        logo = TonLogo;
-      }
-      if (item?.type === "MOVE") {
-        logo = Move;
-      }
-      if (item?.type === "AURA") {
-        logo = AuraLogo;
-      }
-      if (item?.type === "ALGO") {
-        logo = AlgorandLogo;
-      }
       return {
         position: item.position,
         id: item.id,
         type: item.type,
         label: item.label,
-        logo: item.type === "CEX" ? item.logo : logo,
+        logo: item.type === "CEX" ? item.logo : detectedGeneration(item.type),
         address: item.type === "CEX" ? item.id : item.accountId,
         accounts:
           item?.accounts?.map((account) => {
@@ -308,6 +282,10 @@
               type: account?.type,
               label: account?.label,
               value: account?.type === "CEX" ? account?.id : account?.accountId,
+              logo:
+                account?.type === "CEX"
+                  ? account?.logo
+                  : detectedGeneration(account?.type),
             };
           }) || [],
       };
@@ -1728,7 +1706,7 @@
           </label>
         </div>
         <div class="flex items-center justify-center gap-6 my-3">
-          {#each [{ logo: EVM }, { logo: BitcoinLogo }, { logo: SolanaLogo }, { logo: NearLogo }, { logo: Move }, { logo: AuraLogo }, { logo: AlgorandLogo }, { logo: TonLogo }] as item}
+          {#each generationLogo as item}
             <img
               src={item.logo}
               alt=""

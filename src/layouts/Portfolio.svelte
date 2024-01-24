@@ -760,7 +760,6 @@
   $: {
     if ($wallet || $chain) {
       if ($wallet?.length !== 0 && $chain?.length !== 0) {
-        console.log("HELLO WORLD");
         overviewDataPerformance = {
           performance: [],
           portfolioChart: [],

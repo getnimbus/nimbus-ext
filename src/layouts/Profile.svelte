@@ -13,6 +13,7 @@
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
   import { flatMap } from "lodash";
+  import { detectedGeneration } from "~/lib/chains";
 
   import ProfitData from "~/UI/Profile/ProfitData.svelte";
   import InviterQr from "~/UI/Profile/InviterQR.svelte";
@@ -28,16 +29,6 @@
 
   import User from "~/assets/user.png";
   import UpArrow from "~/assets/up-arrow.svg";
-
-  import EVM from "~/assets/chains/evm.png";
-  import Move from "~/assets/chains/move.png";
-  import Bundles from "~/assets/bundles.png";
-  import BitcoinLogo from "~/assets/chains/bitcoin.png";
-  import SolanaLogo from "~/assets/chains/solana.png";
-  import NearLogo from "~/assets/chains/near.png";
-  import AuraLogo from "~/assets/chains/aura.png";
-  import AlgorandLogo from "~/assets/chains/algorand.png";
-  import TonLogo from "~/assets/chains/ton.png";
 
   let toastMsg = "";
   let isSuccessToast = false;
@@ -208,37 +199,12 @@
 
   const formatDataListAddress = (data) => {
     listAddress = data.map((item) => {
-      let logo = EVM;
-      if (item?.type === "BUNDLE") {
-        logo = Bundles;
-      }
-      if (item?.type === "BTC") {
-        logo = BitcoinLogo;
-      }
-      if (item?.type === "SOL") {
-        logo = SolanaLogo;
-      }
-      if (item?.type === "NEAR") {
-        logo = NearLogo;
-      }
-      if (item?.type === "TON") {
-        logo = TonLogo;
-      }
-      if (item?.type === "MOVE") {
-        logo = Move;
-      }
-      if (item?.type === "AURA") {
-        logo = AuraLogo;
-      }
-      if (item?.type === "ALGO") {
-        logo = AlgorandLogo;
-      }
       return {
         id: item.id,
         type: item.type,
         label: item.label,
         value: item.type === "CEX" ? item.id : item.accountId,
-        logo: item.type === "CEX" ? item.logo : logo,
+        logo: item.type === "CEX" ? item.logo : detectedGeneration(item.type),
       };
     });
   };
