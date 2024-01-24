@@ -69,16 +69,6 @@
   // let sortMaxDrawDown = "default";
   // let sortVolatility = "default";
 
-  let selectedType:
-    | "ALL"
-    | "RECOMMENDED"
-    | "VENTURES_CAPITAL"
-    | "SMART_MONEY"
-    | "HAND_PICKED"
-    | "" = "ALL";
-  let selectedCategory;
-  let selectedCategoryId = "";
-
   const getPublicPortfolio = async (type) => {
     try {
       isLoading = true;
@@ -149,25 +139,6 @@
                     </g>
                   </svg>`;
   };
-
-  $: listCategories =
-    Object.keys($user).length === 0
-      ? whaleCategories.slice(1, whaleCategories.length)
-      : whaleCategories;
-
-  $: {
-    if (selectedType === "RECOMMENDED" || selectedType === "ALL") {
-      selectedCategoryId = "";
-    }
-  }
-
-  $: {
-    if ($query.data && $query.data.length !== 0) {
-      selectedCategory = $query.data.find(
-        (item) => item.id === selectedCategoryId
-      );
-    }
-  }
 </script>
 
 <ErrorBoundary>
