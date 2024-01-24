@@ -9,6 +9,7 @@
     chain,
     typeWallet,
     user,
+    selectedPackage,
     isDarkMode,
     isShowHeaderMobile,
     triggerConnectWallet,
@@ -170,6 +171,12 @@
 
   const handleSignOut = () => {
     try {
+      user.update((n) => (n = {}));
+      wallet.update((n) => (n = ""));
+      chain.update((n) => (n = ""));
+      typeWallet.update((n) => (n = ""));
+      userPublicAddress.update((n) => (n = ""));
+      selectedPackage.update((n) => (n = "FREE"));
       showPopover = false;
 
       localStorage.removeItem("public_address");
