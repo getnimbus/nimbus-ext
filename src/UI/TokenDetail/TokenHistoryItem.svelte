@@ -15,6 +15,11 @@
   $: costBuy = Number(data?.quantity_in) * Number(data?.from_price);
   $: costSell = Number(data?.quantity_out) * Number(data?.to_price);
 
+  $: amount =
+    contractAddress?.toLowerCase() === data.from_token_address
+      ? data?.quantity_in
+      : data?.quantity_out;
+
   $: withinLast24Hours = dayjs().diff(dayjs(data?.created_at * 1000), "hour");
 </script>
 
@@ -30,12 +35,12 @@
       {#if data?.to_token_address?.toLowerCase() === contractAddress?.toLowerCase()}
         <div class="flex items-center text-[#00A878]">
           <div>+</div>
-          <TooltipNumber number={data?.quantity_in} type="balance" />
+          <TooltipNumber number={amount} type="balance" />
         </div>
       {:else}
         <div class="flex items-center text-red-500">
           <div>-</div>
-          <TooltipNumber number={data?.quantity_out} type="balance" />
+          <TooltipNumber number={amount} type="balance" />
         </div>
       {/if}
     </div>
