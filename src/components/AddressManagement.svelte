@@ -24,7 +24,9 @@
     listProviderCEX,
     listLogoCEX,
     detectedGeneration,
-    chainSupportedLogo,
+    generationLogo,
+    bigGeneration,
+    otherGeneration,
   } from "~/lib/chains";
   import mixpanel from "mixpanel-browser";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
@@ -305,14 +307,7 @@
     ) {
       chain.update((n) => (n = "ALL"));
 
-      if (
-        typeParams === "BTC" ||
-        typeParams === "SOL" ||
-        typeParams === "NEAR" ||
-        typeParams === "AURA" ||
-        typeParams === "TON" ||
-        typeParams === "ALGO"
-      ) {
+      if (otherGeneration.includes(typeParams)) {
         window.history.replaceState(
           null,
           "",
@@ -320,7 +315,7 @@
         );
       }
 
-      if (typeParams === "EVM" || typeParams === "MOVE") {
+      if (bigGeneration.includes(typeParams)) {
         window.history.replaceState(
           null,
           "",
@@ -332,17 +327,10 @@
 
     // if no chain params and list address is not empty
     if (!chainParams && listAddress.length !== 0 && typeParams) {
-      if (typeParams === "EVM" || typeParams === "MOVE") {
+      if (bigGeneration.includes(typeParams)) {
         chain.update((n) => (n = "ALL"));
       }
-      if (
-        typeParams === "BTC" ||
-        typeParams === "SOL" ||
-        typeParams === "NEAR" ||
-        typeParams === "AURA" ||
-        typeParams === "TON" ||
-        typeParams === "ALGO"
-      ) {
+      if (otherGeneration.includes(typeParams)) {
         window.history.replaceState(
           null,
           "",
@@ -358,9 +346,9 @@
     });
 
     if (selected && Object.keys(selected).length !== 0) {
-      if (selected.type === "BUNDLE") {
-        typeWallet.update((n) => (n = "BUNDLE"));
-        browser.storage.sync.set({ typeWalletAddress: "BUNDLE" });
+      if (otherGeneration.concat(["CEX", "BUNDLE"]).includes(selected.type)) {
+        typeWallet.update((n) => (n = selected.type));
+        browser.storage.sync.set({ typeWalletAddress: selected.type });
         chain.update((n) => (n = "ALL"));
         window.history.replaceState(
           null,
@@ -369,20 +357,9 @@
         );
       }
 
-      if (selected.type === "CEX") {
-        typeWallet.update((n) => (n = "CEX"));
-        browser.storage.sync.set({ typeWalletAddress: "CEX" });
-        chain.update((n) => (n = "ALL"));
-        window.history.replaceState(
-          null,
-          "",
-          window.location.pathname + `?type=${$typeWallet}&address=${$wallet}`
-        );
-      }
-
-      if (selected.type === "EVM") {
-        typeWallet.update((n) => (n = "EVM"));
-        browser.storage.sync.set({ typeWalletAddress: "EVM" });
+      if (bigGeneration.includes(selected.type)) {
+        typeWallet.update((n) => (n = selected.type));
+        browser.storage.sync.set({ typeWalletAddress: selected.type });
         if ($chain) {
           chain.update((n) => (n = $chain));
         } else {
@@ -393,88 +370,6 @@
           "",
           window.location.pathname +
             `?type=${$typeWallet}&chain=${$chain}&address=${$wallet}`
-        );
-      }
-
-      if (selected.type === "MOVE") {
-        typeWallet.update((n) => (n = "MOVE"));
-        browser.storage.sync.set({ typeWalletAddress: "MOVE" });
-        if ($chain) {
-          chain.update((n) => (n = $chain));
-        } else {
-          chain.update((n) => (n = "ALL"));
-        }
-        window.history.replaceState(
-          null,
-          "",
-          window.location.pathname +
-            `?type=${$typeWallet}&chain=${$chain}&address=${$wallet}`
-        );
-      }
-
-      if (selected.type === "SOL") {
-        typeWallet.update((n) => (n = "SOL"));
-        browser.storage.sync.set({ typeWalletAddress: "SOL" });
-        chain.update((n) => (n = "ALL"));
-        window.history.replaceState(
-          null,
-          "",
-          window.location.pathname + `?type=${$typeWallet}&address=${$wallet}`
-        );
-      }
-
-      if (selected.type === "NEAR") {
-        typeWallet.update((n) => (n = "NEAR"));
-        browser.storage.sync.set({ typeWalletAddress: "NEAR" });
-        chain.update((n) => (n = "ALL"));
-        window.history.replaceState(
-          null,
-          "",
-          window.location.pathname + `?type=${$typeWallet}&address=${$wallet}`
-        );
-      }
-
-      if (selected.type === "TON") {
-        typeWallet.update((n) => (n = "TON"));
-        browser.storage.sync.set({ typeWalletAddress: "TON" });
-        chain.update((n) => (n = "ALL"));
-        window.history.replaceState(
-          null,
-          "",
-          window.location.pathname + `?type=${$typeWallet}&address=${$wallet}`
-        );
-      }
-
-      if (selected.type === "AURA") {
-        typeWallet.update((n) => (n = "AURA"));
-        browser.storage.sync.set({ typeWalletAddress: "AURA" });
-        chain.update((n) => (n = "ALL"));
-        window.history.replaceState(
-          null,
-          "",
-          window.location.pathname + `?type=${$typeWallet}&address=${$wallet}`
-        );
-      }
-
-      if (selected.type === "ALGO") {
-        typeWallet.update((n) => (n = "ALGO"));
-        browser.storage.sync.set({ typeWalletAddress: "ALGO" });
-        chain.update((n) => (n = "ALL"));
-        window.history.replaceState(
-          null,
-          "",
-          window.location.pathname + `?type=${$typeWallet}&address=${$wallet}`
-        );
-      }
-
-      if (selected.type === "BTC") {
-        typeWallet.update((n) => (n = "BTC"));
-        browser.storage.sync.set({ typeWalletAddress: "BTC" });
-        chain.update((n) => (n = "ALL"));
-        window.history.replaceState(
-          null,
-          "",
-          window.location.pathname + `?type=${$typeWallet}&address=${$wallet}`
         );
       }
     }
@@ -633,10 +528,7 @@
           selectedWallet: validateAccount?.address,
         });
 
-        if (
-          validateAccount?.type === "EVM" ||
-          validateAccount?.type === "MOVE"
-        ) {
+        if (bigGeneration.includes(validateAccount?.type)) {
           window.history.replaceState(
             null,
             "",
@@ -645,14 +537,7 @@
           );
         }
 
-        if (
-          validateAccount?.type === "BTC" ||
-          validateAccount?.type === "SOL" ||
-          validateAccount?.type === "NEAR" ||
-          validateAccount?.type === "AURA" ||
-          validateAccount?.type === "TON" ||
-          validateAccount?.type === "ALGO"
-        ) {
+        if (otherGeneration.includes(validateAccount?.type)) {
           window.history.replaceState(
             null,
             "",
@@ -1744,7 +1629,7 @@
           </label>
         </div>
         <div class="flex items-center justify-center gap-6 my-3">
-          {#each chainSupportedLogo as item}
+          {#each generationLogo as item}
             <img
               src={item.logo}
               alt=""

@@ -7,7 +7,7 @@
   dayjs.extend(relativeTime);
   import { createQuery } from "@tanstack/svelte-query";
   import { nimbus } from "~/lib/network";
-  import { chainSupportedList } from "~/lib/chains";
+  import { listSupported } from "~/lib/chains";
   import type { AnalyticHistoricalFormat } from "~/types/AnalyticHistoricalData";
 
   import CalendarChart from "~/components/CalendarChart.svelte";
@@ -76,9 +76,31 @@
     },
   };
 
+  const handleValidateAddress = async (address: string) => {
+    try {
+      const response = await nimbus.get(`/v2/address/${address}/validate`);
+      return response?.data;
+    } catch (e) {
+      console.error(e);
+      return {
+        address: "",
+        type: "",
+      };
+    }
+  };
+
   const getAnalyticHistorical = async (address, chain) => {
+    let addressChain = chain;
+
+    if (addressChain === "ALL") {
+      const validateAccount = await handleValidateAddress(address);
+      addressChain = validateAccount?.type;
+    }
+
     const response = await nimbus.get(
-      `/v2/analysis/${address}/historical?chain=${chain}`
+      `/v2/analysis/${address}/historical?chain=${
+        addressChain === "BUNDLE" ? "" : addressChain
+      }`
     );
     return response?.data || [];
   };
@@ -176,7 +198,7 @@
   };
 
   $: enabledQuery = Boolean(
-    chainSupportedList.includes($typeWallet) &&
+    listSupported.includes($typeWallet) &&
       $wallet &&
       $wallet?.length !== 0 &&
       $selectedPackage !== "FREE"

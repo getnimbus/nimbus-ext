@@ -23,6 +23,7 @@
   import Select from "~/components/Select.svelte";
 
   import All from "~/assets/all.svg";
+  import { otherGeneration } from "~/lib/chains";
 
   const types = [
     {
@@ -135,9 +136,31 @@
   $: selectedTypeValue = selectedType?.value;
   $: selectedCoinValue = selectedCoin?.symbol;
 
+  const handleValidateAddress = async (address: string) => {
+    try {
+      const response = await nimbus.get(`/v2/address/${address}/validate`);
+      return response?.data;
+    } catch (e) {
+      console.error(e);
+      return {
+        address: "",
+        type: "",
+      };
+    }
+  };
+
   const getAnalyticHistorical = async (address, chain) => {
+    let addressChain = chain;
+
+    if (addressChain === "ALL") {
+      const validateAccount = await handleValidateAddress(address);
+      addressChain = validateAccount?.type;
+    }
+
     const response: AnalyticHistoricalRes = await nimbus.get(
-      `/v2/analysis/${address}/historical?chain=${chain}`
+      `/v2/analysis/${address}/historical?chain=${
+        addressChain === "BUNDLE" ? "" : addressChain
+      }`
     );
     return response?.data || [];
   };
@@ -243,11 +266,7 @@
       if (
         $wallet?.length !== 0 &&
         $chain?.length !== 0 &&
-        $typeWallet !== "SOL" &&
-        $typeWallet !== "NEAR" &&
-        $typeWallet !== "TON" &&
-        $typeWallet !== "AURA" &&
-        $typeWallet !== "ALGO"
+        !otherGeneration.includes($typeWallet)
       ) {
         getListTransactions("", selectedTypeValue, selectedCoinValue);
       }
@@ -311,7 +330,7 @@
         </div>
       </div>
 
-      {#if $typeWallet === "BUNDLE" || $typeWallet === "SOL" || $typeWallet === "NEAR" || $typeWallet === "TON" || $typeWallet === "AURA" || $typeWallet === "ALGO"}
+      {#if otherGeneration.includes($typeWallet)}
         <div
           class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center gap-3 justify-center z-30 backdrop-blur-md ${
             $isDarkMode ? "bg-black/90" : "bg-white/95"

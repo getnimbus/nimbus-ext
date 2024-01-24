@@ -24,7 +24,11 @@
   import Mousetrap from "mousetrap";
   import addGlobalBinds from "bind-mousetrap-global";
   addGlobalBinds(Mousetrap);
-  import { detectedGeneration } from "~/lib/chains";
+  import {
+    bigGeneration,
+    detectedGeneration,
+    otherGeneration,
+  } from "~/lib/chains";
 
   import tooltip from "~/entries/contentScript/views/tooltip";
   import Auth from "~/UI/Auth/Auth.svelte";
@@ -185,7 +189,7 @@
         typeWalletAddress: validateAccount?.type,
       });
 
-      if (validateAccount?.type === "EVM" || validateAccount?.type === "MOVE") {
+      if (bigGeneration.includes(validateAccount?.type)) {
         window.history.replaceState(
           null,
           "",
@@ -193,15 +197,7 @@
             `?type=${validateAccount?.type}&chain=ALL&address=${validateAccount?.address}`
         );
       }
-      if (
-        validateAccount?.type === "BTC" ||
-        validateAccount?.type === "SOL" ||
-        validateAccount?.type === "NEAR" ||
-        validateAccount?.type === "TON" ||
-        validateAccount?.type === "AURA" ||
-        validateAccount?.type === "ALGO" ||
-        validateAccount?.type === "CEX"
-      ) {
+      if (otherGeneration.includes(validateAccount?.type)) {
         window.history.replaceState(
           null,
           "",

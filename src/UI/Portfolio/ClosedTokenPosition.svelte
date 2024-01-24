@@ -3,7 +3,7 @@
   import { i18n } from "~/lib/i18n";
   import { chain, typeWallet, isDarkMode } from "~/store";
   import { filterTokenValueType } from "~/utils";
-  import { chainSupportedList } from "~/lib/chains";
+  import { listSupported } from "~/lib/chains";
 
   export let selectedWallet;
   export let isLoadingNFT;
@@ -156,7 +156,7 @@
     }
   }
 
-  $: colspan = chainSupportedList.includes($typeWallet) ? 5 : 4;
+  $: colspan = listSupported.includes($typeWallet) ? 5 : 4;
 
   $: {
     if (selectedWallet || $chain) {
@@ -270,7 +270,7 @@
                 </th>
                 <th
                   class={`py-3 ${
-                    chainSupportedList.includes($typeWallet)
+                    listSupported.includes($typeWallet)
                       ? ""
                       : "pr-3 rounded-tr-[10px]"
                   }`}
@@ -281,7 +281,7 @@
                     ROI
                   </div>
                 </th>
-                {#if chainSupportedList.includes($typeWallet)}
+                {#if listSupported.includes($typeWallet)}
                   <th class="py-3 xl:w-14 w-32 rounded-tr-[10px]" />
                 {/if}
               </tr>

@@ -7,6 +7,7 @@
   import OverviewCard from "~/components/OverviewCard.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
+  import { otherGeneration } from "~/lib/chains";
 
   export let data;
   export let totalPositions;
@@ -43,15 +44,11 @@
   $: changeLast24hTotalProfit =
     changeLast24hTotalOutflow - changeLast24hTotalInflow;
 
-  $: last24hTotalProfitPercent =
-    $typeWallet === "SOL" ||
-    $typeWallet === "NEAR" ||
-    $typeWallet === "TON" ||
-    $typeWallet === "AURA" ||
-    $typeWallet === "ALGO" ||
-    $typeWallet === "CEX"
-      ? 0
-      : getChangePercent(totalProfit, changeLast24hTotalProfit);
+  $: last24hTotalProfitPercent = otherGeneration
+    .concat(["CEX"])
+    .includes($typeWallet)
+    ? 0
+    : getChangePercent(totalProfit, changeLast24hTotalProfit);
 </script>
 
 <ErrorBoundary>
@@ -110,13 +107,7 @@
         </div>
         <div
           class={`flex items-center gap-3 ${
-            $typeWallet === "BTC" ||
-            $typeWallet === "SOL" ||
-            $typeWallet === "NEAR" ||
-            $typeWallet === "TON" ||
-            $typeWallet === "AURA" ||
-            $typeWallet === "ALGO" ||
-            $typeWallet === "CEX"
+            otherGeneration.concat(["CEX"]).includes($typeWallet)
               ? "opacity-50"
               : ""
           }`}

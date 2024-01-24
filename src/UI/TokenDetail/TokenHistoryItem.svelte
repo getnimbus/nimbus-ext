@@ -1,6 +1,6 @@
 <script lang="ts">
   import { isDarkMode, typeWallet } from "~/store";
-  import { detectedChain, linkExplorer } from "~/lib/chains";
+  import { detectedChain, linkExplorer, listSupported } from "~/lib/chains";
   import dayjs from "dayjs";
   import "dayjs/locale/en";
   import "dayjs/locale/vi";
@@ -90,18 +90,9 @@
   </td>
 
   <td
-    class={`py-3 ${
-      $typeWallet === "SOL" ||
-      $typeWallet === "NEAR" ||
-      $typeWallet === "TON" ||
-      $typeWallet === "AURA" ||
-      $typeWallet === "ALGO" ||
-      $typeWallet === "EVM" ||
-      $typeWallet === "MOVE" ||
-      ($typeWallet === "BUNDLE" && data?.chain !== "CEX")
-        ? ""
-        : "pr-3"
-    } ${$isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"}`}
+    class={`py-3 ${listSupported.includes($typeWallet) ? "" : "pr-3"} ${
+      $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
+    }`}
   >
     <div class="xl:text-sm text-2xl text_00000099 font-medium text-right">
       {withinLast24Hours < 24
@@ -110,7 +101,7 @@
     </div>
   </td>
 
-  {#if $typeWallet === "SOL" || $typeWallet === "NEAR" || $typeWallet === "TON" || $typeWallet === "AURA" || $typeWallet === "ALGO" || $typeWallet === "EVM" || $typeWallet === "MOVE" || ($typeWallet === "BUNDLE" && data?.chain !== "CEX")}
+  {#if listSupported.includes($typeWallet)}
     <td
       class={`py-3 w-10 ${
         $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"

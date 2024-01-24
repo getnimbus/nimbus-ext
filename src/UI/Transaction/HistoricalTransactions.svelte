@@ -5,7 +5,7 @@
   import relativeTime from "dayjs/plugin/relativeTime";
   dayjs.extend(relativeTime);
   import { typeWallet, isDarkMode } from "~/store";
-  import { chainList, linkExplorer } from "~/lib/chains";
+  import { chainList, linkExplorer, listSupported } from "~/lib/chains";
 
   import Button from "~/components/Button.svelte";
   import Copy from "~/components/Copy.svelte";
@@ -297,7 +297,7 @@
   </div>
 {/if}
 
-{#if $typeWallet !== "SOL" && $typeWallet !== "NEAR" && $typeWallet !== "TON" && $typeWallet !== "AURA" && $typeWallet !== "ALGO" && $typeWallet !== "CEX"}
+{#if !listSupported.includes($typeWallet)}
   <div class="flex items-center gap-2">
     <a href="https://mobula.fi/" target="_blank">
       <img

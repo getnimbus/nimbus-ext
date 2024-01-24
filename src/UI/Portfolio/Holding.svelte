@@ -15,7 +15,7 @@
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
   import { filterTokenValueType, chunkArray } from "~/utils";
-  import { chainSupportedList } from "~/lib/chains";
+  import { listSupported } from "~/lib/chains";
   import { groupBy } from "lodash";
   import { priceMobulaSubscribe } from "~/lib/price-mobulaWs";
   import { priceSubscribe } from "~/lib/price-ws";
@@ -508,7 +508,7 @@
     }
   }
 
-  $: colspan = chainSupportedList.includes($typeWallet) ? 8 : 7;
+  $: colspan = listSupported.includes($typeWallet) ? 8 : 7;
 
   $: {
     if (selectedWallet || $chain) {
@@ -802,7 +802,7 @@
                     </th>
                     <th
                       class={`py-3 xl:pr-3 pr-6 ${
-                        chainSupportedList.includes($typeWallet)
+                        listSupported.includes($typeWallet)
                           ? ""
                           : "rounded-tr-[10px]"
                       }`}
@@ -813,7 +813,7 @@
                         Unrealized PnL
                       </div>
                     </th>
-                    {#if chainSupportedList.includes($typeWallet)}
+                    {#if listSupported.includes($typeWallet)}
                       <th
                         class={`py-3 rounded-tr-[10px] pr-3 ${
                           ["BUNDLE", "SOL"].includes($typeWallet)
