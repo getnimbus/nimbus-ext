@@ -373,7 +373,8 @@
 
   $: enabledQuery = Boolean(
     chainSupportedList.includes($typeWallet) &&
-      $wallet.length !== 0 &&
+      $wallet &&
+      $wallet?.length !== 0 &&
       packageSelected !== "FREE"
   );
 

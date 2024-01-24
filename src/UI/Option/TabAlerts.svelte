@@ -17,8 +17,8 @@
   import Copy from "~/components/Copy.svelte";
 
   import FollowWhale from "~/assets/whale-tracking.gif";
+  import EVM from "~/assets/chains/evm.png";
   import Move from "~/assets/chains/move.png";
-  import All from "~/assets/all.svg";
   import BitcoinLogo from "~/assets/chains/bitcoin.png";
   import SolanaLogo from "~/assets/chains/solana.png";
   import NearLogo from "~/assets/chains/near.png";
@@ -166,7 +166,7 @@
 
   const formatDataListAddress = (data) => {
     const structWalletData = data.map((item) => {
-      let logo = All;
+      let logo = EVM;
       if (item?.type === "BTC") {
         logo = BitcoinLogo;
       }

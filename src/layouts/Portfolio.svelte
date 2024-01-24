@@ -306,7 +306,7 @@
     queryKey: ["overview", $wallet, $chain],
     queryFn: () => getOverview($wallet, $chain),
     staleTime: Infinity,
-    enabled: enabledFetchAllData && $wallet.length !== 0,
+    enabled: enabledFetchAllData && $wallet && $wallet?.length !== 0,
   });
 
   $: {
@@ -394,7 +394,8 @@
     staleTime: Infinity,
     enabled:
       enabledFetchAllData &&
-      $wallet.length !== 0 &&
+      $wallet &&
+      $wallet?.length !== 0 &&
       $chain.length !== 0 &&
       $chain !== "ALL",
   });
@@ -407,7 +408,8 @@
         staleTime: Infinity,
         enabled:
           enabledFetchAllData &&
-          $wallet.length !== 0 &&
+          $wallet &&
+          $wallet?.length !== 0 &&
           $chain.length !== 0 &&
           $chain === "ALL",
       };
@@ -459,7 +461,7 @@
     queryKey: ["vaults", $wallet, $chain],
     queryFn: () => getVaults($wallet, $chain),
     staleTime: Infinity,
-    enabled: enabledFetchAllData && $wallet.length !== 0,
+    enabled: enabledFetchAllData && $wallet && $wallet?.length !== 0,
     placeholderData: [],
   });
 
@@ -488,7 +490,8 @@
     staleTime: Infinity,
     enabled:
       enabledFetchAllData &&
-      $wallet.length !== 0 &&
+      $wallet &&
+      $wallet?.length !== 0 &&
       $chain.length !== 0 &&
       $chain !== "ALL",
   });
@@ -501,7 +504,8 @@
         staleTime: Infinity,
         enabled:
           enabledFetchAllData &&
-          $wallet.length !== 0 &&
+          $wallet &&
+          $wallet?.length !== 0 &&
           $chain.length !== 0 &&
           $chain === "ALL",
       };
@@ -732,7 +736,7 @@
     queryKey: ["compare", $wallet, $chain],
     queryFn: () => getAnalyticCompare($wallet),
     staleTime: Infinity,
-    // enabled: enabledFetchAllData && $wallet.length !== 0,
+    // enabled: enabledFetchAllData && $wallet && $wallet?.length !== 0,
     enabled: false,
   });
 

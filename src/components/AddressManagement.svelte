@@ -53,9 +53,8 @@
   import FollowWhale from "~/assets/whale-tracking.gif";
   import Success from "~/assets/shield-done.svg";
 
+  import EVM from "~/assets/chains/evm.png";
   import Move from "~/assets/chains/move.png";
-  import All from "~/assets/all.svg";
-  import Ethereum from "~/assets/chains/ethereum.png";
   import Bundles from "~/assets/bundles.png";
   import BitcoinLogo from "~/assets/chains/bitcoin.png";
   import SolanaLogo from "~/assets/chains/solana.png";
@@ -491,7 +490,7 @@
 
   const formatDataListAddress = async (data) => {
     const structWalletData = data.map((item) => {
-      let logo = All;
+      let logo = EVM;
       if (item?.type === "BTC") {
         logo = BitcoinLogo;
       }
@@ -524,7 +523,7 @@
         logo: item.type === "CEX" ? item.logo : logo,
         accounts:
           item?.accounts?.map((account) => {
-            let logo = All;
+            let logo = EVM;
             if (account?.type === "BTC") {
               logo = BitcoinLogo;
             }
@@ -1801,7 +1800,7 @@
           </label>
         </div>
         <div class="flex items-center justify-center gap-6 my-3">
-          {#each [{ logo: Ethereum }, { logo: BitcoinLogo }, { logo: SolanaLogo }, { logo: NearLogo }, { logo: Move }, { logo: AuraLogo }, { logo: AlgorandLogo }, { logo: TonLogo }] as item}
+          {#each [{ logo: EVM }, { logo: BitcoinLogo }, { logo: SolanaLogo }, { logo: NearLogo }, { logo: Move }, { logo: AuraLogo }, { logo: AlgorandLogo }, { logo: TonLogo }] as item}
             <img
               src={item.logo}
               alt=""

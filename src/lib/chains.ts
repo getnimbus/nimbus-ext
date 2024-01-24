@@ -1,14 +1,18 @@
+import Bitcoin from "~/assets/chains/bitcoin.png";
 import Solana from "~/assets/chains/solana.png";
 import Aura from "~/assets/chains/aura.png";
-import Bitcoin from "~/assets/chains/bitcoin.png";
+import Algorand from "~/assets/chains/algorand.png";
 import Near from "~/assets/chains/near.png";
-
 import Ton from "~/assets/chains/ton.png";
-import Sui from "~/assets/chains/sui.png";
 
 import All from "~/assets/all.svg";
-import Bnb from "~/assets/chains/bnb.png";
+
+// MOVE
+import Sui from "~/assets/chains/sui.png";
+
+// EVM
 import Ethereum from "~/assets/chains/ethereum.png";
+import Bnb from "~/assets/chains/bnb.png";
 import Matic from "~/assets/chains/matic.png";
 import Optimism from "~/assets/chains/optimism.png";
 import Avax from "~/assets/chains/avax.png";
@@ -20,7 +24,6 @@ import ZkSync from "~/assets/chains/zksync.png";
 import Linea from "~/assets/chains/linea.png";
 import Cronos from "~/assets/chains/cronos.png";
 import Mantle from "~/assets/chains/mantle.png";
-import Algorand from "~/assets/chains/algorand.png";
 import Exzo from "~/assets/chains/exzo.png";
 import Klaytn from "~/assets/chains/klaytn.png";
 import Viction from "~/assets/chains/viction.png";
@@ -259,122 +262,233 @@ export const chainList = [
 ];
 
 export const detectedChain = (type) => {
-  let chain;
+  let chain = {
+    logo: All,
+    name: "All"
+  };
   switch (type) {
-    case "ALL":
-      chain = All;
-      break;
     case "BTC":
-      chain = Bitcoin;
+      chain = {
+        logo: Bitcoin,
+        name: "Bitcoin"
+      };
       break;
     case "AURA":
-      chain = Aura;
+      chain = {
+        logo: Aura,
+        name: "Aura"
+      };
       break;
     case "SUI":
-      chain = Sui;
+      chain = {
+        logo: Sui,
+        name: "Sui"
+      };
       break;
     case "SOL":
-      chain = Solana;
+      chain = {
+        logo: Solana,
+        name: "Solana"
+      };
       break;
     case "NEAR":
-      chain = Near;
+      chain = {
+        logo: Near,
+        name: "Near"
+      };
       break;
     case "TON":
-      chain = Ton;
+      chain = {
+        logo: Ton,
+        name: "Ton"
+      };
       break;
     case "ALGO":
-      chain = Algorand;
+      chain = {
+        logo: Algorand,
+        name: "Algorand"
+      };
       break;
     case "ETH":
-      chain = Ethereum;
+      chain = {
+        logo: Ethereum,
+        name: "Ethereum"
+      };
       break;
     case "XDAI":
-      chain = Gnosis;
+      chain = {
+        logo: Gnosis,
+        name: "Gnosis"
+      };
       break;
     case "BNB":
-      chain = Bnb;
+      chain = {
+        logo: Bnb,
+        name: "Binance"
+      };
       break;
     case "MATIC":
-      chain = Matic;
+      chain = {
+        logo: Matic,
+        name: "Polygon"
+      };
       break;
     case "OP":
-      chain = Optimism;
+      chain = {
+        logo: Optimism,
+        name: "Optimism"
+      };
       break;
     case "AVAX":
-      chain = Avax;
+      chain = {
+        logo: Avax,
+        name: "Avalanche"
+      };
       break;
     case "ARB":
-      chain = Arbitrum;
+      chain = {
+        logo: Arbitrum,
+        name: "Arbitrum"
+      };
       break;
     case "BASE":
-      chain = Base;
+      chain = {
+        logo: Base,
+        name: "Base"
+      };
       break;
     case "SCROLL":
-      chain = Scroll;
+      chain = {
+        logo: Scroll,
+        name: "Scroll"
+      };
       break;
     case "ZKSYNC":
-      chain = ZkSync;
+      chain = {
+        logo: ZkSync,
+        name: "ZkSync"
+      };
       break;
     case "LINEA":
-      chain = Linea;
+      chain = {
+        logo: Linea,
+        name: "Linea"
+      };
       break;
     case "CRONOS":
-      chain = Cronos;
+      chain = {
+        logo: Cronos,
+        name: "Cronos"
+      };
       break;
     case "MANTLE":
-      chain = Mantle;
+      chain = {
+        logo: Mantle,
+        name: "Mantle"
+      };
       break;
     case "XZO":
-      chain = Exzo;
+      chain = {
+        logo: Exzo,
+        name: "Exzo"
+      };
       break;
     case "KLAY":
-      chain = Klaytn;
+      chain = {
+        logo: Klaytn,
+        name: "Klaytn"
+      };
       break;
     case "VIC":
-      chain = Viction;
+      chain = {
+        logo: Viction,
+        name: "Viction"
+      };
       break;
     case "ZETA":
-      chain = Zeta;
+      chain = {
+        logo: Zeta,
+        name: "Zeta (Testnet)"
+      };
       break;
     case "FANTOM":
-      chain = Fantom;
+      chain = {
+        logo: Fantom,
+        name: "Fantom"
+      };
       break;
     case "EVMOS":
-      chain = Evmos;
+      chain = {
+        logo: Evmos,
+        name: "Evmos"
+      };
       break;
     case "ONE":
-      chain = Harmony;
+      chain = {
+        logo: Harmony,
+        name: "Harmony"
+      };
       break;
     case "GLMR":
-      chain = Moonbeam;
+      chain = {
+        logo: Moonbeam,
+        name: "Moonbeam"
+      };
       break;
     case "METIS":
-      chain = Metis;
+      chain = {
+        logo: Metis,
+        name: "Metis"
+      };
       break;
     case "AURORA":
-      chain = Aurora;
+      chain = {
+        logo: Aurora,
+        name: "Aurora"
+      };
       break;
     case "RON":
-      chain = Ronin;
+      chain = {
+        logo: Ronin,
+        name: "Ronin"
+      };
       break;
     case "POLYGON_ZKEVM":
-      chain = zkEVM;
+      chain = {
+        logo: zkEVM,
+        name: "Polygon zkEVM"
+      };
       break;
     case "OPBNB":
-      chain = opBNB;
+      chain = {
+        logo: opBNB,
+        name: "opBNB"
+      };
       break;
     case "MOVR":
-      chain = Moonriver;
+      chain = {
+        logo: Moonriver,
+        name: "Moonriver"
+      };
       break;
     case "CANTO":
-      chain = Canto;
+      chain = {
+        logo: Canto,
+        name: "Canto"
+      };
       break;
     case "ROSE":
-      chain = Oasis;
+      chain = {
+        logo: Oasis,
+        name: "Oasis"
+      };
       break;
-    // case "MANTA":
-    //   chain = Manta;
-    //   break;
+      // case "MANTA":
+      //   chain = {
+      //     logo: Manta,
+      //     name: "Manta"
+      //   };
+      break;
   }
   return chain;
 };

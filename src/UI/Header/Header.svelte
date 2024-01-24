@@ -50,8 +50,8 @@
   import User from "~/assets/user.png";
   import goldImg from "~/assets/Gold4.svg";
 
+  import EVM from "~/assets/chains/evm.png";
   import Move from "~/assets/chains/move.png";
-  import All from "~/assets/all.svg";
   import Bundles from "~/assets/bundles.png";
   import BitcoinLogo from "~/assets/chains/bitcoin.png";
   import SolanaLogo from "~/assets/chains/solana.png";
@@ -121,7 +121,7 @@
 
   const formatDataListAddress = (data) => {
     const structWalletData = data.map((item) => {
-      let logo = All;
+      let logo = EVM;
       if (item?.type === "BTC") {
         logo = BitcoinLogo;
       }
@@ -154,7 +154,7 @@
         logo: item.type === "CEX" ? item.logo : logo,
         accounts:
           item?.accounts?.map((account) => {
-            let logo = All;
+            let logo = EVM;
             if (account?.type === "BTC") {
               logo = BitcoinLogo;
             }
