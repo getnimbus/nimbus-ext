@@ -6,6 +6,7 @@
     isShowModalNftDeList,
     listingNft,
     selectedNftContractAddress,
+    user,
   } from "~/store";
   import { shorterName } from "~/utils";
 
@@ -156,7 +157,7 @@
       </div>
     </div>
 
-    {#if $typeWallet === "SOL" || ($typeWallet === "BUNDLE" && nativeToken?.symbol === "SOL")}
+    {#if ($typeWallet === "SOL" || ($typeWallet === "BUNDLE" && nativeToken?.symbol === "SOL")) && $user && Object.keys($user).length !== 0}
       <div
         class="xl:text-sm text-2xl font-normal flex items-start justify-between gap-1"
       >

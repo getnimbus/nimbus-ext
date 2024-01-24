@@ -985,6 +985,8 @@
       handleUpdateParams();
     }
   };
+
+  $: console.log("HELLO: ", $wallet);
 </script>
 
 {#if $query.isFetching}
@@ -993,7 +995,7 @@
   </div>
 {:else}
   <div>
-    {#if listAddress.length === 0 && $wallet?.length === 0}
+    {#if $wallet?.length === 0}
       <div class="flex justify-center items-center h-screen">
         {#if $query.isError && Object.keys($user).length !== 0}
           <div
@@ -1005,11 +1007,7 @@
           </div>
         {:else}
           <div class="max-w-[2000px] m-auto w-[90%]">
-            <Hero
-              btntext={MultipleLang.content.btn_text}
-              {address}
-              {isOpenAddModal}
-            />
+            <Hero btntext={MultipleLang.content.btn_text} {isOpenAddModal} />
           </div>
         {/if}
       </div>
