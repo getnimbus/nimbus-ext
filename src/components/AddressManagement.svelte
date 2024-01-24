@@ -528,10 +528,7 @@
           selectedWallet: validateAccount?.address,
         });
 
-        if (
-          validateAccount?.type === "EVM" ||
-          validateAccount?.type === "MOVE"
-        ) {
+        if (bigGeneration.includes(validateAccount?.type)) {
           window.history.replaceState(
             null,
             "",
@@ -540,14 +537,7 @@
           );
         }
 
-        if (
-          validateAccount?.type === "BTC" ||
-          validateAccount?.type === "SOL" ||
-          validateAccount?.type === "NEAR" ||
-          validateAccount?.type === "AURA" ||
-          validateAccount?.type === "TON" ||
-          validateAccount?.type === "ALGO"
-        ) {
+        if (otherGeneration.includes(validateAccount?.type)) {
           window.history.replaceState(
             null,
             "",

@@ -18,6 +18,7 @@
 
   import Plus from "~/assets/plus.svg";
   import heroImage from "~/assets/recap/hero/heroimage.png";
+  import { bigGeneration, otherGeneration } from "~/lib/chains";
 
   export let isOpenAddModal = false;
   export let btntext;
@@ -58,7 +59,7 @@
         typeWalletAddress: validateAccount?.type,
       });
 
-      if (validateAccount?.type === "EVM" || validateAccount?.type === "MOVE") {
+      if (bigGeneration.includes(validateAccount?.type)) {
         window.history.replaceState(
           null,
           "",
@@ -67,15 +68,7 @@
         );
       }
 
-      if (
-        validateAccount?.type === "BTC" ||
-        validateAccount?.type === "SOL" ||
-        validateAccount?.type === "NEAR" ||
-        validateAccount?.type === "TON" ||
-        validateAccount?.type === "AURA" ||
-        validateAccount?.type === "ALGO" ||
-        validateAccount?.type === "CEX"
-      ) {
+      if (otherGeneration.includes(validateAccount?.type)) {
         window.history.replaceState(
           null,
           "",

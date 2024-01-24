@@ -2,7 +2,7 @@
   import { wallet, chain, typeWallet } from "~/store";
   import dayjs from "dayjs";
   import { nimbus } from "~/lib/network";
-  import { listSupported } from "~/lib/chains";
+  import { listSupported, otherGeneration } from "~/lib/chains";
   import { createQuery } from "@tanstack/svelte-query";
   import type { AnalyticHistoricalFormat } from "~/types/AnalyticHistoricalData";
 
@@ -129,9 +129,31 @@
     }
   };
 
+  const handleValidateAddress = async (address: string) => {
+    try {
+      const response = await nimbus.get(`/v2/address/${address}/validate`);
+      return response?.data;
+    } catch (e) {
+      console.error(e);
+      return {
+        address: "",
+        type: "",
+      };
+    }
+  };
+
   const getAnalyticHistorical = async (address, chain) => {
+    let addressChain = chain;
+
+    if (addressChain === "ALL") {
+      const validateAccount = await handleValidateAddress(address);
+      addressChain = validateAccount?.type;
+    }
+
     const response = await nimbus.get(
-      `/v2/analysis/${address}/historical?chain=${chain}`
+      `/v2/analysis/${address}/historical?chain=${
+        addressChain === "BUNDLE" ? "" : addressChain
+      }`
     );
     return response?.data || [];
   };
@@ -171,7 +193,7 @@
     id="historical-activities-analytic"
     type="normal"
   />
-  {#if $typeWallet === "SOL" || $typeWallet === "NEAR" || $typeWallet === "TON" || $typeWallet === "AURA" || $typeWallet === "ALGO"}
+  {#if otherGeneration.includes($typeWallet)}
     <div
       class={`absolute top-0 left-0 rounded-[20px] z-30 w-full h-full flex items-center justify-center z-10 backdrop-blur-md ${
         darkMode ? "bg-black/90" : "bg-white/95"
