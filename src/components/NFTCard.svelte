@@ -156,7 +156,7 @@
       </div>
     </div>
 
-    {#if $typeWallet === "SOL" || ($typeWallet === "BUNDLE" && nativeToken?.symbol === "SOL")}
+    <!-- {#if $typeWallet === "SOL" || ($typeWallet === "BUNDLE" && nativeToken?.symbol === "SOL")}
       <div
         class="xl:text-sm text-2xl font-normal flex items-start justify-between gap-1"
       >
@@ -190,7 +190,7 @@
           {/if}
         </div>
       </div>
-    {/if}
+    {/if} -->
   </div>
 </div>
 

@@ -404,7 +404,19 @@
                     </div>
                   </th>
 
-                  <th
+                  <th class="py-3 pr-3 rounded-tr-[10px]">
+                    <div
+                      class="text-right xl:text-xs text-xl uppercase font-medium"
+                    >
+                      <TooltipTitle
+                        tooltipText="Price NFTs now - Price NFTs at time you spent"
+                      >
+                        Profit & Loss
+                      </TooltipTitle>
+                    </div>
+                  </th>
+
+                  <!-- <th
                     class={`py-3 ${
                       $typeWallet === "SOL" ||
                       ($typeWallet === "BUNDLE" &&
@@ -422,9 +434,9 @@
                         Profit & Loss
                       </TooltipTitle>
                     </div>
-                  </th>
+                  </th> -->
 
-                  {#if $typeWallet === "SOL" || ($typeWallet === "BUNDLE" && data?.nativeToken?.symbol === "SOL")}
+                  <!-- {#if $typeWallet === "SOL" || ($typeWallet === "BUNDLE" && data?.nativeToken?.symbol === "SOL")}
                     <th class="py-3 pr-3 rounded-tr-[10px]">
                       <div
                         class="text-right xl:text-xs text-xl uppercase font-medium"
@@ -432,7 +444,7 @@
                         Action
                       </div>
                     </th>
-                  {/if}
+                  {/if} -->
                 </tr>
               </thead>
               <tbody>
