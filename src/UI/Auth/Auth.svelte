@@ -170,11 +170,6 @@
 
   const handleSignOut = () => {
     try {
-      user.update((n) => (n = {}));
-      wallet.update((n) => (n = ""));
-      chain.update((n) => (n = ""));
-      typeWallet.update((n) => (n = ""));
-      userPublicAddress.update((n) => (n = ""));
       showPopover = false;
 
       localStorage.removeItem("public_address");
@@ -185,8 +180,8 @@
       localStorage.removeItem("solana_token");
       $walletStore.disconnect();
 
-      queryClient.invalidateQueries(["list-address"]);
-      queryClient.invalidateQueries(["users-me"]);
+      queryClient?.invalidateQueries(["list-address"]);
+      queryClient?.invalidateQueries(["users-me"]);
       mixpanel.reset();
     } catch (error) {
       console.log(error);
@@ -265,7 +260,7 @@
               picture: User,
             })
         );
-        queryClient.invalidateQueries(["users-me"]);
+        queryClient?.invalidateQueries(["users-me"]);
         queryClient.invalidateQueries(["list-address"]);
       }
     } catch (e) {
@@ -337,7 +332,7 @@
               picture: User,
             })
         );
-        queryClient.invalidateQueries(["users-me"]);
+        queryClient?.invalidateQueries(["users-me"]);
         queryClient.invalidateQueries(["list-address"]);
       }
     } catch (e) {

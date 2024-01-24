@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from "svelte";
+  import { onMount, createEventDispatcher } from "svelte";
   import { i18n } from "~/lib/i18n";
   import {
     chain,
@@ -52,6 +52,7 @@
   import AppOverlay from "~/components/Overlay.svelte";
   import Button from "~/components/Button.svelte";
   import SolanaAuth from "../Auth/SolanaAuth.svelte";
+  import WalletModal from "~/UI/SolanaCustomWalletBtn/WalletModal.svelte";
 
   const marketList = [{ value: "SniperMarket", label: "Sniper Market" }];
   const marketDeList = [
@@ -61,6 +62,12 @@
     { value: "Hyperspace", label: "Hyperspace" },
     { value: "Tensorswap", label: "Tensorswap" },
   ];
+  const wallets = [
+    new PhantomWalletAdapter(),
+    new SolflareWalletAdapter(),
+    new BackpackWalletAdapter(),
+  ];
+  const maxNumberOfWallets = 5;
 
   let dataSubWS = [];
   let filteredUndefinedCmcHoldingTokenData = [];
@@ -530,6 +537,8 @@
     }
   }
 
+  const dispatch = createEventDispatcher();
+
   const handleValidateAddress = async (address: string) => {
     try {
       const response = await nimbus.get(`/v2/address/${address}/validate`);
@@ -539,12 +548,6 @@
       return undefined;
     }
   };
-
-  const wallets = [
-    new PhantomWalletAdapter(),
-    new SolflareWalletAdapter(),
-    new BackpackWalletAdapter(),
-  ];
 
   let toastMsg = "";
   let isSuccessToast = false;
@@ -563,8 +566,50 @@
     isSuccessToast = false;
   };
 
+  let modalVisible = false;
   let userPublicAddressChain = "EVM";
   let userAddress = $userPublicAddress;
+
+  onMount(() => {
+    $walletStore.disconnect();
+  });
+
+  const openModal = () => {
+    modalVisible = true;
+    dispatch("connect");
+  };
+
+  const closeModal = () => (modalVisible = false);
+
+  const connectWallet = async (event) => {
+    closeModal();
+    try {
+      localStorage.removeItem("walletAdapter");
+      await walletStore.resetWallet();
+      await walletStore.setConnecting(false);
+      await $walletStore.disconnect();
+      await $walletStore.select(event.detail);
+      await $walletStore.connect();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  $: solanaPublicAddress = $walletStore?.publicKey?.toBase58();
+
+  $: {
+    if (solanaPublicAddress) {
+      userAddress = solanaPublicAddress;
+    } else {
+      userAddress = $userPublicAddress;
+    }
+  }
+
+  $: {
+    if (userAddress) {
+      handleValidateAddress(userAddress);
+    }
+  }
 
   const onSubmitListNFT = async () => {
     const params = {
@@ -630,22 +675,6 @@
       console.log(e);
     }
   };
-
-  $: solanaPublicAddress = $walletStore?.publicKey?.toBase58();
-
-  $: {
-    if (solanaPublicAddress) {
-      userAddress = solanaPublicAddress;
-    } else {
-      userAddress = $userPublicAddress;
-    }
-  }
-
-  $: {
-    if (userAddress) {
-      handleValidateAddress(userAddress);
-    }
-  }
 </script>
 
 <div
@@ -1159,7 +1188,18 @@
       <div class="font-medium xl:title-3 title-1">
         Connect your Solana wallet to list NFT
       </div>
-      <SolanaAuth text="Connect wallet" />
+      <div
+        class={`flex items-center justify-center gap-2 text-white border cursor-pointer py-3 px-6 rounded-[12px] min-w-[250px] ${
+          $isDarkMode
+            ? "border-white text-white"
+            : "border-[#27326f] text-[#27326f]"
+        }`}
+        on:click={() => {
+          openModal();
+        }}
+      >
+        <div class="font-semibold text-[15px]">Connect wallet</div>
+      </div>
     </div>
   {/if}
 </AppOverlay>
@@ -1245,12 +1285,36 @@
       <div class="font-medium xl:title-3 title-1">
         Connect your Solana wallet to de-list NFT
       </div>
-      <SolanaAuth text="Connect wallet" />
+      <div
+        class={`flex items-center justify-center gap-2 text-white border cursor-pointer py-3 px-6 rounded-[12px] min-w-[250px] ${
+          $isDarkMode
+            ? "border-white text-white"
+            : "border-[#27326f] text-[#27326f]"
+        }`}
+        on:click={() => {
+          openModal();
+        }}
+      >
+        <div class="font-semibold text-[15px]">Connect wallet</div>
+      </div>
     </div>
   {/if}
 </AppOverlay>
 
-<WalletProvider localStorageKey="walletAdapter" {wallets} autoConnect />
+<WalletProvider
+  localStorageKey="walletAdapter"
+  {wallets}
+  autoConnect
+  onError={console.log}
+/>
+
+{#if modalVisible}
+  <WalletModal
+    on:close={closeModal}
+    on:connect={connectWallet}
+    {maxNumberOfWallets}
+  />
+{/if}
 
 {#if showToast}
   <div class="fixed w-full top-3 right-3" style="z-index: 2147483648;">

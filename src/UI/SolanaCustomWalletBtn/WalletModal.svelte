@@ -64,6 +64,7 @@
   aria-labelledby="wallet-adapter-modal-title"
   aria-modal="true"
   class="wallet-adapter-modal wallet-adapter-modal-fade-in"
+  style="z-index: 2147483648;"
   role="dialog"
   bind:this={backdrop}
   on:click={(e) => closeModal(e)}
