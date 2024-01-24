@@ -1,7 +1,6 @@
 <script>
   import dayjs from "dayjs";
   import relativeTime from "dayjs/plugin/relativeTime";
-  import { SparkLine } from "svelte-spark";
   import { isDarkMode } from "~/store";
   dayjs.extend(relativeTime);
 

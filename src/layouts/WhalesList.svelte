@@ -49,19 +49,19 @@
   let whalesData = [];
   let isLoading = false;
 
-  let pageValue = 0;
-  let isOpenFilterModal = false;
-  let filterParams = "";
-  let search = "";
+  // let pageValue = 0;
+  // let isOpenFilterModal = false;
+  // let filterParams = "";
+  // let search = "";
 
-  let sortNetWorth = "default";
-  let sortSharpeRatio = "default";
-  let sortChange1D = "default";
-  let sortChange7D = "default";
-  let sortChange30D = "default";
-  let sortChange1Y = "default";
-  let sortMaxDrawDown = "default";
-  let sortVolatility = "default";
+  // let sortNetWorth = "default";
+  // let sortSharpeRatio = "default";
+  // let sortChange1D = "default";
+  // let sortChange7D = "default";
+  // let sortChange30D = "default";
+  // let sortChange1Y = "default";
+  // let sortMaxDrawDown = "default";
+  // let sortVolatility = "default";
 
   const getPublicPortfolio = async (type) => {
     try {
@@ -87,10 +87,6 @@
     if (selectedFilter) {
       getPublicPortfolio(selectedFilter.value);
     }
-  }
-
-  $: {
-    console.log({ whalesData });
   }
 
   $: sortIcon = (sortType) => {
