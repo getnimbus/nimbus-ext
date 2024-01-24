@@ -3,7 +3,7 @@
   import { shorterName, shorterAddress } from "~/utils";
   import CopyToClipboard from "svelte-copy-to-clipboard";
   import { wait } from "../../entries/background/utils";
-  import { chainSupportedList, detectedChain } from "~/lib/chains";
+  import { listSupported, detectedChain } from "~/lib/chains";
 
   import Tooltip from "~/components/Tooltip.svelte";
   import "~/components/Tooltip.custom.svelte";
@@ -396,7 +396,7 @@
   </td>
 
   <td
-    class={`py-3 ${chainSupportedList.includes($typeWallet) ? "" : "pr-3"} ${
+    class={`py-3 ${listSupported.includes($typeWallet) ? "" : "pr-3"} ${
       $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
@@ -447,14 +447,14 @@
     </div>
   </td>
 
-  {#if chainSupportedList.includes($typeWallet)}
+  {#if listSupported.includes($typeWallet)}
     <td
       class={`py-3 xl:w-14 w-32 h-full flex justify-center items-center xl:gap-3 gap-6 ${
         $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
       }`}
       style={`${lastIndex ? "border-bottom-right-radius: 10px;" : ""}`}
     >
-      {#if chainSupportedList.includes($typeWallet)}
+      {#if listSupported.includes($typeWallet)}
         <div
           class="flex justify-center cursor-pointer"
           on:click={() => {

@@ -2,7 +2,7 @@
   import { groupBy, sumBy } from "lodash";
   import { wallet, chain, typeWallet, isDarkMode } from "~/store";
   import { autoFontSize, formatValue } from "~/utils";
-  import { chainSupportedList } from "~/lib/chains";
+  import { listSupported } from "~/lib/chains";
   import dayjs from "dayjs";
   import { createQuery } from "@tanstack/svelte-query";
   import { nimbus } from "~/lib/network";
@@ -372,7 +372,7 @@
   }
 
   $: enabledQuery = Boolean(
-    chainSupportedList.includes($typeWallet) &&
+    listSupported.includes($typeWallet) &&
       $wallet &&
       $wallet?.length !== 0 &&
       packageSelected !== "FREE"

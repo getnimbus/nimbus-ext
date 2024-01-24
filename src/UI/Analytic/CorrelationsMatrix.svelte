@@ -13,7 +13,7 @@
     equalizeArrayLengths,
     formatPercent,
   } from "~/utils";
-  import { chainSupportedList } from "~/lib/chains";
+  import { listSupported } from "~/lib/chains";
   import { defillama, nimbus } from "~/lib/network";
   import dayjs from "dayjs";
 
@@ -389,7 +389,7 @@
   }
 
   $: enabledQuery = Boolean(
-    chainSupportedList.includes($typeWallet) && $wallet && $wallet?.length !== 0
+    listSupported.includes($typeWallet) && $wallet && $wallet?.length !== 0
   );
 </script>
 

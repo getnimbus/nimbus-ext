@@ -1,7 +1,7 @@
 <script lang="ts">
   import { typeWallet, isDarkMode, user, selectedBundle } from "~/store";
   import { shorterName, shorterAddress } from "~/utils";
-  import { chainSupportedList, detectedChain } from "~/lib/chains";
+  import { listSupported, detectedChain } from "~/lib/chains";
   import numeral from "numeral";
   import { Progressbar, Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
@@ -877,7 +877,7 @@
     </div>
   </td>
 
-  {#if chainSupportedList.includes($typeWallet)}
+  {#if listSupported.includes($typeWallet)}
     <td
       class={`py-3 pr-3 w-full h-full flex justify-start items-center xl:gap-4 gap-7 ${
         $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
@@ -933,7 +933,7 @@
         </div>
       {/if}
 
-      {#if chainSupportedList.includes($typeWallet)}
+      {#if listSupported.includes($typeWallet)}
         <div
           class="flex justify-center cursor-pointer view-icon-detail"
           on:click={() => {

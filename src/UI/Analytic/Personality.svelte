@@ -7,7 +7,7 @@
   dayjs.extend(relativeTime);
   import { createQuery } from "@tanstack/svelte-query";
   import { nimbus } from "~/lib/network";
-  import { chainSupportedList } from "~/lib/chains";
+  import { listSupported } from "~/lib/chains";
   import type { AnalyticHistoricalFormat } from "~/types/AnalyticHistoricalData";
 
   import CalendarChart from "~/components/CalendarChart.svelte";
@@ -176,7 +176,7 @@
   };
 
   $: enabledQuery = Boolean(
-    chainSupportedList.includes($typeWallet) &&
+    listSupported.includes($typeWallet) &&
       $wallet &&
       $wallet?.length !== 0 &&
       $selectedPackage !== "FREE"

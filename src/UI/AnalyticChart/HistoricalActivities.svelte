@@ -2,7 +2,7 @@
   import { wallet, chain, typeWallet } from "~/store";
   import dayjs from "dayjs";
   import { nimbus } from "~/lib/network";
-  import { chainSupportedList } from "~/lib/chains";
+  import { listSupported } from "~/lib/chains";
   import { createQuery } from "@tanstack/svelte-query";
   import type { AnalyticHistoricalFormat } from "~/types/AnalyticHistoricalData";
 
@@ -137,7 +137,7 @@
   };
 
   $: enabledQuery = Boolean(
-    chainSupportedList.includes($typeWallet) &&
+    listSupported.includes($typeWallet) &&
       $wallet &&
       $wallet?.length !== 0 &&
       packageSelected !== "FREE"
