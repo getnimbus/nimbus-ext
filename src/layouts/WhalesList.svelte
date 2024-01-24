@@ -3,14 +3,16 @@
   import { nimbus } from "~/lib/network";
   import { i18n } from "~/lib/i18n";
   import mixpanel from "mixpanel-browser";
-  import { isDarkMode, user, userPublicAddress } from "~/store";
+  import {
+    isDarkMode,
+    user,
+    userPublicAddress,
+    selectedPackage,
+  } from "~/store";
   import { whaleCategories } from "~/utils";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { createQuery } from "@tanstack/svelte-query";
-  import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { useNavigate } from "svelte-navigator";
-
-  import { isDarkMode, selectedPackage, wallet } from "~/store";
 
   import Loading from "~/components/Loading.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
@@ -53,20 +55,19 @@
   let whalesData = [];
   let isLoading = false;
 
-  let pageValue = 0;
-  let isOpenFilterModal = false;
-  let filterParams = "";
-  let search = "";
-  let listCategories;
+  // let pageValue = 0;
+  // let isOpenFilterModal = false;
+  // let filterParams = "";
+  // let search = "";
 
-  let sortNetWorth = "default";
-  let sortSharpeRatio = "default";
-  let sortChange1D = "default";
-  let sortChange7D = "default";
-  let sortChange30D = "default";
-  let sortChange1Y = "default";
-  let sortMaxDrawDown = "default";
-  let sortVolatility = "default";
+  // let sortNetWorth = "default";
+  // let sortSharpeRatio = "default";
+  // let sortChange1D = "default";
+  // let sortChange7D = "default";
+  // let sortChange30D = "default";
+  // let sortChange1Y = "default";
+  // let sortMaxDrawDown = "default";
+  // let sortVolatility = "default";
 
   let selectedType:
     | "ALL"
@@ -77,26 +78,6 @@
     | "" = "ALL";
   let selectedCategory;
   let selectedCategoryId = "";
-  let categoriesPageValue = 0;
-
-  const getPublicPortfolioCategories = async (category, page) => {
-    const response = await nimbus.get(
-      `/market/portfolio/categories?category=${category}&page=${page}`
-    );
-    return response.data;
-  };
-
-  $: query = createQuery({
-    queryKey: ["whale-categories", selectedType, categoriesPageValue],
-    queryFn: () =>
-      getPublicPortfolioCategories(selectedType, categoriesPageValue),
-    staleTime: Infinity,
-    retry: false,
-    enabled:
-      selectedType.length !== 0 &&
-      selectedType !== "RECOMMENDED" &&
-      selectedType !== "ALL",
-  });
 
   const getPublicPortfolio = async (type) => {
     try {
@@ -118,24 +99,10 @@
     getPublicPortfolio(selectedFilter.value);
   });
 
-  const closeModal = () => {
-    isOpenFilterModal = false;
-  };
-
-  const resetFilter = () => {
-    filterParams = "";
-    search = "";
-    getPublicPortfolio(selectedFilter.value);
-  };
-
   $: {
     if (selectedFilter) {
       getPublicPortfolio(selectedFilter.value);
     }
-  }
-
-  $: {
-    console.log({ whalesData });
   }
 
   $: sortIcon = (sortType) => {
@@ -268,11 +235,6 @@
                 Address
               </div>
             </th>
-            <!-- <th class="py-3">
-              <div class="text-left xl:text-xs text-xl uppercase font-medium">
-                Tokens
-              </div>
-            </th> -->
             <th class="py-3">
               <div
                 class="flex items-center justify-end xl:gap-2 gap-4 text-right xl:text-xs text-xl uppercase font-medium"
