@@ -78,12 +78,12 @@
 
   onMount(() => {
     mixpanel.track("market_page");
-    getPublicPortfolio(selectedFilter.value);
+    getPublicPortfolio(selectedFilter.label);
   });
 
   $: {
     if (selectedFilter) {
-      getPublicPortfolio(selectedFilter.value);
+      getPublicPortfolio(selectedFilter.label);
     }
   }
 
@@ -357,8 +357,12 @@
               <!-- {#each whalesData as data} -->
               {#each (filterDuplicates(whalesData) || [])
                 ?.sort((a, b) => b.pnl_30d - a.pnl_30d)
-                ?.slice(0, $selectedPackage === "FREE" ? 10 : undefined) as data}
-                <PublicPortfolioItem {data} />
+                ?.slice(0, $selectedPackage === "FREE" ? 10 : undefined) as data, whalePosition}
+                <PublicPortfolioItem
+                  {data}
+                  typeData={selectedFilter.label}
+                  {whalePosition}
+                />
               {/each}
               {#if $selectedPackage === "FREE"}
                 <tr>
