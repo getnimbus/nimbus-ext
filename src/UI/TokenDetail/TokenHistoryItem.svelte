@@ -12,8 +12,8 @@
   export let data;
   export let contractAddress;
 
-  $: costBuy = Number(data?.quantity_in) * Number(data?.to_price);
-  $: costSell = Number(data?.quantity_out) * Number(data?.from_price);
+  $: costBuy = Number(data?.quantity_in) * Number(data?.from_price);
+  $: costSell = Number(data?.quantity_out) * Number(data?.to_price);
 
   $: withinLast24Hours = dayjs().diff(dayjs(data?.created_at * 1000), "hour");
 </script>
