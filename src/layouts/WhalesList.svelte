@@ -15,6 +15,7 @@
   import Button from "~/components/Button.svelte";
   import FilterModal from "~/UI/WhalesList/FilterModal.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
+  import { filterDuplicates } from "~/utils";
 
   const navigate = useNavigate();
 
@@ -69,17 +70,7 @@
         .get(`/whales?type=${type}`)
         .then((res) => res?.data?.result);
 
-      whalesData = res?.map((item) => {
-        return {
-          ...item,
-          ethBalance: Number(item.eth_balance || 0),
-          realizedProfit: Number(item?.realized_profit || 0),
-          realizedProfit7D: Number(item?.realized_profit_7d || 0),
-          lastActive: Number(item?.last_active || 0),
-          txs30d: Number(item?.txs_30d || 0),
-          avgHoldTime: Number(item?.avg_hold_time || 0),
-        };
-      });
+      whalesData = res;
     } catch (e) {
       console.error("error: ", e);
     } finally {
@@ -171,7 +162,7 @@
           {MultipleLang.whales_page_title}
         </div>
       </div>
-      <div class="flex items-center gap-2">
+      <div class="flex items-center gap-1">
         <AnimateSharedLayout>
           {#each whalesFilter as item}
             <div
@@ -323,7 +314,7 @@
               <div
                 class="flex items-center justify-end xl:gap-2 gap-4 text-right xl:text-xs text-xl uppercase font-medium"
               >
-                <TooltipTitle tooltipText={"Average Holding Time."} isBigIcon>
+                <TooltipTitle tooltipText="Average Holding Time" isBigIcon>
                   AHT
                 </TooltipTitle>
                 <div
@@ -336,9 +327,26 @@
                 </div>
               </div>
             </th>
+            <th class="py-3">
+              <div
+                class="flex items-center justify-end xl:gap-2 gap-4 text-right xl:text-xs text-xl uppercase font-medium"
+              >
+                Last Time
+                <div
+                  on:click={() => {
+                    // toggleSortSharpeRatio();
+                  }}
+                  class="cursor-pointer"
+                >
+                  <!-- {@html sortIcon(sortSharpeRatio)} -->
+                </div>
+              </div>
+            </th>
             <th class="pr-3 py-3 rounded-tr-[10px]">
               <div class="text-right xl:text-xs text-xl uppercase font-medium">
-                Last Time
+                <TooltipTitle tooltipText="Recently Purchased Tokens" isBigIcon>
+                  RPT
+                </TooltipTitle>
               </div>
             </th>
           </tr>
@@ -368,7 +376,9 @@
               </tr>
             {:else}
               <!-- {#each whalesData as data} -->
-              {#each (whalesData || [])?.slice(0, $selectedPackage === "FREE" ? 10 : undefined) as data}
+              {#each (filterDuplicates(whalesData) || [])
+                ?.sort((a, b) => b.pnl_30d - a.pnl_30d)
+                ?.slice(0, $selectedPackage === "FREE" ? 10 : undefined) as data}
                 <PublicPortfolioItem {data} />
               {/each}
               {#if $selectedPackage === "FREE"}
