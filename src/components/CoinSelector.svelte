@@ -54,7 +54,13 @@
       $query.data !== undefined &&
       $query.data.length !== 0
     ) {
-      coins = [...DEFAULT_COINS, ...$query.data];
+      coins = [...DEFAULT_COINS, ...$query?.data];
+    }
+  }
+
+  $: {
+    if (search.length === 0) {
+      coins = [...DEFAULT_COINS];
     }
   }
 </script>
