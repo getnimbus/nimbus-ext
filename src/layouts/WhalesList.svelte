@@ -7,12 +7,12 @@
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
   import { useNavigate } from "svelte-navigator";
+  import { filterDuplicates } from "~/utils";
 
   import Loading from "~/components/Loading.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import PublicPortfolioItem from "~/components/PublicPortfolioItem.svelte";
   import Button from "~/components/Button.svelte";
-  import { filterDuplicates } from "~/utils";
   import Tooltip from "~/components/Tooltip.svelte";
 
   const navigate = useNavigate();
@@ -34,7 +34,7 @@
     ),
   };
 
-  let whalesFilter: {
+  const whalesFilter: {
     value: string;
     label: "ALL" | "SMART" | "FRESH" | "KOL";
   }[] = [
@@ -43,6 +43,7 @@
     { value: "Fresh Wallet", label: "FRESH" },
     { value: "KOL", label: "KOL" },
   ];
+
   let selectedFilter = whalesFilter[0];
   let keysort = {
     eth_balance: { title: "eth_balance", type: "sortBalance" },
