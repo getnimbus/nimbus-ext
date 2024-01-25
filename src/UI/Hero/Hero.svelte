@@ -94,10 +94,10 @@
           place
         </div>
         <div class="grid grid-cols-2 grid-rows-2 xl:text-base text-2xl">
-          <div>✔️ Token & NFT</div>
-          <div>✔️ Profit and Loss</div>
-          <div>✔️ Risk Analysis</div>
-          <div>✔️ Whales list</div>
+          <div>✅ Token & NFT</div>
+          <div>✅ Profit and Loss</div>
+          <div>✅ Risk Analysis</div>
+          <div>✅ Whales list</div>
         </div>
       </div>
     </div>
