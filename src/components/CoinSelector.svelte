@@ -37,7 +37,7 @@
 
   const handleSearchTokenMobula = async (searchValue: string) => {
     const response = await nimbus.get(`/token/${searchValue}/info/mobula`);
-    return response.data;
+    return response?.data?.data;
   };
 
   $: query = createQuery({
