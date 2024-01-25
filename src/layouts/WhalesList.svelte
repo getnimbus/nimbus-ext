@@ -13,6 +13,7 @@
   import PublicPortfolioItem from "~/components/PublicPortfolioItem.svelte";
   import Button from "~/components/Button.svelte";
   import { filterDuplicates } from "~/utils";
+  import Tooltip from "~/components/Tooltip.svelte";
 
   const navigate = useNavigate();
   const queryClient = useQueryClient();

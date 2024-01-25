@@ -299,7 +299,7 @@
           <img
             src={token.logo || defaultToken}
             alt=""
-            class="xl:w-5 xl:h-5 h-10 w-10 object-contain rounded-full bg-white"
+            class="xl:w-7 xl:h-7 h-10 w-10 object-contain rounded-full bg-white"
             on:error={(e) => handleImgError(e, defaultToken)}
           />
           {#if isShowSymbol && selectedToken === token}
