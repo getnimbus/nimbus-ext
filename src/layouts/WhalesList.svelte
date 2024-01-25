@@ -6,7 +6,7 @@
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { useNavigate } from "svelte-navigator";
 
-  import { isDarkMode, selectedPackage, wallet } from "~/store";
+  import { isDarkMode, selectedPackage, user, wallet } from "~/store";
 
   import Loading from "~/components/Loading.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
@@ -14,6 +14,8 @@
   import TooltipTitle from "~/components/TooltipTitle.svelte";
   import Button from "~/components/Button.svelte";
   import { filterDuplicates } from "~/utils";
+  import Tooltip from "~/components/Tooltip.svelte";
+  import { createQuery } from "@tanstack/svelte-query";
 
   const navigate = useNavigate();
 
@@ -46,6 +48,23 @@
 
   let whalesData = [];
   let isLoading = false;
+  let tooltipRPT = false;
+  let tooltipAHT = false;
+
+  const getPublicPortfolio = async () => {
+    try {
+      isLoading = true;
+      const res = await nimbus
+        .get(`/whales?type=${selectedFilter.label}`)
+        .then((res) => res?.data?.result);
+
+      whalesData = res;
+    } catch (e) {
+      console.error("error: ", e);
+    } finally {
+      isLoading = false;
+    }
+  };
 
   // let pageValue = 0;
   // let isOpenFilterModal = false;
@@ -61,31 +80,24 @@
   // let sortMaxDrawDown = "default";
   // let sortVolatility = "default";
 
-  const getPublicPortfolio = async (type) => {
-    try {
-      isLoading = true;
-      const res = await nimbus
-        .get(`/whales?type=${type}`)
-        .then((res) => res?.data?.result);
-
-      whalesData = res;
-    } catch (e) {
-      console.error("error: ", e);
-    } finally {
-      isLoading = false;
-    }
-  };
+  $: queryWhalesList = createQuery({
+    queryKey: ["whalelist"],
+    queryFn: () => getPublicPortfolio(),
+    staleTime: Infinity,
+    retry: false,
+    enabled: $user && Object.keys($user).length !== 0,
+  });
 
   onMount(() => {
     mixpanel.track("market_page");
-    getPublicPortfolio(selectedFilter.label);
+    getPublicPortfolio();
   });
 
-  $: {
-    if (selectedFilter) {
-      getPublicPortfolio(selectedFilter.label);
-    }
-  }
+  // $: {
+  //   if (selectedFilter) {
+  //     getPublicPortfolio();
+  //   }
+  // }
 
   $: sortIcon = (sortType) => {
     return `<svg
@@ -291,11 +303,34 @@
             </th>
             <th class="py-3">
               <div
-                class="flex items-center justify-end xl:gap-2 gap-4 text-right xl:text-xs text-xl uppercase font-medium"
+                class="flex items-center justify-end xl:gap-1 gap-4 text-right xl:text-xs text-xl uppercase font-medium relative"
               >
-                <TooltipTitle tooltipText="Average Holding Time" isBigIcon>
-                  AHT
-                </TooltipTitle>
+                AHT
+                <div
+                  on:mouseenter={() => {
+                    tooltipAHT = true;
+                  }}
+                  on:mouseleave={() => {
+                    tooltipAHT = false;
+                  }}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="14"
+                    height="14"
+                    viewBox="0 0 1024 1024"
+                  >
+                    <path
+                      fill="currentColor"
+                      d="M512 64a448 448 0 1 1 0 896a448 448 0 0 1 0-896m0 832a384 384 0 0 0 0-768a384 384 0 0 0 0 768m48-176a48 48 0 1 1-96 0a48 48 0 0 1 96 0m-48-464a32 32 0 0 1 32 32v288a32 32 0 0 1-64 0V288a32 32 0 0 1 32-32"
+                    />
+                  </svg>
+                </div>
+                {#if tooltipAHT}
+                  <div class="absolute -top-8 left-0">
+                    <Tooltip text="Average Holding Time" />
+                  </div>
+                {/if}
                 <div
                   on:click={() => {
                     // toggleSortSharpeRatio();
@@ -322,10 +357,35 @@
               </div>
             </th>
             <th class="pr-3 py-3 rounded-tr-[10px]">
-              <div class="text-right xl:text-xs text-xl uppercase font-medium">
-                <TooltipTitle tooltipText="Recently Purchased Tokens" isBigIcon>
-                  RPT
-                </TooltipTitle>
+              <div
+                class="flex gap-1 justify-end items-center text-right xl:text-xs text-xl uppercase font-medium relative"
+              >
+                RPT
+                <div
+                  on:mouseenter={() => {
+                    tooltipRPT = true;
+                  }}
+                  on:mouseleave={() => {
+                    tooltipRPT = false;
+                  }}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="14"
+                    height="14"
+                    viewBox="0 0 1024 1024"
+                  >
+                    <path
+                      fill="currentColor"
+                      d="M512 64a448 448 0 1 1 0 896a448 448 0 0 1 0-896m0 832a384 384 0 0 0 0-768a384 384 0 0 0 0 768m48-176a48 48 0 1 1-96 0a48 48 0 0 1 96 0m-48-464a32 32 0 0 1 32 32v288a32 32 0 0 1-64 0V288a32 32 0 0 1 32-32"
+                    />
+                  </svg>
+                </div>
+                {#if tooltipRPT}
+                  <div class="absolute -top-8 left-0">
+                    <Tooltip text="Recently Purchased Tokens" />
+                  </div>
+                {/if}
               </div>
             </th>
           </tr>
