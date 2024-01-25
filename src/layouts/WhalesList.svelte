@@ -58,7 +58,7 @@
         .get(`/whales?type=${selectedFilter.label}`)
         .then((res) => res?.data?.result);
 
-      whalesData = res;
+      return res;
     } catch (e) {
       console.error("error: ", e);
     } finally {
@@ -84,7 +84,7 @@
     queryKey: ["whalelist"],
     queryFn: () => getPublicPortfolio(),
     staleTime: Infinity,
-    retry: false,
+    retry: true,
     enabled: $user && Object.keys($user).length !== 0,
   });
 
@@ -93,11 +93,11 @@
     getPublicPortfolio();
   });
 
-  // $: {
-  //   if (selectedFilter) {
-  //     getPublicPortfolio();
-  //   }
-  // }
+  $: {
+    if (selectedFilter) {
+      whalesData = $queryWhalesList.data;
+    }
+  }
 
   $: sortIcon = (sortType) => {
     return `<svg
@@ -327,7 +327,9 @@
                   </svg>
                 </div>
                 {#if tooltipAHT}
-                  <div class="absolute -top-8 left-0">
+                  <div
+                    class="absolute -top-8 left-1/3 transform -translate-x-1/4"
+                  >
                     <Tooltip text="Average Holding Time" />
                   </div>
                 {/if}
@@ -382,7 +384,9 @@
                   </svg>
                 </div>
                 {#if tooltipRPT}
-                  <div class="absolute -top-8 left-0">
+                  <div
+                    class="absolute -top-8 left-1/3 transform -translate-x-1/4"
+                  >
                     <Tooltip text="Recently Purchased Tokens" />
                   </div>
                 {/if}
