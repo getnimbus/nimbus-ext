@@ -220,10 +220,21 @@
       {#if data?.realized_profit === null}
         <div>--</div>
       {:else}
-        <div class="flex items-center">
+        <div
+          class={`flex items-center ${
+            data?.realized_profit >= 0 ? "text-[#00A878]" : "text-red-500"
+          }`}
+        >
           $<TooltipNumber
             number={Math.abs(Number(data?.realized_profit))}
-            type="balance"
+            type={Math.abs(Number(data?.realized_profit)) > 999999
+              ? "balance"
+              : "percent"}
+          />
+          <img
+            src={data?.realized_profit >= 0 ? TrendUp : TrendDown}
+            alt="trend"
+            class="ml-1 mb-1 w-4 h-4"
           />
         </div>
       {/if}
