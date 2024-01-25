@@ -15,10 +15,21 @@
   $: costBuy = Number(data?.quantity_in) * Number(data?.from_price);
   $: costSell = Number(data?.quantity_out) * Number(data?.to_price);
 
+  $: isBuy =
+    data?.to_token_address?.toLowerCase() === contractAddress?.toLowerCase();
+
   $: amount =
-    contractAddress?.toLowerCase() === data.from_token_address
-      ? data?.quantity_in
-      : data?.quantity_out;
+    data?.to_symbol || data?.from_symbol // Syve data
+      ? isBuy
+        ? Number(data?.quantity_in)
+        : Number(data?.quantity_out)
+      : Number(
+          contractAddress?.toLowerCase() === data.from_token_address
+            ? data?.quantity_in
+            : data?.quantity_out
+        );
+
+  $: console.log({ amount, isBuy, contractAddress, data });
 
   $: withinLast24Hours = dayjs().diff(dayjs(data?.created_at * 1000), "hour");
 </script>

@@ -3,25 +3,20 @@
   import { nimbus } from "~/lib/network";
   import { i18n } from "~/lib/i18n";
   import mixpanel from "mixpanel-browser";
-  import {
-    isDarkMode,
-    user,
-    userPublicAddress,
-    selectedPackage,
-  } from "~/store";
-  import { whaleCategories } from "~/utils";
+  import { isDarkMode, selectedPackage } from "~/store";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
-  import { createQuery } from "@tanstack/svelte-query";
+  import { createQuery, useQueryClient } from "@tanstack/svelte-query";
   import { useNavigate } from "svelte-navigator";
 
   import Loading from "~/components/Loading.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import PublicPortfolioItem from "~/components/PublicPortfolioItem.svelte";
-  import TooltipTitle from "~/components/TooltipTitle.svelte";
   import Button from "~/components/Button.svelte";
   import { filterDuplicates } from "~/utils";
+  import Tooltip from "~/components/Tooltip.svelte";
 
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const MultipleLang = {
     whale: i18n("newtabPage.whale", "Whale 🐳"),
@@ -49,49 +44,242 @@
     { value: "KOL", label: "KOL" },
   ];
   let selectedFilter = whalesFilter[0];
+  let keysort = {
+    eth_balance: { title: "eth_balance", type: "sortBalance" },
+    pnl_1d: { title: "pnl_1d", type: "sort1DPnl" },
+    pnl_7d: { title: "pnl_7d", type: "sort7DPnl" },
+    pnl_30d: { title: "pnl_30d", type: "sort30DPnl" },
+    realized_profit: { title: "realized_profit", type: "sortRealizedProfit" },
+    txs_30d: { title: "txs_30d", type: "sort30DTXS" },
+    avg_hold_time: { title: "avg_hold_time", type: "sortAHT" },
+    last_active: { title: "last_active", type: "sortLastTime" },
+  };
 
   let whalesData = [];
-  let isLoading = false;
+  let tooltipRPT = false;
+  let tooltipAHT = false;
 
-  // let pageValue = 0;
-  // let isOpenFilterModal = false;
-  // let filterParams = "";
-  // let search = "";
-
-  // let sortNetWorth = "default";
-  // let sortSharpeRatio = "default";
-  // let sortChange1D = "default";
-  // let sortChange7D = "default";
-  // let sortChange30D = "default";
-  // let sortChange1Y = "default";
-  // let sortMaxDrawDown = "default";
-  // let sortVolatility = "default";
+  let sortBalance = "default";
+  let sort1DPnl = "default";
+  let sort7DPnl = "default";
+  let sort30DPnl = "default";
+  let sortRealizedProfit = "default";
+  let sort30DTXS = "default";
+  let sortAHT = "default";
+  let sortLastTime = "default";
 
   const getPublicPortfolio = async (type) => {
-    try {
-      isLoading = true;
-      const res = await nimbus
-        .get(`/whales?type=${type}`)
-        .then((res) => res?.data?.result);
-
-      whalesData = res;
-    } catch (e) {
-      console.error("error: ", e);
-    } finally {
-      isLoading = false;
-    }
+    const res = await nimbus
+      .get(`/whales?type=${type}`)
+      .then((res) => res?.data?.result);
+    return res;
   };
+
+  $: queryWhalesList = createQuery({
+    queryKey: ["whaleslist", selectedFilter],
+    queryFn: () => getPublicPortfolio(selectedFilter.label),
+    staleTime: Infinity,
+  });
 
   onMount(() => {
     mixpanel.track("market_page");
-    getPublicPortfolio(selectedFilter.label);
+    getPublicPortfolio();
   });
 
-  $: {
-    if (selectedFilter) {
-      getPublicPortfolio(selectedFilter.label);
+  const toggleSortWhalesList = (key, sortType) => {
+    let sortingType = "default";
+    switch (sortType) {
+      case "sortBalance":
+        sort1DPnl = "default";
+        sort7DPnl = "default";
+        sort30DPnl = "default";
+        sortRealizedProfit = "default";
+        sort30DTXS = "default";
+        sortAHT = "default";
+        sortLastTime = "default";
+        switch (sortBalance) {
+          case "default":
+            sortingType = sortBalance = "asc";
+            break;
+          case "asc":
+            sortingType = sortBalance = "desc";
+            break;
+          case "desc":
+            sortingType = sortBalance = "default";
+            break;
+          default:
+            sortingType = sortBalance = "default";
+        }
+        break;
+      case "sort1DPnl":
+        sortBalance = "default";
+        sort7DPnl = "default";
+        sort30DPnl = "default";
+        sortRealizedProfit = "default";
+        sort30DTXS = "default";
+        sortAHT = "default";
+        sortLastTime = "default";
+
+        switch (sort1DPnl) {
+          case "default":
+            sortingType = sort1DPnl = "asc";
+            break;
+          case "asc":
+            sortingType = sort1DPnl = "desc";
+            break;
+          case "desc":
+            sortingType = sort1DPnl = "default";
+            break;
+          default:
+            sortingType = sort1DPnl = "default";
+        }
+        break;
+      case "sort7DPnl":
+        sortBalance = "default";
+        sort1DPnl = "default";
+        sort30DPnl = "default";
+        sortRealizedProfit = "default";
+        sort30DTXS = "default";
+        sortAHT = "default";
+        sortLastTime = "default";
+        switch (sort7DPnl) {
+          case "default":
+            sortingType = sort7DPnl = "asc";
+            break;
+          case "asc":
+            sortingType = sort7DPnl = "desc";
+            break;
+          case "desc":
+            sortingType = sort7DPnl = "default";
+            break;
+          default:
+            sortingType = sort7DPnl = "default";
+        }
+        break;
+      case "sort30DPnl":
+        sortBalance = "default";
+        sort1DPnl = "default";
+        sort7DPnl = "default";
+        sortRealizedProfit = "default";
+        sort30DTXS = "default";
+        sortAHT = "default";
+        sortLastTime = "default";
+        switch (sort30DPnl) {
+          case "default":
+            sortingType = sort30DPnl = "asc";
+            break;
+          case "asc":
+            sortingType = sort30DPnl = "desc";
+            break;
+          case "desc":
+            sortingType = sort30DPnl = "default";
+            break;
+          default:
+            sortingType = sort30DPnl = "default";
+        }
+        break;
+      case "sortRealizedProfit":
+        sortBalance = "default";
+        sort1DPnl = "default";
+        sort7DPnl = "default";
+        sort30DPnl = "default";
+        sort30DTXS = "default";
+        sortAHT = "default";
+        sortLastTime = "default";
+        switch (sortRealizedProfit) {
+          case "default":
+            sortingType = sortRealizedProfit = "asc";
+            break;
+          case "asc":
+            sortingType = sortRealizedProfit = "desc";
+            break;
+          case "desc":
+            sortingType = sortRealizedProfit = "default";
+            break;
+          default:
+            sortingType = sortRealizedProfit = "default";
+        }
+        break;
+      case "sort30DTXS":
+        sortBalance = "default";
+        sort1DPnl = "default";
+        sort7DPnl = "default";
+        sort30DPnl = "default";
+        sortRealizedProfit = "default";
+        sortAHT = "default";
+        sortLastTime = "default";
+        switch (sort30DTXS) {
+          case "default":
+            sortingType = sort30DTXS = "asc";
+            break;
+          case "asc":
+            sortingType = sort30DTXS = "desc";
+            break;
+          case "desc":
+            sortingType = sort30DTXS = "default";
+            break;
+          default:
+            sortingType = sort30DTXS = "default";
+        }
+        break;
+      case "sortAHT":
+        sortBalance = "default";
+        sort1DPnl = "default";
+        sort7DPnl = "default";
+        sort30DPnl = "default";
+        sortRealizedProfit = "default";
+        sort30DTXS = "default";
+        sortLastTime = "default";
+        switch (sortAHT) {
+          case "default":
+            sortingType = sortAHT = "asc";
+            break;
+          case "asc":
+            sortingType = sortAHT = "desc";
+            break;
+          case "desc":
+            sortingType = sortAHT = "default";
+            break;
+          default:
+            sortingType = sortAHT = "default";
+        }
+        break;
+      case "sortLastTime":
+        sortBalance = "default";
+        sort1DPnl = "default";
+        sort7DPnl = "default";
+        sort30DPnl = "default";
+        sortRealizedProfit = "default";
+        sort30DTXS = "default";
+        sortAHT = "default";
+        switch (sortLastTime) {
+          case "default":
+            sortingType = sortLastTime = "asc";
+            break;
+          case "asc":
+            sortingType = sortLastTime = "desc";
+            break;
+          case "desc":
+            sortingType = sortLastTime = "default";
+            break;
+          default:
+            sortingType = sortLastTime = "default";
+        }
+        break;
+      default:
+        sortingType = "asc";
     }
-  }
+
+    if (sortingType === "asc") {
+      whalesData = whalesData.sort((a, b) => b[key] - a[key]);
+    }
+    if (sortingType === "desc") {
+      whalesData = whalesData.sort((a, b) => a[key] - b[key]);
+    }
+    if (sortingType === "default") {
+      whalesData = whalesData.sort((a, b) => b.pnl_30d - a.pnl_30d);
+    }
+  };
 
   $: sortIcon = (sortType) => {
     return `<svg
@@ -137,13 +325,21 @@
                     </g>
                   </svg>`;
   };
+
+  $: {
+    if (selectedFilter && !$queryWhalesList.isError && $queryWhalesList.data) {
+      whalesData = $queryWhalesList.data.sort((a, b) => b.pnl_30d - a.pnl_30d);
+    }
+  }
 </script>
 
 <ErrorBoundary>
   <div
     class="max-w-[2000px] m-auto xl:w-[90%] w-[90%] py-8 flex flex-col gap-6"
   >
-    <div class="flex justify-between items-end">
+    <div
+      class="flex xl:flex-row flex-col justify-between xl:items-end xl:gap-0 gap-4"
+    >
       <div class="flex flex-col gap-2">
         <div class="xl:text-5xl text-7xl font-semibold">
           {MultipleLang.whale}
@@ -160,6 +356,7 @@
               class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
               on:click={() => {
                 selectedFilter = item;
+                queryClient.invalidateQueries(["whaleslist"]);
               }}
             >
               <div
@@ -191,7 +388,10 @@
       class={`rounded-[10px] border border_0000000d xl:overflow-visible overflow-x-auto ${
         $isDarkMode ? "bg-[#131313]" : "bg-[#fff]"
       } ${
-        isLoading || (whalesData && whalesData?.length === 0) ? "h-screen" : ""
+        ($queryWhalesList.isLoading && $queryWhalesList.isError) ||
+        (whalesData && whalesData?.length === 0)
+          ? "h-screen"
+          : ""
       }`}
     >
       <table class="table-auto xl:w-full w-[2800px] h-full">
@@ -211,11 +411,14 @@
                 ETH Balance
                 <div
                   on:click={() => {
-                    // toggleSortNetWorth();
+                    toggleSortWhalesList(
+                      keysort.eth_balance.title,
+                      keysort.eth_balance.type
+                    );
                   }}
                   class="cursor-pointer"
                 >
-                  <!-- {@html sortIcon(sortNetWorth)} -->
+                  {@html sortIcon(sortBalance)}
                 </div>
               </div>
             </th>
@@ -226,11 +429,14 @@
                 1D Pnl
                 <div
                   on:click={() => {
-                    // toggleSortChange1D();
+                    toggleSortWhalesList(
+                      keysort.pnl_1d.title,
+                      keysort.pnl_1d.type
+                    );
                   }}
                   class="cursor-pointer"
                 >
-                  <!-- {@html sortIcon(sortChange1D)} -->
+                  {@html sortIcon(sort1DPnl)}
                 </div>
               </div>
             </th>
@@ -241,11 +447,14 @@
                 7D Pnl
                 <div
                   on:click={() => {
-                    // toggleSortChange7D();
+                    toggleSortWhalesList(
+                      keysort.pnl_7d.title,
+                      keysort.pnl_7d.type
+                    );
                   }}
                   class="cursor-pointer"
                 >
-                  <!-- {@html sortIcon(sortChange7D)} -->
+                  {@html sortIcon(sort7DPnl)}
                 </div>
               </div>
             </th>
@@ -256,11 +465,14 @@
                 30D Pnl
                 <div
                   on:click={() => {
-                    // toggleSortChange30D();
+                    toggleSortWhalesList(
+                      keysort.pnl_30d.title,
+                      keysort.pnl_30d.type
+                    );
                   }}
                   class="cursor-pointer"
                 >
-                  <!-- {@html sortIcon(sortChange30D)} -->
+                  {@html sortIcon(sort30DPnl)}
                 </div>
               </div>
             </th>
@@ -272,11 +484,14 @@
 
                 <div
                   on:click={() => {
-                    // toggleSortVolatility();
+                    toggleSortWhalesList(
+                      keysort.realized_profit.title,
+                      keysort.realized_profit.type
+                    );
                   }}
                   class="cursor-pointer"
                 >
-                  <!-- {@html sortIcon(sortVolatility)} -->
+                  {@html sortIcon(sortRealizedProfit)}
                 </div>
               </div>
             </th>
@@ -287,28 +502,59 @@
                 30D TXs
                 <div
                   on:click={() => {
-                    // toggleSortMaxDrawDown();
+                    toggleSortWhalesList(
+                      keysort.txs_30d.title,
+                      keysort.txs_30d.type
+                    );
                   }}
                   class="cursor-pointer"
                 >
-                  <!-- {@html sortIcon(sortMaxDrawDown)} -->
+                  {@html sortIcon(sort30DTXS)}
                 </div>
               </div>
             </th>
             <th class="py-3">
               <div
-                class="flex items-center justify-end xl:gap-2 gap-4 text-right xl:text-xs text-xl uppercase font-medium"
+                class="flex items-center justify-end xl:gap-1 gap-4 text-right xl:text-xs text-xl uppercase font-medium relative"
               >
-                <TooltipTitle tooltipText="Average Holding Time" isBigIcon>
-                  AHT
-                </TooltipTitle>
+                AHT
+                <div
+                  on:mouseenter={() => {
+                    tooltipAHT = true;
+                  }}
+                  on:mouseleave={() => {
+                    tooltipAHT = false;
+                  }}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="14"
+                    height="14"
+                    viewBox="0 0 1024 1024"
+                  >
+                    <path
+                      fill="currentColor"
+                      d="M512 64a448 448 0 1 1 0 896a448 448 0 0 1 0-896m0 832a384 384 0 0 0 0-768a384 384 0 0 0 0 768m48-176a48 48 0 1 1-96 0a48 48 0 0 1 96 0m-48-464a32 32 0 0 1 32 32v288a32 32 0 0 1-64 0V288a32 32 0 0 1 32-32"
+                    />
+                  </svg>
+                </div>
+                {#if tooltipAHT}
+                  <div
+                    class="absolute -top-8 left-1/3 transform -translate-x-1/4"
+                  >
+                    <Tooltip text="Average Holding Time" />
+                  </div>
+                {/if}
                 <div
                   on:click={() => {
-                    // toggleSortSharpeRatio();
+                    toggleSortWhalesList(
+                      keysort.avg_hold_time.title,
+                      keysort.avg_hold_time.type
+                    );
                   }}
                   class="cursor-pointer"
                 >
-                  <!-- {@html sortIcon(sortSharpeRatio)} -->
+                  {@html sortIcon(sortAHT)}
                 </div>
               </div>
             </th>
@@ -319,25 +565,55 @@
                 Last Time
                 <div
                   on:click={() => {
-                    // toggleSortSharpeRatio();
+                    toggleSortWhalesList(
+                      keysort.last_active.title,
+                      keysort.last_active.type
+                    );
                   }}
                   class="cursor-pointer"
                 >
-                  <!-- {@html sortIcon(sortSharpeRatio)} -->
+                  {@html sortIcon(sortLastTime)}
                 </div>
               </div>
             </th>
             <th class="pr-3 py-3 rounded-tr-[10px]">
-              <div class="text-right xl:text-xs text-xl uppercase font-medium">
-                <TooltipTitle tooltipText="Recently Purchased Tokens" isBigIcon>
-                  RPT
-                </TooltipTitle>
+              <div
+                class="flex gap-1 justify-end items-center text-right xl:text-xs text-xl uppercase font-medium relative"
+              >
+                RPT
+                <div
+                  on:mouseenter={() => {
+                    tooltipRPT = true;
+                  }}
+                  on:mouseleave={() => {
+                    tooltipRPT = false;
+                  }}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="14"
+                    height="14"
+                    viewBox="0 0 1024 1024"
+                  >
+                    <path
+                      fill="currentColor"
+                      d="M512 64a448 448 0 1 1 0 896a448 448 0 0 1 0-896m0 832a384 384 0 0 0 0-768a384 384 0 0 0 0 768m48-176a48 48 0 1 1-96 0a48 48 0 0 1 96 0m-48-464a32 32 0 0 1 32 32v288a32 32 0 0 1-64 0V288a32 32 0 0 1 32-32"
+                    />
+                  </svg>
+                </div>
+                {#if tooltipRPT}
+                  <div
+                    class="absolute -top-8 left-1/3 transform -translate-x-1/4"
+                  >
+                    <Tooltip text="Recently Purchased Tokens" />
+                  </div>
+                {/if}
               </div>
             </th>
           </tr>
         </thead>
 
-        {#if isLoading}
+        {#if $queryWhalesList.isLoading}
           <tbody>
             <tr>
               <td colspan="11">
@@ -361,9 +637,7 @@
               </tr>
             {:else}
               <!-- {#each whalesData as data} -->
-              {#each (filterDuplicates(whalesData) || [])
-                ?.sort((a, b) => b.pnl_30d - a.pnl_30d)
-                ?.slice(0, $selectedPackage === "FREE" ? 10 : undefined) as data, whalePosition}
+              {#each (filterDuplicates(whalesData) || [])?.slice(0, $selectedPackage === "FREE" ? 10 : undefined) as data, whalePosition}
                 <PublicPortfolioItem
                   {data}
                   typeData={selectedFilter.label}

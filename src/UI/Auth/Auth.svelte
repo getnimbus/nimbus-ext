@@ -760,7 +760,7 @@
     <div class="xl:title-3 title-1 font-medium text-center">
       Connect wallet to enjoy more features
     </div>
-    <div class="flex items-center justify-center gap-4">
+    <div class="flex flex-col items-center justify-center gap-4">
       <div
         class={`flex items-center justify-center gap-2 text-white border cursor-pointer py-3 px-6 rounded-[12px] min-w-[250px] ${
           $isDarkMode

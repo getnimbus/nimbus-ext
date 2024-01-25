@@ -690,7 +690,7 @@
     <div class="flex justify-end text-2xl font-medium xl:text-sm text_00000099">
       {#if data?.chain === "ZETA"}
         <TooltipTitle
-          tooltipText="Because ZETA chain is test-net so we hardcode price to $10."
+          tooltipText="Because ZETA chain is testnet so we hardcode price to $10."
           type="warning"
         >
           <div class="pl-4">
