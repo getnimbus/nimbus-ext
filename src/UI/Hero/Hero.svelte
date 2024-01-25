@@ -17,6 +17,7 @@
   import Button from "~/components/Button.svelte";
 
   import Plus from "~/assets/plus.svg";
+  import checkMark from "~/assets/check.svg";
   import heroImage from "~/assets/recap/hero/heroimage.png";
   import { bigGeneration, otherGeneration } from "~/lib/chains";
 
@@ -94,10 +95,18 @@
           place
         </div>
         <div class="grid grid-cols-2 grid-rows-2 xl:text-base text-2xl">
-          <div>✅ Token & NFT</div>
-          <div>✅ Profit and Loss</div>
-          <div>✅ Risk Analysis</div>
-          <div>✅ Whales list</div>
+          <div class="flex gap-1 items-center">
+            <img src={checkMark} alt="" /> Token & NFT
+          </div>
+          <div class="flex gap-1 items-center">
+            <img src={checkMark} alt="" /> Profit and Loss
+          </div>
+          <div class="flex gap-1 items-center">
+            <img src={checkMark} alt="" /> Risk Analysis
+          </div>
+          <div class="flex gap-1 items-center">
+            <img src={checkMark} alt="" /> Whales list
+          </div>
         </div>
       </div>
     </div>
