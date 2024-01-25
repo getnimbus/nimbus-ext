@@ -5,19 +5,15 @@
   import mixpanel from "mixpanel-browser";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { useNavigate } from "svelte-navigator";
-
+  import { createQuery, useQueryClient } from "@tanstack/svelte-query";
   import { isDarkMode, selectedPackage } from "~/store";
+  import { filterDuplicates } from "~/utils";
 
   import Loading from "~/components/Loading.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import PublicPortfolioItem from "~/components/PublicPortfolioItem.svelte";
   import Button from "~/components/Button.svelte";
-  import { filterDuplicates } from "~/utils";
   import Tooltip from "~/components/Tooltip.svelte";
-  import { createQuery, useQueryClient } from "@tanstack/svelte-query";
-
-  const navigate = useNavigate();
-  const queryClient = useQueryClient();
 
   const MultipleLang = {
     whale: i18n("newtabPage.whale", "Whale 🐳"),
@@ -35,7 +31,10 @@
     ),
   };
 
-  let whalesFilter: {
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
+  const whalesFilter: {
     value: string;
     label: "ALL" | "SMART" | "FRESH" | "KOL";
   }[] = [
@@ -44,6 +43,7 @@
     { value: "Fresh Wallet", label: "FRESH" },
     { value: "KOL", label: "KOL" },
   ];
+
   let selectedFilter = whalesFilter[0];
   let keysort = {
     eth_balance: { title: "eth_balance", type: "sortBalance" },
