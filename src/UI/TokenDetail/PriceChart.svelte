@@ -4,7 +4,7 @@
   dayjs.extend(isBetween);
   import { createQuery } from "@tanstack/svelte-query";
   import { defillama, nimbus } from "~/lib/network";
-  import { isDarkMode, typeWallet } from "~/store";
+  import { isDarkMode } from "~/store";
   import {
     autoFontSize,
     formatBalance,
@@ -14,8 +14,9 @@
   import numeral from "numeral";
   import { groupBy } from "lodash";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
-  import { chainSupport, handleFormatBlockChainId } from "~/lib/price-mobulaWs";
+  import { handleFormatBlockChainId } from "~/lib/price-mobulaWs";
 
+  import TradingViewChart from "~/components/TradingViewChart.svelte";
   import EChart from "~/components/EChart.svelte";
   import Loading from "~/components/Loading.svelte";
 
@@ -909,52 +910,121 @@
     }
   }
 
+  let selectedTypeChart = "candles";
+
+  const typeChart = [
+    {
+      label: "Candles",
+      value: "candles",
+    },
+    {
+      label: "Line",
+      value: "line",
+    },
+  ];
+
+  const handleFormatRangeTradingViewChart = (time) => {
+    let timeFrame = time;
+
+    if (time === "7D") {
+      timeFrame = "5D";
+    }
+
+    if (time === "30D") {
+      timeFrame = "1M";
+    }
+
+    return timeFrame;
+  };
+
   $: theme = $isDarkMode ? "dark" : "white";
+
+  $: options = {
+    symbol: `BYBIT:WSMUSDT.P`,
+    theme,
+    autosize: true,
+    locale: "en",
+    hide_side_toolbar: false,
+    range: handleFormatRangeTradingViewChart(selectedTimeFrame),
+  };
 </script>
 
 <div class="flex flex-col gap-4">
-  <div class="flex justify-end">
-    <AnimateSharedLayout>
-      {#each timeFrame as type}
-        <div
-          class="relative cursor-pointer xl:text-sm text-base font-medium py-1 px-3 rounded-[100px] transition-all"
-          on:click={() => {
-            if (
-              !$queryTokenPrice.isError ||
-              (dataPriceChart && dataPriceChart.length !== 0)
-            ) {
-              selectedTimeFrame = type.value;
-            }
-          }}
-        >
+  <div class="flex justify-between gap-6">
+    <div class="flex items-center">
+      <AnimateSharedLayout>
+        {#each typeChart as type}
           <div
-            class={`relative z-20 ${
-              type.value === selectedTimeFrame && "text-white"
-            }`}
+            class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
+            on:click={() => (selectedTypeChart = type.value)}
           >
-            {type.label}
-          </div>
-          {#if type.value === selectedTimeFrame}
-            <Motion
-              let:motion
-              layoutId="active-pill"
-              transition={{ type: "spring", duration: 0.6 }}
+            <div
+              class={`relative z-20 ${
+                selectedTypeChart === type.value && "text-white"
+              }`}
             >
-              <div
-                class="absolute inset-0 rounded-full z-10"
-                style={`background:${
-                  !$queryTokenPrice.isError ||
-                  (dataPriceChart && dataPriceChart.length !== 0)
-                    ? "rgba(30, 150, 252, 1)"
-                    : "#dddddd"
-                } `}
-                use:motion
-              />
-            </Motion>
-          {/if}
-        </div>
-      {/each}
-    </AnimateSharedLayout>
+              {type.label}
+            </div>
+            {#if type.value === selectedTypeChart}
+              <Motion
+                let:motion
+                layoutId="active-pill"
+                transition={{ type: "spring", duration: 0.6 }}
+              >
+                <div
+                  class="absolute inset-0 rounded-full bg-[#1E96FC] z-10"
+                  use:motion
+                />
+              </Motion>
+            {/if}
+          </div>
+        {/each}
+      </AnimateSharedLayout>
+    </div>
+
+    <div class="flex items-center">
+      <AnimateSharedLayout>
+        {#each timeFrame as type}
+          <div
+            class="relative cursor-pointer xl:text-sm text-base font-medium py-1 px-3 rounded-[100px] transition-all"
+            on:click={() => {
+              if (
+                !$queryTokenPrice.isError ||
+                (dataPriceChart && dataPriceChart.length !== 0)
+              ) {
+                selectedTimeFrame = type.value;
+              }
+            }}
+          >
+            <div
+              class={`relative z-20 ${
+                type.value === selectedTimeFrame && "text-white"
+              }`}
+            >
+              {type.label}
+            </div>
+            {#if type.value === selectedTimeFrame}
+              <Motion
+                let:motion
+                layoutId="active-pill"
+                transition={{ type: "spring", duration: 0.6 }}
+              >
+                <div
+                  class="absolute inset-0 rounded-full z-10"
+                  style={`background:${
+                    !$queryTokenPrice.isError ||
+                    (dataPriceChart && dataPriceChart.length !== 0)
+                      ? "rgba(30, 150, 252, 1)"
+                      : "#dddddd"
+                  } `}
+                  use:motion
+                />
+              </Motion>
+            {/if}
+          </div>
+        {/each}
+      </AnimateSharedLayout>
+    </div>
   </div>
   {#if $queryTokenPrice.isFetching}
     <div class="flex items-center justify-center h-[475px]">
@@ -969,24 +1039,30 @@
           Empty
         </div>
       {:else}
-        <div class="relative">
-          <EChart
-            id={id + "line-chart"}
-            {theme}
-            notMerge={true}
-            option={optionLine}
-            height={485}
-          />
-          <div
-            class="opacity-40 absolute transform -translate-x-1/2 -translate-y-1/2 pointer-events-none top-1/2 left-1/2"
-          >
-            <img
-              src={$isDarkMode ? LogoWhite : Logo}
-              alt=""
-              width="140"
-              height="140"
-            />
-          </div>
+        <div class="h-full">
+          {#if selectedTypeChart === "candles"}
+            <TradingViewChart {options} id={symbol} />
+          {:else}
+            <div class="relative">
+              <EChart
+                id={id + "line-chart"}
+                {theme}
+                notMerge={true}
+                option={optionLine}
+                height={485}
+              />
+              <div
+                class="opacity-40 absolute transform -translate-x-1/2 -translate-y-1/2 pointer-events-none top-1/2 left-1/2"
+              >
+                <img
+                  src={$isDarkMode ? LogoWhite : Logo}
+                  alt=""
+                  width="140"
+                  height="140"
+                />
+              </div>
+            </div>
+          {/if}
         </div>
       {/if}
     </div>
