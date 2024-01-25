@@ -28,7 +28,7 @@
   }`}
 >
   <td
-    class={`pl-3 py-4 xl:static xl:bg-transparent text-left sticky left-0 z-9 ${
+    class={`pl-3 xl:py-3 py-6 xl:static xl:bg-transparent text-left sticky left-0 z-9 ${
       $isDarkMode
         ? "bg-[#131313] group-hover:bg-[#000]"
         : "bg-white group-hover:bg-gray-100"
@@ -98,7 +98,7 @@
   </td>
 
   <td
-    class={`py-3 ${
+    class={`xl:py-3 py-6 ${
       $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
@@ -111,7 +111,7 @@
   </td>
 
   <td
-    class={`py-3 ${
+    class={`xl:py-3 py-6 ${
       $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
@@ -144,7 +144,7 @@
   </td>
 
   <td
-    class={`py-3 ${
+    class={`xl:py-3 py-6 ${
       $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
@@ -177,7 +177,7 @@
   </td>
 
   <td
-    class={`py-3 ${
+    class={`xl:py-3 py-6 ${
       $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
@@ -210,7 +210,7 @@
   </td>
 
   <td
-    class={`py-3 ${
+    class={`xl:py-3 py-6 ${
       $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
@@ -231,7 +231,7 @@
   </td>
 
   <td
-    class={`py-3 ${
+    class={`xl:py-3 py-6 ${
       $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
@@ -247,7 +247,7 @@
   </td>
 
   <td
-    class={`py-3 ${
+    class={`xl:py-3 py-6 ${
       $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
@@ -263,7 +263,7 @@
   </td>
 
   <td
-    class={`py-3 ${
+    class={`xl:py-3 py-6 ${
       $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
@@ -279,7 +279,7 @@
   </td>
 
   <td
-    class={`py-3 pr-3 ${
+    class={`xl:py-3 py-6 pr-3 ${
       $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
@@ -299,7 +299,7 @@
           <img
             src={token.logo || defaultToken}
             alt=""
-            class="w-5 h-5 object-contain rounded-full bg-white"
+            class="xl:w-5 xl:h-5 h-10 w-10 object-contain rounded-full bg-white"
             on:error={(e) => handleImgError(e, defaultToken)}
           />
           {#if isShowSymbol && selectedToken === token}
