@@ -846,7 +846,7 @@
         {/if}
       </div>
       <div class="flex-1">
-        {#if $user && Object.keys($user).length === 0}
+        {#if $user && Object.keys($user).length !== 0}
           <div
             on:click={() => {
               navigate(

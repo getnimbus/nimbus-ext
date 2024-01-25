@@ -29,8 +29,6 @@
             : data?.quantity_out
         );
 
-  $: console.log({ amount, isBuy, contractAddress, data });
-
   $: withinLast24Hours = dayjs().diff(dayjs(data?.created_at * 1000), "hour");
 </script>
 
