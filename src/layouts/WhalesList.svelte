@@ -84,7 +84,6 @@
 
   onMount(() => {
     mixpanel.track("market_page");
-    getPublicPortfolio();
   });
 
   const toggleSortWhalesList = (key, sortType) => {
