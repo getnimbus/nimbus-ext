@@ -10,6 +10,7 @@
   import TabAccounts from "~/UI/Option/TabAccounts.svelte";
   import TabReports from "~/UI/Option/TabReports.svelte";
   import TabAlerts from "~/UI/Option/TabAlerts.svelte";
+  import TabLinks from "~/UI/Option/TabLinks.svelte";
   import TabSettings from "~/UI/Option/TabSettings.svelte";
   import TabNft from "~/UI/Option/TabNFT.svelte";
 
@@ -28,6 +29,11 @@
       label: i18n("optionsPage.tab-title-report", "Reports"),
       value: "reports",
       type: "Reports",
+    },
+    {
+      label: i18n("optionsPage.tab-title-links", "Links"),
+      value: "links",
+      type: "Links",
     },
     // {
     //   label: i18n("optionsPage.tab-title-nft", "NFT"),
@@ -89,6 +95,8 @@
           <TabAlerts />
         {:else if activeTabValue === "reports"}
           <TabReports />
+        {:else if activeTabValue === "links"}
+          <TabLinks />
           <!-- {:else if activeTabValue === "settings"}
           <TabSettings /> -->
         {/if}

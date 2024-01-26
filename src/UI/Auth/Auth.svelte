@@ -44,7 +44,7 @@
   import Logo from "~/assets/logo-1.svg";
   import Reload from "~/assets/reload-black.svg";
   import ReloadWhite from "~/assets/reload-white.svg";
-  import Evm from "~/assets/chains/ethereum.png";
+  import Evm from "~/assets/chains/evm.png";
 
   const wallets = [
     new PhantomWalletAdapter(),
