@@ -441,7 +441,10 @@
         );
 
         const filteredHoldingTokenData = dataTokenHolding?.filter(
-          (item) => item?.cmc_id
+          (item) =>
+            item?.cmc_id !== undefined &&
+            item?.cmc_id !== null &&
+            item?.cmc_id > 0
         );
 
         dataSubWS = filteredHoldingTokenData.map((item) => {
@@ -452,7 +455,7 @@
         });
 
         filteredNullCmcHoldingTokenData = dataTokenHolding?.filter(
-          (item) => item?.cmc_id === null
+          (item) => item?.cmc_id === null || item?.cmc_id === 0
         );
 
         filteredUndefinedCmcHoldingTokenData = dataTokenHolding?.filter(
