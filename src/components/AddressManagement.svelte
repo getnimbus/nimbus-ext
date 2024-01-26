@@ -165,6 +165,7 @@
   let selectYourWalletsBundle = [];
 
   let indexSelectedAddress = 0;
+  let isLoadingCreateUser = false;
 
   const isRequiredFieldValid = (value) => {
     return value != null && value !== "";
@@ -241,7 +242,10 @@
       user.update((n) => (n = {}));
     },
     onSuccess(data) {
-      if (data.length === 0) {
+      if (data.length === 0 && localStorage.getItem("solana_token")) {
+        handleCreateUser();
+      }
+      if (data.length === 1 && localStorage.getItem("evm_token")) {
         handleCreateUser();
       }
     },
@@ -446,6 +450,7 @@
   };
 
   const handleCreateUser = async () => {
+    isLoadingCreateUser = true;
     await wait(200);
     try {
       const [resAddAccount, resAddBundle] = await Promise.all([
@@ -468,6 +473,8 @@
       }
     } catch (e) {
       console.error(e);
+    } finally {
+      isLoadingCreateUser = false;
     }
   };
 
@@ -820,15 +827,19 @@
       handleUpdateParams();
     }
   };
+
+  const handleOpenAddModal = () => {
+    isOpenAddModal = true;
+  };
 </script>
 
-{#if $query.isFetching}
+{#if $query.isFetching && isLoadingCreateUser}
   <div class="flex items-center justify-center h-screen">
     <Loading />
   </div>
 {:else}
   <div>
-    {#if $wallet?.length === 0 && listAddress.length === 0}
+    {#if $wallet?.length === 0}
       <div class="flex justify-center items-center h-screen">
         {#if $query.isError && Object.keys($user).length !== 0}
           <div
@@ -840,7 +851,10 @@
           </div>
         {:else}
           <div class="max-w-[2000px] m-auto w-[90%]">
-            <Hero btntext={MultipleLang.content.btn_text} {isOpenAddModal} />
+            <Hero
+              btntext={MultipleLang.content.btn_text}
+              {handleOpenAddModal}
+            />
           </div>
         {/if}
       </div>
