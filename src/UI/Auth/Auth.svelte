@@ -23,18 +23,6 @@
   import QRCode from "qrcode-generator";
   import CopyToClipboard from "svelte-copy-to-clipboard";
   import { wait } from "~/entries/background/utils";
-
-  import Tooltip from "~/components/Tooltip.svelte";
-  import DarkMode from "~/components/DarkMode.svelte";
-  import AppOverlay from "~/components/Overlay.svelte";
-  import Loading from "~/components/Loading.svelte";
-
-  import User from "~/assets/user.png";
-  import Logo from "~/assets/logo-1.svg";
-  import Reload from "~/assets/reload-black.svg";
-  import ReloadWhite from "~/assets/reload-white.svg";
-  import Evm from "~/assets/chains/ethereum.png";
-
   import SolanaAuth from "./SolanaAuth.svelte";
   import { WalletProvider } from "@svelte-on-solana/wallet-adapter-ui";
   import {
@@ -42,10 +30,21 @@
     PhantomWalletAdapter,
     SolflareWalletAdapter,
   } from "@solana/wallet-adapter-wallets";
-  import jwt_decode from "jwt-decode";
   import bs58 from "bs58";
   import { walletStore } from "@svelte-on-solana/wallet-adapter-core";
+
+  import Tooltip from "~/components/Tooltip.svelte";
+  import DarkMode from "~/components/DarkMode.svelte";
+  import AppOverlay from "~/components/Overlay.svelte";
+  import Loading from "~/components/Loading.svelte";
   import Button from "~/components/Button.svelte";
+  import GoogleAuth from "./GoogleAuth.svelte";
+
+  import User from "~/assets/user.png";
+  import Logo from "~/assets/logo-1.svg";
+  import Reload from "~/assets/reload-black.svg";
+  import ReloadWhite from "~/assets/reload-white.svg";
+  import Evm from "~/assets/chains/ethereum.png";
 
   const wallets = [
     new PhantomWalletAdapter(),
@@ -776,6 +775,7 @@
         <div class="font-semibold text-[15px]">Login with EVM</div>
       </div>
       <SolanaAuth text="Login with Solana" />
+      <GoogleAuth />
     </div>
   </div>
 </AppOverlay>
