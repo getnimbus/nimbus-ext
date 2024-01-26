@@ -152,7 +152,7 @@
   });
 
   $: {
-    if (!$query.isError && $query.data !== undefined) {
+    if (!$query.isError && $query.data !== undefined && blacklistAddress) {
       formatDataListAddress($query.data);
     }
   }
@@ -183,7 +183,9 @@
     });
 
     listAddress = structWalletData;
-    checkAll = true;
+    if (listAddress.length === blacklistAddress.length) {
+      checkAll = true;
+    }
   };
 
   const handleToggleCheckAll = (e) => {

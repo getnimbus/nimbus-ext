@@ -503,7 +503,7 @@
 
         const validateAccount = await handleValidateAddress(dataFormat.value);
 
-        if (groupedToBundles) {
+        if (groupedToBundles || listAddress.length === 0) {
           await nimbus.put(
             `/address/personalize/bundle?name=${"Your wallets"}`,
             {

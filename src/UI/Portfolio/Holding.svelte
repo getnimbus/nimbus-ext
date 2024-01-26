@@ -545,7 +545,7 @@
   const handleValidateAddress = async (address: string) => {
     try {
       const response = await nimbus.get(`/v2/address/${address}/validate`);
-      userPublicAddressChain = response?.data.type;
+      userPublicAddressChain = response?.data?.type;
     } catch (e) {
       console.error(e);
       return undefined;
