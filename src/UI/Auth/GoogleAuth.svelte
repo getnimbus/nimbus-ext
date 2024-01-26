@@ -14,6 +14,7 @@
         const token = credential.accessToken;
         const user = result.user;
         console.log("user: ", user);
+        console.log("token: ", token);
       })
       .catch((error) => {
         const errorCode = error.code;
