@@ -18,11 +18,12 @@
   let isLoading = false;
 
   onMount(() => {
-    const token = localStorage.getItem("token");
+    const authToken = localStorage.getItem("auth_token");
+    const evmToken = localStorage.getItem("evm_token");
     const solanaToken = localStorage.getItem("solana_token");
-    if (token || solanaToken) {
-      if (token) {
-        const { access_token, id_token } = JSON.parse(token);
+    if (evmToken || solanaToken || authToken) {
+      if (evmToken) {
+        const { access_token, id_token } = JSON.parse(evmToken);
         fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
           headers: {
             Authorization: `Bearer ${access_token}`,
@@ -50,7 +51,8 @@
     } else {
       // Access token not found, prompt user to sign in again
       userInfo = {};
-      localStorage.removeItem("token");
+      localStorage.removeItem("auth_token");
+      localStorage.removeItem("evm_token");
       localStorage.removeItem("solana_address");
       localStorage.removeItem("solana_token");
     }

@@ -52,6 +52,7 @@
     queryFn: () => getReferrals(),
     staleTime: Infinity,
     onError(err) {
+      localStorage.removeItem("auth_token");
       localStorage.removeItem("solana_token");
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));

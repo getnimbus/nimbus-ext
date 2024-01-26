@@ -20,6 +20,8 @@
 
   let checked = false;
   let isLinks = true;
+
+  const handleRemoveGoogle = async () => {};
 </script>
 
 <div class="bg_f4f5f8 rounded-[10px] px-4 py-3 flex flex-col gap-2">
@@ -28,6 +30,7 @@
     {#if isLinks}
       <div
         class="cursor-pointer text-red-600 font-medium text-2xl xl:text-base"
+        on:click={handleRemoveGoogle}
       >
         Remove
       </div>

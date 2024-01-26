@@ -235,6 +235,7 @@
     retry: false,
     enabled: $user && Object.keys($user).length !== 0,
     onError(err) {
+      localStorage.removeItem("auth_token");
       localStorage.removeItem("solana_token");
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
@@ -575,13 +576,14 @@
   const onSubmitCEX = () => {
     const solanaToken = localStorage.getItem("solana_token");
     const evmToken = localStorage.getItem("evm_token");
-    if (evmToken || solanaToken) {
+    const authToken = localStorage.getItem("auth_token");
+    if (evmToken || solanaToken || authToken) {
       isLoadingConnectCEX = true;
       const vezgo: any = Vezgo.init({
         clientId: "6st9c6s816su37qe8ld1d5iiq2",
         authEndpoint: `${API_URL}/auth/vezgo`,
         auth: {
-          headers: { Authorization: `${evmToken || solanaToken}` },
+          headers: { Authorization: `${evmToken || solanaToken || authToken}` },
         },
       });
       const userVezgo = vezgo.login();
@@ -826,7 +828,7 @@
   </div>
 {:else}
   <div>
-    {#if $wallet?.length === 0}
+    {#if $wallet?.length === 0 && listAddress.length === 0}
       <div class="flex justify-center items-center h-screen">
         {#if $query.isError && Object.keys($user).length !== 0}
           <div

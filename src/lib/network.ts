@@ -113,11 +113,12 @@ export const nimbus = createAxiosInterface({
   baseURL: API_URL,
   getHeaderAuthorize: () => {
     if (APP_TYPE.TYPE === "WEB") {
+      const authToken = localStorage.getItem("auth_token");
       const solanaToken = localStorage.getItem("solana_token");
       const evmToken = localStorage.getItem("evm_token");
-      if (evmToken || solanaToken) {
+      if (evmToken || solanaToken || authToken) {
         return {
-          Authorization: `${evmToken || solanaToken}`,
+          Authorization: `${evmToken || solanaToken || authToken}`,
         };
       }
     }

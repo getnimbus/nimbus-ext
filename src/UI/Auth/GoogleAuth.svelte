@@ -1,21 +1,55 @@
 <script lang="ts">
+  import { nimbus } from "~/lib/network";
   import { user, isDarkMode } from "~/store";
   import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
   import { googleAuth } from "~/lib/firebase";
+  import { useQueryClient } from "@tanstack/svelte-query";
 
+  import User from "~/assets/user.png";
   import Google from "~/assets/google.png";
 
+  export let handleCloseAuthModal = () => {};
+
+  const queryClient = useQueryClient();
   const googleProvider = new GoogleAuthProvider();
 
   const handleGoogleAuth = async () => {
-    await signInWithPopup(googleAuth, googleProvider)
-      .then((result) => {
-        const user = result.user;
-        console.log("user: ", user);
-      })
-      .catch((error) => {
-        console.error(error);
+    try {
+      const res = await signInWithPopup(googleAuth, googleProvider).then(
+        (result) => {
+          return result.user;
+        }
+      );
+      if (res) {
+        handleGetGoogleToken(res.uid, "google", res.email);
+      }
+    } catch (e) {
+      console.log("error: ", e);
+    }
+  };
+
+  const handleGetGoogleToken = async (uid, type, info) => {
+    try {
+      const res = await nimbus.post("/auth", {
+        uid,
+        type,
+        info,
       });
+      if (res?.data?.result) {
+        handleCloseAuthModal();
+        localStorage.setItem("auth_token", res?.data?.result);
+        user.update(
+          (n) =>
+            (n = {
+              picture: User,
+            })
+        );
+        queryClient?.invalidateQueries(["users-me"]);
+        queryClient.invalidateQueries(["list-address"]);
+      }
+    } catch (e) {
+      console.error("error: ", e);
+    }
   };
 </script>
 
