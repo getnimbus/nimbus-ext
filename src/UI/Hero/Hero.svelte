@@ -21,7 +21,7 @@
   import heroImage from "~/assets/recap/hero/heroimage.png";
   import { bigGeneration, otherGeneration } from "~/lib/chains";
 
-  export let isOpenAddModal = false;
+  export let handleOpenAddModal = () => {};
   export let btntext;
 
   let search = "";
@@ -113,7 +113,7 @@
 
     {#if Object.keys($user).length !== 0}
       <div class="w-max">
-        <Button variant="tertiary" on:click={() => (isOpenAddModal = true)}>
+        <Button variant="tertiary" on:click={handleOpenAddModal}>
           <img src={Plus} alt="" width="12" height="12" />
           <div class="text-2xl font-medium text-white xl:text-base">
             {btntext}
