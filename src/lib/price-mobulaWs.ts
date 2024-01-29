@@ -128,9 +128,11 @@ export const priceMobulaSubscribe = (
             type: "market",
             authorization: authKey,
             payload: {
-              assets: [
-                { symbol: data.join(",") },
-              ],
+              assets: data.map((item) => {
+                return {
+                  symbol: item
+                }
+              }),
               interval: 15
             }
           })
@@ -143,12 +145,12 @@ export const priceMobulaSubscribe = (
             type: "market",
             authorization: authKey,
             payload: {
-              assets: [
-                {
-                  address: data.join(","),
+              assets: data.map((item) => {
+                return {
+                  address: item,
                   blockchain: handleFormatBlockChainId(chain)
-                },
-              ],
+                }
+              }),
               interval: 15
             }
           })

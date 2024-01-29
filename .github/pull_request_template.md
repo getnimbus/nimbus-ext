@@ -10,7 +10,7 @@
 - [ ] Comment example address/url for other to testing
 
 ### After deploy to prod
-- [ ] Notify to group #web-app on discord, which feature is deployed
 - [ ] Test again on Production
+- [ ] Notify to group #operation on discord, which feature is deployed
 
 ## Changelog
