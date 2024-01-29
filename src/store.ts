@@ -21,6 +21,12 @@ export const isShowModalNftDeList = writable(false);
 export const listingNft = writable({});
 export const selectedNftContractAddress = writable("");
 export const detectParams = writable(window.location.pathname);
+export const realtimePrice = writable({});
+export const totalPositions = writable(0);
+export const totalAssets = writable(0);
+export const unrealizedProfit = writable(0);
+export const realizedProfit = writable(0);
+
 
 // let isFirstTime = true;
 // isOpenReport.subscribe((value) => {
