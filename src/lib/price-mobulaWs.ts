@@ -57,32 +57,61 @@ export const chainSupport = [
   "MANTLE", // Mantle
 ];
 
-const authKey = import.meta.env.VITE_MOBULA_KEY || "fe18f8be-644a-45a8-ad05-b088a5e61764"
+const authKey =
+  import.meta.env.VITE_MOBULA_KEY || "fe18f8be-644a-45a8-ad05-b088a5e61764";
 
 export const handleFormatBlockChainId = (chain: string) => {
-  let id = ""
+  let id = "";
   switch (chain) {
-    case "FTM": id = "250"; break;
-    case "XDAI": id = "100"; break;
-    case "AVAX": id = "43114"; break;
-    case "CRONOS": id = "25"; break;
-    case "ETH": id = "1"; break;
-    case "MATIC": id = "137"; break;
-    case "BNB": id = "56"; break;
-    case "KLAY": id = "8217"; break;
-    case "AURA": id = "1313161554"; break;
-    case "ARB": id = "42161"; break;
-    case "OP": id = "10"; break;
-    case "BASE": id = "8453"; break;
-    case "SUI": id = "sui"; break;
-    case "MANTLE": id = "5000"; break;
+    case "FTM":
+      id = "250";
+      break;
+    case "XDAI":
+      id = "100";
+      break;
+    case "AVAX":
+      id = "43114";
+      break;
+    case "CRONOS":
+      id = "25";
+      break;
+    case "ETH":
+      id = "1";
+      break;
+    case "MATIC":
+      id = "137";
+      break;
+    case "BNB":
+      id = "56";
+      break;
+    case "KLAY":
+      id = "8217";
+      break;
+    case "AURA":
+      id = "1313161554";
+      break;
+    case "ARB":
+      id = "42161";
+      break;
+    case "OP":
+      id = "10";
+      break;
+    case "BASE":
+      id = "8453";
+      break;
+    case "SUI":
+      id = "sui";
+      break;
+    case "MANTLE":
+      id = "5000";
+      break;
   }
-  return id
-}
+  return id;
+};
 
 export const priceMobulaSubscribe = (
   data: string[] | number[],
-  chain: string,
+  chain: string
 ) => {
   try {
     if (!mobulaSocket) {
@@ -98,7 +127,7 @@ export const priceMobulaSubscribe = (
       const key = `${data}-${chain}`;
 
       if (cached[key]) {
-        realtimePrice.update((n) => n = cached[key])
+        realtimePrice.update((n) => (n = cached[key]));
       } else {
         if (chain === "CEX") {
           mobulaSocket.send(
@@ -108,13 +137,13 @@ export const priceMobulaSubscribe = (
               payload: {
                 assets: data.map((item) => {
                   return {
-                    symbol: item
-                  }
+                    symbol: item,
+                  };
                 }),
-                interval: 15
-              }
+                interval: 15,
+              },
             })
-          )
+          );
         }
 
         if (chain !== "CEX" && chainSupport.includes(chain)) {
@@ -126,26 +155,39 @@ export const priceMobulaSubscribe = (
                 assets: data.map((item) => {
                   return {
                     address: item,
-                    blockchain: handleFormatBlockChainId(chain)
-                  }
+                    blockchain: handleFormatBlockChainId(chain),
+                  };
                 }),
-                interval: 15
-              }
+                interval: 15,
+              },
             })
-          )
+          );
         }
       }
 
       mobulaSocket.addEventListener("message", (ev) => {
         const res = decodeEvent(ev);
         if (res?.data && Object.keys(res?.data).length !== 0) {
-          const keyData = Object.keys(res?.data)
+          const keyData = Object.keys(res?.data);
 
-          if (!cached[key] && JSON.stringify(key.split('-')[0].split(",")) !== JSON.stringify(keyData)) {
-            cached[key] = res?.data;
-          }
+          // if (
+          //   !cached[key] &&
+          //   JSON.stringify(key.split("-")[0].split(",")) !==
+          //     JSON.stringify(keyData)
+          // ) {
+          //   cached[key] = res?.data;
+          // }
 
-          realtimePrice.update((n) => n = res?.data)
+          Object.keys(res?.data).forEach((key) => {
+            if (
+              res?.data[key]?.liquidity < 1000 ||
+              res?.data[key]?.price > 500000
+            ) {
+              delete res?.data[key];
+            }
+          });
+
+          realtimePrice.update((n) => (n = res?.data));
         }
       });
     }
