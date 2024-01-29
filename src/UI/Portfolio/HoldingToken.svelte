@@ -879,8 +879,12 @@
 
   {#if listSupported.includes($typeWallet)}
     <td
-      class={`py-3 pr-3 w-full h-full flex justify-start items-center xl:gap-4 gap-7 ${
+      class={`py-3 pr-3 w-full h-full flex items-center xl:gap-4 gap-7 ${
         $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
+      } ${
+        ["BUNDLE", "SOL"].includes($typeWallet)
+          ? "justify-start"
+          : "justify-center"
       }`}
       style={`${lastIndex ? "border-bottom-right-radius: 10px;" : ""}`}
     >

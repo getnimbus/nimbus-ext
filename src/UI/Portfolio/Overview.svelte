@@ -1,7 +1,14 @@
 <script lang="ts">
   import { getChangeFromPercent, getChangePercent } from "~/chart-utils";
   import { i18n } from "~/lib/i18n";
-  import { typeWallet, isHidePortfolio } from "~/store";
+  import {
+    typeWallet,
+    isHidePortfolio,
+    totalAssets,
+    totalPositions,
+    unrealizedProfit,
+    realizedProfit,
+  } from "~/store";
 
   import CountUpNumber from "~/components/CountUpNumber.svelte";
   import OverviewCard from "~/components/OverviewCard.svelte";
@@ -10,10 +17,6 @@
   import { otherGeneration } from "~/lib/chains";
 
   export let data;
-  export let totalPositions;
-  export let totalAssets;
-  export let unrealizedProfit;
-  export let realizedProfit;
 
   const MultipleLang = {
     networth: i18n("newtabPage.networth", "Net Worth"),
@@ -25,7 +28,7 @@
     unrealizedProfit: i18n("newtabPage.unrealizedProfit", "Unrealized PnL"),
   };
 
-  $: networth = totalAssets + totalPositions;
+  $: networth = $totalAssets + $totalPositions;
 
   $: totalProfit =
     Number(data?.overview?.cumulativeOutflow || 0) -
@@ -136,12 +139,12 @@
       <OverviewCard title={MultipleLang.realizedProfit}>
         <div class="xl:text-3xl text-5xl flex">
           <span>
-            {#if realizedProfit < 0 && !$isHidePortfolio}
+            {#if $realizedProfit < 0 && !$isHidePortfolio}
               -
             {/if}
           </span>
           <CountUpNumber
-            number={Math.abs(realizedProfit)}
+            number={Math.abs($realizedProfit)}
             type="value"
             personalValue
           />
@@ -183,12 +186,12 @@
       <OverviewCard title={MultipleLang.unrealizedProfit}>
         <div class="xl:text-3xl text-5xl flex">
           <span>
-            {#if unrealizedProfit < 0 && !$isHidePortfolio}
+            {#if $unrealizedProfit < 0 && !$isHidePortfolio}
               -
             {/if}
           </span>
           <CountUpNumber
-            number={Math.abs(unrealizedProfit)}
+            number={Math.abs($unrealizedProfit)}
             type="value"
             personalValue
           />
