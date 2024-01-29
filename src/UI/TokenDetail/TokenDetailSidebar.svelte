@@ -100,7 +100,11 @@
     }
   }
 
-  $: colspan = listSupported.includes($typeWallet) ? 5 : 4;
+  $: colspan = listSupported
+    .filter((item) => item !== "CEX")
+    .includes($typeWallet)
+    ? 5
+    : 4;
 </script>
 
 <ErrorBoundary>
@@ -331,7 +335,11 @@
 
               <th
                 class={`py-3 rounded-tr-[10px] ${
-                  listSupported.includes($typeWallet) ? "" : "pr-3"
+                  listSupported
+                    .filter((item) => item !== "CEX")
+                    .includes($typeWallet)
+                    ? ""
+                    : "pr-3"
                 }`}
               >
                 <div
@@ -341,7 +349,9 @@
                 </div>
               </th>
 
-              {#if listSupported.includes($typeWallet)}
+              {#if listSupported
+                .filter((item) => item !== "CEX")
+                .includes($typeWallet)}
                 <th class="py-3 w-10" />
               {/if}
             </tr>

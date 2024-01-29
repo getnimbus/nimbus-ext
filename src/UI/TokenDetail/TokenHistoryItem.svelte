@@ -99,9 +99,11 @@
   </td>
 
   <td
-    class={`py-3 ${listSupported.includes($typeWallet) ? "" : "pr-3"} ${
-      $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
-    }`}
+    class={`py-3 ${
+      listSupported.filter((item) => item !== "CEX").includes($typeWallet)
+        ? ""
+        : "pr-3"
+    } ${$isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"}`}
   >
     <div class="xl:text-sm text-2xl text_00000099 font-medium text-right">
       {withinLast24Hours < 24
@@ -110,7 +112,7 @@
     </div>
   </td>
 
-  {#if listSupported.includes($typeWallet)}
+  {#if listSupported.filter((item) => item !== "CEX").includes($typeWallet)}
     <td
       class={`py-3 w-10 ${
         $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
