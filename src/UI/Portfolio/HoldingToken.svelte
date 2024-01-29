@@ -1,5 +1,11 @@
 <script lang="ts">
-  import { typeWallet, isDarkMode, user, selectedBundle } from "~/store";
+  import {
+    typeWallet,
+    isDarkMode,
+    user,
+    selectedBundle,
+    realtimePrice,
+  } from "~/store";
   import { shorterName, shorterAddress } from "~/utils";
   import { listSupported, detectedChain } from "~/lib/chains";
   import numeral from "numeral";
@@ -1663,7 +1669,21 @@
         </div>
         <div class="flex items-center font-medium xl:text-2xl text-3xl">
           $<TooltipNumber
-            number={selectedTokenDetail?.market_price}
+            number={$realtimePrice[
+              selectedTokenDetail?.cmc_id ||
+                selectedTokenDetail?.contractAddress ||
+                selectedTokenDetail?.symbol ||
+                selectedTokenDetail?.price?.symbol
+            ]
+              ? Number(
+                  $realtimePrice[
+                    selectedTokenDetail?.cmc_id ||
+                      selectedTokenDetail?.contractAddress ||
+                      selectedTokenDetail?.symbol ||
+                      selectedTokenDetail?.price?.symbol
+                  ]?.price
+                )
+              : Number(selectedTokenDetail?.market_price)}
             type="balance"
           />
         </div>
