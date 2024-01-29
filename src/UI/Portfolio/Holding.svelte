@@ -372,13 +372,13 @@
           ...item,
           marketPrice: $realtimePrice[item?.nativeToken?.cmcId]
             ? Number($realtimePrice[item?.nativeToken?.cmcId]?.price)
-            : Number(item.market_price),
+            : Number(item.marketPrice),
           current_native_token: item?.floorPrice * item?.tokens?.length,
           current_value:
             item?.floorPrice *
             ($realtimePrice[item?.nativeToken?.cmcId]
               ? Number($realtimePrice[item?.nativeToken?.cmcId]?.price)
-              : Number(item.market_price)) *
+              : Number(item.marketPrice)) *
             item?.tokens?.length,
         };
       });
