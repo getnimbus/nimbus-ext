@@ -168,16 +168,6 @@ export const priceMobulaSubscribe = (
       mobulaSocket.addEventListener("message", (ev) => {
         const res = decodeEvent(ev);
         if (res?.data && Object.keys(res?.data).length !== 0) {
-          const keyData = Object.keys(res?.data);
-
-          // if (
-          //   !cached[key] &&
-          //   JSON.stringify(key.split("-")[0].split(",")) !==
-          //     JSON.stringify(keyData)
-          // ) {
-          //   cached[key] = res?.data;
-          // }
-
           Object.keys(res?.data).forEach((key) => {
             if (
               res?.data[key]?.liquidity < 1000 ||
