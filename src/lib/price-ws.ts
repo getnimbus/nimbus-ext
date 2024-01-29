@@ -1,3 +1,5 @@
+import { realtimePrice } from "~/store";
+
 export let socket: null | WebSocket;
 let isReady = false;
 type iFN = () => void;
@@ -35,38 +37,27 @@ export const decodeEvent = (ev: MessageEvent) => {
   }
 };
 
-interface IPriceRealtime {
-  id: string;
-  price: string;
-  volume: string;
-  timestamp: number;
-  type: "mobula" | "cmc" | "ethereum";
-  chain: string;
-}
-
-const cached: Record<string, IPriceRealtime> = {};
+const cached = {};
 
 export const priceSubscribe = (
   cmc_id: number[] | string[],
   chain: string,
-  callback: (any) => void
 ) => {
   try {
     if (!socket) {
       console.log("WS is not initiated");
-      initWS(() => priceSubscribe(cmc_id, chain, callback));
+      initWS(() => priceSubscribe(cmc_id, chain));
     } else {
       if (!isReady) {
         console.log("Delay Subscribe");
-        cbList.push(() => priceSubscribe(cmc_id, chain, callback));
+        cbList.push(() => priceSubscribe(cmc_id, chain));
         return;
       }
 
       const key = `${cmc_id}-${chain}`;
 
       if (cached[key]) {
-        // Return from cache
-        callback(cached[key]);
+        realtimePrice.update((n) => n = cached[key])
       } else {
         socket.send(JSON.stringify({ ids: cmc_id.join(",") }));
       }
@@ -79,11 +70,14 @@ export const priceSubscribe = (
         ) {
 
           if (!cached[key]) {
-            // Only callback when we don't have data cached
-            cached[key] = data;
+            cached[key] = {
+              [data.id]: data
+            };
           }
 
-          callback(data);
+          realtimePrice.update((n) => n = {
+            [data.id]: data
+          })
         }
       });
     }

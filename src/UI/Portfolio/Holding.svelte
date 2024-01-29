@@ -11,6 +11,10 @@
     selectedNftContractAddress,
     wallet,
     userPublicAddress,
+    realtimePrice,
+    totalAssets,
+    unrealizedProfit,
+    realizedProfit,
   } from "~/store";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
@@ -38,9 +42,6 @@
   export let dataVaults;
   export let selectedTokenHolding;
   export let selectedDataPieChart;
-  export let totalAssets;
-  export let unrealizedProfit;
-  export let realizedProfit;
 
   import HoldingToken from "~/UI/Portfolio/HoldingToken.svelte";
   import HoldingNFT from "~/UI/Portfolio/HoldingNFT.svelte";
@@ -72,13 +73,11 @@
   let dataSubWS = [];
   let filteredUndefinedCmcHoldingTokenData = [];
   let filteredNullCmcHoldingTokenData = [];
-  let marketPriceToken;
   let filteredHoldingDataToken = [];
   let filteredHoldingDataNFT = [];
   let formatData = [];
   let formatDataNFT = [];
   let sumTokens = 0;
-  let sumAllTokens = 0;
   let sumNFT = 0;
   let tableTokenHeader;
   let isStickyTableToken = false;
@@ -219,11 +218,6 @@
         filteredUndefinedCmcHoldingTokenData = dataTokenHolding?.filter(
           (item) => item?.cmc_id === undefined
         );
-
-        sumAllTokens = holdingTokenData?.reduce(
-          (prev, item) => prev + item.value,
-          0
-        );
       }
     }
     if (!isLoadingNFT) {
@@ -258,13 +252,7 @@
         if (listTokenSubWs && listTokenSubWs.length !== 0) {
           priceMobulaSubscribe(
             listTokenSubWs.map((item) => item?.symbol),
-            "CEX",
-            (data) => {
-              marketPriceToken = {
-                id: data.id,
-                market_price: data.price,
-              };
-            }
+            "CEX"
           );
         }
       });
@@ -294,13 +282,7 @@
           if (listTokenSubWs && listTokenSubWs.length !== 0) {
             priceMobulaSubscribe(
               listTokenSubWs.map((item) => item.contractAddress),
-              listTokenSubWs[0]?.chain,
-              (data) => {
-                marketPriceToken = {
-                  id: data.id,
-                  market_price: data.price,
-                };
-              }
+              listTokenSubWs[0]?.chain
             );
           }
         });
@@ -324,38 +306,51 @@
         }
       });
       filteredData?.map((item) => {
-        priceSubscribe([Number(item?.cmcId)], item?.chain, (data) => {
-          marketPriceToken = {
-            id: data.id,
-            market_price: data.price,
-          };
-        });
+        priceSubscribe([Number(item?.cmcId)], item?.chain);
       });
     }
   }
 
   // check market price and update price real-time
   $: {
-    if (marketPriceToken) {
+    if ($realtimePrice) {
       // update data token holding
       const formatDataWithMarketPrice = formatData.map((item) => {
-        if (
-          marketPriceToken?.id.toString().toLowerCase() ===
-            item?.cmc_id?.toString().toLowerCase() ||
-          marketPriceToken?.id.toString().toLowerCase() ===
-            item?.contractAddress.toString().toLowerCase() ||
-          marketPriceToken?.id.toString().toLowerCase() ===
-            item?.symbol?.toString().toLowerCase() ||
-          marketPriceToken?.id.toString().toLowerCase() ===
-            item?.price?.symbol?.toString().toLowerCase()
-        ) {
-          return {
-            ...item,
-            market_price: Number(marketPriceToken.market_price),
-            value: Number(item?.amount) * Number(marketPriceToken.market_price),
-          };
-        }
-        return { ...item };
+        return {
+          ...item,
+          market_price: $realtimePrice[
+            item?.cmc_id ||
+              item?.contractAddress ||
+              item?.symbol ||
+              item?.price?.symbol
+          ]
+            ? Number(
+                $realtimePrice[
+                  item?.cmc_id ||
+                    item?.contractAddress ||
+                    item?.symbol ||
+                    item?.price?.symbol
+                ]?.price
+              )
+            : Number(item.market_price),
+          value:
+            Number(item?.amount) *
+            ($realtimePrice[
+              item?.cmc_id ||
+                item?.contractAddress ||
+                item?.symbol ||
+                item?.price?.symbol
+            ]
+              ? Number(
+                  $realtimePrice[
+                    item?.cmc_id ||
+                      item?.contractAddress ||
+                      item?.symbol ||
+                      item?.price?.symbol
+                  ]?.price
+                )
+              : Number(item.market_price)),
+        };
       });
       formatData = formatDataWithMarketPrice.sort((a, b) => {
         if (a.value < b.value) {
@@ -371,27 +366,21 @@
         (prev, item) => prev + item.value,
         0
       );
-      sumAllTokens = formatDataWithMarketPrice.reduce(
-        (prev, item) => prev + item.value,
-        0
-      );
       // update data nft holding
       const formatDataNFTWithMarketPrice = formatDataNFT.map((item) => {
-        if (
-          marketPriceToken?.id.toString().toLowerCase() ===
-          item?.nativeToken?.cmcId.toString().toLowerCase()
-        ) {
-          return {
-            ...item,
-            marketPrice: Number(marketPriceToken.market_price),
-            current_native_token: item?.floorPrice * item?.tokens?.length,
-            current_value:
-              item?.floorPrice *
-              Number(marketPriceToken.market_price) *
-              item?.tokens?.length,
-          };
-        }
-        return { ...item };
+        return {
+          ...item,
+          marketPrice: $realtimePrice[item?.nativeToken?.cmcId]
+            ? Number($realtimePrice[item?.nativeToken?.cmcId]?.price)
+            : Number(item.market_price),
+          current_native_token: item?.floorPrice * item?.tokens?.length,
+          current_value:
+            item?.floorPrice *
+            ($realtimePrice[item?.nativeToken?.cmcId]
+              ? Number($realtimePrice[item?.nativeToken?.cmcId]?.price)
+              : Number(item.market_price)) *
+            item?.tokens?.length,
+        };
       });
       formatDataNFT = formatDataNFTWithMarketPrice.sort((a, b) => {
         if (a.current_native_token < b.current_native_token) {
@@ -453,11 +442,11 @@
 
   $: {
     if (formatData?.length === 0) {
-      totalAssets = 0;
       sumTokens = 0;
       sumNFT = 0;
-      unrealizedProfit = 0;
-      realizedProfit = 0;
+      totalAssets.update((n) => (n = 0));
+      unrealizedProfit.update((n) => (n = 0));
+      realizedProfit.update((n) => (n = 0));
     } else {
       sumTokens = (formatData || []).reduce(
         (prev, item) => prev + item?.amount * item.market_price,
@@ -469,34 +458,43 @@
         0
       );
 
-      realizedProfit = (formatData || [])
-        .map((item) => {
-          return {
-            realized_profit: item?.profit?.realizedProfit || 0,
-          };
-        })
-        .reduce((prev, item) => prev + Number(item.realized_profit), 0);
+      realizedProfit.update(
+        (n) =>
+          (n = (formatData || [])
+            .map((item) => {
+              return {
+                realized_profit: item?.profit?.realizedProfit || 0,
+              };
+            })
+            .reduce((prev, item) => prev + Number(item.realized_profit), 0))
+      );
+      unrealizedProfit.update(
+        (n) =>
+          (n = (formatData || [])
+            ?.filter(
+              (item) => Number(item?.amount) > 0 && Number(item?.avgCost) !== 0
+            )
+            ?.map((item) => {
+              const price = Number(
+                item?.market_price || item?.price?.price || 0
+              );
+              const pnl =
+                Number(item?.balance || 0) * price +
+                Number(item?.profit?.totalGain || 0) -
+                Number(item?.profit?.cost || 0);
+              const realizedProfit = item?.profit?.realizedProfit
+                ? Number(item?.profit?.realizedProfit)
+                : 0;
 
-      unrealizedProfit = (formatData || [])
-        ?.filter(
-          (item) => Number(item?.amount) > 0 && Number(item?.avgCost) !== 0
-        )
-        ?.map((item) => {
-          const price = Number(item?.market_price || item?.price?.price || 0);
-          const pnl =
-            Number(item?.balance || 0) * price +
-            Number(item?.profit?.totalGain || 0) -
-            Number(item?.profit?.cost || 0);
-          const realizedProfit = item?.profit?.realizedProfit
-            ? Number(item?.profit?.realizedProfit)
-            : 0;
-
-          return {
-            unrealized_profit:
-              Number(item?.avgCost) === 0 ? 0 : Number(pnl) - realizedProfit,
-          };
-        })
-        .reduce((prev, item) => prev + Number(item.unrealized_profit), 0);
+              return {
+                unrealized_profit:
+                  Number(item?.avgCost) === 0
+                    ? 0
+                    : Number(pnl) - realizedProfit,
+              };
+            })
+            .reduce((prev, item) => prev + Number(item.unrealized_profit), 0))
+      );
     }
   }
 
@@ -507,7 +505,7 @@
       selectedTokenHolding?.select.length === 0 &&
       (sumTokens || sumNFT)
     ) {
-      totalAssets = sumNFT + sumTokens;
+      totalAssets.update((n) => (n = sumNFT + sumTokens));
     }
   }
 
@@ -517,13 +515,11 @@
     if (selectedWallet || $chain) {
       if (selectedWallet?.length !== 0 && $chain?.length !== 0) {
         sumTokens = 0;
-        sumAllTokens = 0;
         sumNFT = 0;
         formatData = [];
         formatDataNFT = [];
         filteredHoldingDataToken = [];
         filteredHoldingDataNFT = [];
-        marketPriceToken = undefined;
       }
     }
   }
@@ -851,7 +847,7 @@
                         lastIndex={filteredHoldingDataToken.length - 1 ===
                           index}
                         {selectedWallet}
-                        sumAllTokens={totalAssets - sumNFT}
+                        sumAllTokens={$totalAssets - sumNFT}
                         index={index + 1}
                       />
                     {/each}
@@ -907,7 +903,7 @@
                             lastIndex={filteredHoldingDataToken.length - 1 ==
                               index}
                             {selectedWallet}
-                            sumAllTokens={totalAssets - sumNFT}
+                            sumAllTokens={$totalAssets - sumNFT}
                             index={index + 1}
                           />
                         {/each}

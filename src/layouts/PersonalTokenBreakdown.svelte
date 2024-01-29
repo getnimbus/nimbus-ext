@@ -9,7 +9,13 @@
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { Toast, Progressbar } from "flowbite-svelte";
   import { blur } from "svelte/transition";
-  import { isDarkMode, typeWallet, wallet, chain } from "~/store";
+  import {
+    isDarkMode,
+    typeWallet,
+    wallet,
+    chain,
+    realtimePrice,
+  } from "~/store";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
   import { priceMobulaSubscribe } from "~/lib/price-mobulaWs";
   import { priceSubscribe } from "~/lib/price-ws";
@@ -46,7 +52,6 @@
   let dataSubWS = [];
   let filteredUndefinedCmcHoldingTokenData = [];
   let filteredNullCmcHoldingTokenData = [];
-  let marketPriceToken;
   let holdingTokenData: TokenData = [];
   let formatData = [];
   let sumTokens = 0;
@@ -481,13 +486,7 @@
         if (listTokenSubWs && listTokenSubWs.length !== 0) {
           priceMobulaSubscribe(
             listTokenSubWs.map((item) => item?.symbol),
-            "CEX",
-            (data) => {
-              marketPriceToken = {
-                id: data.id,
-                market_price: data.price,
-              };
-            }
+            "CEX"
           );
         }
       });
@@ -516,13 +515,7 @@
           if (listTokenSubWs && listTokenSubWs.length !== 0) {
             priceMobulaSubscribe(
               listTokenSubWs.map((item) => item.contractAddress),
-              listTokenSubWs[0]?.chain,
-              (data) => {
-                marketPriceToken = {
-                  id: data.id,
-                  market_price: data.price,
-                };
-              }
+              listTokenSubWs[0]?.chain
             );
           }
         });
@@ -541,37 +534,50 @@
         }
       });
       filteredData?.map((item) => {
-        priceSubscribe([Number(item?.cmcId)], item?.chain, (data) => {
-          marketPriceToken = {
-            id: data.id,
-            market_price: data.price,
-          };
-        });
+        priceSubscribe([Number(item?.cmcId)], item?.chain);
       });
     }
   }
 
   // check market price and update price real-time
   $: {
-    if (marketPriceToken) {
+    if ($realtimePrice) {
       const formatDataWithMarketPrice = formatData.map((item) => {
-        if (
-          marketPriceToken?.id.toString().toLowerCase() ===
-            item?.cmc_id?.toString().toLowerCase() ||
-          marketPriceToken?.id.toString().toLowerCase() ===
-            item?.contractAddress.toString().toLowerCase() ||
-          marketPriceToken?.id.toString().toLowerCase() ===
-            item?.symbol?.toString().toLowerCase() ||
-          marketPriceToken?.id.toString().toLowerCase() ===
-            item?.price?.symbol?.toString().toLowerCase()
-        ) {
-          return {
-            ...item,
-            market_price: Number(marketPriceToken.market_price),
-            value: Number(item?.amount) * Number(marketPriceToken.market_price),
-          };
-        }
-        return { ...item };
+        return {
+          ...item,
+          market_price: $realtimePrice[
+            item?.cmc_id ||
+              item?.contractAddress ||
+              item?.symbol ||
+              item?.price?.symbol
+          ]
+            ? Number(
+                $realtimePrice[
+                  item?.cmc_id ||
+                    item?.contractAddress ||
+                    item?.symbol ||
+                    item?.price?.symbol
+                ]?.price
+              )
+            : Number(item.market_price),
+          value:
+            Number(item?.amount) *
+            ($realtimePrice[
+              item?.cmc_id ||
+                item?.contractAddress ||
+                item?.symbol ||
+                item?.price?.symbol
+            ]
+              ? Number(
+                  $realtimePrice[
+                    item?.cmc_id ||
+                      item?.contractAddress ||
+                      item?.symbol ||
+                      item?.price?.symbol
+                  ]?.price
+                )
+              : Number(item.market_price)),
+        };
       });
       formatData = formatDataWithMarketPrice.sort((a, b) => {
         if (a.value < b.value) {
