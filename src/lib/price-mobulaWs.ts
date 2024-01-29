@@ -1,3 +1,5 @@
+import { realtimePrice } from "~/store";
+
 type iFN = () => void;
 
 export let mobulaSocket: null | WebSocket;
@@ -36,28 +38,7 @@ export const decodeEvent = (ev: MessageEvent) => {
   }
 };
 
-interface IPriceRealtime {
-  id: string;
-  ath: number;
-  atl: number;
-  is_listed: boolean;
-  liquidity: number;
-  market_cap: number;
-  market_cap_diluted: number;
-  off_chain_volume: number;
-  price: number;
-  price_change_1h: number;
-  price_change_1m: number;
-  price_change_1y: number;
-  price_change_7d: number;
-  price_change_24h: number;
-  rank: number;
-  volume: number;
-  volume_7d: number;
-  volume_change_24h: number;
-}
-
-const cached: Record<string, IPriceRealtime> = {};
+const cached = {};
 
 export const chainSupport = [
   "FTM", //Fantom
@@ -102,59 +83,57 @@ export const handleFormatBlockChainId = (chain: string) => {
 export const priceMobulaSubscribe = (
   data: string[] | number[],
   chain: string,
-  callback: (any) => void
 ) => {
   try {
     if (!mobulaSocket) {
       console.log("Mobula WS is not initiated");
-      initWS(() => priceMobulaSubscribe(data, chain, callback));
+      initWS(() => priceMobulaSubscribe(data, chain));
     } else {
       if (!isMobulaReady) {
         console.log("Delay Mobula Subscribe");
-        cbMobulaList.push(() => priceMobulaSubscribe(data, chain, callback));
+        cbMobulaList.push(() => priceMobulaSubscribe(data, chain));
         return;
       }
 
       const key = `${data}-${chain}`;
 
       if (cached[key]) {
-        // Return from cache
-        callback(cached[key]);
-      }
+        realtimePrice.update((n) => n = cached[key])
+      } else {
+        if (chain === "CEX") {
+          mobulaSocket.send(
+            JSON.stringify({
+              type: "market",
+              authorization: authKey,
+              payload: {
+                assets: data.map((item) => {
+                  return {
+                    symbol: item
+                  }
+                }),
+                interval: 15
+              }
+            })
+          )
+        }
 
-      if (chain === "CEX") {
-        mobulaSocket.send(
-          JSON.stringify({
-            type: "market",
-            authorization: authKey,
-            payload: {
-              assets: data.map((item) => {
-                return {
-                  symbol: item
-                }
-              }),
-              interval: 15
-            }
-          })
-        )
-      }
-
-      if (chain !== "CEX" && chainSupport.includes(chain)) {
-        mobulaSocket.send(
-          JSON.stringify({
-            type: "market",
-            authorization: authKey,
-            payload: {
-              assets: data.map((item) => {
-                return {
-                  address: item,
-                  blockchain: handleFormatBlockChainId(chain)
-                }
-              }),
-              interval: 15
-            }
-          })
-        )
+        if (chain !== "CEX" && chainSupport.includes(chain)) {
+          mobulaSocket.send(
+            JSON.stringify({
+              type: "market",
+              authorization: authKey,
+              payload: {
+                assets: data.map((item) => {
+                  return {
+                    address: item,
+                    blockchain: handleFormatBlockChainId(chain)
+                  }
+                }),
+                interval: 15
+              }
+            })
+          )
+        }
       }
 
       mobulaSocket.addEventListener("message", (ev) => {
@@ -162,17 +141,11 @@ export const priceMobulaSubscribe = (
         if (res?.data && Object.keys(res?.data).length !== 0) {
           const keyData = Object.keys(res?.data)
 
-          const formatData = {
-            ...res?.data[keyData[0]],
-            id: keyData[0],
+          if (!cached[key] && JSON.stringify(key.split('-')[0].split(",")) !== JSON.stringify(keyData)) {
+            cached[key] = res?.data;
           }
 
-          if (!cached[key]) {
-            // Only callback when we don't have data cached
-            cached[key] = formatData;
-          }
-
-          callback(formatData);
+          realtimePrice.update((n) => n = res?.data)
         }
       });
     }

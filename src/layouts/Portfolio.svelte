@@ -107,10 +107,6 @@
   };
   let dataOverviewBundlePieChart = [];
   let dataUpdatedTime;
-  let totalPositions = 0;
-  let totalAssets = 0;
-  let realizedProfit = 0;
-  let unrealizedProfit = 0;
   let isEmptyDataPieTokens = false;
   let isEmptyDataPieNfts = false;
   let syncMsg = "";
@@ -888,13 +884,7 @@
 
   <span slot="overview">
     {#if !isLoadingSync}
-      <Overview
-        data={overviewData}
-        {totalPositions}
-        {totalAssets}
-        {unrealizedProfit}
-        {realizedProfit}
-      />
+      <Overview data={overviewData} />
     {/if}
   </span>
 
@@ -965,9 +955,6 @@
                 dataVaults={$queryVaults.data}
                 {selectedTokenHolding}
                 {selectedDataPieChart}
-                bind:totalAssets
-                bind:unrealizedProfit
-                bind:realizedProfit
               />
 
               {#if $typeWallet !== "BTC"}
