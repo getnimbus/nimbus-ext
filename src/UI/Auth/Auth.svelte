@@ -783,7 +783,7 @@
         <div class="font-semibold text-[15px]">Login with EVM</div>
       </div>
       <SolanaAuth text="Login with Solana" />
-      <!-- <GoogleAuth {handleCloseAuthModal} /> -->
+      <GoogleAuth {handleCloseAuthModal} />
     </div>
   </div>
 </AppOverlay>
