@@ -1,4 +1,8 @@
 <script lang="ts">
+  import { onMount } from "svelte";
+  import { user } from "~/store";
+  import { createQuery } from "@tanstack/svelte-query";
+  import { nimbus } from "~/lib/network";
   import { i18n } from "~/lib/i18n";
 
   import Google from "../SocialLinks/Google.svelte";
@@ -8,6 +12,31 @@
   const MultipleLang = {
     title: i18n("optionsPage.links-page-title", "Link Settings"),
   };
+
+  let uid = "";
+
+  onMount(() => {
+    uid = localStorage.getItem("public_address");
+  });
+
+  const getLinks = async (id: string) => {
+    const response: any = await nimbus.get(`/accounts/link?id=${id}`);
+    return response?.data;
+  };
+
+  $: queryLinks = createQuery({
+    queryKey: ["links", uid],
+    queryFn: () => getLinks(uid),
+    staleTime: Infinity,
+    retry: false,
+    enabled: $user && Object.keys($user).length !== 0 && uid !== "",
+  });
+
+  $: {
+    if (!$queryLinks.isError && $queryLinks.data !== undefined) {
+      console.log("HELLO: ", $queryLinks.data);
+    }
+  }
 </script>
 
 <div class="flex flex-col gap-4">
@@ -42,4 +71,5 @@
   </div>
 </div>
 
-<style></style>
+<style windi:preflights:global windi:safelist:global>
+</style>
