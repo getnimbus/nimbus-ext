@@ -100,6 +100,20 @@
 
   <td
     class={`py-3 ${
+      $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
+    }`}
+  >
+    <div class="xl:text-sm text-2xl text_00000099 font-medium text-right">
+      {#if data?.fee < 1}
+        $<TooltipNumber number={data?.fee} type="balance" />
+      {:else}
+        <TooltipNumber number={data?.fee} type="value" />
+      {/if}
+    </div>
+  </td>
+
+  <td
+    class={`py-3 ${
       listSupported.filter((item) => item !== "CEX").includes($typeWallet)
         ? ""
         : "pr-3"
