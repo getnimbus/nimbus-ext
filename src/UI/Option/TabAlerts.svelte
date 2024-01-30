@@ -344,7 +344,7 @@
   };
 
   $: {
-    if (listAddress && listAddress.length !== 0) {
+    if (!$query.isError && $query.data !== undefined) {
       getUserConfigs();
     }
   }
