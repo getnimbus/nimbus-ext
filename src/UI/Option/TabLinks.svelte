@@ -14,6 +14,7 @@
   };
 
   let uid = "";
+  let linksData = [];
 
   onMount(() => {
     uid = localStorage.getItem("public_address");
@@ -34,9 +35,11 @@
 
   $: {
     if (!$queryLinks.isError && $queryLinks.data !== undefined) {
-      console.log("HELLO: ", $queryLinks.data);
+      linksData = $queryLinks.data[0];
     }
   }
+
+  $: console.log("HELLO: ", linksData);
 </script>
 
 <div class="flex flex-col gap-4">
@@ -55,7 +58,7 @@
         Link your social accounts
       </div>
       <div class="flex flex-col gap-3">
-        <Google />
+        <Google data={linksData} {uid} />
       </div>
     </div>
 

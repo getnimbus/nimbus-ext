@@ -138,8 +138,6 @@
   let isLoadingEditDEX = false;
   let isLoadingConnectCEX = false;
   let showDisableAddWallet = false;
-  let showDisableBundle = false;
-  let selectedHoverBundle;
   let isLoadingDeleteBundles = false;
   let isOpenConfirmDeleteBundles = false;
 
@@ -857,7 +855,7 @@
   const handleDeleteBundle = async () => {
     isLoadingDeleteBundles = true;
     try {
-      const response = await nimbus.delete(
+      await nimbus.delete(
         `/address/personalize/bundle?name=${selectedBundle?.name}`,
         selectedBundle
       );

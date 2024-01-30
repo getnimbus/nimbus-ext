@@ -5,6 +5,9 @@
 
   import Google from "~/assets/google.png";
 
+  export let data;
+  export let uid;
+
   const googleProvider = new GoogleAuthProvider();
 
   const handleGoogleAuth = async () => {
@@ -40,7 +43,7 @@
   {#if isLinks}
     <div class="flex items-center gap-2">
       <img src={Google} alt="" width="22" height="22" />
-      <div class="xl:text-base text-2xl">binhq6@gmail.com</div>
+      <div class="xl:text-base text-2xl">{data.info}</div>
     </div>
     <div class="mt-2 flex items-center justify-start gap-2">
       <input
