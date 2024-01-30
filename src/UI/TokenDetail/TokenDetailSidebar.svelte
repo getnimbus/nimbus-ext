@@ -105,7 +105,7 @@
     0
   );
 
-  $: avgTotalFee =
+  $: avgFee =
     totalFee /
     (Number(buyHistoryTradeList.length) + Number(sellHistoryTradeList.length));
 
@@ -254,12 +254,12 @@
         </div>
       </OverviewCard>
 
-      <OverviewCard title={"Avg Total Fee"}>
+      <OverviewCard title={"Avg Fee"}>
         <div class="flex justify-end xl:text-3xl text-5xl">
           ${#if $isHidePortfolio}
             ******
-          {:else if avgTotalFee}
-            <TooltipNumber number={avgTotalFee} type="balance" personalValue />
+          {:else if avgFee}
+            <TooltipNumber number={avgFee} type="balance" personalValue />
           {:else}
             0
           {/if}
