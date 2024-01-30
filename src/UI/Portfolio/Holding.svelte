@@ -372,13 +372,13 @@
           ...item,
           marketPrice: $realtimePrice[item?.nativeToken?.cmcId]
             ? Number($realtimePrice[item?.nativeToken?.cmcId]?.price)
-            : Number(item.market_price),
+            : Number(item.marketPrice),
           current_native_token: item?.floorPrice * item?.tokens?.length,
           current_value:
             item?.floorPrice *
             ($realtimePrice[item?.nativeToken?.cmcId]
               ? Number($realtimePrice[item?.nativeToken?.cmcId]?.price)
-              : Number(item.market_price)) *
+              : Number(item.marketPrice)) *
             item?.tokens?.length,
         };
       });
@@ -541,7 +541,7 @@
   const handleValidateAddress = async (address: string) => {
     try {
       const response = await nimbus.get(`/v2/address/${address}/validate`);
-      userPublicAddressChain = response?.data.type;
+      userPublicAddressChain = response?.data?.type;
     } catch (e) {
       console.error(e);
       return undefined;

@@ -245,6 +245,7 @@
     staleTime: Infinity,
     enabled: selectedAddress?.length !== 0 && Object.keys($user).length !== 0,
     onError(err) {
+      localStorage.removeItem("auth_token");
       localStorage.removeItem("solana_token");
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
@@ -264,6 +265,7 @@
     staleTime: Infinity,
     enabled: $user && Object.keys($user).length !== 0,
     onError(err) {
+      localStorage.removeItem("auth_token");
       localStorage.removeItem("solana_token");
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));

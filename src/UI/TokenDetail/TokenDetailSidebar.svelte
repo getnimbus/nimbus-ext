@@ -100,11 +100,20 @@
     }
   }
 
+  $: totalFee = dataHistoryTokenDetail?.reduce(
+    (total, item) => total + Number(item?.fee),
+    0
+  );
+
+  $: avgTotalFee =
+    totalFee /
+    (Number(buyHistoryTradeList.length) + Number(sellHistoryTradeList.length));
+
   $: colspan = listSupported
     .filter((item) => item !== "CEX")
     .includes($typeWallet)
-    ? 5
-    : 4;
+    ? 6
+    : 5;
 </script>
 
 <ErrorBoundary>
@@ -123,9 +132,7 @@
     <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
       <OverviewCard title={"Avg Cost"}>
         <div class="flex justify-end xl:text-3xl text-5xl">
-          ${#if $isHidePortfolio}
-            ******
-          {:else if data?.profit}
+          {#if data?.profit}
             <TooltipNumber
               number={data?.profit?.averageCost}
               type="balance"
@@ -233,6 +240,32 @@
         </div>
       </OverviewCard>
     </div>
+
+    <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
+      <OverviewCard title={"Total Fee"}>
+        <div class="flex justify-end xl:text-3xl text-5xl">
+          ${#if $isHidePortfolio}
+            ******
+          {:else if totalFee}
+            <TooltipNumber number={totalFee} type="balance" personalValue />
+          {:else}
+            0
+          {/if}
+        </div>
+      </OverviewCard>
+
+      <OverviewCard title={"Avg Total Fee"}>
+        <div class="flex justify-end xl:text-3xl text-5xl">
+          ${#if $isHidePortfolio}
+            ******
+          {:else if avgTotalFee}
+            <TooltipNumber number={avgTotalFee} type="balance" personalValue />
+          {:else}
+            0
+          {/if}
+        </div>
+      </OverviewCard>
+    </div>
   </div>
 
   <div class="flex flex-col gap-6">
@@ -330,6 +363,14 @@
                   class="text-right xl:text-xs text-xl uppercase font-medium"
                 >
                   Price
+                </div>
+              </th>
+
+              <th class="py-3">
+                <div
+                  class="text-right xl:text-xs text-xl uppercase font-medium"
+                >
+                  Fee
                 </div>
               </th>
 

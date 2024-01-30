@@ -67,6 +67,7 @@
     "driver.js": "^1.3.0",
     "echarts": "^5.4.3",
     "ethers": "^6.6.4",
+    "firebase": "^10.7.2",
     "flowbite": "^1.5.3",
     "flowbite-svelte": "^0.27.1",
     "flowbite-svelte-icons": "^0.3.6",

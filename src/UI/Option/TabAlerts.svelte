@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { onMount } from "svelte";
   import { nimbus } from "~/lib/network";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
@@ -145,6 +144,7 @@
     retry: false,
     enabled: $user && Object.keys($user).length !== 0,
     onError(err) {
+      localStorage.removeItem("auth_token");
       localStorage.removeItem("solana_token");
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
@@ -152,7 +152,7 @@
   });
 
   $: {
-    if (!$query.isError && $query.data !== undefined) {
+    if (!$query.isError && $query.data !== undefined && blacklistAddress) {
       formatDataListAddress($query.data);
     }
   }
@@ -183,7 +183,9 @@
     });
 
     listAddress = structWalletData;
-    checkAll = true;
+    if (listAddress.length === blacklistAddress.length) {
+      checkAll = true;
+    }
   };
 
   const handleToggleCheckAll = (e) => {
@@ -342,7 +344,7 @@
   };
 
   $: {
-    if (listAddress && listAddress.length !== 0) {
+    if (!$query.isError && $query.data !== undefined) {
       getUserConfigs();
     }
   }
@@ -883,7 +885,7 @@
   </div>
 </AppOverlay>
 
-<style>
+<style windi:preflights:global windi:safelist:global>
   :global(body) .bg_fafafbff {
     background: #fafafbff;
   }
