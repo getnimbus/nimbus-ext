@@ -61,52 +61,40 @@ const authKey =
   import.meta.env.VITE_MOBULA_KEY || "fe18f8be-644a-45a8-ad05-b088a5e61764";
 
 export const handleFormatBlockChainId = (chain: string) => {
-  let id = "";
   switch (chain) {
     case "FTM":
-      id = "250";
-      break;
+      return "250";
     case "XDAI":
-      id = "100";
-      break;
+      return "100";
     case "AVAX":
-      id = "43114";
-      break;
+      return "43114";
     case "CRONOS":
-      id = "25";
-      break;
+      return "25";
     case "ETH":
-      id = "1";
-      break;
+      return "1";
     case "MATIC":
-      id = "137";
-      break;
+      return "137";
     case "BNB":
-      id = "56";
-      break;
+      return "56";
     case "KLAY":
-      id = "8217";
-      break;
+      return "8217";
     case "AURA":
-      id = "1313161554";
-      break;
+      return "1313161554";
     case "ARB":
-      id = "42161";
-      break;
+      return "42161";
     case "OP":
-      id = "10";
-      break;
+      return "10";
     case "BASE":
-      id = "8453";
-      break;
+      return "8453";
     case "SUI":
-      id = "sui";
-      break;
+      return "sui";
     case "MANTLE":
-      id = "5000";
-      break;
+      return "5000";
+    case "TON":
+      return "TON";
   }
-  return id;
+
+  return "";
 };
 
 export const priceMobulaSubscribe = (
