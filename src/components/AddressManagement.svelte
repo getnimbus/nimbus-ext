@@ -165,7 +165,6 @@
   let selectYourWalletsBundle = [];
 
   let indexSelectedAddress = 0;
-  let isLoadingCreateUser = false;
 
   const isRequiredFieldValid = (value) => {
     return value != null && value !== "";
@@ -242,10 +241,11 @@
       user.update((n) => (n = {}));
     },
     onSuccess(data) {
-      if (data.length === 0 && localStorage.getItem("solana_token")) {
-        handleCreateUser();
-      }
-      if (data.length === 1 && localStorage.getItem("evm_token")) {
+      if (
+        data.length === 0 &&
+        (localStorage.getItem("solana_token") ||
+          localStorage.getItem("evm_token"))
+      ) {
         handleCreateUser();
       }
     },
@@ -450,7 +450,6 @@
   };
 
   const handleCreateUser = async () => {
-    isLoadingCreateUser = true;
     await wait(200);
     try {
       const [resAddAccount, resAddBundle] = await Promise.all([
@@ -473,8 +472,6 @@
       }
     } catch (e) {
       console.error(e);
-    } finally {
-      isLoadingCreateUser = false;
     }
   };
 
@@ -833,7 +830,7 @@
   };
 </script>
 
-{#if $query.isFetching && isLoadingCreateUser}
+{#if $query.isFetching}
   <div class="flex items-center justify-center h-screen">
     <Loading />
   </div>
