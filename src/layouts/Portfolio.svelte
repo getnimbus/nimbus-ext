@@ -551,9 +551,10 @@
 
     holdingTokenData = formatData?.filter((item) => Number(item.amount) > 0);
 
-    closedHoldingPosition = formatData
-      ?.filter((item) => item?.profit?.realizedProfit)
-      ?.filter((item) => Number(item.amount) === 0);
+    closedHoldingPosition = formatData?.filter(
+      (item) =>
+        item?.profit?.realizedProfit !== undefined && Number(item.amount) === 0
+    );
 
     formatTokenBreakdown(holdingTokenData);
   };
