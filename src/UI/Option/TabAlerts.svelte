@@ -314,7 +314,7 @@
       .map((item) => item.address)
       .filter(
         (element) =>
-          !data?.alertSettings?.portfolioSummary?.blacklist.includes(element)
+          !data?.alertSettings?.portfolioSummary?.blacklist?.includes(element)
       );
 
     userConfigs = {
