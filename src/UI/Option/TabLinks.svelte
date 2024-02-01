@@ -11,7 +11,6 @@
 
   import EvmLogo from "~/assets/chains/evm.png";
   import SolanaLogo from "~/assets/chains/solana.png";
-  import GoogleLogo from "~/assets/google.png";
 
   const MultipleLang = {
     title: i18n("optionsPage.links-page-title", "Link Settings"),
@@ -23,8 +22,12 @@
   let chain = "";
 
   const handleValidateAddress = async (address: string) => {
-    const response = await nimbus.get(`/v2/address/${address}/validate`);
-    chain = response?.data?.type;
+    try {
+      const response = await nimbus.get(`/v2/address/${address}/validate`);
+      chain = response?.data?.type;
+    } catch (e) {
+      console.log("e: ", e);
+    }
   };
 
   onMount(() => {
@@ -39,18 +42,28 @@
   }
 
   const getLinkViaAddress = async (address: string) => {
-    const response: any = await nimbus.get(`/accounts/link?address=${address}`);
-    socialData = response?.data;
+    try {
+      const response: any = await nimbus.get(
+        `/accounts/link?address=${address}`
+      );
+      socialData = response?.data;
+    } catch (e) {
+      console.log("e: ", e);
+    }
   };
 
   const getLinkViaUid = async (id: string) => {
-    const response: any = await nimbus.get(`/accounts/link?id=${id}`);
-    dataUserSocialLogin = response?.data[0] || {};
-    if (dataUserSocialLogin?.publicAddress) {
-      getLinkViaAddress(dataUserSocialLogin?.publicAddress);
-      userSocialPublicAddress.update(
-        (n) => (n = dataUserSocialLogin?.publicAddress)
-      );
+    try {
+      const response: any = await nimbus.get(`/accounts/link?id=${id}`);
+      dataUserSocialLogin = response?.data[0] || {};
+      if (dataUserSocialLogin?.publicAddress) {
+        getLinkViaAddress(dataUserSocialLogin?.publicAddress);
+        userSocialPublicAddress.update(
+          (n) => (n = dataUserSocialLogin?.publicAddress)
+        );
+      }
+    } catch (e) {
+      console.log("e: ", e);
     }
   };
 
@@ -79,15 +92,21 @@
         Link your social accounts
       </div>
 
+      <!-- user social login -->
       {#if localStorage.getItem("auth_token")}
         {#if dataUserSocialLogin && Object.keys(dataUserSocialLogin).length !== 0}
-          <Google
-            data={dataUserSocialLogin}
-            isDisabledRemove={dataUserSocialLogin?.type === "google"}
-            reCallAPI={() => {
-              getLinkViaAddress($userPublicAddress);
-            }}
-          />
+          {#if dataUserSocialLogin?.type === "google"}
+            <Google
+              data={dataUserSocialLogin}
+              isDisabledRemove
+              reCallAPI={() => {
+                getLinkViaAddress($userPublicAddress);
+              }}
+            />
+          {/if}
+          {#if dataUserSocialLogin?.type === "twitter"}
+            <div>Twitter</div>
+          {/if}
         {:else}
           <div class="flex flex-col gap-3">
             {#each socialData as item}
@@ -103,7 +122,10 @@
             {/each}
           </div>
         {/if}
-      {:else}
+      {/if}
+
+      <!-- user connect wallet -->
+      {#if !localStorage.getItem("auth_token")}
         <div class="flex flex-col gap-3">
           {#if socialData && socialData.length !== 0}
             {#each socialData as item}
