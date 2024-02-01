@@ -72,7 +72,6 @@
     try {
       const res = await nimbus.post("/auth/evm", data);
       if (res?.data?.result) {
-        localStorage.removeItem("auth_token");
         localStorage.setItem("evm_token", res?.data?.result);
         user.update(
           (n) =>
@@ -83,6 +82,7 @@
         queryClient?.invalidateQueries(["users-me"]);
         queryClient.invalidateQueries(["list-address"]);
         queryClient.invalidateQueries(["list-bundle"]);
+        reCallAPI();
       }
     } catch (e) {
       console.error("error: ", e);
@@ -99,7 +99,7 @@
         userPublicAddress: payload.publicAddress,
       };
       await nimbus.post("/accounts/link", params);
-      reCallAPI();
+      localStorage.removeItem("auth_token");
       handleGetEVMToken(payload);
     } catch (e) {
       console.log(e);

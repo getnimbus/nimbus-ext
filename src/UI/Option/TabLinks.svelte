@@ -20,34 +20,23 @@
   let uid = "";
   let dataUserSocialLogin: any = {};
   let socialData = [];
+  let chain = "";
 
   const handleValidateAddress = async (address: string) => {
     const response = await nimbus.get(`/v2/address/${address}/validate`);
-    if (response?.data?.type === "EVM") {
-      return `<img
-                src={${EvmLogo}}
-                alt=""
-                width="28"
-                height="28"
-                class="rounded-full"
-              />`;
-    }
-    if (response?.data?.type === "SOL") {
-      return `<img
-                src={${SolanaLogo}}
-                alt=""
-                width="28"
-                height="28"
-                class="rounded-full"
-              />`;
-    }
+    chain = response?.data?.type;
   };
 
   onMount(() => {
     uid = localStorage.getItem("public_address");
-    getLinkViaUid(uid);
-    getLinkViaAddress(uid);
   });
+
+  $: {
+    if (uid) {
+      getLinkViaUid(uid);
+      getLinkViaAddress(uid);
+    }
+  }
 
   const getLinkViaAddress = async (address: string) => {
     const response: any = await nimbus.get(`/accounts/link?address=${address}`);
@@ -64,6 +53,14 @@
       );
     }
   };
+
+  $: {
+    if (dataUserSocialLogin && dataUserSocialLogin?.publicAddress) {
+      handleValidateAddress(dataUserSocialLogin?.publicAddress);
+    } else {
+      handleValidateAddress($userPublicAddress);
+    }
+  }
 </script>
 
 <div class="flex flex-col gap-4">
@@ -82,52 +79,57 @@
         Link your social accounts
       </div>
 
-      {#if dataUserSocialLogin && Object.keys(dataUserSocialLogin).length !== 0 && localStorage.getItem("auth_token")}
-        <Google
-          data={dataUserSocialLogin}
-          isDisabledRemove={dataUserSocialLogin?.type === "google"}
-          reCallAPI={() => {
-            getLinkViaAddress($userPublicAddress);
-          }}
-        />
-      {/if}
-
-      <div class="flex flex-col gap-3">
-        {#if socialData && socialData.length !== 0}
-          {#each socialData as item}
-            {#if item.type === "google"}
-              <Google
-                data={item}
-                reCallAPI={() => {
-                  getLinkViaAddress($userPublicAddress);
-                }}
-              />
-            {/if}
-          {/each}
+      {#if localStorage.getItem("auth_token")}
+        {#if dataUserSocialLogin && Object.keys(dataUserSocialLogin).length !== 0}
+          <Google
+            data={dataUserSocialLogin}
+            isDisabledRemove={dataUserSocialLogin?.type === "google"}
+            reCallAPI={() => {
+              getLinkViaAddress($userPublicAddress);
+            }}
+          />
         {:else}
-          <div>
-            {#if localStorage.getItem("evm_token") || localStorage.getItem("solana_token")}
-              <Google
-                data={{}}
-                reCallAPI={() => {
-                  getLinkViaAddress($userPublicAddress);
-                }}
-              />
-            {:else}
-              <div>
-                {#if dataUserSocialLogin && Object.keys(dataUserSocialLogin).length !== 0 && dataUserSocialLogin.type !== "google"}
-                  <Google
-                    data={{}}
-                    reCallAPI={() => {
-                      getLinkViaAddress($userPublicAddress);
-                    }}
-                  />
-                {/if}
-              </div>
-            {/if}
+          <div class="flex flex-col gap-3">
+            {#each socialData as item}
+              {#if localStorage.getItem("socialAuthType") === "google"}
+                <Google
+                  data={item}
+                  isDisabledRemove
+                  reCallAPI={() => {
+                    getLinkViaAddress($userPublicAddress);
+                  }}
+                />
+              {/if}
+            {/each}
           </div>
         {/if}
-      </div>
+      {:else}
+        <div class="flex flex-col gap-3">
+          {#if socialData && socialData.length !== 0}
+            {#each socialData as item}
+              {#if item.type === "google"}
+                <Google
+                  data={item}
+                  reCallAPI={() => {
+                    getLinkViaAddress($userPublicAddress);
+                  }}
+                />
+              {/if}
+            {/each}
+          {:else}
+            <div>
+              {#if localStorage.getItem("evm_token") || localStorage.getItem("solana_token")}
+                <Google
+                  data={{}}
+                  reCallAPI={() => {
+                    getLinkViaAddress($userPublicAddress);
+                  }}
+                />
+              {/if}
+            </div>
+          {/if}
+        </div>
+      {/if}
     </div>
 
     {#if dataUserSocialLogin && Object.keys(dataUserSocialLogin).length !== 0 && localStorage.getItem("auth_token")}
@@ -159,9 +161,24 @@
             Your main wallet address
           </div>
           <div class="xl:text-lg text-3xl flex items-center gap-3">
-            {@html await handleValidateAddress(
-              dataUserSocialLogin?.publicAddress
-            )}
+            {#if chain === "EVM"}
+              <img
+                src={EvmLogo}
+                alt=""
+                width="28"
+                height="28"
+                class="rounded-full"
+              />
+            {/if}
+            {#if chain === "SOL"}
+              <img
+                src={SolanaLogo}
+                alt=""
+                width="28"
+                height="28"
+                class="rounded-full"
+              />
+            {/if}
             {dataUserSocialLogin?.publicAddress}
           </div>
         {/if}
@@ -172,7 +189,7 @@
           Your main wallet address
         </div>
         <div class="xl:text-lg text-3xl flex items-center gap-3">
-          {#if localStorage.getItem("evm_token")}
+          {#if chain === "EVM"}
             <img
               src={EvmLogo}
               alt=""
@@ -181,7 +198,7 @@
               class="rounded-full"
             />
           {/if}
-          {#if localStorage.getItem("solana_token")}
+          {#if chain === "SOL"}
             <img
               src={SolanaLogo}
               alt=""
