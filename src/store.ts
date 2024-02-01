@@ -15,6 +15,7 @@ export const triggerConnectWallet = writable(false);
 export const triggerSync = writable(false);
 export const userId = writable("");
 export const userPublicAddress = writable("");
+export const userSocialPublicAddress = writable("");
 export const triggerUpdateBundle = writable(false);
 export const isShowModalNftList = writable(false);
 export const isShowModalNftDeList = writable(false);

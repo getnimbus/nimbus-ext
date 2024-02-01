@@ -242,7 +242,8 @@
     },
     onSuccess(data) {
       if (
-        data.length === 0 &&
+        data &&
+        data?.length === 0 &&
         (localStorage.getItem("solana_token") ||
           localStorage.getItem("evm_token"))
       ) {
