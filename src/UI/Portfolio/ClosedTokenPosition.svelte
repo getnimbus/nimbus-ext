@@ -74,12 +74,6 @@
   $: {
     if (holdingTokenData) {
       formatData = holdingTokenData
-        ?.filter((item) => Number(item?.amount) === 0)
-        ?.filter((item) => {
-          if (item?.profit !== undefined) {
-            return Number(item?.profit.realizedProfit) !== 0;
-          }
-        })
         ?.map((item) => {
           return {
             ...item,
@@ -101,10 +95,6 @@
           (prev, item) => prev + Number(item?.profit.realizedProfit),
           0
         )
-      );
-
-      filteredHoldingDataToken = formatData.filter(
-        (item) => Math.abs(Number(item?.profit.realizedProfit)) > 1
       );
     }
     if (holdingNFTData) {
