@@ -2,6 +2,9 @@
   import { isDarkMode } from "~/store";
 
   import Solana from "~/assets/chains/solana.png";
+
+  export let data;
+  export let reCallAPI = () => {};
 </script>
 
 <div

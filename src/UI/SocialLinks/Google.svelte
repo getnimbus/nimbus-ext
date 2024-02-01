@@ -82,7 +82,8 @@
 
   const handleRemoveGoogle = async () => {
     try {
-      await nimbus.delete(`/accounts/link/${uid}`, {});
+      await nimbus.delete(`/accounts/link/${data?.uid}`, {});
+      reCallAPI();
       toastMsg = "Successfully remove link Google account!";
       isSuccessToast = true;
       trigger();

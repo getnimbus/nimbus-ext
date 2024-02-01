@@ -21,6 +21,28 @@
   let dataUserSocialLogin: any = {};
   let socialData = [];
 
+  const handleValidateAddress = async (address: string) => {
+    const response = await nimbus.get(`/v2/address/${address}/validate`);
+    if (response?.data?.type === "EVM") {
+      return `<img
+                src={${EvmLogo}}
+                alt=""
+                width="28"
+                height="28"
+                class="rounded-full"
+              />`;
+    }
+    if (response?.data?.type === "SOL") {
+      return `<img
+                src={${SolanaLogo}}
+                alt=""
+                width="28"
+                height="28"
+                class="rounded-full"
+              />`;
+    }
+  };
+
   onMount(() => {
     uid = localStorage.getItem("public_address");
     getLinkViaUid(uid);
@@ -83,12 +105,27 @@
             {/if}
           {/each}
         {:else}
-          <Google
-            data={{}}
-            reCallAPI={() => {
-              getLinkViaAddress($userPublicAddress);
-            }}
-          />
+          <div>
+            {#if localStorage.getItem("evm_token") || localStorage.getItem("solana_token")}
+              <Google
+                data={{}}
+                reCallAPI={() => {
+                  getLinkViaAddress($userPublicAddress);
+                }}
+              />
+            {:else}
+              <div>
+                {#if dataUserSocialLogin && Object.keys(dataUserSocialLogin).length !== 0 && dataUserSocialLogin.type !== "google"}
+                  <Google
+                    data={{}}
+                    reCallAPI={() => {
+                      getLinkViaAddress($userPublicAddress);
+                    }}
+                  />
+                {/if}
+              </div>
+            {/if}
+          </div>
         {/if}
       </div>
     </div>
@@ -100,23 +137,31 @@
             Connect your main wallet
           </div>
           <div class="flex flex-col gap-3">
-            <Evm />
-            <Solana />
+            <Evm
+              data={dataUserSocialLogin}
+              reCallAPI={() => {
+                dataUserSocialLogin = {};
+                getLinkViaUid(uid);
+                getLinkViaAddress($userPublicAddress);
+              }}
+            />
+            <Solana
+              data={dataUserSocialLogin}
+              reCallAPI={() => {
+                dataUserSocialLogin = {};
+                getLinkViaUid(uid);
+                getLinkViaAddress($userPublicAddress);
+              }}
+            />
           </div>
         {:else}
           <div class="xl:text-base text-2xl font-medium">
             Your main wallet address
           </div>
           <div class="xl:text-lg text-3xl flex items-center gap-3">
-            {#if dataUserSocialLogin?.type === "google"}
-              <img
-                src={GoogleLogo}
-                alt=""
-                width="28"
-                height="28"
-                class="rounded-full"
-              />
-            {/if}
+            {@html await handleValidateAddress(
+              dataUserSocialLogin?.publicAddress
+            )}
             {dataUserSocialLogin?.publicAddress}
           </div>
         {/if}
