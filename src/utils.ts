@@ -865,3 +865,15 @@ export function formatAHT(timestamp) {
     return "More than a year";
   }
 }
+
+export const formatHeaderTokenHistoryCSV = {
+  trx_hash: "Transaction Hash",
+  trx_link: "Transaction Link",
+  value: "Value",
+  time: "Time",
+  fee: "Fee",
+  amount_in: "Amount In",
+  amount_out: "Amount Out",
+  token_address_in: "Token Address In",
+  token_address_out: "Token Address Out",
+}

@@ -10,7 +10,7 @@
     selectedPackage,
   } from "~/store";
   import { linkExplorer, listSupported } from "~/lib/chains";
-  import { filterAvgCostType } from "~/utils";
+  import { filterAvgCostType, shorterAddress } from "~/utils";
   import { useNavigate } from "svelte-navigator";
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
@@ -61,6 +61,29 @@
     return response?.data;
   };
 
+  const handleGetTokenTradeHistory = async (address) => {
+    const response: any = await nimbus.get(`/tokens/${address}/trade-history`, {
+      params: {
+        chain: data?.chain,
+        token: data?.contractAddress,
+      },
+    });
+    return response?.data;
+  };
+
+  $: queryTokenTradeHistory = createQuery({
+    queryKey: ["token-trade-history", data, $wallet],
+    queryFn: () => handleGetTokenTradeHistory($wallet),
+    staleTime: Infinity,
+    retry: false,
+    enabled:
+      data !== undefined &&
+      Object.keys(data).length !== 0 &&
+      $wallet &&
+      $wallet?.length !== 0 &&
+      $selectedPackage !== "FREE",
+  });
+
   $: queryHistoryTokenDetail = createQuery({
     queryKey: ["trade-history", data, $wallet],
     queryFn: () => handleGetTradeHistory($wallet),
@@ -76,6 +99,7 @@
   let sellHistoryTradeList = [];
   let buyHistoryTradeList = [];
   let dataHistoryTokenDetail = [];
+  let dataCSV = [];
 
   let filterType = {
     label: "ALL",
@@ -102,6 +126,16 @@
     }
   }
 
+  $: {
+    if (
+      !$queryTokenTradeHistory.isError &&
+      $queryTokenTradeHistory.data !== undefined &&
+      $queryTokenTradeHistory.data.length !== 0
+    ) {
+      handleFormatDataCSV($queryTokenTradeHistory.data, data?.contractAddress);
+    }
+  }
+
   $: totalFee = dataHistoryTokenDetail?.reduce(
     (total, item) => total + Number(item?.fee),
     0
@@ -117,19 +151,8 @@
     ? 6
     : 5;
 
-  $: {
-    if (
-      dataHistoryTokenDetail &&
-      dataHistoryTokenDetail.length !== 0 &&
-      data?.contractAddress
-    ) {
-      handleFormatDataCSV(dataHistoryTokenDetail, data?.contractAddress);
-    }
-  }
-
   const handleFormatDataCSV = (data, address) => {
-    console.log(data);
-    const formatData = data.map((item) => {
+    dataCSV = data.map((item) => {
       const isBuy =
         data?.to_token_address?.toLowerCase() === address?.toLowerCase();
 
@@ -166,6 +189,14 @@
                   ? 0
                   : item?.quantity_out
               ),
+        token_address_in:
+          item?.to_symbol || item?.from_symbol
+            ? isBuy
+              ? ""
+              : item.to_token_address
+            : address?.toLowerCase() === item.from_token_address
+              ? 0
+              : item.to_token_address,
         amount_out:
           item?.to_symbol || item?.from_symbol
             ? isBuy
@@ -176,10 +207,16 @@
                   ? item?.quantity_in
                   : 0
               ),
+        token_address_out:
+          item?.to_symbol || item?.from_symbol
+            ? isBuy
+              ? item.from_token_address
+              : ""
+            : address?.toLowerCase() === item.from_token_address
+              ? item?.from_token_address
+              : "",
       };
     });
-
-    console.log("formatData: ", formatData);
   };
 </script>
 
@@ -402,7 +439,10 @@
     >
       <div class="flex justify-between items-center gap-6">
         <div class="xl:text-2xl text-4xl font-medium">History</div>
-        <HistoryCsvExport />
+        <HistoryCsvExport
+          data={dataCSV}
+          name={`${shorterAddress($wallet)}_${data?.symbol}_Trades`}
+        />
       </div>
 
       <div
