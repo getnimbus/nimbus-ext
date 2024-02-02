@@ -71,20 +71,21 @@
         }
       );
       if (res) {
-        handleAddGoogle(res.uid, res.email);
+        handleAddGoogle(res.uid, res.email, res.displayName);
       }
     } catch (e) {
       console.log(e);
     }
   };
 
-  const handleAddGoogle = async (id, info) => {
+  const handleAddGoogle = async (id, info, displayName) => {
     try {
       let params: any = {
         kind: "social",
         id,
         type: "google",
         info,
+        displayName,
       };
 
       if (data && Object.keys(data).length === 0) {
@@ -133,7 +134,7 @@
     try {
       checked = !checked;
       await nimbus.put(
-        `/users/displayName?name=${checked ? data?.info : ""}`,
+        `/users/displayName?name=${checked ? data?.name : ""}`,
         {}
       );
       queryClient.invalidateQueries(["users-me"]);

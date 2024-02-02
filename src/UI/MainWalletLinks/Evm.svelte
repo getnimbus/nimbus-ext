@@ -97,6 +97,7 @@
         type: "google",
         info: data?.info,
         userPublicAddress: payload.publicAddress,
+        displayName: data?.name,
       };
       await nimbus.post("/accounts/link", params);
       localStorage.removeItem("auth_token");
