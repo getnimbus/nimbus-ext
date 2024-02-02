@@ -9,7 +9,7 @@
     user,
     selectedPackage,
   } from "~/store";
-  import { listSupported } from "~/lib/chains";
+  import { linkExplorer, listSupported } from "~/lib/chains";
   import { filterAvgCostType } from "~/utils";
   import { useNavigate } from "svelte-navigator";
 
@@ -22,9 +22,11 @@
   import BalanceAvgCostChart from "./BalanceAvgCostChart.svelte";
   import Select from "~/components/Select.svelte";
   import Button from "~/components/Button.svelte";
+  import HistoryCsvExport from "./HistoryCSVExport.svelte";
 
   import TrendUp from "~/assets/trend-up.svg";
   import TrendDown from "~/assets/trend-down.svg";
+  import dayjs from "dayjs";
 
   export let data;
 
@@ -114,6 +116,71 @@
     .includes($typeWallet)
     ? 6
     : 5;
+
+  $: {
+    if (
+      dataHistoryTokenDetail &&
+      dataHistoryTokenDetail.length !== 0 &&
+      data?.contractAddress
+    ) {
+      handleFormatDataCSV(dataHistoryTokenDetail, data?.contractAddress);
+    }
+  }
+
+  const handleFormatDataCSV = (data, address) => {
+    console.log(data);
+    const formatData = data.map((item) => {
+      const isBuy =
+        data?.to_token_address?.toLowerCase() === address?.toLowerCase();
+
+      const withinLast24Hours = dayjs().diff(
+        dayjs(item?.created_at * 1000),
+        "hour"
+      );
+
+      const costBuy = Number(item?.quantity_in) * Number(item?.from_price);
+      const costSell = Number(item?.quantity_out) * Number(item?.to_price);
+      const value =
+        item?.to_token_address?.toLowerCase() === address?.toLowerCase()
+          ? costBuy
+          : costSell;
+
+      return {
+        trx_hash: item.transaction_hash,
+        trx_link: item.transaction_hash
+          ? linkExplorer(item.chain, item.transaction_hash).trx
+          : "",
+        value,
+        time:
+          withinLast24Hours < 24
+            ? dayjs(item?.created_at * 1000).fromNow()
+            : dayjs(item?.created_at * 1000).format("YYYY-MM-DD"),
+        fee: item?.fee,
+        amount_in:
+          item?.to_symbol || item?.from_symbol
+            ? isBuy
+              ? Number(0)
+              : Number(item?.quantity_out)
+            : Number(
+                address?.toLowerCase() === item.from_token_address
+                  ? 0
+                  : item?.quantity_out
+              ),
+        amount_out:
+          item?.to_symbol || item?.from_symbol
+            ? isBuy
+              ? Number(item?.quantity_in)
+              : Number(0)
+            : Number(
+                address?.toLowerCase() === item.from_token_address
+                  ? item?.quantity_in
+                  : 0
+              ),
+      };
+    });
+
+    console.log("formatData: ", formatData);
+  };
 </script>
 
 <ErrorBoundary>
@@ -333,7 +400,11 @@
         $isDarkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
       }`}
     >
-      <div class="xl:text-2xl text-4xl font-medium">History</div>
+      <div class="flex justify-between items-center gap-6">
+        <div class="xl:text-2xl text-4xl font-medium">History</div>
+        <HistoryCsvExport />
+      </div>
+
       <div
         class={`rounded-[10px] xl:overflow-visible overflow-x-auto h-full ${
           $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
