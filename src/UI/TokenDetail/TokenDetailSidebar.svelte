@@ -181,13 +181,13 @@
         token_address_in: item.from_token_address,
         token_in_symbol:
           item?.from_token_address?.toLowerCase() === address?.toLowerCase()
-            ? ""
+            ? item?.from_token_address
             : "",
         amount_out: Number(item?.quantity_out),
         token_address_out: item?.to_token_address,
         token_out_symbol:
           item?.to_token_address?.toLowerCase() === address?.toLowerCase()
-            ? ""
+            ? item?.to_token_address
             : "",
       };
     });
