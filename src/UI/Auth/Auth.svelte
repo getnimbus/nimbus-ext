@@ -32,6 +32,7 @@
   } from "@solana/wallet-adapter-wallets";
   import bs58 from "bs58";
   import { walletStore } from "@svelte-on-solana/wallet-adapter-core";
+  import { navigate } from "svelte-navigator";
 
   import Tooltip from "~/components/Tooltip.svelte";
   import DarkMode from "~/components/DarkMode.svelte";
@@ -62,6 +63,7 @@
   let buyPackage = "Free";
   let interval = "month";
   let endDatePackage = "";
+  let displayName = "";
 
   let isOpenModalSync = false;
   let isCopied = false;
@@ -125,6 +127,7 @@
       buyPackage = $query.data.plan?.tier;
       interval = $query.data.plan?.interval;
       endDatePackage = $query.data.plan?.endDate;
+      displayName = $query.data?.displayName;
       // isSubscription = $query.data.plan?.subscription;
       // isNewUser = $query.data.plan?.isNewUser;
     }
@@ -192,6 +195,7 @@
 
       queryClient?.invalidateQueries(["list-address"]);
       queryClient?.invalidateQueries(["users-me"]);
+      navigate("/", { replace: true });
       mixpanel.reset();
     } catch (error) {
       console.log(error);
@@ -335,6 +339,7 @@
     try {
       const res = await nimbus.post("/auth/solana", data);
       if (res?.data?.result) {
+        localStorage.removeItem("auth_token");
         localStorage.setItem("solana_token", res?.data?.result);
         user.update(
           (n) =>
@@ -470,9 +475,9 @@
           class="flex flex-col gap-3 mx-2 pt-1 pb-2 border-b-[1px] border_0000001a"
         >
           <div class="text-2xl xl:text-base">
-            GM 👋, {shorterAddress(
-              localStorage.getItem("public_address") || ""
-            )}
+            GM 👋, {displayName
+              ? displayName
+              : shorterAddress(localStorage.getItem("public_address") || "")}
           </div>
           <DarkMode />
         </div>
@@ -783,7 +788,7 @@
         <div class="font-semibold text-[15px]">Login with EVM</div>
       </div>
       <SolanaAuth text="Login with Solana" />
-      <!-- <GoogleAuth {handleCloseAuthModal} /> -->
+      <GoogleAuth {handleCloseAuthModal} />
     </div>
   </div>
 </AppOverlay>

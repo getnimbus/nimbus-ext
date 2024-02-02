@@ -138,8 +138,6 @@
   let isLoadingEditDEX = false;
   let isLoadingConnectCEX = false;
   let showDisableAddWallet = false;
-  let showDisableBundle = false;
-  let selectedHoverBundle;
   let isLoadingDeleteBundles = false;
   let isOpenConfirmDeleteBundles = false;
 
@@ -654,17 +652,13 @@
 
   $: {
     if (
-      listAddress.filter((item) => item.type !== "BUNDLE")?.length > 2 &&
-      $selectedPackage === "FREE"
+      $selectedPackage === "FREE" &&
+      listAddress.filter((item) => item.type !== "BUNDLE")?.length > 2
     ) {
       isDisabled = true;
-    } else {
-      isDisabled = false;
-    }
-
-    if (
-      listAddress.filter((item) => item.type !== "BUNDLE")?.length > 6 &&
-      $selectedPackage === "EXPLORER"
+    } else if (
+      $selectedPackage === "EXPLORER" &&
+      listAddress.filter((item) => item.type !== "BUNDLE")?.length > 6
     ) {
       if (
         localStorage.getItem("isGetUserEmailYet") !== null &&
@@ -857,7 +851,7 @@
   const handleDeleteBundle = async () => {
     isLoadingDeleteBundles = true;
     try {
-      const response = await nimbus.delete(
+      await nimbus.delete(
         `/address/personalize/bundle?name=${selectedBundle?.name}`,
         selectedBundle
       );
