@@ -62,6 +62,7 @@
   let buyPackage = "Free";
   let interval = "month";
   let endDatePackage = "";
+  let displayName = "";
 
   let isOpenModalSync = false;
   let isCopied = false;
@@ -125,6 +126,7 @@
       buyPackage = $query.data.plan?.tier;
       interval = $query.data.plan?.interval;
       endDatePackage = $query.data.plan?.endDate;
+      displayName = $query.data?.displayName;
       // isSubscription = $query.data.plan?.subscription;
       // isNewUser = $query.data.plan?.isNewUser;
     }
@@ -337,6 +339,7 @@
     try {
       const res = await nimbus.post("/auth/solana", data);
       if (res?.data?.result) {
+        localStorage.removeItem("auth_token");
         localStorage.setItem("solana_token", res?.data?.result);
         user.update(
           (n) =>
@@ -472,9 +475,9 @@
           class="flex flex-col gap-3 mx-2 pt-1 pb-2 border-b-[1px] border_0000001a"
         >
           <div class="text-2xl xl:text-base">
-            GM 👋, {shorterAddress(
-              localStorage.getItem("public_address") || ""
-            )}
+            GM 👋, {displayName
+              ? displayName
+              : shorterAddress(localStorage.getItem("public_address") || "")}
           </div>
           <DarkMode />
         </div>

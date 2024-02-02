@@ -5,6 +5,7 @@
   import { googleAuth } from "~/lib/firebase";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
+  import { createQuery, useQueryClient } from "@tanstack/svelte-query";
 
   import Google from "~/assets/google.png";
 
@@ -12,12 +13,15 @@
   export let isDisabledRemove = false;
   export let reCallAPI = () => {};
 
+  const queryClient = useQueryClient();
   const googleProvider = new GoogleAuthProvider();
 
   let toastMsg = "";
   let isSuccessToast = false;
   let counter = 3;
   let showToast = false;
+
+  let checked = false;
 
   const trigger = () => {
     showToast = true;
@@ -31,6 +35,33 @@
     toastMsg = "";
     isSuccessToast = false;
   };
+
+  const getUserInfo = async () => {
+    const response: any = await nimbus.get("/users/me");
+    return response?.data;
+  };
+
+  $: queryUserInfo = createQuery({
+    queryKey: ["users-me"],
+    queryFn: () => getUserInfo(),
+    staleTime: Infinity,
+    retry: false,
+    onError(err) {
+      localStorage.removeItem("auth_token");
+      localStorage.removeItem("solana_token");
+      localStorage.removeItem("evm_token");
+    },
+  });
+
+  $: {
+    if (!$queryUserInfo.isError && $queryUserInfo.data !== undefined) {
+      if ($queryUserInfo.data.displayName) {
+        checked = true;
+      } else {
+        checked = false;
+      }
+    }
+  }
 
   const handleGoogleAuth = async () => {
     try {
@@ -64,6 +95,7 @@
       }
 
       await nimbus.post("/accounts/link", params);
+      localStorage.setItem("socialAuthType", "google");
       reCallAPI();
 
       toastMsg = "Successfully link Google account!";
@@ -78,11 +110,12 @@
     }
   };
 
-  let checked = false;
-
   const handleRemoveGoogle = async () => {
     try {
-      await nimbus.delete(`/accounts/link/${uid}`, {});
+      await nimbus.put(`/users/displayName?name=${""}`, {});
+      await nimbus.delete(`/accounts/link/${data?.uid}`, {});
+      localStorage.removeItem("socialAuthType");
+      reCallAPI();
       toastMsg = "Successfully remove link Google account!";
       isSuccessToast = true;
       trigger();
@@ -90,6 +123,26 @@
       console.log(e);
       toastMsg =
         "There are some problem when remove link Google account. Please try again!";
+      isSuccessToast = true;
+      trigger();
+    }
+  };
+
+  const handleDisplayName = async () => {
+    try {
+      checked = !checked;
+      await nimbus.put(
+        `/users/displayName?name=${checked ? data?.info : ""}`,
+        {}
+      );
+      queryClient.invalidateQueries(["users-me"]);
+      toastMsg = "Successfully set display Google account!";
+      isSuccessToast = true;
+      trigger();
+    } catch (e) {
+      console.log(e);
+      toastMsg =
+        "There are some problem when set display Google account. Please try again!";
       isSuccessToast = true;
       trigger();
     }
@@ -117,7 +170,10 @@
     <div class="mt-2 flex items-center justify-start gap-2">
       <input
         type="checkbox"
-        bind:checked
+        {checked}
+        on:click={() => {
+          handleDisplayName();
+        }}
         class="cursor-pointer relative w-5 h-5 appearance-none rounded-[0.25rem] border outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white checked:focus:after:bg-transparent dark:border-neutral-600 dark:checked:border-primary dark:checked:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]"
       />
       <div class="text-lg xl:text-sm">Display Google on Nimbus</div>

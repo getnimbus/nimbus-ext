@@ -64,8 +64,11 @@
       });
 
       closedHoldingPosition = $queryTokenHolding?.data
-        ?.filter((item) => Number(item?.amount) === 0)
-        ?.filter((item) => item?.profit?.realizedProfit)
+        ?.filter(
+          (item) =>
+            item?.profit?.realizedProfit !== undefined &&
+            Number(item.amount) === 0
+        )
         .sort(
           (a, b) =>
             Number(b?.profit.realizedProfit) - Number(a?.profit.realizedProfit)

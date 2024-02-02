@@ -38,6 +38,7 @@
       if (res?.data?.result) {
         handleCloseAuthModal();
         localStorage.setItem("auth_token", res?.data?.result);
+        localStorage.setItem("socialAuthType", "google");
         user.update(
           (n) =>
             (n = {
