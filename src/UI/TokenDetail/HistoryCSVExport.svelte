@@ -1,6 +1,6 @@
 <script lang="ts">
   import Button from "~/components/Button.svelte";
-  import { selectedPackage } from "~/store";
+  import { selectedPackage, user } from "~/store";
   import { formatHeaderTokenHistoryCSV } from "~/utils";
   import tooltip from "~/entries/contentScript/views/tooltip";
 
@@ -41,7 +41,7 @@
   };
 </script>
 
-{#if $selectedPackage !== "Free"}
+{#if $selectedPackage !== "Free" && $user && Object.keys($user).length !== 0}
   <div class="w-max">
     <Button
       variant="premium"
