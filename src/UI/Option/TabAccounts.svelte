@@ -656,8 +656,6 @@
       $selectedPackage === "FREE"
     ) {
       isDisabled = true;
-    } else {
-      isDisabled = false;
     }
 
     if (
@@ -671,8 +669,6 @@
         localStorage.setItem("isGetUserEmailYet", "true");
       }
       isDisabled = true;
-    } else {
-      isDisabled = false;
     }
 
     if ($selectedPackage === "PROFESSIONAL") {
