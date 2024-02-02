@@ -115,6 +115,7 @@
       await nimbus.put(`/users/displayName?name=${""}`, {});
       await nimbus.delete(`/accounts/link/${data?.uid}`, {});
       localStorage.removeItem("socialAuthType");
+      queryClient?.invalidateQueries(["users-me"]);
       reCallAPI();
       toastMsg = "Successfully remove link Google account!";
       isSuccessToast = true;
