@@ -92,7 +92,8 @@
     queryKey: ["nft-holding", addressWallet],
     queryFn: () => getHoldingNFT(addressWallet),
     staleTime: Infinity,
-    enabled: addressWallet.length !== 0,
+    retry: false,
+    enabled: addressWallet && addressWallet.length !== 0,
   });
 
   $: {

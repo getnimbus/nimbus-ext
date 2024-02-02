@@ -1,13 +1,14 @@
 <script lang="ts">
-  import Button from "~/components/Button.svelte";
   import { selectedPackage, user } from "~/store";
   import { formatHeaderTokenHistoryCSV } from "~/utils";
   import tooltip from "~/entries/contentScript/views/tooltip";
 
+  import Button from "~/components/Button.svelte";
+
   export let data;
   export let name;
-
-  let dataCSV;
+  export let triggerExportCSV = () => {};
+  export let isLoading;
 
   $: {
     if (data && data.length !== 0) {
@@ -24,7 +25,11 @@
       return Object.values(item).toString();
     });
 
-    dataCSV = [headers, ...body].join("\n");
+    const dataCSV = [headers, ...body].join("\n");
+
+    if (dataCSV) {
+      downloadCSV(dataCSV);
+    }
   };
 
   const downloadCSV = (data) => {
@@ -38,18 +43,18 @@
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+    triggerExportCSV();
   };
 </script>
 
 {#if $selectedPackage !== "Free" && $user && Object.keys($user).length !== 0}
-  <div class="w-max">
+  <div class="w-max min-w-[142px]">
     <Button
       variant="premium"
       on:click={() => {
-        if (dataCSV) {
-          downloadCSV(dataCSV);
-        }
-      }}>Download CSV</Button
+        triggerExportCSV();
+      }}
+      {isLoading}>Download CSV</Button
     >
   </div>
 {:else}

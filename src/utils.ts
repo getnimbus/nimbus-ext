@@ -899,5 +899,7 @@ export const formatHeaderTokenHistoryCSV = {
   amount_in: "Amount In",
   amount_out: "Amount Out",
   token_address_in: "Token Address In",
+  token_in_symbol: "Token Symbol In",
   token_address_out: "Token Address Out",
+  token_out_symbol: "Token Symbol Out",
 }
