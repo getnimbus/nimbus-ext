@@ -102,28 +102,32 @@
               <div class="flex flex-col items-start">
                 <div class="text-left text-lg uppercase font-medium">Plans</div>
                 <div class="text-center text-base font-medium text-[#1e96fc]">
-                  <span class="uppercase"
-                    >{buyPackage === "Professional"
-                      ? "Alpha"
-                      : buyPackage}</span
-                  >
                   {#if buyPackage !== "Free"}
-                    have
+                    Your <span class="uppercase"
+                      >{buyPackage === "Professional"
+                        ? "Alpha"
+                        : buyPackage}</span
+                    >
+                    plan has
                     <span class="font-medium"
                       >{dateDiffInDays(new Date(), new Date(endDatePackage))} days
                       left</span
                     >
+                  {:else}
+                    Your plan is Free
                   {/if}
                 </div>
               </div>
             </th>
 
-            <th class="py-3 pr-3">
-              <div class="text-left text-lg uppercase font-medium">Free</div>
+            <th class="py-3 pr-3 h-full">
+              <div class="text-left text-lg uppercase font-medium pb-6">
+                Free
+              </div>
             </th>
 
             <th class="py-3 pr-3">
-              <div class="flex items-center gap-2">
+              <div class="flex items-center gap-2 pb-6">
                 <div class="text-lg uppercase font-medium">Explorer</div>
                 {#if selectedTypePackage === "year"}
                   <div
@@ -138,7 +142,7 @@
             </th>
 
             <th class="py-3 px-3 rounded-tr-[10px]">
-              <div class="flex items-center gap-2">
+              <div class="flex items-center gap-2 pb-6">
                 <div class="text-lg uppercase font-medium">Alpha</div>
                 {#if selectedTypePackage === "year"}
                   <div
@@ -445,14 +449,16 @@
     <div class="xl:hidden flex flex-col items-center gap-8">
       <div class="flex flex-col gap-8">
         <div class="text-center text-3xl font-medium text-[#1e96fc]">
-          Plans <span class="uppercase"
-            >{buyPackage === "Professional" ? "Alpha" : buyPackage}</span
-          >
           {#if buyPackage !== "Free"}
-            have
+            Your <span class="uppercase"
+              >{buyPackage === "Professional" ? "Alpha" : buyPackage}</span
+            >
+            plan has
             <span class="font-medium"
               >{dateDiffInDays(new Date(), new Date(endDatePackage))} days left</span
             >
+          {:else}
+            Your plan is Free
           {/if}
         </div>
 
