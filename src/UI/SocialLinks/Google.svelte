@@ -9,9 +9,9 @@
 
   import Google from "~/assets/google.png";
 
-  export let data;
-  export let isDisabledRemove = false;
-  export let reCallAPI = () => {};
+  export let data: any;
+  export let isDisabledRemove: any = false;
+  export let reCallAPI: any = () => {};
 
   const queryClient = useQueryClient();
   const googleProvider = new GoogleAuthProvider();
