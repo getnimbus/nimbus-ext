@@ -32,6 +32,7 @@
   } from "@solana/wallet-adapter-wallets";
   import bs58 from "bs58";
   import { walletStore } from "@svelte-on-solana/wallet-adapter-core";
+  import { navigate } from "svelte-navigator";
 
   import Tooltip from "~/components/Tooltip.svelte";
   import DarkMode from "~/components/DarkMode.svelte";
@@ -194,6 +195,7 @@
 
       queryClient?.invalidateQueries(["list-address"]);
       queryClient?.invalidateQueries(["users-me"]);
+      navigate("/", { replace: true });
       mixpanel.reset();
     } catch (error) {
       console.log(error);

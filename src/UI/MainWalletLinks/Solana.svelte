@@ -63,6 +63,7 @@
         type: "google",
         info: data?.info,
         userPublicAddress: address,
+        displayName: data?.name,
       };
       await nimbus.post("/accounts/link", params);
       queryClient.invalidateQueries(["list-bundle"]);
