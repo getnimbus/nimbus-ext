@@ -242,7 +242,8 @@
     },
     onSuccess(data) {
       if (
-        data.length === 0 &&
+        data &&
+        data?.length === 0 &&
         (localStorage.getItem("solana_token") ||
           localStorage.getItem("evm_token"))
       ) {
@@ -717,17 +718,13 @@
 
   $: {
     if (
-      listAddress.filter((item) => item.type !== "BUNDLE")?.length > 2 &&
-      $selectedPackage === "FREE"
+      $selectedPackage === "FREE" &&
+      listAddress.filter((item) => item.type !== "BUNDLE")?.length > 2
     ) {
       isDisabled = true;
-    } else {
-      isDisabled = false;
-    }
-
-    if (
-      listAddress.filter((item) => item.type !== "BUNDLE")?.length > 6 &&
-      $selectedPackage === "EXPLORER"
+    } else if (
+      $selectedPackage === "EXPLORER" &&
+      listAddress.filter((item) => item.type !== "BUNDLE")?.length > 6
     ) {
       if (
         localStorage.getItem("isGetUserEmailYet") !== null &&
@@ -764,7 +761,7 @@
   }
 
   $: {
-    if (Object.keys($user).length === 0) {
+    if ($user && Object.keys($user).length === 0) {
       tooltipDisableAddBtn = "Connect wallet to add account";
       listAddress = [];
     }
@@ -1125,17 +1122,23 @@
               <div
                 class="relative xl:w-max w-[270px] flex justify-end"
                 on:mouseenter={() => {
-                  if (isDisabled || Object.keys($user).length === 0) {
+                  if (
+                    isDisabled ||
+                    ($user && Object.keys($user).length === 0)
+                  ) {
                     showDisableAddWallet = true;
                   }
                 }}
                 on:mouseleave={() => {
-                  if (isDisabled || Object.keys($user).length === 0) {
+                  if (
+                    isDisabled ||
+                    ($user && Object.keys($user).length === 0)
+                  ) {
                     showDisableAddWallet = false;
                   }
                 }}
               >
-                {#if isDisabled || Object.keys($user).length === 0}
+                {#if isDisabled || ($user && Object.keys($user).length === 0)}
                   <div>
                     {#if localStorage.getItem("isGetUserEmailYet") !== null && localStorage.getItem("isGetUserEmailYet") === "false"}
                       <Button
@@ -1188,6 +1191,7 @@
                     </div>
                   </Button>
                 {/if}
+
                 {#if showDisableAddWallet}
                   <div
                     class={`absolute transform ${

@@ -21,23 +21,25 @@
         }
       );
       if (res) {
-        handleGetGoogleToken(res.uid, "google", res.email);
+        handleGetGoogleToken(res.uid, "google", res.email, res.displayName);
       }
     } catch (e) {
       console.log("error: ", e);
     }
   };
 
-  const handleGetGoogleToken = async (uid, type, info) => {
+  const handleGetGoogleToken = async (uid, type, info, displayName) => {
     try {
       const res = await nimbus.post("/auth", {
         uid,
         type,
         info,
+        displayName,
       });
       if (res?.data?.result) {
         handleCloseAuthModal();
         localStorage.setItem("auth_token", res?.data?.result);
+        localStorage.setItem("socialAuthType", "google");
         user.update(
           (n) =>
             (n = {

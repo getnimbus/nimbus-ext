@@ -30,11 +30,11 @@
       value: "reports",
       type: "Reports",
     },
-    // {
-    //   label: i18n("optionsPage.tab-title-links", "Links"),
-    //   value: "links",
-    //   type: "Links",
-    // },
+    {
+      label: i18n("optionsPage.tab-title-links", "Links"),
+      value: "links",
+      type: "Links",
+    },
     // {
     //   label: i18n("optionsPage.tab-title-nft", "NFT"),
     //   value: "nft",
