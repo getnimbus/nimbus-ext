@@ -2,6 +2,7 @@
   import Button from "~/components/Button.svelte";
   import { selectedPackage } from "~/store";
   import { formatHeaderTokenHistoryCSV } from "~/utils";
+  import tooltip from "~/entries/contentScript/views/tooltip";
 
   export let data;
   export let name;
@@ -40,8 +41,8 @@
   };
 </script>
 
-<div class="w-max">
-  {#if $selectedPackage !== "Free"}
+{#if $selectedPackage !== "Free"}
+  <div class="w-max">
     <Button
       variant="premium"
       on:click={() => {
@@ -50,9 +51,19 @@
         }
       }}>Download CSV</Button
     >
-  {:else}
+  </div>
+{:else}
+  <div
+    use:tooltip={{
+      content: `<tooltip-detail text="Upgrade to Premium to download your csv" />`,
+      allowHTML: true,
+      placement: "top",
+      interactive: true,
+    }}
+    class="w-max"
+  >
     <Button variant="premium" disabled>Download CSV</Button>
-  {/if}
-</div>
+  </div>
+{/if}
 
 <style windi:preflights:global windi:safelist:global></style>
