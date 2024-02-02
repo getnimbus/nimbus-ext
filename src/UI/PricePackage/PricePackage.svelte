@@ -159,14 +159,18 @@
 
           <tr class="bg_f4f5f8">
             <td class="py-3 pl-3 w-[420px]">
-              <div class="flex items-center gap-3">
-                <label class="switch">
-                  <input type="checkbox" bind:checked={checkedTypePackage} />
-                  <span class="slider" />
-                </label>
-                <div class="text-base font-medium">
-                  Annual Billing <span class="text-green-500">(Save 17%)</span>
+              <div class="flex flex-col gap-4">
+                <div class="flex items-center gap-3">
+                  <label class="switch">
+                    <input type="checkbox" bind:checked={checkedTypePackage} />
+                    <span class="slider" />
+                  </label>
+                  <div class="text-base font-medium">
+                    Annual Billing <span class="text-green-500">(Save 17%)</span
+                    >
+                  </div>
                 </div>
+                <div class=" min-h-[30px]"></div>
               </div>
             </td>
 
