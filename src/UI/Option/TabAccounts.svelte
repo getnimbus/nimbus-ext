@@ -652,15 +652,13 @@
 
   $: {
     if (
-      listAddress.filter((item) => item.type !== "BUNDLE")?.length > 2 &&
-      $selectedPackage === "FREE"
+      $selectedPackage === "FREE" &&
+      listAddress.filter((item) => item.type !== "BUNDLE")?.length > 2
     ) {
       isDisabled = true;
-    }
-
-    if (
-      listAddress.filter((item) => item.type !== "BUNDLE")?.length > 6 &&
-      $selectedPackage === "EXPLORER"
+    } else if (
+      $selectedPackage === "EXPLORER" &&
+      listAddress.filter((item) => item.type !== "BUNDLE")?.length > 6
     ) {
       if (
         localStorage.getItem("isGetUserEmailYet") !== null &&
@@ -669,6 +667,8 @@
         localStorage.setItem("isGetUserEmailYet", "true");
       }
       isDisabled = true;
+    } else {
+      isDisabled = false;
     }
 
     if ($selectedPackage === "PROFESSIONAL") {
