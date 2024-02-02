@@ -869,7 +869,8 @@ export function formatAHT(timestamp) {
 export const formatHeaderTokenHistoryCSV = {
   trx_hash: "Transaction Hash",
   trx_link: "Transaction Link",
-  value: "Value",
+  cost: "Cost",
+  gain: "Gain",
   time: "Time",
   fee: "Fee",
   amount_in: "Amount In",
