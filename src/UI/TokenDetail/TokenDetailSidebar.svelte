@@ -78,7 +78,7 @@
         }
       );
       if (response?.data && response?.data.length !== 0) {
-        handleFormatDataCSV(response?.data);
+        handleFormatDataCSV(response?.data, data?.contractAddress);
       }
     } catch (e) {
       console.error(e);
@@ -167,24 +167,28 @@
     }
   }
 
-  const handleFormatDataCSV = (data) => {
+  const handleFormatDataCSV = (data, address) => {
     dataCSV = data.map((item) => {
-      const costBuy = Number(item?.quantity_in) * Number(item?.from_price);
-      const costSell = Number(item?.quantity_out) * Number(item?.to_price);
-
       return {
         trx_hash: item.transaction_hash,
         trx_link: item.transaction_hash
           ? linkExplorer(item.chain, item.transaction_hash).trx
           : "",
-        cost: costBuy,
-        gain: costSell,
+        value: Number(item?.amount_usd),
         time: dayjs(item?.created_at * 1000).format("YYYY-MM-DD HH:mm:ss"),
         fee: item?.fee,
         amount_in: Number(item?.quantity_in),
         token_address_in: item.from_token_address,
+        token_in_symbol:
+          item?.from_token_address?.toLowerCase() === address?.toLowerCase()
+            ? ""
+            : "",
         amount_out: Number(item?.quantity_out),
         token_address_out: item?.to_token_address,
+        token_out_symbol:
+          item?.to_token_address?.toLowerCase() === address?.toLowerCase()
+            ? ""
+            : "",
       };
     });
   };
