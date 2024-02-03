@@ -9,6 +9,7 @@
   export let name;
   export let triggerExportCSV = () => {};
   export let isLoading;
+  export let isDisabled;
 
   $: {
     if (data && data.length !== 0) {
@@ -47,7 +48,7 @@
   };
 </script>
 
-{#if $selectedPackage !== "Free" && $user && Object.keys($user).length !== 0}
+{#if $selectedPackage !== "Free" && $user && Object.keys($user).length !== 0 && !isDisabled}
   <div class="w-max min-w-[142px]">
     <Button
       variant="premium"

@@ -418,6 +418,8 @@
           name={`${shorterAddress($wallet)}_${data?.symbol}_Trades`}
           {triggerExportCSV}
           {isLoading}
+          isDisabled={dataHistoryTokenDetail &&
+            dataHistoryTokenDetail.length !== 0}
         />
       </div>
 
