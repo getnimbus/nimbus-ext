@@ -92,6 +92,8 @@ export const handleFormatBlockChainId = (chain: string) => {
       return "5000";
     case "TON":
       return "TON";
+    case "NEAR":
+      return "NEAR";
   }
 
   return "";
