@@ -47,7 +47,7 @@
   };
 </script>
 
-{#if $selectedPackage !== "Free" && $user && Object.keys($user).length !== 0 && data && data.length !== 0}
+{#if $selectedPackage !== "Free" && $user && Object.keys($user).length !== 0}
   <div class="w-max min-w-[142px]">
     <Button
       variant="premium"
