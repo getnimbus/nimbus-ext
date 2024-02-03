@@ -167,8 +167,8 @@
     }
   }
 
-  const handleFormatDataCSV = (data, address) => {
-    dataCSV = data.map((item) => {
+  const handleFormatDataCSV = (dataHistory, address) => {
+    dataCSV = dataHistory.map((item) => {
       return {
         trx_hash: item.transaction_hash,
         trx_link: item.transaction_hash
