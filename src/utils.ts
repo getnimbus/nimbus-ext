@@ -467,8 +467,8 @@ export const handleFormatDataPieChart = (data, type) => {
 
   return formatGroupData.map((item) => {
     return {
-      logo: type === "chain" ? detectedChain(item.name)?.logo : item.logo,
-      name: type === "chain" ? detectedChain(item.name)?.name : item.name,
+      logo: type === "chain" ? (item.name === "CEX" ? item.logo : detectedChain(item.name)?.logo) : item.logo,
+      name: type === "chain" ? (item.name === "CEX" ? "CEX" : detectedChain(item.name)?.name) : item.name,
       symbol: "",
       name_ratio: item.name_ratio,
       value: (Number(item.value_value) / sumData) * 100,
