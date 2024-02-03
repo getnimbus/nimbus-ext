@@ -1,0 +1,76 @@
+<script>
+  export let options;
+  export let id;
+
+  let SCRIPT_ID = "";
+  let CONTAINER_ID = "";
+  let chart = null;
+
+  $: {
+    if (id) {
+      CONTAINER_ID =
+        options && options.container_id
+          ? options.container_id
+          : `svelte-tradingview-widget-${id};`;
+      SCRIPT_ID = `tradingview-widget-script-${id}`;
+      appendScript(initWidget);
+    }
+  }
+
+  $: {
+    if (options && id) {
+      update(options);
+    }
+  }
+
+  function update(options) {
+    try {
+      setTimeout(() => {
+        chart = new window.TradingView.widget(
+          Object.assign({ container_id: CONTAINER_ID }, options)
+        );
+      }, 200);
+    } catch (e) {
+      console.log("e: ", e);
+    }
+  }
+
+  function initWidget() {
+    if (typeof TradingView !== "undefined") {
+      new window.TradingView.widget(
+        Object.assign({ container_id: CONTAINER_ID }, options)
+      );
+    }
+  }
+
+  function appendScript(onload) {
+    if (document.getElementById(SCRIPT_ID) === null) {
+      const script = document.createElement("script");
+      script.id = SCRIPT_ID;
+      script.type = "text/javascript";
+      script.async = true;
+      script.src = "https://s3.tradingview.com/tv.js";
+      script.onload = onload;
+      document.getElementsByTagName("head")[0].appendChild(script);
+    } else {
+      const script = document.getElementById(SCRIPT_ID);
+      const oldOnload = script.onload;
+      return (script.onload = () => {
+        oldOnload();
+        onload();
+      });
+    }
+  }
+
+  $: autosize = options.autosize;
+</script>
+
+<div id={CONTAINER_ID} class:autosize />
+
+<style>
+  .autosize {
+    width: 100%;
+    height: 100%;
+    min-height: 485px;
+  }
+</style>
