@@ -306,7 +306,7 @@
             <div class="xl:text-2xl text-4xl font-medium">
               Historical Transactions
             </div>
-            {#if $typeWallet === "EVM" || $typeWallet === "MOVE"}
+            {#if $typeWallet === "EVM"}
               <div class="flex items-center gap-4">
                 <CoinSelector
                   bind:selected={selectedCoin}

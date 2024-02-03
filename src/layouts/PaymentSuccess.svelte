@@ -90,6 +90,7 @@
     staleTime: Infinity,
     retry: false,
     onError(err) {
+      localStorage.removeItem("auth_token");
       localStorage.removeItem("solana_token");
       localStorage.removeItem("evm_token");
     },

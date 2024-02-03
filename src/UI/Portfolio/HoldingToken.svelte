@@ -1,5 +1,11 @@
 <script lang="ts">
-  import { typeWallet, isDarkMode, user, selectedBundle } from "~/store";
+  import {
+    typeWallet,
+    isDarkMode,
+    user,
+    selectedBundle,
+    realtimePrice,
+  } from "~/store";
   import { shorterName, shorterAddress } from "~/utils";
   import { listSupported, detectedChain } from "~/lib/chains";
   import numeral from "numeral";
@@ -879,8 +885,12 @@
 
   {#if listSupported.includes($typeWallet)}
     <td
-      class={`py-3 pr-3 w-full h-full flex justify-start items-center xl:gap-4 gap-7 ${
+      class={`py-3 pr-3 w-full h-full flex items-center xl:gap-4 gap-7 ${
         $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
+      } ${
+        ["BUNDLE", "SOL"].includes($typeWallet)
+          ? "justify-start"
+          : "justify-center"
       }`}
       style={`${lastIndex ? "border-bottom-right-radius: 10px;" : ""}`}
     >
@@ -1659,14 +1669,28 @@
         </div>
         <div class="flex items-center font-medium xl:text-2xl text-3xl">
           $<TooltipNumber
-            number={selectedTokenDetail?.market_price}
+            number={$realtimePrice[
+              selectedTokenDetail?.cmc_id ||
+                selectedTokenDetail?.contractAddress ||
+                selectedTokenDetail?.symbol ||
+                selectedTokenDetail?.price?.symbol
+            ]
+              ? Number(
+                  $realtimePrice[
+                    selectedTokenDetail?.cmc_id ||
+                      selectedTokenDetail?.contractAddress ||
+                      selectedTokenDetail?.symbol ||
+                      selectedTokenDetail?.price?.symbol
+                  ]?.price
+                )
+              : Number(selectedTokenDetail?.market_price)}
             type="balance"
           />
         </div>
       </div>
     {/if}
   </div>
-  <TokenDetailSidebar data={selectedTokenDetail} />
+  <TokenDetailSidebar data={selectedTokenDetail} {showSideTokenDetail} />
 </OverlaySidebar>
 
 <!-- Sidebar Token Swap -->

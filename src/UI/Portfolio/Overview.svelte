@@ -1,19 +1,21 @@
 <script lang="ts">
-  import { getChangeFromPercent, getChangePercent } from "~/chart-utils";
   import { i18n } from "~/lib/i18n";
-  import { typeWallet, isHidePortfolio } from "~/store";
+  import {
+    typeWallet,
+    isHidePortfolio,
+    totalAssets,
+    totalPositions,
+    unrealizedProfit,
+    realizedProfit,
+    pastProfit,
+  } from "~/store";
 
   import CountUpNumber from "~/components/CountUpNumber.svelte";
   import OverviewCard from "~/components/OverviewCard.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
-  import { otherGeneration } from "~/lib/chains";
 
   export let data;
-  export let totalPositions;
-  export let totalAssets;
-  export let unrealizedProfit;
-  export let realizedProfit;
 
   const MultipleLang = {
     networth: i18n("newtabPage.networth", "Net Worth"),
@@ -25,30 +27,7 @@
     unrealizedProfit: i18n("newtabPage.unrealizedProfit", "Unrealized PnL"),
   };
 
-  $: networth = totalAssets + totalPositions;
-
-  $: totalProfit =
-    Number(data?.overview?.cumulativeOutflow || 0) -
-    Number(data?.overview?.cumulativeInflow || 0);
-
-  $: changeLast24hTotalInflow = getChangeFromPercent(
-    data?.overview?.cumulativeInflow,
-    data?.overview?.cumulativeInflowChange
-  );
-
-  $: changeLast24hTotalOutflow = getChangeFromPercent(
-    data?.overview?.cumulativeOutflow,
-    data?.overview?.cumulativeOutflowChange
-  );
-
-  $: changeLast24hTotalProfit =
-    changeLast24hTotalOutflow - changeLast24hTotalInflow;
-
-  $: last24hTotalProfitPercent = otherGeneration
-    .concat(["CEX"])
-    .includes($typeWallet)
-    ? 0
-    : getChangePercent(totalProfit, changeLast24hTotalProfit);
+  $: networth = $totalAssets + $totalPositions;
 </script>
 
 <ErrorBoundary>
@@ -84,50 +63,22 @@
         </div>
       </OverviewCard>
 
-      <OverviewCard
-        title={MultipleLang.net_flow}
-        isTooltip
-        tooltipText="Net Flow = Total Outflow - Total Inflow"
-      >
+      <OverviewCard title={"Past Profit"}>
         <div class="flex xl:text-3xl text-5xl">
-          {#if totalProfit.toString().toLowerCase().includes("e-")}
-            $<TooltipNumber number={totalProfit} type="balance" personalValue />
+          {#if $pastProfit.toString().toLowerCase().includes("e-")}
+            $<TooltipNumber number={$pastProfit} type="balance" personalValue />
           {:else}
             <span>
-              {#if totalProfit < 0 && !$isHidePortfolio}
+              {#if $pastProfit < 0 && !$isHidePortfolio}
                 -
               {/if}
             </span>
             <CountUpNumber
-              number={Math.abs(totalProfit)}
+              number={Math.abs($pastProfit)}
               type="value"
               personalValue
             />
           {/if}
-        </div>
-        <div
-          class={`flex items-center gap-3 ${
-            otherGeneration.concat(["CEX"]).includes($typeWallet)
-              ? "opacity-50"
-              : ""
-          }`}
-        >
-          <div
-            class={`flex xl:text-lg text-3xl font-medium ${
-              last24hTotalProfitPercent < 0 ? "text-red-500" : "text-[#00A878]"
-            }`}
-          >
-            {#if last24hTotalProfitPercent < 0}
-              ↓
-            {:else}
-              ↑
-            {/if}
-            <CountUpNumber
-              number={Math.abs(last24hTotalProfitPercent)}
-              type="percent"
-            />%
-          </div>
-          <div class="text-2xl font-medium text_00000066 xl:text-base">24h</div>
         </div>
       </OverviewCard>
     </div>
@@ -136,12 +87,12 @@
       <OverviewCard title={MultipleLang.realizedProfit}>
         <div class="xl:text-3xl text-5xl flex">
           <span>
-            {#if realizedProfit < 0 && !$isHidePortfolio}
+            {#if $realizedProfit < 0 && !$isHidePortfolio}
               -
             {/if}
           </span>
           <CountUpNumber
-            number={Math.abs(realizedProfit)}
+            number={Math.abs($realizedProfit)}
             type="value"
             personalValue
           />
@@ -183,12 +134,12 @@
       <OverviewCard title={MultipleLang.unrealizedProfit}>
         <div class="xl:text-3xl text-5xl flex">
           <span>
-            {#if unrealizedProfit < 0 && !$isHidePortfolio}
+            {#if $unrealizedProfit < 0 && !$isHidePortfolio}
               -
             {/if}
           </span>
           <CountUpNumber
-            number={Math.abs(unrealizedProfit)}
+            number={Math.abs($unrealizedProfit)}
             type="value"
             personalValue
           />

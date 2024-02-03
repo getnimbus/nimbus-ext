@@ -37,7 +37,7 @@
 
   const handleSearchTokenMobula = async (searchValue: string) => {
     const response = await nimbus.get(`/token/${searchValue}/info/mobula`);
-    return response.data;
+    return response?.data?.data;
   };
 
   $: query = createQuery({
@@ -54,7 +54,13 @@
       $query.data !== undefined &&
       $query.data.length !== 0
     ) {
-      coins = [...DEFAULT_COINS, ...$query.data];
+      coins = [...DEFAULT_COINS, ...$query?.data];
+    }
+  }
+
+  $: {
+    if (search.length === 0) {
+      coins = [...DEFAULT_COINS];
     }
   }
 </script>

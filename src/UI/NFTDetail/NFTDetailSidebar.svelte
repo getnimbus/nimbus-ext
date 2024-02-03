@@ -1,7 +1,7 @@
 <script lang="ts">
   import { nimbus } from "~/lib/network";
   import { priceSubscribe } from "~/lib/price-ws";
-  import { isDarkMode, typeWallet } from "~/store";
+  import { isDarkMode, realtimePrice, typeWallet } from "~/store";
   import { createQuery } from "@tanstack/svelte-query";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
 
@@ -20,9 +20,9 @@
   export let addressWallet;
 
   let tokens = [];
-  let data = {};
+  let data: any = {};
   let nativeToken = {};
-  let marketPriceNFT;
+  let marketPriceNFT = 0;
 
   let selectedTypeDisplay: "grid" | "table" = "grid";
 
@@ -61,13 +61,9 @@
     if (selectedCollection) {
       tokens = selectedCollection?.tokens;
 
-      marketPriceNFT = {
-        id: -1,
-        market_price: Number(selectedCollection?.marketPrice || 0),
-      };
-
       data = {
         ...selectedCollection,
+        marketPrice: Number(selectedCollection?.marketPrice || 0),
         current_native_value:
           Number(selectedCollection?.floorPrice) *
           selectedCollection?.tokens?.length,
@@ -85,13 +81,7 @@
       ) {
         priceSubscribe(
           [Number(selectedCollection?.nativeToken?.cmcId)],
-          selectedCollection?.collection?.chain,
-          (item) => {
-            marketPriceNFT = {
-              id: item.id,
-              market_price: item.price,
-            };
-          }
+          selectedCollection?.collection?.chain
         );
       }
     }
@@ -102,7 +92,8 @@
     queryKey: ["nft-holding", addressWallet],
     queryFn: () => getHoldingNFT(addressWallet),
     staleTime: Infinity,
-    enabled: addressWallet.length !== 0,
+    retry: false,
+    enabled: addressWallet && addressWallet.length !== 0,
   });
 
   $: {
@@ -112,14 +103,22 @@
   }
 
   $: {
-    if (marketPriceNFT && data) {
+    if ($realtimePrice && data) {
+      marketPriceNFT = $realtimePrice[data?.nativeToken?.cmcId]
+        ? Number($realtimePrice[data?.nativeToken?.cmcId]?.price)
+        : Number(data?.marketPrice);
+
       data = {
         ...data,
-        marketPrice: Number(marketPriceNFT.market_price),
+        marketPrice: $realtimePrice[data?.nativeToken?.cmcId]
+          ? Number($realtimePrice[data?.nativeToken?.cmcId]?.price)
+          : Number(data?.marketPrice),
         current_native_value: Number(data?.floorPrice) * data?.tokens?.length,
         current_value:
           Number(data?.floorPrice) *
-          Number(marketPriceNFT.market_price) *
+          ($realtimePrice[data?.nativeToken?.cmcId]
+            ? Number($realtimePrice[data?.nativeToken?.cmcId]?.price)
+            : Number(data?.marketPrice)) *
           data?.tokens?.length,
       };
     }
@@ -244,8 +243,7 @@
         </div>
         <div class="xl:text-lg text-3xl flex">
           <TooltipNumber
-            number={Number(data?.floorPrice || 0) *
-              (marketPriceNFT?.market_price || 0)}
+            number={Number(data?.floorPrice || 0) * (marketPriceNFT || 0)}
             type="value"
           />
         </div>
@@ -372,7 +370,7 @@
               <NftCard
                 data={item}
                 {nativeToken}
-                marketPrice={marketPriceNFT?.market_price || 0}
+                marketPrice={marketPriceNFT || 0}
                 floorPrice={Number(data?.floorPrice || 0)}
               />
             {/each}
@@ -452,7 +450,7 @@
                   <NftDetailItem
                     {item}
                     {nativeToken}
-                    marketPrice={marketPriceNFT?.market_price || 0}
+                    marketPrice={marketPriceNFT || 0}
                     floorPrice={Number(data?.floorPrice || 0)}
                   />
                 {/each}

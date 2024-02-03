@@ -36,12 +36,7 @@
               ?.map((item) => {
                 const token0 = Number(item?.token0Info?.info?.cmc_id);
                 const token1 = Number(item?.token1Info?.info?.cmc_id);
-                priceSubscribe([token0, token1], "", (data) => {
-                  marketPrice = {
-                    id: data.id,
-                    market_price: data.price,
-                  };
-                });
+                priceSubscribe([token0, token1], "");
               });
           }
           if (type === "LP-Provider v2") {
@@ -54,12 +49,7 @@
               ?.map((item) => {
                 const token0 = Number(item?.token0Info?.info?.cmc_id);
                 const token1 = Number(item?.token1Info?.info?.cmc_id);
-                priceSubscribe([token0, token1], "", (data) => {
-                  marketPrice = {
-                    id: data.id,
-                    market_price: data.price,
-                  };
-                });
+                priceSubscribe([token0, token1], "");
               });
           }
           if (type === "LP Staking") {
@@ -75,48 +65,28 @@
                 const rewardToken0 = Number(
                   item?.rewardTokens[0]?.info?.info?.cmc_id
                 );
-                priceSubscribe([token0, token1, rewardToken0], "", (data) => {
-                  marketPrice = {
-                    id: data.id,
-                    market_price: data.price,
-                  };
-                });
+                priceSubscribe([token0, token1, rewardToken0], "");
               });
           }
           if (type === "Staking") {
             eachData.positions?.["Staking"]
               ?.filter((item) => item?.cmc_id)
               ?.map((item) => {
-                priceSubscribe([item?.cmc_id], "", (data) => {
-                  marketPrice = {
-                    id: data.id,
-                    market_price: data.price,
-                  };
-                });
+                priceSubscribe([item?.cmc_id], "");
               });
           }
           if (type === "Lending") {
             eachData.positions?.["Lending"]
               ?.filter((item) => item?.cmc_id)
               ?.map((item) => {
-                priceSubscribe([item?.cmc_id], "", (data) => {
-                  marketPrice = {
-                    id: data.id,
-                    market_price: data.price,
-                  };
-                });
+                priceSubscribe([item?.cmc_id], "");
               });
           }
           if (type === "Borrow") {
             eachData.positions?.["Borrow"]
               ?.filter((item) => item?.cmc_id)
               ?.map((item) => {
-                priceSubscribe([item?.cmc_id], "", (data) => {
-                  marketPrice = {
-                    id: data.id,
-                    market_price: data.price,
-                  };
-                });
+                priceSubscribe([item?.cmc_id], "");
               });
           }
           if (type === "MCD") {
@@ -124,12 +94,7 @@
               ?.filter((item) => item?.cmc_id)
               ?.map((item) => {
                 const token = Number(item?.token?.cmc_id);
-                priceSubscribe([token], "", (data) => {
-                  marketPrice = {
-                    id: data.id,
-                    market_price: data.price,
-                  };
-                });
+                priceSubscribe([token], "");
               });
           }
         });

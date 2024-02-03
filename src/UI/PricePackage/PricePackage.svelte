@@ -1,7 +1,7 @@
 <script lang="ts">
   import { getTooltipContent } from "~/utils";
   import { nimbus } from "~/lib/network";
-  import { createQuery, useQueryClient } from "@tanstack/svelte-query";
+  import { createQuery } from "@tanstack/svelte-query";
   import { isDarkMode, user } from "~/store";
 
   import tooltip from "~/entries/contentScript/views/tooltip";
@@ -9,8 +9,6 @@
   import CompareTable from "~/UI/PricePackage/CompareTable.svelte";
 
   export let selectedPackage = (item) => {};
-
-  const queryClient = useQueryClient();
 
   let selectedPricePackage = "Free";
   let buyPackage = "Free";
@@ -38,6 +36,7 @@
     staleTime: Infinity,
     retry: false,
     onError(err) {
+      localStorage.removeItem("auth_token");
       localStorage.removeItem("solana_token");
       localStorage.removeItem("evm_token");
     },
@@ -100,15 +99,35 @@
         <thead>
           <tr class="bg_f4f5f8">
             <th class="py-3 pl-3 rounded-tl-[10px] w-[420px]">
-              <div class="text-left text-lg uppercase font-medium">Plans</div>
+              <div class="flex flex-col items-start">
+                <div class="text-left text-lg uppercase font-medium">Plans</div>
+                <div class="text-center text-base font-medium text-[#1e96fc]">
+                  {#if buyPackage !== "Free"}
+                    Your <span class="uppercase"
+                      >{buyPackage === "Professional"
+                        ? "Alpha"
+                        : buyPackage}</span
+                    >
+                    plan has
+                    <span class="font-medium"
+                      >{dateDiffInDays(new Date(), new Date(endDatePackage))} days
+                      left</span
+                    >
+                  {:else}
+                    Your plan is Free
+                  {/if}
+                </div>
+              </div>
+            </th>
+
+            <th class="py-3 pr-3 h-full">
+              <div class="text-left text-lg uppercase font-medium pb-6">
+                Free
+              </div>
             </th>
 
             <th class="py-3 pr-3">
-              <div class="text-left text-lg uppercase font-medium">Free</div>
-            </th>
-
-            <th class="py-3 pr-3">
-              <div class="flex items-center gap-2">
+              <div class="flex items-center gap-2 pb-6">
                 <div class="text-lg uppercase font-medium">Explorer</div>
                 {#if selectedTypePackage === "year"}
                   <div
@@ -123,7 +142,7 @@
             </th>
 
             <th class="py-3 px-3 rounded-tr-[10px]">
-              <div class="flex items-center gap-2">
+              <div class="flex items-center gap-2 pb-6">
                 <div class="text-lg uppercase font-medium">Alpha</div>
                 {#if selectedTypePackage === "year"}
                   <div
@@ -140,14 +159,18 @@
 
           <tr class="bg_f4f5f8">
             <td class="py-3 pl-3 w-[420px]">
-              <div class="flex items-center gap-3">
-                <label class="switch">
-                  <input type="checkbox" bind:checked={checkedTypePackage} />
-                  <span class="slider" />
-                </label>
-                <div class="text-base font-medium">
-                  Annual Billing <span class="text-green-500">(Save 17%)</span>
+              <div class="flex flex-col gap-4">
+                <div class="flex items-center gap-3">
+                  <label class="switch">
+                    <input type="checkbox" bind:checked={checkedTypePackage} />
+                    <span class="slider" />
+                  </label>
+                  <div class="text-base font-medium">
+                    Annual Billing <span class="text-green-500">(Save 17%)</span
+                    >
+                  </div>
                 </div>
+                <div class=" min-h-[30px]"></div>
               </div>
             </td>
 
@@ -161,19 +184,7 @@
                   </div>
                 </div>
 
-                {#if Object.keys($user).length !== 0}
-                  <div class="w-max flex items-center min-h-[30px]">
-                    <div
-                      class={`text-center text-base font-medium text-[#1e96fc] ${
-                        buyPackage === "Free"
-                          ? "opacity-100 block"
-                          : "opacity-0 hidden"
-                      }`}
-                    >
-                      Current Plan
-                    </div>
-                  </div>
-                {/if}
+                <div class=" min-h-[30px]"></div>
               </div>
             </td>
 
@@ -195,22 +206,6 @@
                 {#if Object.keys($user).length !== 0}
                   <div class="w-max flex items-center min-h-[30px]">
                     {#if selectedTypePackage === "month"}
-                      <div
-                        class={`text-base font-medium text-[#1e96fc] ${
-                          buyPackage === "Explorer" && interval === "month"
-                            ? "opacity-100 block"
-                            : "opacity-0 hidden"
-                        }`}
-                      >
-                        Current Plan have
-                        <span class="font-medium"
-                          >{dateDiffInDays(
-                            new Date(),
-                            new Date(endDatePackage)
-                          )} days left</span
-                        >
-                      </div>
-
                       <div class="font-medium text-lg">
                         {#if buyPackage === "Free"}
                           <div
@@ -241,22 +236,6 @@
                     {/if}
 
                     {#if selectedTypePackage === "year"}
-                      <div
-                        class={`text-base font-medium text-[#1e96fc] ${
-                          buyPackage === "Explorer" && interval === "year"
-                            ? "opacity-100 block"
-                            : "opacity-0 hidden"
-                        }`}
-                      >
-                        Current Plan have
-                        <span class="font-medium"
-                          >{dateDiffInDays(
-                            new Date(),
-                            new Date(endDatePackage)
-                          )} days left</span
-                        >
-                      </div>
-
                       <div class="font-medium text-lg">
                         {#if buyPackage === "Free"}
                           <div
@@ -310,22 +289,6 @@
                 {#if Object.keys($user).length !== 0}
                   <div class="w-max flex items-center min-h-[30px]">
                     {#if selectedTypePackage === "month"}
-                      <div
-                        class={`text-base font-medium text-[#1e96fc] ${
-                          buyPackage === "Professional" && interval === "month"
-                            ? "opacity-100 block"
-                            : "opacity-0 hidden"
-                        }`}
-                      >
-                        Current Plan have
-                        <span class="font-medium"
-                          >{dateDiffInDays(
-                            new Date(),
-                            new Date(endDatePackage)
-                          )} days left</span
-                        >
-                      </div>
-
                       <div class="font-medium text-lg">
                         {#if buyPackage === "Free"}
                           <div
@@ -356,22 +319,6 @@
                     {/if}
 
                     {#if selectedTypePackage === "year"}
-                      <div
-                        class={`text-base font-medium text-[#1e96fc] ${
-                          buyPackage === "Professional" && interval === "year"
-                            ? "opacity-100 block"
-                            : "opacity-0 hidden"
-                        }`}
-                      >
-                        Current Plan have
-                        <span class="font-medium"
-                          >{dateDiffInDays(
-                            new Date(),
-                            new Date(endDatePackage)
-                          )} days left</span
-                        >
-                      </div>
-
                       <div class="font-medium text-lg">
                         {#if buyPackage === "Free"}
                           <div
@@ -505,6 +452,20 @@
     <!-- Pricing Table Tablet/Mobile -->
     <div class="xl:hidden flex flex-col items-center gap-8">
       <div class="flex flex-col gap-8">
+        <div class="text-center text-3xl font-medium text-[#1e96fc]">
+          {#if buyPackage !== "Free"}
+            Your <span class="uppercase"
+              >{buyPackage === "Professional" ? "Alpha" : buyPackage}</span
+            >
+            plan has
+            <span class="font-medium"
+              >{dateDiffInDays(new Date(), new Date(endDatePackage))} days left</span
+            >
+          {:else}
+            Your plan is Free
+          {/if}
+        </div>
+
         <div class="flex items-center justify-center gap-3">
           <label class="switch">
             <input type="checkbox" bind:checked={checkedTypePackage} />
@@ -576,17 +537,7 @@
                 <span class="text-5xl font-semibold">0 USDC</span>
                 <div class="text-lg">For those who starting to invest</div>
               </div>
-              <div class="flex justify-center min-h-[30px]">
-                <div
-                  class={`text-2xl font-medium text-[#1e96fc] ${
-                    buyPackage === "Free"
-                      ? "opacity-100 block"
-                      : "opacity-0 hidden"
-                  }`}
-                >
-                  Current Plan
-                </div>
-              </div>
+              <div class=" min-h-[30px]"></div>
             </div>
           {/if}
 
@@ -615,22 +566,9 @@
                   Boost your return and reduce your risk
                 </div>
               </div>
+
               <div class="flex justify-center min-h-[30px]">
                 {#if selectedTypePackage === "month"}
-                  <div
-                    class={`text-2xl font-medium text-[#1e96fc] ${
-                      buyPackage === "Explorer" && interval === "month"
-                        ? "opacity-100 block"
-                        : "opacity-0 hidden"
-                    }`}
-                  >
-                    Current Plan have
-                    <span class="font-medium"
-                      >{dateDiffInDays(new Date(), new Date(endDatePackage))} days
-                      left</span
-                    >
-                  </div>
-
                   <div class="font-medium text-2xl">
                     {#if buyPackage === "Free"}
                       <div
@@ -661,20 +599,6 @@
                 {/if}
 
                 {#if selectedTypePackage === "year"}
-                  <div
-                    class={`text-2xl font-medium text-[#1e96fc] ${
-                      buyPackage === "Explorer" && interval === "year"
-                        ? "opacity-100 block"
-                        : "opacity-0 hidden"
-                    }`}
-                  >
-                    Current Plan have
-                    <span class="font-medium"
-                      >{dateDiffInDays(new Date(), new Date(endDatePackage))} days
-                      left</span
-                    >
-                  </div>
-
                   <div class="font-medium text-2xl">
                     {#if buyPackage === "Free"}
                       <div
@@ -732,22 +656,9 @@
                   Enjoy all the features without any limited
                 </div>
               </div>
+
               <div class="flex justify-center min-h-[30px]">
                 {#if selectedTypePackage === "month"}
-                  <div
-                    class={`text-2xl font-medium text-[#1e96fc] ${
-                      buyPackage === "Professional" && interval === "month"
-                        ? "opacity-100 block"
-                        : "opacity-0 hidden"
-                    }`}
-                  >
-                    Current Plan have
-                    <span class="font-medium"
-                      >{dateDiffInDays(new Date(), new Date(endDatePackage))} days
-                      left</span
-                    >
-                  </div>
-
                   <div class="font-medium text-2xl w-max">
                     {#if buyPackage === "Free"}
                       <div
@@ -778,20 +689,6 @@
                 {/if}
 
                 {#if selectedTypePackage === "year"}
-                  <div
-                    class={`text-2xl font-medium text-[#1e96fc] ${
-                      buyPackage === "Professional" && interval === "year"
-                        ? "opacity-100 block"
-                        : "opacity-0 hidden"
-                    }`}
-                  >
-                    Current Plan have
-                    <span class="font-medium"
-                      >{dateDiffInDays(new Date(), new Date(endDatePackage))} days
-                      left</span
-                    >
-                  </div>
-
                   <div class="font-medium text-2xl w-max">
                     {#if buyPackage === "Free"}
                       <div

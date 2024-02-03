@@ -1,55 +1,69 @@
 <script lang="ts">
-  import { user } from "~/store";
-  import { handleGetAccessToken } from "~/utils";
+  import { nimbus } from "~/lib/network";
+  import { user, isDarkMode } from "~/store";
+  import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+  import { googleAuth } from "~/lib/firebase";
+  import { useQueryClient } from "@tanstack/svelte-query";
 
+  import User from "~/assets/user.png";
   import Google from "~/assets/google.png";
 
-  const clientID = encodeURI(
-    "520245364327-4t6vius9egn2qfdrcj2paeefv5l3hgtg.apps.googleusercontent.com"
-  );
-  const oauth2Endpoint = "https://accounts.google.com/o/oauth2/v2/auth";
-  const redirectURL = encodeURIComponent("https://app.getnimbus.io");
+  export let handleCloseAuthModal = () => {};
 
-  const handleLogin = async () => {
-    const url = `${oauth2Endpoint}/oauthchooseaccount?redirect_uri=${redirectURL}&prompt=consent&response_type=code&client_id=${clientID}&scope=email%20profile&access_type=offline&service=lso&o2v=2&flowName=GeneralOAuthFlow`;
-    chrome.identity.launchWebAuthFlow(
-      {
-        url,
-        interactive: true,
-      },
-      async function (redirect_url) {
-        const codeFromRedirectURL = decodeURIComponent(
-          redirect_url
-            .substring(url.indexOf("?"))
-            .slice(
-              0,
-              redirect_url.substring(url.indexOf("?")).indexOf("&scope")
-            )
-        );
-        const userData = await handleGetAccessToken(codeFromRedirectURL);
-        user.update((n) => (n = userData));
+  const queryClient = useQueryClient();
+  const googleProvider = new GoogleAuthProvider();
+
+  const handleGoogleAuth = async () => {
+    try {
+      const res = await signInWithPopup(googleAuth, googleProvider).then(
+        (result) => {
+          return result.user;
+        }
+      );
+      if (res) {
+        handleGetGoogleToken(res.uid, "google", res.email, res.displayName);
       }
-    );
+    } catch (e) {
+      console.log("error: ", e);
+    }
+  };
+
+  const handleGetGoogleToken = async (uid, type, info, displayName) => {
+    try {
+      const res = await nimbus.post("/auth", {
+        uid,
+        type,
+        info,
+        displayName,
+      });
+      if (res?.data?.result) {
+        handleCloseAuthModal();
+        localStorage.setItem("auth_token", res?.data?.result);
+        localStorage.setItem("socialAuthType", "google");
+        user.update(
+          (n) =>
+            (n = {
+              picture: User,
+            })
+        );
+        queryClient?.invalidateQueries(["users-me"]);
+        queryClient.invalidateQueries(["list-address"]);
+      }
+    } catch (e) {
+      console.error("error: ", e);
+    }
   };
 </script>
 
-{#if APP_TYPE.TYPE === "EXT"}
-  <div
-    class="text-[#9ca3af] font-semibold text-base cursor-pointer flex items-center gap-2 border border-gray-200 py-3 px-6 rounded-lg w-[250px]"
-    on:click={handleLogin}
-  >
-    <img src={Google} alt="" width="24" height="24" />
-    <div>Login with Google</div>
-  </div>
-{:else}
-  <a
-    class="text-[#9ca3af] font-semibold text-base cursor-pointer flex items-center gap-2 border border-gray-200 py-3 px-6 rounded-lg w-[250px]"
-    href={`${oauth2Endpoint}/oauthchooseaccount?redirect_uri=${redirectURL}&prompt=consent&response_type=code&client_id=${clientID}&scope=email%20profile&access_type=offline&service=lso&o2v=2&flowName=GeneralOAuthFlow`}
-  >
-    <img src={Google} alt="" width="24" height="24" />
-    <div>Login with Google</div>
-  </a>
-{/if}
+<div
+  class={`flex items-center justify-center gap-2 text-white border cursor-pointer py-3 px-6 rounded-[12px] min-w-[250px] ${
+    $isDarkMode ? "border-white text-white" : "border-[#27326f] text-[#27326f]"
+  }`}
+  on:click={handleGoogleAuth}
+>
+  <img src={Google} alt="" width="22" height="22" />
+  <div class="font-semibold text-[15px]">Login with Google</div>
+</div>
 
 <style>
 </style>

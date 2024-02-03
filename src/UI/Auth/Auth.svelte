@@ -23,18 +23,6 @@
   import QRCode from "qrcode-generator";
   import CopyToClipboard from "svelte-copy-to-clipboard";
   import { wait } from "~/entries/background/utils";
-
-  import Tooltip from "~/components/Tooltip.svelte";
-  import DarkMode from "~/components/DarkMode.svelte";
-  import AppOverlay from "~/components/Overlay.svelte";
-  import Loading from "~/components/Loading.svelte";
-
-  import User from "~/assets/user.png";
-  import Logo from "~/assets/logo-1.svg";
-  import Reload from "~/assets/reload-black.svg";
-  import ReloadWhite from "~/assets/reload-white.svg";
-  import Evm from "~/assets/chains/ethereum.png";
-
   import SolanaAuth from "./SolanaAuth.svelte";
   import { WalletProvider } from "@svelte-on-solana/wallet-adapter-ui";
   import {
@@ -42,10 +30,22 @@
     PhantomWalletAdapter,
     SolflareWalletAdapter,
   } from "@solana/wallet-adapter-wallets";
-  import jwt_decode from "jwt-decode";
   import bs58 from "bs58";
   import { walletStore } from "@svelte-on-solana/wallet-adapter-core";
+  import { navigate } from "svelte-navigator";
+
+  import Tooltip from "~/components/Tooltip.svelte";
+  import DarkMode from "~/components/DarkMode.svelte";
+  import AppOverlay from "~/components/Overlay.svelte";
+  import Loading from "~/components/Loading.svelte";
   import Button from "~/components/Button.svelte";
+  import GoogleAuth from "./GoogleAuth.svelte";
+
+  import User from "~/assets/user.png";
+  import Logo from "~/assets/logo-1.svg";
+  import Reload from "~/assets/reload-black.svg";
+  import ReloadWhite from "~/assets/reload-white.svg";
+  import Evm from "~/assets/chains/evm.png";
 
   const wallets = [
     new PhantomWalletAdapter(),
@@ -63,6 +63,7 @@
   let buyPackage = "Free";
   let interval = "month";
   let endDatePackage = "";
+  let displayName = "";
 
   let isOpenModalSync = false;
   let isCopied = false;
@@ -84,9 +85,10 @@
       invitation = invitationParams;
     }
 
+    const authToken = localStorage.getItem("auth_token");
     const solanaToken = localStorage.getItem("solana_token");
     const evmToken = localStorage.getItem("evm_token");
-    if (evmToken || solanaToken) {
+    if (evmToken || solanaToken || authToken) {
       user.update(
         (n) =>
           (n = {
@@ -109,6 +111,7 @@
     staleTime: Infinity,
     retry: false,
     onError(err) {
+      localStorage.removeItem("auth_token");
       localStorage.removeItem("solana_token");
       localStorage.removeItem("evm_token");
     },
@@ -124,6 +127,7 @@
       buyPackage = $query.data.plan?.tier;
       interval = $query.data.plan?.interval;
       endDatePackage = $query.data.plan?.endDate;
+      displayName = $query.data?.displayName;
       // isSubscription = $query.data.plan?.subscription;
       // isNewUser = $query.data.plan?.isNewUser;
     }
@@ -187,8 +191,11 @@
       localStorage.removeItem("solana_token");
       $walletStore.disconnect();
 
+      localStorage.removeItem("auth_token");
+
       queryClient?.invalidateQueries(["list-address"]);
       queryClient?.invalidateQueries(["users-me"]);
+      navigate("/", { replace: true });
       mixpanel.reset();
     } catch (error) {
       console.log(error);
@@ -332,6 +339,7 @@
     try {
       const res = await nimbus.post("/auth/solana", data);
       if (res?.data?.result) {
+        localStorage.removeItem("auth_token");
         localStorage.setItem("solana_token", res?.data?.result);
         user.update(
           (n) =>
@@ -363,6 +371,10 @@
       triggerConnectWallet.update((n) => (n = false));
     }
   }
+
+  const handleCloseAuthModal = () => {
+    isOpenAuthModal = false;
+  };
 </script>
 
 {#if $user && Object.keys($user).length !== 0}
@@ -463,9 +475,9 @@
           class="flex flex-col gap-3 mx-2 pt-1 pb-2 border-b-[1px] border_0000001a"
         >
           <div class="text-2xl xl:text-base">
-            GM 👋, {shorterAddress(
-              localStorage.getItem("public_address") || ""
-            )}
+            GM 👋, {displayName
+              ? displayName
+              : shorterAddress(localStorage.getItem("public_address") || "")}
           </div>
           <DarkMode />
         </div>
@@ -776,6 +788,7 @@
         <div class="font-semibold text-[15px]">Login with EVM</div>
       </div>
       <SolanaAuth text="Login with Solana" />
+      <GoogleAuth {handleCloseAuthModal} />
     </div>
   </div>
 </AppOverlay>

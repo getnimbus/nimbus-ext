@@ -23,6 +23,7 @@
   "optionsPage": {
     "message": "Options page languages",
     "tab-title-accounts": "Tài khoản",
+    "tab-title-links": "Liên kết",
     "tab-title-report": "Báo cáo",
     "tab-title-alerts": "Cảnh báo",
     "tab-title-dashboard": "Bảng điều khiển",
@@ -33,6 +34,7 @@
     "nft-page-title": "NFT của tôi",
     "accounts-page-title": "Cài đặt tài khoản",
     "report-page-title": "Cài đặt báo cáo",
+    "links-page-title": "Cài đặt liên kết",
     "dashboard-page-title": "Bảng điều khiển",
     "highlight-page-title": "Điểm nổi bật",
     "notification-page-title": "Thông báo",

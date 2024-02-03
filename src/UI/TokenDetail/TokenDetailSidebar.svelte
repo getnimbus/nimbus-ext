@@ -9,8 +9,8 @@
     user,
     selectedPackage,
   } from "~/store";
-  import { listSupported } from "~/lib/chains";
-  import { filterAvgCostType } from "~/utils";
+  import { linkExplorer, listSupported } from "~/lib/chains";
+  import { filterAvgCostType, shorterAddress } from "~/utils";
   import { useNavigate } from "svelte-navigator";
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
@@ -22,11 +22,14 @@
   import BalanceAvgCostChart from "./BalanceAvgCostChart.svelte";
   import Select from "~/components/Select.svelte";
   import Button from "~/components/Button.svelte";
+  import HistoryCsvExport from "./HistoryCSVExport.svelte";
 
   import TrendUp from "~/assets/trend-up.svg";
   import TrendDown from "~/assets/trend-down.svg";
+  import dayjs from "dayjs";
 
   export let data;
+  export let showSideTokenDetail;
 
   const navigate = useNavigate();
 
@@ -59,6 +62,44 @@
     return response?.data;
   };
 
+  let exportCSV = false;
+  let isLoading = false;
+
+  const handleGetTokenTradeHistory = async (address) => {
+    try {
+      isLoading = true;
+      const response: any = await nimbus.get(
+        `/tokens/${address}/trade-history`,
+        {
+          params: {
+            chain: data?.chain,
+            token: data?.contractAddress,
+          },
+        }
+      );
+      if (response?.data && response?.data.length !== 0) {
+        handleFormatDataCSV(response?.data, data?.contractAddress);
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      isLoading = false;
+    }
+  };
+
+  $: {
+    if (
+      data !== undefined &&
+      Object.keys(data).length !== 0 &&
+      $wallet &&
+      $wallet?.length !== 0 &&
+      $selectedPackage !== "FREE" &&
+      exportCSV
+    ) {
+      handleGetTokenTradeHistory($wallet);
+    }
+  }
+
   $: queryHistoryTokenDetail = createQuery({
     queryKey: ["trade-history", data, $wallet],
     queryFn: () => handleGetTradeHistory($wallet),
@@ -74,6 +115,7 @@
   let sellHistoryTradeList = [];
   let buyHistoryTradeList = [];
   let dataHistoryTokenDetail = [];
+  let dataCSV = [];
 
   let filterType = {
     label: "ALL",
@@ -100,7 +142,56 @@
     }
   }
 
-  $: colspan = listSupported.includes($typeWallet) ? 5 : 4;
+  $: totalFee = dataHistoryTokenDetail?.reduce(
+    (total, item) => total + Number(item?.fee),
+    0
+  );
+
+  $: avgFee =
+    totalFee /
+    (Number(buyHistoryTradeList.length) + Number(sellHistoryTradeList.length));
+
+  $: colspan = listSupported
+    .filter((item) => item !== "CEX")
+    .includes($typeWallet)
+    ? 6
+    : 5;
+
+  const triggerExportCSV = () => {
+    exportCSV = !exportCSV;
+  };
+
+  $: {
+    if (!showSideTokenDetail) {
+      exportCSV = false;
+    }
+  }
+
+  const handleFormatDataCSV = (dataHistory, address) => {
+    dataCSV = dataHistory.map((item) => {
+      return {
+        trx_hash: item.transaction_hash,
+        trx_link: item.transaction_hash
+          ? linkExplorer(item.chain, item.transaction_hash).trx
+          : "",
+        value: `$${Number(item?.amount_usd)}`,
+        time: dayjs(item?.created_at * 1000).format("YYYY-MM-DD HH:mm:ss"),
+        fee: `$${Number(item?.fee)}`,
+        amount_in: Number(item?.quantity_in),
+        token_address_in: item.from_token_address,
+        token_in_symbol:
+          item?.from_token_address?.toLowerCase() === address?.toLowerCase()
+            ? data?.symbol
+            : "",
+        amount_out: Number(item?.quantity_out),
+        token_address_out: item?.to_token_address,
+        token_out_symbol:
+          item?.to_token_address?.toLowerCase() === address?.toLowerCase()
+            ? data?.symbol
+            : "",
+      };
+    });
+  };
 </script>
 
 <ErrorBoundary>
@@ -119,9 +210,7 @@
     <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
       <OverviewCard title={"Avg Cost"}>
         <div class="flex justify-end xl:text-3xl text-5xl">
-          ${#if $isHidePortfolio}
-            ******
-          {:else if data?.profit}
+          {#if data?.profit}
             <TooltipNumber
               number={data?.profit?.averageCost}
               type="balance"
@@ -229,6 +318,32 @@
         </div>
       </OverviewCard>
     </div>
+
+    <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
+      <OverviewCard title={"Total Fee"}>
+        <div class="flex justify-end xl:text-3xl text-5xl">
+          ${#if $isHidePortfolio}
+            ******
+          {:else if totalFee}
+            <TooltipNumber number={totalFee} type="balance" personalValue />
+          {:else}
+            0
+          {/if}
+        </div>
+      </OverviewCard>
+
+      <OverviewCard title={"Avg Fee"}>
+        <div class="flex justify-end xl:text-3xl text-5xl">
+          ${#if $isHidePortfolio}
+            ******
+          {:else if avgFee}
+            <TooltipNumber number={avgFee} type="balance" personalValue />
+          {:else}
+            0
+          {/if}
+        </div>
+      </OverviewCard>
+    </div>
   </div>
 
   <div class="flex flex-col gap-6">
@@ -296,7 +411,16 @@
         $isDarkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
       }`}
     >
-      <div class="xl:text-2xl text-4xl font-medium">History</div>
+      <div class="flex justify-between items-center gap-6">
+        <div class="xl:text-2xl text-4xl font-medium">History</div>
+        <HistoryCsvExport
+          data={dataCSV}
+          name={`${shorterAddress($wallet)}_${data?.symbol}_Trades`}
+          {triggerExportCSV}
+          {isLoading}
+        />
+      </div>
+
       <div
         class={`rounded-[10px] xl:overflow-visible overflow-x-auto h-full ${
           $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
@@ -329,9 +453,21 @@
                 </div>
               </th>
 
+              <th class="py-3">
+                <div
+                  class="text-right xl:text-xs text-xl uppercase font-medium"
+                >
+                  Fee
+                </div>
+              </th>
+
               <th
                 class={`py-3 rounded-tr-[10px] ${
-                  listSupported.includes($typeWallet) ? "" : "pr-3"
+                  listSupported
+                    .filter((item) => item !== "CEX")
+                    .includes($typeWallet)
+                    ? ""
+                    : "pr-3"
                 }`}
               >
                 <div
@@ -341,7 +477,9 @@
                 </div>
               </th>
 
-              {#if listSupported.includes($typeWallet)}
+              {#if listSupported
+                .filter((item) => item !== "CEX")
+                .includes($typeWallet)}
                 <th class="py-3 w-10" />
               {/if}
             </tr>
