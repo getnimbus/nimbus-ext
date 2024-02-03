@@ -419,7 +419,7 @@
           {triggerExportCSV}
           {isLoading}
           isDisabled={dataHistoryTokenDetail &&
-            dataHistoryTokenDetail.length !== 0}
+            dataHistoryTokenDetail.length === 0}
         />
       </div>
 
