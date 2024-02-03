@@ -1690,7 +1690,7 @@
       </div>
     {/if}
   </div>
-  <TokenDetailSidebar data={selectedTokenDetail} />
+  <TokenDetailSidebar data={selectedTokenDetail} {showSideTokenDetail} />
 </OverlaySidebar>
 
 <!-- Sidebar Token Swap -->
