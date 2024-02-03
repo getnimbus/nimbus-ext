@@ -174,9 +174,9 @@
         trx_link: item.transaction_hash
           ? linkExplorer(item.chain, item.transaction_hash).trx
           : "",
-        value: Number(item?.amount_usd),
+        value: `$${Number(item?.amount_usd)}`,
         time: dayjs(item?.created_at * 1000).format("YYYY-MM-DD HH:mm:ss"),
-        fee: item?.fee,
+        fee: `$${Number(item?.fee)}`,
         amount_in: Number(item?.quantity_in),
         token_address_in: item.from_token_address,
         token_in_symbol:
