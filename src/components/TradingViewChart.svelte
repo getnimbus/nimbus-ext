@@ -1,76 +1,76 @@
-<script>
-  export let options;
-  export let id;
+<script lang="ts">
+  import { Datafeed } from "~/lib/trading-view/utils";
+  import { overrides } from "~/lib/trading-view/theme";
+  import { widgetOptionsDefault } from "~/lib/trading-view/helper";
+  import {
+    DISABLED_FEATURES,
+    ENABLED_FEATURES,
+  } from "~/lib/trading-view/constant";
+  import { isDarkMode } from "~/store";
 
-  let SCRIPT_ID = "";
-  let CONTAINER_ID = "";
-  let chart = null;
+  export let mobile = false;
+  export let baseAsset;
+  export let custom_css_url = "../themed.css";
+  export let isPair = false;
+  export let setPairTrades;
 
-  $: {
-    if (id) {
-      CONTAINER_ID =
-        options && options.container_id
-          ? options.container_id
-          : `svelte-tradingview-widget-${id};`;
-      SCRIPT_ID = `tradingview-widget-script-${id}`;
-      appendScript(initWidget);
-    }
-  }
+  let chartContainer;
 
-  $: {
-    if (options && id) {
-      update(options);
-    }
-  }
+  const chartInit = () => {
+    if (!baseAsset) return () => {};
+    import("~/lib/trading-view/charting_library").then(({ widget: Widget }) => {
+      if (!chartContainer.current) return;
 
-  function update(options) {
-    try {
-      setTimeout(() => {
-        chart = new window.TradingView.widget(
-          Object.assign({ container_id: CONTAINER_ID }, options)
-        );
-      }, 200);
-    } catch (e) {
-      console.log("e: ", e);
-    }
-  }
-
-  function initWidget() {
-    if (typeof TradingView !== "undefined") {
-      new window.TradingView.widget(
-        Object.assign({ container_id: CONTAINER_ID }, options)
-      );
-    }
-  }
-
-  function appendScript(onload) {
-    if (document.getElementById(SCRIPT_ID) === null) {
-      const script = document.createElement("script");
-      script.id = SCRIPT_ID;
-      script.type = "text/javascript";
-      script.async = true;
-      script.src = "https://s3.tradingview.com/tv.js";
-      script.onload = onload;
-      document.getElementsByTagName("head")[0].appendChild(script);
-    } else {
-      const script = document.getElementById(SCRIPT_ID);
-      const oldOnload = script.onload;
-      return (script.onload = () => {
-        oldOnload();
-        onload();
+      const baseToken = baseAsset?.[baseAsset?.baseToken];
+      const quoteToken = baseAsset?.[baseAsset?.quoteToken];
+      const tvWidget = new Widget({
+        datafeed: Datafeed(baseAsset, isPair, setPairTrades),
+        symbol: isPair
+          ? baseToken?.symbol + "/" + quoteToken?.symbol
+          : baseAsset?.symbol + "/USD",
+        container: chartContainer.current,
+        container_id: chartContainer.current.id,
+        locale: "en",
+        fullscreen: false,
+        enabled_features: ENABLED_FEATURES,
+        disabled_features: [
+          ...DISABLED_FEATURES,
+          ...(mobile ? ["left_toolbar"] : []),
+        ],
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone as any,
+        autosize: true,
+        theme: $isDarkMode ? "Dark" : "Light",
+        studies_overrides: {
+          "volume.volume.color.0": "#ea3943",
+          "volume.volume.color.1": "#0ECB81",
+        },
+        ...widgetOptionsDefault,
       });
+
+      (window as any).tvWidget = tvWidget;
+
+      (window as any).tvWidget.onChartReady(() => {
+        // setIsChartLoaded(true);
+        (window as any).tvWidget?.applyOverrides(overrides($isDarkMode) || {});
+      });
+    });
+  };
+
+  $: {
+    if (baseAsset?.id || custom_css_url || mobile || $isDarkMode) {
+      (window as any).tvWidget = null;
+
+      chartInit();
+
+      if ((window as any).tvWidget !== null) {
+        (window as any).tvWidget?.remove();
+        (window as any).tvWidget = null;
+      }
     }
   }
-
-  $: autosize = options.autosize;
 </script>
 
-<div id={CONTAINER_ID} class:autosize />
+<div class="w-full h-full border border-red-500" bind:this={chartContainer} />
 
 <style>
-  .autosize {
-    width: 100%;
-    height: 100%;
-    min-height: 485px;
-  }
 </style>

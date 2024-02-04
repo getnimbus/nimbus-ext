@@ -923,30 +923,7 @@
     },
   ];
 
-  const handleFormatRangeTradingViewChart = (time) => {
-    let timeFrame = time;
-
-    if (time === "7D") {
-      timeFrame = "5D";
-    }
-
-    if (time === "30D") {
-      timeFrame = "1M";
-    }
-
-    return timeFrame;
-  };
-
   $: theme = $isDarkMode ? "dark" : "white";
-
-  $: options = {
-    symbol: `BYBIT:WSMUSDT.P`,
-    theme,
-    autosize: true,
-    locale: "en",
-    hide_side_toolbar: false,
-    range: handleFormatRangeTradingViewChart(selectedTimeFrame),
-  };
 </script>
 
 <div class="flex flex-col gap-4">
@@ -1041,7 +1018,7 @@
       {:else}
         <div class="h-full">
           {#if selectedTypeChart === "candles"}
-            <TradingViewChart {options} id={symbol} />
+            <TradingViewChart baseAsset={{}} setPairTrades={{}} />
           {:else}
             <div class="relative">
               <EChart
