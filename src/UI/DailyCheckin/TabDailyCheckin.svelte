@@ -469,6 +469,26 @@
           queryClient.invalidateQueries(["users-me"]);
         }
       }
+      if (type === "link-google") {
+        window.open(link, "_blank");
+        await wait(6000);
+        const res = await nimbus.post(
+          `/v2/checkin/${$userPublicAddress}/quest/link-google`,
+          {}
+        );
+        if (res && res?.data === null) {
+          toastMsg = "You are not link to Google account";
+          isSuccessToast = false;
+          trigger();
+        }
+        if (res?.data?.bonus !== undefined) {
+          triggerBonusScore();
+          bonusScore = res?.data?.bonus;
+          isTriggerBonusScore = true;
+          queryClient.invalidateQueries([$userPublicAddress, "daily-checkin"]);
+          queryClient.invalidateQueries(["users-me"]);
+        }
+      }
       if (type === "new-user-tutorial") {
         const res = await nimbus.post(
           `/v2/checkin/${$userPublicAddress}/quest/new-user-tutorial`,
