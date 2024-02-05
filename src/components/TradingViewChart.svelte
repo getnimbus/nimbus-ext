@@ -1,76 +1,156 @@
-<script>
-  export let options;
-  export let id;
+<script lang="ts">
+  import { Datafeed } from "~/lib/trading-view/utils";
+  import { overrides } from "~/lib/trading-view/theme";
+  import { widgetOptionsDefault } from "~/lib/trading-view/helper";
+  import {
+    DISABLED_FEATURES,
+    ENABLED_FEATURES,
+  } from "~/lib/trading-view/constant";
+  import { isDarkMode } from "~/store";
+  import { handleFormatBlockChainId } from "~/lib/price-mobulaWs";
+  import { UDFCompatibleDatafeed } from "~/lib/trading-view/datafeeds/udf/lib/udf-compatible-datafeed";
+  import axios from "axios";
 
-  let SCRIPT_ID = "";
+  export let id: string;
+  export let mobile: boolean = false;
+  export let contractAddress;
+  export let price;
+  export let chain;
+
   let CONTAINER_ID = "";
-  let chart = null;
+  let chartContainer;
+  let baseAsset;
+
+  $: {
+    if (
+      contractAddress &&
+      contractAddress !== "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+    ) {
+      handleGetPairData(contractAddress);
+    } else {
+      baseAsset = {
+        name: id,
+        address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+        price,
+        token0: "",
+        token1: "",
+      };
+    }
+  }
+
+  const handleGetPairData = async (address: string) => {
+    try {
+      const res = await axios.get(
+        `https://api.mobula.io/api/1/market/pairs?asset=${address}&&blockchain=${handleFormatBlockChainId(
+          chain
+        )}`
+      );
+      if (res && res?.data?.data) {
+        baseAsset = {
+          name: id,
+          address: res?.data?.data?.pairs[0]?.address,
+          price,
+          token0: res?.data?.data?.pairs[0]?.token0?.symbol,
+          token1: res?.data?.data?.pairs[0]?.token1?.symbol,
+        };
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   $: {
     if (id) {
-      CONTAINER_ID =
-        options && options.container_id
-          ? options.container_id
-          : `svelte-tradingview-widget-${id};`;
-      SCRIPT_ID = `tradingview-widget-script-${id}`;
-      appendScript(initWidget);
+      CONTAINER_ID = `svelte-tradingview-widget-${id};`;
     }
   }
+
+  const chartInit = () => {
+    if (!baseAsset) return () => {};
+
+    if (!chartContainer) {
+      return;
+    }
+
+    const options: any =
+      baseAsset?.address === "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+        ? {
+            symbol: "AAPL",
+            datafeed: new UDFCompatibleDatafeed(
+              "https://demo_feed.tradingview.com",
+              undefined,
+              {
+                maxResponseLength: 1000,
+                expectedOrder: "latestFirst",
+              }
+            ),
+          }
+        : {
+            datafeed: Datafeed(baseAsset),
+            symbol:
+              baseAsset?.token0 === id
+                ? baseAsset?.token0 + "/" + baseAsset?.token1
+                : baseAsset?.token1 + "/" + baseAsset?.token0,
+          };
+
+    try {
+      import("../../public/static/charting_library").then(
+        ({ widget: Widget }) => {
+          const tvWidget = new Widget({
+            ...options,
+            container: chartContainer,
+            container_id: CONTAINER_ID,
+            library_path: "/static/charting_library/",
+            locale: "en",
+            disabled_features: [
+              ...DISABLED_FEATURES,
+              ...(mobile ? ["left_toolbar"] : []),
+            ],
+            enabled_features: ENABLED_FEATURES,
+            charts_storage_url: "https://saveload.tradingview.com",
+            charts_storage_api_version: "1.1",
+            client_id: "tradingview.com",
+            user_id: "public_user_id",
+            fullscreen: false,
+            autosize: true,
+            theme: $isDarkMode ? "Dark" : "Light",
+            timezone: Intl.DateTimeFormat().resolvedOptions().timeZone as any,
+            studies_overrides: {
+              "volume.volume.color.0": "#ea3943",
+              "volume.volume.color.1": "#0ECB81",
+            },
+            ...widgetOptionsDefault,
+          });
+
+          (window as any).tvWidget = tvWidget;
+
+          (window as any).tvWidget.onChartReady(() => {
+            (window as any).tvWidget?.applyOverrides(
+              overrides(!$isDarkMode) || {}
+            );
+          });
+        }
+      );
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
 
   $: {
-    if (options && id) {
-      update(options);
+    if (baseAsset || mobile || $isDarkMode) {
+      if (chartContainer) {
+        if ((window as any).tvWidget !== null) {
+          (window as any).tvWidget?.remove();
+          (window as any).tvWidget = null;
+        }
+
+        chartInit();
+      }
     }
   }
-
-  function update(options) {
-    try {
-      setTimeout(() => {
-        chart = new window.TradingView.widget(
-          Object.assign({ container_id: CONTAINER_ID }, options)
-        );
-      }, 200);
-    } catch (e) {
-      console.log("e: ", e);
-    }
-  }
-
-  function initWidget() {
-    if (typeof TradingView !== "undefined") {
-      new window.TradingView.widget(
-        Object.assign({ container_id: CONTAINER_ID }, options)
-      );
-    }
-  }
-
-  function appendScript(onload) {
-    if (document.getElementById(SCRIPT_ID) === null) {
-      const script = document.createElement("script");
-      script.id = SCRIPT_ID;
-      script.type = "text/javascript";
-      script.async = true;
-      script.src = "https://s3.tradingview.com/tv.js";
-      script.onload = onload;
-      document.getElementsByTagName("head")[0].appendChild(script);
-    } else {
-      const script = document.getElementById(SCRIPT_ID);
-      const oldOnload = script.onload;
-      return (script.onload = () => {
-        oldOnload();
-        onload();
-      });
-    }
-  }
-
-  $: autosize = options.autosize;
 </script>
 
-<div id={CONTAINER_ID} class:autosize />
+<div class="w-full h-[485px]" id={CONTAINER_ID} bind:this={chartContainer} />
 
 <style>
-  .autosize {
-    width: 100%;
-    height: 100%;
-    min-height: 485px;
-  }
 </style>
