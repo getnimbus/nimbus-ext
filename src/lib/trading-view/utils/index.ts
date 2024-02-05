@@ -65,6 +65,7 @@ export const Datafeed = (
       },
       headers: { Authorization: "eb66b1f3-c24b-4f43-9892-dbc5f37d5a6d" },
     }).then((res) => res.data);
+    console.log("HELLO", data.data)
 
     onResult(data.data, {
       noData: data.data.length !== periodParams.countBack,

@@ -89,8 +89,8 @@
             datafeed: Datafeed(baseAsset),
             symbol:
               baseAsset?.token0 === id
-                ? baseAsset?.token0 + "/" + baseAsset?.token1
-                : baseAsset?.token1 + "/" + baseAsset?.token0,
+                ? baseAsset?.token0 + "/" + "USD"
+                : baseAsset?.token1 + "/" + "USD",
           };
 
     try {
