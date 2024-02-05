@@ -31,6 +31,7 @@
   export let avgCost;
   export let chain: string;
   export let symbol;
+  export let price;
 
   let selectedTimeFrame: "7D" | "30D" | "3M" | "1Y" | "ALL" = "30D";
   let dataPriceChart = [];
@@ -959,49 +960,51 @@
       </AnimateSharedLayout>
     </div>
 
-    <div class="flex items-center">
-      <AnimateSharedLayout>
-        {#each timeFrame as type}
-          <div
-            class="relative cursor-pointer xl:text-sm text-base font-medium py-1 px-3 rounded-[100px] transition-all"
-            on:click={() => {
-              if (
-                !$queryTokenPrice.isError ||
-                (dataPriceChart && dataPriceChart.length !== 0)
-              ) {
-                selectedTimeFrame = type.value;
-              }
-            }}
-          >
+    {#if selectedTypeChart !== "candles"}
+      <div class="flex items-center">
+        <AnimateSharedLayout>
+          {#each timeFrame as type}
             <div
-              class={`relative z-20 ${
-                type.value === selectedTimeFrame && "text-white"
-              }`}
+              class="relative cursor-pointer xl:text-sm text-base font-medium py-1 px-3 rounded-[100px] transition-all"
+              on:click={() => {
+                if (
+                  !$queryTokenPrice.isError ||
+                  (dataPriceChart && dataPriceChart.length !== 0)
+                ) {
+                  selectedTimeFrame = type.value;
+                }
+              }}
             >
-              {type.label}
-            </div>
-            {#if type.value === selectedTimeFrame}
-              <Motion
-                let:motion
-                layoutId="active-pill"
-                transition={{ type: "spring", duration: 0.6 }}
+              <div
+                class={`relative z-20 ${
+                  type.value === selectedTimeFrame && "text-white"
+                }`}
               >
-                <div
-                  class="absolute inset-0 rounded-full z-10"
-                  style={`background:${
-                    !$queryTokenPrice.isError ||
-                    (dataPriceChart && dataPriceChart.length !== 0)
-                      ? "rgba(30, 150, 252, 1)"
-                      : "#dddddd"
-                  } `}
-                  use:motion
-                />
-              </Motion>
-            {/if}
-          </div>
-        {/each}
-      </AnimateSharedLayout>
-    </div>
+                {type.label}
+              </div>
+              {#if type.value === selectedTimeFrame}
+                <Motion
+                  let:motion
+                  layoutId="active-pill"
+                  transition={{ type: "spring", duration: 0.6 }}
+                >
+                  <div
+                    class="absolute inset-0 rounded-full z-10"
+                    style={`background:${
+                      !$queryTokenPrice.isError ||
+                      (dataPriceChart && dataPriceChart.length !== 0)
+                        ? "rgba(30, 150, 252, 1)"
+                        : "#dddddd"
+                    } `}
+                    use:motion
+                  />
+                </Motion>
+              {/if}
+            </div>
+          {/each}
+        </AnimateSharedLayout>
+      </div>
+    {/if}
   </div>
   {#if $queryTokenPrice.isFetching}
     <div class="flex items-center justify-center h-[475px]">
@@ -1018,7 +1021,12 @@
       {:else}
         <div class="h-full">
           {#if selectedTypeChart === "candles"}
-            <TradingViewChart baseAsset={{}} setPairTrades={{}} />
+            <TradingViewChart
+              id={symbol}
+              mobile={false}
+              {contractAddress}
+              {price}
+            />
           {:else}
             <div class="relative">
               <EChart

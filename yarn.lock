@@ -9391,11 +9391,6 @@ mlly@^1.1.0, mlly@^1.1.1:
     pkg-types "^1.0.2"
     ufo "^1.1.1"
 
-mobula-lite@^1.3.92:
-  version "1.3.92"
-  resolved "https://registry.yarnpkg.com/mobula-lite/-/mobula-lite-1.3.92.tgz#9bc12e3d0c854ac069e501e665d2c37ce3ad3c75"
-  integrity sha512-ZpEbQo2wf+/kQnkD93NzF0dP8lmMx+YmTBgaykYeL0Y3I9uPzGLotGSxo39B8f+fVw5tm1j7DIZ6GbolRECHeA==
-
 moment@^2.19.3:
   version "2.29.4"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.29.4.tgz#3dbe052889fe7c1b2ed966fcb3a77328964ef108"

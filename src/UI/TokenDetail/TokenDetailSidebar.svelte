@@ -204,6 +204,7 @@
     symbol={data?.symbol}
     avgCost={data?.profit?.averageCost}
     chain={data?.chain}
+    price={Number(data?.market_price || 0)}
   />
 
   <div class="flex flex-col justify-between gap-6">

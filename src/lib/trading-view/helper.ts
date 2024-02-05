@@ -1,5 +1,5 @@
 
-import type { AvailableSaveloadVersions, ResolutionString } from "./charting_library/charting_library";
+import type { AvailableSaveloadVersions, ResolutionString } from "../../../public/static/charting_library";
 import { TRADING_VIEW_DEFAULTS } from "./model";
 
 

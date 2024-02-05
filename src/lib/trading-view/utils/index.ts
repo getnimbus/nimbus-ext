@@ -1,4 +1,5 @@
 import { getNextBarTime } from "./stream";
+import axios from "axios";
 
 export const supportedResolutions = [
   "1",
@@ -17,16 +18,13 @@ const sockets = new Map();
 
 export const Datafeed = (
   baseAsset: any,
-  isPair: boolean,
-  setPairTrades?: any
 ) => ({
   onReady: (callback: Function) => {
     callback({ supported_resolutions: supportedResolutions });
   },
   resolveSymbol: (symbolName: string, onResolve: Function) => {
-    const price = isPair
-      ? baseAsset?.[baseAsset?.baseToken]?.price
-      : baseAsset.price;
+    const price = baseAsset?.price;
+
     const params = {
       name: symbolName,
       description: "",
@@ -52,35 +50,27 @@ export const Datafeed = (
     periodParams,
     onResult: Function
   ) => {
-    const apiParams = {
-      endpoint: "/api/1/market/history/pair",
-      params: {
-        from: periodParams.from * 1000,
-        to: periodParams.to * 1000,
-        amount: periodParams.countBack,
-        usd: true,
-        period: resolution,
-      },
+    const params = {
+      from: periodParams.from * 1000,
+      to: periodParams.to * 1000,
+      amount: periodParams.countBack,
+      period: resolution,
+      address: baseAsset?.address
     };
 
-    if (isPair) {
-      apiParams.params["address"] = baseAsset?.address;
-    } else {
-      apiParams.params["asset"] = baseAsset.contracts[0];
-      apiParams.params["blockchain"] = baseAsset.blockchains[0];
-    }
-
-    const response = await GET(apiParams.endpoint, apiParams.params, false, {
+    const data: any = await axios.get("https://api.mobula.io/api/1/market/history/pair", {
+      params: {
+        ...params
+      },
       headers: { Authorization: "eb66b1f3-c24b-4f43-9892-dbc5f37d5a6d" },
-    });
-    const data = await response.json();
+    }).then((res) => res.data);
 
     onResult(data.data, {
       noData: data.data.length !== periodParams.countBack,
     });
 
     if (periodParams.firstDataRequest) {
-      lastBarsCache.set(baseAsset.name, data.data[data.data.length - 1]);
+      lastBarsCache.set(baseAsset?.name, data.data[data.data.length - 1]);
     }
   },
   searchSymbols: () => { },
@@ -93,23 +83,20 @@ export const Datafeed = (
   ) => {
     console.log("Subscribinnnng");
     const socket = new WebSocket(
-      process.env.NEXT_PUBLIC_PRICE_WSS_ENDPOINT as string
+      "wss://general-api-wss-fgpupeioaa-uc.a.run.app" as string
     );
+    const authKey =
+      import.meta.env.VITE_MOBULA_KEY || "fe18f8be-644a-45a8-ad05-b088a5e61764";
     const params = {
       interval: 5,
+      address: baseAsset?.address
     };
-
-    if (isPair) params["address"] = baseAsset?.address;
-    else {
-      (params["asset"] = baseAsset.contracts[0]),
-        (params["blockchain"] = baseAsset.blockchains[0]);
-    }
 
     socket.addEventListener("open", () => {
       socket.send(
         JSON.stringify({
           type: "pair",
-          authorization: process.env.NEXT_PUBLIC_PRICE_KEY,
+          authorization: authKey,
           payload: params,
         })
       );
@@ -117,48 +104,41 @@ export const Datafeed = (
 
     socket.addEventListener("message", (event) => {
       const eventData = JSON.parse(event.data);
-      try {
-        if (eventData?.blockchain && setPairTrades)
-          setPairTrades((prev) => [
-            eventData,
-            ...prev.slice(0, prev.length - 1),
-          ]);
-      } catch (e) {
-        // console.log(e);
-      }
       const { data } = eventData;
-      const { priceUSD: price, date: timestamp } = data;
+      if (data) {
+        const { priceUSD: price, date: timestamp } = data;
 
-      const lastDailyBar = lastBarsCache.get(baseAsset.name);
-      const nextDailyBarTime = getNextBarTime(resolution, lastDailyBar.time);
-      let bar: any;
+        const lastDailyBar = lastBarsCache.get(baseAsset?.name);
+        const nextDailyBarTime = getNextBarTime(resolution, lastDailyBar.time);
+        let bar: any;
 
-      if (timestamp >= nextDailyBarTime) {
-        bar = {
-          time: nextDailyBarTime,
-          open: lastDailyBar.close,
-          high: price,
-          low: price,
-          close: price,
-        };
-      } else {
-        bar = {
-          ...lastDailyBar,
-          high: Math.max(lastDailyBar.high, price),
-          low: Math.min(lastDailyBar.low, price),
-          close: price,
-        };
+        if (timestamp >= nextDailyBarTime) {
+          bar = {
+            time: nextDailyBarTime,
+            open: lastDailyBar.close,
+            high: price,
+            low: price,
+            close: price,
+          };
+        } else {
+          bar = {
+            ...lastDailyBar,
+            high: Math.max(lastDailyBar.high, price),
+            low: Math.min(lastDailyBar.low, price),
+            close: price,
+          };
+        }
+
+        onRealtimeCallback(bar);
       }
-
-      onRealtimeCallback(bar);
     });
 
-    console.log("Subscribe", baseAsset.name + "-" + subscriberUID);
-    sockets.set(baseAsset.name + "-" + subscriberUID, socket);
+    console.log("Subscribe", baseAsset?.name + "-" + subscriberUID);
+    sockets.set(baseAsset?.name + "-" + subscriberUID, socket);
   },
   unsubscribeBars: (subscriberUID) => {
-    console.log("Unsubscribe", baseAsset.name + "-" + subscriberUID);
-    sockets.get(baseAsset.name + "-" + subscriberUID).close();
+    console.log("Unsubscribe", baseAsset?.name + "-" + subscriberUID);
+    sockets.get(baseAsset?.name + "-" + subscriberUID).close();
   },
   getMarks: () => ({}),
   getTimeScaleMarks: () => ({}),
