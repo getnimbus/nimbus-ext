@@ -6,7 +6,7 @@
     DISABLED_FEATURES,
     ENABLED_FEATURES,
   } from "~/lib/trading-view/constant";
-  import { chain, isDarkMode } from "~/store";
+  import { isDarkMode } from "~/store";
   import { handleFormatBlockChainId } from "~/lib/price-mobulaWs";
   import { UDFCompatibleDatafeed } from "~/lib/trading-view/datafeeds/udf/lib/udf-compatible-datafeed";
   import axios from "axios";
@@ -15,6 +15,7 @@
   export let mobile: boolean = false;
   export let contractAddress;
   export let price;
+  export let chain;
 
   let CONTAINER_ID = "";
   let chartContainer;
@@ -41,7 +42,7 @@
     try {
       const res = await axios.get(
         `https://api.mobula.io/api/1/market/pairs?asset=${address}&&blockchain=${handleFormatBlockChainId(
-          $chain
+          chain
         )}`
       );
       if (res && res?.data?.data) {
@@ -71,7 +72,7 @@
       return;
     }
 
-    const options =
+    const options: any =
       baseAsset?.address === "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
         ? {
             symbol: "AAPL",

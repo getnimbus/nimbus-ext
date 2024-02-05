@@ -55,7 +55,8 @@ export const Datafeed = (
       to: periodParams.to * 1000,
       amount: periodParams.countBack,
       period: resolution,
-      address: baseAsset?.address
+      address: baseAsset?.address,
+      usd: true
     };
 
     const data: any = await axios.get("https://api.mobula.io/api/1/market/history/pair", {

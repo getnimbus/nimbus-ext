@@ -1026,6 +1026,7 @@
               mobile={false}
               {contractAddress}
               {price}
+              {chain}
             />
           {:else}
             <div class="relative">
