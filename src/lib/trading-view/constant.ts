@@ -1,6 +1,7 @@
 export const ENABLED_FEATURES = [
   "save_chart_properties_to_local_storage",
   "use_localstorage_for_settings",
+  "two_character_bar_marks_labels",
   // "hide_last_na_study_output",
   // "dont_show_boolean_study_arguments",
 ];

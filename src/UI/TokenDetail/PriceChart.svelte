@@ -16,7 +16,7 @@
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { handleFormatBlockChainId } from "~/lib/price-mobulaWs";
 
-  import TradingViewChart from "~/components/TradingViewChart.svelte";
+  import TradingViewChart from "~/UI/TokenDetail/TradingViewChart.svelte";
   import EChart from "~/components/EChart.svelte";
   import Loading from "~/components/Loading.svelte";
 

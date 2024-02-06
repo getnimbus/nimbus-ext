@@ -94,7 +94,7 @@
           };
 
     try {
-      import("../../public/static/charting_library").then(
+      import("../../../public/static/charting_library").then(
         ({ widget: Widget }) => {
           const tvWidget = new Widget({
             ...options,
@@ -127,6 +127,26 @@
           (window as any).tvWidget.onChartReady(() => {
             (window as any).tvWidget?.applyOverrides(
               overrides(!$isDarkMode) || {}
+            );
+
+            (window as any).tvWidget.activeChart().createShape(
+              { time: 2114355600, channel: "close" },
+              {
+                shape: "arrow_down",
+                text: "B",
+                overrides: {
+                  backgroundColor: "#00b580",
+                  borderColor: "#00b580",
+                },
+              }
+            );
+
+            (window as any).tvWidget.activeChart().createShape(
+              { time: 1705053600, channel: "open" },
+              {
+                shape: "comment",
+                text: "S",
+              }
             );
           });
         }
