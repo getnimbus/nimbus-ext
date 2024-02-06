@@ -20,7 +20,7 @@ export const Datafeed = (
   baseAsset: any,
 ) => ({
   onReady: (callback: Function) => {
-    callback({ supported_resolutions: supportedResolutions });
+    callback({ supported_resolutions: supportedResolutions, supports_marks: true });
   },
   resolveSymbol: (symbolName: string, onResolve: Function) => {
     const price = baseAsset?.price;
@@ -141,7 +141,8 @@ export const Datafeed = (
     console.log("Unsubscribe", baseAsset?.name + "-" + subscriberUID);
     sockets.get(baseAsset?.name + "-" + subscriberUID).close();
   },
-  getMarks: () => ({}),
+  getMarks: (symbolInfo, startDate, endDate, onDataCallback, resolution) => {
+  },
   getTimeScaleMarks: () => ({}),
   getServerTime: () => ({}),
 });

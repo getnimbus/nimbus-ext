@@ -16,6 +16,8 @@
   export let contractAddress;
   export let price;
   export let chain;
+  export let sellHistoryTradeList;
+  export let buyHistoryTradeList;
 
   let CONTAINER_ID = "";
   let chartContainer;
@@ -89,12 +91,12 @@
             datafeed: Datafeed(baseAsset),
             symbol:
               baseAsset?.token0 === id
-                ? baseAsset?.token0 + "/" + baseAsset?.token1
-                : baseAsset?.token1 + "/" + baseAsset?.token0,
+                ? baseAsset?.token0 + "/" + "USD"
+                : baseAsset?.token1 + "/" + "USD",
           };
 
     try {
-      import("../../public/static/charting_library").then(
+      import("../../../public/static/charting_library").then(
         ({ widget: Widget }) => {
           const tvWidget = new Widget({
             ...options,
@@ -128,6 +130,28 @@
             (window as any).tvWidget?.applyOverrides(
               overrides(!$isDarkMode) || {}
             );
+
+            buyHistoryTradeList.forEach((item) => {
+              (window as any).tvWidget
+                .activeChart()
+                .createExecutionShape()
+                .setText("B")
+                .setTextColor("#00b580")
+                .setArrowColor("#00b580")
+                .setDirection("buy")
+                .setTime(Number(item.created_at));
+            });
+
+            sellHistoryTradeList.forEach((item) => {
+              (window as any).tvWidget
+                .activeChart()
+                .createExecutionShape()
+                .setText("S")
+                .setTextColor("#ef4444")
+                .setArrowColor("#ef4444")
+                .setDirection("sell")
+                .setTime(Number(item.created_at));
+            });
           });
         }
       );
