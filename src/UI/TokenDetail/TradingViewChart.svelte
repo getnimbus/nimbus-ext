@@ -134,7 +134,7 @@
               tvWidget
                 .activeChart()
                 .createExecutionShape()
-                .setText(`Buy ${formatBalance(Number(item?.quantity_in))}`)
+                .setText(`Buy ${formatBalance(Number(item?.quantity_out))}`)
                 .setFont("16pt Arial")
                 .setArrowHeight(14)
                 .setTextColor("#00b580")
@@ -147,7 +147,7 @@
               tvWidget
                 .activeChart()
                 .createExecutionShape()
-                .setText(`Sell ${formatBalance(Number(item?.quantity_out))}`)
+                .setText(`Sell ${formatBalance(Number(item?.quantity_in))}`)
                 .setFont("16pt Arial")
                 .setArrowHeight(14)
                 .setTextColor("#ef4444")
