@@ -16,6 +16,8 @@
   export let contractAddress;
   export let price;
   export let chain;
+  export let sellHistoryTradeList;
+  export let buyHistoryTradeList;
 
   let CONTAINER_ID = "";
   let chartContainer;
@@ -129,25 +131,27 @@
               overrides(!$isDarkMode) || {}
             );
 
-            (window as any).tvWidget.activeChart().createShape(
-              { time: 2114355600, channel: "close" },
-              {
-                shape: "arrow_down",
-                text: "B",
-                overrides: {
-                  backgroundColor: "#00b580",
-                  borderColor: "#00b580",
-                },
-              }
-            );
+            buyHistoryTradeList.forEach((item) => {
+              (window as any).tvWidget
+                .activeChart()
+                .createExecutionShape()
+                .setText("B")
+                .setTextColor("#00b580")
+                .setArrowColor("#00b580")
+                .setDirection("buy")
+                .setTime(Number(item.created_at));
+            });
 
-            (window as any).tvWidget.activeChart().createShape(
-              { time: 1705053600, channel: "open" },
-              {
-                shape: "comment",
-                text: "S",
-              }
-            );
+            sellHistoryTradeList.forEach((item) => {
+              (window as any).tvWidget
+                .activeChart()
+                .createExecutionShape()
+                .setText("S")
+                .setTextColor("#ef4444")
+                .setArrowColor("#ef4444")
+                .setDirection("sell")
+                .setTime(Number(item.created_at));
+            });
           });
         }
       );

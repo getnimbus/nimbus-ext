@@ -1027,6 +1027,8 @@
               {contractAddress}
               {price}
               {chain}
+              {buyHistoryTradeList}
+              {sellHistoryTradeList}
             />
           {:else}
             <div class="relative">
