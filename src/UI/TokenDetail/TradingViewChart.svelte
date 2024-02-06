@@ -10,6 +10,7 @@
   import { handleFormatBlockChainId } from "~/lib/price-mobulaWs";
   import { UDFCompatibleDatafeed } from "~/lib/trading-view/datafeeds/udf/lib/udf-compatible-datafeed";
   import axios from "axios";
+  import { formatBalance } from "~/utils";
 
   export let id: string;
   export let mobile: boolean = false;
@@ -126,16 +127,16 @@
 
           (window as any).tvWidget = tvWidget;
 
-          (window as any).tvWidget.onChartReady(() => {
-            (window as any).tvWidget?.applyOverrides(
-              overrides(!$isDarkMode) || {}
-            );
+          tvWidget.onChartReady(() => {
+            tvWidget.applyOverrides(overrides(!$isDarkMode) || {});
 
             buyHistoryTradeList.forEach((item) => {
-              (window as any).tvWidget
+              tvWidget
                 .activeChart()
                 .createExecutionShape()
-                .setText("B")
+                .setText(`Buy ${formatBalance(Number(item?.quantity_in))}`)
+                .setFont("16pt Arial")
+                .setArrowHeight(14)
                 .setTextColor("#00b580")
                 .setArrowColor("#00b580")
                 .setDirection("buy")
@@ -143,10 +144,12 @@
             });
 
             sellHistoryTradeList.forEach((item) => {
-              (window as any).tvWidget
+              tvWidget
                 .activeChart()
                 .createExecutionShape()
-                .setText("S")
+                .setText(`Sell ${formatBalance(Number(item?.quantity_out))}`)
+                .setFont("16pt Arial")
+                .setArrowHeight(14)
                 .setTextColor("#ef4444")
                 .setArrowColor("#ef4444")
                 .setDirection("sell")
