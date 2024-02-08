@@ -1,7 +1,13 @@
 <script lang="ts">
   import { nimbus } from "~/lib/network";
   import { priceSubscribe } from "~/lib/price-ws";
-  import { isDarkMode, realtimePrice, typeWallet, user } from "~/store";
+  import {
+    isDarkMode,
+    realtimePrice,
+    selectedNftOwnerAddress,
+    typeWallet,
+    user,
+  } from "~/store";
   import { createQuery } from "@tanstack/svelte-query";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
 
@@ -59,6 +65,7 @@
         item?.collectionId?.toLowerCase() === collectionId?.toLowerCase()
     );
     if (selectedCollection) {
+      selectedNftOwnerAddress.update((n) => (n = selectedCollection?.owner));
       tokens = selectedCollection?.tokens;
 
       data = {

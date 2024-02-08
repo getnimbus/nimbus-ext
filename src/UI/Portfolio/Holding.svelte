@@ -9,7 +9,7 @@
     isShowModalNftDeList,
     listingNft,
     selectedNftContractAddress,
-    wallet,
+    selectedNftOwnerAddress,
     userPublicAddress,
     realtimePrice,
     totalAssets,
@@ -33,6 +33,7 @@
   } from "@solana/wallet-adapter-wallets";
   import { walletStore } from "@svelte-on-solana/wallet-adapter-core";
   import { Buffer as BufferPolyfill } from "buffer";
+  import { createMutation } from "@tanstack/svelte-query";
 
   export let selectedWallet;
   export let isLoadingNFT;
@@ -87,6 +88,11 @@
   let nftListPrice = 0;
   let selectedMarket;
 
+  let toastMsg = "";
+  let isSuccessToast = false;
+  let counter = 5;
+  let showToast = false;
+
   let selectedTypeTable = {
     label: "",
     value: "",
@@ -118,6 +124,18 @@
     Balance: i18n("newtabPage.Balance", "Balance"),
     hide: i18n("newtabPage.hide-less-than-1", "Hide tokens less than $1"),
     empty: i18n("newtabPage.empty", "Empty"),
+  };
+
+  const trigger = () => {
+    showToast = true;
+    counter = 5;
+    timeout();
+  };
+
+  const timeout = () => {
+    if (--counter > 0) return setTimeout(timeout, 1000);
+    showToast = false;
+    isSuccessToast = false;
   };
 
   onMount(() => {
@@ -548,23 +566,6 @@
     }
   };
 
-  let toastMsg = "";
-  let isSuccessToast = false;
-  let counter = 5;
-  let showToast = false;
-
-  const trigger = () => {
-    showToast = true;
-    counter = 5;
-    timeout();
-  };
-
-  const timeout = () => {
-    if (--counter > 0) return setTimeout(timeout, 1000);
-    showToast = false;
-    isSuccessToast = false;
-  };
-
   let modalVisible = false;
   let userPublicAddressChain = "EVM";
   let userAddress = $userPublicAddress;
@@ -617,11 +618,17 @@
       marketplace: selectedMarket?.value,
     };
     try {
-      const res = await nimbus.get(`/v2/address/${$wallet}/nft/list`, {
-        params,
-      });
+      const res = await nimbus.get(
+        `/v2/address/${$selectedNftOwnerAddress}/nft/list`,
+        {
+          params,
+        }
+      );
       if (res?.data && res?.data?.tx) {
-        sendTrxOnSolChain(res?.data?.tx, "List");
+        $handleSignTrx.mutate({
+          trx: res?.data?.tx,
+          type: "List",
+        });
       }
     } catch (e) {
       console.log(e);
@@ -634,20 +641,32 @@
       marketplace: $listingNft?.marketplace,
     };
     try {
-      const res = await nimbus.get(`/v2/address/${$wallet}/nft/delist`, {
-        params,
-      });
+      const res = await nimbus.get(
+        `/v2/address/${$selectedNftOwnerAddress}/nft/delist`,
+        {
+          params,
+        }
+      );
       if (res?.data && res?.data?.tx) {
-        sendTrxOnSolChain(res?.data?.tx, "De-list");
+        $handleSignTrx.mutate({
+          trx: res?.data?.tx,
+          type: "De-List",
+        });
       }
     } catch (e) {
       console.log(e);
     }
   };
 
-  const sendTrxOnSolChain = async (trx: any, type: string) => {
-    try {
-      const txBuffer = BufferPolyfill.from(trx, "base64");
+  const handleSignTrx = createMutation({
+    onError: (error) => {
+      console.log(error);
+      toastMsg = "Something wrong while submitting trx. Please try again!";
+      isSuccessToast = false;
+      trigger();
+    },
+    mutationFn: async (data: any) => {
+      const txBuffer = BufferPolyfill.from(data?.trx, "base64");
       const transaction = Transaction.from(txBuffer);
 
       const connection = new Connection(
@@ -661,19 +680,13 @@
       );
       console.log("result:", result);
 
-      if (result) {
-        toastMsg = `${type} your NFT successful`;
-        isSuccessToast = true;
-        trigger();
-      } else {
-        toastMsg = `Something wrong when ${type} your NFT. Please try again!`;
-        isSuccessToast = false;
-        trigger();
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  };
+      toastMsg = `${data?.type} your NFT successful`;
+      isSuccessToast = true;
+      trigger();
+
+      return result;
+    },
+  });
 </script>
 
 <div
@@ -1132,7 +1145,7 @@
           }`}
         >
           <div class="xl:text-base text-2xl text-[#666666] font-medium">
-            Price ({$typeWallet})
+            Price (SOL)
           </div>
           <input
             type="text"
@@ -1174,10 +1187,9 @@
           <div class="xl:w-[120px] w-full">
             <Button
               type="submit"
-              isLoading={false}
-              disabled={userAddress !== $wallet}>Submit</Button
+              isLoading={$handleSignTrx.isLoading}
+              disabled={userAddress !== $selectedNftOwnerAddress}>Submit</Button
             >
-            <!-- <Button type="submit" isLoading={false}>Submit</Button> -->
           </div>
         </div>
       </form>
@@ -1271,10 +1283,9 @@
           <div class="xl:w-[120px] w-full">
             <Button
               type="submit"
-              isLoading={false}
-              disabled={userAddress !== $wallet}>Submit</Button
+              isLoading={$handleSignTrx.isLoading}
+              disabled={userAddress !== $selectedNftOwnerAddress}>Submit</Button
             >
-            <!-- <Button type="submit" isLoading={false}>Submit</Button> -->
           </div>
         </div>
       </form>
