@@ -477,7 +477,7 @@
                   (Math.abs(sumLossProfitHistoryTokenDetail) +
                     Math.abs(sumWinProfitHistoryTokenDetail))) *
                   100
-              ).toFixed(2)}%)`
+              )?.toFixed(2)}%)`
         }`}
       >
         <div class="flex gap-1 absolute top-5 left-0 xl:text-sm text-xl w-max">

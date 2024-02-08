@@ -98,6 +98,7 @@
     staleTime: Infinity,
     enabled: $user && Object.keys($user).length !== 0,
     onError(err) {
+      localStorage.removeItem("auth_token");
       localStorage.removeItem("solana_token");
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
@@ -107,10 +108,10 @@
   $: {
     if (
       !$query.isError &&
-      $query.data !== undefined &&
-      $query.data.length !== 0
+      $query?.data !== undefined &&
+      $query?.data.length !== 0
     ) {
-      formatDataListAddress($query.data);
+      formatDataListAddress($query?.data);
     }
   }
 
@@ -351,18 +352,22 @@
     staleTime: Infinity,
     retry: false,
     onError(err) {
+      localStorage.removeItem("auth_token");
       localStorage.removeItem("solana_token");
       localStorage.removeItem("evm_token");
     },
   });
 
   $: {
-    if (!$queryUserInfo.isError && $queryUserInfo.data !== undefined) {
-      localStorage.setItem("public_address", $queryUserInfo.data.publicAddress);
-      userPublicAddress.update((n) => (n = $queryUserInfo.data.publicAddress));
-      userId.update((n) => (n = $queryUserInfo.data.id));
-      userID = $queryUserInfo.data.id;
-      publicAddress = $queryUserInfo.data.publicAddress;
+    if (!$queryUserInfo.isError && $queryUserInfo?.data !== undefined) {
+      localStorage.setItem(
+        "public_address",
+        $queryUserInfo?.data.publicAddress
+      );
+      userPublicAddress.update((n) => (n = $queryUserInfo?.data.publicAddress));
+      userId.update((n) => (n = $queryUserInfo?.data?.id));
+      userID = $queryUserInfo?.data?.id;
+      publicAddress = $queryUserInfo?.data?.publicAddress;
       if (
         $queryUserInfo.data?.plan?.tier &&
         $queryUserInfo.data?.plan?.tier.length !== 0

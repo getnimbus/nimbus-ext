@@ -138,8 +138,6 @@
   let isLoadingEditDEX = false;
   let isLoadingConnectCEX = false;
   let showDisableAddWallet = false;
-  let showDisableBundle = false;
-  let selectedHoverBundle;
   let isLoadingDeleteBundles = false;
   let isOpenConfirmDeleteBundles = false;
 
@@ -324,6 +322,7 @@
     retry: false,
     enabled: $user && Object.keys($user).length !== 0,
     onError(err) {
+      localStorage.removeItem("auth_token");
       localStorage.removeItem("solana_token");
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
@@ -416,15 +415,16 @@
 
   // Add CEX address account
   const onSubmitCEX = () => {
+    const authToken = localStorage.getItem("auth_token");
     const solanaToken = localStorage.getItem("solana_token");
     const evmToken = localStorage.getItem("evm_token");
-    if (evmToken || solanaToken) {
+    if (evmToken || solanaToken || authToken) {
       isLoadingConnectCEX = true;
       const vezgo: any = Vezgo.init({
         clientId: "6st9c6s816su37qe8ld1d5iiq2",
         authEndpoint: `${API_URL}/auth/vezgo`,
         auth: {
-          headers: { Authorization: `${evmToken || solanaToken}` },
+          headers: { Authorization: `${evmToken || solanaToken || authToken}` },
         },
       });
       const userVezgo = vezgo.login();
@@ -652,17 +652,13 @@
 
   $: {
     if (
-      listAddress.filter((item) => item.type !== "BUNDLE")?.length > 2 &&
-      $selectedPackage === "FREE"
+      $selectedPackage === "FREE" &&
+      listAddress.filter((item) => item.type !== "BUNDLE")?.length > 2
     ) {
       isDisabled = true;
-    } else {
-      isDisabled = false;
-    }
-
-    if (
-      listAddress.filter((item) => item.type !== "BUNDLE")?.length > 6 &&
-      $selectedPackage === "EXPLORER"
+    } else if (
+      $selectedPackage === "EXPLORER" &&
+      listAddress.filter((item) => item.type !== "BUNDLE")?.length > 6
     ) {
       if (
         localStorage.getItem("isGetUserEmailYet") !== null &&
@@ -702,9 +698,10 @@
   }
 
   onMount(() => {
+    const authToken = localStorage.getItem("auth_token");
     const solanaToken = localStorage.getItem("solana_token");
     const evmToken = localStorage.getItem("evm_token");
-    if (evmToken || solanaToken) {
+    if (evmToken || solanaToken || authToken) {
       user.update(
         (n) =>
           (n = {
@@ -732,6 +729,7 @@
     staleTime: Infinity,
     enabled: $user && Object.keys($user).length !== 0,
     onError(err) {
+      localStorage.removeItem("auth_token");
       localStorage.removeItem("solana_token");
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
@@ -853,7 +851,7 @@
   const handleDeleteBundle = async () => {
     isLoadingDeleteBundles = true;
     try {
-      const response = await nimbus.delete(
+      await nimbus.delete(
         `/address/personalize/bundle?name=${selectedBundle?.name}`,
         selectedBundle
       );
@@ -2059,7 +2057,7 @@
   </div>
 {/if}
 
-<style>
+<style windi:preflights:global windi:safelist:global>
   :global(body) .bg_fafafbff {
     background: #fafafbff;
   }

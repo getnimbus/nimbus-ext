@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { i18n } from "~/lib/i18n";
-  import { chain, typeWallet, isDarkMode } from "~/store";
+  import { chain, typeWallet, isDarkMode, pastProfit } from "~/store";
   import { filterTokenValueType } from "~/utils";
   import { listSupported } from "~/lib/chains";
 
@@ -74,12 +74,6 @@
   $: {
     if (holdingTokenData) {
       formatData = holdingTokenData
-        ?.filter((item) => Number(item?.amount) === 0)
-        ?.filter((item) => {
-          if (item?.profit !== undefined) {
-            return Number(item?.profit.realizedProfit) !== 0;
-          }
-        })
         ?.map((item) => {
           return {
             ...item,
@@ -96,8 +90,11 @@
         0
       );
 
-      filteredHoldingDataToken = formatData.filter(
-        (item) => Math.abs(Number(item?.profit.realizedProfit)) > 1
+      pastProfit.update((n) =>
+        formatData.reduce(
+          (prev, item) => prev + Number(item?.profit.realizedProfit),
+          0
+        )
       );
     }
     if (holdingNFTData) {
@@ -144,6 +141,7 @@
     if (formatData?.length === 0) {
       sumAllTokens = 0;
       sumNFT = 0;
+      pastProfit.update((n) => (n = 0));
     } else {
       sumAllTokens = formatData.reduce(
         (prev, item) => prev + Number(item?.profit.realizedProfit),
@@ -152,6 +150,13 @@
       sumNFT = (formatDataNFT || []).reduce(
         (prev, item) => prev + item?.current_value,
         0
+      );
+      pastProfit.update(
+        (n) =>
+          (n = formatData.reduce(
+            (prev, item) => prev + Number(item?.profit.realizedProfit),
+            0
+          ))
       );
     }
   }
@@ -163,6 +168,7 @@
       if (selectedWallet?.length !== 0 && $chain?.length !== 0) {
         sumAllTokens = 0;
         sumNFT = 0;
+        pastProfit.update((n) => (n = 0));
         formatData = [];
         formatDataNFT = [];
         filteredHoldingDataToken = [];

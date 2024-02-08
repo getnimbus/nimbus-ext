@@ -23,6 +23,7 @@
   "optionsPage": {
     "message": "Options page languages",
     "tab-title-accounts": "Accounts",
+    "tab-title-links": "Links",
     "tab-title-report": "Reports",
     "tab-title-alerts": "Alerts",
     "tab-title-dashboard": "Dashboard",
@@ -33,6 +34,7 @@
     "nft-page-title": "My NFT",
     "accounts-page-title": "Account Settings",
     "report-page-title": "Report Settings",
+    "links-page-title": "Link Settings",
     "dashboard-page-title": "Dashboard",
     "highlight-page-title": "Highlight",
     "notification-page-title": "Notification",

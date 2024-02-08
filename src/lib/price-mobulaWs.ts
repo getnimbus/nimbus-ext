@@ -1,3 +1,5 @@
+import { realtimePrice } from "~/store";
+
 type iFN = () => void;
 
 export let mobulaSocket: null | WebSocket;
@@ -36,28 +38,7 @@ export const decodeEvent = (ev: MessageEvent) => {
   }
 };
 
-interface IPriceRealtime {
-  id: string;
-  ath: number;
-  atl: number;
-  is_listed: boolean;
-  liquidity: number;
-  market_cap: number;
-  market_cap_diluted: number;
-  off_chain_volume: number;
-  price: number;
-  price_change_1h: number;
-  price_change_1m: number;
-  price_change_1y: number;
-  price_change_7d: number;
-  price_change_24h: number;
-  rank: number;
-  volume: number;
-  volume_7d: number;
-  volume_change_24h: number;
-}
-
-const cached: Record<string, IPriceRealtime> = {};
+const cached = {};
 
 export const chainSupport = [
   "FTM", //Fantom
@@ -76,101 +57,117 @@ export const chainSupport = [
   "MANTLE", // Mantle
 ];
 
-const authKey = import.meta.env.VITE_MOBULA_KEY || "fe18f8be-644a-45a8-ad05-b088a5e61764"
+const authKey =
+  import.meta.env.VITE_MOBULA_KEY || "fe18f8be-644a-45a8-ad05-b088a5e61764";
 
 export const handleFormatBlockChainId = (chain: string) => {
-  let id = ""
   switch (chain) {
-    case "FTM": id = "250"; break;
-    case "XDAI": id = "100"; break;
-    case "AVAX": id = "43114"; break;
-    case "CRONOS": id = "25"; break;
-    case "ETH": id = "1"; break;
-    case "MATIC": id = "137"; break;
-    case "BNB": id = "56"; break;
-    case "KLAY": id = "8217"; break;
-    case "AURA": id = "1313161554"; break;
-    case "ARB": id = "42161"; break;
-    case "OP": id = "10"; break;
-    case "BASE": id = "8453"; break;
-    case "SUI": id = "sui"; break;
-    case "MANTLE": id = "5000"; break;
+    case "FTM":
+      return "250";
+    case "XDAI":
+      return "100";
+    case "AVAX":
+      return "43114";
+    case "CRONOS":
+      return "25";
+    case "ETH":
+      return "1";
+    case "MATIC":
+      return "137";
+    case "BNB":
+      return "56";
+    case "KLAY":
+      return "8217";
+    case "AURA":
+      return "1313161554";
+    case "ARB":
+      return "42161";
+    case "OP":
+      return "10";
+    case "BASE":
+      return "8453";
+    case "SUI":
+      return "sui";
+    case "MANTLE":
+      return "5000";
+    case "TON":
+      return "TON";
+    case "NEAR":
+      return "NEAR";
   }
-  return id
-}
+
+  return "";
+};
 
 export const priceMobulaSubscribe = (
   data: string[] | number[],
-  chain: string,
-  callback: (any) => void
+  chain: string
 ) => {
   try {
     if (!mobulaSocket) {
       console.log("Mobula WS is not initiated");
-      initWS(() => priceMobulaSubscribe(data, chain, callback));
+      initWS(() => priceMobulaSubscribe(data, chain));
     } else {
       if (!isMobulaReady) {
         console.log("Delay Mobula Subscribe");
-        cbMobulaList.push(() => priceMobulaSubscribe(data, chain, callback));
+        cbMobulaList.push(() => priceMobulaSubscribe(data, chain));
         return;
       }
 
       const key = `${data}-${chain}`;
 
       if (cached[key]) {
-        // Return from cache
-        callback(cached[key]);
-      }
+        realtimePrice.update((n) => (n = cached[key]));
+      } else {
+        if (chain === "CEX") {
+          mobulaSocket.send(
+            JSON.stringify({
+              type: "market",
+              authorization: authKey,
+              payload: {
+                assets: data.map((item) => {
+                  return {
+                    symbol: item,
+                  };
+                }),
+                interval: 15,
+              },
+            })
+          );
+        }
 
-      if (chain === "CEX") {
-        mobulaSocket.send(
-          JSON.stringify({
-            type: "market",
-            authorization: authKey,
-            payload: {
-              assets: [
-                { symbol: data.join(",") },
-              ],
-              interval: 15
-            }
-          })
-        )
-      }
-
-      if (chain !== "CEX" && chainSupport.includes(chain)) {
-        mobulaSocket.send(
-          JSON.stringify({
-            type: "market",
-            authorization: authKey,
-            payload: {
-              assets: [
-                {
-                  address: data.join(","),
-                  blockchain: handleFormatBlockChainId(chain)
-                },
-              ],
-              interval: 15
-            }
-          })
-        )
+        if (chain !== "CEX" && chainSupport.includes(chain)) {
+          mobulaSocket.send(
+            JSON.stringify({
+              type: "market",
+              authorization: authKey,
+              payload: {
+                assets: data.map((item) => {
+                  return {
+                    address: item,
+                    blockchain: handleFormatBlockChainId(chain),
+                  };
+                }),
+                interval: 15,
+              },
+            })
+          );
+        }
       }
 
       mobulaSocket.addEventListener("message", (ev) => {
         const res = decodeEvent(ev);
         if (res?.data && Object.keys(res?.data).length !== 0) {
-          const keyData = Object.keys(res?.data)
+          Object.keys(res?.data).forEach((key) => {
+            if (
+              res?.data[key]?.liquidity < 1000 ||
+              res?.data[key]?.price > 500000
+            ) {
+              delete res?.data[key];
+            }
+          });
 
-          const formatData = {
-            ...res?.data[keyData[0]],
-            id: keyData[0],
-          }
-
-          if (!cached[key]) {
-            // Only callback when we don't have data cached
-            cached[key] = formatData;
-          }
-
-          callback(formatData);
+          realtimePrice.update((n) => (n = res?.data));
         }
       });
     }

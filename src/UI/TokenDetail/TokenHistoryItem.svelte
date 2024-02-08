@@ -15,10 +15,19 @@
   $: costBuy = Number(data?.quantity_in) * Number(data?.from_price);
   $: costSell = Number(data?.quantity_out) * Number(data?.to_price);
 
+  $: isBuy =
+    data?.to_token_address?.toLowerCase() === contractAddress?.toLowerCase();
+
   $: amount =
-    contractAddress?.toLowerCase() === data.from_token_address
-      ? data?.quantity_in
-      : data?.quantity_out;
+    data?.to_symbol || data?.from_symbol // Syve data
+      ? isBuy
+        ? Number(data?.quantity_in)
+        : Number(data?.quantity_out)
+      : Number(
+          contractAddress?.toLowerCase() === data.from_token_address
+            ? data?.quantity_in
+            : data?.quantity_out
+        );
 
   $: withinLast24Hours = dayjs().diff(dayjs(data?.created_at * 1000), "hour");
 </script>
@@ -90,9 +99,25 @@
   </td>
 
   <td
-    class={`py-3 ${listSupported.includes($typeWallet) ? "" : "pr-3"} ${
+    class={`py-3 ${
       $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
+  >
+    <div class="xl:text-sm text-2xl text_00000099 font-medium text-right">
+      {#if data?.fee < 1}
+        $<TooltipNumber number={data?.fee} type="balance" />
+      {:else}
+        <TooltipNumber number={data?.fee} type="value" />
+      {/if}
+    </div>
+  </td>
+
+  <td
+    class={`py-3 ${
+      listSupported.filter((item) => item !== "CEX").includes($typeWallet)
+        ? ""
+        : "pr-3"
+    } ${$isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"}`}
   >
     <div class="xl:text-sm text-2xl text_00000099 font-medium text-right">
       {withinLast24Hours < 24
@@ -101,7 +126,7 @@
     </div>
   </td>
 
-  {#if listSupported.includes($typeWallet)}
+  {#if listSupported.filter((item) => item !== "CEX").includes($typeWallet)}
     <td
       class={`py-3 w-10 ${
         $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"

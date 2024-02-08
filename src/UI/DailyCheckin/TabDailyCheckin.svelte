@@ -206,6 +206,7 @@
       Object.keys($user).length !== 0 &&
       $userPublicAddress.length !== 0,
     onError(err) {
+      localStorage.removeItem("auth_token");
       localStorage.removeItem("solana_token");
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
@@ -221,6 +222,7 @@
       Object.keys($user).length !== 0 &&
       $userPublicAddress.length !== 0,
     onError(err) {
+      localStorage.removeItem("auth_token");
       localStorage.removeItem("solana_token");
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
@@ -456,6 +458,26 @@
         );
         if (res && res?.data === null) {
           toastMsg = "You are not sync Telegram";
+          isSuccessToast = false;
+          trigger();
+        }
+        if (res?.data?.bonus !== undefined) {
+          triggerBonusScore();
+          bonusScore = res?.data?.bonus;
+          isTriggerBonusScore = true;
+          queryClient.invalidateQueries([$userPublicAddress, "daily-checkin"]);
+          queryClient.invalidateQueries(["users-me"]);
+        }
+      }
+      if (type === "link-google") {
+        window.open(link, "_blank");
+        await wait(6000);
+        const res = await nimbus.post(
+          `/v2/checkin/${$userPublicAddress}/quest/link-google`,
+          {}
+        );
+        if (res && res?.data === null) {
+          toastMsg = "You are not link to Google account";
           isSuccessToast = false;
           trigger();
         }

@@ -235,12 +235,18 @@
     retry: false,
     enabled: $user && Object.keys($user).length !== 0,
     onError(err) {
+      localStorage.removeItem("auth_token");
       localStorage.removeItem("solana_token");
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
     },
     onSuccess(data) {
-      if (data.length === 0) {
+      if (
+        data &&
+        data?.length === 0 &&
+        (localStorage.getItem("solana_token") ||
+          localStorage.getItem("evm_token"))
+      ) {
         handleCreateUser();
       }
     },
@@ -495,7 +501,7 @@
 
         const validateAccount = await handleValidateAddress(dataFormat.value);
 
-        if (groupedToBundles) {
+        if (groupedToBundles || listAddress.length === 0) {
           await nimbus.put(
             `/address/personalize/bundle?name=${"Your wallets"}`,
             {
@@ -575,13 +581,14 @@
   const onSubmitCEX = () => {
     const solanaToken = localStorage.getItem("solana_token");
     const evmToken = localStorage.getItem("evm_token");
-    if (evmToken || solanaToken) {
+    const authToken = localStorage.getItem("auth_token");
+    if (evmToken || solanaToken || authToken) {
       isLoadingConnectCEX = true;
       const vezgo: any = Vezgo.init({
         clientId: "6st9c6s816su37qe8ld1d5iiq2",
         authEndpoint: `${API_URL}/auth/vezgo`,
         auth: {
-          headers: { Authorization: `${evmToken || solanaToken}` },
+          headers: { Authorization: `${evmToken || solanaToken || authToken}` },
         },
       });
       const userVezgo = vezgo.login();
@@ -711,17 +718,13 @@
 
   $: {
     if (
-      listAddress.filter((item) => item.type !== "BUNDLE")?.length > 2 &&
-      $selectedPackage === "FREE"
+      $selectedPackage === "FREE" &&
+      listAddress.filter((item) => item.type !== "BUNDLE")?.length > 2
     ) {
       isDisabled = true;
-    } else {
-      isDisabled = false;
-    }
-
-    if (
-      listAddress.filter((item) => item.type !== "BUNDLE")?.length > 6 &&
-      $selectedPackage === "EXPLORER"
+    } else if (
+      $selectedPackage === "EXPLORER" &&
+      listAddress.filter((item) => item.type !== "BUNDLE")?.length > 6
     ) {
       if (
         localStorage.getItem("isGetUserEmailYet") !== null &&
@@ -758,7 +761,7 @@
   }
 
   $: {
-    if (Object.keys($user).length === 0) {
+    if ($user && Object.keys($user).length === 0) {
       tooltipDisableAddBtn = "Connect wallet to add account";
       listAddress = [];
     }
@@ -818,6 +821,10 @@
       handleUpdateParams();
     }
   };
+
+  const handleOpenAddModal = () => {
+    isOpenAddModal = true;
+  };
 </script>
 
 {#if $query.isFetching}
@@ -838,7 +845,10 @@
           </div>
         {:else}
           <div class="max-w-[2000px] m-auto w-[90%]">
-            <Hero btntext={MultipleLang.content.btn_text} {isOpenAddModal} />
+            <Hero
+              btntext={MultipleLang.content.btn_text}
+              {handleOpenAddModal}
+            />
           </div>
         {/if}
       </div>
@@ -1112,17 +1122,23 @@
               <div
                 class="relative xl:w-max w-[270px] flex justify-end"
                 on:mouseenter={() => {
-                  if (isDisabled || Object.keys($user).length === 0) {
+                  if (
+                    isDisabled ||
+                    ($user && Object.keys($user).length === 0)
+                  ) {
                     showDisableAddWallet = true;
                   }
                 }}
                 on:mouseleave={() => {
-                  if (isDisabled || Object.keys($user).length === 0) {
+                  if (
+                    isDisabled ||
+                    ($user && Object.keys($user).length === 0)
+                  ) {
                     showDisableAddWallet = false;
                   }
                 }}
               >
-                {#if isDisabled || Object.keys($user).length === 0}
+                {#if isDisabled || ($user && Object.keys($user).length === 0)}
                   <div>
                     {#if localStorage.getItem("isGetUserEmailYet") !== null && localStorage.getItem("isGetUserEmailYet") === "false"}
                       <Button
@@ -1175,6 +1191,7 @@
                     </div>
                   </Button>
                 {/if}
+
                 {#if showDisableAddWallet}
                   <div
                     class={`absolute transform ${

@@ -2,12 +2,14 @@ import Onboard from "@web3-onboard/core";
 import injectedModule from "@web3-onboard/injected-wallets";
 import ledgerModule from "@web3-onboard/ledger";
 import coinbaseModule from "@web3-onboard/coinbase";
+import bitgetWalletModule from "@web3-onboard/bitget";
 
 const injected = injectedModule();
 const coinbaseWallet = coinbaseModule();
 const ledger = ledgerModule({ chainId: 1, walletConnectVersion: 1 });
+const bitget = bitgetWalletModule();
 
-const wallets = [injected, coinbaseWallet, ledger];
+const wallets = [injected, coinbaseWallet, ledger, bitget];
 
 const chains = [
   {

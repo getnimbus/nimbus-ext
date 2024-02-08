@@ -1,11 +1,10 @@
 import numeral from "numeral";
-import jwt_decode from "jwt-decode";
-import { nimbus } from "./lib/network";
 import { detectedChain } from "./lib/chains";
 import { groupBy } from "lodash";
 import confetti from "canvas-confetti";
 import { driver } from "driver.js";
 import "driver.js/dist/driver.css";
+import dayjs from "dayjs";
 
 export const netWorthFilter = [
   {
@@ -227,11 +226,11 @@ export const showOverlayAnimationVariants = {
 
 export const tryCatch = (fn: (...data: any[]) => any, defaultValue: any) => {
   try {
-    return fn()
+    return fn();
   } catch (error) {
     return defaultValue;
   }
-}
+};
 
 export const chunkArray = (array, chunkSize) => {
   let result = [];
@@ -240,7 +239,7 @@ export const chunkArray = (array, chunkSize) => {
     result.push(chunk);
   }
   return result;
-}
+};
 
 export const flattenArray = (arr) => {
   return arr.reduce(function (flat, toFlatten) {
@@ -468,8 +467,8 @@ export const handleFormatDataPieChart = (data, type) => {
 
   return formatGroupData.map((item) => {
     return {
-      logo: type === "chain" ? detectedChain(item.name)?.logo : item.logo,
-      name: type === "chain" ? detectedChain(item.name)?.name : item.name,
+      logo: type === "chain" ? (item.name === "CEX" ? item.logo : detectedChain(item.name)?.logo) : item.logo,
+      name: type === "chain" ? (item.name === "CEX" ? "CEX" : detectedChain(item.name)?.name) : item.name,
       symbol: "",
       name_ratio: item.name_ratio,
       value: (Number(item.value_value) / sumData) * 100,
@@ -810,18 +809,73 @@ export const drivePortfolio = () =>
     ],
   });
 
-export const handleGetAccessToken = async (code: string) => {
-  const res = await nimbus
-    .post("/auth", {
-      code,
-      direct_url: "https://app.getnimbus.io",
-    })
-    .then((response) => response);
-  if (res.data) {
-    localStorage.setItem("token", JSON.stringify(res.data));
-    if (APP_TYPE.TYPE !== "EXT") {
-      window.history.replaceState(null, "", window.location.pathname);
+export function filterDuplicates(arr) {
+  const seen = new Set();
+  return arr.filter((obj) => {
+    const stringifiedObj = JSON.stringify(obj);
+    if (seen.has(stringifiedObj)) {
+      return false;
+    } else {
+      seen.add(stringifiedObj);
+      return true;
     }
-    return jwt_decode(res.data.id_token);
+  });
+}
+
+export function formatActiveTime(timestamp) {
+  const currentTime = dayjs();
+  const activityTime = dayjs(timestamp);
+
+  const minutesDiff = currentTime.diff(activityTime, "minute");
+  const hoursDiff = currentTime.diff(activityTime, "hour");
+  const daysDiff = currentTime.diff(activityTime, "day");
+  const monthsDiff = currentTime.diff(activityTime, "month");
+
+  if (minutesDiff < 60) {
+    return `${minutesDiff} ${minutesDiff === 1 ? "minute" : "minutes"} ago`;
+  } else if (hoursDiff < 24) {
+    return `${hoursDiff} ${hoursDiff === 1 ? "hour" : "hours"} ago`;
+  } else if (daysDiff < 30) {
+    return `${daysDiff} ${daysDiff === 1 ? "day" : "days"} ago`;
+  } else if (monthsDiff < 12) {
+    return `${monthsDiff} ${monthsDiff === 1 ? "month" : "months"} ago`;
+  } else {
+    return "More than a year ago";
   }
-};
+}
+
+export function formatAHT(timestamp) {
+  const currentTime = dayjs();
+  const activityTime = dayjs(Number(currentTime) - timestamp);
+
+  const minutesDiff = currentTime.diff(activityTime, "minute");
+  const hoursDiff = currentTime.diff(activityTime, "hour");
+  const daysDiff = currentTime.diff(activityTime, "day");
+  const monthsDiff = currentTime.diff(activityTime, "month");
+
+  if (minutesDiff < 60) {
+    return `${minutesDiff}m`;
+  } else if (hoursDiff < 24) {
+    return `${hoursDiff}h`;
+  } else if (daysDiff < 30) {
+    return `${daysDiff}d`;
+  } else if (monthsDiff < 12) {
+    return `${monthsDiff}mo`;
+  } else {
+    return "More than a year";
+  }
+}
+
+export const formatHeaderTokenHistoryCSV = {
+  trx_hash: "Transaction Hash",
+  trx_link: "Transaction Link",
+  value: "Value",
+  time: "Time",
+  fee: "Fee",
+  amount_in: "Amount In",
+  amount_out: "Amount Out",
+  token_address_in: "Token Address In",
+  token_in_symbol: "Token Symbol In",
+  token_address_out: "Token Address Out",
+  token_out_symbol: "Token Symbol Out",
+}
