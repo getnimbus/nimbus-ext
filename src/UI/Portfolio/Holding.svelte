@@ -23,7 +23,11 @@
   import { groupBy } from "lodash";
   import { priceMobulaSubscribe } from "~/lib/price-mobulaWs";
   import { priceSubscribe } from "~/lib/price-ws";
-  import { Connection, Transaction } from "@solana/web3.js";
+  import {
+    Connection,
+    Transaction,
+    TransactionInstruction,
+  } from "@solana/web3.js";
   import { nimbus } from "~/lib/network";
   import { WalletProvider } from "@svelte-on-solana/wallet-adapter-ui";
   import {
@@ -33,7 +37,7 @@
   } from "@solana/wallet-adapter-wallets";
   import { walletStore } from "@svelte-on-solana/wallet-adapter-core";
   import { Buffer as BufferPolyfill } from "buffer";
-  import { createMutation } from "@tanstack/svelte-query";
+  import { createMutation, useQueryClient } from "@tanstack/svelte-query";
 
   export let selectedWallet;
   export let isLoadingNFT;
@@ -70,6 +74,8 @@
     new BackpackWalletAdapter(),
   ];
   const maxNumberOfWallets = 5;
+
+  const queryClient = useQueryClient();
 
   let dataSubWS = [];
   let filteredUndefinedCmcHoldingTokenData = [];
@@ -611,67 +617,72 @@
     }
   }
 
-  const onSubmitListNFT = async () => {
-    const params = {
-      price: Number(nftListPrice),
-      mintAddress: $selectedNftContractAddress,
-      marketplace: selectedMarket?.value,
-    };
-    try {
-      const res = await nimbus.get(
-        `/v2/address/${$selectedNftOwnerAddress}/nft/list`,
-        {
-          params,
-        }
-      );
-      if (res?.data && res?.data?.tx) {
-        $handleSignTrx.mutate({
-          trx: res?.data?.tx,
-          type: "List",
-        });
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  };
+  const onSubmitDeListNFT = createMutation({
+    onError: (error) => {
+      toastMsg = "Something wrong while de-list your nft. Please try again!";
+      isSuccessToast = false;
+      trigger();
+    },
+    mutationFn: async () => {
+      const params = {
+        mintAddress: $selectedNftContractAddress,
+        marketplace: $listingNft?.marketplace,
+      };
 
-  const onSubmitDeListNFT = async () => {
-    const params = {
-      mintAddress: $selectedNftContractAddress,
-      marketplace: $listingNft?.marketplace,
-    };
-    try {
       const res = await nimbus.get(
         `/v2/address/${$selectedNftOwnerAddress}/nft/delist`,
         {
           params,
         }
       );
-      if (res?.data && res?.data?.tx) {
-        $handleSignTrx.mutate({
-          trx: res?.data?.tx,
-          type: "De-List",
-        });
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  };
 
-  const handleSignTrx = createMutation({
+      const txBuffer = BufferPolyfill.from(res?.data?.tx, "base64");
+      const transaction = Transaction.from(txBuffer);
+      const connection = new Connection(
+        // "https://devnet-rpc.shyft.to?api_key=gsusEvomKHQwwltu" // DEVNET
+        "https://rpc.shyft.to?api_key=b4feHxaBppbRqTHc" // PROD
+        // "https://rpc.shyft.to?api_key=gsusEvomKHQwwltu"
+      );
+      const result = await $walletStore.sendTransaction(
+        transaction,
+        connection
+      );
+
+      toastMsg = "De-List your NFT successful";
+      isSuccessToast = true;
+      trigger();
+
+      queryClient.invalidateQueries(["nft-holding"]);
+
+      return result;
+    },
+  });
+
+  const onSubmitListNFT = createMutation({
     onError: (error) => {
-      console.log(error);
-      toastMsg = "Something wrong while submitting trx. Please try again!";
+      toastMsg = "Something wrong while list your nft. Please try again!";
       isSuccessToast = false;
       trigger();
     },
-    mutationFn: async (data: any) => {
-      const txBuffer = BufferPolyfill.from(data?.trx, "base64");
-      const transaction = Transaction.from(txBuffer);
+    mutationFn: async () => {
+      const params = {
+        price: Number(nftListPrice),
+        mintAddress: $selectedNftContractAddress,
+        marketplace: selectedMarket?.value,
+      };
 
+      const res = await nimbus.get(
+        `/v2/address/${$selectedNftOwnerAddress}/nft/list`,
+        {
+          params,
+        }
+      );
+
+      const txBuffer = BufferPolyfill.from(res?.data?.tx, "base64");
+      const transaction = Transaction.from(txBuffer);
       const connection = new Connection(
-        "https://devnet-rpc.shyft.to?api_key=gsusEvomKHQwwltu" // DEVNET
-        // "https://rpc.shyft.to?api_key=b4feHxaBppbRqTHc" // PROD
+        // "https://devnet-rpc.shyft.to?api_key=gsusEvomKHQwwltu" // DEVNET
+        "https://rpc.shyft.to?api_key=b4feHxaBppbRqTHc" // PROD
         // "https://rpc.shyft.to?api_key=gsusEvomKHQwwltu"
       );
       const result = await $walletStore.sendTransaction(
@@ -680,9 +691,11 @@
       );
       console.log("result:", result);
 
-      toastMsg = `${data?.type} your NFT successful`;
+      toastMsg = "List your NFT successful";
       isSuccessToast = true;
       trigger();
+
+      queryClient.invalidateQueries(["nft-holding"]);
 
       return result;
     },
@@ -1136,7 +1149,9 @@
         <SolanaAuth text="Connect wallet" />
       </div>
       <form
-        on:submit|preventDefault={onSubmitListNFT}
+        on:submit|preventDefault={() => {
+          $onSubmitListNFT.mutate();
+        }}
         class="flex flex-col xl:gap-3 gap-10"
       >
         <div
@@ -1187,7 +1202,7 @@
           <div class="xl:w-[120px] w-full">
             <Button
               type="submit"
-              isLoading={$handleSignTrx.isLoading}
+              isLoading={$onSubmitListNFT.isLoading}
               disabled={userAddress !== $selectedNftOwnerAddress}>Submit</Button
             >
           </div>
@@ -1230,7 +1245,9 @@
         <SolanaAuth text="Connect wallet" />
       </div>
       <form
-        on:submit|preventDefault={onSubmitDeListNFT}
+        on:submit|preventDefault={() => {
+          $onSubmitDeListNFT.mutate();
+        }}
         class="flex flex-col xl:gap-3 gap-10"
       >
         <div
@@ -1283,7 +1300,7 @@
           <div class="xl:w-[120px] w-full">
             <Button
               type="submit"
-              isLoading={$handleSignTrx.isLoading}
+              isLoading={$onSubmitDeListNFT.isLoading}
               disabled={userAddress !== $selectedNftOwnerAddress}>Submit</Button
             >
           </div>
