@@ -9,7 +9,7 @@
     isShowModalNftDeList,
     listingNft,
     selectedNftContractAddress,
-    wallet,
+    selectedNftOwnerAddress,
     userPublicAddress,
     realtimePrice,
     totalAssets,
@@ -568,6 +568,7 @@
   let modalVisible = false;
   let userPublicAddressChain = "EVM";
   let userAddress = $userPublicAddress;
+  let isLoading = false;
 
   onMount(() => {
     $walletStore.disconnect();
@@ -617,14 +618,20 @@
       marketplace: selectedMarket?.value,
     };
     try {
-      const res = await nimbus.get(`/v2/address/${$wallet}/nft/list`, {
-        params,
-      });
+      isLoading = true;
+      const res = await nimbus.get(
+        `/v2/address/${$selectedNftOwnerAddress}/nft/list`,
+        {
+          params,
+        }
+      );
       if (res?.data && res?.data?.tx) {
         sendTrxOnSolChain(res?.data?.tx, "List");
       }
     } catch (e) {
       console.log(e);
+    } finally {
+      isLoading = false;
     }
   };
 
@@ -634,14 +641,20 @@
       marketplace: $listingNft?.marketplace,
     };
     try {
-      const res = await nimbus.get(`/v2/address/${$wallet}/nft/delist`, {
-        params,
-      });
+      isLoading = true;
+      const res = await nimbus.get(
+        `/v2/address/${$selectedNftOwnerAddress}/nft/delist`,
+        {
+          params,
+        }
+      );
       if (res?.data && res?.data?.tx) {
         sendTrxOnSolChain(res?.data?.tx, "De-list");
       }
     } catch (e) {
       console.log(e);
+    } finally {
+      isLoading = false;
     }
   };
 
@@ -1132,7 +1145,7 @@
           }`}
         >
           <div class="xl:text-base text-2xl text-[#666666] font-medium">
-            Price ({$typeWallet})
+            Price (SOL)
           </div>
           <input
             type="text"
@@ -1174,10 +1187,9 @@
           <div class="xl:w-[120px] w-full">
             <Button
               type="submit"
-              isLoading={false}
-              disabled={userAddress !== $wallet}>Submit</Button
+              {isLoading}
+              disabled={userAddress !== $selectedNftOwnerAddress}>Submit</Button
             >
-            <!-- <Button type="submit" isLoading={false}>Submit</Button> -->
           </div>
         </div>
       </form>
@@ -1271,10 +1283,9 @@
           <div class="xl:w-[120px] w-full">
             <Button
               type="submit"
-              isLoading={false}
-              disabled={userAddress !== $wallet}>Submit</Button
+              {isLoading}
+              disabled={userAddress !== $selectedNftOwnerAddress}>Submit</Button
             >
-            <!-- <Button type="submit" isLoading={false}>Submit</Button> -->
           </div>
         </div>
       </form>

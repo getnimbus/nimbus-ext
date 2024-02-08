@@ -21,6 +21,7 @@ export const isShowModalNftList = writable(false);
 export const isShowModalNftDeList = writable(false);
 export const listingNft = writable({});
 export const selectedNftContractAddress = writable("");
+export const selectedNftOwnerAddress = writable("");
 export const detectParams = writable(window.location.pathname);
 export const realtimePrice = writable({});
 export const totalPositions = writable(0);
