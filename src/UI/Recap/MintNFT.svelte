@@ -1,14 +1,9 @@
 <script lang="ts">
   import { createEventDispatcher, onDestroy, onMount } from "svelte";
-  import {
-    createQuery,
-    createMutation,
-    useQueryClient,
-  } from "@tanstack/svelte-query";
+  import { createMutation } from "@tanstack/svelte-query";
   import { nimbus } from "~/lib/network";
   import { triggerFirework } from "~/utils";
   import { wait } from "~/entries/background/utils";
-  import { userPublicAddress } from "~/store";
   import { walletStore } from "@svelte-on-solana/wallet-adapter-core";
   import { Buffer as BufferPolyfill } from "buffer";
   import mixpanel from "mixpanel-browser";
