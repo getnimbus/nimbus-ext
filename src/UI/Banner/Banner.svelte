@@ -35,7 +35,7 @@
             src="https://lixi.aura.network/_next/static/media/logo.2ae31c42.svg"
             class="inline-block"
           /> -->
-          Aura Airdrop</strong
+          Aura Network Airdrop</strong
         >
         <svg
           viewBox="0 0 2 2"
