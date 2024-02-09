@@ -30,23 +30,31 @@
     </div>
     <div class="flex flex-wrap items-center gap-x-4 xl:gap-y-2 gap-y-3">
       <p class="xl:text-sm text-2xl xl:leading-6 leading-8">
-        <strong class="font-semibold">Solana Recap 2023</strong>
+        <strong class="font-semibold">
+          <!-- <img
+            src="https://lixi.aura.network/_next/static/media/logo.2ae31c42.svg"
+            class="inline-block"
+          /> -->
+          Aura Airdrop</strong
+        >
         <svg
           viewBox="0 0 2 2"
           class="mx-2 inline h-0.5 w-0.5 fill-current"
           aria-hidden="true"
         >
           <circle cx="1" cy="1" r="1" />
-        </svg>Discover the unforgettable moments of 2023 with Solana – a year of
-        remarkable moments
+        </svg>Join Aura Year of Dragon's Lixi
       </p>
-      <Link to="recap">
+      <a
+        href="https://twitter.com/get_nimbus/status/1755909540892028990"
+        target="_blank"
+      >
         <div
-          class="flex-none rounded-full bg-[#27326f] xl:px-3.5 xl:py-1 px-4 py-2 xl:text-sm text-2xl font-semibold text-white shadow-sm"
+          class="flex-none rounded-full bg-[#ba0d10] xl:px-3.5 xl:py-1 px-4 py-2 xl:text-sm text-2xl font-semibold text-white shadow-sm"
         >
-          View your recap <span aria-hidden="true">&rarr;</span>
+          Get my lucky money <span aria-hidden="true">&rarr;</span>
         </div>
-      </Link>
+      </a>
     </div>
   </div>
 </div>
