@@ -683,9 +683,9 @@
             </a>
           {/if}
 
-          <!-- {#if !isShowCMC || !isShowCoingecko}
-            <div class="w-[20px] h-[20px]" />
-          {/if} -->
+          {#if !isShowCMC || !isShowCoingecko}
+            <div class="h-[20px]" />
+          {/if}
 
           {#if data.positionType === "ERC_404"}
             <span
