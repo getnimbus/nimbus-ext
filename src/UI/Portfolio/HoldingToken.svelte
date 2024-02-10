@@ -47,6 +47,7 @@
   let isShowCMC = false;
   let isShowCoingecko = false;
   let isShowReport = false;
+  let showType = false;
 
   let showTableVaults = false;
   let selectedHighestVault;
@@ -283,6 +284,7 @@
     if (data?.cg_id) {
       isShowCoingecko = true;
     }
+    showType = true;
   }}
   on:mouseleave={() => {
     if ($user && Object.keys($user).length !== 0) {
@@ -294,6 +296,7 @@
     if (data?.cg_id) {
       isShowCoingecko = false;
     }
+    showType = false;
   }}
 >
   <td
@@ -680,8 +683,23 @@
             </a>
           {/if}
 
-          {#if !isShowCMC || !isShowCoingecko}
+          <!-- {#if !isShowCMC || !isShowCoingecko}
             <div class="w-[20px] h-[20px]" />
+          {/if} -->
+
+          {#if data.positionType === "ERC_404"}
+            <span
+              class="inline-flex items-center gap-x-1.5 rounded-full bg-yellow-100 px-1 py-0.5 text-[10px] font-medium text-yellow-800"
+            >
+              <svg
+                class="h-1.5 w-1.5 fill-yellow-500"
+                viewBox="0 0 6 6"
+                aria-hidden="true"
+              >
+                <circle cx={3} cy={3} r={3} />
+              </svg>
+              ERC 404
+            </span>
           {/if}
         </div>
       </div>
