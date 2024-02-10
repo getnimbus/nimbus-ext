@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { useNavigate } from "svelte-navigator";
   import { shorterName } from "~/utils";
   import { detectedChain } from "~/lib/chains";
   import { typeWallet, isDarkMode, user } from "~/store";
@@ -27,8 +26,6 @@
   export let selectedWallet;
   export let index;
   export let lastIndex: boolean = false;
-
-  const navigate = useNavigate();
 
   const MultipleLang = {
     content: {
@@ -721,7 +718,6 @@
   <NftDetailSidebar
     {selectedNftCollectionId}
     {selectedNftCollectionChain}
-    collectionId={data.collectionId}
     addressWallet={selectedWallet}
   />
 </OverlaySidebar>
