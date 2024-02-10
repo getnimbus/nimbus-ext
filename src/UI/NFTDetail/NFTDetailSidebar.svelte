@@ -22,7 +22,6 @@
 
   export let selectedNftCollectionId;
   export let selectedNftCollectionChain;
-  export let collectionId;
   export let addressWallet;
 
   let tokens = [];
@@ -62,7 +61,8 @@
   const formatDataHoldingNFT = (dataNftHolding) => {
     const selectedCollection = dataNftHolding.find(
       (item) =>
-        item?.collectionId?.toLowerCase() === collectionId?.toLowerCase()
+        item?.collectionId?.toLowerCase() ===
+        selectedNftCollectionId?.toLowerCase()
     );
     if (selectedCollection) {
       selectedNftOwnerAddress.update((n) => (n = selectedCollection?.owner));
@@ -104,7 +104,11 @@
   });
 
   $: {
-    if (!$queryNftHolding.isError && $queryNftHolding.data !== undefined) {
+    if (
+      !$queryNftHolding.isError &&
+      $queryNftHolding.data !== undefined &&
+      selectedNftCollectionId
+    ) {
       formatDataHoldingNFT($queryNftHolding.data);
     }
   }
@@ -236,7 +240,7 @@
           : "The Floor price of last 24h, if there is no volume, the floor price is 0"}
         isTooltip
         link={false
-          ? `https://magiceden.io/ordinals/marketplace/${collectionId}`
+          ? `https://magiceden.io/ordinals/marketplace/${selectedNftCollectionId}`
           : ""}
       >
         <div class="xl:text-3xl text-5xl flex items-end gap-1">
