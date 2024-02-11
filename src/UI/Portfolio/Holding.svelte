@@ -179,21 +179,25 @@
         formatData = data.map((item) => {
           return {
             ...item,
-            market_price: item.chain === "ZETA" ? 10 : item?.rate || 0,
+            market_price: item?.chain === "ZETA" ? 10 : item?.rate || 0,
           };
         });
         filteredHoldingDataToken = formatData.filter((item) => item.value > 1);
         sumTokens = data.reduce((prev, item) => prev + item.value, 0);
       }
     }
+
     if (holdingNFTData) {
       formatDataNFT = holdingNFTData
         .map((item) => {
           return {
             ...item,
-            current_native_token: item?.floorPrice * item?.tokens?.length,
+            current_native_token:
+              Number(item?.floorPrice) * item?.tokens?.length,
             current_value:
-              item?.floorPrice * item?.marketPrice * item?.tokens?.length,
+              Number(item?.floorPrice) *
+              Number(item?.marketPrice) *
+              item?.tokens?.length,
           };
         })
         .sort((a, b) => {
@@ -390,19 +394,20 @@
         (prev, item) => prev + item.value,
         0
       );
+
       // update data nft holding
       const formatDataNFTWithMarketPrice = formatDataNFT.map((item) => {
         return {
           ...item,
           marketPrice: $realtimePrice[item?.nativeToken?.cmcId]
             ? Number($realtimePrice[item?.nativeToken?.cmcId]?.price)
-            : Number(item.marketPrice),
+            : Number(item?.marketPrice),
           current_native_token: item?.floorPrice * item?.tokens?.length,
           current_value:
             item?.floorPrice *
             ($realtimePrice[item?.nativeToken?.cmcId]
               ? Number($realtimePrice[item?.nativeToken?.cmcId]?.price)
-              : Number(item.marketPrice)) *
+              : Number(item?.marketPrice)) *
             item?.tokens?.length,
         };
       });
@@ -492,6 +497,7 @@
             })
             .reduce((prev, item) => prev + Number(item.realized_profit), 0))
       );
+
       unrealizedProfit.update(
         (n) =>
           (n = (formatData || [])
