@@ -25,10 +25,13 @@
     },
   });
 
-  let isTouchDevice = false;
+  const Error = () => {
+    return `<div class="flex items-center justify-center h-screen">
+        Something when wrong! Please reload your browser to try again
+      </div>`;
+  };
 
-  // TODO: Add Lazyload for each routes
-  // const hash = createHistory(createHashSource());
+  let isTouchDevice = false;
 
   $: {
     browser.storage.onChanged.addListener((changes) => {
@@ -75,9 +78,7 @@
           {:then { default: component }}
             <svelte:component this={component} />
           {:catch error}
-            <div class="flex items-center justify-center h-screen">
-              Something when wrong! Please reload your browser to try again
-            </div>
+            {@html Error()}
           {/await}
         </Route>
 
@@ -94,9 +95,7 @@
               {:then { default: component }}
                 <svelte:component this={component} />
               {:catch error}
-                <div class="flex items-center justify-center h-screen">
-                  Something when wrong! Please reload your browser to try again
-                </div>
+                {@html Error()}
               {/await}
             </Route>
 
@@ -108,9 +107,7 @@
               {:then { default: component }}
                 <svelte:component this={component} />
               {:catch error}
-                <div class="flex items-center justify-center h-screen">
-                  Something when wrong! Please reload your browser to try again
-                </div>
+                {@html Error()}
               {/await}
             </Route>
 
@@ -122,9 +119,7 @@
               {:then { default: component }}
                 <svelte:component this={component} />
               {:catch error}
-                <div class="flex items-center justify-center h-screen">
-                  Something when wrong! Please reload your browser to try again
-                </div>
+                {@html Error()}
               {/await}
             </Route>
 
@@ -136,9 +131,7 @@
               {:then { default: component }}
                 <svelte:component this={component} />
               {:catch error}
-                <div class="flex items-center justify-center h-screen">
-                  Something when wrong! Please reload your browser to try again
-                </div>
+                {@html Error()}
               {/await}
             </Route>
 
@@ -150,9 +143,7 @@
               {:then { default: component }}
                 <svelte:component this={component} />
               {:catch error}
-                <div class="flex items-center justify-center h-screen">
-                  Something when wrong! Please reload your browser to try again
-                </div>
+                {@html Error()}
               {/await}
             </Route>
 
@@ -165,9 +156,7 @@
               {:then { default: component }}
                 <svelte:component this={component} />
               {:catch error}
-                <div class="flex items-center justify-center h-screen">
-                  Something when wrong! Please reload your browser to try again
-                </div>
+                {@html Error()}
               {/await}
             </Route>
 
@@ -179,9 +168,7 @@
               {:then { default: component }}
                 <svelte:component this={component} />
               {:catch error}
-                <div class="flex items-center justify-center h-screen">
-                  Something when wrong! Please reload your browser to try again
-                </div>
+                {@html Error()}
               {/await}
             </Route>
 
@@ -193,9 +180,7 @@
               {:then { default: component }}
                 <svelte:component this={component} />
               {:catch error}
-                <div class="flex items-center justify-center h-screen">
-                  Something when wrong! Please reload your browser to try again
-                </div>
+                {@html Error()}
               {/await}
             </Route>
 
@@ -207,9 +192,7 @@
               {:then { default: component }}
                 <svelte:component this={component} />
               {:catch error}
-                <div class="flex items-center justify-center h-screen">
-                  Something when wrong! Please reload your browser to try again
-                </div>
+                {@html Error()}
               {/await}
             </Route>
 
@@ -221,9 +204,7 @@
               {:then { default: component }}
                 <svelte:component this={component} />
               {:catch error}
-                <div class="flex items-center justify-center h-screen">
-                  Something when wrong! Please reload your browser to try again
-                </div>
+                {@html Error()}
               {/await}
             </Route>
 
@@ -235,9 +216,7 @@
               {:then { default: component }}
                 <svelte:component this={component} />
               {:catch error}
-                <div class="flex items-center justify-center h-screen">
-                  Something when wrong! Please reload your browser to try again
-                </div>
+                {@html Error()}
               {/await}
             </Route>
 
@@ -249,9 +228,7 @@
               {:then { default: component }}
                 <svelte:component this={component} />
               {:catch error}
-                <div class="flex items-center justify-center h-screen">
-                  Something when wrong! Please reload your browser to try again
-                </div>
+                {@html Error()}
               {/await}
             </Route>
 
@@ -263,9 +240,7 @@
               {:then { default: component }}
                 <svelte:component this={component} />
               {:catch error}
-                <div class="flex items-center justify-center h-screen">
-                  Something when wrong! Please reload your browser to try again
-                </div>
+                {@html Error()}
               {/await}
             </Route>
 
@@ -277,9 +252,7 @@
               {:then { default: component }}
                 <svelte:component this={component} />
               {:catch error}
-                <div class="flex items-center justify-center h-screen">
-                  Something when wrong! Please reload your browser to try again
-                </div>
+                {@html Error()}
               {/await}
             </Route>
 
@@ -291,9 +264,7 @@
               {:then { default: component }}
                 <svelte:component this={component} />
               {:catch error}
-                <div class="flex items-center justify-center h-screen">
-                  Something when wrong! Please reload your browser to try again
-                </div>
+                {@html Error()}
               {/await}
             </Route>
 
@@ -305,9 +276,7 @@
               {:then { default: component }}
                 <svelte:component this={component} />
               {:catch error}
-                <div class="flex items-center justify-center h-screen">
-                  Something when wrong! Please reload your browser to try again
-                </div>
+                {@html Error()}
               {/await}
             </Route>
 
@@ -319,9 +288,7 @@
               {:then { default: component }}
                 <svelte:component this={component} />
               {:catch error}
-                <div class="flex items-center justify-center h-screen">
-                  Something when wrong! Please reload your browser to try again
-                </div>
+                {@html Error()}
               {/await}
             </Route>
           </div>
