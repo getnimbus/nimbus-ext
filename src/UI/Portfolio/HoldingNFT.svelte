@@ -27,6 +27,8 @@
   export let index;
   export let lastIndex: boolean = false;
 
+  $: console.log("data: ", data);
+
   const MultipleLang = {
     content: {
       modal_cancel: i18n(
