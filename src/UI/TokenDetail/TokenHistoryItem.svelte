@@ -114,7 +114,8 @@
 
   <td
     class={`py-3 ${
-      listSupported.filter((item) => item !== "CEX").includes($typeWallet)
+      listSupported.filter((item) => item !== "CEX").includes($typeWallet) &&
+      data.chain !== "CEX"
         ? ""
         : "pr-3"
     } ${$isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"}`}
@@ -126,7 +127,9 @@
     </div>
   </td>
 
-  {#if listSupported.filter((item) => item !== "CEX").includes($typeWallet)}
+  {#if listSupported
+    .filter((item) => item !== "CEX")
+    .includes($typeWallet) && data.chain !== "CEX"}
     <td
       class={`py-3 w-10 ${
         $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
