@@ -151,11 +151,11 @@
     totalFee /
     (Number(buyHistoryTradeList.length) + Number(sellHistoryTradeList.length));
 
-  $: colspan = listSupported
-    .filter((item) => item !== "CEX")
-    .includes($typeWallet)
-    ? 6
-    : 5;
+  $: colspan =
+    listSupported.filter((item) => item !== "CEX").includes($typeWallet) &&
+    dataHistoryTokenDetail.find((item) => item.chain !== "CEX") !== undefined
+      ? 6
+      : 5;
 
   const triggerExportCSV = () => {
     exportCSV = !exportCSV;
@@ -467,7 +467,10 @@
                 class={`py-3 rounded-tr-[10px] ${
                   listSupported
                     .filter((item) => item !== "CEX")
-                    .includes($typeWallet)
+                    .includes($typeWallet) &&
+                  dataHistoryTokenDetail.find(
+                    (item) => item.chain !== "CEX"
+                  ) !== undefined
                     ? ""
                     : "pr-3"
                 }`}
@@ -481,7 +484,7 @@
 
               {#if listSupported
                 .filter((item) => item !== "CEX")
-                .includes($typeWallet)}
+                .includes($typeWallet) && dataHistoryTokenDetail.find((item) => item.chain !== "CEX") !== undefined}
                 <th class="py-3 w-10" />
               {/if}
             </tr>
