@@ -33,6 +33,19 @@
   export let symbol;
   export let price;
 
+  const typeChart = [
+    {
+      label: "Candles",
+      value: "candles",
+    },
+    {
+      label: "Line",
+      value: "line",
+    },
+  ];
+
+  let selectedTypeChart = "candles";
+
   let selectedTimeFrame: "7D" | "30D" | "3M" | "1Y" | "ALL" = "30D";
   let dataPriceChart = [];
   let dataAvgCost = [];
@@ -911,19 +924,6 @@
     }
   }
 
-  let selectedTypeChart = "candles";
-
-  const typeChart = [
-    {
-      label: "Candles",
-      value: "candles",
-    },
-    {
-      label: "Line",
-      value: "line",
-    },
-  ];
-
   $: theme = $isDarkMode ? "dark" : "white";
 </script>
 
@@ -960,7 +960,7 @@
       </AnimateSharedLayout>
     </div>
 
-    {#if selectedTypeChart !== "candles"}
+    {#if selectedTypeChart !== "candles" && !["SOL", "BTC", "TON"].includes(chain)}
       <div class="flex items-center">
         <AnimateSharedLayout>
           {#each timeFrame as type}
@@ -1014,24 +1014,45 @@
     <div class="h-full">
       {#if $queryTokenPrice.isError || (dataPriceChart && dataPriceChart.length === 0)}
         <div
-          class="flex justify-center items-center text-lg text-gray-400 h-[475px]"
+          class="flex justify-center items-center text-lg text-gray-400 h-[485px] relative"
         >
           Empty
+          {#if ["SOL", "BTC", "TON", "NEAR", "ALGO"].includes(chain)}
+            <div
+              class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center gap-3 pt-62 z-30 backdrop-blur-md ${
+                $isDarkMode ? "bg-black/90" : "bg-white/95"
+              }`}
+            >
+              <div class="text-lg">Coming soon 🚀</div>
+            </div>
+          {/if}
         </div>
       {:else}
         <div class="h-full">
           {#if selectedTypeChart === "candles"}
-            <TradingViewChart
-              id={symbol}
-              mobile={false}
-              {contractAddress}
-              {price}
-              {chain}
-              {buyHistoryTradeList}
-              {sellHistoryTradeList}
-            />
+            <div class="relative h-[485px]">
+              {#if ["ETH", "BNB", "MATIC", "USDT", "USDC"].includes(symbol) || ["SOL", "BTC", "TON", "NEAR", "ALGO"].includes(chain)}
+                <div
+                  class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center gap-3 pt-62 z-30 backdrop-blur-md ${
+                    $isDarkMode ? "bg-black/90" : "bg-white/95"
+                  }`}
+                >
+                  <div class="text-lg">Coming soon 🚀</div>
+                </div>
+              {:else}
+                <TradingViewChart
+                  id={symbol}
+                  mobile={false}
+                  {contractAddress}
+                  {price}
+                  {chain}
+                  {buyHistoryTradeList}
+                  {sellHistoryTradeList}
+                />
+              {/if}
+            </div>
           {:else}
-            <div class="relative">
+            <div class="relative h-[485px]">
               <EChart
                 id={id + "line-chart"}
                 {theme}
@@ -1049,6 +1070,15 @@
                   height="140"
                 />
               </div>
+              {#if ["SOL", "BTC", "TON"].includes(chain)}
+                <div
+                  class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center gap-3 pt-62 z-30 backdrop-blur-md ${
+                    $isDarkMode ? "bg-black/90" : "bg-white/95"
+                  }`}
+                >
+                  <div class="text-lg">Coming soon 🚀</div>
+                </div>
+              {/if}
             </div>
           {/if}
         </div>
