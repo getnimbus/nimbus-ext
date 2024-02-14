@@ -4,7 +4,7 @@
   dayjs.extend(isBetween);
   import { createQuery } from "@tanstack/svelte-query";
   import { defillama, nimbus } from "~/lib/network";
-  import { isDarkMode, typeWallet } from "~/store";
+  import { isDarkMode } from "~/store";
   import {
     autoFontSize,
     formatBalance,
@@ -14,8 +14,9 @@
   import numeral from "numeral";
   import { groupBy } from "lodash";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
-  import { chainSupport, handleFormatBlockChainId } from "~/lib/price-mobulaWs";
+  import { handleFormatBlockChainId } from "~/lib/price-mobulaWs";
 
+  import TradingViewChart from "~/UI/TokenDetail/TradingViewChart.svelte";
   import EChart from "~/components/EChart.svelte";
   import Loading from "~/components/Loading.svelte";
 
@@ -30,6 +31,20 @@
   export let avgCost;
   export let chain: string;
   export let symbol;
+  export let price;
+
+  const typeChart = [
+    {
+      label: "Candles",
+      value: "candles",
+    },
+    {
+      label: "Line",
+      value: "line",
+    },
+  ];
+
+  let selectedTypeChart = "candles";
 
   let selectedTimeFrame: "7D" | "30D" | "3M" | "1Y" | "ALL" = "30D";
   let dataPriceChart = [];
@@ -913,48 +928,83 @@
 </script>
 
 <div class="flex flex-col gap-4">
-  <div class="flex justify-end">
-    <AnimateSharedLayout>
-      {#each timeFrame as type}
-        <div
-          class="relative cursor-pointer xl:text-sm text-base font-medium py-1 px-3 rounded-[100px] transition-all"
-          on:click={() => {
-            if (
-              !$queryTokenPrice.isError ||
-              (dataPriceChart && dataPriceChart.length !== 0)
-            ) {
-              selectedTimeFrame = type.value;
-            }
-          }}
-        >
+  <div class="flex justify-between gap-6">
+    <div class="flex items-center">
+      <AnimateSharedLayout>
+        {#each typeChart as type}
           <div
-            class={`relative z-20 ${
-              type.value === selectedTimeFrame && "text-white"
-            }`}
+            class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
+            on:click={() => (selectedTypeChart = type.value)}
           >
-            {type.label}
-          </div>
-          {#if type.value === selectedTimeFrame}
-            <Motion
-              let:motion
-              layoutId="active-pill"
-              transition={{ type: "spring", duration: 0.6 }}
+            <div
+              class={`relative z-20 ${
+                selectedTypeChart === type.value && "text-white"
+              }`}
             >
-              <div
-                class="absolute inset-0 rounded-full z-10"
-                style={`background:${
+              {type.label}
+            </div>
+            {#if type.value === selectedTypeChart}
+              <Motion
+                let:motion
+                layoutId="active-pill"
+                transition={{ type: "spring", duration: 0.6 }}
+              >
+                <div
+                  class="absolute inset-0 rounded-full bg-[#1E96FC] z-10"
+                  use:motion
+                />
+              </Motion>
+            {/if}
+          </div>
+        {/each}
+      </AnimateSharedLayout>
+    </div>
+
+    {#if selectedTypeChart !== "candles" && !["SOL", "BTC", "TON"].includes(chain)}
+      <div class="flex items-center">
+        <AnimateSharedLayout>
+          {#each timeFrame as type}
+            <div
+              class="relative cursor-pointer xl:text-sm text-base font-medium py-1 px-3 rounded-[100px] transition-all"
+              on:click={() => {
+                if (
                   !$queryTokenPrice.isError ||
                   (dataPriceChart && dataPriceChart.length !== 0)
-                    ? "rgba(30, 150, 252, 1)"
-                    : "#dddddd"
-                } `}
-                use:motion
-              />
-            </Motion>
-          {/if}
-        </div>
-      {/each}
-    </AnimateSharedLayout>
+                ) {
+                  selectedTimeFrame = type.value;
+                }
+              }}
+            >
+              <div
+                class={`relative z-20 ${
+                  type.value === selectedTimeFrame && "text-white"
+                }`}
+              >
+                {type.label}
+              </div>
+              {#if type.value === selectedTimeFrame}
+                <Motion
+                  let:motion
+                  layoutId="active-pill"
+                  transition={{ type: "spring", duration: 0.6 }}
+                >
+                  <div
+                    class="absolute inset-0 rounded-full z-10"
+                    style={`background:${
+                      !$queryTokenPrice.isError ||
+                      (dataPriceChart && dataPriceChart.length !== 0)
+                        ? "rgba(30, 150, 252, 1)"
+                        : "#dddddd"
+                    } `}
+                    use:motion
+                  />
+                </Motion>
+              {/if}
+            </div>
+          {/each}
+        </AnimateSharedLayout>
+      </div>
+    {/if}
   </div>
   {#if $queryTokenPrice.isFetching}
     <div class="flex items-center justify-center h-[475px]">
@@ -964,29 +1014,73 @@
     <div class="h-full">
       {#if $queryTokenPrice.isError || (dataPriceChart && dataPriceChart.length === 0)}
         <div
-          class="flex justify-center items-center text-lg text-gray-400 h-[475px]"
+          class="flex justify-center items-center text-lg text-gray-400 h-[485px] relative"
         >
           Empty
+          {#if ["SOL", "BTC", "TON", "NEAR", "ALGO"].includes(chain)}
+            <div
+              class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center gap-3 pt-62 z-30 backdrop-blur-md ${
+                $isDarkMode ? "bg-black/90" : "bg-white/95"
+              }`}
+            >
+              <div class="text-lg">Coming soon 🚀</div>
+            </div>
+          {/if}
         </div>
       {:else}
-        <div class="relative">
-          <EChart
-            id={id + "line-chart"}
-            {theme}
-            notMerge={true}
-            option={optionLine}
-            height={485}
-          />
-          <div
-            class="opacity-40 absolute transform -translate-x-1/2 -translate-y-1/2 pointer-events-none top-1/2 left-1/2"
-          >
-            <img
-              src={$isDarkMode ? LogoWhite : Logo}
-              alt=""
-              width="140"
-              height="140"
-            />
-          </div>
+        <div class="h-full">
+          {#if selectedTypeChart === "candles"}
+            <div class="relative h-[485px]">
+              {#if ["ETH", "BNB", "MATIC", "USDT", "USDC"].includes(symbol) || ["SOL", "BTC", "TON", "NEAR", "ALGO"].includes(chain)}
+                <div
+                  class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center gap-3 pt-62 z-30 backdrop-blur-md ${
+                    $isDarkMode ? "bg-black/90" : "bg-white/95"
+                  }`}
+                >
+                  <div class="text-lg">Coming soon 🚀</div>
+                </div>
+              {:else}
+                <TradingViewChart
+                  id={symbol}
+                  mobile={false}
+                  {contractAddress}
+                  {price}
+                  {chain}
+                  {buyHistoryTradeList}
+                  {sellHistoryTradeList}
+                />
+              {/if}
+            </div>
+          {:else}
+            <div class="relative h-[485px]">
+              <EChart
+                id={id + "line-chart"}
+                {theme}
+                notMerge={true}
+                option={optionLine}
+                height={485}
+              />
+              <div
+                class="opacity-40 absolute transform -translate-x-1/2 -translate-y-1/2 pointer-events-none top-1/2 left-1/2"
+              >
+                <img
+                  src={$isDarkMode ? LogoWhite : Logo}
+                  alt=""
+                  width="140"
+                  height="140"
+                />
+              </div>
+              {#if ["SOL", "BTC", "TON"].includes(chain)}
+                <div
+                  class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center gap-3 pt-62 z-30 backdrop-blur-md ${
+                    $isDarkMode ? "bg-black/90" : "bg-white/95"
+                  }`}
+                >
+                  <div class="text-lg">Coming soon 🚀</div>
+                </div>
+              {/if}
+            </div>
+          {/if}
         </div>
       {/if}
     </div>
