@@ -13,13 +13,13 @@
     user,
   } from "~/store";
   import { drivePortfolio } from "~/utils";
+  import { bigGeneration, otherGeneration } from "~/lib/chains";
 
   import Button from "~/components/Button.svelte";
 
   import Plus from "~/assets/plus.svg";
   import checkMark from "~/assets/check.svg";
   import heroImage from "~/assets/recap/hero/heroimage.png";
-  import { bigGeneration, otherGeneration } from "~/lib/chains";
 
   export let handleOpenAddModal = () => {};
   export let btntext;
@@ -96,16 +96,16 @@
         </div>
         <div class="grid grid-cols-2 grid-rows-2 xl:text-base text-2xl">
           <div class="flex gap-1 items-center">
-            <img src={checkMark} alt="" /> Token & NFT
+            <img src={checkMark} alt="" class="w-max h-max" /> Token & NFT
           </div>
           <div class="flex gap-1 items-center">
-            <img src={checkMark} alt="" /> Profit and Loss
+            <img src={checkMark} alt="" class="w-max h-max" /> Profit and Loss
           </div>
           <div class="flex gap-1 items-center">
-            <img src={checkMark} alt="" /> Risk Analysis
+            <img src={checkMark} alt="" class="w-max h-max" /> Risk Analysis
           </div>
           <div class="flex gap-1 items-center">
-            <img src={checkMark} alt="" /> Whales list
+            <img src={checkMark} alt="" class="w-max h-max" /> Whales list
           </div>
         </div>
       </div>
