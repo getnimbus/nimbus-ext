@@ -9,7 +9,7 @@
   import { isDarkMode } from "~/store";
   import { handleFormatBlockChainId } from "~/lib/price-mobulaWs";
   import { UDFCompatibleDatafeed } from "~/lib/trading-view/datafeeds/udf/lib/udf-compatible-datafeed";
-  import axios from "axios";
+  import { nimbus } from "~/lib/network";
   import { formatBalance } from "~/utils";
 
   export let id: string;
@@ -43,18 +43,20 @@
 
   const handleGetPairData = async (address: string) => {
     try {
-      const res = await axios.get(
-        `https://api.mobula.io/api/1/market/pairs?asset=${address}&&blockchain=${handleFormatBlockChainId(
-          chain
-        )}`
-      );
-      if (res && res?.data?.data) {
+      const params = {
+        address,
+        blockchain: handleFormatBlockChainId(chain),
+      };
+      const res = await nimbus.get("/token/market-pairs/mobula", {
+        params,
+      });
+      if (res && res?.data) {
         baseAsset = {
           name: id,
-          address: res?.data?.data?.pairs[0]?.address,
+          address: res?.data?.pairs[0]?.address,
           price,
-          token0: res?.data?.data?.pairs[0]?.token0?.symbol,
-          token1: res?.data?.data?.pairs[0]?.token1?.symbol,
+          token0: res?.data?.pairs[0]?.token0?.symbol,
+          token1: res?.data?.pairs[0]?.token1?.symbol,
         };
       }
     } catch (error) {
