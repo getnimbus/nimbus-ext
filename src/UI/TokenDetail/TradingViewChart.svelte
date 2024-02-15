@@ -56,9 +56,11 @@
           token0: res?.data?.data?.pairs[0]?.token0?.symbol,
           token1: res?.data?.data?.pairs[0]?.token1?.symbol,
         };
+      } else {
+        console.log("HELLO WORLD");
       }
-    } catch (e) {
-      console.log(e);
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -97,8 +99,8 @@
           };
 
     try {
-      import("../../../public/static/charting_library").then(
-        ({ widget: Widget }) => {
+      import("../../../public/static/charting_library")
+        .then(({ widget: Widget }) => {
           const tvWidget = new Widget({
             ...options,
             container: chartContainer,
@@ -118,6 +120,9 @@
             autosize: true,
             theme: $isDarkMode ? "Dark" : "Light",
             timezone: Intl.DateTimeFormat().resolvedOptions().timeZone as any,
+            favorites: {
+              intervals: ["60", "240", "1", "5"],
+            },
             studies_overrides: {
               "volume.volume.color.0": "#ea3943",
               "volume.volume.color.1": "#0ECB81",
@@ -156,10 +161,12 @@
                 .setTime(Number(item.created_at));
             });
           });
-        }
-      );
+        })
+        .catch((error) => {
+          console.error(error);
+        });
     } catch (error) {
-      console.log("error", error);
+      console.error(error);
     }
   };
 
