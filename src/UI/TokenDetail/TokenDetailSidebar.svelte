@@ -12,6 +12,7 @@
   import { linkExplorer, listSupported } from "~/lib/chains";
   import { filterAvgCostType, shorterAddress } from "~/utils";
   import { useNavigate } from "svelte-navigator";
+  import dayjs from "dayjs";
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
@@ -26,7 +27,6 @@
 
   import TrendUp from "~/assets/trend-up.svg";
   import TrendDown from "~/assets/trend-down.svg";
-  import dayjs from "dayjs";
 
   export let data;
   export let showSideTokenDetail;
@@ -205,6 +205,7 @@
     symbol={data?.symbol}
     avgCost={data?.profit?.averageCost}
     chain={data?.chain}
+    price={Number(data?.market_price || 0)}
   />
 
   <div class="flex flex-col justify-between gap-6">
