@@ -56,8 +56,6 @@
           token0: res?.data?.data?.pairs[0]?.token0?.symbol,
           token1: res?.data?.data?.pairs[0]?.token1?.symbol,
         };
-      } else {
-        console.log("HELLO WORLD");
       }
     } catch (error) {
       console.error(error);
