@@ -15,12 +15,12 @@ export const overrides = (isWhiteMode: boolean) => ({
   "mainSeriesProperties.candleStyle.upColor": "#0ECB81",
   "mainSeriesProperties.candleStyle.downColor": "#ea3943",
   "paneProperties.background": isWhiteMode
-    ? "rgba(255,255,255,1)"
-    : "rgba(19, 22, 39, 1)",
+    ? "#ffffff"
+    : "#0f0f0f",
   "paneProperties.backgroundType": "solid",
   "scalesProperties.backgroundColor": isWhiteMode
-    ? "rgba(255,255,255,1)"
-    : "rgba(19, 22, 39, 1)",
+    ? "#ffffff"
+    : "#0f0f0f",
   "paneProperties.legendProperties.showStudyArguments": true,
   "paneProperties.legendProperties.showStudyTitles": true,
   "paneProperties.legendProperties.showStudyValues": true,

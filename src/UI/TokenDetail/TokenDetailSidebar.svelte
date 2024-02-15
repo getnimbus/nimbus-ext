@@ -12,6 +12,7 @@
   import { linkExplorer, listSupported } from "~/lib/chains";
   import { filterAvgCostType, shorterAddress } from "~/utils";
   import { useNavigate } from "svelte-navigator";
+  import dayjs from "dayjs";
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
@@ -26,7 +27,6 @@
 
   import TrendUp from "~/assets/trend-up.svg";
   import TrendDown from "~/assets/trend-down.svg";
-  import dayjs from "dayjs";
 
   export let data;
   export let showSideTokenDetail;
