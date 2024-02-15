@@ -121,7 +121,7 @@
             theme: $isDarkMode ? "Dark" : "Light",
             timezone: Intl.DateTimeFormat().resolvedOptions().timeZone as any,
             favorites: {
-              intervals: ["60", "240", "1", "5"],
+              intervals: ["60", "240", "1", "5", "1440"],
             },
             studies_overrides: {
               "volume.volume.color.0": "#ea3943",
