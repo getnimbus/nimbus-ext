@@ -241,7 +241,7 @@
 
         return {
           ...item,
-          isDone: !item.isInternalLink && selectedLogs,
+          isDone: selectedLogs,
         };
       });
     }
