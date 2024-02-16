@@ -236,7 +236,12 @@
       dataCheckinHistory = $queryDailyCheckin?.data?.checkinLogs;
       quests = $queryDailyCheckin?.data?.quests.map((item, index) => {
         const selectedLogs = dataCheckinHistory
-          .filter((log) => log.type === "QUEST" && log.note !== "id-generate")
+          .filter(
+            (log) =>
+              log.type === "QUEST" &&
+              log.note !== "id-generate" &&
+              log.note !== "link-google"
+          )
           .find((log) => log.note === item.id);
 
         return {
@@ -409,15 +414,15 @@
 
   const handleReceiveQuest = async (link: string, type: string) => {
     try {
-      if (type === "first-share-on-twitter") {
+      if (type.includes("retweet-on-twitter")) {
         window.open(link, "_blank");
         await wait(5000);
         const res = await nimbus.post(
-          `/v2/checkin/${$userPublicAddress}/quest/first-share-on-twitter`,
+          `/v2/checkin/${$userPublicAddress}/quest/retweet-on-twitter`,
           {}
         );
         if (res && res?.data === null) {
-          toastMsg = "You already post us on Twitter";
+          toastMsg = "You already retweet us on Twitter";
           isSuccessToast = false;
           trigger();
         }
@@ -449,6 +454,24 @@
           queryClient.invalidateQueries(["users-me"]);
         }
       }
+      if (type === "new-user-tutorial") {
+        const res = await nimbus.post(
+          `/v2/checkin/${$userPublicAddress}/quest/new-user-tutorial`,
+          {}
+        );
+        if (res && res?.data === null) {
+          toastMsg = "You are already finished this quest";
+          isSuccessToast = false;
+          trigger();
+        }
+        if (res?.data?.bonus !== undefined) {
+          triggerBonusScore();
+          bonusScore = res?.data?.bonus;
+          isTriggerBonusScore = true;
+          queryClient.invalidateQueries([$userPublicAddress, "daily-checkin"]);
+          queryClient.invalidateQueries(["users-me"]);
+        }
+      }
       if (type === "sync-telegram") {
         window.open(link, "_blank");
         await wait(6000);
@@ -469,53 +492,15 @@
           queryClient.invalidateQueries(["users-me"]);
         }
       }
-      if (type === "link-google") {
-        window.open(link, "_blank");
-        await wait(6000);
-        const res = await nimbus.post(
-          `/v2/checkin/${$userPublicAddress}/quest/link-google`,
-          {}
-        );
-        if (res && res?.data === null) {
-          toastMsg = "You are not link to Google account";
-          isSuccessToast = false;
-          trigger();
-        }
-        if (res?.data?.bonus !== undefined) {
-          triggerBonusScore();
-          bonusScore = res?.data?.bonus;
-          isTriggerBonusScore = true;
-          queryClient.invalidateQueries([$userPublicAddress, "daily-checkin"]);
-          queryClient.invalidateQueries(["users-me"]);
-        }
-      }
-      if (type === "new-user-tutorial") {
-        const res = await nimbus.post(
-          `/v2/checkin/${$userPublicAddress}/quest/new-user-tutorial`,
-          {}
-        );
-        if (res && res?.data === null) {
-          toastMsg = "You are already finished this quest";
-          isSuccessToast = false;
-          trigger();
-        }
-        if (res?.data?.bonus !== undefined) {
-          triggerBonusScore();
-          bonusScore = res?.data?.bonus;
-          isTriggerBonusScore = true;
-          queryClient.invalidateQueries([$userPublicAddress, "daily-checkin"]);
-          queryClient.invalidateQueries(["users-me"]);
-        }
-      }
-      if (type.includes("retweet-on-twitter")) {
+      if (type === "first-share-on-twitter") {
         window.open(link, "_blank");
         await wait(5000);
         const res = await nimbus.post(
-          `/v2/checkin/${$userPublicAddress}/quest/retweet-on-twitter`,
+          `/v2/checkin/${$userPublicAddress}/quest/first-share-on-twitter`,
           {}
         );
         if (res && res?.data === null) {
-          toastMsg = "You already retweet us on Twitter";
+          toastMsg = "You already post us on Twitter";
           isSuccessToast = false;
           trigger();
         }
