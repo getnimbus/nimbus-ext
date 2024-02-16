@@ -241,7 +241,7 @@
 
         return {
           ...item,
-          isDone: selectedLogs,
+          isDone: Boolean(selectedLogs),
         };
       });
     }
