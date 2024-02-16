@@ -236,12 +236,7 @@
       dataCheckinHistory = $queryDailyCheckin?.data?.checkinLogs;
       quests = $queryDailyCheckin?.data?.quests.map((item, index) => {
         const selectedLogs = dataCheckinHistory
-          .filter(
-            (log) =>
-              log.type === "QUEST" &&
-              log.note !== "id-generate" &&
-              log.note !== "link-google"
-          )
+          .filter((log) => log.type === "QUEST" && log.note !== "id-generate")
           .find((log) => log.note === item.id);
 
         return {
@@ -747,23 +742,39 @@
                         </div>
                       </div>
                       <div class="w-[170px]">
-                        {#if quest?.isInternalLink}
-                          <a href={quest?.url} class="py-1">
-                            <Button>Collect!</Button>
-                          </a>
+                        {#if quest?.id === "link-google"}
+                          <div>
+                            {#if quest.isDone}
+                              <div class="py-1">
+                                <Button disabled>Collect!</Button>
+                              </div>
+                            {:else}
+                              <a href={quest?.url} class="py-1">
+                                <Button>Collect!</Button>
+                              </a>
+                            {/if}
+                          </div>
                         {:else}
-                          <div
-                            on:click={() => {
-                              if (!quest.isDone) {
-                                handleReceiveQuest(quest?.url, quest?.id);
-                              }
-                            }}
-                            class="py-1"
-                          >
-                            <Button
-                              disabled={isDisabledReceiveQuest || quest.isDone}
-                              >Collect!</Button
-                            >
+                          <div>
+                            {#if quest?.isInternalLink}
+                              <a href={quest?.url} class="py-1">
+                                <Button>Collect!</Button>
+                              </a>
+                            {:else}
+                              <div
+                                on:click={() => {
+                                  if (!quest.isDone) {
+                                    handleReceiveQuest(quest?.url, quest?.id);
+                                  }
+                                }}
+                                class="py-1"
+                              >
+                                <Button
+                                  disabled={isDisabledReceiveQuest ||
+                                    quest.isDone}>Collect!</Button
+                                >
+                              </div>
+                            {/if}
                           </div>
                         {/if}
                       </div>
