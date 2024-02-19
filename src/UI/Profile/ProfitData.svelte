@@ -311,7 +311,7 @@
           </div>
         </div>
       </div>
-      {#if (goodPerf && Object.keys(goodPerf)?.length !== 0) || (badPerf && Object.keys(badPerf)?.length !== 0)}
+      <!-- {#if (goodPerf && Object.keys(goodPerf)?.length !== 0) || (badPerf && Object.keys(badPerf)?.length !== 0)}
         <div class="grid grid-cols-2 gap-5">
           {#if goodPerf}
             <div class="rounded-[20px] flex-1 bg_fafafbff px-4 pb-3 pt-5">
@@ -427,7 +427,7 @@
             </div>
           {/if}
         </div>
-      {/if}
+      {/if} -->
     </div>
   {/if}
 </div>

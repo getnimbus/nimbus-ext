@@ -15,8 +15,8 @@
   export let isSync = false;
   export let enabledFetchAllData = false;
 
-  let top5ProfitToken = [];
-  let top5LossToken = [];
+  let topProfitToken = [];
+  let topLossToken = [];
 
   $: isFetch = isSync ? enabledFetchAllData : true;
 
@@ -75,13 +75,13 @@
         }
       });
 
-    top5ProfitToken = listProfitToken
-      .sort((a, b) => b.realizedProfit - a.realizedProfit)
-      .slice(0, 5);
+    topProfitToken = listProfitToken.sort(
+      (a, b) => b.realizedProfit - a.realizedProfit
+    );
 
-    top5LossToken = listLossToken
-      .sort((a, b) => a.realizedProfit - b.realizedProfit)
-      .slice(0, 5);
+    topLossToken = listLossToken.sort(
+      (a, b) => a.realizedProfit - b.realizedProfit
+    );
   };
 
   $: queryTradingStats = createQuery({
@@ -104,22 +104,22 @@
 </script>
 
 <div class="col-span-4 grid grid-cols-2 gap-5">
-  <div class="flex flex-col gap-5 border border_0000001a rounded-xl px-6 py-6">
-    <div class="xl:text-xl text-3xl font-medium">Top 5 Profit (30D)</div>
+  <div class="flex flex-col gap-5 border border_0000001a rounded-xl px-3 py-6">
+    <div class="xl:text-xl text-3xl font-medium px-3">Top Profit (30D)</div>
 
-    <div class="min-h-[280px]">
+    <div class="max-h-[280px] overflow-y-auto px-3">
       {#if $queryTradingStats.isFetching}
         <div class="h-full flex justify-center items-center">
           <Loading />
         </div>
       {:else}
         <div class="h-full flex flex-col gap-4">
-          {#if top5ProfitToken.length === 0}
+          {#if topProfitToken.length === 0}
             <div class="h-full flex items-center justify-center text-center">
               There are no closed holding position in the last 30 day
             </div>
           {:else}
-            {#each top5ProfitToken as item}
+            {#each topProfitToken as item}
               <div class="flex items-center justify-between gap-2">
                 <div class="flex-1 flex items-center gap-2">
                   <div class="w-[30px] h-[30px] overflow-hidden rounded-full">
@@ -149,22 +149,22 @@
     </div>
   </div>
 
-  <div class="flex flex-col gap-5 border border_0000001a rounded-xl px-6 py-6">
-    <div class="xl:text-xl text-3xl font-medium">Top 5 Loss (30D)</div>
+  <div class="flex flex-col gap-5 border border_0000001a rounded-xl px-3 py-6">
+    <div class="xl:text-xl text-3xl font-medium px-3">Top Loss (30D)</div>
 
-    <div class="min-h-[280px]">
+    <div class="max-h-[280px] overflow-y-auto px-3">
       {#if $queryTradingStats.isLoading}
         <div class="h-full flex justify-center items-center">
           <Loading />
         </div>
       {:else}
         <div class="h-full flex flex-col gap-4">
-          {#if top5LossToken.length === 0}
+          {#if topLossToken.length === 0}
             <div class="h-full flex items-center justify-center text-center">
               There are no closed holding position in the last 30 day
             </div>
           {:else}
-            {#each top5LossToken as item}
+            {#each topLossToken as item}
               <div class="flex items-center justify-between gap-2">
                 <div class="flex-1 flex items-center gap-2">
                   <div class="w-[30px] h-[30px] overflow-hidden rounded-full">
