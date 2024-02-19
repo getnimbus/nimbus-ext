@@ -535,7 +535,7 @@
               <div class="flex flex-col gap-2 justify-center items-center">
                 <div class="text-2xl font-medium uppercase">Free</div>
                 <span class="text-5xl font-semibold">0 USDC</span>
-                <div class="text-lg">For those who starting to invest</div>
+                <div class="text-xl">For those who starting to invest</div>
               </div>
               <div class=" min-h-[30px]"></div>
             </div>
