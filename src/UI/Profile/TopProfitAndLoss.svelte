@@ -15,8 +15,8 @@
   export let isSync = false;
   export let enabledFetchAllData = false;
 
-  let top5ProfitToken = [];
-  let top5LossToken = [];
+  let topProfitToken = [];
+  let topLossToken = [];
 
   $: isFetch = isSync ? enabledFetchAllData : true;
 
@@ -75,13 +75,13 @@
         }
       });
 
-    top5ProfitToken = listProfitToken
-      .sort((a, b) => b.realizedProfit - a.realizedProfit)
-      .slice(0, 5);
+    topProfitToken = listProfitToken.sort(
+      (a, b) => b.realizedProfit - a.realizedProfit
+    );
 
-    top5LossToken = listLossToken
-      .sort((a, b) => a.realizedProfit - b.realizedProfit)
-      .slice(0, 5);
+    topLossToken = listLossToken.sort(
+      (a, b) => a.realizedProfit - b.realizedProfit
+    );
   };
 
   $: queryTradingStats = createQuery({
@@ -103,92 +103,100 @@
   }
 </script>
 
-<div class="col-span-4 grid grid-cols-2 gap-5">
-  <div class="flex flex-col gap-5 border border_0000001a rounded-xl px-6 py-6">
-    <div class="xl:text-xl text-3xl font-medium">Top 5 Profit (30D)</div>
+<div class="col-span-4 grid xl:grid-cols-2 grid-cols-1 gap-5">
+  <div class="flex flex-col gap-5 border border_0000001a rounded-xl px-3 py-6">
+    <div class="xl:text-xl text-2xl font-medium px-3">Top Profit (30D)</div>
 
-    <div class="min-h-[280px]">
+    <div class="max-h-[280px]">
       {#if $queryTradingStats.isFetching}
         <div class="h-full flex justify-center items-center">
           <Loading />
         </div>
       {:else}
-        <div class="h-full flex flex-col gap-4">
-          {#if top5ProfitToken.length === 0}
-            <div class="h-full flex items-center justify-center text-center">
-              There are no closed holding position in the last 30 day
-            </div>
-          {:else}
-            {#each top5ProfitToken as item}
-              <div class="flex items-center justify-between gap-2">
-                <div class="flex-1 flex items-center gap-2">
-                  <div class="w-[30px] h-[30px] overflow-hidden rounded-full">
-                    <Image logo={item?.logo} defaultLogo={defaultToken} />
-                  </div>
-                  <span class="flex flex-col">
-                    <span class="text-lg xl:text-base font-medium">
-                      {item.name}
-                    </span>
-                    <span class="text-lg font-medium text_00000080 xl:text-xs">
-                      {#if item.symbol === undefined}
-                        N/A
-                      {:else}
-                        {shorterName(item.symbol, 20)}
-                      {/if}
-                    </span>
-                  </span>
-                </div>
-                <div class="text-[#00A878] xl:text-base text-lg">
-                  <TooltipNumber number={item.realizedProfit} type="value" />
-                </div>
+        <div class="h-full overflow-y-auto px-3">
+          <div class="h-full flex flex-col gap-4">
+            {#if topProfitToken.length === 0}
+              <div class="h-full flex items-center justify-center text-center">
+                There are no closed holding position in the last 30 day
               </div>
-            {/each}
-          {/if}
+            {:else}
+              {#each topProfitToken as item}
+                <div class="flex items-center justify-between gap-2">
+                  <div class="flex-1 flex items-center gap-2">
+                    <div class="w-[30px] h-[30px] overflow-hidden rounded-full">
+                      <Image logo={item?.logo} defaultLogo={defaultToken} />
+                    </div>
+                    <span class="flex flex-col">
+                      <span class="text-lg xl:text-sm font-medium">
+                        {item.name}
+                      </span>
+                      <span
+                        class="text-lg font-medium text_00000080 xl:text-xs"
+                      >
+                        {#if item.symbol === undefined}
+                          N/A
+                        {:else}
+                          {shorterName(item.symbol, 20)}
+                        {/if}
+                      </span>
+                    </span>
+                  </div>
+                  <div class="text-[#00A878] xl:text-base text-lg">
+                    <TooltipNumber number={item.realizedProfit} type="value" />
+                  </div>
+                </div>
+              {/each}
+            {/if}
+          </div>
         </div>
       {/if}
     </div>
   </div>
 
-  <div class="flex flex-col gap-5 border border_0000001a rounded-xl px-6 py-6">
-    <div class="xl:text-xl text-3xl font-medium">Top 5 Loss (30D)</div>
+  <div class="flex flex-col gap-5 border border_0000001a rounded-xl px-3 py-6">
+    <div class="xl:text-xl text-2xl font-medium px-3">Top Loss (30D)</div>
 
-    <div class="min-h-[280px]">
+    <div class="max-h-[280px]">
       {#if $queryTradingStats.isLoading}
         <div class="h-full flex justify-center items-center">
           <Loading />
         </div>
       {:else}
-        <div class="h-full flex flex-col gap-4">
-          {#if top5LossToken.length === 0}
-            <div class="h-full flex items-center justify-center text-center">
-              There are no closed holding position in the last 30 day
-            </div>
-          {:else}
-            {#each top5LossToken as item}
-              <div class="flex items-center justify-between gap-2">
-                <div class="flex-1 flex items-center gap-2">
-                  <div class="w-[30px] h-[30px] overflow-hidden rounded-full">
-                    <Image logo={item?.logo} defaultLogo={defaultToken} />
-                  </div>
-                  <span class="flex flex-col">
-                    <span class="text-lg xl:text-base font-medium">
-                      {item.name}
-                    </span>
-                    <span class="text-lg font-medium text_00000080 xl:text-xs">
-                      {#if item.symbol === undefined}
-                        N/A
-                      {:else}
-                        {shorterName(item.symbol, 20)}
-                      {/if}
-                    </span>
-                  </span>
-                </div>
-                <div class="text-red-500 xl:text-base text-lg">
-                  <TooltipNumber number={item.realizedProfit} type="value" />
-                </div>
+        <div class="h-full overflow-y-auto px-3">
+          <div class="h-full flex flex-col gap-4">
+            {#if topLossToken.length === 0}
+              <div class="h-full flex items-center justify-center text-center">
+                There are no closed holding position in the last 30 day
               </div>
-            {/each}
-          {/if}
+            {:else}
+              {#each topLossToken as item}
+                <div class="flex items-center justify-between gap-2">
+                  <div class="flex-1 flex items-center gap-2">
+                    <div class="w-[30px] h-[30px] overflow-hidden rounded-full">
+                      <Image logo={item?.logo} defaultLogo={defaultToken} />
+                    </div>
+                    <span class="flex flex-col">
+                      <span class="text-lg xl:text-sm font-medium">
+                        {item.name}
+                      </span>
+                      <span
+                        class="text-lg font-medium text_00000080 xl:text-xs"
+                      >
+                        {#if item.symbol === undefined}
+                          N/A
+                        {:else}
+                          {shorterName(item.symbol, 20)}
+                        {/if}
+                      </span>
+                    </span>
+                  </div>
+                  <div class="text-red-500 xl:text-base text-lg">
+                    <TooltipNumber number={item.realizedProfit} type="value" />
+                  </div>
+                </div>
+              {/each}
+            {/if}
+          </div>
         </div>
       {/if}
     </div>
