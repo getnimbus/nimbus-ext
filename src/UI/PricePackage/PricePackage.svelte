@@ -550,7 +550,7 @@
                     <span
                       class="text-white px-2 py-1 font-normal text-lg ml-3 bg-[#10b981] rounded-lg"
                     >
-                      Save $1.75
+                      Save 1.75 USDC
                     </span>
                   {/if}
                 </div>
