@@ -42,7 +42,8 @@
         email: data.email,
       });
       isLoadingSendMail = false;
-      toastMsg = "Ready to receive exclusive benefits soon!";
+      toastMsg =
+        "We have received you email. Let's us check you payment and email to you soon!";
       isSuccessToast = true;
       trigger();
     } catch (e) {
