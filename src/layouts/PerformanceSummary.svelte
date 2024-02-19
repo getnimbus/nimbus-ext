@@ -94,7 +94,7 @@
 
         <button
           id="btn-share-summary"
-          class="flex items-center justify-center gap-2 xl:text-sm text-2xl font-medium text-white bg-[#27326f] px-4 py-2 rounded-xl"
+          class="flex items-center justify-center gap-2 xl:text-sm text-2xl font-medium text-white bg-[#1e96fc] px-4 py-2 rounded-xl"
           on:click={downloadPage}
         >
           Share
@@ -137,7 +137,7 @@
             {/if}
           </div>
           <a
-            class="hover:underline text-gray-500 sm:text-left text-center"
+            class="hover:underline text-[#27326f] sm:text-left text-center"
             href="https://getnimbus.io/"
             target="_blank"
           >
