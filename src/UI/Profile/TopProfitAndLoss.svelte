@@ -103,9 +103,9 @@
   }
 </script>
 
-<div class="col-span-4 grid grid-cols-2 gap-5">
+<div class="col-span-4 grid xl:grid-cols-2 grid-cols-1 gap-5">
   <div class="flex flex-col gap-5 border border_0000001a rounded-xl px-3 py-6">
-    <div class="xl:text-xl text-3xl font-medium px-3">Top Profit (30D)</div>
+    <div class="xl:text-xl text-2xl font-medium px-3">Top Profit (30D)</div>
 
     <div class="max-h-[280px] px-3">
       {#if $queryTradingStats.isFetching}
@@ -154,7 +154,7 @@
   </div>
 
   <div class="flex flex-col gap-5 border border_0000001a rounded-xl px-3 py-6">
-    <div class="xl:text-xl text-3xl font-medium px-3">Top Loss (30D)</div>
+    <div class="xl:text-xl text-2xl font-medium px-3">Top Loss (30D)</div>
 
     <div class="max-h-[280px] px-3">
       {#if $queryTradingStats.isLoading}

@@ -114,7 +114,7 @@
         </button>
       </div>
       <div
-        class="w-full flex xl:flex-row flex-col rounded-xl py-10 px-10 gap-9 border-2 border_0000001a"
+        class="w-full flex xl:flex-row flex-col rounded-xl py-10 md:px-10 px-4 gap-9 border-2 border_0000001a"
       >
         <div class="xl:w-[20%] w-full flex flex-col gap-5 justify-between">
           <div>
@@ -137,7 +137,7 @@
             {/if}
           </div>
           <a
-            class="hover:underline text-gray-500"
+            class="hover:underline text-gray-500 sm:text-left text-center"
             href="https://getnimbus.io/"
             target="_blank"
           >
