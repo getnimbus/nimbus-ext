@@ -30,11 +30,12 @@
   import AppOverlay from "~/components/Overlay.svelte";
   import VaultTable from "~/UI/Portfolio/VaultTable.svelte";
   import TokenDetailSidebar from "~/UI/TokenDetail/TokenDetailSidebar.svelte";
+  import SwapWidget from "../SwapWidget/SwapWidget.svelte";
+  import TooltipTitle from "~/components/TooltipTitle.svelte";
 
   import TrendUp from "~/assets/trend-up.svg";
   import TrendDown from "~/assets/trend-down.svg";
   import defaultToken from "~/assets/defaultToken.png";
-  import TooltipTitle from "~/components/TooltipTitle.svelte";
 
   export let data;
   export let selectedWallet;
@@ -892,7 +893,7 @@
       class={`py-3 pr-3 w-full h-full flex items-center xl:gap-4 gap-7 ${
         $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
       } ${
-        ["BUNDLE", "SOL"].includes($typeWallet)
+        ["BUNDLE", "SOL", "EVM"].includes($typeWallet)
           ? "justify-start"
           : "justify-center"
       }`}
@@ -1017,7 +1018,7 @@
         </div>
       {/if}
 
-      {#if $typeWallet === "SOL" || ($typeWallet === "BUNDLE" && data?.chain === "SOL")}
+      {#if $typeWallet === "SOL" || $typeWallet === "EVM" || ($typeWallet === "BUNDLE" && data?.chain !== "CEX")}
         <div
           class="flex justify-center view-icon-detail"
           use:tooltip={{
@@ -1031,7 +1032,12 @@
             on:click={() => {
               showSideTokenSwap = true;
               selectedTokenDetail = data;
-              handleSwapToken(data);
+              if (
+                $typeWallet === "SOL" ||
+                ($typeWallet === "BUNDLE" && data?.chain === "SOL")
+              ) {
+                handleSwapToken(data);
+              }
             }}
           >
             <svg
@@ -1054,7 +1060,12 @@
             on:click={() => {
               showSideTokenSwap = true;
               selectedTokenDetail = data;
-              handleSwapToken(data);
+              if (
+                $typeWallet === "SOL" ||
+                ($typeWallet === "BUNDLE" && data?.chain === "SOL")
+              ) {
+                handleSwapToken(data);
+              }
             }}
           >
             <svg
@@ -1849,7 +1860,12 @@
       </div>
     {/if}
   </div>
-  <div id={`swap-${index}`}></div>
+
+  {#if $typeWallet === "SOL" || ($typeWallet === "BUNDLE" && data?.chain === "SOL")}
+    <div id={`swap-${index}`}></div>
+  {:else}
+    <SwapWidget />
+  {/if}
 </OverlaySidebarSwap>
 
 {#if showToast}

@@ -821,7 +821,7 @@
                     {#if listSupported.includes($typeWallet)}
                       <th
                         class={`py-3 pr-3 rounded-tr-[10px] ${
-                          ["BUNDLE", "SOL"].includes($typeWallet)
+                          ["BUNDLE", "SOL", "EVM"].includes($typeWallet)
                             ? "xl:max-w-20 w-16"
                             : "xl:w-12 w-32"
                         }`}
