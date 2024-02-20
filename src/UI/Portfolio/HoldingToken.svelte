@@ -1864,7 +1864,7 @@
   {#if $typeWallet === "SOL" || ($typeWallet === "BUNDLE" && data?.chain === "SOL")}
     <div id={`swap-${index}`}></div>
   {:else}
-    <SwapWidget />
+    <SwapWidget chain={data?.chain} address={data?.contractAddress} />
   {/if}
 </OverlaySidebarSwap>
 

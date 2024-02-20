@@ -94,6 +94,14 @@ export const handleFormatBlockChainId = (chain: string) => {
       return "TON";
     case "NEAR":
       return "NEAR";
+    case "MOVR":
+      return "1285";
+    case "GLMR":
+      return "1284";
+    case "ZETA":
+      return "7000";
+    case "ONE":
+      return "1666600000"
   }
 
   return "";
