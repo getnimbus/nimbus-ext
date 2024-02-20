@@ -62,46 +62,48 @@ const authKey =
 
 export const handleFormatBlockChainId = (chain: string) => {
   switch (chain) {
-    case "FTM":
-      return "250";
-    case "XDAI":
+    case "XDAI": // XDAI
       return "100";
-    case "AVAX":
+    case "AVAX": // Avalanche C-Chain
       return "43114";
-    case "CRONOS":
+    case "CRONOS": // Cronos
       return "25";
-    case "ETH":
+    case "ETH": // Ethereum
       return "1";
-    case "MATIC":
+    case "MATIC": // Polygon
       return "137";
-    case "BNB":
+    case "BNB": // BNB Smart Chain (BEP20)
       return "56";
-    case "KLAY":
+    case "KLAY": // Klaytn
       return "8217";
-    case "AURA":
+    case "AURORA": // AURORA
       return "1313161554";
-    case "ARB":
+    case "ARB": // Arbitrum
       return "42161";
-    case "OP":
+    case "OP": // Optimistic
       return "10";
-    case "BASE":
+    case "BASE": // Base
       return "8453";
-    case "SUI":
+    case "SUI": // SUI
       return "sui";
-    case "MANTLE":
+    case "MANTLE": // Mantle
       return "5000";
+    case "MOVR": // Moonriver
+      return "1285";
+    case "GLMR": // Moonbeam
+      return "1284";
+    case "ZETA": // ZetaChain
+      return "7000";
+    case "ONE": // Harmony
+      return "1666600000";
+    case "FANTOM": // Fantom
+      return "250";
+    case "ROSE": // Oasis
+      return "42262";
     case "TON":
       return "TON";
     case "NEAR":
       return "NEAR";
-    case "MOVR":
-      return "1285";
-    case "GLMR":
-      return "1284";
-    case "ZETA":
-      return "7000";
-    case "ONE":
-      return "1666600000"
   }
 
   return "";
