@@ -230,7 +230,7 @@
     <div class="flex flex-col gap-4">
       <div class="grid xl:grid-cols-5 grid-cols-3 gap-5">
         <div class="flex flex-col gap-2 justify-between">
-          <div class="text-xl xl:text-xs font-medium text_00000099">
+          <div class="text-xl xl:text-sm font-medium text_00000099">
             Portfolio Value
           </div>
           <div class="xl:text-base text-lg">
@@ -239,7 +239,7 @@
         </div>
 
         <div class="flex flex-col gap-2 justify-between">
-          <div class="text-xl xl:text-xs font-medium text_00000099">
+          <div class="text-xl xl:text-sm font-medium text_00000099">
             30D Unrealized PnL
           </div>
           <div
@@ -257,7 +257,7 @@
         </div>
 
         <div class="flex flex-col gap-2 justify-between">
-          <div class="text-xl xl:text-xs font-medium text_00000099">
+          <div class="text-xl xl:text-sm font-medium text_00000099">
             30D Realized PnL
           </div>
           <div
@@ -275,7 +275,7 @@
         </div>
 
         <!-- <div class="flex flex-col gap-2 justify-between">
-        <div class="text-xl xl:text-xs font-medium text_00000099">30D PnL</div>
+        <div class="text-xl xl:text-sm font-medium text_00000099">30D PnL</div>
         <div
           class={`flex items-center xl:text-base text-lg ${
             set30DayPnl !== 0
@@ -294,7 +294,7 @@
       </div> -->
 
         <div class="flex flex-col gap-2 justify-between">
-          <div class="text-xl xl:text-xs font-medium text_00000099">
+          <div class="text-xl xl:text-sm font-medium text_00000099">
             Trade Tokens
           </div>
           <div class="xl:text-base text-lg">
@@ -303,7 +303,7 @@
         </div>
 
         <div class="flex flex-col gap-2 justify-between">
-          <div class="text-xl xl:text-xs font-medium text_00000099">
+          <div class="text-xl xl:text-sm font-medium text_00000099">
             Winrate
           </div>
           <div class="xl:text-base text-lg">

@@ -107,13 +107,13 @@
   <div class="flex flex-col gap-5 border border_0000001a rounded-xl px-3 py-6">
     <div class="xl:text-xl text-2xl font-medium px-3">Top Profit (30D)</div>
 
-    <div class="max-h-[280px] px-3">
+    <div class="max-h-[280px]">
       {#if $queryTradingStats.isFetching}
         <div class="h-full flex justify-center items-center">
           <Loading />
         </div>
       {:else}
-        <div class="h-full overflow-y-auto">
+        <div class="h-full overflow-y-auto px-3">
           <div class="h-full flex flex-col gap-4">
             {#if topProfitToken.length === 0}
               <div class="h-full flex items-center justify-center text-center">
@@ -127,7 +127,7 @@
                       <Image logo={item?.logo} defaultLogo={defaultToken} />
                     </div>
                     <span class="flex flex-col">
-                      <span class="text-lg xl:text-base font-medium">
+                      <span class="text-lg xl:text-sm font-medium">
                         {item.name}
                       </span>
                       <span
@@ -156,13 +156,13 @@
   <div class="flex flex-col gap-5 border border_0000001a rounded-xl px-3 py-6">
     <div class="xl:text-xl text-2xl font-medium px-3">Top Loss (30D)</div>
 
-    <div class="max-h-[280px] px-3">
+    <div class="max-h-[280px]">
       {#if $queryTradingStats.isLoading}
         <div class="h-full flex justify-center items-center">
           <Loading />
         </div>
       {:else}
-        <div class="h-full overflow-y-auto">
+        <div class="h-full overflow-y-auto px-3">
           <div class="h-full flex flex-col gap-4">
             {#if topLossToken.length === 0}
               <div class="h-full flex items-center justify-center text-center">
@@ -176,7 +176,7 @@
                       <Image logo={item?.logo} defaultLogo={defaultToken} />
                     </div>
                     <span class="flex flex-col">
-                      <span class="text-lg xl:text-base font-medium">
+                      <span class="text-lg xl:text-sm font-medium">
                         {item.name}
                       </span>
                       <span
