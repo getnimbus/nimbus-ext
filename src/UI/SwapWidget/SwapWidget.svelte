@@ -10,11 +10,8 @@
     integrator: "Nimbus",
     variant: "default",
     gmPoints: "1000",
-    fromToken: handleFormatBlockChainId(chain).length === 0 ? "" : address,
-    fromChain:
-      handleFormatBlockChainId(chain).length === 0
-        ? 0
-        : Number(handleFormatBlockChainId(chain)),
+    fromToken: address,
+    fromChain: Number(handleFormatBlockChainId(chain)),
   };
 </script>
 

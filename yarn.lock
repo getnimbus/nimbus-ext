@@ -3137,7 +3137,7 @@
   resolved "https://registry.yarnpkg.com/@lifi/types/-/types-11.3.0.tgz#b7dd30040c1017ac8031c90b3f90f361ae2d6ce7"
   integrity sha512-mokZg0KysK6gulf1Sn23yGpBNpDRMu4nUxYjQ0pEe3rBE5GDqAce3LAcEQL+H/ggMt8aLK+h75q+FKfvvAhEFQ==
 
-"@lifi/wallet-management@^3.0.0":
+"@lifi/wallet-management@3.0.0-alpha.21":
   version "3.0.0-alpha.21"
   resolved "https://registry.yarnpkg.com/@lifi/wallet-management/-/wallet-management-3.0.0-alpha.21.tgz#7120c208248b0a2000e5843ae59eb0f2620386a7"
   integrity sha512-rJb6y11yDuMTHD1S0RpxEHM48uPwiCITNWKjHB8Hrh/y3qY/YpJlWw7YeR/sJ1IvN67LqRPSzVI9asO36GmoGw==
@@ -11832,15 +11832,15 @@ next-tick@1, next-tick@^1.1.0:
   resolved "https://registry.yarnpkg.com/next-tick/-/next-tick-1.1.0.tgz#1836ee30ad56d67ef281b22bd199f709449b35eb"
   integrity sha512-CXdUiJembsNjuToQvxayPZF9Vqht7hewsvy2sOWafLvi2awflj9mOC6bHIg50orX8IJvWKY9wYQ/zB2kogPslQ==
 
-nimbus-swap-widget@^3.0.3:
-  version "3.0.3"
-  resolved "https://registry.yarnpkg.com/nimbus-swap-widget/-/nimbus-swap-widget-3.0.3.tgz#bde06a66081f0b75d907039e7c37058614d5b31e"
-  integrity sha512-tWmBIL+337dgpkKz5E7iYJmuUWudnAGH/O4N0gkNXAdJ9GMAtaq8SBEClIZZivtQFcFtcAosfNgkN69QGl5WMg==
+nimbus-swap-widget@^3.0.4:
+  version "3.0.4"
+  resolved "https://registry.yarnpkg.com/nimbus-swap-widget/-/nimbus-swap-widget-3.0.4.tgz#cd303a10827fe8fc56dc58fd0e52a238a54b0a9d"
+  integrity sha512-tsh05UayeBYrjNFonkfS0uJP8NAtUcm55Fjql5XJKBd67NYAbtOBjgMc9NEpMWtF6LYBzzhROHgz2Xi07o8sXw==
   dependencies:
     "@emotion/react" "^11.11.3"
     "@emotion/styled" "^11.11.0"
     "@lifi/sdk" "^3.0.0-alpha.54"
-    "@lifi/wallet-management" "^3.0.0"
+    "@lifi/wallet-management" "3.0.0-alpha.21"
     "@mui/icons-material" "^5.15.7"
     "@mui/lab" "^5.0.0-alpha.163"
     "@mui/material" "^5.15.7"
