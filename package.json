@@ -4,6 +4,9 @@
   "version": "1.0.0",
   "author": "Thanh Le - thanhle@getnimbus.io",
   "description": "A personalized Web3 portfolio tool for DEFI users",
+  "engines": {
+    "node": ">=18.18.0 <19.0.0"
+  },
   "scripts": {
     "build": "vite build",
     "build:components": "vite build -c vite.config.components.ts",
