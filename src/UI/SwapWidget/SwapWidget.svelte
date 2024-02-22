@@ -6,15 +6,22 @@
 
   export let chain;
   export let address;
+  export let showSideTokenSwap;
 
-  $: widgetConfig = {
-    integrator: "Nimbus",
-    variant: "default",
-    gmPointCoefficient: "5",
-    userNimbusOwner: $userPublicAddress,
-    fromToken: address,
-    fromChain: Number(handleFormatBlockChainId(chain)),
-  };
+  let widgetConfig;
+
+  $: {
+    if (showSideTokenSwap) {
+      widgetConfig = {
+        integrator: "Nimbus",
+        variant: "default",
+        gmPointCoefficient: "5",
+        userNimbusOwner: $userPublicAddress,
+        fromToken: address,
+        fromChain: Number(handleFormatBlockChainId(chain)),
+      };
+    }
+  }
 </script>
 
 <ReactAdapter
