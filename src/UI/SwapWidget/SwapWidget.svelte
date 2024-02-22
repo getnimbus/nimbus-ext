@@ -15,6 +15,8 @@
     userNimbusOwner: $userPublicAddress,
     fromToken: address,
     fromChain: Number(handleFormatBlockChainId(chain)),
+    toChain: Number(handleFormatBlockChainId(chain)),
+    toToken: "0x0000000000000000000000000000000000000000",
   };
 </script>
 
