@@ -2,6 +2,7 @@
   import { LiFiWidget } from "nimbus-swap-widget";
   import ReactAdapter from "./ReactAdapter.svelte";
   import { handleFormatBlockChainId } from "~/lib/price-mobulaWs";
+  import { userPublicAddress } from "~/store";
 
   export let chain;
   export let address;
@@ -9,7 +10,8 @@
   $: widgetConfig = {
     integrator: "Nimbus",
     variant: "default",
-    gmPoints: "1000",
+    gmPointCoefficient: "5",
+    userNimbusOwner: $userPublicAddress,
     fromToken: address,
     fromChain: Number(handleFormatBlockChainId(chain)),
   };
