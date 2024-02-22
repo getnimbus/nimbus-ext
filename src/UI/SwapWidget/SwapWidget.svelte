@@ -8,27 +8,23 @@
   export let address;
   export let showSideTokenSwap;
 
-  let widgetConfig;
-
-  $: {
-    if (showSideTokenSwap) {
-      widgetConfig = {
-        integrator: "Nimbus",
-        variant: "default",
-        gmPointCoefficient: "5",
-        userNimbusOwner: $userPublicAddress,
-        fromToken: address,
-        fromChain: Number(handleFormatBlockChainId(chain)),
-      };
-    }
-  }
+  $: widgetConfig = {
+    integrator: "Nimbus",
+    variant: "default",
+    gmPointCoefficient: "5",
+    userNimbusOwner: $userPublicAddress,
+    fromToken: address,
+    fromChain: Number(handleFormatBlockChainId(chain)),
+  };
 </script>
 
-<ReactAdapter
-  element={LiFiWidget}
-  config={widgetConfig}
-  integrator="svelte-example"
-/>
+{#if showSideTokenSwap}
+  <ReactAdapter
+    element={LiFiWidget}
+    config={widgetConfig}
+    integrator="svelte-example"
+  />
+{/if}
 
 <style>
 </style>
