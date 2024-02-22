@@ -196,17 +196,19 @@
 </script>
 
 <ErrorBoundary>
-  <PriceChart
-    contractAddress={data?.contractAddress}
-    cgId={data?.cg_id}
-    {sellHistoryTradeList}
-    {buyHistoryTradeList}
-    id={data?.name}
-    symbol={data?.symbol}
-    avgCost={data?.profit?.averageCost}
-    chain={data?.chain}
-    price={Number(data?.market_price || 0)}
-  />
+  {#if showSideTokenDetail}
+    <PriceChart
+      contractAddress={data?.contractAddress}
+      cgId={data?.cg_id}
+      {sellHistoryTradeList}
+      {buyHistoryTradeList}
+      id={data?.name}
+      symbol={data?.symbol}
+      avgCost={data?.profit?.averageCost}
+      chain={data?.chain}
+      price={Number(data?.market_price || 0)}
+    />
+  {/if}
 
   <div class="flex flex-col justify-between gap-6">
     <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">

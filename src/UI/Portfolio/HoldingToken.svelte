@@ -1862,7 +1862,9 @@
   </div>
 
   {#if $typeWallet === "SOL" || ($typeWallet === "BUNDLE" && data?.chain === "SOL")}
-    <div id={`swap-${index}`}></div>
+    {#if showSideTokenSwap}
+      <div id={`swap-${index}`}></div>
+    {/if}
   {:else}
     <SwapWidget
       chain={data?.chain}
