@@ -2,7 +2,8 @@
   import { LiFiWidget } from "nimbus-swap-widget";
   import ReactAdapter from "./ReactAdapter.svelte";
   import { handleFormatBlockChainId } from "~/lib/price-mobulaWs";
-  import { userPublicAddress } from "~/store";
+  import { userPublicAddress, isDarkMode } from "~/store";
+  import { currentLang } from "~/lib/i18n";
 
   export let chain;
   export let address;
@@ -17,6 +18,10 @@
     fromChain: Number(handleFormatBlockChainId(chain)),
     toChain: Number(handleFormatBlockChainId(chain)),
     toToken: "0x0000000000000000000000000000000000000000",
+    appearance: $isDarkMode ? "dark" : "light",
+    languages: {
+      default: currentLang,
+    },
   };
 </script>
 
