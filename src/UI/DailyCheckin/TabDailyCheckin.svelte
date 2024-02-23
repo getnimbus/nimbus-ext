@@ -11,6 +11,7 @@
   import { blur } from "svelte/transition";
   import { driver } from "driver.js";
   import "driver.js/dist/driver.css";
+  import mixpanel from "mixpanel-browser";
 
   import Button from "~/components/Button.svelte";
   import Loading from "~/components/Loading.svelte";
@@ -172,6 +173,7 @@
   };
 
   const handleCheckin = async () => {
+    mixpanel.track("user_checkin");
     isLoadingCheckin = true;
     try {
       const response = await nimbus.post(`/v2/checkin`, {});
