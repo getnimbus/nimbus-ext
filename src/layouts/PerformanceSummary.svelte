@@ -16,6 +16,7 @@
 
   import SyncData from "~/components/SyncData.svelte";
   import { Toast } from "flowbite-svelte";
+  import { onMount } from "svelte";
 
   let toastMsg = "";
   let isSuccessToast = false;
@@ -72,6 +73,10 @@
       }
     }
   };
+
+  onMount(() => {
+    mixpanel.track("upgrade_page");
+  });
 </script>
 
 <div
