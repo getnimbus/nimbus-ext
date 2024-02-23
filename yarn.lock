@@ -11832,10 +11832,10 @@ next-tick@1, next-tick@^1.1.0:
   resolved "https://registry.yarnpkg.com/next-tick/-/next-tick-1.1.0.tgz#1836ee30ad56d67ef281b22bd199f709449b35eb"
   integrity sha512-CXdUiJembsNjuToQvxayPZF9Vqht7hewsvy2sOWafLvi2awflj9mOC6bHIg50orX8IJvWKY9wYQ/zB2kogPslQ==
 
-nimbus-swap-widget@^3.0.18:
-  version "3.0.18"
-  resolved "https://registry.yarnpkg.com/nimbus-swap-widget/-/nimbus-swap-widget-3.0.18.tgz#742e60cdcfb084873bb92dc3dd8189ea2508d933"
-  integrity sha512-FISYtIVBnkBDwwJd8I3LddVBixv22WbAHQonhbiidI3QChp1PQhk05GEAna65jnqgZzUeplP3wWHfHZzsm/5Lg==
+nimbus-swap-widget@^3.0.19:
+  version "3.0.19"
+  resolved "https://registry.yarnpkg.com/nimbus-swap-widget/-/nimbus-swap-widget-3.0.19.tgz#73cdeddda8874ffd22a054198a67946e65eaa142"
+  integrity sha512-LWywDWKIZI98gJGDZHK0IzahpuOaBoT5jrN7cv+lRL1Pwaf+CFXCjejAnmJsdewvSS5QI/QHc4vT/o4UYRsWVQ==
   dependencies:
     "@emotion/react" "^11.11.3"
     "@emotion/styled" "^11.11.0"
