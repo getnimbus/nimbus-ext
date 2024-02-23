@@ -208,7 +208,9 @@
         {}
       );
       queryClient.invalidateQueries(["users-me"]);
-      toastMsg = "Successfully set display Google account!";
+      toastMsg = `Successfully ${
+        checked ? "set" : "unset"
+      } display Google account!`;
       isSuccessToast = true;
       trigger();
     } catch (e) {
