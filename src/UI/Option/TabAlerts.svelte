@@ -9,6 +9,7 @@
   import { createQuery } from "@tanstack/svelte-query";
   import { i18n } from "~/lib/i18n";
   import { detectedGeneration } from "~/lib/chains";
+  import mixpanel from "mixpanel-browser";
 
   import Tooltip from "~/components/Tooltip.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
@@ -17,6 +18,7 @@
   import Copy from "~/components/Copy.svelte";
 
   import FollowWhale from "~/assets/whale-tracking.gif";
+  import { onMount } from "svelte";
 
   const MultipleLang = {
     content: {
@@ -156,6 +158,10 @@
       formatDataListAddress($query.data);
     }
   }
+
+  onMount(() => {
+    mixpanel.track("accounts_page");
+  });
 
   const formatDataListAddress = (data) => {
     const structWalletData = data.map((item) => {

@@ -4,6 +4,7 @@
   import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
   import { googleAuth } from "~/lib/firebase";
   import { useQueryClient } from "@tanstack/svelte-query";
+  import mixpanel from "mixpanel-browser";
 
   import User from "~/assets/user.png";
   import Google from "~/assets/google.png";
@@ -14,6 +15,7 @@
   const googleProvider = new GoogleAuthProvider();
 
   const handleGoogleAuth = async () => {
+    mixpanel.track("user_login_google");
     try {
       const res = await signInWithPopup(googleAuth, googleProvider).then(
         (result) => {
