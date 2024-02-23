@@ -37,13 +37,10 @@
   } from "@solana/wallet-adapter-wallets";
   import { walletStore } from "@svelte-on-solana/wallet-adapter-core";
   import { Buffer as BufferPolyfill } from "buffer";
-<<<<<<< HEAD
   import { createMutation, useQueryClient } from "@tanstack/svelte-query";
-=======
   import { wait } from "~/entries/background/utils";
 
   import goldImg from "~/assets/Gold4.svg";
->>>>>>> feat/evm-swap
 
   export let selectedWallet;
   export let isLoadingNFT;
@@ -703,7 +700,6 @@
       );
       console.log("result:", result);
 
-<<<<<<< HEAD
       toastMsg = "List your NFT successful";
       isSuccessToast = true;
       trigger();
@@ -713,20 +709,6 @@
       return result;
     },
   });
-=======
-      if (result) {
-        toastMsg = `${type} your NFT successful`;
-        isSuccessToast = true;
-        trigger();
-      } else {
-        toastMsg = `Something wrong when ${type} your NFT. Please try again!`;
-        isSuccessToast = false;
-        trigger();
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  };
 
   let openScreenBonusScore: boolean = false;
   let bonusScore: number = 10;
@@ -742,7 +724,6 @@
     await wait(2000);
     openScreenBonusScore = false;
   };
->>>>>>> feat/evm-swap
 </script>
 
 <div
