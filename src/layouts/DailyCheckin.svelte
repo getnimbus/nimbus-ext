@@ -10,6 +10,7 @@
   import SidebarTabs from "~/UI/Option/SidebarTabs.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import Mixpanel from "~/components/Mixpanel.svelte";
+  import mixpanel from "mixpanel-browser";
 
   const listSideBar = [
     {
@@ -57,6 +58,10 @@
         window.location.pathname + `?tab=checkin`
       );
     }
+  });
+
+  onMount(() => {
+    mixpanel.track("checkin_page");
   });
 </script>
 

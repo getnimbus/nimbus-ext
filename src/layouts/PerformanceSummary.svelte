@@ -75,7 +75,7 @@
   };
 
   onMount(() => {
-    mixpanel.track("upgrade_page");
+    mixpanel.track("summary_page");
   });
 </script>
 
