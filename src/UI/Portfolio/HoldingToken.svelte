@@ -42,6 +42,7 @@
   export let sumAllTokens;
   export let lastIndex: boolean = false;
   export let index: number;
+  export let triggerFireworkBonus = (data) => {};
 
   let isShowTooltipName = false;
   let isShowTooltipSymbol = false;
@@ -1873,6 +1874,7 @@
       owner={$typeWallet === "BUNDLE"
         ? data?.breakdown.map((item) => item.owner)
         : [data?.owner]}
+      {triggerFireworkBonus}
     />
   {/if}
 </OverlaySidebarSwap>
