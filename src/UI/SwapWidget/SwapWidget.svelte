@@ -2,7 +2,7 @@
   import { LiFiWidget } from "nimbus-swap-widget";
   import ReactAdapter from "./ReactAdapter.svelte";
   import { handleFormatBlockChainId } from "~/lib/price-mobulaWs";
-  import { userPublicAddress, isDarkMode } from "~/store";
+  import { userPublicAddress, isDarkMode, wallet } from "~/store";
   import { currentLang } from "~/lib/i18n";
 
   export let chain;
@@ -14,11 +14,19 @@
     variant: "default",
     gmPointCoefficient: "5",
     userNimbusOwner: $userPublicAddress,
+    referrerAddress: $wallet,
     fromToken: address,
     fromChain: Number(handleFormatBlockChainId(chain)),
     toChain: Number(handleFormatBlockChainId(chain)),
     toToken: "0x0000000000000000000000000000000000000000",
     appearance: $isDarkMode ? "dark" : "light",
+    theme: {
+      palette: {
+        primary: {
+          main: "#1e96fc",
+        },
+      },
+    },
     languages: {
       default: currentLang,
     },
