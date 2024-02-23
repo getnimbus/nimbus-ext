@@ -1,6 +1,7 @@
 <script lang="ts">
   import { isDarkMode } from "~/store";
   import { walletStore } from "@svelte-on-solana/wallet-adapter-core";
+  import mixpanel from "mixpanel-browser";
 
   import WalletButton from "~/UI/SolanaCustomWalletBtn/WalletButton.svelte";
   import WalletConnectButton from "~/UI/SolanaCustomWalletBtn/WalletConnectButton.svelte";
@@ -45,6 +46,7 @@
 
   async function connectWallet(event) {
     closeModal();
+    mixpanel.track("user_login_solana");
     await select(event.detail);
     await connect();
   }

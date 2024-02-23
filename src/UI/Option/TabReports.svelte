@@ -2,10 +2,16 @@
   import { i18n } from "~/lib/i18n";
   import Tokens from "../Reports/Tokens.svelte";
   import NFTs from "../Reports/NFTs.svelte";
+  import { onMount } from "svelte";
+  import mixpanel from "mixpanel-browser";
 
   const MultipleLang = {
     title: i18n("optionsPage.report-page-title", "Report Settings"),
   };
+
+  onMount(() => {
+    mixpanel.track("accounts_page");
+  });
 </script>
 
 <div class="flex flex-col gap-4">

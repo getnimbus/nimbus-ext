@@ -18,7 +18,7 @@
   } from "~/store";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
-  import { filterTokenValueType, chunkArray } from "~/utils";
+  import { filterTokenValueType, chunkArray, triggerFirework } from "~/utils";
   import { listSupported } from "~/lib/chains";
   import { groupBy } from "lodash";
   import { priceMobulaSubscribe } from "~/lib/price-mobulaWs";
@@ -37,7 +37,13 @@
   } from "@solana/wallet-adapter-wallets";
   import { walletStore } from "@svelte-on-solana/wallet-adapter-core";
   import { Buffer as BufferPolyfill } from "buffer";
+<<<<<<< HEAD
   import { createMutation, useQueryClient } from "@tanstack/svelte-query";
+=======
+  import { wait } from "~/entries/background/utils";
+
+  import goldImg from "~/assets/Gold4.svg";
+>>>>>>> feat/evm-swap
 
   export let selectedWallet;
   export let isLoadingNFT;
@@ -697,6 +703,7 @@
       );
       console.log("result:", result);
 
+<<<<<<< HEAD
       toastMsg = "List your NFT successful";
       isSuccessToast = true;
       trigger();
@@ -706,6 +713,36 @@
       return result;
     },
   });
+=======
+      if (result) {
+        toastMsg = `${type} your NFT successful`;
+        isSuccessToast = true;
+        trigger();
+      } else {
+        toastMsg = `Something wrong when ${type} your NFT. Please try again!`;
+        isSuccessToast = false;
+        trigger();
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  let openScreenBonusScore: boolean = false;
+  let bonusScore: number = 10;
+
+  const triggerFireworkBonus = (score: number) => {
+    bonusScore = score;
+    triggerBonusScore();
+  };
+
+  const triggerBonusScore = async () => {
+    openScreenBonusScore = true;
+    triggerFirework();
+    await wait(2000);
+    openScreenBonusScore = false;
+  };
+>>>>>>> feat/evm-swap
 </script>
 
 <div
@@ -881,6 +918,7 @@
                         {selectedWallet}
                         sumAllTokens={$totalAssets - sumNFT}
                         index={index + 1}
+                        {triggerFireworkBonus}
                       />
                     {/each}
                   </tbody>
@@ -937,6 +975,7 @@
                             {selectedWallet}
                             sumAllTokens={$totalAssets - sumNFT}
                             index={index + 1}
+                            {triggerFireworkBonus}
                           />
                         {/each}
                       {/if}
@@ -1340,6 +1379,27 @@
   autoConnect
   onError={console.log}
 />
+
+{#if openScreenBonusScore}
+  <div
+    class="fixed h-screen w-screen top-0 left-0 z-[29] flex items-center justify-center bg-[#000000cc]"
+    on:click={() => {
+      setTimeout(() => {
+        openScreenBonusScore = false;
+      }, 500);
+    }}
+  >
+    <div class="flex flex-col items-center justify-center gap-10">
+      <div class="xl:text-2xl text-4xl text-white font-medium">
+        Congratulation!!!
+      </div>
+      <img src={goldImg} alt="" class="w-40 h-40" />
+      <div class="xl:text-2xl text-4xl text-white font-medium">
+        You have received {bonusScore} GM Points
+      </div>
+    </div>
+  </div>
+{/if}
 
 {#if modalVisible}
   <WalletModal

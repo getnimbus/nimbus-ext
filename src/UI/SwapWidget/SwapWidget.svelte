@@ -2,19 +2,23 @@
   import { LiFiWidget } from "nimbus-swap-widget";
   import ReactAdapter from "./ReactAdapter.svelte";
   import { handleFormatBlockChainId } from "~/lib/price-mobulaWs";
-  import { userPublicAddress, isDarkMode, wallet } from "~/store";
+  import { userPublicAddress, isDarkMode } from "~/store";
   import { currentLang } from "~/lib/i18n";
+  import { nimbus } from "~/lib/network";
+  import mixpanel from "mixpanel-browser";
 
   export let chain;
   export let address;
   export let showSideTokenSwap;
+  export let owner;
+  export let triggerFireworkBonus = (data) => {};
 
   $: widgetConfig = {
     integrator: "Nimbus",
     variant: "default",
     gmPointCoefficient: "5",
     userNimbusOwner: $userPublicAddress,
-    referrerAddress: $wallet,
+    referrerAddress: owner,
     fromToken: address,
     fromChain: Number(handleFormatBlockChainId(chain)),
     toChain: Number(handleFormatBlockChainId(chain)),
@@ -30,6 +34,24 @@
     languages: {
       default: currentLang,
     },
+    onTriggerBonusSwap: (data: any) => {
+      handleSwapBonus(data);
+    },
+  };
+
+  const handleSwapBonus = async (data) => {
+    try {
+      const response = await nimbus.post(`/swap/${data?.address}/bonus`, {
+        point: data?.point,
+        txHash: data?.txHash,
+      });
+      if (response && response?.data) {
+        mixpanel.track("user_swap_completed");
+        triggerFireworkBonus(response?.data?.point);
+      }
+    } catch (e) {
+      console.error(e);
+    }
   };
 </script>
 

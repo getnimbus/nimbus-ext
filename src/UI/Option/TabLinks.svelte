@@ -4,6 +4,7 @@
   import { nimbus } from "~/lib/network";
   import { i18n } from "~/lib/i18n";
   import { shorterAddress } from "~/utils";
+  import mixpanel from "mixpanel-browser";
 
   import Google from "../SocialLinks/Google.svelte";
   import Solana from "../MainWalletLinks/Solana.svelte";
@@ -66,6 +67,10 @@
       console.log("e: ", e);
     }
   };
+
+  onMount(() => {
+    mixpanel.track("accounts_page");
+  });
 
   $: {
     if (dataUserSocialLogin && dataUserSocialLogin?.publicAddress) {
