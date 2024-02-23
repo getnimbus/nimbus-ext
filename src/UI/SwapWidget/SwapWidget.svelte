@@ -2,19 +2,20 @@
   import { LiFiWidget } from "nimbus-swap-widget";
   import ReactAdapter from "./ReactAdapter.svelte";
   import { handleFormatBlockChainId } from "~/lib/price-mobulaWs";
-  import { userPublicAddress, isDarkMode, wallet } from "~/store";
+  import { userPublicAddress, isDarkMode } from "~/store";
   import { currentLang } from "~/lib/i18n";
 
   export let chain;
   export let address;
   export let showSideTokenSwap;
+  export let owner;
 
   $: widgetConfig = {
     integrator: "Nimbus",
     variant: "default",
     gmPointCoefficient: "5",
     userNimbusOwner: $userPublicAddress,
-    referrerAddress: $wallet,
+    referrerAddress: owner,
     fromToken: address,
     fromChain: Number(handleFormatBlockChainId(chain)),
     toChain: Number(handleFormatBlockChainId(chain)),

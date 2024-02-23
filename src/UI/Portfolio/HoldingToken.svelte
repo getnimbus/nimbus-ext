@@ -1870,6 +1870,9 @@
       chain={data?.chain}
       address={data?.contractAddress}
       {showSideTokenSwap}
+      owner={$typeWallet === "BUNDLE"
+        ? data?.breakdown.map((item) => item.owner)
+        : [data?.owner]}
     />
   {/if}
 </OverlaySidebarSwap>
