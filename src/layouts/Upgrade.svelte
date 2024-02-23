@@ -7,6 +7,7 @@
   import publicClient from "~/lib/viem-client";
   import { mainnet } from "viem/chains";
   import { useNavigate } from "svelte-navigator";
+  import mixpanel from "mixpanel-browser";
 
   import PricePackage from "~/UI/PricePackage/PricePackage.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
@@ -14,6 +15,7 @@
 
   import Ethereum from "~/assets/chains/ethereum.png";
   import Solana from "~/assets/chains/solana.png";
+  import { onMount } from "svelte";
 
   const navigate = useNavigate();
 
@@ -109,6 +111,10 @@
       trigger();
     }
   };
+
+  onMount(() => {
+    mixpanel.track("upgrade_page");
+  });
 
   const submitTrial = async (code) => {
     try {
