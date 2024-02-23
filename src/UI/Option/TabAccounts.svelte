@@ -751,6 +751,10 @@
     }
   }
 
+  onMount(() => {
+    mixpanel.track("accounts_page");
+  });
+
   const handleResetBundleState = () => {
     nameBundle = "";
     selectedBundle = {};

@@ -174,6 +174,7 @@
   };
 
   const handleSignOut = () => {
+    mixpanel.track("user_logout");
     try {
       user.update((n) => (n = {}));
       wallet.update((n) => (n = ""));
@@ -781,6 +782,7 @@
         }`}
         on:click={() => {
           connect();
+          mixpanel.track("user_login_evm");
           isOpenAuthModal = false;
         }}
       >
