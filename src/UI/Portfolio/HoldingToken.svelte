@@ -894,7 +894,7 @@
       class={`py-3 pr-3 w-full h-full flex items-center xl:gap-4 gap-7 ${
         $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
       } ${
-        ["BUNDLE", "SOL", "EVM"].includes($typeWallet)
+        ["BUNDLE", "SOL"].includes($typeWallet)
           ? "justify-start"
           : "justify-center"
       }`}
@@ -1019,7 +1019,7 @@
         </div>
       {/if}
 
-      {#if $typeWallet === "SOL" || $typeWallet === "EVM" || ($typeWallet === "BUNDLE" && data?.chain !== "CEX")}
+      {#if $typeWallet === "SOL" || ($typeWallet === "BUNDLE" && data?.chain === "SOL")}
         <div
           class="flex justify-center view-icon-detail"
           use:tooltip={{
