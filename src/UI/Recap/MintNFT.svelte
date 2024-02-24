@@ -1,23 +1,13 @@
 <script lang="ts">
   import { createEventDispatcher, onDestroy, onMount } from "svelte";
-  import {
-    createQuery,
-    createMutation,
-    useQueryClient,
-  } from "@tanstack/svelte-query";
+  import { createMutation } from "@tanstack/svelte-query";
   import { nimbus } from "~/lib/network";
   import { triggerFirework } from "~/utils";
   import { wait } from "~/entries/background/utils";
-  import { userPublicAddress } from "~/store";
   import { walletStore } from "@svelte-on-solana/wallet-adapter-core";
   import { Buffer as BufferPolyfill } from "buffer";
   import mixpanel from "mixpanel-browser";
-
-  import {
-    Connection,
-    Transaction,
-    VersionedTransaction,
-  } from "@solana/web3.js";
+  import { Connection, Transaction } from "@solana/web3.js";
   import html2canvas from "html2canvas";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
