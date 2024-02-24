@@ -3,6 +3,10 @@
   export let onError = null;
 
   $: if ($error && onError) onError($error);
+  $: if ($error) {
+    console.log("Render error");
+    console.log($error);
+  }
 </script>
 
 {#if $error}
