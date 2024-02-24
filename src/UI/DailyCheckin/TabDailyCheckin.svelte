@@ -11,6 +11,7 @@
   import { blur } from "svelte/transition";
   import { driver } from "driver.js";
   import "driver.js/dist/driver.css";
+  import mixpanel from "mixpanel-browser";
 
   import Button from "~/components/Button.svelte";
   import Loading from "~/components/Loading.svelte";
@@ -172,6 +173,7 @@
   };
 
   const handleCheckin = async () => {
+    mixpanel.track("user_checkin");
     isLoadingCheckin = true;
     try {
       const response = await nimbus.post(`/v2/checkin`, {});
@@ -241,7 +243,7 @@
 
         return {
           ...item,
-          isDone: !item.isInternalLink && selectedLogs,
+          isDone: Boolean(selectedLogs),
         };
       });
     }
@@ -409,15 +411,15 @@
 
   const handleReceiveQuest = async (link: string, type: string) => {
     try {
-      if (type === "first-share-on-twitter") {
+      if (type.includes("retweet-on-twitter")) {
         window.open(link, "_blank");
         await wait(5000);
         const res = await nimbus.post(
-          `/v2/checkin/${$userPublicAddress}/quest/first-share-on-twitter`,
+          `/v2/checkin/${$userPublicAddress}/quest/retweet-on-twitter`,
           {}
         );
         if (res && res?.data === null) {
-          toastMsg = "You already post us on Twitter";
+          toastMsg = "You already retweet us on Twitter";
           isSuccessToast = false;
           trigger();
         }
@@ -449,6 +451,24 @@
           queryClient.invalidateQueries(["users-me"]);
         }
       }
+      if (type === "new-user-tutorial") {
+        const res = await nimbus.post(
+          `/v2/checkin/${$userPublicAddress}/quest/new-user-tutorial`,
+          {}
+        );
+        if (res && res?.data === null) {
+          toastMsg = "You are already finished this quest";
+          isSuccessToast = false;
+          trigger();
+        }
+        if (res?.data?.bonus !== undefined) {
+          triggerBonusScore();
+          bonusScore = res?.data?.bonus;
+          isTriggerBonusScore = true;
+          queryClient.invalidateQueries([$userPublicAddress, "daily-checkin"]);
+          queryClient.invalidateQueries(["users-me"]);
+        }
+      }
       if (type === "sync-telegram") {
         window.open(link, "_blank");
         await wait(6000);
@@ -469,53 +489,15 @@
           queryClient.invalidateQueries(["users-me"]);
         }
       }
-      if (type === "link-google") {
-        window.open(link, "_blank");
-        await wait(6000);
-        const res = await nimbus.post(
-          `/v2/checkin/${$userPublicAddress}/quest/link-google`,
-          {}
-        );
-        if (res && res?.data === null) {
-          toastMsg = "You are not link to Google account";
-          isSuccessToast = false;
-          trigger();
-        }
-        if (res?.data?.bonus !== undefined) {
-          triggerBonusScore();
-          bonusScore = res?.data?.bonus;
-          isTriggerBonusScore = true;
-          queryClient.invalidateQueries([$userPublicAddress, "daily-checkin"]);
-          queryClient.invalidateQueries(["users-me"]);
-        }
-      }
-      if (type === "new-user-tutorial") {
-        const res = await nimbus.post(
-          `/v2/checkin/${$userPublicAddress}/quest/new-user-tutorial`,
-          {}
-        );
-        if (res && res?.data === null) {
-          toastMsg = "You are already finished this quest";
-          isSuccessToast = false;
-          trigger();
-        }
-        if (res?.data?.bonus !== undefined) {
-          triggerBonusScore();
-          bonusScore = res?.data?.bonus;
-          isTriggerBonusScore = true;
-          queryClient.invalidateQueries([$userPublicAddress, "daily-checkin"]);
-          queryClient.invalidateQueries(["users-me"]);
-        }
-      }
-      if (type.includes("retweet-on-twitter")) {
+      if (type === "first-share-on-twitter") {
         window.open(link, "_blank");
         await wait(5000);
         const res = await nimbus.post(
-          `/v2/checkin/${$userPublicAddress}/quest/retweet-on-twitter`,
+          `/v2/checkin/${$userPublicAddress}/quest/first-share-on-twitter`,
           {}
         );
         if (res && res?.data === null) {
-          toastMsg = "You already retweet us on Twitter";
+          toastMsg = "You already post us on Twitter";
           isSuccessToast = false;
           trigger();
         }
@@ -762,23 +744,39 @@
                         </div>
                       </div>
                       <div class="w-[170px]">
-                        {#if quest?.isInternalLink}
-                          <a href={quest?.url} class="py-1">
-                            <Button>Collect!</Button>
-                          </a>
+                        {#if quest?.id === "link-google"}
+                          <div>
+                            {#if quest.isDone}
+                              <div class="py-1">
+                                <Button disabled>Collect!</Button>
+                              </div>
+                            {:else}
+                              <a href={quest?.url} class="py-1">
+                                <Button>Collect!</Button>
+                              </a>
+                            {/if}
+                          </div>
                         {:else}
-                          <div
-                            on:click={() => {
-                              if (!quest.isDone) {
-                                handleReceiveQuest(quest?.url, quest?.id);
-                              }
-                            }}
-                            class="py-1"
-                          >
-                            <Button
-                              disabled={isDisabledReceiveQuest || quest.isDone}
-                              >Collect!</Button
-                            >
+                          <div>
+                            {#if quest?.isInternalLink}
+                              <a href={quest?.url} class="py-1">
+                                <Button>Collect!</Button>
+                              </a>
+                            {:else}
+                              <div
+                                on:click={() => {
+                                  if (!quest.isDone) {
+                                    handleReceiveQuest(quest?.url, quest?.id);
+                                  }
+                                }}
+                                class="py-1"
+                              >
+                                <Button
+                                  disabled={isDisabledReceiveQuest ||
+                                    quest.isDone}>Collect!</Button
+                                >
+                              </div>
+                            {/if}
                           </div>
                         {/if}
                       </div>

@@ -709,18 +709,7 @@
     }`}
   >
     <div class="flex justify-end text-2xl font-medium xl:text-sm text_00000099">
-      {#if data?.chain === "ZETA"}
-        <TooltipTitle
-          tooltipText="Because ZETA chain is testnet so we hardcode price to $10."
-          type="warning"
-        >
-          <div class="pl-4">
-            $<TooltipNumber number={data.market_price} type="balance" />
-          </div>
-        </TooltipTitle>
-      {:else}
-        $<TooltipNumber number={data.market_price} type="balance" />
-      {/if}
+      $<TooltipNumber number={data.market_price} type="balance" />
     </div>
   </td>
 

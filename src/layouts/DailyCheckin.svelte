@@ -10,6 +10,7 @@
   import SidebarTabs from "~/UI/Option/SidebarTabs.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import Mixpanel from "~/components/Mixpanel.svelte";
+  import mixpanel from "mixpanel-browser";
 
   const listSideBar = [
     {
@@ -58,27 +59,29 @@
       );
     }
   });
+
+  onMount(() => {
+    mixpanel.track("checkin_page");
+  });
 </script>
 
 <ErrorBoundary>
-  <Mixpanel>
-    <div
-      class="max-w-[2000px] m-auto xl:w-[90%] w-[90%] py-8 grid xl:grid-cols-6 grid-cols-1 gap-6"
-    >
-      <div class="col-span-1">
-        <SidebarTabs bind:activeTabValue darkMode={$isDarkMode} {listSideBar} />
-      </div>
-      <div class="xl:col-span-5 col-span-1">
-        {#if activeTabValue === "checkin"}
-          <TabDailyCheckin />
-        {:else if activeTabValue === "leaderboard"}
-          <TabLeaderBoard />
-        {:else if activeTabValue === "rewards"}
-          <TabReward />
-        {/if}
-      </div>
+  <div
+    class="max-w-[2000px] m-auto xl:w-[90%] w-[90%] py-8 grid xl:grid-cols-6 grid-cols-1 gap-6"
+  >
+    <div class="col-span-1">
+      <SidebarTabs bind:activeTabValue darkMode={$isDarkMode} {listSideBar} />
     </div>
-  </Mixpanel>
+    <div class="xl:col-span-5 col-span-1">
+      {#if activeTabValue === "checkin"}
+        <TabDailyCheckin />
+      {:else if activeTabValue === "leaderboard"}
+        <TabLeaderBoard />
+      {:else if activeTabValue === "rewards"}
+        <TabReward />
+      {/if}
+    </div>
+  </div>
 </ErrorBoundary>
 
 <style></style>

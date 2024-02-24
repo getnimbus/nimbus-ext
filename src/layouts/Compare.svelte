@@ -52,7 +52,7 @@
   const navigate = useNavigate();
 
   onMount(() => {
-    mixpanel.track("user_compare");
+    mixpanel.track("compare_page");
     const urlParams = new URLSearchParams(window.location.search);
     let addressParams = urlParams.get("address");
 

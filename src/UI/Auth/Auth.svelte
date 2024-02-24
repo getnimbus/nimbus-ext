@@ -64,6 +64,7 @@
   let interval = "month";
   let endDatePackage = "";
   let displayName = "";
+  let publicAddress = "";
 
   let isOpenModalSync = false;
   let isCopied = false;
@@ -128,6 +129,7 @@
       interval = $query.data.plan?.interval;
       endDatePackage = $query.data.plan?.endDate;
       displayName = $query.data?.displayName;
+      publicAddress = $query?.data?.publicAddress;
       // isSubscription = $query.data.plan?.subscription;
       // isNewUser = $query.data.plan?.isNewUser;
     }
@@ -174,6 +176,7 @@
   };
 
   const handleSignOut = () => {
+    mixpanel.track("user_logout");
     try {
       user.update((n) => (n = {}));
       wallet.update((n) => (n = ""));
@@ -479,7 +482,9 @@
           <div class="text-2xl xl:text-base">
             GM 👋, {displayName
               ? displayName
-              : shorterAddress(localStorage.getItem("public_address") || "")}
+              : shorterAddress(
+                  localStorage.getItem("public_address") || publicAddress
+                )}
           </div>
           <DarkMode />
         </div>
@@ -783,6 +788,7 @@
         }`}
         on:click={() => {
           connect();
+          mixpanel.track("user_login_evm");
           isOpenAuthModal = false;
         }}
       >

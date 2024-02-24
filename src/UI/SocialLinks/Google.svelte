@@ -1,13 +1,16 @@
 <script lang="ts">
   import { nimbus } from "~/lib/network";
-  import { isDarkMode, userPublicAddress } from "~/store";
+  import { isDarkMode, userPublicAddress, user } from "~/store";
   import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
   import { googleAuth } from "~/lib/firebase";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
+  import { triggerFirework } from "~/utils";
+  import { wait } from "~/entries/background/utils";
 
   import Google from "~/assets/google.png";
+  import goldImg from "~/assets/Gold4.svg";
 
   export let data: any;
   export let isDisabledRemove: any = false;
@@ -36,10 +39,48 @@
     isSuccessToast = false;
   };
 
+  let dataCheckinHistory = [];
+  let openScreenBonusScore: boolean = false;
+  let bonusScore: number = 0;
+
+  const triggerBonusScore = async () => {
+    openScreenBonusScore = true;
+    triggerFirework();
+    await wait(2000);
+    openScreenBonusScore = false;
+  };
+
+  const handleDailyCheckin = async () => {
+    const response = await nimbus.get(`/v2/checkin/${$userPublicAddress}`);
+    return response.data;
+  };
+
   const getUserInfo = async () => {
     const response: any = await nimbus.get("/users/me");
     return response?.data;
   };
+
+  $: queryDailyCheckin = createQuery({
+    queryKey: [$userPublicAddress, "daily-checkin"],
+    queryFn: () => handleDailyCheckin(),
+    staleTime: Infinity,
+    enabled:
+      $user &&
+      Object.keys($user).length !== 0 &&
+      $userPublicAddress.length !== 0,
+    onError(err) {
+      localStorage.removeItem("auth_token");
+      localStorage.removeItem("solana_token");
+      localStorage.removeItem("evm_token");
+      user.update((n) => (n = {}));
+    },
+  });
+
+  $: {
+    if (!$queryDailyCheckin.isError && $queryDailyCheckin.data !== undefined) {
+      dataCheckinHistory = $queryDailyCheckin?.data?.checkinLogs;
+    }
+  }
 
   $: queryUserInfo = createQuery({
     queryKey: ["users-me"],
@@ -96,6 +137,14 @@
       }
 
       await nimbus.post("/accounts/link", params);
+
+      const quest = dataCheckinHistory.find(
+        (item) => item.type === "QUEST" && item.note === "link-google"
+      );
+      if (!quest) {
+        handleAddBonusQuest();
+      }
+
       localStorage.setItem("socialAuthType", "google");
       reCallAPI();
 
@@ -108,6 +157,27 @@
         "There are some problem when link Google account. Please try again!";
       isSuccessToast = true;
       trigger();
+    }
+  };
+
+  const handleAddBonusQuest = async () => {
+    try {
+      const res = await nimbus.post(
+        `/v2/checkin/${$userPublicAddress}/quest/link-google`,
+        {}
+      );
+      if (res && res?.data === null) {
+        toastMsg = "You are already finished this quest";
+        isSuccessToast = false;
+      }
+      if (res?.data?.bonus !== undefined) {
+        triggerBonusScore();
+        bonusScore = res?.data?.bonus;
+        queryClient.invalidateQueries([$userPublicAddress, "daily-checkin"]);
+        queryClient.invalidateQueries(["users-me"]);
+      }
+    } catch (e) {
+      console.error(e);
     }
   };
 
@@ -138,7 +208,9 @@
         {}
       );
       queryClient.invalidateQueries(["users-me"]);
-      toastMsg = "Successfully set display Google account!";
+      toastMsg = `Successfully ${
+        checked ? "set" : "unset"
+      } display Google account!`;
       isSuccessToast = true;
       trigger();
     } catch (e) {
@@ -194,6 +266,27 @@
     </div>
   {/if}
 </div>
+
+{#if openScreenBonusScore}
+  <div
+    class="fixed h-screen w-screen top-0 left-0 z-[19] flex items-center justify-center bg-[#000000cc]"
+    on:click={() => {
+      setTimeout(() => {
+        openScreenBonusScore = false;
+      }, 500);
+    }}
+  >
+    <div class="flex flex-col items-center justify-center gap-10">
+      <div class="xl:text-2xl text-4xl text-white font-medium">
+        Congratulation!!!
+      </div>
+      <img src={goldImg} alt="" class="w-40 h-40" />
+      <div class="xl:text-2xl text-4xl text-white font-medium">
+        You have received {bonusScore} Bonus GM Points
+      </div>
+    </div>
+  </div>
+{/if}
 
 {#if showToast}
   <div class="fixed top-3 right-3 w-full" style="z-index: 2147483648;">

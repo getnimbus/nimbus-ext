@@ -273,6 +273,7 @@
     Mousetrap.reset();
   });
 
+  let displayName = "";
   let publicAddress = "";
   let isOpenModalSync = false;
   let code = "";
@@ -367,6 +368,7 @@
       userPublicAddress.update((n) => (n = $queryUserInfo?.data.publicAddress));
       userId.update((n) => (n = $queryUserInfo?.data?.id));
       userID = $queryUserInfo?.data?.id;
+      displayName = $queryUserInfo.data?.displayName;
       publicAddress = $queryUserInfo?.data?.publicAddress;
       if (
         $queryUserInfo.data?.plan?.tier &&
@@ -730,7 +732,7 @@
   </div>
 </div>
 
-<Banner />
+<!-- <Banner /> -->
 
 <!-- Mobile header -->
 <div
@@ -762,9 +764,11 @@
         {#if $user && Object.keys($user).length !== 0}
           <div class="flex justify-between items-center px-4 text-white">
             <div class="text-3xl">
-              GM 👋, {shorterAddress(
-                localStorage.getItem("public_address") || publicAddress
-              )}
+              GM 👋, {displayName
+                ? displayName
+                : shorterAddress(
+                    localStorage.getItem("public_address") || publicAddress
+                  )}
             </div>
           </div>
         {/if}

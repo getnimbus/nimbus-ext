@@ -751,6 +751,10 @@
     }
   }
 
+  onMount(() => {
+    mixpanel.track("accounts_page");
+  });
+
   const handleResetBundleState = () => {
     nameBundle = "";
     selectedBundle = {};
@@ -1600,7 +1604,7 @@
             href="https://getnimbus.io/chains-support"
             target="_blank"
             class="text-blue-500 hover:underline cursor-pointer xl:text-base text-2xl"
-            >More chains</a
+            >More exchanges</a
           >
         </div>
       </div>
