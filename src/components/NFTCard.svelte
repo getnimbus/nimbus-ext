@@ -1,12 +1,5 @@
 <script lang="ts">
-  import {
-    typeWallet,
-    isDarkMode,
-    isShowModalNftList,
-    isShowModalNftDeList,
-    listingNft,
-    selectedNftContractAddress,
-  } from "~/store";
+  import { isDarkMode } from "~/store";
   import { shorterName } from "~/utils";
 
   import Tooltip from "~/components/Tooltip.svelte";
@@ -62,13 +55,6 @@
         </span>
       {/if}
     </div>
-
-    <!-- <div
-      class="xl:text-sm text-lg font-normal flex items-center justify-between gap-2"
-    >
-      <div class="text-[#616b84]">Rarity Score</div>
-      <TooltipNumber number={data?.rarityScore} type="percent" />
-    </div> -->
 
     <div
       class="xl:text-sm text-2xl font-normal flex xl:items-center items-start justify-between gap-1"
@@ -155,42 +141,6 @@
         </div>
       </div>
     </div>
-
-    <!-- {#if $typeWallet === "SOL" || ($typeWallet === "BUNDLE" && nativeToken?.symbol === "SOL")}
-      <div
-        class="xl:text-sm text-2xl font-normal flex items-start justify-between gap-1"
-      >
-        <div class="text-[#616b84]">Action</div>
-        <div class="flex flex-col items-end">
-          {#if data?.listing}
-            <div
-              class="font-semibold text-red-600 transition-all cursor-pointer hover:underline"
-              on:click={() => {
-                selectedNftContractAddress.update(
-                  (n) => (n = data?.contractAddress)
-                );
-                listingNft.update((n) => (n = data?.listing));
-                isShowModalNftDeList.update((n) => (n = true));
-              }}
-            >
-              De-list
-            </div>
-          {:else}
-            <div
-              class="font-semibold text-blue-600 transition-all cursor-pointer hover:underline"
-              on:click={() => {
-                selectedNftContractAddress.update(
-                  (n) => (n = data?.contractAddress)
-                );
-                isShowModalNftList.update((n) => (n = true));
-              }}
-            >
-              List
-            </div>
-          {/if}
-        </div>
-      </div>
-    {/if} -->
   </div>
 </div>
 

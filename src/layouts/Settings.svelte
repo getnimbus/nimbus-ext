@@ -79,30 +79,28 @@
 </script>
 
 <ErrorBoundary>
-  <Mixpanel>
-    <div
-      class="max-w-[2000px] xl:min-h-screen m-auto xl:w-[90%] w-[90%] py-8 grid xl:grid-cols-6 grid-cols-1 gap-6"
-    >
-      <div class="col-span-1">
-        <SidebarTabs bind:activeTabValue darkMode={$isDarkMode} {listSideBar} />
-      </div>
-      <div class="xl:col-span-5 col-span-1">
-        {#if activeTabValue === "accounts"}
-          <TabAccounts />
-          <!-- {:else if activeTabValue === "nft"}
-          <TabNft /> -->
-        {:else if activeTabValue === "alerts"}
-          <TabAlerts />
-        {:else if activeTabValue === "reports"}
-          <TabReports />
-        {:else if activeTabValue === "links"}
-          <TabLinks />
-          <!-- {:else if activeTabValue === "settings"}
-          <TabSettings /> -->
-        {/if}
-      </div>
+  <div
+    class="max-w-[2000px] xl:min-h-screen m-auto xl:w-[90%] w-[90%] py-8 grid xl:grid-cols-6 grid-cols-1 gap-6"
+  >
+    <div class="col-span-1">
+      <SidebarTabs bind:activeTabValue darkMode={$isDarkMode} {listSideBar} />
     </div>
-  </Mixpanel>
+    <div class="xl:col-span-5 col-span-1">
+      {#if activeTabValue === "accounts"}
+        <TabAccounts />
+        <!-- {:else if activeTabValue === "nft"}
+          <TabNft /> -->
+      {:else if activeTabValue === "alerts"}
+        <TabAlerts />
+      {:else if activeTabValue === "reports"}
+        <TabReports />
+      {:else if activeTabValue === "links"}
+        <TabLinks />
+        <!-- {:else if activeTabValue === "settings"}
+          <TabSettings /> -->
+      {/if}
+    </div>
+  </div>
 </ErrorBoundary>
 
 <style windi:preflights:global windi:safelist:global>

@@ -27,7 +27,7 @@
 
   const handleValidateAddress = async (address: string) => {
     try {
-      const response = await nimbus.get(`/v2/address/${address}/validate`);
+      const response: any = await nimbus.get(`/v2/address/${address}/validate`);
       return response?.data;
     } catch (e) {
       console.error(e);
@@ -48,7 +48,7 @@
           validateAccount?.type === "BUNDLE" ? "" : validateAccount?.type
         }`
       )
-      .then((response) => response?.data);
+      .then((response: any) => response?.data);
     return response;
   };
 
@@ -417,36 +417,6 @@
                       </TooltipTitle>
                     </div>
                   </th>
-
-                  <!-- <th
-                    class={`py-3 ${
-                      $typeWallet === "SOL" ||
-                      ($typeWallet === "BUNDLE" &&
-                        data?.nativeToken?.symbol === "SOL")
-                        ? ""
-                        : "pr-3 rounded-tr-[10px]"
-                    }`}
-                  >
-                    <div
-                      class="text-right xl:text-xs text-xl uppercase font-medium"
-                    >
-                      <TooltipTitle
-                        tooltipText="Price NFTs now - Price NFTs at time you spent"
-                      >
-                        Profit & Loss
-                      </TooltipTitle>
-                    </div>
-                  </th> -->
-
-                  <!-- {#if $typeWallet === "SOL" || ($typeWallet === "BUNDLE" && data?.nativeToken?.symbol === "SOL")}
-                    <th class="py-3 pr-3 rounded-tr-[10px]">
-                      <div
-                        class="text-right xl:text-xs text-xl uppercase font-medium"
-                      >
-                        Action
-                      </div>
-                    </th>
-                  {/if} -->
                 </tr>
               </thead>
               <tbody>

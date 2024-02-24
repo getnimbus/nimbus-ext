@@ -30,17 +30,19 @@
   import AppOverlay from "~/components/Overlay.svelte";
   import VaultTable from "~/UI/Portfolio/VaultTable.svelte";
   import TokenDetailSidebar from "~/UI/TokenDetail/TokenDetailSidebar.svelte";
+  import SwapWidget from "../SwapWidget/SwapWidget.svelte";
+  import TooltipTitle from "~/components/TooltipTitle.svelte";
 
   import TrendUp from "~/assets/trend-up.svg";
   import TrendDown from "~/assets/trend-down.svg";
   import defaultToken from "~/assets/defaultToken.png";
-  import TooltipTitle from "~/components/TooltipTitle.svelte";
 
   export let data;
   export let selectedWallet;
   export let sumAllTokens;
   export let lastIndex: boolean = false;
   export let index: number;
+  export let triggerFireworkBonus = (data) => {};
 
   let isShowTooltipName = false;
   let isShowTooltipSymbol = false;
@@ -1031,7 +1033,12 @@
             on:click={() => {
               showSideTokenSwap = true;
               selectedTokenDetail = data;
-              handleSwapToken(data);
+              if (
+                $typeWallet === "SOL" ||
+                ($typeWallet === "BUNDLE" && data?.chain === "SOL")
+              ) {
+                handleSwapToken(data);
+              }
             }}
           >
             <svg
@@ -1054,7 +1061,12 @@
             on:click={() => {
               showSideTokenSwap = true;
               selectedTokenDetail = data;
-              handleSwapToken(data);
+              if (
+                $typeWallet === "SOL" ||
+                ($typeWallet === "BUNDLE" && data?.chain === "SOL")
+              ) {
+                handleSwapToken(data);
+              }
             }}
           >
             <svg
@@ -1849,7 +1861,22 @@
       </div>
     {/if}
   </div>
-  <div id={`swap-${index}`}></div>
+
+  {#if $typeWallet === "SOL" || ($typeWallet === "BUNDLE" && data?.chain === "SOL")}
+    {#if showSideTokenSwap}
+      <div id={`swap-${index}`}></div>
+    {/if}
+  {:else}
+    <!-- <SwapWidget
+      chain={data?.chain}
+      address={data?.contractAddress}
+      {showSideTokenSwap}
+      owner={$typeWallet === "BUNDLE"
+        ? data?.breakdown.map((item) => item.owner)
+        : [data?.owner]}
+      {triggerFireworkBonus}
+    /> -->
+  {/if}
 </OverlaySidebarSwap>
 
 {#if showToast}
