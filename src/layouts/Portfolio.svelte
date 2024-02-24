@@ -440,6 +440,7 @@
 
   //// VAULTS
   const getVaults = async (address, chain) => {
+    return []; // TODO: Fix the api query time later
     let addressChain = chain;
 
     if (addressChain === "ALL") {
