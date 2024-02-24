@@ -25,7 +25,9 @@
     },
   });
 
-  const Error = () => {
+  const Error = (error) => {
+    console.log("Render error");
+    console.log(error);
     return `<div class="flex items-center justify-center h-screen">
         Something when wrong! Please reload your browser to try again
       </div>`;
@@ -78,7 +80,7 @@
           {:then { default: component }}
             <svelte:component this={component} />
           {:catch error}
-            {@html Error()}
+            {@html Error(error)}
           {/await}
         </Route>
 
@@ -95,7 +97,7 @@
               {:then { default: component }}
                 <svelte:component this={component} />
               {:catch error}
-                {@html Error()}
+                {@html Error(error)}
               {/await}
             </Route>
 
@@ -107,7 +109,7 @@
               {:then { default: component }}
                 <svelte:component this={component} />
               {:catch error}
-                {@html Error()}
+                {@html Error(error)}
               {/await}
             </Route>
 
@@ -119,7 +121,7 @@
               {:then { default: component }}
                 <svelte:component this={component} />
               {:catch error}
-                {@html Error()}
+                {@html Error(error)}
               {/await}
             </Route>
 
@@ -131,7 +133,7 @@
               {:then { default: component }}
                 <svelte:component this={component} />
               {:catch error}
-                {@html Error()}
+                {@html Error(error)}
               {/await}
             </Route>
 
@@ -143,7 +145,7 @@
               {:then { default: component }}
                 <svelte:component this={component} />
               {:catch error}
-                {@html Error()}
+                {@html Error(error)}
               {/await}
             </Route>
 
@@ -156,7 +158,7 @@
               {:then { default: component }}
                 <svelte:component this={component} />
               {:catch error}
-                {@html Error()}
+                {@html Error(error)}
               {/await}
             </Route>
 
@@ -168,7 +170,7 @@
               {:then { default: component }}
                 <svelte:component this={component} />
               {:catch error}
-                {@html Error()}
+                {@html Error(error)}
               {/await}
             </Route>
 
@@ -180,7 +182,7 @@
               {:then { default: component }}
                 <svelte:component this={component} />
               {:catch error}
-                {@html Error()}
+                {@html Error(error)}
               {/await}
             </Route>
 
@@ -192,7 +194,7 @@
               {:then { default: component }}
                 <svelte:component this={component} />
               {:catch error}
-                {@html Error()}
+                {@html Error(error)}
               {/await}
             </Route>
 
@@ -204,7 +206,7 @@
               {:then { default: component }}
                 <svelte:component this={component} />
               {:catch error}
-                {@html Error()}
+                {@html Error(error)}
               {/await}
             </Route>
 
@@ -216,7 +218,7 @@
               {:then { default: component }}
                 <svelte:component this={component} />
               {:catch error}
-                {@html Error()}
+                {@html Error(error)}
               {/await}
             </Route>
 
@@ -228,7 +230,7 @@
               {:then { default: component }}
                 <svelte:component this={component} />
               {:catch error}
-                {@html Error()}
+                {@html Error(error)}
               {/await}
             </Route>
 
@@ -240,7 +242,7 @@
               {:then { default: component }}
                 <svelte:component this={component} />
               {:catch error}
-                {@html Error()}
+                {@html Error(error)}
               {/await}
             </Route>
 
@@ -252,7 +254,7 @@
               {:then { default: component }}
                 <svelte:component this={component} />
               {:catch error}
-                {@html Error()}
+                {@html Error(error)}
               {/await}
             </Route>
 
@@ -264,7 +266,7 @@
               {:then { default: component }}
                 <svelte:component this={component} />
               {:catch error}
-                {@html Error()}
+                {@html Error(error)}
               {/await}
             </Route>
 
@@ -276,7 +278,7 @@
               {:then { default: component }}
                 <svelte:component this={component} />
               {:catch error}
-                {@html Error()}
+                {@html Error(error)}
               {/await}
             </Route>
 
@@ -288,7 +290,7 @@
               {:then { default: component }}
                 <svelte:component this={component} />
               {:catch error}
-                {@html Error()}
+                {@html Error(error)}
               {/await}
             </Route>
           </div>
