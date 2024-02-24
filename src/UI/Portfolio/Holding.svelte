@@ -1,43 +1,20 @@
 <script lang="ts">
-  import { onMount, createEventDispatcher } from "svelte";
+  import { onMount } from "svelte";
   import { i18n } from "~/lib/i18n";
   import {
     chain,
     typeWallet,
     isDarkMode,
-    isShowModalNftList,
-    isShowModalNftDeList,
-    listingNft,
-    selectedNftContractAddress,
-    selectedNftOwnerAddress,
-    userPublicAddress,
     realtimePrice,
     totalAssets,
     unrealizedProfit,
     realizedProfit,
   } from "~/store";
-  import { Toast } from "flowbite-svelte";
-  import { blur } from "svelte/transition";
   import { filterTokenValueType, chunkArray } from "~/utils";
   import { listSupported } from "~/lib/chains";
   import { groupBy } from "lodash";
   import { priceMobulaSubscribe } from "~/lib/price-mobulaWs";
   import { priceSubscribe } from "~/lib/price-ws";
-  import {
-    Connection,
-    Transaction,
-    TransactionInstruction,
-  } from "@solana/web3.js";
-  import { nimbus } from "~/lib/network";
-  import { WalletProvider } from "@svelte-on-solana/wallet-adapter-ui";
-  import {
-    BackpackWalletAdapter,
-    PhantomWalletAdapter,
-    SolflareWalletAdapter,
-  } from "@solana/wallet-adapter-wallets";
-  import { walletStore } from "@svelte-on-solana/wallet-adapter-core";
-  import { Buffer as BufferPolyfill } from "buffer";
-  import { createMutation, useQueryClient } from "@tanstack/svelte-query";
 
   export let selectedWallet;
   export let isLoadingNFT;
@@ -55,27 +32,6 @@
   import TooltipTitle from "~/components/TooltipTitle.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import Loading from "~/components/Loading.svelte";
-  import AppOverlay from "~/components/Overlay.svelte";
-  import Button from "~/components/Button.svelte";
-  import SolanaAuth from "../Auth/SolanaAuth.svelte";
-  import WalletModal from "~/UI/SolanaCustomWalletBtn/WalletModal.svelte";
-
-  const marketList = [{ value: "SniperMarket", label: "Sniper Market" }];
-  const marketDeList = [
-    { value: "SniperMarket", label: "Sniper Market" },
-    { value: "MagicEden", label: "Magic Eden" },
-    { value: "CoralCube", label: "Coral Cube" },
-    { value: "Hyperspace", label: "Hyperspace" },
-    { value: "Tensorswap", label: "Tensorswap" },
-  ];
-  const wallets = [
-    new PhantomWalletAdapter(),
-    new SolflareWalletAdapter(),
-    new BackpackWalletAdapter(),
-  ];
-  const maxNumberOfWallets = 5;
-
-  const queryClient = useQueryClient();
 
   let dataSubWS = [];
   let filteredUndefinedCmcHoldingTokenData = [];
@@ -90,14 +46,6 @@
   let isStickyTableToken = false;
   let tableNFTHeader;
   let isStickyTableNFT = false;
-
-  let nftListPrice = 0;
-  let selectedMarket;
-
-  let toastMsg = "";
-  let isSuccessToast = false;
-  let counter = 5;
-  let showToast = false;
 
   let selectedTypeTable = {
     label: "",
@@ -130,18 +78,6 @@
     Balance: i18n("newtabPage.Balance", "Balance"),
     hide: i18n("newtabPage.hide-less-than-1", "Hide tokens less than $1"),
     empty: i18n("newtabPage.empty", "Empty"),
-  };
-
-  const trigger = () => {
-    showToast = true;
-    counter = 5;
-    timeout();
-  };
-
-  const timeout = () => {
-    if (--counter > 0) return setTimeout(timeout, 1000);
-    showToast = false;
-    isSuccessToast = false;
   };
 
   onMount(() => {
@@ -565,147 +501,6 @@
       sumTokens = 0;
     }
   }
-
-  const dispatch = createEventDispatcher();
-
-  const handleValidateAddress = async (address: string) => {
-    try {
-      const response = await nimbus.get(`/v2/address/${address}/validate`);
-      userPublicAddressChain = response?.data?.type;
-    } catch (e) {
-      console.error(e);
-      return undefined;
-    }
-  };
-
-  let modalVisible = false;
-  let userPublicAddressChain = "EVM";
-  let userAddress = $userPublicAddress;
-
-  onMount(() => {
-    $walletStore.disconnect();
-  });
-
-  const openModal = () => {
-    modalVisible = true;
-    dispatch("connect");
-  };
-
-  const closeModal = () => (modalVisible = false);
-
-  const connectWallet = async (event) => {
-    closeModal();
-    try {
-      localStorage.removeItem("walletAdapter");
-      await walletStore.resetWallet();
-      await walletStore.setConnecting(false);
-      await $walletStore.disconnect();
-      await $walletStore.select(event.detail);
-      await $walletStore.connect();
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  $: solanaPublicAddress = $walletStore?.publicKey?.toBase58();
-
-  $: {
-    if (solanaPublicAddress) {
-      userAddress = solanaPublicAddress;
-    } else {
-      userAddress = $userPublicAddress;
-    }
-  }
-
-  $: {
-    if (userAddress) {
-      handleValidateAddress(userAddress);
-    }
-  }
-
-  const onSubmitDeListNFT = createMutation({
-    onError: (error) => {
-      toastMsg = "Something wrong while de-list your nft. Please try again!";
-      isSuccessToast = false;
-      trigger();
-    },
-    mutationFn: async () => {
-      const params = {
-        mintAddress: $selectedNftContractAddress,
-        marketplace: $listingNft?.marketplace,
-      };
-
-      const res = await nimbus.get(
-        `/v2/address/${$selectedNftOwnerAddress}/nft/delist`,
-        {
-          params,
-        }
-      );
-
-      const txBuffer = BufferPolyfill.from(res?.data?.tx, "base64");
-      const transaction = Transaction.from(txBuffer);
-      const connection = new Connection(
-        // "https://devnet-rpc.shyft.to?api_key=gsusEvomKHQwwltu" // DEVNET
-        "https://rpc.shyft.to?api_key=b4feHxaBppbRqTHc" // PROD
-        // "https://rpc.shyft.to?api_key=gsusEvomKHQwwltu"
-      );
-      const result = await $walletStore.sendTransaction(
-        transaction,
-        connection
-      );
-
-      toastMsg = "De-List your NFT successful";
-      isSuccessToast = true;
-      trigger();
-
-      queryClient.invalidateQueries(["nft-holding"]);
-
-      return result;
-    },
-  });
-
-  const onSubmitListNFT = createMutation({
-    onError: (error) => {
-      toastMsg = "Something wrong while list your nft. Please try again!";
-      isSuccessToast = false;
-      trigger();
-    },
-    mutationFn: async () => {
-      const params = {
-        price: Number(nftListPrice),
-        mintAddress: $selectedNftContractAddress,
-        marketplace: selectedMarket?.value,
-      };
-
-      const res = await nimbus.get(
-        `/v2/address/${$selectedNftOwnerAddress}/nft/list`,
-        {
-          params,
-        }
-      );
-
-      const txBuffer = BufferPolyfill.from(res?.data?.tx, "base64");
-      const transaction = Transaction.from(txBuffer);
-      const connection = new Connection(
-        // "https://devnet-rpc.shyft.to?api_key=gsusEvomKHQwwltu" // DEVNET
-        "https://rpc.shyft.to?api_key=b4feHxaBppbRqTHc" // PROD
-        // "https://rpc.shyft.to?api_key=gsusEvomKHQwwltu"
-      );
-      const result = await $walletStore.sendTransaction(
-        transaction,
-        connection
-      );
-      console.log("result:", result);
-
-      toastMsg = "List your NFT successful";
-      isSuccessToast = true;
-      trigger();
-
-      queryClient.invalidateQueries(["nft-holding"]);
-
-      return result;
-    },
-  });
 </script>
 
 <div
@@ -1139,260 +934,6 @@
     </div>
   </ErrorBoundary>
 </div>
-
-<!-- Modal list nft  -->
-<AppOverlay
-  clickOutSideToClose
-  isOpen={$isShowModalNftList}
-  on:close={() => {
-    isShowModalNftList.update((n) => (n = false));
-  }}
->
-  {#if userPublicAddressChain === "SOL" && solanaPublicAddress}
-    <div class="flex flex-col gap-4">
-      <div class="flex items-center gap-4">
-        <div class="font-medium xl:title-3 title-1">List your NFT</div>
-        <SolanaAuth text="Connect wallet" />
-      </div>
-      <form
-        on:submit|preventDefault={() => {
-          $onSubmitListNFT.mutate();
-        }}
-        class="flex flex-col xl:gap-3 gap-10"
-      >
-        <div
-          class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
-            nftListPrice && !$isDarkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
-          }`}
-        >
-          <div class="xl:text-base text-2xl text-[#666666] font-medium">
-            Price (SOL)
-          </div>
-          <input
-            type="text"
-            id="price"
-            name="price"
-            required
-            placeholder="Your NFT price"
-            value=""
-            class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
-              nftListPrice && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
-            }`}
-            on:keyup={({ target: { value } }) => (nftListPrice = value)}
-          />
-        </div>
-
-        <div class="flex items-center gap-3 px-3">
-          <div class="xl:text-base text-2xl text-[#666666] font-medium">
-            Market
-          </div>
-          <Select
-            type="lang"
-            positionSelectList="left-0"
-            listSelect={marketList}
-            bind:selected={selectedMarket}
-          />
-        </div>
-
-        <div class="flex justify-end lg:gap-2 gap-6">
-          <div class="xl:w-[120px] w-full">
-            <Button
-              variant="secondary"
-              on:click={() => {
-                isShowModalNftList.update((n) => (n = false));
-              }}
-            >
-              Cancel</Button
-            >
-          </div>
-          <div class="xl:w-[120px] w-full">
-            <Button
-              type="submit"
-              isLoading={$onSubmitListNFT.isLoading}
-              disabled={userAddress !== $selectedNftOwnerAddress}>Submit</Button
-            >
-          </div>
-        </div>
-      </form>
-    </div>
-  {:else}
-    <div class="flex flex-col items-center gap-4">
-      <div class="font-medium xl:title-3 title-1">
-        Connect your Solana wallet to list NFT
-      </div>
-      <div
-        class={`flex items-center justify-center gap-2 text-white border cursor-pointer py-3 px-6 rounded-[12px] min-w-[250px] ${
-          $isDarkMode
-            ? "border-white text-white"
-            : "border-[#27326f] text-[#27326f]"
-        }`}
-        on:click={() => {
-          openModal();
-        }}
-      >
-        <div class="font-semibold text-[15px]">Connect wallet</div>
-      </div>
-    </div>
-  {/if}
-</AppOverlay>
-
-<!-- Modal de-list nft  -->
-<AppOverlay
-  clickOutSideToClose
-  isOpen={$isShowModalNftDeList}
-  on:close={() => {
-    isShowModalNftDeList.update((n) => (n = false));
-  }}
->
-  {#if userPublicAddressChain === "SOL" && solanaPublicAddress}
-    <div class="flex flex-col gap-4">
-      <div class="flex items-center gap-4">
-        <div class="font-medium xl:title-3 title-1">Your list NFT</div>
-        <SolanaAuth text="Connect wallet" />
-      </div>
-      <form
-        on:submit|preventDefault={() => {
-          $onSubmitDeListNFT.mutate();
-        }}
-        class="flex flex-col xl:gap-3 gap-10"
-      >
-        <div
-          class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
-            nftListPrice && !$isDarkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
-          }`}
-        >
-          <div class="xl:text-base text-2xl text-[#666666] font-medium">
-            Price ({$typeWallet})
-          </div>
-          <input
-            type="text"
-            id="price"
-            name="price"
-            required
-            placeholder="Your NFT price"
-            value={$listingNft?.price}
-            class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
-              !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
-            }`}
-          />
-        </div>
-
-        <div class="flex items-center gap-3 px-3">
-          <div class="xl:text-base text-2xl text-[#666666] font-medium">
-            Market
-          </div>
-          <Select
-            type="chain"
-            disabled
-            positionSelectList="left-0"
-            listSelect={marketDeList}
-            selected={marketDeList.find(
-              (item) => item.value === $listingNft?.marketplace
-            )}
-          />
-        </div>
-
-        <div class="flex justify-end lg:gap-2 gap-6">
-          <div class="xl:w-[120px] w-full">
-            <Button
-              variant="secondary"
-              on:click={() => {
-                isShowModalNftList.update((n) => (n = false));
-              }}
-            >
-              Cancel</Button
-            >
-          </div>
-          <div class="xl:w-[120px] w-full">
-            <Button
-              type="submit"
-              isLoading={$onSubmitDeListNFT.isLoading}
-              disabled={userAddress !== $selectedNftOwnerAddress}>Submit</Button
-            >
-          </div>
-        </div>
-      </form>
-    </div>
-  {:else}
-    <div class="flex flex-col items-center gap-4">
-      <div class="font-medium xl:title-3 title-1">
-        Connect your Solana wallet to de-list NFT
-      </div>
-      <div
-        class={`flex items-center justify-center gap-2 text-white border cursor-pointer py-3 px-6 rounded-[12px] min-w-[250px] ${
-          $isDarkMode
-            ? "border-white text-white"
-            : "border-[#27326f] text-[#27326f]"
-        }`}
-        on:click={() => {
-          openModal();
-        }}
-      >
-        <div class="font-semibold text-[15px]">Connect wallet</div>
-      </div>
-    </div>
-  {/if}
-</AppOverlay>
-
-<WalletProvider
-  localStorageKey="walletAdapter"
-  {wallets}
-  autoConnect
-  onError={console.log}
-/>
-
-{#if modalVisible}
-  <WalletModal
-    on:close={closeModal}
-    on:connect={connectWallet}
-    {maxNumberOfWallets}
-  />
-{/if}
-
-{#if showToast}
-  <div class="fixed w-full top-3 right-3" style="z-index: 2147483648;">
-    <Toast
-      transition={blur}
-      params={{ amount: 10 }}
-      position="top-right"
-      color={isSuccessToast ? "green" : "red"}
-      bind:open={showToast}
-    >
-      <svelte:fragment slot="icon">
-        {#if isSuccessToast}
-          <svg
-            aria-hidden="true"
-            class="w-5 h-5"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-            xmlns="http://www.w3.org/2000/svg"
-            ><path
-              fill-rule="evenodd"
-              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-              clip-rule="evenodd"
-            /></svg
-          >
-          <span class="sr-only">Check icon</span>
-        {:else}
-          <svg
-            aria-hidden="true"
-            class="w-5 h-5"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-            xmlns="http://www.w3.org/2000/svg"
-            ><path
-              fill-rule="evenodd"
-              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-              clip-rule="evenodd"
-            /></svg
-          >
-          <span class="sr-only">Error icon</span>
-        {/if}
-      </svelte:fragment>
-      {toastMsg}
-    </Toast>
-  </div>
-{/if}
 
 <style>
 </style>
