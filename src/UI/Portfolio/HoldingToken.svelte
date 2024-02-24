@@ -1867,7 +1867,7 @@
       <div id={`swap-${index}`}></div>
     {/if}
   {:else}
-    <SwapWidget
+    <!-- <SwapWidget
       chain={data?.chain}
       address={data?.contractAddress}
       {showSideTokenSwap}
@@ -1875,7 +1875,7 @@
         ? data?.breakdown.map((item) => item.owner)
         : [data?.owner]}
       {triggerFireworkBonus}
-    />
+    /> -->
   {/if}
 </OverlaySidebarSwap>
 
