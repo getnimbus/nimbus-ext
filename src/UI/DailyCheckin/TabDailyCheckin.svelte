@@ -129,7 +129,7 @@
   const queryClient = useQueryClient();
 
   const nameTypeCheckin = (
-    type: "QUEST" | "CHECK_IN" | "REDEEM" | "BONUS 5%"
+    type: "QUEST" | "CHECK_IN" | "REDEEM" | "BONUS 5%" | "SWAP"
   ) => {
     switch (type) {
       case "QUEST":
@@ -140,6 +140,8 @@
         return "Redeem";
       case "BONUS 5%":
         return "Bonus 5%";
+      case "SWAP":
+        return "Swap";
     }
   };
 

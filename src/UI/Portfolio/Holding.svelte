@@ -18,7 +18,7 @@
   } from "~/store";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
-  import { filterTokenValueType, chunkArray } from "~/utils";
+  import { filterTokenValueType, chunkArray, triggerFirework } from "~/utils";
   import { listSupported } from "~/lib/chains";
   import { groupBy } from "lodash";
   import { priceMobulaSubscribe } from "~/lib/price-mobulaWs";
@@ -33,6 +33,9 @@
   } from "@solana/wallet-adapter-wallets";
   import { walletStore } from "@svelte-on-solana/wallet-adapter-core";
   import { Buffer as BufferPolyfill } from "buffer";
+  import { wait } from "~/entries/background/utils";
+
+  import goldImg from "~/assets/Gold4.svg";
 
   export let selectedWallet;
   export let isLoadingNFT;
@@ -680,6 +683,21 @@
       console.log(e);
     }
   };
+
+  let openScreenBonusScore: boolean = false;
+  let bonusScore: number = 10;
+
+  const triggerFireworkBonus = (score: number) => {
+    bonusScore = score;
+    triggerBonusScore();
+  };
+
+  const triggerBonusScore = async () => {
+    openScreenBonusScore = true;
+    triggerFirework();
+    await wait(2000);
+    openScreenBonusScore = false;
+  };
 </script>
 
 <div
@@ -821,7 +839,7 @@
                     {#if listSupported.includes($typeWallet)}
                       <th
                         class={`py-3 pr-3 rounded-tr-[10px] ${
-                          ["BUNDLE", "SOL"].includes($typeWallet)
+                          ["BUNDLE", "SOL", "EVM"].includes($typeWallet)
                             ? "xl:max-w-20 w-16"
                             : "xl:w-12 w-32"
                         }`}
@@ -855,6 +873,7 @@
                         {selectedWallet}
                         sumAllTokens={$totalAssets - sumNFT}
                         index={index + 1}
+                        {triggerFireworkBonus}
                       />
                     {/each}
                   </tbody>
@@ -911,6 +930,7 @@
                             {selectedWallet}
                             sumAllTokens={$totalAssets - sumNFT}
                             index={index + 1}
+                            {triggerFireworkBonus}
                           />
                         {/each}
                       {/if}
@@ -1312,6 +1332,27 @@
   autoConnect
   onError={console.log}
 />
+
+{#if openScreenBonusScore}
+  <div
+    class="fixed h-screen w-screen top-0 left-0 z-[29] flex items-center justify-center bg-[#000000cc]"
+    on:click={() => {
+      setTimeout(() => {
+        openScreenBonusScore = false;
+      }, 500);
+    }}
+  >
+    <div class="flex flex-col items-center justify-center gap-10">
+      <div class="xl:text-2xl text-4xl text-white font-medium">
+        Congratulation!!!
+      </div>
+      <img src={goldImg} alt="" class="w-40 h-40" />
+      <div class="xl:text-2xl text-4xl text-white font-medium">
+        You have received {bonusScore} GM Points
+      </div>
+    </div>
+  </div>
+{/if}
 
 {#if modalVisible}
   <WalletModal
