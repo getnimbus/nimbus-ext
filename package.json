@@ -4,6 +4,9 @@
   "version": "1.0.0",
   "author": "Thanh Le - thanhle@getnimbus.io",
   "description": "A personalized Web3 portfolio tool for DEFI users",
+  "engines": {
+    "node": ">=18.18.0 <19.0.0"
+  },
   "scripts": {
     "build": "vite build",
     "build:components": "vite build -c vite.config.components.ts",
@@ -83,8 +86,11 @@
     "moralis-v1": "^1.13.0",
     "mousetrap": "^1.6.5",
     "nanoid": "^4.0.2",
+    "nimbus-swap-widget": "^3.2.0",
     "numeral": "^2.0.6",
     "qrcode-generator": "^1.4.4",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "sass": "^1.59.2",
     "scrollreveal": "^4.0.9",
     "svelte-copy-to-clipboard": "^0.2.5",
