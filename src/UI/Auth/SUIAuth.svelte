@@ -5,6 +5,7 @@
   import {
     SuiConnector,
     WidgetConfig,
+    WidgetProps,
     WalletState,
   } from "nimbus-sui-connector";
   import { isDarkMode, user } from "~/store";
@@ -32,7 +33,6 @@
   const handleSUIAuth = async () => {
     mixpanel.track("user_login_sui");
     try {
-      console.log({ walletInstance });
       if (walletInstance) {
         // walletInstance;
         walletInstance.toggleSelect();
@@ -63,10 +63,17 @@
     onConnectError: console.error,
   };
 
+  const chains = [
+    {
+      id: "sui:mainnet",
+      name: "Mainnet",
+      rpcUrl: "https://fullnode.mainnet.sui.io",
+    },
+  ];
+
   const handleGetSUIToken = async (data) => {
     try {
       const res = await nimbus.post("/auth/sui", data);
-      console.log(res);
       if (res?.data?.result) {
         handleCloseAuthModal();
         localStorage.setItem("evm_token", res?.data?.result); // TODO: For compatible, check if we need to set it to sui_token
@@ -124,8 +131,6 @@
   //     handleGetNonce(walletInstance?.account.address);
   //   }
   // }
-
-  $: console.log(widgetConfig);
 </script>
 
 <div
@@ -139,6 +144,8 @@
   <ReactAdapter
     element={SuiConnector}
     config={widgetConfig}
+    autoConnect={false}
+    {chains}
     integrator="svelte-example"
   />
 </div>
