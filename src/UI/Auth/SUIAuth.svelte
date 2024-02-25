@@ -10,7 +10,7 @@
   import { isDarkMode, user } from "~/store";
 
   import User from "~/assets/user.png";
-  import Google from "~/assets/google.png";
+  import SUI from "~/assets/sui_logo.svg";
   import ReactAdapter from "../SwapWidget/ReactAdapter.svelte";
   import { P } from "flowbite-svelte";
   import { nimbus } from "~/lib/network";
@@ -134,8 +134,8 @@
   }`}
   on:click={handleSUIAuth}
 >
-  <img src={Google} alt="" width="22" height="22" />
-  <div class="font-semibold text-[15px]">Login with SUI</div>
+  <img src={SUI} alt="" width="22" height="22" />
+  <div class="font-semibold text-[15px]">Login with Sui</div>
   <ReactAdapter
     element={SuiConnector}
     config={widgetConfig}
