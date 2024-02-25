@@ -68,6 +68,7 @@
       const res = await nimbus.post("/auth/sui", data);
       console.log(res);
       if (res?.data?.result) {
+        handleCloseAuthModal();
         localStorage.setItem("evm_token", res?.data?.result); // TODO: For compatible, check if we need to set it to sui_token
         user.update(
           (n) =>
