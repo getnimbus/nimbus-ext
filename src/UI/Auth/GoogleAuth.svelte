@@ -63,7 +63,7 @@
   }`}
   on:click={handleGoogleAuth}
 >
-  <img src={Google} alt="" width="22" height="22" />
+  <img src={Google} class="h-[24px]" />
   <div class="font-semibold text-[15px]">Login with Google</div>
 </div>
 

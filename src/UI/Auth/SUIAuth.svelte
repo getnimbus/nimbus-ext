@@ -139,7 +139,7 @@
   }`}
   on:click={handleSUIAuth}
 >
-  <img src={SUI} alt="" width="22" height="22" />
+  <img src={SUI} class="h-[24px] w-auto" />
   <div class="font-semibold text-[15px]">Login with Sui</div>
   <ReactAdapter
     element={SuiConnector}
