@@ -24,7 +24,6 @@
   import QRCode from "qrcode-generator";
   import CopyToClipboard from "svelte-copy-to-clipboard";
   import { wait } from "~/entries/background/utils";
-  import SolanaAuth from "./SolanaAuth.svelte";
   import { WalletProvider } from "@svelte-on-solana/wallet-adapter-ui";
   import {
     BackpackWalletAdapter,
@@ -43,6 +42,7 @@
   import Button from "~/components/Button.svelte";
   import GoogleAuth from "./GoogleAuth.svelte";
   import SuiAuth from "./SUIAuth.svelte";
+  import SolanaAuth from "./SolanaAuth.svelte";
 
   import User from "~/assets/user.png";
   import Logo from "~/assets/logo-1.svg";
@@ -200,7 +200,12 @@
       $walletStore.disconnect();
 
       localStorage.removeItem("sui_token");
-      ($suiWalletInstance as WalletState).disconnect();
+      if (
+        ($suiWalletInstance as WalletState) &&
+        ($suiWalletInstance as WalletState).connected
+      ) {
+        ($suiWalletInstance as WalletState).disconnect();
+      }
 
       localStorage.removeItem("auth_token");
 
@@ -213,7 +218,7 @@
     }
   };
 
-  // handle evm login
+  // handle EVM login
   const connect = async () => {
     try {
       const res = await onboard.connectWallet();
@@ -278,6 +283,8 @@
     try {
       const res = await nimbus.post("/auth/evm", data);
       if (res?.data?.result) {
+        handleCloseAuthModal();
+        localStorage.removeItem("auth_token");
         localStorage.setItem("evm_token", res?.data?.result);
         user.update(
           (n) =>
@@ -293,14 +300,14 @@
     }
   };
 
-  // handle solana login
+  // handle Solana login
   $: solanaPublicAddress = $walletStore?.publicKey?.toBase58();
 
   $: {
     if (solanaPublicAddress) {
       const solanaToken = localStorage.getItem("solana_token");
       if (!solanaToken) {
-        isOpenAuthModal = false;
+        handleCloseAuthModal();
         if ($user && Object.keys($user).length === 0) {
           handleGetSolanaNonce(solanaPublicAddress);
         }
@@ -352,6 +359,7 @@
     try {
       const res = await nimbus.post("/auth/solana", data);
       if (res?.data?.result) {
+        handleCloseAuthModal();
         localStorage.removeItem("auth_token");
         localStorage.setItem("solana_token", res?.data?.result);
         user.update(
@@ -797,7 +805,6 @@
         on:click={() => {
           connect();
           mixpanel.track("user_login_evm");
-          isOpenAuthModal = false;
         }}
       >
         <img src={Evm} alt="" width="24" height="24" />

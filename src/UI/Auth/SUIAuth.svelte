@@ -22,22 +22,18 @@
     },
   ];
 
-  const onConnectSuccess = () => {
-    console.log("Success connect", $suiWalletInstance as WalletState);
+  const onConnectSuccess = (msg) => {
+    console.log("Success connect: ", msg);
     if ($suiWalletInstance) {
-      ($suiWalletInstance as WalletState).toggleSelect(); // Close the list
-      handleGetNonce(($suiWalletInstance as WalletState)?.account.address);
-    } else {
-      // Work around to try again
-      setTimeout(() => {
-        onConnectSuccess();
-      }, 500);
+      ($suiWalletInstance as WalletState).toggleSelect();
     }
   };
 
   const onConnectError = (msg) => {
     console.error("Error connect", msg);
-    ($suiWalletInstance as WalletState).toggleSelect(); // Close the list
+    if ($suiWalletInstance) {
+      ($suiWalletInstance as WalletState).toggleSelect();
+    }
   };
 
   const widgetConfig = {
@@ -69,6 +65,15 @@
     }
   };
 
+  $: {
+    if (
+      ($suiWalletInstance as WalletState) &&
+      ($suiWalletInstance as WalletState).connected
+    ) {
+      handleGetNonce(($suiWalletInstance as WalletState)?.account?.address);
+    }
+  }
+
   const handleGetNonce = async (address: string) => {
     try {
       const res = await nimbus.post("/users/nonce", {
@@ -99,7 +104,6 @@
         `I am signing my one-time nonce: ${nonce}`
       ),
     });
-
     return msg;
   };
 
@@ -108,6 +112,7 @@
       const res = await nimbus.post("/auth/sui", data);
       if (res?.data?.result) {
         handleCloseAuthModal();
+        localStorage.removeItem("auth_token");
         localStorage.setItem("sui_token", res?.data?.result);
         user.update(
           (n) =>
