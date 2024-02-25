@@ -1,37 +1,19 @@
 <script lang="ts">
+  import { onMount } from "svelte";
   import { useQueryClient } from "@tanstack/svelte-query";
   import mixpanel from "mixpanel-browser";
-  import {
-    SuiConnector,
-    WidgetConfig,
-    WidgetProps,
-    WalletState,
-  } from "nimbus-sui-connector";
-  import { isDarkMode, user } from "~/store";
+  import { SuiConnector, WalletState } from "nimbus-sui-connector";
+  import { isDarkMode, user, suiWalletInstance } from "~/store";
   import { nimbus } from "~/lib/network";
-  import { onMount } from "svelte";
 
   import ReactAdapter from "~/components/ReactAdapter.svelte";
 
   import User from "~/assets/user.png";
-  import SUI from "~/assets/sui_logo.svg";
+  import SUI from "~/assets/chains/sui.svg";
 
   export let handleCloseAuthModal = () => {};
+
   const queryClient = useQueryClient();
-
-  const onConnectSuccess = () => {
-    console.log("Success connect", walletInstance);
-    if (walletInstance) {
-      walletInstance.toggleSelect(); // Close the list
-      handleGetNonce(walletInstance?.account.address);
-    } else {
-      // Work around to try again
-      setTimeout(() => {
-        onConnectSuccess();
-      }, 500);
-    }
-  };
-
   const chains = [
     {
       id: "sui:mainnet",
@@ -40,15 +22,32 @@
     },
   ];
 
-  const widgetConfig = {
-    walletFn: (wallet) => {
-      walletInstance = wallet;
-    },
-    onConnectSuccess,
-    onConnectError: console.error,
+  const onConnectSuccess = () => {
+    console.log("Success connect", $suiWalletInstance as WalletState);
+    if ($suiWalletInstance) {
+      ($suiWalletInstance as WalletState).toggleSelect(); // Close the list
+      handleGetNonce(($suiWalletInstance as WalletState)?.account.address);
+    } else {
+      // Work around to try again
+      setTimeout(() => {
+        onConnectSuccess();
+      }, 500);
+    }
   };
 
-  let walletInstance: WalletState;
+  const onConnectError = (msg) => {
+    console.error("Error connect", msg);
+    ($suiWalletInstance as WalletState).toggleSelect(); // Close the list
+  };
+
+  const widgetConfig = {
+    walletFn: (wallet) => {
+      suiWalletInstance.update((n) => (n = wallet));
+    },
+    onConnectSuccess,
+    onConnectError,
+  };
+
   let invitation = "";
 
   onMount(() => {
@@ -62,8 +61,8 @@
   const handleSUIAuth = async () => {
     mixpanel.track("user_login_sui");
     try {
-      if (walletInstance) {
-        walletInstance.toggleSelect();
+      if ($suiWalletInstance) {
+        ($suiWalletInstance as WalletState).toggleSelect();
       }
     } catch (e) {
       console.log("error: ", e);
@@ -95,7 +94,7 @@
   };
 
   const handleSignAddressMessage = async (nonce: string) => {
-    const msg = await walletInstance.signPersonalMessage({
+    const msg = await ($suiWalletInstance as WalletState).signPersonalMessage({
       message: new TextEncoder().encode(
         `I am signing my one-time nonce: ${nonce}`
       ),
@@ -109,7 +108,7 @@
       const res = await nimbus.post("/auth/sui", data);
       if (res?.data?.result) {
         handleCloseAuthModal();
-        localStorage.setItem("evm_token", res?.data?.result); // TODO: For compatible, check if we need to set it to sui_token
+        localStorage.setItem("sui_token", res?.data?.result);
         user.update(
           (n) =>
             (n = {

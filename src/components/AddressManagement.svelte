@@ -238,6 +238,7 @@
       localStorage.removeItem("auth_token");
       localStorage.removeItem("solana_token");
       localStorage.removeItem("evm_token");
+      localStorage.removeItem("sui_token");
       user.update((n) => (n = {}));
     },
     onSuccess(data) {
@@ -245,7 +246,8 @@
         data &&
         data?.length === 0 &&
         (localStorage.getItem("solana_token") ||
-          localStorage.getItem("evm_token"))
+          localStorage.getItem("evm_token") ||
+          localStorage.getItem("sui_token"))
       ) {
         handleCreateUser();
       }
@@ -581,14 +583,19 @@
   const onSubmitCEX = () => {
     const solanaToken = localStorage.getItem("solana_token");
     const evmToken = localStorage.getItem("evm_token");
+    const suiToken = localStorage.getItem("sui_token");
     const authToken = localStorage.getItem("auth_token");
-    if (evmToken || solanaToken || authToken) {
+    if (evmToken || solanaToken || suiToken || authToken) {
       isLoadingConnectCEX = true;
       const vezgo: any = Vezgo.init({
         clientId: "6st9c6s816su37qe8ld1d5iiq2",
         authEndpoint: `${API_URL}/auth/vezgo`,
         auth: {
-          headers: { Authorization: `${evmToken || solanaToken || authToken}` },
+          headers: {
+            Authorization: `${
+              evmToken || solanaToken || authToken || suiToken
+            }`,
+          },
         },
       });
       const userVezgo = vezgo.login();
