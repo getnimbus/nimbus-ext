@@ -1,6 +1,5 @@
 <script lang="ts">
   import { useQueryClient } from "@tanstack/svelte-query";
-  import { GoogleAuthProvider } from "firebase/auth";
   import mixpanel from "mixpanel-browser";
   import {
     SuiConnector,
@@ -9,38 +8,16 @@
     WalletState,
   } from "nimbus-sui-connector";
   import { isDarkMode, user } from "~/store";
-
-  import User from "~/assets/user.png";
-  import SUI from "~/assets/sui_logo.svg";
-  import ReactAdapter from "../SwapWidget/ReactAdapter.svelte";
-  import { P } from "flowbite-svelte";
   import { nimbus } from "~/lib/network";
   import { onMount } from "svelte";
 
+  import ReactAdapter from "~/components/ReactAdapter.svelte";
+
+  import User from "~/assets/user.png";
+  import SUI from "~/assets/sui_logo.svg";
+
   export let handleCloseAuthModal = () => {};
-  let walletInstance: WalletState;
-  let invitation = "";
   const queryClient = useQueryClient();
-
-  onMount(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const invitationParams = urlParams.get("invitation");
-    if (invitationParams) {
-      invitation = invitationParams;
-    }
-  });
-
-  const handleSUIAuth = async () => {
-    mixpanel.track("user_login_sui");
-    try {
-      if (walletInstance) {
-        // walletInstance;
-        walletInstance.toggleSelect();
-      }
-    } catch (e) {
-      console.log("error: ", e);
-    }
-  };
 
   const onConnectSuccess = () => {
     console.log("Success connect", walletInstance);
@@ -55,14 +32,6 @@
     }
   };
 
-  const widgetConfig = {
-    walletFn: (wallet) => {
-      walletInstance = wallet;
-    },
-    onConnectSuccess,
-    onConnectError: console.error,
-  };
-
   const chains = [
     {
       id: "sui:mainnet",
@@ -71,23 +40,33 @@
     },
   ];
 
-  const handleGetSUIToken = async (data) => {
+  const widgetConfig = {
+    walletFn: (wallet) => {
+      walletInstance = wallet;
+    },
+    onConnectSuccess,
+    onConnectError: console.error,
+  };
+
+  let walletInstance: WalletState;
+  let invitation = "";
+
+  onMount(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const invitationParams = urlParams.get("invitation");
+    if (invitationParams) {
+      invitation = invitationParams;
+    }
+  });
+
+  const handleSUIAuth = async () => {
+    mixpanel.track("user_login_sui");
     try {
-      const res = await nimbus.post("/auth/sui", data);
-      if (res?.data?.result) {
-        handleCloseAuthModal();
-        localStorage.setItem("evm_token", res?.data?.result); // TODO: For compatible, check if we need to set it to sui_token
-        user.update(
-          (n) =>
-            (n = {
-              picture: User,
-            })
-        );
-        queryClient.invalidateQueries(["users-me"]);
-        queryClient.invalidateQueries(["list-address"]);
+      if (walletInstance) {
+        walletInstance.toggleSelect();
       }
     } catch (e) {
-      console.error("error: ", e);
+      console.log("error: ", e);
     }
   };
 
@@ -125,12 +104,25 @@
     return msg;
   };
 
-  // $: {
-  //   console.log("connectred", walletInstance?.account.address);
-  //   if (walletInstance?.account.address) {
-  //     handleGetNonce(walletInstance?.account.address);
-  //   }
-  // }
+  const handleGetSUIToken = async (data) => {
+    try {
+      const res = await nimbus.post("/auth/sui", data);
+      if (res?.data?.result) {
+        handleCloseAuthModal();
+        localStorage.setItem("evm_token", res?.data?.result); // TODO: For compatible, check if we need to set it to sui_token
+        user.update(
+          (n) =>
+            (n = {
+              picture: User,
+            })
+        );
+        queryClient.invalidateQueries(["users-me"]);
+        queryClient.invalidateQueries(["list-address"]);
+      }
+    } catch (e) {
+      console.error("error: ", e);
+    }
+  };
 </script>
 
 <div
@@ -141,14 +133,15 @@
 >
   <img src={SUI} class="h-[24px] w-auto" />
   <div class="font-semibold text-[15px]">Login with Sui</div>
-  <ReactAdapter
-    element={SuiConnector}
-    config={widgetConfig}
-    autoConnect={false}
-    {chains}
-    integrator="svelte-example"
-  />
 </div>
+
+<ReactAdapter
+  element={SuiConnector}
+  config={widgetConfig}
+  autoConnect={false}
+  {chains}
+  integrator="svelte-example"
+/>
 
 <style>
 </style>
