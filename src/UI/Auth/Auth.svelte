@@ -46,6 +46,7 @@
   import Reload from "~/assets/reload-black.svg";
   import ReloadWhite from "~/assets/reload-white.svg";
   import Evm from "~/assets/chains/evm.png";
+  import SuiAuth from "./SUIAuth.svelte";
 
   const wallets = [
     new PhantomWalletAdapter(),
@@ -796,6 +797,7 @@
         <div class="font-semibold text-[15px]">Login with EVM</div>
       </div>
       <SolanaAuth text="Login with Solana" />
+      <SuiAuth />
       <GoogleAuth {handleCloseAuthModal} />
     </div>
   </div>
