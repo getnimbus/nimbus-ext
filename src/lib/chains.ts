@@ -10,7 +10,7 @@ import Ton from "~/assets/chains/ton.png";
 
 // MOVE
 import Move from "~/assets/chains/move.png";
-import Sui from "~/assets/chains/sui.png";
+import Sui from "~/assets/chains/sui.svg";
 
 // EVM
 import EVM from "~/assets/chains/evm.png";
