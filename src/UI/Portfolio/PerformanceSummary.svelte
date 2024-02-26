@@ -10,17 +10,10 @@
   import ClosedPositionChart from "~/UI/Profile/ClosedPositionChart.svelte";
   import TopProfitAndLoss from "~/UI/Profile/TopProfitAndLoss.svelte";
   import ProfitData from "~/UI/Profile/ProfitData.svelte";
+  import TokenHoldingTable from "../Profile/TokenHoldingTable/TokenHoldingTable.svelte";
   import SyncData from "~/components/SyncData.svelte";
 
   import User from "~/assets/user.png";
-  import TokenHoldingTrades from "../Profile/TokenHoldingTrades.svelte";
-  import ClosedHoldingTrades from "../Profile/ClosedHoldingTrades.svelte";
-  import RuggedHoldingTrades from "../Profile/RuggedHoldingTrades.svelte";
-
-  export let isLoadingToken;
-  export let holdingTokenData;
-  export let closedHoldingPosition;
-  export let ruggedHoldingPosition;
 
   let toastMsg = "";
   let isSuccessToast = false;
@@ -163,16 +156,10 @@
               {enabledFetchAllData}
             />
 
-            <TokenHoldingTrades {holdingTokenData} isLoading={isLoadingToken} />
-
-            <ClosedHoldingTrades
-              holdingTokenData={closedHoldingPosition}
-              isLoading={isLoadingToken}
-            />
-
-            <RuggedHoldingTrades
-              holdingTokenData={ruggedHoldingPosition}
-              isLoading={isLoadingToken}
+            <TokenHoldingTable
+              selectedAddress={address}
+              isSync={true}
+              {enabledFetchAllData}
             />
           </div>
         </div>
