@@ -1,7 +1,8 @@
 <script lang="ts">
+  import { Toast } from "flowbite-svelte";
+  import { onMount } from "svelte";
   import { isDarkMode, user } from "~/store";
   import { shorterAddress } from "~/utils";
-  import { Link } from "svelte-navigator";
   import mixpanel from "mixpanel-browser";
   import html2canvas from "html2canvas";
 
@@ -9,14 +10,9 @@
   import ClosedPositionChart from "~/UI/Profile/ClosedPositionChart.svelte";
   import TopProfitAndLoss from "~/UI/Profile/TopProfitAndLoss.svelte";
   import ProfitData from "~/UI/Profile/ProfitData.svelte";
+  import SyncData from "~/components/SyncData.svelte";
 
   import User from "~/assets/user.png";
-  import LeftArrow from "~/assets/left-arrow.svg";
-  import LeftArrowBlack from "~/assets/left-arrow-black.svg";
-
-  import SyncData from "~/components/SyncData.svelte";
-  import { Toast } from "flowbite-svelte";
-  import { onMount } from "svelte";
 
   let toastMsg = "";
   let isSuccessToast = false;
@@ -79,24 +75,10 @@
   });
 </script>
 
-<div
-  class="max-w-[2000px] m-auto xl:w-[90%] w-[90%] py-8"
-  id="target-performance-summary"
->
+<div class="-mt-15" id="target-performance-summary">
   <SyncData let:address let:enabledFetchAllData>
     <div class="flex flex-col gap-6">
-      <div class="flex items-center justify-between">
-        <Link to="/" class="cusor-pointer">
-          <div class="flex items-center gap-1">
-            <img
-              src={$isDarkMode ? LeftArrow : LeftArrowBlack}
-              alt=""
-              class="xl:w-5 xl:h-5 w-7 h-7"
-            />
-            <div class="xl:text-sm text-2xl font-medium">Portfolio Detail</div>
-          </div>
-        </Link>
-
+      <div class="flex items-center justify-end">
         <button
           id="btn-share-summary"
           class="flex items-center justify-center gap-2 xl:text-sm text-2xl font-medium text-white bg-[#1e96fc] px-4 py-2 rounded-xl"
@@ -118,6 +100,7 @@
           </svg>
         </button>
       </div>
+
       <div
         class="w-full flex xl:flex-row flex-col rounded-xl py-10 md:px-10 px-4 gap-9 border-2 border_0000001a"
       >

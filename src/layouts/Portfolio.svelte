@@ -38,6 +38,7 @@
   import Charts from "~/UI/Portfolio/Charts.svelte";
   import Holding from "~/UI/Portfolio/Holding.svelte";
   import ClosedTokenPosition from "~/UI/Portfolio/ClosedTokenPosition.svelte";
+  import PerformanceSummary from "~/UI/Portfolio/PerformanceSummary.svelte";
   import RiskReturn from "~/UI/Portfolio/RiskReturn.svelte";
   import News from "~/UI/Portfolio/News.svelte";
   import Positions from "~/UI/Portfolio/Positions.svelte";
@@ -950,26 +951,27 @@
                 </AnimateSharedLayout>
               </div>
 
-              <Charts
-                {handleSelectedTableTokenHolding}
-                isLoading={$queryOverview.isFetching}
-                isLoadingBreakdownTokens={$queryAllTokenHolding.some(
-                  (item) => item.isFetching === true
-                )}
-                isLoadingBreakdownNfts={$queryAllNftHolding.some(
-                  (item) => item.isFetching === true
-                )}
-                {holdingTokenData}
-                {overviewDataPerformance}
-                {dataPieChartToken}
-                {dataPieChartNft}
-                {isEmptyDataPieTokens}
-                {isEmptyDataPieNfts}
-                {dataOverviewBundlePieChart}
-                {selectedType}
-              />
+              {#if selectedType !== "summary"}
+                <Charts
+                  {handleSelectedTableTokenHolding}
+                  isLoading={$queryOverview.isFetching}
+                  isLoadingBreakdownTokens={$queryAllTokenHolding.some(
+                    (item) => item.isFetching === true
+                  )}
+                  isLoadingBreakdownNfts={$queryAllNftHolding.some(
+                    (item) => item.isFetching === true
+                  )}
+                  {holdingTokenData}
+                  {overviewDataPerformance}
+                  {dataPieChartToken}
+                  {dataPieChartNft}
+                  {isEmptyDataPieTokens}
+                  {isEmptyDataPieNfts}
+                  {dataOverviewBundlePieChart}
+                  {selectedType}
+                />
 
-              <!-- {#if $typeWallet === "EVM" || $typeWallet === "MOVE" || $typeWallet === "CEX" || $typeWallet === "BUNDLE"}
+                <!-- {#if $typeWallet === "EVM" || $typeWallet === "MOVE" || $typeWallet === "CEX" || $typeWallet === "BUNDLE"}
                 <RiskReturn
                   isLoading={$queryCompare.isFetching}
                   isError={$queryCompare.isError}
@@ -977,26 +979,7 @@
                 />
               {/if} -->
 
-              <Holding
-                selectedWallet={$wallet}
-                isLoadingNFT={$chain === "ALL"
-                  ? $queryAllNftHolding.some((item) => item.isFetching === true)
-                  : $queryNftHolding.isFetching}
-                isLoadingToken={$chain === "ALL"
-                  ? $queryAllTokenHolding.some(
-                      (item) => item.isFetching === true
-                    )
-                  : $queryTokenHolding.isFetching}
-                {holdingTokenData}
-                {holdingNFTData}
-                dataVaults={$queryVaults.data}
-                {selectedTokenHolding}
-                {selectedDataPieChart}
-                {selectedType}
-              />
-
-              {#if $typeWallet !== "BTC" && selectedType === "token"}
-                <ClosedTokenPosition
+                <Holding
                   selectedWallet={$wallet}
                   isLoadingNFT={$chain === "ALL"
                     ? $queryAllNftHolding.some(
@@ -1008,9 +991,35 @@
                         (item) => item.isFetching === true
                       )
                     : $queryTokenHolding.isFetching}
-                  holdingTokenData={closedHoldingPosition}
+                  {holdingTokenData}
                   {holdingNFTData}
+                  dataVaults={$queryVaults.data}
+                  {selectedTokenHolding}
+                  {selectedDataPieChart}
+                  {selectedType}
                 />
+
+                {#if $typeWallet !== "BTC" && selectedType === "token"}
+                  <ClosedTokenPosition
+                    selectedWallet={$wallet}
+                    isLoadingNFT={$chain === "ALL"
+                      ? $queryAllNftHolding.some(
+                          (item) => item.isFetching === true
+                        )
+                      : $queryNftHolding.isFetching}
+                    isLoadingToken={$chain === "ALL"
+                      ? $queryAllTokenHolding.some(
+                          (item) => item.isFetching === true
+                        )
+                      : $queryTokenHolding.isFetching}
+                    holdingTokenData={closedHoldingPosition}
+                    {holdingNFTData}
+                  />
+                {/if}
+              {/if}
+
+              {#if selectedType === "summary"}
+                <PerformanceSummary />
               {/if}
 
               <!-- <News isLoading={false} data={newsData} /> -->
