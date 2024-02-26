@@ -125,10 +125,7 @@
                         isShorten={true}
                         isLink={true}
                         link={`${
-                          item?.chain
-                            ? linkExplorer(item?.chain, item?.transaction_hash)
-                                .trx
-                            : linkExplorer("SUI", item?.transaction_hash).trx
+                          linkExplorer(item?.chain, item?.transaction_hash).trx
                         }`}
                       />
                     {:else}
