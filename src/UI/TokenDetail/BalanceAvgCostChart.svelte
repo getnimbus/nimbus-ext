@@ -215,7 +215,8 @@
                   {
                     name: "Current Price",
                     label: "Current Price",
-                    xAxis: data?.market_price,
+                    xAxis:
+                      data?.market_price || data?.price?.price || data?.rate,
                     lineStyle: {
                       color: "#1e96fc",
                       type: "solid",
@@ -225,7 +226,7 @@
                   {
                     name: "Avg Cost",
                     label: "Avg Cost",
-                    xAxis: avgCost,
+                    xAxis: avgCost || 0,
                     lineStyle: {
                       color: "#eab308",
                       type: "dashed",
