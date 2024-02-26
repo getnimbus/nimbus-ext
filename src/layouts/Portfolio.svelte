@@ -661,12 +661,14 @@
       isEmptyDataPieTokens = false;
     }
 
-    const formatData = data.map((item) => {
-      return {
-        ...item,
-        value: Number(item?.amount || 0) * Number(item?.price?.price || 0),
-      };
-    });
+    const formatData = data
+      .map((item) => {
+        return {
+          ...item,
+          value: Number(item?.amount || 0) * Number(item?.price?.price || 0),
+        };
+      })
+      .filter((item) => Number(item.value) > 0);
 
     const sumToken = (formatData || []).reduce(
       (prev, item) => prev + Number(item?.value),
