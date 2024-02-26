@@ -11,7 +11,7 @@
   import ReactAdapter from "~/components/ReactAdapter.svelte";
 
   import User from "~/assets/user.png";
-  import SUI from "~/assets/chains/sui.svg";
+  import SUI from "~/assets/chains/sui.png";
 
   export let handleCloseAuthModal = () => {};
 
