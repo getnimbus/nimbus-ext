@@ -395,7 +395,8 @@
         $wallet &&
         $wallet?.length !== 0 &&
         $chain.length !== 0 &&
-        $chain !== "ALL"
+        $chain !== "ALL" &&
+        selectedType === "nft"
     ),
   });
 
@@ -410,7 +411,8 @@
             $wallet &&
             $wallet?.length !== 0 &&
             $chain.length !== 0 &&
-            $chain === "ALL"
+            $chain === "ALL" &&
+            selectedType === "nft"
         ),
       };
     })
@@ -494,7 +496,8 @@
         $wallet &&
         $wallet?.length !== 0 &&
         $chain.length !== 0 &&
-        $chain !== "ALL"
+        $chain !== "ALL" &&
+        selectedType === "token"
     ),
   });
 
@@ -509,7 +512,8 @@
             $wallet &&
             $wallet?.length !== 0 &&
             $chain.length !== 0 &&
-            $chain === "ALL"
+            $chain === "ALL" &&
+            selectedType === "token"
         ),
       };
     })
