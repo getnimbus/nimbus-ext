@@ -260,9 +260,7 @@
     style={`${lastIndex ? "border-bottom-right-radius: 10px;" : ""}`}
   >
     <div class="text-right text-2xl font-medium xl:text-sm text_00000099">
-      {dayjs().diff(dayjs(data?.profit?.latestTrade), "hour") < 24
-        ? dayjs(data?.profit?.latestTrade).fromNow()
-        : dayjs(data?.profit?.latestTrade).format("YYYY-MM-DD")}
+      {dayjs(data?.profit?.latestTrade).format("YYYY-MM-DD")}
     </div>
   </td>
 </tr>
