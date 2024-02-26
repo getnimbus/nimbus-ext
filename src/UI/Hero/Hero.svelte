@@ -4,6 +4,7 @@
   import * as browser from "webextension-polyfill";
   import { nimbus } from "~/lib/network";
   import {
+    tab,
     chain,
     isDarkMode,
     triggerConnectWallet,
@@ -65,7 +66,7 @@
           null,
           "",
           window.location.pathname +
-            `?type=${validateAccount?.type}&chain=ALL&address=${validateAccount?.address}`
+            `?tab=${$tab}&type=${validateAccount?.type}&chain=ALL&address=${validateAccount?.address}`
         );
       }
 
@@ -74,7 +75,7 @@
           null,
           "",
           window.location.pathname +
-            `?type=${validateAccount?.type}&address=${validateAccount?.address}`
+            `?tab=${$tab}&type=${validateAccount?.type}&address=${validateAccount?.address}`
         );
       }
     }
