@@ -13,6 +13,7 @@
   import Loading from "~/components/Loading.svelte";
 
   import mobulaLogo from "~/assets/mobula-logo.png";
+  import defaultToken from "~/assets/defaultToken.png";
 
   export let data;
   export let isLoading;
@@ -25,6 +26,8 @@
     }
     return dayjs(date).fromNow();
   };
+
+  $: console.log("HELLO: ", data);
 </script>
 
 <div
@@ -108,7 +111,7 @@
                       <img
                         src={chainList.find(
                           (chain) => chain.value === item?.chain
-                        )?.logo}
+                        )?.logo || defaultToken}
                         alt=""
                         class="object-contain w-5 h-5 rounded-full"
                       />
@@ -122,7 +125,10 @@
                         isShorten={true}
                         isLink={true}
                         link={`${
-                          linkExplorer(item?.chain, item?.transaction_hash).trx
+                          item?.chain
+                            ? linkExplorer(item?.chain, item?.transaction_hash)
+                                .trx
+                            : linkExplorer("SUI", item?.transaction_hash).trx
                         }`}
                       />
                     {:else}
@@ -243,7 +249,7 @@
                 {#each item.changes as change}
                   <div class="flex items-center gap-2">
                     <img
-                      src={change?.logo}
+                      src={change?.logo || defaultToken}
                       alt=""
                       class="object-contain overflow-hidden rounded-full w-7 h-7"
                     />
