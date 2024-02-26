@@ -14,6 +14,7 @@
 
   import mobulaLogo from "~/assets/mobula-logo.png";
   import defaultToken from "~/assets/defaultToken.png";
+  import SuiLogo from "~/assets/chains/sui.png";
 
   export let data;
   export let isLoading;
@@ -109,9 +110,11 @@
                   <div class="text-2xl xl:text-sm flex gap-2">
                     {#if $typeWallet !== "CEX" && $typeWallet !== "BTC"}
                       <img
-                        src={chainList.find(
-                          (chain) => chain.value === item?.chain
-                        )?.logo || defaultToken}
+                        src={item?.chain === "SUI"
+                          ? SuiLogo
+                          : chainList.find(
+                              (chain) => chain.value === item?.chain
+                            )?.logo || defaultToken}
                         alt=""
                         class="object-contain w-5 h-5 rounded-full"
                       />
