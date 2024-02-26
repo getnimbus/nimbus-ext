@@ -120,8 +120,6 @@
             picture: User,
           })
       );
-    } else {
-      handleSignOut();
     }
   });
 
@@ -201,6 +199,7 @@
   };
 
   const handleSignOut = () => {
+    console.log("HELLO WORLD");
     mixpanel.track("user_logout");
     try {
       user.update((n) => (n = {}));

@@ -11,6 +11,7 @@
   import { chainList, chainMoveList } from "~/lib/chains";
   import { wait } from "../entries/background/utils";
   import {
+    tab,
     wallet,
     chain,
     typeWallet,
@@ -397,7 +398,7 @@
         $wallet?.length !== 0 &&
         $chain.length !== 0 &&
         $chain !== "ALL" &&
-        selectedType === "nft"
+        $tab === "nft"
     ),
   });
 
@@ -413,7 +414,7 @@
             $wallet?.length !== 0 &&
             $chain.length !== 0 &&
             $chain === "ALL" &&
-            selectedType === "nft"
+            $tab === "nft"
         ),
       };
     })
@@ -498,7 +499,7 @@
         $wallet?.length !== 0 &&
         $chain.length !== 0 &&
         $chain !== "ALL" &&
-        selectedType === "token"
+        $tab === "token"
     ),
   });
 
@@ -514,7 +515,7 @@
             $wallet?.length !== 0 &&
             $chain.length !== 0 &&
             $chain === "ALL" &&
-            selectedType === "token"
+            $tab === "token"
         ),
       };
     })
@@ -872,8 +873,6 @@
       localStorage.setItem("view-portfolio-tour", "true");
     }
   }
-
-  let selectedType: "token" | "nft" | "summary" = "token";
 </script>
 
 <AddressManagement title={MultipleLang.overview}>
@@ -937,16 +936,24 @@
                   {#each typePortfolioPage as type}
                     <div
                       class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
-                      on:click={() => (selectedType = type.value)}
+                      on:click={() => {
+                        tab.update((n) => (n = type.value));
+                        window.history.replaceState(
+                          null,
+                          "",
+                          window.location.pathname +
+                            `?tab=${type.value}&type=${$typeWallet}&chain=${$chain}&address=${$wallet}`
+                        );
+                      }}
                     >
                       <div
                         class={`relative z-2 ${
-                          selectedType === type.value && "text-white"
+                          $tab === type.value && "text-white"
                         }`}
                       >
                         {type.label}
                       </div>
-                      {#if type.value === selectedType}
+                      {#if type.value === $tab}
                         <Motion
                           let:motion
                           layoutId="active-pill"
@@ -963,7 +970,7 @@
                 </AnimateSharedLayout>
               </div>
 
-              {#if selectedType !== "summary"}
+              {#if $tab !== "summary"}
                 <Charts
                   {handleSelectedTableTokenHolding}
                   isLoading={$queryOverview.isFetching}
@@ -980,7 +987,7 @@
                   {isEmptyDataPieTokens}
                   {isEmptyDataPieNfts}
                   {dataOverviewBundlePieChart}
-                  {selectedType}
+                  selectedType={$tab}
                 />
 
                 <!-- {#if $typeWallet === "EVM" || $typeWallet === "MOVE" || $typeWallet === "CEX" || $typeWallet === "BUNDLE"}
@@ -1007,10 +1014,10 @@
                   dataVaults={$queryVaults.data}
                   {selectedTokenHolding}
                   {selectedDataPieChart}
-                  {selectedType}
+                  selectedType={$tab}
                 />
 
-                {#if $typeWallet !== "BTC" && selectedType === "token"}
+                {#if $typeWallet !== "BTC" && $tab === "token"}
                   <ClosedTokenPosition
                     isLoadingToken={$chain === "ALL"
                       ? $queryAllTokenHolding.some(
@@ -1026,7 +1033,7 @@
                 {/if}
               {/if}
 
-              {#if selectedType === "summary"}
+              {#if $tab === "summary"}
                 <PerformanceSummary
                   isLoadingToken={$chain === "ALL"
                     ? $queryAllTokenHolding.some(
