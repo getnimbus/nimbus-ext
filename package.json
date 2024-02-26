@@ -86,7 +86,7 @@
     "moralis-v1": "^1.13.0",
     "mousetrap": "^1.6.5",
     "nanoid": "^4.0.2",
-    "nimbus-sui-connector": "^1.0.3",
+    "nimbus-sui-kit": "^0.0.2",
     "nimbus-swap-widget": "^3.2.0",
     "numeral": "^2.0.6",
     "qrcode-generator": "^1.4.4",

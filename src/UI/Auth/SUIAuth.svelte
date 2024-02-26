@@ -2,7 +2,7 @@
   import { onMount } from "svelte";
   import { useQueryClient } from "@tanstack/svelte-query";
   import mixpanel from "mixpanel-browser";
-  import { SuiConnector, WalletState } from "nimbus-sui-connector";
+  import { SuiConnector, WalletState } from "nimbus-sui-kit";
   import { isDarkMode, user, suiWalletInstance } from "~/store";
   import { nimbus } from "~/lib/network";
 

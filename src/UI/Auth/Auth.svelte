@@ -33,7 +33,7 @@
   import bs58 from "bs58";
   import { walletStore } from "@svelte-on-solana/wallet-adapter-core";
   import { navigate } from "svelte-navigator";
-  import type { WalletState } from "nimbus-sui-connector";
+  import type { WalletState } from "nimbus-sui-kit";
 
   import Tooltip from "~/components/Tooltip.svelte";
   import DarkMode from "~/components/DarkMode.svelte";
