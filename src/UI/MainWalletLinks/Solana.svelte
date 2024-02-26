@@ -1,6 +1,6 @@
 <script lang="ts">
   import {
-    BackpackWalletAdapter,
+    // BackpackWalletAdapter,
     PhantomWalletAdapter,
     SolflareWalletAdapter,
   } from "@solana/wallet-adapter-wallets";
@@ -22,7 +22,7 @@
   const wallets = [
     new PhantomWalletAdapter(),
     new SolflareWalletAdapter(),
-    new BackpackWalletAdapter(),
+    // new BackpackWalletAdapter(),
   ];
 
   let modalVisible = false;
