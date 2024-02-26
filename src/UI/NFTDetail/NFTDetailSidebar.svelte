@@ -1,7 +1,7 @@
 <script lang="ts">
   import { nimbus } from "~/lib/network";
   import { priceSubscribe } from "~/lib/price-ws";
-  import { isDarkMode, realtimePrice } from "~/store";
+  import { wallet, isDarkMode, realtimePrice } from "~/store";
   import { createQuery } from "@tanstack/svelte-query";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
 
@@ -16,7 +16,6 @@
 
   export let selectedNftCollectionId;
   export let selectedNftCollectionChain;
-  export let addressWallet;
 
   let tokens = [];
   let data: any = {};
@@ -89,11 +88,11 @@
 
   // query nft holding
   $: queryNftHolding = createQuery({
-    queryKey: ["nft-holding", addressWallet],
-    queryFn: () => getHoldingNFT(addressWallet),
+    queryKey: ["nft-holding", $wallet],
+    queryFn: () => getHoldingNFT($wallet),
     staleTime: Infinity,
     retry: false,
-    enabled: addressWallet && addressWallet.length !== 0,
+    enabled: $wallet && $wallet.length !== 0,
   });
 
   $: {

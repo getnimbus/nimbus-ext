@@ -1,6 +1,6 @@
 <script lang="ts">
   import { LiFiWidget } from "nimbus-swap-widget";
-  import ReactAdapter from "./ReactAdapter.svelte";
+  import ReactAdapter from "~/components/ReactAdapter.svelte";
   import { handleFormatBlockChainId } from "~/lib/price-mobulaWs";
   import { userPublicAddress, isDarkMode } from "~/store";
   import { currentLang } from "~/lib/i18n";
