@@ -420,7 +420,7 @@
     const solanaToken = localStorage.getItem("solana_token");
     const suiToken = localStorage.getItem("sui_token");
     const evmToken = localStorage.getItem("evm_token");
-    if (evmToken || solanaToken || authToken) {
+    if (evmToken || solanaToken || suiToken || authToken) {
       isLoadingConnectCEX = true;
       const vezgo: any = Vezgo.init({
         clientId: "6st9c6s816su37qe8ld1d5iiq2",
