@@ -24,6 +24,7 @@ export const totalAssets = writable(0);
 export const unrealizedProfit = writable(0);
 export const realizedProfit = writable(0);
 export const pastProfit = writable(0);
+export const suiWalletInstance = writable(null);
 
 // let isFirstTime = true;
 // isOpenReport.subscribe((value) => {

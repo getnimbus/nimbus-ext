@@ -100,6 +100,7 @@
     onError(err) {
       localStorage.removeItem("auth_token");
       localStorage.removeItem("solana_token");
+      localStorage.removeItem("sui_token");
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
     },
@@ -355,6 +356,7 @@
     onError(err) {
       localStorage.removeItem("auth_token");
       localStorage.removeItem("solana_token");
+      localStorage.removeItem("sui_token");
       localStorage.removeItem("evm_token");
     },
   });
