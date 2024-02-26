@@ -28,7 +28,7 @@
   import { wait } from "~/entries/background/utils";
   import { WalletProvider } from "@svelte-on-solana/wallet-adapter-ui";
   import {
-    BackpackWalletAdapter,
+    // BackpackWalletAdapter,
     PhantomWalletAdapter,
     SolflareWalletAdapter,
   } from "@solana/wallet-adapter-wallets";
@@ -55,7 +55,7 @@
   const wallets = [
     new PhantomWalletAdapter(),
     new SolflareWalletAdapter(),
-    new BackpackWalletAdapter(),
+    // new BackpackWalletAdapter(),
   ];
 
   const wallets$ = onboard.state.select("wallets");
