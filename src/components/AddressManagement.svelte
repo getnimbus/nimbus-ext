@@ -2,6 +2,7 @@
   import { onMount } from "svelte";
   import * as browser from "webextension-polyfill";
   import {
+    tab,
     wallet,
     chain,
     typeWallet,
@@ -269,6 +270,7 @@
     const addressParams = urlParams.get("address");
     const chainParams = urlParams.get("chain");
     const typeParams = urlParams.get("type");
+    const tabParams = urlParams.get("tab");
 
     // reset all global state if list address is empty
     if (!chainParams && listAddress.length === 0) {
@@ -279,6 +281,10 @@
     }
     if (!typeParams && listAddress.length === 0) {
       typeWallet.update((n) => (n = ""));
+    }
+
+    if (tabParams) {
+      tab.update((n) => (n = tabParams));
     }
 
     // update global chain state
@@ -302,7 +308,8 @@
       window.history.replaceState(
         null,
         "",
-        window.location.pathname + `?type=${$typeWallet}&address=${$wallet}`
+        window.location.pathname +
+          `?tab=${$tab}&type=${$typeWallet}&address=${$wallet}`
       );
     }
 
@@ -319,7 +326,8 @@
         window.history.replaceState(
           null,
           "",
-          window.location.pathname + `?type=${$typeWallet}&address=${$wallet}`
+          window.location.pathname +
+            `?tab=${$tab}&type=${$typeWallet}&address=${$wallet}`
         );
       }
 
@@ -328,7 +336,7 @@
           null,
           "",
           window.location.pathname +
-            `?type=${$typeWallet}&chain=${$chain}&address=${$wallet}`
+            `?tab=${$tab}&type=${$typeWallet}&chain=${$chain}&address=${$wallet}`
         );
       }
     }
@@ -342,7 +350,8 @@
         window.history.replaceState(
           null,
           "",
-          window.location.pathname + `?type=${$typeWallet}&address=${$wallet}`
+          window.location.pathname +
+            `?tab=${$tab}&type=${$typeWallet}&address=${$wallet}`
         );
       }
     }
@@ -361,7 +370,8 @@
         window.history.replaceState(
           null,
           "",
-          window.location.pathname + `?type=${$typeWallet}&address=${$wallet}`
+          window.location.pathname +
+            `?tab=${$tab}&type=${$typeWallet}&address=${$wallet}`
         );
       }
 
@@ -377,7 +387,7 @@
           null,
           "",
           window.location.pathname +
-            `?type=${$typeWallet}&chain=${$chain}&address=${$wallet}`
+            `?tab=${$tab}&type=${$typeWallet}&chain=${$chain}&address=${$wallet}`
         );
       }
     }
@@ -541,7 +551,7 @@
             null,
             "",
             window.location.pathname +
-              `?type=${validateAccount?.type}&chain=ALL&address=${validateAccount?.address}`
+              `?tab=${$tab}&type=${validateAccount?.type}&chain=ALL&address=${validateAccount?.address}`
           );
         }
 
@@ -550,7 +560,7 @@
             null,
             "",
             window.location.pathname +
-              `?type=${validateAccount?.type}&address=${validateAccount?.address}`
+              `?tab=${$tab}&type=${validateAccount?.type}&address=${validateAccount?.address}`
           );
         }
 

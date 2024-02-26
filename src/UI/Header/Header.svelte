@@ -3,6 +3,7 @@
   import { Link, useMatch, useNavigate } from "svelte-navigator";
   import { i18n } from "~/lib/i18n";
   import {
+    tab,
     chain,
     wallet,
     selectedPackage,
@@ -196,7 +197,7 @@
           null,
           "",
           window.location.pathname +
-            `?type=${validateAccount?.type}&chain=ALL&address=${validateAccount?.address}`
+            `?tab=${$tab}&type=${validateAccount?.type}&chain=ALL&address=${validateAccount?.address}`
         );
       }
       if (otherGeneration.includes(validateAccount?.type)) {
@@ -204,7 +205,7 @@
           null,
           "",
           window.location.pathname +
-            `?type=${validateAccount?.type}&address=${validateAccount?.address}`
+            `?tab=${$tab}&type=${validateAccount?.type}&address=${validateAccount?.address}`
         );
       }
       handleSaveSuggest(validateAccount?.address);
@@ -503,7 +504,7 @@
       <Link
         to={`${
           $wallet
-            ? `/?type=${$typeWallet}&chain=${$chain}&address=${$wallet}`
+            ? `/?tab=${$tab}&type=${$typeWallet}&chain=${$chain}&address=${$wallet}`
             : "/"
         }`}
       >
