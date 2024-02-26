@@ -99,7 +99,7 @@
               </td>
             </tr>
           {:else}
-            {#each holdingTokenData as data, index}
+            {#each holdingTokenData.filter((item) => Number(item?.amount) * Number(item?.price?.price) > 0) as data, index}
               <TokenHoldingTradeItem
                 {data}
                 lastIndex={holdingTokenData.length - 1 === index}
