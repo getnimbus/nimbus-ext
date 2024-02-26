@@ -2,6 +2,7 @@
   import { onMount } from "svelte";
   import { i18n } from "~/lib/i18n";
   import {
+    wallet,
     chain,
     typeWallet,
     isDarkMode,
@@ -19,7 +20,6 @@
 
   import goldImg from "~/assets/Gold4.svg";
 
-  export let selectedWallet;
   export let isLoadingNFT;
   export let isLoadingToken;
   export let holdingTokenData;
@@ -27,6 +27,7 @@
   export let dataVaults;
   export let selectedTokenHolding;
   export let selectedDataPieChart;
+  export let selectedType;
 
   import HoldingToken from "~/UI/Portfolio/HoldingToken.svelte";
   import HoldingNFT from "~/UI/Portfolio/HoldingNFT.svelte";
@@ -481,8 +482,8 @@
   $: colspan = listSupported.includes($typeWallet) ? 8 : 7;
 
   $: {
-    if (selectedWallet || $chain) {
-      if (selectedWallet?.length !== 0 && $chain?.length !== 0) {
+    if ($wallet || $chain) {
+      if ($wallet?.length !== 0 && $chain?.length !== 0) {
         sumTokens = 0;
         sumNFT = 0;
         formatData = [];
@@ -527,208 +528,165 @@
   }`}
 >
   <ErrorBoundary>
-    <div class="flex flex-col gap-6">
-      <div class="flex items-end gap-3">
-        <div class="xl:text-2xl text-4xl font-medium">
-          {MultipleLang.holding}
+    <div class="flex flex-col">
+      <div class="flex justify-between">
+        <div class="flex items-end gap-3">
+          <div class="xl:text-2xl text-4xl font-medium">
+            {MultipleLang.holding}
+          </div>
+          <!-- <a
+            href="https://forms.gle/HfmvSTzd5frPPYDz8"
+            target="_blank"
+            class="xl:text-sm text-2xl font-normal text-blue-500 mb-[2px] hover:text-blue-700 transition-all"
+          >
+            Get investment opportunities notification
+          </a> -->
         </div>
-        <!-- <a
-          href="https://forms.gle/HfmvSTzd5frPPYDz8"
-          target="_blank"
-          class="xl:text-sm text-2xl font-normal text-blue-500 mb-[2px] hover:text-blue-700 transition-all"
-        >
-          Get investment opportunities notification
-        </a> -->
+        <div class="xl:text-3xl text-4xl font-medium">
+          {#if selectedType === "token"}
+            <TooltipNumber number={sumTokens} type="value" personalValue />
+          {/if}
+          {#if selectedType === "nft"}
+            <TooltipNumber number={sumNFT} type="value" />
+          {/if}
+        </div>
       </div>
 
       <div class="flex flex-col gap-6">
         <!-- token holding table -->
-        <div class="flex flex-col gap-2">
-          <div class="flex justify-between items-center">
-            <div class="flex items-center gap-4">
-              <div class="xl:text-xl text-3xl font-medium">
-                {MultipleLang.token}
-              </div>
-              {#if selectedTokenHolding && Object.keys(selectedTokenHolding).length !== 0 && selectedTokenHolding?.select.length !== 0}
-                <Select
-                  type="lang"
-                  positionSelectList="left-0"
-                  listSelect={selectedTokenHolding?.select || []}
-                  bind:selected={selectedTypeTable}
-                />
-              {/if}
-            </div>
-            <div class="xl:text-3xl text-4xl font-medium text-right">
-              <TooltipNumber number={sumTokens} type="value" personalValue />
-              {#if selectedTokenHolding && Object.keys(selectedTokenHolding).length !== 0 && selectedTokenHolding?.select.length !== 0}
-                <span class="xl:text-xl text-2xl font-medium text-gray-400">
-                  <TooltipNumber
-                    number={selectedDataPieChart?.series[0]?.data.filter(
-                      (item) =>
-                        item.name === selectedTypeTable?.value ||
-                        item.name === selectedTypeTable?.label
-                    )[0]?.value}
-                    type="percent"
-                  />%
-                </span>
-              {/if}
-            </div>
-          </div>
+        {#if selectedType === "token"}
           <div class="flex flex-col gap-2">
-            <div class="flex items-center justify-end gap-2">
-              <div class="xl:text-sm text-2xl font-regular text-gray-400">
-                Hide tokens less than
+            {#if selectedTokenHolding && Object.keys(selectedTokenHolding).length !== 0 && selectedTokenHolding?.select.length !== 0}
+              <div
+                class="xl:text-xl text-2xl font-medium text-gray-400 text-right"
+              >
+                <TooltipNumber
+                  number={selectedDataPieChart?.series[0]?.data.filter(
+                    (item) =>
+                      item.name === selectedTypeTable?.value ||
+                      item.name === selectedTypeTable?.label
+                  )[0]?.value}
+                  type="percent"
+                />%
               </div>
-              <Select
-                type="filter"
-                positionSelectList="right-0"
-                listSelect={filterTokenValueType}
-                bind:selected={filterTokenType}
-              />
-            </div>
+            {/if}
 
-            <div
-              class={`rounded-[10px] xl:overflow-visible overflow-x-auto h-full ${
-                $isDarkMode
-                  ? "bg-[#131313]"
-                  : "bg-[#fff] border border_0000000d"
-              }`}
-            >
-              <table class="table-auto xl:w-full w-[2000px] h-full">
-                <thead
-                  class={isStickyTableToken ? "sticky top-0 z-10" : ""}
-                  bind:this={tableTokenHeader}
-                >
-                  <tr class="bg_f4f5f8">
-                    <th
-                      class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8 w-[420px]"
-                    >
-                      <div
-                        class="text-left xl:text-xs text-xl uppercase font-medium"
-                      >
-                        {MultipleLang.assets}
-                      </div>
-                    </th>
-                    <th class="py-3">
-                      <div
-                        class="text-right xl:text-xs text-xl uppercase font-medium"
-                      >
-                        {MultipleLang.price}
-                      </div>
-                    </th>
-                    <th class="py-3">
-                      <div
-                        class="text-right xl:text-xs text-xl uppercase font-medium"
-                      >
-                        {MultipleLang.amount}
-                      </div>
-                    </th>
-                    <th class="py-3">
-                      <div
-                        class="text-right xl:text-xs text-xl uppercase font-medium"
-                      >
-                        {MultipleLang.value}
-                      </div>
-                    </th>
-                    <th class="py-3">
-                      <div
-                        class="text-right xl:text-xs text-xl uppercase font-medium"
-                      >
-                        Avg Cost
-                      </div>
-                    </th>
-                    <th class="py-3">
-                      <div
-                        class="text-right xl:text-xs text-xl uppercase font-medium"
-                      >
-                        Realized PnL
-                      </div>
-                    </th>
-                    <th
-                      class={`py-3 xl:pr-3 pr-6 ${
-                        listSupported.includes($typeWallet)
-                          ? ""
-                          : "rounded-tr-[10px]"
-                      }`}
-                    >
-                      <div
-                        class="text-right xl:text-xs text-xl uppercase font-medium"
-                      >
-                        Unrealized PnL
-                      </div>
-                    </th>
-                    {#if listSupported.includes($typeWallet)}
-                      <th
-                        class={`py-3 pr-3 rounded-tr-[10px] ${
-                          ["BUNDLE", "SOL"].includes($typeWallet)
-                            ? "xl:max-w-20 w-16"
-                            : "xl:w-12 w-32"
-                        }`}
-                      />
-                    {/if}
-                  </tr>
-                </thead>
-
-                {#if $chain === "ALL"}
-                  <tbody>
-                    {#if filteredHoldingDataToken && filteredHoldingDataToken.length === 0 && !isLoadingToken}
-                      <tr>
-                        <td {colspan}>
-                          <div
-                            class="flex justify-center items-center h-full py-3 px-3 xl:text-lg text-xl text-gray-400"
-                          >
-                            {#if holdingTokenData && holdingTokenData.length === 0}
-                              {MultipleLang.empty}
-                            {:else}
-                              All tokens less than $1
-                            {/if}
-                          </div>
-                        </td>
-                      </tr>
-                    {/if}
-                    {#each filteredHoldingDataToken as holding, index}
-                      <HoldingToken
-                        data={holding}
-                        lastIndex={filteredHoldingDataToken.length - 1 ===
-                          index}
-                        {selectedWallet}
-                        sumAllTokens={$totalAssets - sumNFT}
-                        index={index + 1}
-                        {triggerFireworkBonus}
-                      />
-                    {/each}
-                  </tbody>
-                  {#if isLoadingToken}
-                    <tbody>
-                      <tr>
-                        <td {colspan}>
-                          <div
-                            class="flex justify-center items-center h-full py-3 px-3"
-                          >
-                            <Loading />
-                          </div>
-                        </td>
-                      </tr>
-                    </tbody>
-                  {/if}
+            <div class="flex flex-col gap-2">
+              <div
+                class={`flex items-center ${
+                  selectedTokenHolding &&
+                  Object.keys(selectedTokenHolding).length !== 0 &&
+                  selectedTokenHolding?.select.length !== 0
+                    ? "justify-between"
+                    : "justify-end"
+                }`}
+              >
+                {#if selectedTokenHolding && Object.keys(selectedTokenHolding).length !== 0 && selectedTokenHolding?.select.length !== 0}
+                  <Select
+                    type="lang"
+                    positionSelectList="left-0"
+                    listSelect={selectedTokenHolding?.select || []}
+                    bind:selected={selectedTypeTable}
+                  />
                 {/if}
+                <div class="flex items-center justify-end gap-2">
+                  <div class="xl:text-sm text-2xl font-regular text-gray-400">
+                    Hide tokens less than
+                  </div>
+                  <Select
+                    type="filter"
+                    positionSelectList="right-0"
+                    listSelect={filterTokenValueType}
+                    bind:selected={filterTokenType}
+                  />
+                </div>
+              </div>
 
-                {#if $chain !== "ALL"}
-                  {#if isLoadingToken}
+              <div
+                class={`rounded-[10px] xl:overflow-visible overflow-x-auto h-full ${
+                  $isDarkMode
+                    ? "bg-[#131313]"
+                    : "bg-[#fff] border border_0000000d"
+                }`}
+              >
+                <table class="table-auto xl:w-full w-[2000px] h-full">
+                  <thead
+                    class={isStickyTableToken ? "sticky top-0 z-10" : ""}
+                    bind:this={tableTokenHeader}
+                  >
+                    <tr class="bg_f4f5f8">
+                      <th
+                        class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8 w-[420px]"
+                      >
+                        <div
+                          class="text-left xl:text-xs text-xl uppercase font-medium"
+                        >
+                          {MultipleLang.assets}
+                        </div>
+                      </th>
+                      <th class="py-3">
+                        <div
+                          class="text-right xl:text-xs text-xl uppercase font-medium"
+                        >
+                          {MultipleLang.price}
+                        </div>
+                      </th>
+                      <th class="py-3">
+                        <div
+                          class="text-right xl:text-xs text-xl uppercase font-medium"
+                        >
+                          {MultipleLang.amount}
+                        </div>
+                      </th>
+                      <th class="py-3">
+                        <div
+                          class="text-right xl:text-xs text-xl uppercase font-medium"
+                        >
+                          {MultipleLang.value}
+                        </div>
+                      </th>
+                      <th class="py-3">
+                        <div
+                          class="text-right xl:text-xs text-xl uppercase font-medium"
+                        >
+                          Avg Cost
+                        </div>
+                      </th>
+                      <th class="py-3">
+                        <div
+                          class="text-right xl:text-xs text-xl uppercase font-medium"
+                        >
+                          Realized PnL
+                        </div>
+                      </th>
+                      <th
+                        class={`py-3 xl:pr-3 pr-6 ${
+                          listSupported.includes($typeWallet)
+                            ? ""
+                            : "rounded-tr-[10px]"
+                        }`}
+                      >
+                        <div
+                          class="text-right xl:text-xs text-xl uppercase font-medium"
+                        >
+                          Unrealized PnL
+                        </div>
+                      </th>
+                      {#if listSupported.includes($typeWallet)}
+                        <th
+                          class={`py-3 pr-3 rounded-tr-[10px] ${
+                            ["BUNDLE", "SOL"].includes($typeWallet)
+                              ? "xl:max-w-20 w-16"
+                              : "xl:w-12 w-32"
+                          }`}
+                        />
+                      {/if}
+                    </tr>
+                  </thead>
+
+                  {#if $chain === "ALL"}
                     <tbody>
-                      <tr>
-                        <td {colspan}>
-                          <div
-                            class="flex justify-center items-center h-full py-3 px-3"
-                          >
-                            <Loading />
-                          </div>
-                        </td>
-                      </tr>
-                    </tbody>
-                  {:else}
-                    <tbody>
-                      {#if filteredHoldingDataToken && filteredHoldingDataToken.length === 0}
+                      {#if filteredHoldingDataToken && filteredHoldingDataToken.length === 0 && !isLoadingToken}
                         <tr>
                           <td {colspan}>
                             <div
@@ -742,38 +700,86 @@
                             </div>
                           </td>
                         </tr>
-                      {:else}
-                        {#each filteredHoldingDataToken as holding, index (holding.positionId)}
-                          <HoldingToken
-                            data={holding}
-                            lastIndex={filteredHoldingDataToken.length - 1 ==
-                              index}
-                            {selectedWallet}
-                            sumAllTokens={$totalAssets - sumNFT}
-                            index={index + 1}
-                            {triggerFireworkBonus}
-                          />
-                        {/each}
                       {/if}
+                      {#each filteredHoldingDataToken as holding, index}
+                        <HoldingToken
+                          data={holding}
+                          lastIndex={filteredHoldingDataToken.length - 1 ===
+                            index}
+                          sumAllTokens={$totalAssets - sumNFT}
+                          index={index + 1}
+                          {triggerFireworkBonus}
+                        />
+                      {/each}
                     </tbody>
+                    {#if isLoadingToken}
+                      <tbody>
+                        <tr>
+                          <td {colspan}>
+                            <div
+                              class="flex justify-center items-center h-full py-3 px-3"
+                            >
+                              <Loading />
+                            </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    {/if}
                   {/if}
-                {/if}
-              </table>
+
+                  {#if $chain !== "ALL"}
+                    {#if isLoadingToken}
+                      <tbody>
+                        <tr>
+                          <td {colspan}>
+                            <div
+                              class="flex justify-center items-center h-full py-3 px-3"
+                            >
+                              <Loading />
+                            </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    {:else}
+                      <tbody>
+                        {#if filteredHoldingDataToken && filteredHoldingDataToken.length === 0}
+                          <tr>
+                            <td {colspan}>
+                              <div
+                                class="flex justify-center items-center h-full py-3 px-3 xl:text-lg text-xl text-gray-400"
+                              >
+                                {#if holdingTokenData && holdingTokenData.length === 0}
+                                  {MultipleLang.empty}
+                                {:else}
+                                  All tokens less than $1
+                                {/if}
+                              </div>
+                            </td>
+                          </tr>
+                        {:else}
+                          {#each filteredHoldingDataToken as holding, index (holding.positionId)}
+                            <HoldingToken
+                              data={holding}
+                              lastIndex={filteredHoldingDataToken.length - 1 ==
+                                index}
+                              sumAllTokens={$totalAssets - sumNFT}
+                              index={index + 1}
+                              {triggerFireworkBonus}
+                            />
+                          {/each}
+                        {/if}
+                      </tbody>
+                    {/if}
+                  {/if}
+                </table>
+              </div>
             </div>
           </div>
-        </div>
+        {/if}
 
         <!-- nft holding table -->
-        {#if $typeWallet !== "CEX"}
-          <div class="flex flex-col gap-2">
-            <div class="flex justify-between items-center">
-              <div class="xl:text-xl text-3xl font-medium">
-                {MultipleLang.nft}
-              </div>
-              <div class="xl:text-3xl text-4xl font-medium text-right">
-                <TooltipNumber number={sumNFT} type="value" />
-              </div>
-            </div>
+        {#if selectedType === "nft"}
+          {#if $typeWallet !== "CEX"}
             <div class="flex flex-col gap-2">
               <div class="flex items-center justify-end gap-2">
                 <div class="xl:text-sm text-2xl font-regular text-gray-400">
@@ -881,7 +887,6 @@
                       {#each filteredHoldingDataNFT as holding, index}
                         <HoldingNFT
                           data={holding}
-                          {selectedWallet}
                           {index}
                           lastIndex={filteredHoldingDataNFT.length - 1 == index}
                         />
@@ -937,7 +942,6 @@
                               lastIndex={filteredHoldingDataNFT.length - 1 ==
                                 index}
                               data={holding}
-                              {selectedWallet}
                               {index}
                             />
                           {/each}
@@ -948,7 +952,7 @@
                 </table>
               </div>
             </div>
-          </div>
+          {/if}
         {/if}
       </div>
     </div>

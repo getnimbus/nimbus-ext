@@ -7,7 +7,7 @@
   import { groupBy, flatten } from "lodash";
   import { onMount } from "svelte";
   import { i18n } from "~/lib/i18n";
-  import { drivePortfolio } from "~/utils";
+  import { drivePortfolio, typePortfolioPage } from "~/utils";
   import { chainList, chainMoveList } from "~/lib/chains";
   import { wait } from "../entries/background/utils";
   import {
@@ -24,6 +24,7 @@
     createQueries,
     useQueryClient,
   } from "@tanstack/svelte-query";
+  import { AnimateSharedLayout, Motion } from "svelte-motion";
 
   import type { NewData, NewDataRes } from "~/types/NewData";
   import type { OverviewData, OverviewDataRes } from "~/types/OverviewData";
@@ -37,6 +38,7 @@
   import Charts from "~/UI/Portfolio/Charts.svelte";
   import Holding from "~/UI/Portfolio/Holding.svelte";
   import ClosedTokenPosition from "~/UI/Portfolio/ClosedTokenPosition.svelte";
+  import PerformanceSummary from "~/UI/Portfolio/PerformanceSummary.svelte";
   import RiskReturn from "~/UI/Portfolio/RiskReturn.svelte";
   import News from "~/UI/Portfolio/News.svelte";
   import Positions from "~/UI/Portfolio/Positions.svelte";
@@ -393,7 +395,8 @@
         $wallet &&
         $wallet?.length !== 0 &&
         $chain.length !== 0 &&
-        $chain !== "ALL"
+        $chain !== "ALL" &&
+        selectedType === "nft"
     ),
   });
 
@@ -408,7 +411,8 @@
             $wallet &&
             $wallet?.length !== 0 &&
             $chain.length !== 0 &&
-            $chain === "ALL"
+            $chain === "ALL" &&
+            selectedType === "nft"
         ),
       };
     })
@@ -492,7 +496,8 @@
         $wallet &&
         $wallet?.length !== 0 &&
         $chain.length !== 0 &&
-        $chain !== "ALL"
+        $chain !== "ALL" &&
+        selectedType === "token"
     ),
   });
 
@@ -507,7 +512,8 @@
             $wallet &&
             $wallet?.length !== 0 &&
             $chain.length !== 0 &&
-            $chain === "ALL"
+            $chain === "ALL" &&
+            selectedType === "token"
         ),
       };
     })
@@ -858,6 +864,8 @@
       localStorage.setItem("view-portfolio-tour", "true");
     }
   }
+
+  let selectedType: "token" | "nft" | "summary" = "token";
 </script>
 
 <AddressManagement title={MultipleLang.overview}>
@@ -916,52 +924,66 @@
             <div
               class="portfolio_container flex flex-col gap-7 rounded-[20px] xl:p-8 p-6"
             >
-              <Charts
-                {handleSelectedTableTokenHolding}
-                isLoading={$queryOverview.isFetching}
-                isLoadingBreakdownTokens={$queryAllTokenHolding.some(
-                  (item) => item.isFetching === true
-                )}
-                isLoadingBreakdownNfts={$queryAllNftHolding.some(
-                  (item) => item.isFetching === true
-                )}
-                {holdingTokenData}
-                {overviewDataPerformance}
-                {dataPieChartToken}
-                {dataPieChartNft}
-                {isEmptyDataPieTokens}
-                {isEmptyDataPieNfts}
-                {dataOverviewBundlePieChart}
-              />
+              <div class="flex items-center gap-1">
+                <AnimateSharedLayout>
+                  {#each typePortfolioPage as type}
+                    <div
+                      class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
+                      on:click={() => (selectedType = type.value)}
+                    >
+                      <div
+                        class={`relative z-2 ${
+                          selectedType === type.value && "text-white"
+                        }`}
+                      >
+                        {type.label}
+                      </div>
+                      {#if type.value === selectedType}
+                        <Motion
+                          let:motion
+                          layoutId="active-pill"
+                          transition={{ type: "spring", duration: 0.6 }}
+                        >
+                          <div
+                            class="absolute inset-0 rounded-full bg-[#1E96FC] z-1"
+                            use:motion
+                          />
+                        </Motion>
+                      {/if}
+                    </div>
+                  {/each}
+                </AnimateSharedLayout>
+              </div>
 
-              <!-- {#if $typeWallet === "EVM" || $typeWallet === "MOVE" || $typeWallet === "CEX" || $typeWallet === "BUNDLE"}
-                <RiskReturn
-                  isLoading={$queryCompare.isFetching}
-                  isError={$queryCompare.isError}
-                  data={$queryCompare.data}
+              {#if selectedType !== "summary"}
+                <Charts
+                  {handleSelectedTableTokenHolding}
+                  isLoading={$queryOverview.isFetching}
+                  isLoadingBreakdownTokens={$queryAllTokenHolding.some(
+                    (item) => item.isFetching === true
+                  )}
+                  isLoadingBreakdownNfts={$queryAllNftHolding.some(
+                    (item) => item.isFetching === true
+                  )}
+                  {holdingTokenData}
+                  {overviewDataPerformance}
+                  {dataPieChartToken}
+                  {dataPieChartNft}
+                  {isEmptyDataPieTokens}
+                  {isEmptyDataPieNfts}
+                  {dataOverviewBundlePieChart}
+                  {selectedType}
                 />
-              {/if} -->
 
-              <Holding
-                selectedWallet={$wallet}
-                isLoadingNFT={$chain === "ALL"
-                  ? $queryAllNftHolding.some((item) => item.isFetching === true)
-                  : $queryNftHolding.isFetching}
-                isLoadingToken={$chain === "ALL"
-                  ? $queryAllTokenHolding.some(
-                      (item) => item.isFetching === true
-                    )
-                  : $queryTokenHolding.isFetching}
-                {holdingTokenData}
-                {holdingNFTData}
-                dataVaults={$queryVaults.data}
-                {selectedTokenHolding}
-                {selectedDataPieChart}
-              />
+                <!-- {#if $typeWallet === "EVM" || $typeWallet === "MOVE" || $typeWallet === "CEX" || $typeWallet === "BUNDLE"}
+                  <RiskReturn
+                    isLoading={$queryCompare.isFetching}
+                    isError={$queryCompare.isError}
+                    data={$queryCompare.data}
+                  />
+                {/if} -->
 
-              {#if $typeWallet !== "BTC"}
-                <ClosedTokenPosition
-                  selectedWallet={$wallet}
+                <Holding
                   isLoadingNFT={$chain === "ALL"
                     ? $queryAllNftHolding.some(
                         (item) => item.isFetching === true
@@ -972,9 +994,28 @@
                         (item) => item.isFetching === true
                       )
                     : $queryTokenHolding.isFetching}
-                  holdingTokenData={closedHoldingPosition}
+                  {holdingTokenData}
                   {holdingNFTData}
+                  dataVaults={$queryVaults.data}
+                  {selectedTokenHolding}
+                  {selectedDataPieChart}
+                  {selectedType}
                 />
+
+                {#if $typeWallet !== "BTC" && selectedType === "token"}
+                  <ClosedTokenPosition
+                    isLoadingToken={$chain === "ALL"
+                      ? $queryAllTokenHolding.some(
+                          (item) => item.isFetching === true
+                        )
+                      : $queryTokenHolding.isFetching}
+                    holdingTokenData={closedHoldingPosition}
+                  />
+                {/if}
+              {/if}
+
+              {#if selectedType === "summary"}
+                <PerformanceSummary />
               {/if}
 
               <!-- <News isLoading={false} data={newsData} /> -->
