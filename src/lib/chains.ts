@@ -592,8 +592,8 @@ export const linkExplorer = (chain, hash) => {
       break;
     case "SUI":
       links = {
-        trx: `https://suiexplorer.com/txblock/${hash}`,
-        address: `https://suiexplorer.com/address/${hash}`,
+        trx: `https://suiscan.xyz/mainnet/tx/${hash}`,
+        address: `https://suiscan.xyz/mainnet/account/${hash}`,
       };
       break;
     case "AURA":
