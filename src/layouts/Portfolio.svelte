@@ -1034,18 +1034,7 @@
               {/if}
 
               {#if $tab === "summary"}
-                <PerformanceSummary
-                  isLoadingToken={$chain === "ALL"
-                    ? $queryAllTokenHolding.some(
-                        (item) => item.isFetching === true
-                      )
-                    : $queryTokenHolding.isFetching}
-                  holdingTokenData={holdingTokenData.filter(
-                    (item) => item?.profit !== undefined
-                  )}
-                  {closedHoldingPosition}
-                  {ruggedHoldingPosition}
-                />
+                <PerformanceSummary />
               {/if}
 
               <!-- <News isLoading={false} data={newsData} /> -->
