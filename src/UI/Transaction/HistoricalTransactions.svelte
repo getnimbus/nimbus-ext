@@ -27,8 +27,6 @@
     }
     return dayjs(date).fromNow();
   };
-
-  $: console.log("HELLO: ", data);
 </script>
 
 <div
