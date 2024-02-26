@@ -992,9 +992,10 @@
                 dataVaults={$queryVaults.data}
                 {selectedTokenHolding}
                 {selectedDataPieChart}
+                {selectedType}
               />
 
-              {#if $typeWallet !== "BTC"}
+              {#if $typeWallet !== "BTC" && selectedType === "token"}
                 <ClosedTokenPosition
                   selectedWallet={$wallet}
                   isLoadingNFT={$chain === "ALL"
