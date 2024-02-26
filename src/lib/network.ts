@@ -117,7 +117,7 @@ export const nimbus = createAxiosInterface({
       const solanaToken = localStorage.getItem("solana_token");
       const suiToken = localStorage.getItem("sui_token");
       const evmToken = localStorage.getItem("evm_token");
-      if (evmToken || solanaToken || authToken) {
+      if (evmToken || solanaToken || suiToken || authToken) {
         return {
           Authorization: `${evmToken || solanaToken || suiToken || authToken}`,
         };
