@@ -17,7 +17,6 @@
 
   let filteredHoldingDataToken = [];
 
-  let formatData = [];
   let sumAllTokens = 0;
 
   let tableClosedTokenHeader;
@@ -60,41 +59,12 @@
     };
   });
 
-  // format initial data
-  $: {
-    if (holdingTokenData) {
-      formatData = holdingTokenData
-        ?.map((item) => {
-          return {
-            ...item,
-            market_price: item?.rate || 0,
-          };
-        })
-        .sort(
-          (a, b) =>
-            Number(b?.profit.realizedProfit) - Number(a?.profit.realizedProfit)
-        );
-
-      sumAllTokens = formatData.reduce(
-        (prev, item) => prev + Number(item?.profit.realizedProfit),
-        0
-      );
-
-      pastProfit.update((n) =>
-        formatData.reduce(
-          (prev, item) => prev + Number(item?.profit.realizedProfit),
-          0
-        )
-      );
-    }
-  }
-
   $: {
     if (filterTokenType) {
       if (filterTokenType.value === 0) {
-        filteredHoldingDataToken = formatData;
+        filteredHoldingDataToken = holdingTokenData;
       } else {
-        filteredHoldingDataToken = formatData?.filter(
+        filteredHoldingDataToken = holdingTokenData?.filter(
           (item) =>
             Math.abs(Number(item?.profit.realizedProfit)) >
             filterTokenType.value
@@ -104,17 +74,17 @@
   }
 
   $: {
-    if (formatData?.length === 0) {
+    if (holdingTokenData?.length === 0) {
       sumAllTokens = 0;
       pastProfit.update((n) => (n = 0));
     } else {
-      sumAllTokens = formatData.reduce(
+      sumAllTokens = holdingTokenData.reduce(
         (prev, item) => prev + Number(item?.profit.realizedProfit),
         0
       );
       pastProfit.update(
         (n) =>
-          (n = formatData.reduce(
+          (n = holdingTokenData.reduce(
             (prev, item) => prev + Number(item?.profit.realizedProfit),
             0
           ))
@@ -129,7 +99,6 @@
       if ($wallet?.length !== 0 && $chain?.length !== 0) {
         sumAllTokens = 0;
         pastProfit.update((n) => (n = 0));
-        formatData = [];
         filteredHoldingDataToken = [];
       }
     }
