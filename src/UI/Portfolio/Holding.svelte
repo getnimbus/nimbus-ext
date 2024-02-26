@@ -528,7 +528,7 @@
   }`}
 >
   <ErrorBoundary>
-    <div class="flex flex-col">
+    <div class="flex flex-col gap-2">
       <div class="flex justify-between">
         <div class="flex items-end gap-3">
           <div class="xl:text-2xl text-4xl font-medium">
@@ -552,141 +552,196 @@
         </div>
       </div>
 
-      <div class="flex flex-col gap-6">
-        <!-- token holding table -->
-        {#if selectedType === "token"}
-          <div class="flex flex-col gap-2">
-            {#if selectedTokenHolding && Object.keys(selectedTokenHolding).length !== 0 && selectedTokenHolding?.select.length !== 0}
-              <div
-                class="xl:text-xl text-2xl font-medium text-gray-400 text-right"
-              >
-                <TooltipNumber
-                  number={selectedDataPieChart?.series[0]?.data.filter(
-                    (item) =>
-                      item.name === selectedTypeTable?.value ||
-                      item.name === selectedTypeTable?.label
-                  )[0]?.value}
-                  type="percent"
-                />%
-              </div>
-            {/if}
+      <!-- token holding table -->
+      {#if selectedType === "token"}
+        <div class="flex flex-col gap-2">
+          {#if selectedTokenHolding && Object.keys(selectedTokenHolding).length !== 0 && selectedTokenHolding?.select.length !== 0}
+            <div
+              class="xl:text-xl text-2xl font-medium text-gray-400 text-right"
+            >
+              <TooltipNumber
+                number={selectedDataPieChart?.series[0]?.data.filter(
+                  (item) =>
+                    item.name === selectedTypeTable?.value ||
+                    item.name === selectedTypeTable?.label
+                )[0]?.value}
+                type="percent"
+              />%
+            </div>
+          {/if}
 
-            <div class="flex flex-col gap-2">
-              <div
-                class={`flex items-center ${
-                  selectedTokenHolding &&
-                  Object.keys(selectedTokenHolding).length !== 0 &&
-                  selectedTokenHolding?.select.length !== 0
-                    ? "justify-between"
-                    : "justify-end"
-                }`}
-              >
-                {#if selectedTokenHolding && Object.keys(selectedTokenHolding).length !== 0 && selectedTokenHolding?.select.length !== 0}
-                  <Select
-                    type="lang"
-                    positionSelectList="left-0"
-                    listSelect={selectedTokenHolding?.select || []}
-                    bind:selected={selectedTypeTable}
-                  />
-                {/if}
-                <div class="flex items-center justify-end gap-2">
-                  <div class="xl:text-sm text-2xl font-regular text-gray-400">
-                    Hide tokens less than
-                  </div>
-                  <Select
-                    type="filter"
-                    positionSelectList="right-0"
-                    listSelect={filterTokenValueType}
-                    bind:selected={filterTokenType}
-                  />
+          <div class="flex flex-col gap-4">
+            <div
+              class={`flex items-center ${
+                selectedTokenHolding &&
+                Object.keys(selectedTokenHolding).length !== 0 &&
+                selectedTokenHolding?.select.length !== 0
+                  ? "justify-between"
+                  : "justify-end"
+              }`}
+            >
+              {#if selectedTokenHolding && Object.keys(selectedTokenHolding).length !== 0 && selectedTokenHolding?.select.length !== 0}
+                <Select
+                  type="lang"
+                  positionSelectList="left-0"
+                  listSelect={selectedTokenHolding?.select || []}
+                  bind:selected={selectedTypeTable}
+                />
+              {/if}
+              <div class="flex items-center justify-end gap-2">
+                <div class="xl:text-sm text-2xl font-regular text-gray-400">
+                  Hide tokens less than
                 </div>
+                <Select
+                  type="filter"
+                  positionSelectList="right-0"
+                  listSelect={filterTokenValueType}
+                  bind:selected={filterTokenType}
+                />
               </div>
+            </div>
 
-              <div
-                class={`rounded-[10px] xl:overflow-visible overflow-x-auto h-full ${
-                  $isDarkMode
-                    ? "bg-[#131313]"
-                    : "bg-[#fff] border border_0000000d"
-                }`}
-              >
-                <table class="table-auto xl:w-full w-[2000px] h-full">
-                  <thead
-                    class={isStickyTableToken ? "sticky top-0 z-10" : ""}
-                    bind:this={tableTokenHeader}
-                  >
-                    <tr class="bg_f4f5f8">
-                      <th
-                        class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8 w-[420px]"
+            <div
+              class={`rounded-[10px] xl:overflow-visible overflow-x-auto h-full ${
+                $isDarkMode
+                  ? "bg-[#131313]"
+                  : "bg-[#fff] border border_0000000d"
+              }`}
+            >
+              <table class="table-auto xl:w-full w-[2000px] h-full">
+                <thead
+                  class={isStickyTableToken ? "sticky top-0 z-10" : ""}
+                  bind:this={tableTokenHeader}
+                >
+                  <tr class="bg_f4f5f8">
+                    <th
+                      class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8 w-[420px]"
+                    >
+                      <div
+                        class="text-left xl:text-xs text-xl uppercase font-medium"
                       >
-                        <div
-                          class="text-left xl:text-xs text-xl uppercase font-medium"
-                        >
-                          {MultipleLang.assets}
-                        </div>
-                      </th>
-                      <th class="py-3">
-                        <div
-                          class="text-right xl:text-xs text-xl uppercase font-medium"
-                        >
-                          {MultipleLang.price}
-                        </div>
-                      </th>
-                      <th class="py-3">
-                        <div
-                          class="text-right xl:text-xs text-xl uppercase font-medium"
-                        >
-                          {MultipleLang.amount}
-                        </div>
-                      </th>
-                      <th class="py-3">
-                        <div
-                          class="text-right xl:text-xs text-xl uppercase font-medium"
-                        >
-                          {MultipleLang.value}
-                        </div>
-                      </th>
-                      <th class="py-3">
-                        <div
-                          class="text-right xl:text-xs text-xl uppercase font-medium"
-                        >
-                          Avg Cost
-                        </div>
-                      </th>
-                      <th class="py-3">
-                        <div
-                          class="text-right xl:text-xs text-xl uppercase font-medium"
-                        >
-                          Realized PnL
-                        </div>
-                      </th>
+                        {MultipleLang.assets}
+                      </div>
+                    </th>
+                    <th class="py-3">
+                      <div
+                        class="text-right xl:text-xs text-xl uppercase font-medium"
+                      >
+                        {MultipleLang.price}
+                      </div>
+                    </th>
+                    <th class="py-3">
+                      <div
+                        class="text-right xl:text-xs text-xl uppercase font-medium"
+                      >
+                        {MultipleLang.amount}
+                      </div>
+                    </th>
+                    <th class="py-3">
+                      <div
+                        class="text-right xl:text-xs text-xl uppercase font-medium"
+                      >
+                        {MultipleLang.value}
+                      </div>
+                    </th>
+                    <th class="py-3">
+                      <div
+                        class="text-right xl:text-xs text-xl uppercase font-medium"
+                      >
+                        Avg Cost
+                      </div>
+                    </th>
+                    <th class="py-3">
+                      <div
+                        class="text-right xl:text-xs text-xl uppercase font-medium"
+                      >
+                        Realized PnL
+                      </div>
+                    </th>
+                    <th
+                      class={`py-3 xl:pr-3 pr-6 ${
+                        listSupported.includes($typeWallet)
+                          ? ""
+                          : "rounded-tr-[10px]"
+                      }`}
+                    >
+                      <div
+                        class="text-right xl:text-xs text-xl uppercase font-medium"
+                      >
+                        Unrealized PnL
+                      </div>
+                    </th>
+                    {#if listSupported.includes($typeWallet)}
                       <th
-                        class={`py-3 xl:pr-3 pr-6 ${
-                          listSupported.includes($typeWallet)
-                            ? ""
-                            : "rounded-tr-[10px]"
+                        class={`py-3 pr-3 rounded-tr-[10px] ${
+                          ["BUNDLE", "SOL"].includes($typeWallet)
+                            ? "xl:max-w-20 w-16"
+                            : "xl:w-12 w-32"
                         }`}
-                      >
-                        <div
-                          class="text-right xl:text-xs text-xl uppercase font-medium"
-                        >
-                          Unrealized PnL
-                        </div>
-                      </th>
-                      {#if listSupported.includes($typeWallet)}
-                        <th
-                          class={`py-3 pr-3 rounded-tr-[10px] ${
-                            ["BUNDLE", "SOL"].includes($typeWallet)
-                              ? "xl:max-w-20 w-16"
-                              : "xl:w-12 w-32"
-                          }`}
-                        />
-                      {/if}
-                    </tr>
-                  </thead>
+                      />
+                    {/if}
+                  </tr>
+                </thead>
 
-                  {#if $chain === "ALL"}
+                {#if $chain === "ALL"}
+                  <tbody>
+                    {#if filteredHoldingDataToken && filteredHoldingDataToken.length === 0 && !isLoadingToken}
+                      <tr>
+                        <td {colspan}>
+                          <div
+                            class="flex justify-center items-center h-full py-3 px-3 xl:text-lg text-xl text-gray-400"
+                          >
+                            {#if holdingTokenData && holdingTokenData.length === 0}
+                              {MultipleLang.empty}
+                            {:else}
+                              All tokens less than $1
+                            {/if}
+                          </div>
+                        </td>
+                      </tr>
+                    {/if}
+                    {#each filteredHoldingDataToken as holding, index}
+                      <HoldingToken
+                        data={holding}
+                        lastIndex={filteredHoldingDataToken.length - 1 ===
+                          index}
+                        sumAllTokens={$totalAssets - sumNFT}
+                        index={index + 1}
+                        {triggerFireworkBonus}
+                      />
+                    {/each}
+                  </tbody>
+                  {#if isLoadingToken}
                     <tbody>
-                      {#if filteredHoldingDataToken && filteredHoldingDataToken.length === 0 && !isLoadingToken}
+                      <tr>
+                        <td {colspan}>
+                          <div
+                            class="flex justify-center items-center h-full py-3 px-3"
+                          >
+                            <Loading />
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  {/if}
+                {/if}
+
+                {#if $chain !== "ALL"}
+                  {#if isLoadingToken}
+                    <tbody>
+                      <tr>
+                        <td {colspan}>
+                          <div
+                            class="flex justify-center items-center h-full py-3 px-3"
+                          >
+                            <Loading />
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  {:else}
+                    <tbody>
+                      {#if filteredHoldingDataToken && filteredHoldingDataToken.length === 0}
                         <tr>
                           <td {colspan}>
                             <div
@@ -700,176 +755,173 @@
                             </div>
                           </td>
                         </tr>
+                      {:else}
+                        {#each filteredHoldingDataToken as holding, index (holding.positionId)}
+                          <HoldingToken
+                            data={holding}
+                            lastIndex={filteredHoldingDataToken.length - 1 ==
+                              index}
+                            sumAllTokens={$totalAssets - sumNFT}
+                            index={index + 1}
+                            {triggerFireworkBonus}
+                          />
+                        {/each}
                       {/if}
-                      {#each filteredHoldingDataToken as holding, index}
-                        <HoldingToken
-                          data={holding}
-                          lastIndex={filteredHoldingDataToken.length - 1 ===
-                            index}
-                          sumAllTokens={$totalAssets - sumNFT}
-                          index={index + 1}
-                          {triggerFireworkBonus}
-                        />
-                      {/each}
                     </tbody>
-                    {#if isLoadingToken}
-                      <tbody>
-                        <tr>
-                          <td {colspan}>
-                            <div
-                              class="flex justify-center items-center h-full py-3 px-3"
-                            >
-                              <Loading />
-                            </div>
-                          </td>
-                        </tr>
-                      </tbody>
-                    {/if}
                   {/if}
-
-                  {#if $chain !== "ALL"}
-                    {#if isLoadingToken}
-                      <tbody>
-                        <tr>
-                          <td {colspan}>
-                            <div
-                              class="flex justify-center items-center h-full py-3 px-3"
-                            >
-                              <Loading />
-                            </div>
-                          </td>
-                        </tr>
-                      </tbody>
-                    {:else}
-                      <tbody>
-                        {#if filteredHoldingDataToken && filteredHoldingDataToken.length === 0}
-                          <tr>
-                            <td {colspan}>
-                              <div
-                                class="flex justify-center items-center h-full py-3 px-3 xl:text-lg text-xl text-gray-400"
-                              >
-                                {#if holdingTokenData && holdingTokenData.length === 0}
-                                  {MultipleLang.empty}
-                                {:else}
-                                  All tokens less than $1
-                                {/if}
-                              </div>
-                            </td>
-                          </tr>
-                        {:else}
-                          {#each filteredHoldingDataToken as holding, index (holding.positionId)}
-                            <HoldingToken
-                              data={holding}
-                              lastIndex={filteredHoldingDataToken.length - 1 ==
-                                index}
-                              sumAllTokens={$totalAssets - sumNFT}
-                              index={index + 1}
-                              {triggerFireworkBonus}
-                            />
-                          {/each}
-                        {/if}
-                      </tbody>
-                    {/if}
-                  {/if}
-                </table>
-              </div>
+                {/if}
+              </table>
             </div>
           </div>
-        {/if}
+        </div>
+      {/if}
 
-        <!-- nft holding table -->
-        {#if selectedType === "nft"}
-          {#if $typeWallet !== "CEX"}
-            <div class="flex flex-col gap-2">
-              <div class="flex items-center justify-end gap-2">
-                <div class="xl:text-sm text-2xl font-regular text-gray-400">
-                  Hide NFT Collections less than
-                </div>
-                <Select
-                  type="filter"
-                  positionSelectList="right-0"
-                  listSelect={filterTokenValueType}
-                  bind:selected={filterNFTType}
-                />
+      <!-- nft holding table -->
+      {#if selectedType === "nft"}
+        {#if $typeWallet !== "CEX"}
+          <div class="flex flex-col gap-2">
+            <div class="flex items-center justify-end gap-2">
+              <div class="xl:text-sm text-2xl font-regular text-gray-400">
+                Hide NFT Collections less than
               </div>
+              <Select
+                type="filter"
+                positionSelectList="right-0"
+                listSelect={filterTokenValueType}
+                bind:selected={filterNFTType}
+              />
+            </div>
 
-              <div
-                class={`rounded-[10px] xl:overflow-visible overflow-x-auto h-full ${
-                  $isDarkMode
-                    ? "bg-[#131313]"
-                    : "bg-[#fff] border border_0000000d"
-                }`}
-              >
-                <table class="table-auto xl:w-full w-[2000px] h-full">
-                  <thead
-                    class={isStickyTableNFT ? "sticky top-0 z-10" : ""}
-                    bind:this={tableNFTHeader}
-                  >
-                    <tr class="bg_f4f5f8">
-                      <th
-                        class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8 xl:w-[220px] w-[350px]"
+            <div
+              class={`rounded-[10px] xl:overflow-visible overflow-x-auto h-full ${
+                $isDarkMode
+                  ? "bg-[#131313]"
+                  : "bg-[#fff] border border_0000000d"
+              }`}
+            >
+              <table class="table-auto xl:w-full w-[2000px] h-full">
+                <thead
+                  class={isStickyTableNFT ? "sticky top-0 z-10" : ""}
+                  bind:this={tableNFTHeader}
+                >
+                  <tr class="bg_f4f5f8">
+                    <th
+                      class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8 xl:w-[220px] w-[350px]"
+                    >
+                      <div
+                        class="text-left xl:text-xs text-xl uppercase font-medium"
                       >
-                        <div
-                          class="text-left xl:text-xs text-xl uppercase font-medium"
-                        >
-                          {MultipleLang.collection}
-                        </div>
-                      </th>
-                      <th
-                        class="py-3 xl:static xl:bg-transparent sticky left-[350px] z-10 bg_f4f5f8 w-[200px]"
+                        {MultipleLang.collection}
+                      </div>
+                    </th>
+                    <th
+                      class="py-3 xl:static xl:bg-transparent sticky left-[350px] z-10 bg_f4f5f8 w-[200px]"
+                    >
+                      <div
+                        class="text-left xl:text-xs text-xl uppercase font-medium"
                       >
-                        <div
-                          class="text-left xl:text-xs text-xl uppercase font-medium"
+                        {MultipleLang.Balance}
+                      </div>
+                    </th>
+                    <th class="py-3">
+                      <div
+                        class="text-right xl:text-xs text-xl uppercase font-medium"
+                      >
+                        <TooltipTitle
+                          tooltipText={false
+                            ? "The Floor price from Magic Eden marketplace. "
+                            : "The Floor price of last 24h, if there is no volume, the floor price is 0"}
+                          link={false ? "https://magiceden.io/ordinals" : ""}
                         >
-                          {MultipleLang.Balance}
-                        </div>
-                      </th>
-                      <th class="py-3">
-                        <div
-                          class="text-right xl:text-xs text-xl uppercase font-medium"
+                          {MultipleLang.floor_price}
+                        </TooltipTitle>
+                      </div>
+                    </th>
+                    <th class="py-3">
+                      <div
+                        class="text-right xl:text-xs text-xl uppercase font-medium"
+                      >
+                        Cost
+                      </div>
+                    </th>
+                    <th class="py-3">
+                      <div
+                        class="text-right xl:text-xs text-xl uppercase font-medium"
+                      >
+                        {MultipleLang.current_value}
+                      </div>
+                    </th>
+                    <th class="py-3">
+                      <div
+                        class="text-right xl:text-xs text-xl uppercase font-medium"
+                      >
+                        <TooltipTitle
+                          tooltipText="Price NFTs now - Price NFTs at time you spent"
                         >
-                          <TooltipTitle
-                            tooltipText={false
-                              ? "The Floor price from Magic Eden marketplace. "
-                              : "The Floor price of last 24h, if there is no volume, the floor price is 0"}
-                            link={false ? "https://magiceden.io/ordinals" : ""}
-                          >
-                            {MultipleLang.floor_price}
-                          </TooltipTitle>
-                        </div>
-                      </th>
-                      <th class="py-3">
-                        <div
-                          class="text-right xl:text-xs text-xl uppercase font-medium"
-                        >
-                          Cost
-                        </div>
-                      </th>
-                      <th class="py-3">
-                        <div
-                          class="text-right xl:text-xs text-xl uppercase font-medium"
-                        >
-                          {MultipleLang.current_value}
-                        </div>
-                      </th>
-                      <th class="py-3">
-                        <div
-                          class="text-right xl:text-xs text-xl uppercase font-medium"
-                        >
-                          <TooltipTitle
-                            tooltipText="Price NFTs now - Price NFTs at time you spent"
-                          >
-                            {MultipleLang.profit}
-                          </TooltipTitle>
-                        </div>
-                      </th>
-                      <th class="py-3 xl:w-12 w-32 rounded-tr-[10px]" />
-                    </tr>
-                  </thead>
+                          {MultipleLang.profit}
+                        </TooltipTitle>
+                      </div>
+                    </th>
+                    <th class="py-3 xl:w-12 w-32 rounded-tr-[10px]" />
+                  </tr>
+                </thead>
 
-                  {#if $chain === "ALL"}
+                {#if $chain === "ALL"}
+                  <tbody>
+                    {#if filteredHoldingDataNFT && filteredHoldingDataNFT.length === 0 && !isLoadingNFT}
+                      <tr>
+                        <td colspan={7}>
+                          <div
+                            class="flex justify-center items-center h-full py-3 px-3 xl:text-lg text-xl text-gray-400 view-nft-detail"
+                          >
+                            {#if formatDataNFT && formatDataNFT.length === 0}
+                              {MultipleLang.empty}
+                            {:else}
+                              All NFT Collections less than $1
+                            {/if}
+                          </div>
+                        </td>
+                      </tr>
+                    {/if}
+                    {#each filteredHoldingDataNFT as holding, index}
+                      <HoldingNFT
+                        data={holding}
+                        {index}
+                        lastIndex={filteredHoldingDataNFT.length - 1 == index}
+                      />
+                    {/each}
+                  </tbody>
+                  {#if isLoadingNFT}
                     <tbody>
-                      {#if filteredHoldingDataNFT && filteredHoldingDataNFT.length === 0 && !isLoadingNFT}
+                      <tr>
+                        <td colspan={7}>
+                          <div
+                            class="flex justify-center items-center h-full py-3 px-3"
+                          >
+                            <Loading />
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  {/if}
+                {/if}
+
+                {#if $chain !== "ALL"}
+                  {#if isLoadingNFT}
+                    <tbody>
+                      <tr>
+                        <td colspan={7}>
+                          <div
+                            class="flex justify-center items-center h-full py-3 px-3"
+                          >
+                            <Loading />
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  {:else}
+                    <tbody>
+                      {#if filteredHoldingDataNFT && filteredHoldingDataNFT.length === 0}
                         <tr>
                           <td colspan={7}>
                             <div
@@ -883,78 +935,24 @@
                             </div>
                           </td>
                         </tr>
+                      {:else}
+                        {#each filteredHoldingDataNFT as holding, index}
+                          <HoldingNFT
+                            lastIndex={filteredHoldingDataNFT.length - 1 ==
+                              index}
+                            data={holding}
+                            {index}
+                          />
+                        {/each}
                       {/if}
-                      {#each filteredHoldingDataNFT as holding, index}
-                        <HoldingNFT
-                          data={holding}
-                          {index}
-                          lastIndex={filteredHoldingDataNFT.length - 1 == index}
-                        />
-                      {/each}
                     </tbody>
-                    {#if isLoadingNFT}
-                      <tbody>
-                        <tr>
-                          <td colspan={7}>
-                            <div
-                              class="flex justify-center items-center h-full py-3 px-3"
-                            >
-                              <Loading />
-                            </div>
-                          </td>
-                        </tr>
-                      </tbody>
-                    {/if}
                   {/if}
-
-                  {#if $chain !== "ALL"}
-                    {#if isLoadingNFT}
-                      <tbody>
-                        <tr>
-                          <td colspan={7}>
-                            <div
-                              class="flex justify-center items-center h-full py-3 px-3"
-                            >
-                              <Loading />
-                            </div>
-                          </td>
-                        </tr>
-                      </tbody>
-                    {:else}
-                      <tbody>
-                        {#if filteredHoldingDataNFT && filteredHoldingDataNFT.length === 0}
-                          <tr>
-                            <td colspan={7}>
-                              <div
-                                class="flex justify-center items-center h-full py-3 px-3 xl:text-lg text-xl text-gray-400 view-nft-detail"
-                              >
-                                {#if formatDataNFT && formatDataNFT.length === 0}
-                                  {MultipleLang.empty}
-                                {:else}
-                                  All NFT Collections less than $1
-                                {/if}
-                              </div>
-                            </td>
-                          </tr>
-                        {:else}
-                          {#each filteredHoldingDataNFT as holding, index}
-                            <HoldingNFT
-                              lastIndex={filteredHoldingDataNFT.length - 1 ==
-                                index}
-                              data={holding}
-                              {index}
-                            />
-                          {/each}
-                        {/if}
-                      </tbody>
-                    {/if}
-                  {/if}
-                </table>
-              </div>
+                {/if}
+              </table>
             </div>
-          {/if}
+          </div>
         {/if}
-      </div>
+      {/if}
     </div>
   </ErrorBoundary>
 </div>
