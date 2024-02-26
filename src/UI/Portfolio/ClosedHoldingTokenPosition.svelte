@@ -18,7 +18,6 @@
   import defaultToken from "~/assets/defaultToken.png";
 
   export let data;
-  export let selectedWallet;
   export let lastIndex = false;
 
   let isShowTooltipName = false;

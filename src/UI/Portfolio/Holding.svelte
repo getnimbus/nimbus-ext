@@ -2,6 +2,7 @@
   import { onMount } from "svelte";
   import { i18n } from "~/lib/i18n";
   import {
+    wallet,
     chain,
     typeWallet,
     isDarkMode,
@@ -19,7 +20,6 @@
 
   import goldImg from "~/assets/Gold4.svg";
 
-  export let selectedWallet;
   export let isLoadingNFT;
   export let isLoadingToken;
   export let holdingTokenData;
@@ -482,8 +482,8 @@
   $: colspan = listSupported.includes($typeWallet) ? 8 : 7;
 
   $: {
-    if (selectedWallet || $chain) {
-      if (selectedWallet?.length !== 0 && $chain?.length !== 0) {
+    if ($wallet || $chain) {
+      if ($wallet?.length !== 0 && $chain?.length !== 0) {
         sumTokens = 0;
         sumNFT = 0;
         formatData = [];
@@ -706,7 +706,6 @@
                           data={holding}
                           lastIndex={filteredHoldingDataToken.length - 1 ===
                             index}
-                          {selectedWallet}
                           sumAllTokens={$totalAssets - sumNFT}
                           index={index + 1}
                           {triggerFireworkBonus}
@@ -763,7 +762,6 @@
                               data={holding}
                               lastIndex={filteredHoldingDataToken.length - 1 ==
                                 index}
-                              {selectedWallet}
                               sumAllTokens={$totalAssets - sumNFT}
                               index={index + 1}
                               {triggerFireworkBonus}
@@ -889,7 +887,6 @@
                       {#each filteredHoldingDataNFT as holding, index}
                         <HoldingNFT
                           data={holding}
-                          {selectedWallet}
                           {index}
                           lastIndex={filteredHoldingDataNFT.length - 1 == index}
                         />
@@ -945,7 +942,6 @@
                               lastIndex={filteredHoldingDataNFT.length - 1 ==
                                 index}
                               data={holding}
-                              {selectedWallet}
                               {index}
                             />
                           {/each}
