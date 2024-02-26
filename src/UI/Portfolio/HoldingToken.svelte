@@ -1,5 +1,6 @@
 <script lang="ts">
   import {
+    wallet,
     typeWallet,
     isDarkMode,
     user,
@@ -38,7 +39,6 @@
   import defaultToken from "~/assets/defaultToken.png";
 
   export let data;
-  export let selectedWallet;
   export let sumAllTokens;
   export let lastIndex: boolean = false;
   export let index: number;
@@ -261,7 +261,7 @@
   $: {
     if (showSideTokenDetail) {
       mixpanel.track("token_detail_page", {
-        address: selectedWallet,
+        address: $wallet,
         token_address: selectedTokenDetail?.contract_address || "",
       });
     }

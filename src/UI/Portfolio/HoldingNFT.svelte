@@ -1,7 +1,7 @@
 <script lang="ts">
   import { shorterName } from "~/utils";
   import { detectedChain } from "~/lib/chains";
-  import { typeWallet, isDarkMode, user } from "~/store";
+  import { wallet, typeWallet, isDarkMode, user } from "~/store";
   import mixpanel from "mixpanel-browser";
   import { i18n } from "~/lib/i18n";
   import { nimbus } from "~/lib/network";
@@ -23,7 +23,6 @@
   import TrendDown from "~/assets/trend-down.svg";
 
   export let data;
-  export let selectedWallet;
   export let index;
   export let lastIndex: boolean = false;
 
@@ -457,7 +456,7 @@
         selectedNftCollectionId = data?.collectionId;
         selectedNftCollectionChain = data?.nativeToken?.symbol;
         mixpanel.track("nft_detail_page", {
-          address: selectedWallet,
+          address: $wallet,
           collection_type: data.collectionId,
         });
       }}
@@ -715,11 +714,7 @@
       </div>
     </div>
   </div>
-  <NftDetailSidebar
-    {selectedNftCollectionId}
-    {selectedNftCollectionChain}
-    addressWallet={selectedWallet}
-  />
+  <NftDetailSidebar {selectedNftCollectionId} {selectedNftCollectionChain} />
 </OverlaySidebar>
 
 {#if showToast}

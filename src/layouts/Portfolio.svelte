@@ -972,15 +972,14 @@
                 />
 
                 <!-- {#if $typeWallet === "EVM" || $typeWallet === "MOVE" || $typeWallet === "CEX" || $typeWallet === "BUNDLE"}
-                <RiskReturn
-                  isLoading={$queryCompare.isFetching}
-                  isError={$queryCompare.isError}
-                  data={$queryCompare.data}
-                />
-              {/if} -->
+                  <RiskReturn
+                    isLoading={$queryCompare.isFetching}
+                    isError={$queryCompare.isError}
+                    data={$queryCompare.data}
+                  />
+                {/if} -->
 
                 <Holding
-                  selectedWallet={$wallet}
                   isLoadingNFT={$chain === "ALL"
                     ? $queryAllNftHolding.some(
                         (item) => item.isFetching === true
@@ -1001,19 +1000,12 @@
 
                 {#if $typeWallet !== "BTC" && selectedType === "token"}
                   <ClosedTokenPosition
-                    selectedWallet={$wallet}
-                    isLoadingNFT={$chain === "ALL"
-                      ? $queryAllNftHolding.some(
-                          (item) => item.isFetching === true
-                        )
-                      : $queryNftHolding.isFetching}
                     isLoadingToken={$chain === "ALL"
                       ? $queryAllTokenHolding.some(
                           (item) => item.isFetching === true
                         )
                       : $queryTokenHolding.isFetching}
                     holdingTokenData={closedHoldingPosition}
-                    {holdingNFTData}
                   />
                 {/if}
               {/if}
