@@ -141,15 +141,15 @@
             })
         );
         toastMsg = "Login with Sui successfully!";
-        isSuccessToast = false;
+        isSuccessToast = true;
         trigger();
         queryClient.invalidateQueries(["users-me"]);
         queryClient.invalidateQueries(["list-address"]);
+      } else {
+        toastMsg = res?.error;
+        isSuccessToast = false;
+        trigger();
       }
-
-      toastMsg = res?.error;
-      isSuccessToast = false;
-      trigger();
     } catch (e) {
       console.error("error: ", e);
     }
