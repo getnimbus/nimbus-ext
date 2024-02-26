@@ -13,6 +13,14 @@
   import SyncData from "~/components/SyncData.svelte";
 
   import User from "~/assets/user.png";
+  import TokenHoldingTrades from "../Profile/TokenHoldingTrades.svelte";
+  import ClosedHoldingTrades from "../Profile/ClosedHoldingTrades.svelte";
+  import RuggedHoldingTrades from "../Profile/RuggedHoldingTrades.svelte";
+
+  export let isLoadingToken;
+  export let holdingTokenData;
+  export let closedHoldingPosition;
+  export let ruggedHoldingPosition;
 
   let toastMsg = "";
   let isSuccessToast = false;
@@ -153,6 +161,18 @@
               selectedAddress={address}
               isSync={true}
               {enabledFetchAllData}
+            />
+
+            <TokenHoldingTrades {holdingTokenData} isLoading={isLoadingToken} />
+
+            <ClosedHoldingTrades
+              holdingTokenData={closedHoldingPosition}
+              isLoading={isLoadingToken}
+            />
+
+            <RuggedHoldingTrades
+              holdingTokenData={ruggedHoldingPosition}
+              isLoading={isLoadingToken}
             />
           </div>
         </div>

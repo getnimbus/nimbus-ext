@@ -100,6 +100,7 @@
 
   let holdingTokenData: any = [];
   let closedHoldingPosition: any = [];
+  let ruggedHoldingPosition: any = [];
   let holdingNFTData: any = [];
 
   let positionsData: any = [];
@@ -563,6 +564,13 @@
         item?.profit?.realizedProfit !== undefined && Number(item.amount) === 0
     );
 
+    ruggedHoldingPosition = formatData?.filter(
+      (item) =>
+        item?.profit?.realizedProfit !== undefined &&
+        Number(item?.price?.price || item?.rate) === 0 &&
+        Number(item.amount) === 0
+    );
+
     formatTokenBreakdown(holdingTokenData);
   };
 
@@ -1009,13 +1017,28 @@
                           (item) => item.isFetching === true
                         )
                       : $queryTokenHolding.isFetching}
-                    holdingTokenData={closedHoldingPosition}
+                    holdingTokenData={closedHoldingPosition.sort(
+                      (a, b) =>
+                        Number(b?.profit.realizedProfit) -
+                        Number(a?.profit.realizedProfit)
+                    )}
                   />
                 {/if}
               {/if}
 
               {#if selectedType === "summary"}
-                <PerformanceSummary />
+                <PerformanceSummary
+                  isLoadingToken={$chain === "ALL"
+                    ? $queryAllTokenHolding.some(
+                        (item) => item.isFetching === true
+                      )
+                    : $queryTokenHolding.isFetching}
+                  holdingTokenData={holdingTokenData.filter(
+                    (item) => item?.profit !== undefined
+                  )}
+                  {closedHoldingPosition}
+                  {ruggedHoldingPosition}
+                />
               {/if}
 
               <!-- <News isLoading={false} data={newsData} /> -->

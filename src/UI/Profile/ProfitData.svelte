@@ -275,23 +275,25 @@
         </div>
 
         <!-- <div class="flex flex-col gap-2 justify-between">
-        <div class="text-xl xl:text-sm font-medium text_00000099">30D PnL</div>
-        <div
-          class={`flex items-center xl:text-base text-lg ${
-            set30DayPnl !== 0
-              ? set30DayPnl >= 0
-                ? "text-[#00A878]"
-                : "text-red-500"
-              : ""
-          }`}
-        >
-          {#if set30DayPnl < 0}-{/if}
-          <TooltipNumber
-            number={Math.abs(set30DayPnl)}
-            type={Math.abs(Number(set30DayPnl)) > 100 ? "balance" : "percent"}
-          />%
-        </div>
-      </div> -->
+          <div class="text-xl xl:text-sm font-medium text_00000099">
+            30D PnL
+          </div>
+          <div
+            class={`flex items-center xl:text-base text-lg ${
+              set30DayPnl !== 0
+                ? set30DayPnl >= 0
+                  ? "text-[#00A878]"
+                  : "text-red-500"
+                : ""
+            }`}
+          >
+            {#if set30DayPnl < 0}-{/if}
+            <TooltipNumber
+              number={Math.abs(set30DayPnl)}
+              type={Math.abs(Number(set30DayPnl)) > 100 ? "balance" : "percent"}
+            />%
+          </div>
+        </div> -->
 
         <div class="flex flex-col gap-2 justify-between">
           <div class="text-xl xl:text-sm font-medium text_00000099">
@@ -311,6 +313,7 @@
           </div>
         </div>
       </div>
+
       <!-- {#if (goodPerf && Object.keys(goodPerf)?.length !== 0) || (badPerf && Object.keys(badPerf)?.length !== 0)}
         <div class="grid grid-cols-2 gap-5">
           {#if goodPerf}

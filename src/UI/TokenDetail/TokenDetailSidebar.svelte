@@ -372,7 +372,7 @@
         <BalanceAvgCostChart
           {data}
           id={data?.name}
-          avgCost={data?.profit?.averageCost}
+          avgCost={data?.profit?.averageCost || 0}
           {filterType}
         />
 
