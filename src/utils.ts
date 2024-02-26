@@ -169,6 +169,21 @@ export const filterAvgCostType = [
   },
 ];
 
+export const typePortfolioPage = [
+  {
+    label: "Tokens",
+    value: "token",
+  },
+  {
+    label: "NFTs",
+    value: "nft",
+  },
+  {
+    label: "Summary",
+    value: "summary",
+  },
+];
+
 export const filterTokenValueType = [
   {
     label: "None",

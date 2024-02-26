@@ -27,6 +27,7 @@
   export let isEmptyDataPieTokens;
   export let isEmptyDataPieNfts;
   export let dataOverviewBundlePieChart;
+  export let selectedType;
 
   import EChart from "~/components/EChart.svelte";
   import Loading from "~/components/Loading.svelte";
@@ -47,7 +48,6 @@
     Value: i18n("newtabPage.Value", "Value"),
   };
 
-  let selectedType: "token" | "nft" = "token";
   let selectedTypePerformance: "percent" | "networth" = "percent";
   let optionPie = {
     title: {
@@ -762,41 +762,7 @@
         $isDarkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
       }`}
     >
-      <div class="w-full flex items-center gap-4 mb-6">
-        <div class="text-4xl font-medium xl:text-2xl">Allocation</div>
-        {#if $typeWallet !== "CEX"}
-          <div class="flex items-center gap-1">
-            <AnimateSharedLayout>
-              {#each typePieChart as type}
-                <div
-                  class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
-                  on:click={() => (selectedType = type.value)}
-                >
-                  <div
-                    class={`relative z-2 ${
-                      selectedType === type.value && "text-white"
-                    }`}
-                  >
-                    {type.label}
-                  </div>
-                  {#if type.value === selectedType}
-                    <Motion
-                      let:motion
-                      layoutId="active-pill"
-                      transition={{ type: "spring", duration: 0.6 }}
-                    >
-                      <div
-                        class="absolute inset-0 rounded-full bg-[#1E96FC] z-1"
-                        use:motion
-                      />
-                    </Motion>
-                  {/if}
-                </div>
-              {/each}
-            </AnimateSharedLayout>
-          </div>
-        {/if}
-      </div>
+      <div class="text-4xl font-medium xl:text-2xl mb-6">Allocation</div>
 
       {#if isLoadingBreakdownTokens && isLoadingBreakdownNfts}
         <div class="flex items-center justify-center h-[465px]">

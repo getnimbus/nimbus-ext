@@ -2,15 +2,13 @@
   import { timeFrame } from "~/utils";
   import {
     user,
-    chain,
     wallet,
     selectedPackage,
     isDarkMode,
     typeWallet,
     triggerUpdateBundle,
-    userPublicAddress,
   } from "~/store";
-  import { Link, useNavigate } from "svelte-navigator";
+  import { useNavigate } from "svelte-navigator";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import mixpanel from "mixpanel-browser";
   import { useQueryClient } from "@tanstack/svelte-query";
@@ -64,67 +62,49 @@
     <div class="max-w-[2000px] m-auto -mt-32 xl:w-[90%] w-[90%]">
       <SyncData let:address let:enabledFetchAllData>
         <div class="analytic_container rounded-[20px] xl:p-8 p-6 space-y-4">
-          <div class="flex justify-between items-center">
-            {#if isShowSoon && $user && Object.keys($user).length === 0}
-              <div class="w-full xl:w-[230px]">
-                <Button disabled>Performance Summary</Button>
-              </div>
-            {:else}
-              <Link
-                to={`/performance-summary/?type=${$typeWallet}&chain=${$chain}&address=${address}`}
-              >
-                <Button>
-                  <div class="w-full xl:w-[230px]">Performance Summary</div>
-                </Button>
-              </Link>
-            {/if}
-
-            <div class="flex items-center justify-end gap-1">
-              <div class="mr-1 xl:text-base text-2xl">Timeframe</div>
-              <AnimateSharedLayout>
-                {#each timeFrame as type}
+          <div class="flex items-center justify-end gap-1">
+            <div class="mr-1 xl:text-base text-2xl">Timeframe</div>
+            <AnimateSharedLayout>
+              {#each timeFrame as type}
+                <div
+                  class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
+                  on:click={() => {
+                    if (
+                      isShowSoon &&
+                      $user &&
+                      Object.keys($user).length === 0
+                    ) {
+                      return;
+                    }
+                    selectedTimeFrame = type.value;
+                  }}
+                >
                   <div
-                    class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
-                    on:click={() => {
-                      if (
-                        isShowSoon &&
-                        $user &&
-                        Object.keys($user).length === 0
-                      ) {
-                        return;
-                      }
-                      selectedTimeFrame = type.value;
-                    }}
+                    class={`relative z-2 ${
+                      type.value === selectedTimeFrame && "text-white"
+                    }`}
                   >
-                    <div
-                      class={`relative z-2 ${
-                        type.value === selectedTimeFrame && "text-white"
-                      }`}
-                    >
-                      {type.label}
-                    </div>
-                    {#if type.value === selectedTimeFrame}
-                      <Motion
-                        let:motion
-                        layoutId="active-pill"
-                        transition={{ type: "spring", duration: 0.6 }}
-                      >
-                        <div
-                          class={`absolute inset-0 rounded-full z-1 ${
-                            isShowSoon &&
-                            $user &&
-                            Object.keys($user).length === 0
-                              ? "bg-[#dddddd]"
-                              : "bg-[#1E96FC]"
-                          }`}
-                          use:motion
-                        />
-                      </Motion>
-                    {/if}
+                    {type.label}
                   </div>
-                {/each}
-              </AnimateSharedLayout>
-            </div>
+                  {#if type.value === selectedTimeFrame}
+                    <Motion
+                      let:motion
+                      layoutId="active-pill"
+                      transition={{ type: "spring", duration: 0.6 }}
+                    >
+                      <div
+                        class={`absolute inset-0 rounded-full z-1 ${
+                          isShowSoon && $user && Object.keys($user).length === 0
+                            ? "bg-[#dddddd]"
+                            : "bg-[#1E96FC]"
+                        }`}
+                        use:motion
+                      />
+                    </Motion>
+                  {/if}
+                </div>
+              {/each}
+            </AnimateSharedLayout>
           </div>
 
           <div class="flex flex-col gap-7">
