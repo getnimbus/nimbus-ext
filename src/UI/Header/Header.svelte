@@ -212,69 +212,6 @@
     }
   };
 
-  onMount(() => {
-    getSuggestList();
-    Mousetrap.bindGlobal(["up", "down"], (event) => {
-      if (searchListAddressResult.length !== 0) {
-        if (event.key === "ArrowUp" && selectedIndexAddress > 0) {
-          selectedIndexAddress -= 1;
-        }
-        if (event.key === "ArrowDown") {
-          if (
-            searchListAddressResult.length === listAddress.length &&
-            selectedIndexAddress < listAddress.length - 1
-          ) {
-            selectedIndexAddress += 1;
-          }
-          if (
-            searchListAddressResult.length < listAddress.length &&
-            selectedIndexAddress < searchListAddressResult.length - 1
-          ) {
-            selectedIndexAddress += 1;
-          }
-        }
-        const itemElement = listAddressElement.querySelector(
-          `div:nth-child(${selectedIndexAddress + 1})`
-        );
-        if (itemElement) {
-          itemElement.scrollIntoView({ behavior: "smooth", block: "nearest" });
-        }
-      }
-    });
-    Mousetrap.bindGlobal(["/"], function () {
-      showPopoverSearch = true;
-    });
-    Mousetrap.bindGlobal(["esc"], function () {
-      showPopoverSearch = false;
-      search = "";
-    });
-
-    Mousetrap.bindGlobal(["enter"], async function () {
-      if (showPopoverSearch) {
-        if (selectedIndexAddress !== -1) {
-          let selectedAddress;
-          if (indexSelectedAddressResult === -1) {
-            selectedAddress = listAddress[selectedIndexAddress]?.value;
-          } else {
-            selectedAddress = listAddress[indexSelectedAddressResult]?.value;
-          }
-          handleSearchAddress(selectedAddress);
-          showPopoverSearch = false;
-          indexSelectedAddressResult = -1;
-          search = "";
-          searchListAddressResult = listAddress;
-        } else {
-          search = "";
-          searchListAddressResult = listAddress;
-        }
-      }
-    });
-  });
-
-  onDestroy(() => {
-    Mousetrap.reset();
-  });
-
   let displayName = "";
   let publicAddress = "";
   let isOpenModalSync = false;
@@ -339,9 +276,74 @@
   onMount(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const syncCodeParams = urlParams.get("code");
+
     if (syncCodeParams) {
       handleMobileSignIn(syncCodeParams);
     }
+
+    getSuggestList();
+
+    Mousetrap.bindGlobal(["up", "down"], (event) => {
+      if (searchListAddressResult.length !== 0) {
+        if (event.key === "ArrowUp" && selectedIndexAddress > 0) {
+          selectedIndexAddress -= 1;
+        }
+        if (event.key === "ArrowDown") {
+          if (
+            searchListAddressResult.length === listAddress.length &&
+            selectedIndexAddress < listAddress.length - 1
+          ) {
+            selectedIndexAddress += 1;
+          }
+          if (
+            searchListAddressResult.length < listAddress.length &&
+            selectedIndexAddress < searchListAddressResult.length - 1
+          ) {
+            selectedIndexAddress += 1;
+          }
+        }
+        const itemElement = listAddressElement.querySelector(
+          `div:nth-child(${selectedIndexAddress + 1})`
+        );
+        if (itemElement) {
+          itemElement.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        }
+      }
+    });
+
+    Mousetrap.bindGlobal(["/"], function () {
+      showPopoverSearch = true;
+    });
+
+    Mousetrap.bindGlobal(["esc"], function () {
+      showPopoverSearch = false;
+      search = "";
+    });
+
+    Mousetrap.bindGlobal(["enter"], async function () {
+      if (showPopoverSearch) {
+        if (selectedIndexAddress !== -1) {
+          let selectedAddress;
+          if (indexSelectedAddressResult === -1) {
+            selectedAddress = listAddress[selectedIndexAddress]?.value;
+          } else {
+            selectedAddress = listAddress[indexSelectedAddressResult]?.value;
+          }
+          handleSearchAddress(selectedAddress);
+          showPopoverSearch = false;
+          indexSelectedAddressResult = -1;
+          search = "";
+          searchListAddressResult = listAddress;
+        } else {
+          search = "";
+          searchListAddressResult = listAddress;
+        }
+      }
+    });
+  });
+
+  onDestroy(() => {
+    Mousetrap.reset();
   });
 
   const getUserInfo = async () => {
