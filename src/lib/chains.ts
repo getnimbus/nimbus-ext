@@ -152,11 +152,11 @@ export const chainList = [
     label: "BNB",
     value: "BNB",
   },
-  {
-    logo: opBNB,
-    label: "opBNB",
-    value: "OPBNB",
-  },
+  // {
+  //   logo: opBNB,
+  //   label: "opBNB",
+  //   value: "OPBNB",
+  // },
   {
     logo: Matic,
     label: "Polygon",
@@ -217,11 +217,11 @@ export const chainList = [
     label: "Mantle",
     value: "MANTLE",
   },
-  {
-    logo: Exzo,
-    label: "Exzo",
-    value: "XZO",
-  },
+  // {
+  //   logo: Exzo,
+  //   label: "Exzo",
+  //   value: "XZO",
+  // },
   {
     logo: Klaytn,
     label: "Klaytn",
@@ -242,21 +242,21 @@ export const chainList = [
     label: "Fantom",
     value: "FANTOM",
   },
-  {
-    logo: Evmos,
-    label: "Evmos",
-    value: "EVMOS",
-  },
-  {
-    logo: Harmony,
-    label: "Harmony",
-    value: "ONE",
-  },
-  {
-    logo: Moonbeam,
-    label: "Moonbeam",
-    value: "GLMR",
-  },
+  // {
+  //   logo: Evmos,
+  //   label: "Evmos",
+  //   value: "EVMOS",
+  // },
+  // {
+  //   logo: Harmony,
+  //   label: "Harmony",
+  //   value: "ONE",
+  // },
+  // {
+  //   logo: Moonbeam,
+  //   label: "Moonbeam",
+  //   value: "GLMR",
+  // },
   {
     logo: Metis,
     label: "Metis",
@@ -272,21 +272,21 @@ export const chainList = [
     label: "Ronin",
     value: "RON",
   },
-  {
-    logo: Moonriver,
-    label: "Moonriver",
-    value: "MOVR",
-  },
-  {
-    logo: Canto,
-    label: "Canto",
-    value: "CANTO",
-  },
-  {
-    logo: Oasis,
-    label: "Oasis",
-    value: "ROSE",
-  },
+  // {
+  //   logo: Moonriver,
+  //   label: "Moonriver",
+  //   value: "MOVR",
+  // },
+  // {
+  //   logo: Canto,
+  //   label: "Canto",
+  //   value: "CANTO",
+  // },
+  // {
+  //   logo: Oasis,
+  //   label: "Oasis",
+  //   value: "ROSE",
+  // },
   // {
   //   logo: Manta,
   //   label: "Manta",
