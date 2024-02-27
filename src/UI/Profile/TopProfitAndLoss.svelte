@@ -131,7 +131,9 @@
         <div class="h-full overflow-y-auto">
           <div class="h-full flex flex-col">
             {#if topProfitToken.length === 0}
-              <div class="h-full flex items-center justify-center text-center">
+              <div
+                class="h-full flex items-center justify-center text-center pt-4 pb-6 px-6"
+              >
                 There are no closed holding position in the last 30 day
               </div>
             {:else}
@@ -192,7 +194,9 @@
         <div class="h-full overflow-y-auto">
           <div class="h-full flex flex-col">
             {#if topLossToken.length === 0}
-              <div class="h-full flex items-center justify-center text-center">
+              <div
+                class="h-full flex items-center justify-center text-center pt-4 pb-6 px-6"
+              >
                 There are no closed holding position in the last 30 day
               </div>
             {:else}

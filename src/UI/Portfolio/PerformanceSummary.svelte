@@ -126,7 +126,7 @@
             {/if}
           </div>
           <a
-            class="hover:underline text-[#27326f] sm:text-left text-center"
+            class="hover:underline text-[#27326f] text-center"
             href="https://getnimbus.io/"
             target="_blank"
           >
@@ -149,15 +149,14 @@
               isSync={true}
               {enabledFetchAllData}
             />
-
-            <ClosedPositionChart
-              selectedAddress={address}
-              isSync={true}
-              {enabledFetchAllData}
-            />
           </div>
         </div>
         <div class="col-span-4 flex flex-col gap-9">
+          <ClosedPositionChart
+            selectedAddress={address}
+            isSync={true}
+            {enabledFetchAllData}
+          />
           <TokenHoldingTable
             selectedAddress={address}
             isSync={true}
