@@ -158,12 +158,12 @@
   </div>
 
   <div
-    class={`rounded-[10px] xl:overflow-y-auto overflow-auto max-h-[350px] ${
+    class={`rounded-[10px] xl:overflow-y-auto overflow-auto max-h-[280px] ${
       $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
     }`}
   >
     <table class="table-auto xl:w-full w-[2000px] h-full">
-      <thead class="sticky top-0 z-10">
+      <thead class="sticky top-0 z-9">
         <tr class="bg_f4f5f8">
           <th
             class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8 w-[250px]"
@@ -189,26 +189,26 @@
           </th>
           <th class="py-3">
             <div
-              class="flex items-center justify-end gap-2"
+              class="flex items-center justify-end gap-2 cursor-pointer"
               on:click={toggleSortPnl}
             >
               <div class="text-right xl:text-xs text-xl uppercase font-medium">
                 Pnl
               </div>
-              <div class="cursor-pointer">
+              <div>
                 {@html sortIcon(sortTypePnl)}
               </div>
             </div>
           </th>
           <th class="py-3 pr-3 rounded-tr-[10px]">
             <div
-              class="flex items-center justify-end gap-2"
+              class="flex items-center justify-end gap-2 cursor-pointer"
               on:click={toggleSortLastActivity}
             >
               <div class="text-right xl:text-xs text-xl uppercase font-medium">
                 Last activity
               </div>
-              <div class="cursor-pointer">
+              <div>
                 {@html sortIcon(sortTypeLastActivity)}
               </div>
             </div>

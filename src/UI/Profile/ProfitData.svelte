@@ -252,7 +252,7 @@
                 interactive: true,
               }}
             >
-              30D UPnL
+              30D uPnL
             </span>
           </div>
           <div
