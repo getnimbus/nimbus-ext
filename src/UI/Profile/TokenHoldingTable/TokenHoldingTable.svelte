@@ -137,7 +137,8 @@
     realizedProfit.update(
       (n) =>
         (n = (formatData || [])
-          .map((item) => {
+          ?.filter((item) => item?.profit?.realizedProfit !== undefined)
+          ?.map((item) => {
             return {
               realized_profit: item?.profit?.realizedProfit || 0,
             };
@@ -171,10 +172,12 @@
 
     pastProfit.update(
       (n) =>
-        (n = formatData.reduce(
-          (prev, item) => prev + Number(item?.profit?.realizedProfit),
-          0
-        ))
+        (n = (formatData || [])
+          .filter((item) => item?.profit?.realizedProfit !== undefined)
+          .reduce(
+            (prev, item) => prev + Number(item?.profit?.realizedProfit),
+            0
+          ))
     );
 
     closedHoldingPosition = formatData?.filter(
