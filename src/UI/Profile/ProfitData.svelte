@@ -240,16 +240,17 @@
         </div>
 
         <div class="flex flex-col gap-2 justify-between">
-          <div
-            class="text-xl xl:text-sm font-medium text_00000099"
-            use:tooltip={{
-              content: `<tooltip-detail text="30D Unrealized PnL" />`,
-              allowHTML: true,
-              placement: "top",
-              interactive: true,
-            }}
-          >
-            30D UPnL
+          <div class="text-xl xl:text-sm font-medium text_00000099">
+            <span
+              use:tooltip={{
+                content: `<tooltip-detail text="30D Unrealized PnL" />`,
+                allowHTML: true,
+                placement: "top",
+                interactive: true,
+              }}
+            >
+              30D UPnL
+            </span>
           </div>
           <div
             class={`flex items-center xl:text-base text-lg ${

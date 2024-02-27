@@ -21,6 +21,13 @@
   export let isSync = false;
   export let enabledFetchAllData = false;
 
+  let showSideTokenDetail = false;
+  let selectedTokenDetail;
+  let isShowTooltipContractAddress = false;
+  let isCopied = false;
+  let isShowTooltipSymbol = false;
+  let isShowTooltipName = false;
+
   let topProfitToken = [];
   let topLossToken = [];
 
@@ -107,15 +114,6 @@
       formatDataTradingStats($queryTradingStats.data);
     }
   }
-
-  let showSideTokenDetail = false;
-  let selectedTokenDetail;
-  let isShowTooltipContractAddress = false;
-  let isCopied = false;
-  let isShowTooltipSymbol = false;
-  let isShowTooltipName = false;
-
-  $: console.log({ topLossToken });
 </script>
 
 <div class="col-span-4 grid xl:grid-cols-2 grid-cols-1 gap-5">
