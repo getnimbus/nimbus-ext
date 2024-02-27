@@ -4,23 +4,147 @@
 
   import Loading from "~/components/Loading.svelte";
   import TokenHoldingTradeItem from "./TokenHoldingTradeItem.svelte";
+  import dayjs from "dayjs";
 
   export let holdingTokenData;
   export let isLoading;
 
-  let tableTokenHeader;
-  let isStickyTableToken = false;
+  let sortTypePnl = "default";
+  let sortTypeLastActivity = "default";
 
-  onMount(() => {
-    const handleScroll = () => {
-      const clientRectTokenHeader = tableTokenHeader?.getBoundingClientRect();
-      isStickyTableToken = clientRectTokenHeader?.top <= 0;
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
+  $: defaultDataClosedHoldingTrades = holdingTokenData.map((item) => {
+    return {
+      ...item,
+      realizedProfit: item?.profit?.realizedProfit
+        ? Number(item?.profit?.realizedProfit)
+        : 0,
     };
   });
+
+  const toggleSortPnl = () => {
+    sortTypeLastActivity = "default";
+    switch (sortTypePnl) {
+      case "default":
+        sortTypePnl = "asc";
+        break;
+      case "asc":
+        sortTypePnl = "desc";
+        break;
+      case "desc":
+        sortTypePnl = "default";
+        break;
+      default:
+        sortTypePnl = "default";
+    }
+
+    if (sortTypePnl === "asc") {
+      defaultDataClosedHoldingTrades = defaultDataClosedHoldingTrades.sort(
+        (a, b) => b.realizedProfit - a.realizedProfit
+      );
+    }
+    if (sortTypePnl === "desc") {
+      defaultDataClosedHoldingTrades = defaultDataClosedHoldingTrades.sort(
+        (a, b) => a.realizedProfit - b.realizedProfit
+      );
+    }
+    if (sortTypePnl === "default") {
+      defaultDataClosedHoldingTrades = holdingTokenData.map((item) => {
+        return {
+          ...item,
+          realizedProfit: item?.profit?.realizedProfit
+            ? Number(item?.profit?.realizedProfit)
+            : 0,
+        };
+      });
+    }
+  };
+
+  const toggleSortLastActivity = () => {
+    sortTypePnl = "default";
+    switch (sortTypeLastActivity) {
+      case "default":
+        sortTypeLastActivity = "asc";
+        break;
+      case "asc":
+        sortTypeLastActivity = "desc";
+        break;
+      case "desc":
+        sortTypeLastActivity = "default";
+        break;
+      default:
+        sortTypeLastActivity = "default";
+    }
+
+    if (sortTypeLastActivity === "asc") {
+      defaultDataClosedHoldingTrades = defaultDataClosedHoldingTrades.sort(
+        (a, b) =>
+          dayjs(b?.profit?.latestTrade).valueOf() -
+          dayjs(a?.profit?.latestTrade).valueOf()
+      );
+    }
+    if (sortTypeLastActivity === "desc") {
+      defaultDataClosedHoldingTrades = defaultDataClosedHoldingTrades.sort(
+        (a, b) =>
+          dayjs(a?.profit?.latestTrade).valueOf() -
+          dayjs(b?.profit?.latestTrade).valueOf()
+      );
+    }
+    if (sortTypeLastActivity === "default") {
+      defaultDataClosedHoldingTrades = holdingTokenData.map((item) => {
+        return {
+          ...item,
+          realizedProfit: item?.profit?.realizedProfit
+            ? Number(item?.profit?.realizedProfit)
+            : 0,
+        };
+      });
+    }
+  };
+
+  $: sortIcon = (sortType) => {
+    return `<svg
+                    height="0.9rem"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <g id="SVGRepo_bgCarrier" stroke-width="0" /><g
+                      id="SVGRepo_tracerCarrier"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <g id="SVGRepo_iconCarrier">
+                      <path
+                        d="M16.0686 15H7.9313C7.32548 15 7.02257 15 6.88231 15.1198C6.76061 15.2238 6.69602 15.3797 6.70858 15.5393C6.72305 15.7232 6.93724 15.9374 7.36561 16.3657L11.4342 20.4344C11.6323 20.6324 11.7313 20.7314 11.8454 20.7685C11.9458 20.8011 12.054 20.8011 12.1544 20.7685C12.2686 20.7314 12.3676 20.6324 12.5656 20.4344L16.6342 16.3657C17.0626 15.9374 17.2768 15.7232 17.2913 15.5393C17.3038 15.3797 17.2392 15.2238 17.1175 15.1198C16.9773 15 16.6744 15 16.0686 15Z"
+                        stroke="${$isDarkMode ? "#ffffff" : "#000000"}"
+                        fill="${
+                          sortType === "default" || sortType === "desc"
+                            ? $isDarkMode
+                              ? "#ffffff"
+                              : "#000000"
+                            : ""
+                        }"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                      <path
+                        d="M7.9313 9.00005H16.0686C16.6744 9.00005 16.9773 9.00005 17.1175 8.88025C17.2393 8.7763 17.3038 8.62038 17.2913 8.46082C17.2768 8.27693 17.0626 8.06274 16.6342 7.63436L12.5656 3.56573C12.3676 3.36772 12.2686 3.26872 12.1544 3.23163C12.054 3.199 11.9458 3.199 11.8454 3.23163C11.7313 3.26872 11.6323 3.36772 11.4342 3.56573L7.36561 7.63436C6.93724 8.06273 6.72305 8.27693 6.70858 8.46082C6.69602 8.62038 6.76061 8.7763 6.88231 8.88025C7.02257 9.00005 7.32548 9.00005 7.9313 9.00005Z"
+                         stroke="${$isDarkMode ? "#ffffff" : "#000000"}"
+                        fill="${
+                          sortType === "default" || sortType === "asc"
+                            ? $isDarkMode
+                              ? "#ffffff"
+                              : "#000000"
+                            : ""
+                        }"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </g>
+                  </svg>`;
+  };
 </script>
 
 <div
@@ -31,15 +155,12 @@
   </div>
 
   <div
-    class={`rounded-[10px] xl:overflow-visible overflow-x-auto h-full ${
+    class={`rounded-[10px] xl:overflow-y-auto overflow-auto max-h-[350px] ${
       $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
     }`}
   >
     <table class="table-auto xl:w-full w-[2000px] h-full">
-      <thead
-        class={isStickyTableToken ? "sticky top-0 z-10" : ""}
-        bind:this={tableTokenHeader}
-      >
+      <thead class="sticky top-0 z-10">
         <tr class="bg_f4f5f8">
           <th
             class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8 w-[250px]"
@@ -64,13 +185,23 @@
             </div>
           </th>
           <th class="py-3">
-            <div class="text-right xl:text-xs text-xl uppercase font-medium">
-              PnL
+            <div class="flex items-center justify-end gap-2">
+              <div class="text-right xl:text-xs text-xl uppercase font-medium">
+                Pnl
+              </div>
+              <div on:click={toggleSortPnl} class="cursor-pointer">
+                {@html sortIcon(sortTypePnl)}
+              </div>
             </div>
           </th>
           <th class="py-3 pr-3 rounded-tr-[10px]">
-            <div class="text-right xl:text-xs text-xl uppercase font-medium">
-              Last activity
+            <div class="flex items-center justify-end gap-2">
+              <div class="text-right xl:text-xs text-xl uppercase font-medium">
+                Last activity
+              </div>
+              <div on:click={toggleSortLastActivity} class="cursor-pointer">
+                {@html sortIcon(sortTypeLastActivity)}
+              </div>
             </div>
           </th>
         </tr>
@@ -88,7 +219,7 @@
         </tbody>
       {:else}
         <tbody>
-          {#if holdingTokenData && holdingTokenData.length === 0}
+          {#if defaultDataClosedHoldingTrades && defaultDataClosedHoldingTrades.length === 0}
             <tr>
               <td colspan={6}>
                 <div
@@ -99,10 +230,10 @@
               </td>
             </tr>
           {:else}
-            {#each holdingTokenData.filter((item) => Number(item?.amount) * Number(item?.price?.price) > 0) as data, index}
+            {#each defaultDataClosedHoldingTrades.filter((item) => Number(item?.amount) * Number(item?.price?.price) > 0) as data, index}
               <TokenHoldingTradeItem
                 {data}
-                lastIndex={holdingTokenData.length - 1 === index}
+                lastIndex={defaultDataClosedHoldingTrades.length - 1 === index}
               />
             {/each}
           {/if}

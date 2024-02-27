@@ -811,8 +811,9 @@
                   >
                     <th
                       class="py-2 pl-3 text-left font-medium uppercase xl:text-xs text-xl"
-                      >Date</th
                     >
+                      Date
+                    </th>
                     <th class="py-2">
                       <div class="flex items-center justify-start gap-2">
                         <div class="font-medium uppercase xl:text-xs text-xl">
