@@ -160,7 +160,7 @@
     }`}
   >
     <table class="table-auto xl:w-full w-[2000px] h-full">
-      <thead class="sticky top-0 z-10">
+      <thead class="sticky top-0 z-9">
         <tr class="bg_f4f5f8">
           <th
             class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8 w-[250px]"
