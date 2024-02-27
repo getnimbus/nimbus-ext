@@ -158,7 +158,7 @@
   </div>
 
   <div
-    class={`rounded-[10px] xl:overflow-y-auto overflow-auto max-h-[350px] ${
+    class={`rounded-[10px] xl:overflow-y-auto overflow-auto max-h-[280px] ${
       $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
     }`}
   >
