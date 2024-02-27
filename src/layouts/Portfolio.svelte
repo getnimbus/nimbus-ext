@@ -582,13 +582,15 @@
       isEmptyDataPieNfts = false;
     }
 
-    const formatData = data.map((item) => {
-      return {
-        ...item,
-        current_value:
-          item?.floorPrice * item?.marketPrice * item?.tokens?.length,
-      };
-    });
+    const formatData = data
+      .map((item) => {
+        return {
+          ...item,
+          current_value:
+            item?.floorPrice * item?.marketPrice * item?.tokens?.length,
+        };
+      })
+      .filter((item) => Number(item.current_value) > 0);
 
     const sumNft = (formatData || []).reduce(
       (prev, item) => prev + Number(item?.current_value),

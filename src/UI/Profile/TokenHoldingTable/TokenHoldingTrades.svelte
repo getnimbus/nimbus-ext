@@ -10,17 +10,23 @@
   export let isLoading;
 
   let sortTypePnl = "default";
-  let sortTypeLastActivity = "default";
+  let sortTypeLastActivity = "asc";
 
-  $: defaultDataClosedHoldingTrades = holdingTokenData.map((item) => {
-    return {
-      ...item,
-      pnl:
-        Number(item?.balance || 0) * Number(item?.price?.price || 0) +
-        Number(item?.profit?.totalGain || 0) -
-        Number(item?.profit?.cost || 0),
-    };
-  });
+  $: defaultDataClosedHoldingTrades = holdingTokenData
+    .map((item) => {
+      return {
+        ...item,
+        pnl:
+          Number(item?.balance || 0) * Number(item?.price?.price || 0) +
+          Number(item?.profit?.totalGain || 0) -
+          Number(item?.profit?.cost || 0),
+      };
+    })
+    .sort(
+      (a, b) =>
+        dayjs(b?.profit?.latestTrade).valueOf() -
+        dayjs(a?.profit?.latestTrade).valueOf()
+    );
 
   const toggleSortPnl = () => {
     sortTypeLastActivity = "default";
@@ -52,10 +58,9 @@
       defaultDataClosedHoldingTrades = holdingTokenData.map((item) => {
         return {
           ...item,
-          pnl:
-            Number(item?.balance || 0) * Number(item?.price?.price || 0) +
-            Number(item?.profit?.totalGain || 0) -
-            Number(item?.profit?.cost || 0),
+          realizedProfit: item?.profit?.realizedProfit
+            ? Number(item?.profit?.realizedProfit)
+            : 0,
         };
       });
     }
@@ -95,10 +100,9 @@
       defaultDataClosedHoldingTrades = holdingTokenData.map((item) => {
         return {
           ...item,
-          pnl:
-            Number(item?.balance || 0) * Number(item?.price?.price || 0) +
-            Number(item?.profit?.totalGain || 0) -
-            Number(item?.profit?.cost || 0),
+          realizedProfit: item?.profit?.realizedProfit
+            ? Number(item?.profit?.realizedProfit)
+            : 0,
         };
       });
     }

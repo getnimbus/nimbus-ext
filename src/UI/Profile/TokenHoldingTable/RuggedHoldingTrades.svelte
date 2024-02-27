@@ -10,16 +10,22 @@
   export let isLoading;
 
   let sortTypeROI = "default";
-  let sortTypeLastActivity = "default";
+  let sortTypeLastActivity = "asc";
 
-  $: defaultDataClosedHoldingTrades = holdingTokenData.map((item) => {
-    return {
-      ...item,
-      realizedProfit: item?.profit?.realizedProfit
-        ? Number(item?.profit?.realizedProfit)
-        : 0,
-    };
-  });
+  $: defaultDataClosedHoldingTrades = holdingTokenData
+    .map((item) => {
+      return {
+        ...item,
+        realizedProfit: item?.profit?.realizedProfit
+          ? Number(item?.profit?.realizedProfit)
+          : 0,
+      };
+    })
+    .sort(
+      (a, b) =>
+        dayjs(b?.profit?.latestTrade).valueOf() -
+        dayjs(a?.profit?.latestTrade).valueOf()
+    );
 
   const toggleSortROI = () => {
     sortTypeLastActivity = "default";
@@ -160,7 +166,7 @@
     }`}
   >
     <table class="table-auto xl:w-full w-[2000px] h-full">
-      <thead class="sticky top-0 z-9">
+      <thead class="sticky top-0 z-10">
         <tr class="bg_f4f5f8">
           <th
             class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8 w-[250px]"
