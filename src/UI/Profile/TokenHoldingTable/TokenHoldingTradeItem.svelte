@@ -35,13 +35,10 @@
 
   $: value = Number(data?.amount) * Number(data?.price?.price);
 
-  $: pnl =
-    Number(data?.balance || 0) * Number(data?.price?.price || 0) +
-    Number(data?.profit?.totalGain || 0) -
-    Number(data?.profit?.cost || 0);
-
   $: percentPnL =
-    Number(data?.avgCost) === 0 ? 0 : pnl / Math.abs(Number(data?.avgCost));
+    Number(data?.avgCost) === 0
+      ? 0
+      : data.pnl / Math.abs(Number(data?.avgCost));
 </script>
 
 <tr
@@ -215,20 +212,24 @@
         <div class="flex flex-col">
           <div
             class={`flex justify-end ${
-              pnl !== 0
-                ? pnl >= 0
+              data.pnl !== 0
+                ? data.pnl >= 0
                   ? "text-[#00A878]"
                   : "text-red-500"
                 : "text_00000099"
             }`}
           >
-            <TooltipNumber number={Math.abs(pnl)} type="value" personalValue />
+            <TooltipNumber
+              number={Math.abs(data.pnl)}
+              type="value"
+              personalValue
+            />
           </div>
           <div class="flex items-center justify-end gap-1">
             <div
               class={`flex items-center ${
-                pnl !== 0
-                  ? pnl >= 0
+                data.pnl !== 0
+                  ? data.pnl >= 0
                     ? "text-[#00A878]"
                     : "text-red-500"
                   : "text_00000099"
@@ -240,9 +241,9 @@
               />
               <span>%</span>
             </div>
-            {#if pnl !== 0}
+            {#if data.pnl !== 0}
               <img
-                src={pnl >= 0 ? TrendUp : TrendDown}
+                src={data.pnl >= 0 ? TrendUp : TrendDown}
                 alt="trend"
                 class="mb-1"
               />

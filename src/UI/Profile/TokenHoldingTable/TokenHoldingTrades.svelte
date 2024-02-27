@@ -15,9 +15,10 @@
   $: defaultDataClosedHoldingTrades = holdingTokenData.map((item) => {
     return {
       ...item,
-      realizedProfit: item?.profit?.realizedProfit
-        ? Number(item?.profit?.realizedProfit)
-        : 0,
+      pnl:
+        Number(item?.balance || 0) * Number(item?.price?.price || 0) +
+        Number(item?.profit?.totalGain || 0) -
+        Number(item?.profit?.cost || 0),
     };
   });
 
@@ -39,21 +40,22 @@
 
     if (sortTypePnl === "asc") {
       defaultDataClosedHoldingTrades = defaultDataClosedHoldingTrades.sort(
-        (a, b) => b.realizedProfit - a.realizedProfit
+        (a, b) => b.pnl - a.pnl
       );
     }
     if (sortTypePnl === "desc") {
       defaultDataClosedHoldingTrades = defaultDataClosedHoldingTrades.sort(
-        (a, b) => a.realizedProfit - b.realizedProfit
+        (a, b) => a.pnl - b.pnl
       );
     }
     if (sortTypePnl === "default") {
       defaultDataClosedHoldingTrades = holdingTokenData.map((item) => {
         return {
           ...item,
-          realizedProfit: item?.profit?.realizedProfit
-            ? Number(item?.profit?.realizedProfit)
-            : 0,
+          pnl:
+            Number(item?.balance || 0) * Number(item?.price?.price || 0) +
+            Number(item?.profit?.totalGain || 0) -
+            Number(item?.profit?.cost || 0),
         };
       });
     }
@@ -93,9 +95,10 @@
       defaultDataClosedHoldingTrades = holdingTokenData.map((item) => {
         return {
           ...item,
-          realizedProfit: item?.profit?.realizedProfit
-            ? Number(item?.profit?.realizedProfit)
-            : 0,
+          pnl:
+            Number(item?.balance || 0) * Number(item?.price?.price || 0) +
+            Number(item?.profit?.totalGain || 0) -
+            Number(item?.profit?.cost || 0),
         };
       });
     }
@@ -185,21 +188,27 @@
             </div>
           </th>
           <th class="py-3">
-            <div class="flex items-center justify-end gap-2">
+            <div
+              class="flex items-center justify-end gap-2"
+              on:click={toggleSortPnl}
+            >
               <div class="text-right xl:text-xs text-xl uppercase font-medium">
                 Pnl
               </div>
-              <div on:click={toggleSortPnl} class="cursor-pointer">
+              <div class="cursor-pointer">
                 {@html sortIcon(sortTypePnl)}
               </div>
             </div>
           </th>
           <th class="py-3 pr-3 rounded-tr-[10px]">
-            <div class="flex items-center justify-end gap-2">
+            <div
+              class="flex items-center justify-end gap-2"
+              on:click={toggleSortLastActivity}
+            >
               <div class="text-right xl:text-xs text-xl uppercase font-medium">
                 Last activity
               </div>
-              <div on:click={toggleSortLastActivity} class="cursor-pointer">
+              <div class="cursor-pointer">
                 {@html sortIcon(sortTypeLastActivity)}
               </div>
             </div>
