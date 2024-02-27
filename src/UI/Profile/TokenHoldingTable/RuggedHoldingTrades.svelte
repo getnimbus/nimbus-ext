@@ -12,14 +12,20 @@
   let sortTypeROI = "default";
   let sortTypeLastActivity = "default";
 
-  $: defaultDataClosedHoldingTrades = holdingTokenData.map((item) => {
-    return {
-      ...item,
-      realizedProfit: item?.profit?.realizedProfit
-        ? Number(item?.profit?.realizedProfit)
-        : 0,
-    };
-  });
+  $: defaultDataClosedHoldingTrades = holdingTokenData
+    .map((item) => {
+      return {
+        ...item,
+        realizedProfit: item?.profit?.realizedProfit
+          ? Number(item?.profit?.realizedProfit)
+          : 0,
+      };
+    })
+    .sort(
+      (a, b) =>
+        dayjs(b?.profit?.latestTrade).valueOf() -
+        dayjs(a?.profit?.latestTrade).valueOf()
+    );
 
   const toggleSortROI = () => {
     sortTypeLastActivity = "default";
@@ -48,14 +54,11 @@
       );
     }
     if (sortTypeROI === "default") {
-      defaultDataClosedHoldingTrades = holdingTokenData.map((item) => {
-        return {
-          ...item,
-          realizedProfit: item?.profit?.realizedProfit
-            ? Number(item?.profit?.realizedProfit)
-            : 0,
-        };
-      });
+      defaultDataClosedHoldingTrades = defaultDataClosedHoldingTrades.sort(
+        (a, b) =>
+          dayjs(b?.profit?.latestTrade).valueOf() -
+          dayjs(a?.profit?.latestTrade).valueOf()
+      );
     }
   };
 
@@ -90,14 +93,11 @@
       );
     }
     if (sortTypeLastActivity === "default") {
-      defaultDataClosedHoldingTrades = holdingTokenData.map((item) => {
-        return {
-          ...item,
-          realizedProfit: item?.profit?.realizedProfit
-            ? Number(item?.profit?.realizedProfit)
-            : 0,
-        };
-      });
+      defaultDataClosedHoldingTrades = defaultDataClosedHoldingTrades.sort(
+        (a, b) =>
+          dayjs(b?.profit?.latestTrade).valueOf() -
+          dayjs(a?.profit?.latestTrade).valueOf()
+      );
     }
   };
 

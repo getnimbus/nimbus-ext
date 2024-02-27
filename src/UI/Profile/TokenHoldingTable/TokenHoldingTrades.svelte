@@ -12,15 +12,21 @@
   let sortTypePnl = "default";
   let sortTypeLastActivity = "default";
 
-  $: defaultDataClosedHoldingTrades = holdingTokenData.map((item) => {
-    return {
-      ...item,
-      pnl:
-        Number(item?.balance || 0) * Number(item?.price?.price || 0) +
-        Number(item?.profit?.totalGain || 0) -
-        Number(item?.profit?.cost || 0),
-    };
-  });
+  $: defaultDataClosedHoldingTrades = holdingTokenData
+    .map((item) => {
+      return {
+        ...item,
+        pnl:
+          Number(item?.balance || 0) * Number(item?.price?.price || 0) +
+          Number(item?.profit?.totalGain || 0) -
+          Number(item?.profit?.cost || 0),
+      };
+    })
+    .sort(
+      (a, b) =>
+        dayjs(b?.profit?.latestTrade).valueOf() -
+        dayjs(a?.profit?.latestTrade).valueOf()
+    );
 
   const toggleSortPnl = () => {
     sortTypeLastActivity = "default";
@@ -49,15 +55,11 @@
       );
     }
     if (sortTypePnl === "default") {
-      defaultDataClosedHoldingTrades = holdingTokenData.map((item) => {
-        return {
-          ...item,
-          pnl:
-            Number(item?.balance || 0) * Number(item?.price?.price || 0) +
-            Number(item?.profit?.totalGain || 0) -
-            Number(item?.profit?.cost || 0),
-        };
-      });
+      defaultDataClosedHoldingTrades = defaultDataClosedHoldingTrades.sort(
+        (a, b) =>
+          dayjs(b?.profit?.latestTrade).valueOf() -
+          dayjs(a?.profit?.latestTrade).valueOf()
+      );
     }
   };
 
@@ -92,15 +94,11 @@
       );
     }
     if (sortTypeLastActivity === "default") {
-      defaultDataClosedHoldingTrades = holdingTokenData.map((item) => {
-        return {
-          ...item,
-          pnl:
-            Number(item?.balance || 0) * Number(item?.price?.price || 0) +
-            Number(item?.profit?.totalGain || 0) -
-            Number(item?.profit?.cost || 0),
-        };
-      });
+      defaultDataClosedHoldingTrades = defaultDataClosedHoldingTrades.sort(
+        (a, b) =>
+          dayjs(b?.profit?.latestTrade).valueOf() -
+          dayjs(a?.profit?.latestTrade).valueOf()
+      );
     }
   };
 
