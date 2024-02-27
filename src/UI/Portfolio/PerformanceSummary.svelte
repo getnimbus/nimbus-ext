@@ -10,7 +10,8 @@
   import ClosedPositionChart from "~/UI/Profile/ClosedPositionChart.svelte";
   import TopProfitAndLoss from "~/UI/Profile/TopProfitAndLoss.svelte";
   import ProfitData from "~/UI/Profile/ProfitData.svelte";
-  import TokenHoldingTable from "../Profile/TokenHoldingTable/TokenHoldingTable.svelte";
+  import TokenHoldingTable from "~/UI/Profile/TokenHoldingTable/TokenHoldingTable.svelte";
+  import RecentActivitiesTable from "~/UI/Profile/RecentActivitiesTable/RecentActivitiesTable.svelte";
   import SyncData from "~/components/SyncData.svelte";
 
   import User from "~/assets/user.png";
@@ -157,6 +158,12 @@
             />
 
             <TokenHoldingTable
+              selectedAddress={address}
+              isSync={true}
+              {enabledFetchAllData}
+            />
+
+            <RecentActivitiesTable
               selectedAddress={address}
               isSync={true}
               {enabledFetchAllData}
