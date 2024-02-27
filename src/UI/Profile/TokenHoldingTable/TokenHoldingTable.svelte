@@ -22,7 +22,7 @@
 
   const handleValidateAddress = async (address: string) => {
     try {
-      const response = await nimbus.get(`/v2/address/${address}/validate`);
+      const response: any = await nimbus.get(`/v2/address/${address}/validate`);
       return response?.data;
     } catch (e) {
       console.error(e);
@@ -47,7 +47,7 @@
           addressChain === "BUNDLE" ? "" : addressChain
         }`
       )
-      .then((response) => response?.data);
+      .then((response: any) => response?.data);
     return response;
   };
 
