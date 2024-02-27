@@ -10,7 +10,7 @@
   export let isLoading;
 
   let sortTypeROI = "default";
-  let sortTypeLastActivity = "default";
+  let sortTypeLastActivity = "asc";
 
   $: defaultDataClosedHoldingTrades = holdingTokenData
     .map((item) => {
@@ -54,11 +54,14 @@
       );
     }
     if (sortTypeROI === "default") {
-      defaultDataClosedHoldingTrades = defaultDataClosedHoldingTrades.sort(
-        (a, b) =>
-          dayjs(b?.profit?.latestTrade).valueOf() -
-          dayjs(a?.profit?.latestTrade).valueOf()
-      );
+      defaultDataClosedHoldingTrades = holdingTokenData.map((item) => {
+        return {
+          ...item,
+          realizedProfit: item?.profit?.realizedProfit
+            ? Number(item?.profit?.realizedProfit)
+            : 0,
+        };
+      });
     }
   };
 
@@ -93,11 +96,14 @@
       );
     }
     if (sortTypeLastActivity === "default") {
-      defaultDataClosedHoldingTrades = defaultDataClosedHoldingTrades.sort(
-        (a, b) =>
-          dayjs(b?.profit?.latestTrade).valueOf() -
-          dayjs(a?.profit?.latestTrade).valueOf()
-      );
+      defaultDataClosedHoldingTrades = holdingTokenData.map((item) => {
+        return {
+          ...item,
+          realizedProfit: item?.profit?.realizedProfit
+            ? Number(item?.profit?.realizedProfit)
+            : 0,
+        };
+      });
     }
   };
 
