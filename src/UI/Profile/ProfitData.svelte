@@ -17,6 +17,7 @@
 
   let balance = 0;
   let unRealizedProfit = 0;
+  let fee = 0;
   let set30DayPnl = 0;
   let winRate = 0;
   let totalCost = 0;
@@ -134,6 +135,8 @@
       (prev, item) => prev + Number(item.unrealizedProfit),
       0
     );
+
+    fee = data.latestStats.fee;
 
     realizedProfit = tradingStatsMeta.reduce(
       (prev, item) => prev + Number(item.realizedProfit),
@@ -328,7 +331,7 @@
             Total fee paid
           </div>
           <div class="xl:text-base text-lg">
-            <TooltipNumber number={winRate} type="percent" />%
+            <TooltipNumber number={fee} type="value" />
           </div>
         </div>
       </div>
