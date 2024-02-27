@@ -175,21 +175,27 @@
             </div>
           </th>
           <th class="py-3">
-            <div class="flex items-center justify-end gap-2">
+            <div
+              class="flex items-center justify-end gap-2"
+              on:click={toggleSortROI}
+            >
               <div class="text-right xl:text-xs text-xl uppercase font-medium">
                 ROI
               </div>
-              <div on:click={toggleSortROI} class="cursor-pointer">
+              <div class="cursor-pointer">
                 {@html sortIcon(sortTypeROI)}
               </div>
             </div>
           </th>
           <th class="py-3 pr-3 rounded-tr-[10px]">
-            <div class="flex items-center justify-end gap-2">
+            <div
+              class="flex items-center justify-end gap-2"
+              on:click={toggleSortLastActivity}
+            >
               <div class="text-right xl:text-xs text-xl uppercase font-medium">
                 Last activity
               </div>
-              <div on:click={toggleSortLastActivity} class="cursor-pointer">
+              <div class="cursor-pointer">
                 {@html sortIcon(sortTypeLastActivity)}
               </div>
             </div>
