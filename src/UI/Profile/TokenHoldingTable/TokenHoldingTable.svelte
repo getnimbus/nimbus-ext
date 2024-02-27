@@ -170,19 +170,17 @@
           .reduce((prev, item) => prev + Number(item.unrealized_profit), 0))
     );
 
-    pastProfit.update(
-      (n) =>
-        (n = (formatData || [])
-          .filter((item) => item?.profit?.realizedProfit !== undefined)
-          .reduce(
-            (prev, item) => prev + Number(item?.profit?.realizedProfit),
-            0
-          ))
-    );
-
     closedHoldingPosition = formatData?.filter(
       (item) =>
         item?.profit?.realizedProfit !== undefined && Number(item.amount) === 0
+    );
+
+    pastProfit.update(
+      (n) =>
+        (n = (closedHoldingPosition || []).reduce(
+          (prev, item) => prev + Number(item?.profit?.realizedProfit),
+          0
+        ))
     );
 
     ruggedHoldingPosition = formatData?.filter(
