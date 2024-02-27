@@ -1,5 +1,6 @@
 <script lang="ts">
   import { createQuery } from "@tanstack/svelte-query";
+  import tooltip from "~/entries/contentScript/views/tooltip";
   import dayjs from "dayjs";
   import { nimbus } from "~/lib/network";
   import { user } from "~/store";
@@ -16,6 +17,7 @@
 
   let balance = 0;
   let unRealizedProfit = 0;
+  let fee = 0;
   let set30DayPnl = 0;
   let winRate = 0;
   let totalCost = 0;
@@ -134,6 +136,8 @@
       0
     );
 
+    fee = data.latestStats.fee;
+
     realizedProfit = tradingStatsMeta.reduce(
       (prev, item) => prev + Number(item.realizedProfit),
       0
@@ -228,7 +232,7 @@
     </div>
   {:else}
     <div class="flex flex-col gap-4">
-      <div class="grid xl:grid-cols-5 grid-cols-3 gap-5">
+      <div class="grid xl:grid-cols-6 grid-cols-3 gap-5">
         <div class="flex flex-col gap-2 justify-between">
           <div class="text-xl xl:text-sm font-medium text_00000099">
             Portfolio Value
@@ -240,7 +244,16 @@
 
         <div class="flex flex-col gap-2 justify-between">
           <div class="text-xl xl:text-sm font-medium text_00000099">
-            30D Unrealized PnL
+            <span
+              use:tooltip={{
+                content: `<tooltip-detail text="30D Unrealized PnL" />`,
+                allowHTML: true,
+                placement: "top",
+                interactive: true,
+              }}
+            >
+              30D uPnL
+            </span>
           </div>
           <div
             class={`flex items-center xl:text-base text-lg ${
@@ -297,7 +310,7 @@
 
         <div class="flex flex-col gap-2 justify-between">
           <div class="text-xl xl:text-sm font-medium text_00000099">
-            Trade Tokens
+            30D Trade Tokens
           </div>
           <div class="xl:text-base text-lg">
             {totalToken}
@@ -310,6 +323,15 @@
           </div>
           <div class="xl:text-base text-lg">
             <TooltipNumber number={winRate} type="percent" />%
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-2 justify-between">
+          <div class="text-xl xl:text-sm font-medium text_00000099">
+            Total fee paid
+          </div>
+          <div class="xl:text-base text-lg">
+            <TooltipNumber number={fee} type="value" />
           </div>
         </div>
       </div>

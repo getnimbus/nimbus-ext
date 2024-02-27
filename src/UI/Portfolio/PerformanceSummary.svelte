@@ -88,8 +88,8 @@
           Share
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
+            width="16"
+            height="16"
             viewBox="0 0 16 16"
             class="m-auto"
           >
@@ -103,9 +103,9 @@
       </div>
 
       <div
-        class="w-full flex xl:flex-row flex-col rounded-xl py-10 md:px-10 px-4 gap-9 border-2 border_0000001a"
+        class="w-full xl:grid grid-cols-4 flex flex-col rounded-xl py-10 md:px-10 px-4 gap-9 border-2 border_0000001a"
       >
-        <div class="xl:w-[20%] w-full flex flex-col gap-5 justify-between">
+        <div class="w-full flex flex-col gap-5 justify-between col-span-1">
           <div>
             <div class="flex flex-col gap-3 items-center justify-start">
               <div class="xl:w-[80px] xl:h-[80px] w-32 h-32">
@@ -126,14 +126,16 @@
             {/if}
           </div>
           <a
-            class="hover:underline text-[#27326f] sm:text-left text-center"
+            class={`hover:underline text-center ${
+              $isDarkMode ? "text-white" : "text-[#27326f]"
+            }`}
             href="https://getnimbus.io/"
             target="_blank"
           >
             https://getnimbus.io/
           </a>
         </div>
-        <div class="flex-1 flex flex-col gap-4">
+        <div class="flex-1 flex flex-col gap-4 col-span-3">
           <div class="xl:text-3xl text-4xl font-medium">
             Performance Summary
           </div>
@@ -149,19 +151,19 @@
               isSync={true}
               {enabledFetchAllData}
             />
-
-            <ClosedPositionChart
-              selectedAddress={address}
-              isSync={true}
-              {enabledFetchAllData}
-            />
-
-            <TokenHoldingTable
-              selectedAddress={address}
-              isSync={true}
-              {enabledFetchAllData}
-            />
           </div>
+        </div>
+        <div class="col-span-4 flex flex-col gap-9">
+          <ClosedPositionChart
+            selectedAddress={address}
+            isSync={true}
+            {enabledFetchAllData}
+          />
+          <TokenHoldingTable
+            selectedAddress={address}
+            isSync={true}
+            {enabledFetchAllData}
+          />
         </div>
       </div>
     </div>
@@ -185,12 +187,13 @@
             fill="currentColor"
             viewBox="0 0 20 20"
             xmlns="http://www.w3.org/2000/svg"
-            ><path
+          >
+            <path
               fill-rule="evenodd"
               d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
               clip-rule="evenodd"
-            /></svg
-          >
+            />
+          </svg>
           <span class="sr-only">Check icon</span>
         {:else}
           <svg
