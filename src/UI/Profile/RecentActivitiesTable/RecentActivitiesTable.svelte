@@ -1,7 +1,6 @@
 <script lang="ts">
   import { chain, isDarkMode } from "~/store";
   import { nimbus } from "~/lib/network";
-  import { onMount } from "svelte";
 
   import Loading from "~/components/Loading.svelte";
   import Button from "~/components/Button.svelte";
@@ -58,20 +57,6 @@
       }
     }
   }
-
-  let tableTokenHeader;
-  let isStickyTableToken = false;
-
-  onMount(() => {
-    const handleScroll = () => {
-      const clientRectTokenHeader = tableTokenHeader?.getBoundingClientRect();
-      isStickyTableToken = clientRectTokenHeader?.top <= 0;
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  });
 </script>
 
 <div
@@ -82,15 +67,12 @@
   </div>
 
   <div
-    class={`rounded-[10px] xl:overflow-visible overflow-x-auto h-full ${
+    class={`rounded-[10px] xl:overflow-y-auto overflow-auto max-h-[280px] ${
       $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
     }`}
   >
     <table class="table-auto xl:w-full w-[2000px] h-full">
-      <thead
-        class={isStickyTableToken ? "sticky top-0 z-10" : ""}
-        bind:this={tableTokenHeader}
-      >
+      <thead class="sticky top-0 z-9">
         <tr class="bg_f4f5f8">
           <th
             class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8 w-[200px]"
