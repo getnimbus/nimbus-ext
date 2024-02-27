@@ -46,39 +46,21 @@
         <Image logo={item.from_token_logo} defaultLogo={defaultToken} />
       </div>
       <div class="flex flex-col gap-1">
-        <div class="flex items-start gap-2">
-          <div
-            class="relative text-2xl font-medium xl:text-sm"
-            on:mouseover={() => {
-              isShowTooltipName = true;
-            }}
-            on:mouseleave={() => (isShowTooltipName = false)}
-          >
-            {#if item.from_token_name === undefined}
-              N/A
-            {:else}
-              <div class="flex">
-                {item.from_token_name?.length > 20
-                  ? shorterName(item.from_token_name, 20)
-                  : item.from_token_name}
-              </div>
-            {/if}
-            {#if isShowTooltipName && item.fron_token_name?.length > 20}
-              <div class="absolute left-0 -top-8" style="z-index: 2147483648;">
-                <Tooltip text={item.from_token_name} />
-              </div>
-            {/if}
-          </div>
-        </div>
         <div class="flex items-center gap-1">
           <TooltipNumber number={item?.quantity_in} type="amount" />
           <div class="relative font-medium text_00000080">
             {#if item?.from_token_symbol === undefined}
               N/A
             {:else}
-              {shorterName(item?.from_token_symbol, 20)}
+              {shorterName(item?.from_token_symbol, 20).toUpperCase()}
             {/if}
           </div>
+        </div>
+        <div class="flex items-center">
+          $<TooltipNumber
+            number={Number(item?.amount_usd) / Number(item?.quantity_in)}
+            type="balance"
+          />
         </div>
       </div>
     </div>
@@ -98,39 +80,21 @@
         <Image logo={item.to_token_logo} defaultLogo={defaultToken} />
       </div>
       <div class="flex flex-col gap-1">
-        <div class="flex items-start gap-2">
-          <div
-            class="relative text-2xl font-medium xl:text-sm"
-            on:mouseover={() => {
-              isShowTooltipName = true;
-            }}
-            on:mouseleave={() => (isShowTooltipName = false)}
-          >
-            {#if item.to_token_name === undefined}
-              N/A
-            {:else}
-              <div class="flex">
-                {item.to_token_name?.length > 20
-                  ? shorterName(item.to_token_name, 20)
-                  : item.to_token_name}
-              </div>
-            {/if}
-            {#if isShowTooltipName && item.to_token_name?.length > 20}
-              <div class="absolute left-0 -top-8" style="z-index: 2147483648;">
-                <Tooltip text={item.to_token_name} />
-              </div>
-            {/if}
-          </div>
-        </div>
         <div class="flex items-center gap-1">
           <TooltipNumber number={item?.quantity_out} type="amount" />
           <div class="relative font-medium text_00000080">
             {#if item?.to_token_symbol === undefined}
               N/A
             {:else}
-              {shorterName(item?.to_token_symbol, 20)}
+              {shorterName(item?.to_token_symbol, 20).toUpperCase()}
             {/if}
           </div>
+        </div>
+        <div class="flex items-center">
+          $<TooltipNumber
+            number={Number(item?.amount_usd) / Number(item?.quantity_out)}
+            type="balance"
+          />
         </div>
       </div>
     </div>
