@@ -1,5 +1,6 @@
 <script lang="ts">
   import { createQuery } from "@tanstack/svelte-query";
+  import tooltip from "~/entries/contentScript/views/tooltip";
   import dayjs from "dayjs";
   import { nimbus } from "~/lib/network";
   import { user } from "~/store";
@@ -239,8 +240,16 @@
         </div>
 
         <div class="flex flex-col gap-2 justify-between">
-          <div class="text-xl xl:text-sm font-medium text_00000099">
-            30D Unrealized PnL
+          <div
+            class="text-xl xl:text-sm font-medium text_00000099"
+            use:tooltip={{
+              content: `<tooltip-detail text="30D Unrealized PnL" />`,
+              allowHTML: true,
+              placement: "top",
+              interactive: true,
+            }}
+          >
+            30D UPnL
           </div>
           <div
             class={`flex items-center xl:text-base text-lg ${
