@@ -15,6 +15,7 @@
     AnalyticHistoricalRes,
     AnalyticHistoricalFormat,
   } from "~/types/AnalyticHistoricalData";
+  import { otherGeneration } from "~/lib/chains";
 
   import HistoricalTransactions from "./HistoricalTransactions.svelte";
   import AddressManagement from "~/components/AddressManagement.svelte";
@@ -23,7 +24,6 @@
   import Select from "~/components/Select.svelte";
 
   import All from "~/assets/all.svg";
-  import { otherGeneration } from "~/lib/chains";
 
   const types = [
     {
