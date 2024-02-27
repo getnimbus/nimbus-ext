@@ -1,7 +1,7 @@
 <script lang="ts">
   import { typeWallet, isDarkMode } from "~/store";
   import { detectedChain } from "~/lib/chains";
-  import { shorterName } from "~/utils";
+  import { shorterAddress, shorterName } from "~/utils";
   import dayjs from "dayjs";
   import "dayjs/locale/en";
   import "dayjs/locale/vi";
@@ -32,14 +32,10 @@
   let isCopied = false;
   let isShowTooltipContractAddress = false;
 
-  $: realizedProfit = data?.profit?.realizedProfit
-    ? Number(data?.profit?.realizedProfit)
-    : 0;
-
   $: percentRealizedProfit =
     Number(data?.avgCost) === 0
       ? 0
-      : realizedProfit / Math.abs(Number(data?.avgCost));
+      : data.realizedProfit / Math.abs(Number(data?.avgCost));
 </script>
 
 <tr
@@ -163,15 +159,15 @@
         <div class="flex flex-col">
           <div
             class={`flex justify-end ${
-              realizedProfit !== 0
-                ? realizedProfit >= 0
+              data.realizedProfit !== 0
+                ? data.realizedProfit >= 0
                   ? "text-[#00A878]"
                   : "text-red-500"
                 : "text_00000099"
             }`}
           >
             <TooltipNumber
-              number={Math.abs(realizedProfit)}
+              number={Math.abs(data.realizedProfit)}
               type="value"
               personalValue
             />
@@ -179,8 +175,8 @@
           <div class="flex items-center justify-end gap-1">
             <div
               class={`flex items-center ${
-                realizedProfit !== 0
-                  ? realizedProfit >= 0
+                data.realizedProfit !== 0
+                  ? data.realizedProfit >= 0
                     ? "text-[#00A878]"
                     : "text-red-500"
                   : "text_00000099"
@@ -192,9 +188,9 @@
               />
               <span>%</span>
             </div>
-            {#if realizedProfit !== 0}
+            {#if data.realizedProfit !== 0}
               <img
-                src={realizedProfit >= 0 ? TrendUp : TrendDown}
+                src={data.realizedProfit >= 0 ? TrendUp : TrendDown}
                 alt="trend"
                 class="mb-1"
               />
@@ -257,19 +253,19 @@
                 }}
                 on:mouseleave={() => (isShowTooltipName = false)}
               >
-                {#if selectedTokenDetail.name === undefined}
+                {#if selectedTokenDetail?.name === undefined}
                   N/A
                 {:else}
                   {selectedTokenDetail?.name?.length > 20
-                    ? shorterName(selectedTokenDetail.name, 20)
-                    : selectedTokenDetail.name}
+                    ? shorterName(selectedTokenDetail?.name, 20)
+                    : selectedTokenDetail?.name}
                 {/if}
                 {#if isShowTooltipName && selectedTokenDetail?.name?.length > 20}
                   <div
                     class="absolute left-0 -top-8"
                     style="z-index: 2147483648;"
                   >
-                    <Tooltip text={selectedTokenDetail.name} />
+                    <Tooltip text={selectedTokenDetail?.name} />
                   </div>
                 {/if}
               </div>
@@ -283,17 +279,17 @@
                 }}
                 on:mouseleave={() => (isShowTooltipSymbol = false)}
               >
-                {#if selectedTokenDetail.symbol === undefined}
+                {#if selectedTokenDetail?.symbol === undefined}
                   N/A
                 {:else}
-                  {shorterName(selectedTokenDetail.symbol, 20)}
+                  {shorterName(selectedTokenDetail?.symbol, 20)}
                 {/if}
-                {#if isShowTooltipSymbol && selectedTokenDetail.symbol.length > 20}
+                {#if isShowTooltipSymbol && selectedTokenDetail?.symbol.length > 20}
                   <div
                     class="absolute left-0 -top-8"
                     style="z-index: 2147483648;"
                   >
-                    <Tooltip text={selectedTokenDetail.symbol} />
+                    <Tooltip text={selectedTokenDetail?.symbol} />
                   </div>
                 {/if}
               </div>
