@@ -124,7 +124,7 @@
 
     <div class="max-h-[280px]">
       {#if $queryTradingStats.isFetching}
-        <div class="h-full flex justify-center items-center">
+        <div class="h-full flex justify-center items-center py-4">
           <Loading />
         </div>
       {:else}
@@ -132,7 +132,7 @@
           <div class="h-full flex flex-col">
             {#if topProfitToken.length === 0}
               <div
-                class="h-full flex items-center justify-center text-center pt-4 pb-6 px-6"
+                class="h-full flex items-center justify-center text-center py-4 px-6"
               >
                 There are no closed holding position in the last 30 day
               </div>
@@ -187,7 +187,7 @@
 
     <div class="max-h-[280px]">
       {#if $queryTradingStats.isLoading}
-        <div class="h-full flex justify-center items-center">
+        <div class="h-full flex justify-center items-center py-4">
           <Loading />
         </div>
       {:else}
@@ -195,7 +195,7 @@
           <div class="h-full flex flex-col">
             {#if topLossToken.length === 0}
               <div
-                class="h-full flex items-center justify-center text-center pt-4 pb-6 px-6"
+                class="h-full flex items-center justify-center text-center py-4 px-6"
               >
                 There are no closed holding position in the last 30 day
               </div>

@@ -82,7 +82,7 @@
       <div class="flex items-center justify-end">
         <button
           id="btn-share-summary"
-          class="flex items-center justify-center gap-2 xl:text-sm text-2xl font-medium text-white bg-[#1e96fc] px-4 py-2 rounded-xl"
+          class="flex items-center justify-center gap-2 xl:text-sm text-2xl font-medium text-white bg-[#1e96fc] px-4 py-[7px] rounded-xl"
           on:click={downloadPage}
         >
           Share
@@ -126,7 +126,9 @@
             {/if}
           </div>
           <a
-            class="hover:underline text-[#27326f] text-center"
+            class={`hover:underline text-center ${
+              $isDarkMode ? "text-white" : "text-[#27326f]"
+            }`}
             href="https://getnimbus.io/"
             target="_blank"
           >
