@@ -101,6 +101,8 @@
       formatDataTradingStats($queryTradingStats.data);
     }
   }
+
+  $: console.log({ topLossToken });
 </script>
 
 <div class="col-span-4 grid xl:grid-cols-2 grid-cols-1 gap-5">

@@ -42,6 +42,8 @@
 
   $: percentPnL =
     Number(data?.avgCost) === 0 ? 0 : pnl / Math.abs(Number(data?.avgCost));
+
+  $: console.log({ selectedTokenDetail, data });
 </script>
 
 <tr
