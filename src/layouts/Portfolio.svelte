@@ -17,7 +17,6 @@
     typeWallet,
     selectedBundle,
     triggerUpdateBundle,
-    pastProfit,
   } from "~/store";
   import mixpanel from "mixpanel-browser";
   import { nimbus } from "~/lib/network";
