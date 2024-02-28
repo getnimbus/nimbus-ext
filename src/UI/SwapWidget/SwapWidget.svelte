@@ -1,7 +1,7 @@
 <script lang="ts">
   import { LiFiWidget } from "nimbus-swap-widget";
   import ReactAdapter from "~/components/ReactAdapter.svelte";
-  import { userPublicAddress, isDarkMode } from "~/store";
+  import { wallet, userPublicAddress, isDarkMode } from "~/store";
   import { currentLang } from "~/lib/i18n";
   import { nimbus } from "~/lib/network";
   import mixpanel from "mixpanel-browser";
@@ -82,6 +82,13 @@
     },
   };
 
+  const getHoldingToken = async (address, chain) => {
+    const response: any = await nimbus
+      .get(`/v2/address/${address}/holding?chain=${chain}&force_refresh=true`)
+      .then((response) => response?.data);
+    return response;
+  };
+
   const handleSwapBonus = async (data) => {
     try {
       const response = await nimbus.post(`/swap/${data?.address}/bonus`, {
@@ -90,6 +97,7 @@
       });
       if (response && response?.data) {
         mixpanel.track("user_swap_completed");
+        getHoldingToken($wallet, chain);
         triggerFireworkBonus(response?.data?.point);
       }
     } catch (e) {
