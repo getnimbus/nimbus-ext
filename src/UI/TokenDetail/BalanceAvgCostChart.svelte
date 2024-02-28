@@ -1,13 +1,7 @@
 <script lang="ts">
   import { nimbus } from "~/lib/network";
   import { createQuery } from "@tanstack/svelte-query";
-  import {
-    wallet,
-    user,
-    isDarkMode,
-    typeWallet,
-    selectedPackage,
-  } from "~/store";
+  import { wallet, isDarkMode, typeWallet, selectedPackage } from "~/store";
   import { autoFontSize } from "~/utils";
   import numeral from "numeral";
 
@@ -33,7 +27,7 @@
               <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
                 $isDarkMode ? "white" : "black"
               }">
-                $${formatPrice(params[0].axisValue)}
+                $${formatPrice(params[0]?.axisValue)}
               </div>
               <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
                 <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
@@ -53,7 +47,7 @@
               </div>
               
               ${
-                avgCost
+                avgCost !== 0
                   ? `
                   <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
                     <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
@@ -158,8 +152,8 @@
   });
 
   const formatPrice = (value: number) => {
-    if (value.toString().includes("e-")) {
-      const numStr = value.toString();
+    if (value && value?.toString()?.includes("e-")) {
+      const numStr = value?.toString();
       const eIndex = numStr.indexOf("e");
       if (eIndex !== -1) {
         const significand = parseFloat(
@@ -190,11 +184,11 @@
       $queryHistoryTokenDetailAnalysis.data !== undefined &&
       $queryHistoryTokenDetailAnalysis.data.length !== 0
     ) {
-      const dataChart = $queryHistoryTokenDetailAnalysis.data.map((item) => {
+      const dataChart = $queryHistoryTokenDetailAnalysis?.data?.map((item) => {
         return [item?.price, item?.totalToken];
       });
 
-      if (avgCost) {
+      if (avgCost !== 0) {
         optionBar = {
           ...optionBar,
           series: [
@@ -262,7 +256,7 @@
                   {
                     name: "Current Price",
                     label: "Current Price",
-                    xAxis: data?.market_price,
+                    xAxis: data?.market_price || 0,
                     lineStyle: {
                       color: "#1e96fc",
                       type: "solid",
@@ -279,19 +273,19 @@
         };
       }
 
-      sumCount = $queryHistoryTokenDetailAnalysis.data.reduce(
+      sumCount = $queryHistoryTokenDetailAnalysis?.data.reduce(
         (prev, item) => prev + Number(item.count),
         0
       );
 
-      sumTotalToken = $queryHistoryTokenDetailAnalysis.data.reduce(
+      sumTotalToken = $queryHistoryTokenDetailAnalysis?.data.reduce(
         (prev, item) => prev + Number(item.totalToken),
         0
       );
 
       // logic win
       const winHistoryTokenDetail =
-        $queryHistoryTokenDetailAnalysis.data.filter(
+        $queryHistoryTokenDetailAnalysis?.data.filter(
           (item) => Number(item.price) <= Number(data?.market_price)
         );
 
