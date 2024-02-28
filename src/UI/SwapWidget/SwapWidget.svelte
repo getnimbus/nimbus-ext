@@ -48,6 +48,8 @@
         return 1151111081099710;
       case "METIS":
         return 1088;
+      default:
+        return -1;
     }
 
     return "";
