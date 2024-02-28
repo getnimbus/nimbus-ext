@@ -78,7 +78,7 @@
   class="col-span-4 border border_0000001a rounded-xl flex flex-col gap-3 p-6"
 >
   <div class="flex justify-start text-3xl font-medium xl:text-xl">
-    Recent Activities
+    Recent Trades
   </div>
 
   <div
