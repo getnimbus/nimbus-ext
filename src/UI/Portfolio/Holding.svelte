@@ -449,6 +449,7 @@
       totalAssets.update((n) => (n = 0));
       unrealizedProfit.update((n) => (n = 0));
       realizedProfit.update((n) => (n = 0));
+      pastProfit.update((n) => (n = 0));
     } else {
       sumTokens = (formatData || []).reduce(
         (prev, item) => prev + item?.amount * item.market_price,
@@ -519,6 +520,8 @@
       if ($wallet?.length !== 0 && $chain?.length !== 0) {
         sumTokens = 0;
         sumNFT = 0;
+        sumClosedTokenHolding = 0;
+        closedHoldingPosition = [];
         formatData = [];
         formatDataNFT = [];
         filteredHoldingDataToken = [];
