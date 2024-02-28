@@ -104,9 +104,9 @@ export const handleFormatBlockChainId = (chain: string) => {
       return "TON";
     case "NEAR":
       return "NEAR";
+    default:
+      return "";
   }
-
-  return "";
 };
 
 export const priceMobulaSubscribe = (

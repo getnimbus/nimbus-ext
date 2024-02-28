@@ -51,8 +51,6 @@
       default:
         return -1;
     }
-
-    return "";
   };
 
   $: widgetConfig = {
@@ -65,6 +63,9 @@
     fromChain: handleFormatBlockChainId(chain),
     toChain: handleFormatBlockChainId(chain),
     toToken: "0x0000000000000000000000000000000000000000",
+    chains: {
+      deny: [1151111081099710],
+    },
     appearance: $isDarkMode ? "dark" : "light",
     theme: {
       palette: {
