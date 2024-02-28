@@ -134,53 +134,9 @@
 
     holdingTokenData = formatData?.filter((item) => Number(item.amount) > 0);
 
-    realizedProfit.update(
-      (n) =>
-        (n = (formatData || [])
-          ?.filter((item) => item?.profit?.realizedProfit !== undefined)
-          ?.map((item) => {
-            return {
-              realized_profit: item?.profit?.realizedProfit || 0,
-            };
-          })
-          .reduce((prev, item) => prev + Number(item.realized_profit), 0))
-    );
-
-    unrealizedProfit.update(
-      (n) =>
-        (n = (formatData || [])
-          ?.filter(
-            (item) => Number(item?.amount) > 0 && Number(item?.avgCost) !== 0
-          )
-          ?.map((item) => {
-            const price = Number(item?.market_price || item?.price?.price || 0);
-            const pnl =
-              Number(item?.balance || 0) * price +
-              Number(item?.profit?.totalGain || 0) -
-              Number(item?.profit?.cost || 0);
-            const realizedProfit = item?.profit?.realizedProfit
-              ? Number(item?.profit?.realizedProfit)
-              : 0;
-
-            return {
-              unrealized_profit:
-                Number(item?.avgCost) === 0 ? 0 : Number(pnl) - realizedProfit,
-            };
-          })
-          .reduce((prev, item) => prev + Number(item.unrealized_profit), 0))
-    );
-
     closedHoldingPosition = formatData?.filter(
       (item) =>
         item?.profit?.realizedProfit !== undefined && Number(item.amount) === 0
-    );
-
-    pastProfit.update(
-      (n) =>
-        (n = (closedHoldingPosition || []).reduce(
-          (prev, item) => prev + Number(item?.profit?.realizedProfit),
-          0
-        ))
     );
 
     ruggedHoldingPosition = formatData?.filter(
@@ -190,6 +146,67 @@
         Number(item.amount) === 0
     );
   };
+
+  $: {
+    if (holdingTokenData?.length === 0) {
+      realizedProfit.update((n) => (n = 0));
+      unrealizedProfit.update((n) => (n = 0));
+    } else {
+      realizedProfit.update(
+        (n) =>
+          (n = (holdingTokenData || [])
+            ?.filter((item) => item?.profit?.realizedProfit !== undefined)
+            ?.map((item) => {
+              return {
+                realized_profit: item?.profit?.realizedProfit || 0,
+              };
+            })
+            .reduce((prev, item) => prev + Number(item.realized_profit), 0))
+      );
+
+      unrealizedProfit.update(
+        (n) =>
+          (n = (holdingTokenData || [])
+            ?.filter(
+              (item) => Number(item?.amount) > 0 && Number(item?.avgCost) !== 0
+            )
+            ?.map((item) => {
+              const price = Number(
+                item?.market_price || item?.price?.price || 0
+              );
+              const pnl =
+                Number(item?.balance || 0) * price +
+                Number(item?.profit?.totalGain || 0) -
+                Number(item?.profit?.cost || 0);
+              const realizedProfit = item?.profit?.realizedProfit
+                ? Number(item?.profit?.realizedProfit)
+                : 0;
+
+              return {
+                unrealized_profit:
+                  Number(item?.avgCost) === 0
+                    ? 0
+                    : Number(pnl) - realizedProfit,
+              };
+            })
+            .reduce((prev, item) => prev + Number(item.unrealized_profit), 0))
+      );
+    }
+  }
+
+  $: {
+    if (closedHoldingPosition?.length === 0) {
+      pastProfit.update((n) => (n = 0));
+    } else {
+      pastProfit.update(
+        (n) =>
+          (n = closedHoldingPosition.reduce(
+            (prev, item) => prev + Number(item?.profit.realizedProfit),
+            0
+          ))
+      );
+    }
+  }
 
   $: {
     if ($typeWallet?.length !== 0 && $typeWallet === "EVM") {
