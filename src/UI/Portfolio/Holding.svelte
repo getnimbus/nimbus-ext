@@ -48,8 +48,8 @@
   let filteredHoldingDataNFT = [];
   let formatData = [];
   let formatDataNFT = [];
-  let closedHoldingPosition = [];
-  let sumClosedTokenHolding = 0;
+  // let closedHoldingPosition = [];
+  // let sumClosedTokenHolding = 0;
   let sumTokens = 0;
   let sumNFT = 0;
   let tableTokenHeader;
@@ -103,33 +103,33 @@
     };
   });
 
-  $: {
-    if (formatHoldingTokenData) {
-      closedHoldingPosition = formatHoldingTokenData
-        ?.filter(
-          (item) =>
-            item?.profit?.realizedProfit !== undefined &&
-            Number(item.amount) === 0
-        )
-        .sort(
-          (a, b) =>
-            Number(b?.profit.realizedProfit) - Number(a?.profit.realizedProfit)
-        );
+  // $: {
+  //   if (formatHoldingTokenData) {
+  //     closedHoldingPosition = formatHoldingTokenData
+  //       ?.filter(
+  //         (item) =>
+  //           item?.profit?.realizedProfit !== undefined &&
+  //           Number(item.amount) === 0
+  //       )
+  //       .sort(
+  //         (a, b) =>
+  //           Number(b?.profit.realizedProfit) - Number(a?.profit.realizedProfit)
+  //       );
 
-      sumClosedTokenHolding = closedHoldingPosition.reduce(
-        (prev, item) => prev + Number(item?.profit.realizedProfit),
-        0
-      );
+  //     sumClosedTokenHolding = closedHoldingPosition.reduce(
+  //       (prev, item) => prev + Number(item?.profit.realizedProfit),
+  //       0
+  //     );
 
-      pastProfit.update(
-        (n) =>
-          (n = closedHoldingPosition.reduce(
-            (prev, item) => prev + Number(item?.profit.realizedProfit),
-            0
-          ))
-      );
-    }
-  }
+  //     pastProfit.update(
+  //       (n) =>
+  //         (n = closedHoldingPosition.reduce(
+  //           (prev, item) => prev + Number(item?.profit.realizedProfit),
+  //           0
+  //         ))
+  //     );
+  //   }
+  // }
 
   // format initial data
   $: {
@@ -521,8 +521,8 @@
       if ($wallet?.length !== 0 && $chain?.length !== 0) {
         sumTokens = 0;
         sumNFT = 0;
-        sumClosedTokenHolding = 0;
-        closedHoldingPosition = [];
+        // sumClosedTokenHolding = 0;
+        // closedHoldingPosition = [];
         formatData = [];
         formatDataNFT = [];
         filteredHoldingDataToken = [];
@@ -994,13 +994,13 @@
   </ErrorBoundary>
 </div>
 
-{#if $typeWallet !== "BTC"}
+<!-- {#if $typeWallet !== "BTC"}
   <ClosedTokenPosition
     {isLoadingToken}
     holdingTokenData={closedHoldingPosition}
     {sumClosedTokenHolding}
   />
-{/if}
+{/if} -->
 
 {#if openScreenBonusScore}
   <div
