@@ -10,6 +10,7 @@
     totalAssets,
     unrealizedProfit,
     realizedProfit,
+    pastProfit,
   } from "~/store";
   import { filterTokenValueType, chunkArray, triggerFirework } from "~/utils";
   import { listSupported } from "~/lib/chains";
@@ -28,7 +29,9 @@
   export let selectedTokenHolding;
   export let selectedDataPieChart;
   export let selectedType;
+  export let formatHoldingTokenData;
 
+  import ClosedTokenPosition from "~/UI/Portfolio/ClosedTokenPosition.svelte";
   import HoldingToken from "~/UI/Portfolio/HoldingToken.svelte";
   import HoldingNFT from "~/UI/Portfolio/HoldingNFT.svelte";
   import Select from "~/components/Select.svelte";
@@ -44,6 +47,8 @@
   let filteredHoldingDataNFT = [];
   let formatData = [];
   let formatDataNFT = [];
+  let closedHoldingPosition = [];
+  let sumClosedTokenHolding = 0;
   let sumTokens = 0;
   let sumNFT = 0;
   let tableTokenHeader;
@@ -96,6 +101,34 @@
       window.removeEventListener("scroll", handleScroll);
     };
   });
+
+  $: {
+    if (formatHoldingTokenData) {
+      closedHoldingPosition = formatHoldingTokenData
+        ?.filter(
+          (item) =>
+            item?.profit?.realizedProfit !== undefined &&
+            Number(item.amount) === 0
+        )
+        .sort(
+          (a, b) =>
+            Number(b?.profit.realizedProfit) - Number(a?.profit.realizedProfit)
+        );
+
+      sumClosedTokenHolding = closedHoldingPosition.reduce(
+        (prev, item) => prev + Number(item?.profit.realizedProfit),
+        0
+      );
+
+      pastProfit.update(
+        (n) =>
+          (n = closedHoldingPosition.reduce(
+            (prev, item) => prev + Number(item?.profit.realizedProfit),
+            0
+          ))
+      );
+    }
+  }
 
   // format initial data
   $: {
@@ -956,6 +989,14 @@
     </div>
   </ErrorBoundary>
 </div>
+
+{#if $typeWallet !== "BTC"}
+  <ClosedTokenPosition
+    {isLoadingToken}
+    holdingTokenData={closedHoldingPosition}
+    {sumClosedTokenHolding}
+  />
+{/if}
 
 {#if openScreenBonusScore}
   <div

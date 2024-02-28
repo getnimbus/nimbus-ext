@@ -7,6 +7,7 @@
 
   export let isLoadingToken;
   export let holdingTokenData;
+  export let sumClosedTokenHolding;
 
   import ClosedHoldingTokenPosition from "~/UI/Portfolio/ClosedHoldingTokenPosition.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
@@ -16,8 +17,6 @@
   import Select from "~/components/Select.svelte";
 
   let filteredHoldingDataToken = [];
-
-  let sumAllTokens = 0;
 
   let tableClosedTokenHeader;
   let isStickyTableClosedToken = false;
@@ -73,32 +72,11 @@
     }
   }
 
-  $: {
-    if (holdingTokenData?.length === 0) {
-      sumAllTokens = 0;
-      pastProfit.update((n) => (n = 0));
-    } else {
-      sumAllTokens = holdingTokenData.reduce(
-        (prev, item) => prev + Number(item?.profit.realizedProfit),
-        0
-      );
-      pastProfit.update(
-        (n) =>
-          (n = holdingTokenData.reduce(
-            (prev, item) => prev + Number(item?.profit.realizedProfit),
-            0
-          ))
-      );
-    }
-  }
-
   $: colspan = listSupported.includes($typeWallet) ? 5 : 4;
 
   $: {
     if ($wallet || $chain) {
       if ($wallet?.length !== 0 && $chain?.length !== 0) {
-        sumAllTokens = 0;
-        pastProfit.update((n) => (n = 0));
         filteredHoldingDataToken = [];
       }
     }
@@ -132,8 +110,8 @@
       <div class="flex flex-col gap-2">
         <div
           class={`xl:text-3xl text-4xl font-medium text-right ${
-            sumAllTokens !== 0
-              ? sumAllTokens >= 0
+            sumClosedTokenHolding !== 0
+              ? sumClosedTokenHolding >= 0
                 ? "text-[#00A878]"
                 : "text-red-500"
               : $isDarkMode
@@ -142,7 +120,7 @@
           }`}
         >
           <TooltipNumber
-            number={Math.abs(sumAllTokens)}
+            number={Math.abs(sumClosedTokenHolding)}
             type="value"
             personalValue
           />
