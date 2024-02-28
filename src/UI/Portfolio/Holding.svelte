@@ -11,6 +11,7 @@
     unrealizedProfit,
     realizedProfit,
     pastProfit,
+    user,
   } from "~/store";
   import { filterTokenValueType, chunkArray, triggerFirework } from "~/utils";
   import { listSupported } from "~/lib/chains";

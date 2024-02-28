@@ -1019,7 +1019,7 @@
         </div>
       {/if}
 
-      {#if $typeWallet === "SOL" || $typeWallet === "EVM" || ($typeWallet === "BUNDLE" && data?.chain !== "CEX")}
+      {#if $user && Object.keys($user).length !== 0 && ($typeWallet === "SOL" || $typeWallet === "EVM" || ($typeWallet === "BUNDLE" && data?.chain !== "CEX"))}
         <div
           class="flex justify-center view-icon-detail"
           use:tooltip={{
@@ -1872,7 +1872,7 @@
       address={data?.contractAddress}
       {showSideTokenSwap}
       owner={$typeWallet === "BUNDLE"
-        ? data?.breakdown.map((item) => item.owner)
+        ? data?.breakdown?.map((item) => item.owner)
         : [data?.owner]}
       {triggerFireworkBonus}
     />

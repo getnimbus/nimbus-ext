@@ -11793,10 +11793,10 @@ nimbus-sui-kit@^0.0.2:
     react-intersection-observer "^9.6.0"
     react-router-dom "^6.22.0"
 
-nimbus-swap-widget@^3.7.0:
-  version "3.7.0"
-  resolved "https://registry.yarnpkg.com/nimbus-swap-widget/-/nimbus-swap-widget-3.7.0.tgz#cc6ab0c1aaf558cc60ff43e1a0cbdcb47fca4d69"
-  integrity sha512-oB9GJkmz9QyqrZVy620AQt8JEh/gATS7+68xQp8045IbRNBZaH8M6JPT07Rv0QTtDDxp8V5g3UMGNytYAa18ow==
+nimbus-swap-widget@^3.8.0:
+  version "3.8.0"
+  resolved "https://registry.yarnpkg.com/nimbus-swap-widget/-/nimbus-swap-widget-3.8.0.tgz#c73761cf6f77cdefff885a3a478a6bc201097c03"
+  integrity sha512-JCyo4nW2M8XVotK4a++RNIvYVYf1IZ49NVsWwMFmLN4VxI0DKZFn1Qit161K6vxrAz5VzqKWcRvCuQq/My6rRA==
   dependencies:
     "@emotion/react" "^11.11.3"
     "@emotion/styled" "^11.11.0"
