@@ -17,6 +17,7 @@
     typeWallet,
     selectedBundle,
     triggerUpdateBundle,
+    userPublicAddress,
   } from "~/store";
   import mixpanel from "mixpanel-browser";
   import { nimbus } from "~/lib/network";

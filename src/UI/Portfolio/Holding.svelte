@@ -1004,7 +1004,8 @@
 
 {#if openScreenBonusScore}
   <div
-    class="fixed h-screen w-screen top-0 left-0 z-[29] flex items-center justify-center bg-[#000000cc]"
+    class="fixed h-screen w-screen top-0 left-0 flex items-center justify-center bg-[#000000cc]"
+    style="z-index: 2147483648;"
     on:click={() => {
       setTimeout(() => {
         openScreenBonusScore = false;

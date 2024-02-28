@@ -756,7 +756,7 @@ const fire = (particleRatio, opts) => {
   confetti({
     ...opts,
     origin: { y: 0.7 },
-    zIndex: 99999,
+    zIndex: 2147483649,
     particleCount: Math.floor(200 * particleRatio),
   });
 };
