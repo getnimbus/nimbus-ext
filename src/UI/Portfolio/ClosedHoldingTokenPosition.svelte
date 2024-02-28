@@ -30,8 +30,6 @@
   let isCopied = false;
   let isShowTooltipContractAddress = false;
 
-  $: value = Number(data?.amount) * Number(data?.market_price);
-
   $: realizedProfit = data?.profit?.realizedProfit
     ? Number(data?.profit?.realizedProfit)
     : 0;

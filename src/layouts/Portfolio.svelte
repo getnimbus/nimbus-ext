@@ -17,6 +17,7 @@
     typeWallet,
     selectedBundle,
     triggerUpdateBundle,
+    pastProfit,
   } from "~/store";
   import mixpanel from "mixpanel-browser";
   import { nimbus } from "~/lib/network";
@@ -38,7 +39,6 @@
   import Testimonial from "~/UI/Testimonial/Testimonial.svelte";
   import Charts from "~/UI/Portfolio/Charts.svelte";
   import Holding from "~/UI/Portfolio/Holding.svelte";
-  import ClosedTokenPosition from "~/UI/Portfolio/ClosedTokenPosition.svelte";
   import PerformanceSummary from "~/UI/Portfolio/PerformanceSummary.svelte";
   import RiskReturn from "~/UI/Portfolio/RiskReturn.svelte";
   import News from "~/UI/Portfolio/News.svelte";
@@ -99,9 +99,8 @@
 
   let newsData: any = [];
 
+  let formatHoldingTokenData: any = [];
   let holdingTokenData: any = [];
-  let closedHoldingPosition: any = [];
-  let ruggedHoldingPosition: any = [];
   let holdingNFTData: any = [];
 
   let positionsData: any = [];
@@ -541,7 +540,7 @@
   }
 
   const formatDataHoldingToken = (data) => {
-    const formatData = data
+    formatHoldingTokenData = data
       ?.map((item) => {
         return {
           ...item,
@@ -558,18 +557,8 @@
         return 0;
       });
 
-    holdingTokenData = formatData?.filter((item) => Number(item.amount) > 0);
-
-    closedHoldingPosition = formatData?.filter(
-      (item) =>
-        item?.profit?.realizedProfit !== undefined && Number(item.amount) === 0
-    );
-
-    ruggedHoldingPosition = formatData?.filter(
-      (item) =>
-        item?.profit?.realizedProfit !== undefined &&
-        Number(item?.price?.price || item?.rate) === 0 &&
-        Number(item.amount) === 0
+    holdingTokenData = formatHoldingTokenData?.filter(
+      (item) => Number(item.amount) > 0
     );
 
     formatTokenBreakdown(holdingTokenData);
@@ -1019,22 +1008,8 @@
                   {selectedTokenHolding}
                   {selectedDataPieChart}
                   selectedType={$tab}
+                  {formatHoldingTokenData}
                 />
-
-                {#if $typeWallet !== "BTC" && $tab === "token"}
-                  <ClosedTokenPosition
-                    isLoadingToken={$chain === "ALL"
-                      ? $queryAllTokenHolding.some(
-                          (item) => item.isFetching === true
-                        )
-                      : $queryTokenHolding.isFetching}
-                    holdingTokenData={closedHoldingPosition.sort(
-                      (a, b) =>
-                        Number(b?.profit.realizedProfit) -
-                        Number(a?.profit.realizedProfit)
-                    )}
-                  />
-                {/if}
               {/if}
 
               {#if $tab === "summary"}
