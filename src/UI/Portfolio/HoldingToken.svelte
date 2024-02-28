@@ -894,7 +894,7 @@
       class={`py-3 pr-3 w-full h-full flex items-center xl:gap-4 gap-7 ${
         $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
       } ${
-        ["BUNDLE", "SOL"].includes($typeWallet)
+        ["BUNDLE", "SOL", "EVM"].includes($typeWallet)
           ? "justify-start"
           : "justify-center"
       }`}
@@ -1019,7 +1019,7 @@
         </div>
       {/if}
 
-      {#if $typeWallet === "SOL" || ($typeWallet === "BUNDLE" && data?.chain === "SOL")}
+      {#if $user && Object.keys($user).length !== 0 && ($typeWallet === "SOL" || $typeWallet === "EVM" || ($typeWallet === "BUNDLE" && data?.chain !== "CEX"))}
         <div
           class="flex justify-center view-icon-detail"
           use:tooltip={{
@@ -1867,15 +1867,15 @@
       <div id={`swap-${index}`}></div>
     {/if}
   {:else}
-    <!-- <SwapWidget
+    <SwapWidget
       chain={data?.chain}
       address={data?.contractAddress}
       {showSideTokenSwap}
       owner={$typeWallet === "BUNDLE"
-        ? data?.breakdown.map((item) => item.owner)
+        ? data?.breakdown?.map((item) => item.owner)
         : [data?.owner]}
       {triggerFireworkBonus}
-    /> -->
+    />
   {/if}
 </OverlaySidebarSwap>
 

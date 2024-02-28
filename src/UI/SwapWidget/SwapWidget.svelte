@@ -1,7 +1,6 @@
 <script lang="ts">
   import { LiFiWidget } from "nimbus-swap-widget";
   import ReactAdapter from "~/components/ReactAdapter.svelte";
-  import { handleFormatBlockChainId } from "~/lib/price-mobulaWs";
   import { userPublicAddress, isDarkMode } from "~/store";
   import { currentLang } from "~/lib/i18n";
   import { nimbus } from "~/lib/network";
@@ -13,6 +12,47 @@
   export let owner;
   export let triggerFireworkBonus = (data) => {};
 
+  const handleFormatBlockChainId = (chain: string) => {
+    switch (chain) {
+      case "ETH":
+        return 1;
+      case "ARB":
+        return 42161;
+      case "OP":
+        return 10;
+      case "MATIC":
+        return 137;
+      case "BNB":
+        return 56;
+      case "ZKSYNC":
+        return 324;
+      case "BASE":
+        return 8453;
+      case "AVAX":
+        return 43114;
+      case "POLYGON_ZKEVM":
+        return 1101;
+      case "LINEA":
+        return 59144;
+      case "XDAI":
+        return 100;
+      case "FANTOM":
+        return 250;
+      case "MOVR":
+        return 1285;
+      case "GLMR":
+        return 1284;
+      case "AURORA":
+        return 1313161554;
+      case "SOL":
+        return 1151111081099710;
+      case "METIS":
+        return 1088;
+      default:
+        return -1;
+    }
+  };
+
   $: widgetConfig = {
     integrator: "Nimbus",
     variant: "default",
@@ -20,9 +60,12 @@
     userNimbusOwner: $userPublicAddress,
     referrerAddress: owner,
     fromToken: address,
-    fromChain: Number(handleFormatBlockChainId(chain)),
-    toChain: Number(handleFormatBlockChainId(chain)),
+    fromChain: handleFormatBlockChainId(chain),
+    toChain: handleFormatBlockChainId(chain),
     toToken: "0x0000000000000000000000000000000000000000",
+    chains: {
+      deny: [1151111081099710],
+    },
     appearance: $isDarkMode ? "dark" : "light",
     theme: {
       palette: {
