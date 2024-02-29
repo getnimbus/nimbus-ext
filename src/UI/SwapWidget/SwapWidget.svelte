@@ -53,6 +53,47 @@
     }
   };
 
+  const handleFormatIdBlockChain = (id: number) => {
+    switch (id) {
+      case 1:
+        return "ETH";
+      case 42161:
+        return "ARB";
+      case 10:
+        return "OP";
+      case 137:
+        return "MATIC";
+      case 56:
+        return "BNB";
+      case 324:
+        return "ZKSYNC";
+      case 8453:
+        return "BASE";
+      case 43114:
+        return "AVAX";
+      case 1101:
+        return "POLYGON_ZKEVM";
+      case 59144:
+        return "LINEA";
+      case 100:
+        return "XDAI";
+      case 250:
+        return "FANTOM";
+      case 1285:
+        return "MOVR";
+      case 1284:
+        return "GLMR";
+      case 1313161554:
+        return "AURORA";
+      case 1151111081099710:
+        return "SOL";
+      case 1088:
+        return "METIS";
+      default:
+        return "";
+    }
+  };
+
   $: widgetConfig = {
     integrator: "Nimbus",
     variant: "default",
@@ -83,10 +124,33 @@
   };
 
   const getHoldingToken = async (address, chain) => {
-    const response: any = await nimbus
-      .get(`/v2/address/${address}/holding?chain=${chain}&force_refresh=true`)
-      .then((response) => response?.data);
-    return response;
+    try {
+      await nimbus.get(
+        `/v2/address/${address}/holding?chain=${chain}&force_refresh=${true}`
+      );
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const updateBalanceToken = async (data) => {
+    try {
+      const payload = [
+        {
+          chain: handleFormatIdBlockChain(data.from_token_chain),
+          owner: $userPublicAddress,
+          contract_address: data.from_token_ca,
+        },
+        {
+          chain: handleFormatIdBlockChain(data.to_token_chain),
+          owner: $userPublicAddress,
+          contract_address: data.to_token_ca,
+        },
+      ];
+      await nimbus.post("/v2/holding-realtime", payload);
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   const handleSwapBonus = async (data) => {
@@ -98,6 +162,7 @@
       if (response && response?.data) {
         mixpanel.track("user_swap_completed");
         getHoldingToken($wallet, chain);
+        updateBalanceToken(data);
         triggerFireworkBonus(response?.data?.point);
       }
     } catch (e) {
