@@ -162,7 +162,7 @@
   {#if pageToken !== 1}
     <div class="mx-auto">
       <div class="w-[140px]">
-        {#if isDisabled}
+        {#if isDisabled || data.length === 0}
           <Button disabled>Load more</Button>
         {:else}
           <Button
