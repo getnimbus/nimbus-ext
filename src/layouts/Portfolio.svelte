@@ -753,6 +753,7 @@
   onMount(() => {
     mixpanel.track("portfolio_page", {
       address: $wallet,
+      chain: $chain,
     });
   });
 

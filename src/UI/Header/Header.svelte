@@ -728,7 +728,7 @@
         <div
           class="xl:block hidden"
           use:tooltip={{
-            content: `<tooltip-detail text="Check in daily, earn reward" />`,
+            content: `<tooltip-detail text="Check in daily, do quest, earn reward!" />`,
             allowHTML: true,
             placement: "bottom",
           }}
