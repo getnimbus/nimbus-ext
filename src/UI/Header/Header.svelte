@@ -1270,7 +1270,7 @@
         </div>
         <div
           class="xl:max-h-[310px] xl:h-[310px] max-h-[380px] h-[380px] w-full flex flex-col gap-2"
-          style="overflow-y: scroll;"
+          style="overflow-y: auto;"
           bind:this={listAddressElement}
         >
           {#each searchListAddressResult as item, index}
