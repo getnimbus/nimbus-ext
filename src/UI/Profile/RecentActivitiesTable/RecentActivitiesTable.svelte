@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { chain, isDarkMode } from "~/store";
+  import { chain, isDarkMode, typeWallet } from "~/store";
   import { nimbus } from "~/lib/network";
   import { onMount } from "svelte";
 
@@ -22,8 +22,12 @@
     isLoading = true;
     let selectedChain = chain;
 
-    if (chain === "ALL") {
+    if (chain === "ALL" && $typeWallet === "EVM") {
       selectedChain = "ETH";
+    }
+
+    if (chain === "ALL" && $typeWallet === "MOVE") {
+      selectedChain = "SUI";
     }
 
     try {
@@ -159,23 +163,21 @@
     </table>
   </div>
 
-  {#if pageToken !== 1}
-    <div class="mx-auto">
-      <div class="w-[140px]">
-        {#if isDisabled || data.length === 0}
-          <Button disabled>Load more</Button>
-        {:else}
-          <Button
-            variant="secondary"
-            on:click={() => handleLoadMore(pageToken)}
-            disabled={isLoading}
-            {isLoading}
-            >Load more
-          </Button>
-        {/if}
-      </div>
+  <div class="mx-auto">
+    <div class="w-[140px]">
+      {#if isDisabled || data.length === 0}
+        <Button disabled>Load more</Button>
+      {:else}
+        <Button
+          variant="secondary"
+          on:click={() => handleLoadMore(pageToken)}
+          disabled={isLoading}
+          {isLoading}
+          >Load more
+        </Button>
+      {/if}
     </div>
-  {/if}
+  </div>
 </div>
 
 <style windi:preflights:global windi:safelist:global>
