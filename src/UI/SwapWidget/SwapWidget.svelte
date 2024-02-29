@@ -5,6 +5,7 @@
   import { currentLang } from "~/lib/i18n";
   import { nimbus } from "~/lib/network";
   import mixpanel from "mixpanel-browser";
+  import { useQueryClient } from "@tanstack/svelte-query";
 
   export let chain;
   export let address;
@@ -94,6 +95,8 @@
     }
   };
 
+  const queryClient = useQueryClient();
+
   $: widgetConfig = {
     integrator: "Nimbus",
     variant: "default",
@@ -163,6 +166,7 @@
         mixpanel.track("user_swap_completed");
         getHoldingToken($wallet, chain);
         updateBalanceToken(data);
+        queryClient.invalidateQueries(["token-holding"]);
         triggerFireworkBonus(response?.data?.point);
       }
     } catch (e) {
