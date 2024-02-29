@@ -272,6 +272,7 @@
 
 <tr
   key={data?.symbol}
+  id={`${data.symbol}`}
   class={`group transition-all ${
     isOpenTokenInfoBundle ? ($isDarkMode ? "bg-[#000]" : "bg-gray-100") : ""
   }`}
