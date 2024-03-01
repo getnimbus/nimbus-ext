@@ -90,7 +90,6 @@
           address,
           blockchain,
         };
-        console.log(params);
         const res = await nimbus.get("/token/market-pairs/mobula", {
           params,
         });
