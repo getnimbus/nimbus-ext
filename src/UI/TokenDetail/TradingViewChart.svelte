@@ -6,9 +6,8 @@
     DISABLED_FEATURES,
     ENABLED_FEATURES,
   } from "~/lib/trading-view/constant";
-  import { isDarkMode } from "~/store";
+  import { isDarkMode, typeWallet } from "~/store";
   import { handleFormatBlockChainId } from "~/lib/price-mobulaWs";
-  import { UDFCompatibleDatafeed } from "~/lib/trading-view/datafeeds/udf/lib/udf-compatible-datafeed";
   import { nimbus } from "~/lib/network";
   import { formatBalance } from "~/utils";
 
@@ -23,43 +22,93 @@
   let CONTAINER_ID = "";
   let chartContainer;
   let baseAsset;
+  let isEmpty = false;
+
+  const nativeTokenList = [
+    "ETH",
+    "BTC",
+    "SUI",
+    "BNB",
+    "SOL",
+    "ADA",
+    "AVAX",
+    "DOT",
+    "MATIC",
+    "LINK",
+    "ALGO",
+    "XTZ",
+    "CRO",
+    "MNT",
+    "XZO",
+    "KLAY",
+    "AURA",
+    "VIC",
+    "TON",
+    "NEAR",
+    "ZETA",
+    "FTM",
+    "EVMOS",
+    "ONE",
+    "GLMR",
+    "METIS",
+    "RON",
+    "MOVR",
+    "CANTO",
+    "ROSE",
+  ];
 
   $: {
-    if (
-      contractAddress &&
-      contractAddress !== "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
-    ) {
-      handleGetPairData(contractAddress);
+    if ($typeWallet === "CEX") {
+      if (nativeTokenList.includes(id)) {
+        handleGetPairData(id === "ETH" ? "ethereum" : id);
+      } else {
+        handleGetPairData(contractAddress);
+      }
     } else {
-      baseAsset = {
-        name: id,
-        address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
-        price,
-        token0: "",
-        token1: "",
-      };
+      if (
+        contractAddress &&
+        contractAddress !== "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+      ) {
+        if (nativeTokenList.includes(id)) {
+          handleGetPairData(id === "ETH" ? "ethereum" : id);
+        } else {
+          handleGetPairData(contractAddress);
+        }
+      } else {
+        handleGetPairData(id);
+      }
     }
   }
 
   const handleGetPairData = async (address: string) => {
     try {
-      const params = {
-        address,
-        blockchain: handleFormatBlockChainId(chain),
-      };
-      const res = await nimbus.get("/token/market-pairs/mobula", {
-        params,
-      });
-      if (res && res?.data) {
-        baseAsset = {
-          name: id,
-          address: res?.data?.pairs[0]?.address,
-          price,
-          token0: res?.data?.pairs[0]?.token0?.symbol,
-          token1: res?.data?.pairs[0]?.token1?.symbol,
+      const blockchain = handleFormatBlockChainId(
+        $typeWallet === "CEX" ? id : chain
+      );
+      if (blockchain) {
+        const params = {
+          address,
+          blockchain,
         };
+        const res = await nimbus.get("/token/market-pairs/mobula", {
+          params,
+        });
+        if (res && res?.data && res?.data?.pairs.length !== 0) {
+          baseAsset = {
+            name: id,
+            address: res?.data?.pairs[0]?.address,
+            price,
+            token0: res?.data?.pairs[0]?.token0?.symbol,
+            token1: res?.data?.pairs[0]?.token1?.symbol,
+          };
+        } else {
+          isEmpty = true;
+        }
+      } else {
+        isEmpty = true;
       }
     } catch (error) {
+      isEmpty = true;
       console.error(error);
     }
   };
@@ -77,26 +126,13 @@
       return;
     }
 
-    const options: any =
-      baseAsset?.address === "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
-        ? {
-            symbol: "AAPL",
-            datafeed: new UDFCompatibleDatafeed(
-              "https://demo_feed.tradingview.com",
-              undefined,
-              {
-                maxResponseLength: 1000,
-                expectedOrder: "latestFirst",
-              }
-            ),
-          }
-        : {
-            datafeed: Datafeed(baseAsset),
-            symbol:
-              baseAsset?.token0 === id
-                ? baseAsset?.token0 + "/" + "USD"
-                : baseAsset?.token1 + "/" + "USD",
-          };
+    const options: any = {
+      datafeed: Datafeed(baseAsset),
+      symbol:
+        baseAsset?.token0 === id
+          ? baseAsset?.token0 + "/" + "USD"
+          : baseAsset?.token1 + "/" + "USD",
+    };
 
     try {
       import("../../../public/static/charting_library")
@@ -184,7 +220,15 @@
   }
 </script>
 
-<div class="w-full h-[485px]" id={CONTAINER_ID} bind:this={chartContainer} />
+{#if isEmpty}
+  <div
+    class="flex justify-center items-center text-lg text-gray-400 h-[485px] relative"
+  >
+    Empty
+  </div>
+{:else}
+  <div class="w-full h-[485px]" id={CONTAINER_ID} bind:this={chartContainer} />
+{/if}
 
 <style>
 </style>
