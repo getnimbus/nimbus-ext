@@ -18,6 +18,7 @@
   export let chain;
   export let sellHistoryTradeList;
   export let buyHistoryTradeList;
+  export let selectedTypeChart;
 
   let CONTAINER_ID = "";
   let chartContainer;
@@ -58,24 +59,27 @@
   ];
 
   $: {
-    if ($typeWallet === "CEX") {
-      if (nativeTokenList.includes(id)) {
-        handleGetPairData(id === "ETH" ? "ethereum" : id);
-      } else {
-        handleGetPairData(contractAddress);
-      }
-    } else {
-      if (
-        contractAddress &&
-        contractAddress !== "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
-      ) {
+    if (selectedTypeChart === "candles") {
+      if ($typeWallet === "CEX") {
         if (nativeTokenList.includes(id)) {
           handleGetPairData(id === "ETH" ? "ethereum" : id);
         } else {
           handleGetPairData(contractAddress);
         }
       } else {
-        handleGetPairData(id);
+        console.log("HELLO WORLD");
+        if (
+          contractAddress &&
+          contractAddress !== "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+        ) {
+          if (nativeTokenList.includes(id)) {
+            handleGetPairData(id === "ETH" ? "ethereum" : id);
+          } else {
+            handleGetPairData(contractAddress);
+          }
+        } else {
+          handleGetPairData(id);
+        }
       }
     }
   }
