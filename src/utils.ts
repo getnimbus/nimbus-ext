@@ -506,8 +506,18 @@ export const handleFormatDataPieChart = (data, type) => {
 
   return formatGroupData.map((item) => {
     return {
-      logo: type === "chain" ? (item.name === "CEX" ? item.logo : detectedChain(item.name)?.logo) : item.logo,
-      name: type === "chain" ? (item.name === "CEX" ? "CEX" : detectedChain(item.name)?.name) : item.name,
+      logo:
+        type === "chain"
+          ? item.name === "CEX"
+            ? item.logo
+            : detectedChain(item.name)?.logo
+          : item.logo,
+      name:
+        type === "chain"
+          ? item.name === "CEX"
+            ? "CEX"
+            : detectedChain(item.name)?.name
+          : item.name,
       symbol: "",
       name_ratio: item.name_ratio,
       value: (Number(item.value_value) / sumData) * 100,
@@ -838,13 +848,6 @@ export const drivePortfolio = () =>
             "View your trading activities on the Price chart, get market bought distribution to make wise more",
         },
       },
-      {
-        element: ".view-nft-detail",
-        popover: {
-          title: "Not just token, we track NFT as well 🌁",
-          description: "All of your NFTs, and of course, Profit and loss",
-        },
-      },
     ],
   });
 
@@ -917,4 +920,4 @@ export const formatHeaderTokenHistoryCSV = {
   token_in_symbol: "Token Symbol In",
   token_address_out: "Token Address Out",
   token_out_symbol: "Token Symbol Out",
-}
+};
