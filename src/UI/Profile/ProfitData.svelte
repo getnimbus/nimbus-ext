@@ -237,7 +237,7 @@
           <div class="text-xl xl:text-sm font-medium text_00000099">
             Portfolio Value
           </div>
-          <div class="xl:text-base text-lg">
+          <div class="xl:text-sm text-lg font-medium">
             <TooltipNumber number={balance} type="value" />
           </div>
         </div>
@@ -256,7 +256,7 @@
             </span>
           </div>
           <div
-            class={`flex items-center xl:text-base text-lg ${
+            class={`flex items-center xl:text-sm text-lg font-medium ${
               unRealizedProfit !== 0
                 ? unRealizedProfit >= 0
                   ? "text-[#00A878]"
@@ -274,7 +274,7 @@
             30D Realized PnL
           </div>
           <div
-            class={`flex items-center xl:text-base text-lg ${
+            class={`flex items-center xl:text-sm text-lg font-medium ${
               realizedProfit !== 0
                 ? realizedProfit >= 0
                   ? "text-[#00A878]"
@@ -292,7 +292,7 @@
             30D PnL
           </div>
           <div
-            class={`flex items-center xl:text-base text-lg ${
+            class={`flex items-center xl:text-sm text-lg font-medium ${
               set30DayPnl !== 0
                 ? set30DayPnl >= 0
                   ? "text-[#00A878]"
@@ -312,7 +312,7 @@
           <div class="text-xl xl:text-sm font-medium text_00000099">
             30D Trade Tokens
           </div>
-          <div class="xl:text-base text-lg">
+          <div class="xl:text-sm text-lg font-medium">
             {totalToken}
           </div>
         </div>
@@ -321,7 +321,7 @@
           <div class="text-xl xl:text-sm font-medium text_00000099">
             Winrate
           </div>
-          <div class="xl:text-base text-lg">
+          <div class="xl:text-sm text-lg font-medium">
             <TooltipNumber number={winRate} type="percent" />%
           </div>
         </div>
@@ -330,7 +330,7 @@
           <div class="text-xl xl:text-sm font-medium text_00000099">
             Total fee paid
           </div>
-          <div class="xl:text-base text-lg">
+          <div class="xl:text-sm text-lg font-medium">
             <TooltipNumber number={fee} type="value" />
           </div>
         </div>
@@ -340,7 +340,7 @@
         <div class="grid grid-cols-2 gap-5">
           {#if goodPerf}
             <div class="rounded-[20px] flex-1 bg_fafafbff px-4 pb-3 pt-5">
-              <div class="xl:text-base text-xl text-[#6E7787FF] relative">
+              <div class="xl:text-sm text-xl font-medium text-[#6E7787FF] relative">
                 <div
                   class="border border-[#00A878] absolute -top-1 left-0 w-[40px]"
                 />
@@ -386,7 +386,7 @@
                 </div>
               {:else}
                 <div
-                  class="h-full flex justify-center items-center pb-8 xl:text-base text-lg"
+                  class="h-full flex justify-center items-center pb-8 xl:text-sm text-lg font-medium"
                 >
                   There is no biggest win
                 </div>
@@ -396,7 +396,7 @@
 
           {#if badPerf}
             <div class="rounded-[20px] flex-1 bg_fafafbff px-4 pb-3 pt-5">
-              <div class="xl:text-base text-xl text-[#6E7787FF] relative">
+              <div class="xl:text-sm text-xl font-medium text-[#6E7787FF] relative">
                 <div
                   class="border border-red-500 absolute -top-1 left-0 w-[40px]"
                 />
@@ -444,7 +444,7 @@
                 </div>
               {:else}
                 <div
-                  class="h-full flex justify-center items-center pb-8 xl:text-base text-lg"
+                  class="h-full flex justify-center items-center pb-8 xl:text-sm text-lg font-medium"
                 >
                   There is no worse lose
                 </div>
