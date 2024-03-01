@@ -92,7 +92,7 @@
   >
     <table class="table-auto xl:w-full w-[2000px] h-full">
       <thead
-        class={isStickyTableToken ? "sticky top-0 z-10" : ""}
+        class={isStickyTableToken ? "sticky top-0 z-9" : ""}
         bind:this={tableTokenHeader}
       >
         <tr class="bg_f4f5f8">

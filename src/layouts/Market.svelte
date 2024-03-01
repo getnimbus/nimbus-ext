@@ -172,7 +172,7 @@
     >
       <table class="table-auto xl:w-full w-[1300px]">
         <thead
-          class={isSticky ? "sticky top-0 z-10" : ""}
+          class={isSticky ? "sticky top-0 z-9" : ""}
           bind:this={tableHeader}
         >
           <tr class="bg_f4f5f8">
