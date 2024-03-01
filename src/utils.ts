@@ -147,14 +147,17 @@ export const filterAvgCostType = [
 
 export const typePortfolioPage = [
   {
+    id: "view-the-holding-token",
     label: "Tokens",
     value: "token",
   },
   {
+    id: "view-the-nft",
     label: "NFTs",
     value: "nft",
   },
   {
+    id: "view-the-summary",
     label: "Summary",
     value: "summary",
   },
@@ -284,9 +287,9 @@ export const exponentialToDecimal = (exponential: number) => {
       let i = 0;
       i <
       +exponentialSplitted[1] -
-      (exponentialSplitted[0].includes(".")
-        ? exponentialSplitted[0].split(".")[1].length
-        : 0);
+        (exponentialSplitted[0].includes(".")
+          ? exponentialSplitted[0].split(".")[1].length
+          : 0);
       i++
     ) {
       postfix += "0";
@@ -336,16 +339,16 @@ export const formatValue = (input: number) => {
   return numeral(input).format("0,0.00") === "NaN"
     ? formatNumberSmall(input)
     : input !== 0 && input > 0 && input < 0.01
-      ? "<$0.01"
-      : numeral(input).format("$0,0.00");
+    ? "<$0.01"
+    : numeral(input).format("$0,0.00");
 };
 
 export const formatCurrency = (input: number) => {
   return numeral(input).format("0,0.000000") === "NaN"
     ? formatNumberSmall(input)
     : input !== 0 && input > 0 && input < 0.01
-      ? numeral(input).format("0,0.000000")
-      : numeral(input).format("0,0.0000");
+    ? numeral(input).format("0,0.000000")
+    : numeral(input).format("0,0.0000");
 };
 
 export const formatBalance = (input: number) => {
@@ -681,14 +684,17 @@ export const getTooltipContent = (
   width?: string
 ) => {
   return `
-      <div style="padding: 8px; border-radius: 8px; background: ${darkMode ? "#0f0f0f" : "#000"
-    }; width: ${isMaxWidth ? "100%" : "560px"}; height: auto;">
-        ${text
-      ? `<div style="margin-bottom: 6px; font-size: 14px; line-height: 20px; color: #fff;">${text}</div>`
-      : ""
-    } 
-        <div style="border-radius: 6px; width: ${width ? width : "100%"
-    }; overflow: hidden">
+      <div style="padding: 8px; border-radius: 8px; background: ${
+        darkMode ? "#0f0f0f" : "#000"
+      }; width: ${isMaxWidth ? "100%" : "560px"}; height: auto;">
+        ${
+          text
+            ? `<div style="margin-bottom: 6px; font-size: 14px; line-height: 20px; color: #fff;">${text}</div>`
+            : ""
+        } 
+        <div style="border-radius: 6px; width: ${
+          width ? width : "100%"
+        }; overflow: hidden">
           <video autoplay muted playsinline disablepictureinpicture loop>
             <source type="video/mp4" src="${videoUrl}" />
           </video>
@@ -793,6 +799,28 @@ export const drivePortfolio = () =>
         },
       },
       {
+        element: "#view-the-holding-token",
+        popover: {
+          title: "Show you the Token you holding 🟡",
+          description: "You can see all your token holding right here",
+        },
+      },
+      {
+        element: "#view-the-nft",
+        popover: {
+          title: "Show you the NFTs you holding 🖼️",
+          description: "You can see your NFTs right here",
+        },
+      },
+      {
+        element: "#view-the-summary",
+        popover: {
+          title: "See our summary about your portfolio 📊",
+          description:
+            "We give you some short data about your portfolio you holding",
+        },
+      },
+      {
         element: ".view-the-pnl",
         popover: {
           title: "Track your token performance 📊",
@@ -824,6 +852,13 @@ export const drivePortfolio = () =>
             "View your trading activities on the Price chart, get market bought distribution to make wise more",
         },
       },
+      // {
+      //   element: ".view-nft-detail",
+      //   popover: {
+      //     title: "Not just token, we track NFT as well 🌁",
+      //     description: "All of your NFTs, and of course, Profit and loss",
+      //   },
+      // },
     ],
   });
 
