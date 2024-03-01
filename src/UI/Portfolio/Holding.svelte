@@ -662,7 +662,7 @@
             >
               <table class="table-auto xl:w-full w-[2000px] h-full">
                 <thead
-                  class={isStickyTableNFT ? "sticky top-0 z-10" : ""}
+                  class={isStickyTableNFT ? "sticky top-0 z-9" : ""}
                   bind:this={tableNFTHeader}
                 >
                   <tr class="bg_f4f5f8">

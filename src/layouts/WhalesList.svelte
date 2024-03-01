@@ -395,7 +395,7 @@
       }`}
     >
       <table class="table-auto xl:w-full w-[2800px] h-full">
-        <thead class="sticky top-0 z-10">
+        <thead class="sticky top-0 z-9">
           <tr class="bg_f4f5f8">
             <th
               class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8"
@@ -649,7 +649,7 @@
                   <td colspan="8">
                     {#if whalesData.length > 5}
                       <tr
-                        class={`absolute z-10 left-0 right-0 bottom-0 top-[270px] flex justify-center pt-10 backdrop-blur-md bg-gradient-to-t to-transparent ${
+                        class={`absolute z-9 left-0 right-0 bottom-0 top-[270px] flex justify-center pt-10 backdrop-blur-md bg-gradient-to-t to-transparent ${
                           $isDarkMode
                             ? "bg-black/90 from-[#000] via-[#222222]"
                             : "bg-white/95 from-white via-white"
@@ -681,7 +681,7 @@
                       </tr>
                     {:else}
                       <tr
-                        class={`absolute z-10 left-0 right-0 bottom-0 top-[120px] flex justify-center pt-10 backdrop-blur-md bg-gradient-to-t to-transparent ${
+                        class={`absolute z-9 left-0 right-0 bottom-0 top-[120px] flex justify-center pt-10 backdrop-blur-md bg-gradient-to-t to-transparent ${
                           $isDarkMode
                             ? "bg-black/90 from-[#000] via-[#222222]"
                             : "bg-white/95 from-white via-white"
