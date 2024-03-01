@@ -32,7 +32,6 @@
   import VaultTable from "~/UI/Portfolio/VaultTable.svelte";
   import TokenDetailSidebar from "~/UI/TokenDetail/TokenDetailSidebar.svelte";
   import SwapWidget from "../SwapWidget/SwapWidget.svelte";
-  import TooltipTitle from "~/components/TooltipTitle.svelte";
 
   import TrendUp from "~/assets/trend-up.svg";
   import TrendDown from "~/assets/trend-down.svg";
