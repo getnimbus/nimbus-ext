@@ -836,7 +836,7 @@
   $: isPortfolioReady =
     $chain === "ALL"
       ? $queryAllTokenHolding.every((item) => item.isFetched) &&
-        $queryAllNftHolding.every((item) => item.isFetched) &&
+        // $queryAllNftHolding.every((item) => item.isFetched) &&
         $queryVaults.isFetched &&
         $queryOverview.isFetched
       : $queryTokenHolding.isFetched &&

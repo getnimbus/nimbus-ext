@@ -284,9 +284,9 @@ export const exponentialToDecimal = (exponential: number) => {
       let i = 0;
       i <
       +exponentialSplitted[1] -
-      (exponentialSplitted[0].includes(".")
-        ? exponentialSplitted[0].split(".")[1].length
-        : 0);
+        (exponentialSplitted[0].includes(".")
+          ? exponentialSplitted[0].split(".")[1].length
+          : 0);
       i++
     ) {
       postfix += "0";
@@ -336,16 +336,16 @@ export const formatValue = (input: number) => {
   return numeral(input).format("0,0.00") === "NaN"
     ? formatNumberSmall(input)
     : input !== 0 && input > 0 && input < 0.01
-      ? "<$0.01"
-      : numeral(input).format("$0,0.00");
+    ? "<$0.01"
+    : numeral(input).format("$0,0.00");
 };
 
 export const formatCurrency = (input: number) => {
   return numeral(input).format("0,0.000000") === "NaN"
     ? formatNumberSmall(input)
     : input !== 0 && input > 0 && input < 0.01
-      ? numeral(input).format("0,0.000000")
-      : numeral(input).format("0,0.0000");
+    ? numeral(input).format("0,0.000000")
+    : numeral(input).format("0,0.0000");
 };
 
 export const formatBalance = (input: number) => {
@@ -482,8 +482,18 @@ export const handleFormatDataPieChart = (data, type) => {
 
   return formatGroupData.map((item) => {
     return {
-      logo: type === "chain" ? (item.name === "CEX" ? item.logo : detectedChain(item.name)?.logo) : item.logo,
-      name: type === "chain" ? (item.name === "CEX" ? "CEX" : detectedChain(item.name)?.name) : item.name,
+      logo:
+        type === "chain"
+          ? item.name === "CEX"
+            ? item.logo
+            : detectedChain(item.name)?.logo
+          : item.logo,
+      name:
+        type === "chain"
+          ? item.name === "CEX"
+            ? "CEX"
+            : detectedChain(item.name)?.name
+          : item.name,
       symbol: "",
       name_ratio: item.name_ratio,
       value: (Number(item.value_value) / sumData) * 100,
@@ -671,14 +681,17 @@ export const getTooltipContent = (
   width?: string
 ) => {
   return `
-      <div style="padding: 8px; border-radius: 8px; background: ${darkMode ? "#0f0f0f" : "#000"
-    }; width: ${isMaxWidth ? "100%" : "560px"}; height: auto;">
-        ${text
-      ? `<div style="margin-bottom: 6px; font-size: 14px; line-height: 20px; color: #fff;">${text}</div>`
-      : ""
-    } 
-        <div style="border-radius: 6px; width: ${width ? width : "100%"
-    }; overflow: hidden">
+      <div style="padding: 8px; border-radius: 8px; background: ${
+        darkMode ? "#0f0f0f" : "#000"
+      }; width: ${isMaxWidth ? "100%" : "560px"}; height: auto;">
+        ${
+          text
+            ? `<div style="margin-bottom: 6px; font-size: 14px; line-height: 20px; color: #fff;">${text}</div>`
+            : ""
+        } 
+        <div style="border-radius: 6px; width: ${
+          width ? width : "100%"
+        }; overflow: hidden">
           <video autoplay muted playsinline disablepictureinpicture loop>
             <source type="video/mp4" src="${videoUrl}" />
           </video>
@@ -814,13 +827,13 @@ export const drivePortfolio = () =>
             "View your trading activities on the Price chart, get market bought distribution to make wise more",
         },
       },
-      {
-        element: ".view-nft-detail",
-        popover: {
-          title: "Not just token, we track NFT as well 🌁",
-          description: "All of your NFTs, and of course, Profit and loss",
-        },
-      },
+      // {
+      //   element: ".view-nft-detail",
+      //   popover: {
+      //     title: "Not just token, we track NFT as well 🌁",
+      //     description: "All of your NFTs, and of course, Profit and loss",
+      //   },
+      // },
     ],
   });
 
@@ -893,4 +906,4 @@ export const formatHeaderTokenHistoryCSV = {
   token_in_symbol: "Token Symbol In",
   token_address_out: "Token Address Out",
   token_out_symbol: "Token Symbol Out",
-}
+};
