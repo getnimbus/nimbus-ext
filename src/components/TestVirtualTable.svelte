@@ -5,6 +5,7 @@
   import { listSupported } from "~/lib/chains";
   import Loading from "./Loading.svelte";
   import HoldingToken from "~/UI/Portfolio/HoldingToken.svelte";
+  import Test from "./Test.svelte";
 
   export let sumNFT;
   export let defaultData;
@@ -81,6 +82,10 @@
   function updateTableHeight() {
     tableHeight = window.innerHeight - table?.getBoundingClientRect().top;
   }
+
+  let container;
+  let containerHeight;
+  let scrollTop = 0;
 </script>
 
 <div
@@ -168,6 +173,27 @@
             </td>
           </tr>
         {/if}
+
+        <div
+          class="books"
+          bind:this={container}
+          bind:clientHeight={containerHeight}
+        >
+          <Test
+            items={visibleItems}
+            itemHeight={120}
+            {containerHeight}
+            {scrollTop}
+            let:item
+            let:dummy
+            let:y
+          >
+            <div class="book" class:dummy style="top:{y}px;">
+              {#if !dummy}#{item.id} - {item.title}{/if}
+            </div>
+          </Test>
+        </div>
+
         {#each visibleItems as holding, index}
           <HoldingToken
             data={holding}
