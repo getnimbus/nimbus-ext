@@ -214,6 +214,8 @@
 
   let displayName = "";
   let publicAddress = "";
+  let buyPackage = "Free";
+
   let isOpenModalSync = false;
   let code = "";
   let isLoadingSyncMobile = false;
@@ -384,6 +386,8 @@
     if (data?.plan?.tier && data?.plan?.tier.length !== 0) {
       selectedPackage.update((n) => (n = data?.plan?.tier.toUpperCase()));
     }
+    buyPackage = data.plan?.tier;
+    mixpanel.identify(data.publicAddress);
   };
 
   $: navActive = $absoluteMatch ? $absoluteMatch.params.page : "portfolio";
@@ -731,7 +735,7 @@
       </div> -->
 
       <div class="xl:block hidden">
-        <Auth />
+        <Auth {displayName} {publicAddress} {buyPackage} />
       </div>
     </div>
   </div>

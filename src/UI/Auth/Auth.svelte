@@ -52,6 +52,10 @@
   import ReloadWhite from "~/assets/reload-white.svg";
   import Evm from "~/assets/chains/evm.png";
 
+  export let displayName;
+  export let publicAddress;
+  export let buyPackage = "Free";
+
   const wallets = [
     new PhantomWalletAdapter(),
     new SolflareWalletAdapter(),
@@ -82,12 +86,6 @@
   let invitation = "";
 
   const queryClient = useQueryClient();
-
-  let buyPackage = "Free";
-  let interval = "month";
-  let endDatePackage = "";
-  let displayName = "";
-  let publicAddress = "";
 
   let isOpenModalSync = false;
   let isCopied = false;
@@ -126,46 +124,6 @@
   const getUserInfo = async () => {
     const response: any = await nimbus.get("/users/me");
     return response?.data;
-  };
-
-  $: queryUserInfo = createQuery({
-    queryKey: ["users-me"],
-    queryFn: () => getUserInfo(),
-    staleTime: Infinity,
-    retry: false,
-    onError(err) {
-      localStorage.removeItem("auth_token");
-      localStorage.removeItem("solana_token");
-      localStorage.removeItem("sui_token");
-      localStorage.removeItem("evm_token");
-    },
-  });
-
-  $: {
-    if (
-      !$queryUserInfo.isError &&
-      $queryUserInfo &&
-      $queryUserInfo?.data !== undefined
-    ) {
-      handleSetUserData($queryUserInfo?.data);
-    }
-  }
-
-  const handleSetUserData = (data) => {
-    localStorage.setItem("public_address", data?.publicAddress);
-    userPublicAddress.update((n) => (n = data?.publicAddress));
-    userId.update((n) => (n = data?.id));
-    displayName = data?.displayName;
-    publicAddress = data?.publicAddress;
-    if (data?.plan?.tier && data?.plan?.tier.length !== 0) {
-      selectedPackage.update((n) => (n = data?.plan?.tier.toUpperCase()));
-    }
-    buyPackage = data.plan?.tier;
-    interval = data.plan?.interval;
-    endDatePackage = data.plan?.endDate;
-    mixpanel.identify(data.publicAddress);
-    // isSubscription = data.plan?.subscription;
-    // isNewUser = data.plan?.isNewUser;
   };
 
   const handleGetCodeSyncMobile = async () => {
@@ -324,7 +282,7 @@
         isSuccessToast = true;
         trigger();
         queryClient?.invalidateQueries(["users-me"]);
-        queryClient.invalidateQueries(["list-address"]);
+        queryClient?.invalidateQueries(["list-address"]);
       } else {
         toastMsg = res?.error;
         isSuccessToast = false;
@@ -407,7 +365,7 @@
         isSuccessToast = true;
         trigger();
         queryClient?.invalidateQueries(["users-me"]);
-        queryClient.invalidateQueries(["list-address"]);
+        queryClient?.invalidateQueries(["list-address"]);
       } else {
         toastMsg = res?.error;
         isSuccessToast = false;
