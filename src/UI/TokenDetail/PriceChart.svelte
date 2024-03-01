@@ -4,7 +4,7 @@
   dayjs.extend(isBetween);
   import { createQuery } from "@tanstack/svelte-query";
   import { defillama, nimbus } from "~/lib/network";
-  import { isDarkMode } from "~/store";
+  import { isDarkMode, typeWallet } from "~/store";
   import {
     autoFontSize,
     formatBalance,
@@ -931,7 +931,7 @@
 
 <div class="flex flex-col gap-4">
   <div class="flex justify-between gap-6">
-    {#if !symbol.includes("USD") && symbol !== "DAI"}
+    {#if !symbol.includes("USD") && symbol !== "DAI" && $typeWallet !== "MOVE"}
       <div class="flex items-center">
         <AnimateSharedLayout>
           {#each typeChart as type}
@@ -1015,7 +1015,7 @@
     </div>
   {:else}
     <div class="h-full">
-      {#if !symbol.includes("USD") && symbol !== "DAI"}
+      {#if !symbol.includes("USD") && symbol !== "DAI" && $typeWallet !== "MOVE"}
         {#if selectedTypeChart === "candles"}
           <div class="relative h-[485px]">
             <TradingViewChart
