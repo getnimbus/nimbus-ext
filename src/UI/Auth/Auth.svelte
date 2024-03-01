@@ -128,7 +128,7 @@
     return response?.data;
   };
 
-  $: query = createQuery({
+  $: queryUserInfo = createQuery({
     queryKey: ["users-me"],
     queryFn: () => getUserInfo(),
     staleTime: Infinity,
@@ -139,29 +139,39 @@
       localStorage.removeItem("sui_token");
       localStorage.removeItem("evm_token");
     },
-    onSuccess(data) {
-      if (data.publicAddress) {
-        mixpanel.identify(data.publicAddress);
-      }
-    },
   });
 
   $: {
-    if (!$query.isError && $query.data !== undefined) {
-      buyPackage = $query.data.plan?.tier;
-      interval = $query.data.plan?.interval;
-      endDatePackage = $query.data.plan?.endDate;
-      displayName = $query.data?.displayName;
-      publicAddress = $query?.data?.publicAddress;
-      // isSubscription = $query.data.plan?.subscription;
-      // isNewUser = $query.data.plan?.isNewUser;
+    if (
+      !$queryUserInfo.isError &&
+      $queryUserInfo &&
+      $queryUserInfo?.data !== undefined
+    ) {
+      handleSetUserData($queryUserInfo?.data);
     }
   }
+
+  const handleSetUserData = (data) => {
+    localStorage.setItem("public_address", data?.publicAddress);
+    userPublicAddress.update((n) => (n = data?.publicAddress));
+    userId.update((n) => (n = data?.id));
+    displayName = data?.displayName;
+    publicAddress = data?.publicAddress;
+    if (data?.plan?.tier && data?.plan?.tier.length !== 0) {
+      selectedPackage.update((n) => (n = data?.plan?.tier.toUpperCase()));
+    }
+    buyPackage = data.plan?.tier;
+    interval = data.plan?.interval;
+    endDatePackage = data.plan?.endDate;
+    mixpanel.identify(data.publicAddress);
+    // isSubscription = data.plan?.subscription;
+    // isNewUser = data.plan?.isNewUser;
+  };
 
   const handleGetCodeSyncMobile = async () => {
     loading = true;
     try {
-      const res = await nimbus.get("/users/cross-login");
+      const res: any = await nimbus.get("/users/cross-login");
       if (res?.data) {
         syncMobileCode = res?.data?.code;
         const expiredAt = dayjs.unix(res?.data?.expiredAt);
@@ -299,7 +309,7 @@
 
   const handleGetEVMToken = async (data) => {
     try {
-      const res = await nimbus.post("/auth/evm", data);
+      const res: any = await nimbus.post("/auth/evm", data);
       if (res?.data?.result) {
         handleCloseAuthModal();
         localStorage.removeItem("auth_token");
@@ -382,7 +392,7 @@
 
   const handleGetSolanaToken = async (data) => {
     try {
-      const res = await nimbus.post("/auth/solana", data);
+      const res: any = await nimbus.post("/auth/solana", data);
       if (res?.data?.result) {
         handleCloseAuthModal();
         localStorage.removeItem("auth_token");
