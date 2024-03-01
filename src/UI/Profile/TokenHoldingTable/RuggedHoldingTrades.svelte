@@ -1,18 +1,20 @@
 <script lang="ts">
-  import { onMount } from "svelte";
   import { isDarkMode } from "~/store";
+  import dayjs from "dayjs";
+  import { AnimateSharedLayout, Motion } from "svelte-motion";
+  import { timeFrame } from "~/utils";
 
   import Loading from "~/components/Loading.svelte";
   import ClosedAndRuggedHoldingTradeItem from "./ClosedAndRuggedHoldingTradeItem.svelte";
-  import dayjs from "dayjs";
 
   export let holdingTokenData;
   export let isLoading;
 
   let sortTypeROI = "default";
   let sortTypeLastActivity = "asc";
+  let selectedTimeFrame: "7D" | "30D" | "3M" | "1Y" | "ALL" = "30D";
 
-  $: defaultDataClosedHoldingTrades = holdingTokenData
+  $: formatData = holdingTokenData
     .map((item) => {
       return {
         ...item,
@@ -25,7 +27,33 @@
       (a, b) =>
         dayjs(b?.profit?.latestTrade).valueOf() -
         dayjs(a?.profit?.latestTrade).valueOf()
-    );
+    )
+    .filter((element) => {
+      switch (selectedTimeFrame) {
+        case "7D":
+          return (
+            dayjs().subtract(8, "day").valueOf() <
+            dayjs(element?.profit?.latestTrade).valueOf()
+          );
+        case "30D":
+          return (
+            dayjs().subtract(1, "month").valueOf() <
+            dayjs(element?.profit?.latestTrade).valueOf()
+          );
+        case "3M":
+          return (
+            dayjs().subtract(3, "month").valueOf() <
+            dayjs(element?.profit?.latestTrade).valueOf()
+          );
+        case "1Y":
+          return (
+            dayjs().subtract(1, "year").valueOf() <
+            dayjs(element?.profit?.latestTrade).valueOf()
+          );
+        case "ALL":
+          return element;
+      }
+    });
 
   const toggleSortROI = () => {
     sortTypeLastActivity = "default";
@@ -44,17 +72,17 @@
     }
 
     if (sortTypeROI === "asc") {
-      defaultDataClosedHoldingTrades = defaultDataClosedHoldingTrades.sort(
+      formatData = formatData.sort(
         (a, b) => b.realizedProfit - a.realizedProfit
       );
     }
     if (sortTypeROI === "desc") {
-      defaultDataClosedHoldingTrades = defaultDataClosedHoldingTrades.sort(
+      formatData = formatData.sort(
         (a, b) => a.realizedProfit - b.realizedProfit
       );
     }
     if (sortTypeROI === "default") {
-      defaultDataClosedHoldingTrades = holdingTokenData.map((item) => {
+      formatData = holdingTokenData.map((item) => {
         return {
           ...item,
           realizedProfit: item?.profit?.realizedProfit
@@ -82,21 +110,21 @@
     }
 
     if (sortTypeLastActivity === "asc") {
-      defaultDataClosedHoldingTrades = defaultDataClosedHoldingTrades.sort(
+      formatData = formatData.sort(
         (a, b) =>
           dayjs(b?.profit?.latestTrade).valueOf() -
           dayjs(a?.profit?.latestTrade).valueOf()
       );
     }
     if (sortTypeLastActivity === "desc") {
-      defaultDataClosedHoldingTrades = defaultDataClosedHoldingTrades.sort(
+      formatData = formatData.sort(
         (a, b) =>
           dayjs(a?.profit?.latestTrade).valueOf() -
           dayjs(b?.profit?.latestTrade).valueOf()
       );
     }
     if (sortTypeLastActivity === "default") {
-      defaultDataClosedHoldingTrades = holdingTokenData.map((item) => {
+      formatData = holdingTokenData.map((item) => {
         return {
           ...item,
           realizedProfit: item?.profit?.realizedProfit
@@ -156,8 +184,47 @@
 <div
   class="col-span-4 border border_0000001a rounded-xl flex flex-col gap-3 p-6"
 >
-  <div class="flex justify-start text-3xl font-medium xl:text-xl">
-    Rugged Trades
+  <div class="flex justify-between text-3xl font-medium xl:text-xl">
+    <div class="text-3xl font-medium xl:text-xl">Rugged Trades</div>
+    <div class="flex justify-between">
+      <AnimateSharedLayout>
+        {#each timeFrame as type}
+          <div
+            class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
+            on:click={() => {
+              if (formatData && formatData.length === 0) {
+                return;
+              }
+              selectedTimeFrame = type.value;
+            }}
+          >
+            <div
+              class={`relative z-2 ${
+                type.value === selectedTimeFrame && "text-white"
+              }`}
+            >
+              {type.label}
+            </div>
+            {#if type.value === selectedTimeFrame}
+              <Motion
+                let:motion
+                layoutId="active-pill"
+                transition={{ type: "spring", duration: 0.6 }}
+              >
+                <div
+                  class={`absolute inset-0 rounded-full z-1 ${
+                    formatData && formatData.length === 0
+                      ? "bg-[#dddddd]"
+                      : "bg-[#1E96FC]"
+                  }`}
+                  use:motion
+                />
+              </Motion>
+            {/if}
+          </div>
+        {/each}
+      </AnimateSharedLayout>
+    </div>
   </div>
 
   <div
@@ -221,7 +288,7 @@
         </tbody>
       {:else}
         <tbody>
-          {#if defaultDataClosedHoldingTrades && defaultDataClosedHoldingTrades.length === 0}
+          {#if formatData && formatData.length === 0}
             <tr>
               <td colspan={4}>
                 <div
@@ -232,10 +299,10 @@
               </td>
             </tr>
           {:else}
-            {#each defaultDataClosedHoldingTrades as data, index}
+            {#each formatData as data, index}
               <ClosedAndRuggedHoldingTradeItem
                 {data}
-                lastIndex={defaultDataClosedHoldingTrades.length - 1 === index}
+                lastIndex={formatData.length - 1 === index}
               />
             {/each}
           {/if}
