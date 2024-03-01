@@ -802,22 +802,21 @@ export const drivePortfolio = () =>
         element: "#view-the-holding-token",
         popover: {
           title: "Show you the Token you holding 🟡",
-          description: "You can see all your token holding right here",
+          description: "You can see all your Token right here",
         },
       },
       {
         element: "#view-the-nft",
         popover: {
           title: "Show you the NFTs you holding 🖼️",
-          description: "You can see your NFTs right here",
+          description: "You can see your NFTs holding right here",
         },
       },
       {
         element: "#view-the-summary",
         popover: {
           title: "See our summary about your portfolio 📊",
-          description:
-            "We give you some short data about your portfolio you holding",
+          description: "We give you some overview data about your portfolio",
         },
       },
       {
@@ -852,13 +851,6 @@ export const drivePortfolio = () =>
             "View your trading activities on the Price chart, get market bought distribution to make wise more",
         },
       },
-      // {
-      //   element: ".view-nft-detail",
-      //   popover: {
-      //     title: "Not just token, we track NFT as well 🌁",
-      //     description: "All of your NFTs, and of course, Profit and loss",
-      //   },
-      // },
     ],
   });
 
