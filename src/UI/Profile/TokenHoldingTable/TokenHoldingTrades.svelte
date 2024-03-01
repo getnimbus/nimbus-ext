@@ -1,16 +1,27 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { isDarkMode } from "~/store";
+  import {
+    isDarkMode,
+    selectedPackage,
+    typeWallet,
+    user,
+    wallet,
+  } from "~/store";
 
   import Loading from "~/components/Loading.svelte";
   import TokenHoldingTradeItem from "./TokenHoldingTradeItem.svelte";
   import dayjs from "dayjs";
+  import { AnimateSharedLayout, Motion } from "svelte-motion";
+  import { timeFrame } from "~/utils";
+  import { element } from "svelte/internal";
 
   export let holdingTokenData;
   export let isLoading;
 
   let sortTypePnl = "default";
   let sortTypeLastActivity = "asc";
+  let isShowSoon = false;
+  let selectedTimeFrame: "7D" | "30D" | "3M" | "1Y" | "ALL" = "30D";
 
   $: defaultDataClosedHoldingTrades = holdingTokenData
     .map((item) => {
@@ -26,7 +37,33 @@
       (a, b) =>
         dayjs(b?.profit?.latestTrade).valueOf() -
         dayjs(a?.profit?.latestTrade).valueOf()
-    );
+    )
+    .filter((element) => {
+      switch (selectedTimeFrame) {
+        case "7D":
+          return (
+            dayjs().subtract(8, "day").valueOf() <
+            dayjs(element?.profit?.latestTrade).valueOf()
+          );
+        case "30D":
+          return (
+            dayjs().subtract(1, "month").valueOf() <
+            dayjs(element?.profit?.latestTrade).valueOf()
+          );
+        case "3M":
+          return (
+            dayjs().subtract(3, "month").valueOf() <
+            dayjs(element?.profit?.latestTrade).valueOf()
+          );
+        case "1Y":
+          return (
+            dayjs().subtract(1, "year").valueOf() <
+            dayjs(element?.profit?.latestTrade).valueOf()
+          );
+        case "ALL":
+          return element;
+      }
+    });
 
   const toggleSortPnl = () => {
     sortTypeLastActivity = "default";
@@ -152,13 +189,62 @@
                     </g>
                   </svg>`;
   };
+
+  $: {
+    if ($wallet) {
+      if ($typeWallet === "BTC" || $selectedPackage === "FREE") {
+        isShowSoon = true;
+      } else {
+        isShowSoon = false;
+      }
+    }
+  }
 </script>
 
 <div
   class="col-span-4 border border_0000001a rounded-xl flex flex-col gap-3 p-6"
 >
-  <div class="flex justify-start text-3xl font-medium xl:text-xl">
-    Holding Trades
+  <div class="flex justify-between text-3xl font-medium xl:text-xl">
+    <div class="text-3xl font-medium xl:text-xl">Holding Trades</div>
+    <div class="flex justify-between">
+      <AnimateSharedLayout>
+        {#each timeFrame as type}
+          <div
+            class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
+            on:click={() => {
+              if (isShowSoon && $user && Object.keys($user).length === 0) {
+                return;
+              }
+              selectedTimeFrame = type.value;
+            }}
+          >
+            <div
+              class={`relative z-2 ${
+                type.value === selectedTimeFrame && "text-white"
+              }`}
+            >
+              {type.label}
+            </div>
+            {#if type.value === selectedTimeFrame}
+              <Motion
+                let:motion
+                layoutId="active-pill"
+                transition={{ type: "spring", duration: 0.6 }}
+              >
+                <div
+                  class={`absolute inset-0 rounded-full z-1 ${
+                    isShowSoon && $user && Object.keys($user).length === 0
+                      ? "bg-[#dddddd]"
+                      : "bg-[#1E96FC]"
+                  }`}
+                  use:motion
+                />
+              </Motion>
+            {/if}
+          </div>
+        {/each}
+      </AnimateSharedLayout>
+    </div>
   </div>
 
   <div
