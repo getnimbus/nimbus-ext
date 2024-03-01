@@ -52,6 +52,10 @@
   import ReloadWhite from "~/assets/reload-white.svg";
   import Evm from "~/assets/chains/evm.png";
 
+  export let displayName;
+  export let publicAddress;
+  export let buyPackage = "Free";
+
   const wallets = [
     new PhantomWalletAdapter(),
     new SolflareWalletAdapter(),
@@ -82,12 +86,6 @@
   let invitation = "";
 
   const queryClient = useQueryClient();
-
-  let buyPackage = "Free";
-  let interval = "month";
-  let endDatePackage = "";
-  let displayName = "";
-  let publicAddress = "";
 
   let isOpenModalSync = false;
   let isCopied = false;
@@ -128,40 +126,10 @@
     return response?.data;
   };
 
-  $: query = createQuery({
-    queryKey: ["users-me"],
-    queryFn: () => getUserInfo(),
-    staleTime: Infinity,
-    retry: false,
-    onError(err) {
-      localStorage.removeItem("auth_token");
-      localStorage.removeItem("solana_token");
-      localStorage.removeItem("sui_token");
-      localStorage.removeItem("evm_token");
-    },
-    onSuccess(data) {
-      if (data.publicAddress) {
-        mixpanel.identify(data.publicAddress);
-      }
-    },
-  });
-
-  $: {
-    if (!$query.isError && $query.data !== undefined) {
-      buyPackage = $query.data.plan?.tier;
-      interval = $query.data.plan?.interval;
-      endDatePackage = $query.data.plan?.endDate;
-      displayName = $query.data?.displayName;
-      publicAddress = $query?.data?.publicAddress;
-      // isSubscription = $query.data.plan?.subscription;
-      // isNewUser = $query.data.plan?.isNewUser;
-    }
-  }
-
   const handleGetCodeSyncMobile = async () => {
     loading = true;
     try {
-      const res = await nimbus.get("/users/cross-login");
+      const res: any = await nimbus.get("/users/cross-login");
       if (res?.data) {
         syncMobileCode = res?.data?.code;
         const expiredAt = dayjs.unix(res?.data?.expiredAt);
@@ -299,7 +267,7 @@
 
   const handleGetEVMToken = async (data) => {
     try {
-      const res = await nimbus.post("/auth/evm", data);
+      const res: any = await nimbus.post("/auth/evm", data);
       if (res?.data?.result) {
         handleCloseAuthModal();
         localStorage.removeItem("auth_token");
@@ -314,7 +282,7 @@
         isSuccessToast = true;
         trigger();
         queryClient?.invalidateQueries(["users-me"]);
-        queryClient.invalidateQueries(["list-address"]);
+        queryClient?.invalidateQueries(["list-address"]);
       } else {
         toastMsg = res?.error;
         isSuccessToast = false;
@@ -382,7 +350,7 @@
 
   const handleGetSolanaToken = async (data) => {
     try {
-      const res = await nimbus.post("/auth/solana", data);
+      const res: any = await nimbus.post("/auth/solana", data);
       if (res?.data?.result) {
         handleCloseAuthModal();
         localStorage.removeItem("auth_token");
@@ -397,7 +365,7 @@
         isSuccessToast = true;
         trigger();
         queryClient?.invalidateQueries(["users-me"]);
-        queryClient.invalidateQueries(["list-address"]);
+        queryClient?.invalidateQueries(["list-address"]);
       } else {
         toastMsg = res?.error;
         isSuccessToast = false;
