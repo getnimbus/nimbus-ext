@@ -929,38 +929,39 @@
 
 <div class="flex flex-col gap-4">
   <div class="flex justify-between gap-6">
-    <div class="flex items-center">
-      <AnimateSharedLayout>
-        {#each typeChart as type}
-          <div
-            class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
-            on:click={() => (selectedTypeChart = type.value)}
-          >
+    {#if !symbol.includes("USD") && symbol !== "DAI"}
+      <div class="flex items-center">
+        <AnimateSharedLayout>
+          {#each typeChart as type}
             <div
-              class={`relative z-20 ${
-                selectedTypeChart === type.value && "text-white"
-              }`}
+              class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
+              on:click={() => (selectedTypeChart = type.value)}
             >
-              {type.label}
-            </div>
-            {#if type.value === selectedTypeChart}
-              <Motion
-                let:motion
-                layoutId="active-pill"
-                transition={{ type: "spring", duration: 0.6 }}
+              <div
+                class={`relative z-20 ${
+                  selectedTypeChart === type.value && "text-white"
+                }`}
               >
-                <div
-                  class="absolute inset-0 rounded-full bg-[#1E96FC] z-10"
-                  use:motion
-                />
-              </Motion>
-            {/if}
-          </div>
-        {/each}
-      </AnimateSharedLayout>
-    </div>
-
-    {#if selectedTypeChart !== "candles" && !["SOL", "BTC", "TON"].includes(chain)}
+                {type.label}
+              </div>
+              {#if type.value === selectedTypeChart}
+                <Motion
+                  let:motion
+                  layoutId="active-pill"
+                  transition={{ type: "spring", duration: 0.6 }}
+                >
+                  <div
+                    class="absolute inset-0 rounded-full bg-[#1E96FC] z-10"
+                    use:motion
+                  />
+                </Motion>
+              {/if}
+            </div>
+          {/each}
+        </AnimateSharedLayout>
+      </div>
+    {/if}
+    {#if selectedTypeChart === "line" && !["SOL", "BTC", "TON"].includes(chain)}
       <div class="flex items-center">
         <AnimateSharedLayout>
           {#each timeFrame as type}
@@ -1029,28 +1030,52 @@
         </div>
       {:else}
         <div class="h-full">
-          {#if selectedTypeChart === "candles"}
-            <div class="relative h-[485px]">
-              {#if ["ETH", "BNB", "MATIC", "USDT", "USDC"].includes(symbol) || ["SOL", "BTC", "TON", "NEAR", "ALGO"].includes(chain)}
-                <div
-                  class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center gap-3 pt-62 z-9 backdrop-blur-md ${
-                    $isDarkMode ? "bg-black/90" : "bg-white/95"
-                  }`}
-                >
-                  <div class="text-lg">Coming soon 🚀</div>
-                </div>
-              {:else}
-                <TradingViewChart
-                  id={symbol}
-                  mobile={false}
-                  {contractAddress}
-                  {price}
-                  {chain}
-                  {buyHistoryTradeList}
-                  {sellHistoryTradeList}
+          {#if !symbol.includes("USD") && symbol !== "DAI"}
+            {#if selectedTypeChart === "candles"}
+              <div class="relative h-[485px]">
+                {#if !symbol.includes("USD") && symbol !== "DAI"}
+                  <TradingViewChart
+                    id={symbol}
+                    mobile={false}
+                    {contractAddress}
+                    {price}
+                    {chain}
+                    {buyHistoryTradeList}
+                    {sellHistoryTradeList}
+                  />
+                {/if}
+              </div>
+            {/if}
+            {#if selectedTypeChart === "line"}
+              <div class="relative h-[485px]">
+                <EChart
+                  id={id + "line-chart"}
+                  {theme}
+                  notMerge={true}
+                  option={optionLine}
+                  height={485}
                 />
-              {/if}
-            </div>
+                <div
+                  class="opacity-40 absolute transform -translate-x-1/2 -translate-y-1/2 pointer-events-none top-1/2 left-1/2"
+                >
+                  <img
+                    src={$isDarkMode ? LogoWhite : Logo}
+                    alt=""
+                    width="140"
+                    height="140"
+                  />
+                </div>
+                {#if ["BTC", "TON"].includes(chain)}
+                  <div
+                    class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center gap-3 pt-62 z-9 backdrop-blur-md ${
+                      $isDarkMode ? "bg-black/90" : "bg-white/95"
+                    }`}
+                  >
+                    <div class="text-lg">Coming soon 🚀</div>
+                  </div>
+                {/if}
+              </div>
+            {/if}
           {:else}
             <div class="relative h-[485px]">
               <EChart
@@ -1070,7 +1095,7 @@
                   height="140"
                 />
               </div>
-              {#if ["SOL", "BTC", "TON"].includes(chain)}
+              {#if ["BTC", "TON"].includes(chain)}
                 <div
                   class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center gap-3 pt-62 z-9 backdrop-blur-md ${
                     $isDarkMode ? "bg-black/90" : "bg-white/95"
