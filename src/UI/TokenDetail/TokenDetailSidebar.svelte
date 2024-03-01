@@ -378,7 +378,7 @@
 
         {#if $typeWallet !== "EVM" && $typeWallet !== "MOVE" && $typeWallet !== "BUNDLE"}
           <div
-            class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center gap-3 pt-62 z-30 backdrop-blur-md ${
+            class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center gap-3 pt-62 z-9 backdrop-blur-md ${
               $isDarkMode ? "bg-black/90" : "bg-white/95"
             }`}
           >
@@ -388,7 +388,7 @@
 
         {#if $selectedPackage === "FREE"}
           <div
-            class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center justify-center gap-3 z-30 backdrop-blur-md ${
+            class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center justify-center gap-3 z-9 backdrop-blur-md ${
               $isDarkMode ? "bg-black/90" : "bg-white/95"
             }`}
           >

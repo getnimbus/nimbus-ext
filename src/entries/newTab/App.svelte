@@ -281,7 +281,7 @@
             {/await}
           </Route>
         </div>
-        <div class="fixed bottom-0 left-0 z-20 w-full footer xl:relative">
+        <div class="fixed bottom-0 left-0 z-9 w-full footer xl:relative">
           <div class="hidden xl:block">
             <Footer />
           </div>

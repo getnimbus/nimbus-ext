@@ -824,7 +824,7 @@
           {MultipleLang.performance}
         </div>
         <div
-          class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex items-center justify-center z-10 backdrop-blur-md ${
+          class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex items-center justify-center z-9 backdrop-blur-md ${
             $isDarkMode ? "bg-black/90" : "bg-white/95"
           }`}
         >
@@ -857,7 +857,7 @@
                     on:click={() => (selectedTypePerformance = type.value)}
                   >
                     <div
-                      class={`relative z-20 ${
+                      class={`relative z-2 ${
                         selectedTypePerformance === type.value && "text-white"
                       }`}
                     >
@@ -870,7 +870,7 @@
                         transition={{ type: "spring", duration: 0.6 }}
                       >
                         <div
-                          class="absolute inset-0 rounded-full bg-[#1E96FC] z-10"
+                          class="absolute inset-0 rounded-full bg-[#1E96FC] z-1"
                           use:motion
                         />
                       </Motion>
@@ -896,7 +896,7 @@
             {:else}
               <div class="flex flex-col gap-4 relative">
                 <div
-                  class={`absolute top-8 left-20 flex flex-col rounded-[4px] px-2 py-1 z-10 ${
+                  class={`absolute top-8 left-20 flex flex-col rounded-[4px] px-2 py-1 z-2 ${
                     $isDarkMode ? "bg-[#131313]" : "bg-white"
                   }`}
                   style="box-shadow: rgba(0, 0, 0, 0.2) 1px 2px 10px;"
