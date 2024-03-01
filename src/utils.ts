@@ -802,7 +802,7 @@ export const drivePortfolio = () =>
         element: "#view-the-holding-token",
         popover: {
           title: "Show you the Token you holding 🟡",
-          description: "You can see all your Token right here",
+          description: "You can see all your Tokens right here",
         },
       },
       {
