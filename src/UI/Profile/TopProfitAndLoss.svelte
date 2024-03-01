@@ -168,7 +168,7 @@
                       </span>
                     </span>
                   </div>
-                  <div class="text-[#00A878] xl:text-base text-lg">
+                  <div class="text-[#00A878] xl:text-sm text-lg font-medium">
                     <TooltipNumber number={item.realizedProfit} type="value" />
                   </div>
                 </div>
@@ -231,7 +231,7 @@
                       </span>
                     </span>
                   </div>
-                  <div class="text-red-500 xl:text-base text-lg">
+                  <div class="text-red-500 xl:text-sm text-lg font-medium">
                     <TooltipNumber number={item.realizedProfit} type="value" />
                   </div>
                 </div>
