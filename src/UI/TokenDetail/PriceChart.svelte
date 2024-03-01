@@ -269,7 +269,9 @@
     queryFn: () => handleGetTokenPrice(),
     staleTime: Infinity,
     retry: false,
-    enabled: Boolean(contractAddress || symbol || cgId || chain),
+    enabled:
+      Boolean(contractAddress || symbol || cgId || chain) &&
+      selectedTypeChart === "line",
   });
 
   $: {
@@ -1013,69 +1015,85 @@
     </div>
   {:else}
     <div class="h-full">
-      {#if $queryTokenPrice.isError || (dataPriceChart && dataPriceChart.length === 0)}
-        <div
-          class="flex justify-center items-center text-lg text-gray-400 h-[485px] relative"
-        >
-          Empty
-          {#if ["SOL", "BTC", "TON", "NEAR", "ALGO"].includes(chain)}
+      {#if !symbol.includes("USD") && symbol !== "DAI"}
+        {#if selectedTypeChart === "candles"}
+          <div class="relative h-[485px]">
+            <TradingViewChart
+              id={symbol}
+              mobile={false}
+              {contractAddress}
+              {price}
+              {chain}
+              {buyHistoryTradeList}
+              {sellHistoryTradeList}
+              {selectedTypeChart}
+            />
+          </div>
+        {/if}
+        {#if selectedTypeChart === "line"}
+          {#if $queryTokenPrice.isError || (dataPriceChart && dataPriceChart.length === 0)}
             <div
-              class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center gap-3 pt-62 z-9 backdrop-blur-md ${
-                $isDarkMode ? "bg-black/90" : "bg-white/95"
-              }`}
+              class="flex justify-center items-center text-lg text-gray-400 h-[485px] relative"
             >
-              <div class="text-lg">Coming soon 🚀</div>
+              Empty
+              {#if ["SOL", "BTC", "TON", "NEAR", "ALGO"].includes(chain)}
+                <div
+                  class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center gap-3 pt-62 z-9 backdrop-blur-md ${
+                    $isDarkMode ? "bg-black/90" : "bg-white/95"
+                  }`}
+                >
+                  <div class="text-lg">Coming soon 🚀</div>
+                </div>
+              {/if}
+            </div>
+          {:else}
+            <div class="relative h-[485px]">
+              <EChart
+                id={id + "line-chart"}
+                {theme}
+                notMerge={true}
+                option={optionLine}
+                height={485}
+              />
+              <div
+                class="opacity-40 absolute transform -translate-x-1/2 -translate-y-1/2 pointer-events-none top-1/2 left-1/2"
+              >
+                <img
+                  src={$isDarkMode ? LogoWhite : Logo}
+                  alt=""
+                  width="140"
+                  height="140"
+                />
+              </div>
+              {#if ["BTC", "TON"].includes(chain)}
+                <div
+                  class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center gap-3 pt-62 z-9 backdrop-blur-md ${
+                    $isDarkMode ? "bg-black/90" : "bg-white/95"
+                  }`}
+                >
+                  <div class="text-lg">Coming soon 🚀</div>
+                </div>
+              {/if}
             </div>
           {/if}
-        </div>
+        {/if}
       {:else}
         <div class="h-full">
-          {#if !symbol.includes("USD") && symbol !== "DAI"}
-            {#if selectedTypeChart === "candles"}
-              <div class="relative h-[485px]">
-                {#if !symbol.includes("USD") && symbol !== "DAI"}
-                  <TradingViewChart
-                    id={symbol}
-                    mobile={false}
-                    {contractAddress}
-                    {price}
-                    {chain}
-                    {buyHistoryTradeList}
-                    {sellHistoryTradeList}
-                  />
-                {/if}
-              </div>
-            {/if}
-            {#if selectedTypeChart === "line"}
-              <div class="relative h-[485px]">
-                <EChart
-                  id={id + "line-chart"}
-                  {theme}
-                  notMerge={true}
-                  option={optionLine}
-                  height={485}
-                />
+          {#if $queryTokenPrice.isError || (dataPriceChart && dataPriceChart.length === 0)}
+            <div
+              class="flex justify-center items-center text-lg text-gray-400 h-[485px] relative"
+            >
+              Empty
+              {#if ["SOL", "BTC", "TON", "NEAR", "ALGO"].includes(chain)}
                 <div
-                  class="opacity-40 absolute transform -translate-x-1/2 -translate-y-1/2 pointer-events-none top-1/2 left-1/2"
+                  class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center gap-3 pt-62 z-9 backdrop-blur-md ${
+                    $isDarkMode ? "bg-black/90" : "bg-white/95"
+                  }`}
                 >
-                  <img
-                    src={$isDarkMode ? LogoWhite : Logo}
-                    alt=""
-                    width="140"
-                    height="140"
-                  />
+                  <div class="text-lg">Coming soon 🚀</div>
                 </div>
-                {#if ["BTC", "TON"].includes(chain)}
-                  <div
-                    class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center gap-3 pt-62 z-9 backdrop-blur-md ${
-                      $isDarkMode ? "bg-black/90" : "bg-white/95"
-                    }`}
-                  >
-                    <div class="text-lg">Coming soon 🚀</div>
-                  </div>
-                {/if}
-              </div>
-            {/if}
+              {/if}
+            </div>
           {:else}
             <div class="relative h-[485px]">
               <EChart
