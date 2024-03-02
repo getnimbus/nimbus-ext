@@ -1204,7 +1204,7 @@
 {/if}
 
 <!-- Modal token holding information when bundle -->
-<AppOverlay
+<!-- <AppOverlay
   clickOutSideToClose
   isOpen={showTokenInfoBundle}
   isTableContent
@@ -1353,10 +1353,10 @@
       </table>
     </div>
   </div>
-</AppOverlay>
+</AppOverlay> -->
 
 <!-- Modal vault -->
-<AppOverlay
+<!-- <AppOverlay
   clickOutSideToClose
   isOpen={showTableVaults}
   isTableContent
@@ -1365,10 +1365,10 @@
   }}
 >
   <VaultTable data={selectedVaults} symbol={selectedVaultsSymbol} />
-</AppOverlay>
+</AppOverlay> -->
 
 <!-- Modal report spam/trash token  -->
-<AppOverlay
+<!-- <AppOverlay
   clickOutSideToClose
   isOpen={isShowReportTable}
   on:close={() => {
@@ -1530,10 +1530,10 @@
       </div>
     </form>
   </div>
-</AppOverlay>
+</AppOverlay> -->
 
 <!-- Sidebar Token Detail -->
-<OverlaySidebar isOpen={showSideTokenDetail}>
+<!-- <OverlaySidebar isOpen={showSideTokenDetail}>
   <div class="flex justify-between items-start">
     <div
       class="xl:text-5xl text-6xl text-gray-500 cursor-pointer"
@@ -1707,10 +1707,10 @@
     {/if}
   </div>
   <TokenDetailSidebar data={selectedTokenDetail} {showSideTokenDetail} />
-</OverlaySidebar>
+</OverlaySidebar> -->
 
 <!-- Sidebar Token Swap -->
-<OverlaySidebarSwap isOpen={showSideTokenSwap}>
+<!-- <OverlaySidebarSwap isOpen={showSideTokenSwap}>
   <div class="flex justify-between items-start">
     <div
       class="xl:text-5xl text-6xl text-gray-500 cursor-pointer"
@@ -1922,7 +1922,7 @@
       {toastMsg}
     </Toast>
   </div>
-{/if}
+{/if} -->
 
 <style windi:preflights:global windi:safelist:global>
   :global(body) .bg_fafafbff {

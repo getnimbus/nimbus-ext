@@ -3,6 +3,7 @@
   import { isDarkMode, typeWallet, chain, totalAssets } from "~/store";
   import { i18n } from "~/lib/i18n";
   import { listSupported } from "~/lib/chains";
+  import VirtualList from "svelte-tiny-virtual-list";
 
   import Loading from "./Loading.svelte";
   import HoldingToken from "~/UI/Portfolio/HoldingToken.svelte";
@@ -48,7 +49,7 @@
   $: colspan = listSupported.includes($typeWallet) ? 8 : 7;
 </script>
 
-<div
+<!-- <div
   class={`rounded-[10px] xl:overflow-visible overflow-x-auto ${
     $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
   }`}
@@ -194,7 +195,13 @@
       {/if}
     {/if}
   </table>
-</div>
+</div> -->
+
+<VirtualList width="100%" height={960} itemCount={data.length} itemSize={50}>
+  <div slot="item" let:index let:style {style}>
+    #{index}: {data[index].symbol}
+  </div>
+</VirtualList>
 
 <style>
 </style>
