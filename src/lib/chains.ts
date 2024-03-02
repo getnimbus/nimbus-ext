@@ -43,6 +43,7 @@ import opBNB from "~/assets/chains/opbnb.png";
 import Moonriver from "~/assets/chains/moonriver.png";
 import Canto from "~/assets/chains/canto.png";
 import Oasis from "~/assets/chains/oasis.png";
+import Blast from "~/assets/chains/blast.png";
 // import Manta from "~/assets/chains/manta.png";
 
 export const listProviderCEX = [
@@ -90,7 +91,7 @@ export const listLogoCEX = [
   "https://s2.coinmarketcap.com/static/img/exchanges/64x64/37.png",
 ];
 
-export const listNotSupportHistoricalBalances = ["ROSE", "CANTO", "MOVR", "MANTA", "VIC", "MANTLE", "CRONOS", "LINEA", "ZKSYNC", "XDAI", "ARB", "AVAX", "OP", "BASE", "SCROLL", "KLAY", "XZO", "ZETA", "RON", "FANTOM", "AURORA", "EVMOS", "ONE", "GLMR", "METIS", "POLYGON_ZKEVM", "OPBNB"];
+export const listNotSupportHistoricalBalances = ["ROSE", "CANTO", "MOVR", "MANTA", "VIC", "MANTLE", "CRONOS", "LINEA", "ZKSYNC", "XDAI", "ARB", "AVAX", "OP", "BASE", "SCROLL", "KLAY", "XZO", "ZETA", "RON", "FANTOM", "AURORA", "EVMOS", "ONE", "GLMR", "METIS", "POLYGON_ZKEVM", "OPBNB", "BLAST"];
 
 export const listSupported = ["BUNDLE", "EVM", "CEX", "MOVE", "SOL", "NEAR", "TON", "ALGO", "AURA"];
 
@@ -292,6 +293,11 @@ export const chainList = [
   //   label: "Manta",
   //   value: "MANTA",
   // },
+  {
+    logo: Blast,
+    label: "Blast",
+    value: "BLAST",
+  },
 ];
 
 export const detectedGeneration = (type) => {
@@ -544,6 +550,12 @@ export const detectedChain = (type) => {
         name: "Canto"
       };
       break;
+      case "BLAST":
+        chain = {
+          logo: Blast,
+          name: "Blast"
+        };
+        break;
     case "ROSE":
       chain = {
         logo: Oasis,
@@ -780,6 +792,12 @@ export const linkExplorer = (chain, hash) => {
       links = {
         trx: `https://explorer.emerald.oasis.dev/tx/${hash}/internal-transactions`,
         address: `https://explorer.emerald.oasis.dev/address/${hash}/transactions`,
+      };
+      break;
+    case "BLAST":
+        links = {
+        trx: `https://blastscan.io/tx/${hash}`,
+        address: `https://blastscan.io/address/${hash}`,
       };
       break;
     // case "MANTA":
