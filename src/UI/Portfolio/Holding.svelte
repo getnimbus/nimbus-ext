@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { onMount } from "svelte";
   import { i18n } from "~/lib/i18n";
   import {
     wallet,
@@ -49,10 +48,6 @@
   let formatDataNFT = [];
   let sumTokens = 0;
   let sumNFT = 0;
-  let tableTokenHeader;
-  let isStickyTableToken = false;
-  let tableNFTHeader;
-  let isStickyTableNFT = false;
 
   let selectedTypeTable = {
     label: "",
@@ -86,19 +81,6 @@
     hide: i18n("newtabPage.hide-less-than-1", "Hide tokens less than $1"),
     empty: i18n("newtabPage.empty", "Empty"),
   };
-
-  onMount(() => {
-    const handleScroll = () => {
-      const clientRectTokenHeader = tableTokenHeader?.getBoundingClientRect();
-      isStickyTableToken = clientRectTokenHeader?.top <= 0;
-      const clientRectNFTHeader = tableNFTHeader?.getBoundingClientRect();
-      isStickyTableNFT = clientRectNFTHeader?.top <= 0;
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  });
 
   $: {
     if (formatHoldingTokenData) {
@@ -654,17 +636,14 @@
             </div>
 
             <div
-              class={`rounded-[10px] xl:overflow-visible overflow-x-auto h-full ${
+              class={`rounded-[10px] overflow-y-auto overflow-x-auto max-h-[1100px] ${
                 $isDarkMode
                   ? "bg-[#131313]"
                   : "bg-[#fff] border border_0000000d"
               }`}
             >
               <table class="table-auto xl:w-full w-[2000px] h-full">
-                <thead
-                  class={isStickyTableNFT ? "sticky top-0 z-9" : ""}
-                  bind:this={tableNFTHeader}
-                >
+                <thead class="sticky top-0 z-9">
                   <tr class="bg_f4f5f8">
                     <th
                       class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8 xl:w-[220px] w-[350px]"
