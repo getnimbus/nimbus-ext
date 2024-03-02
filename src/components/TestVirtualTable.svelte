@@ -1,8 +1,9 @@
 <script>
-  import { afterUpdate, onMount } from "svelte";
+  import { onMount } from "svelte";
   import { isDarkMode, typeWallet, chain, totalAssets } from "~/store";
   import { i18n } from "~/lib/i18n";
   import { listSupported } from "~/lib/chains";
+
   import Loading from "./Loading.svelte";
   import HoldingToken from "~/UI/Portfolio/HoldingToken.svelte";
 
@@ -45,52 +46,12 @@
   });
 
   $: colspan = listSupported.includes($typeWallet) ? 8 : 7;
-
-  let table;
-  let visibleItems = [];
-  let tableHeight;
-
-  $: {
-    if (data) {
-      visibleItems = data;
-    }
-  }
-
-  function updateVisibleItems() {
-    console.log("HELLO WORLD");
-    const tableTop = table?.getBoundingClientRect().top;
-    const tableBottom = table?.getBoundingClientRect().bottom;
-
-    if (visibleItems.length !== 0) {
-      visibleItems = visibleItems.filter((item) => {
-        const itemTop = document.getElementById(`${item.symbol}`);
-        const itemBottom = document.getElementById(`${item.symbol}`);
-
-        if (itemTop && itemBottom) {
-          return (
-            (itemTop?.getBoundingClientRect()?.top >= tableTop &&
-              itemTop?.getBoundingClientRect()?.top <= tableBottom) ||
-            (itemBottom?.getBoundingClientRect()?.bottom >= tableTop &&
-              itemBottom?.getBoundingClientRect()?.bottom <= tableBottom)
-          );
-        }
-      });
-    }
-  }
-
-  function updateTableHeight() {
-    tableHeight = window.innerHeight - table?.getBoundingClientRect().top;
-  }
 </script>
 
 <div
   class={`rounded-[10px] xl:overflow-visible overflow-x-auto ${
     $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
   }`}
-  bind:this={table}
-  on:scroll={updateVisibleItems}
-  on:resize={updateTableHeight}
-  style="height: {tableHeight}px"
 >
   <table class="table-auto xl:w-full w-[2000px] h-full">
     <thead
@@ -153,7 +114,7 @@
 
     {#if $chain === "ALL"}
       <tbody>
-        {#if visibleItems && visibleItems.length === 0 && !isLoading}
+        {#if data && data.length === 0 && !isLoading}
           <tr>
             <td {colspan}>
               <div
@@ -168,10 +129,10 @@
             </td>
           </tr>
         {/if}
-        {#each visibleItems as holding, index}
+        {#each data as holding, index}
           <HoldingToken
             data={holding}
-            lastIndex={visibleItems.length - 1 === index}
+            lastIndex={data.length - 1 === index}
             sumAllTokens={$totalAssets - sumNFT}
             index={index + 1}
             {triggerFireworkBonus}
@@ -204,7 +165,7 @@
         </tbody>
       {:else}
         <tbody>
-          {#if visibleItems && visibleItems.length === 0}
+          {#if data && data.length === 0}
             <tr>
               <td {colspan}>
                 <div
@@ -219,10 +180,10 @@
               </td>
             </tr>
           {:else}
-            {#each visibleItems as holding, index (holding.positionId)}
+            {#each data as holding, index (holding.positionId)}
               <HoldingToken
                 data={holding}
-                lastIndex={visibleItems.length - 1 == index}
+                lastIndex={data.length - 1 == index}
                 sumAllTokens={$totalAssets - sumNFT}
                 index={index + 1}
                 {triggerFireworkBonus}

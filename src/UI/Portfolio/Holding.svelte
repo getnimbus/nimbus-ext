@@ -12,7 +12,6 @@
     pastProfit,
   } from "~/store";
   import { filterTokenValueType, chunkArray, triggerFirework } from "~/utils";
-  import { listSupported } from "~/lib/chains";
   import { groupBy } from "lodash";
   import { priceMobulaSubscribe } from "~/lib/price-mobulaWs";
   import { priceSubscribe } from "~/lib/price-ws";
@@ -30,13 +29,13 @@
   export let selectedType;
   export let formatHoldingTokenData;
 
-  import HoldingToken from "~/UI/Portfolio/HoldingToken.svelte";
   import HoldingNFT from "~/UI/Portfolio/HoldingNFT.svelte";
   import Select from "~/components/Select.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import TooltipTitle from "~/components/TooltipTitle.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import Loading from "~/components/Loading.svelte";
+
   import TestVirtualTable from "~/components/TestVirtualTable.svelte";
 
   let dataSubWS = [];
