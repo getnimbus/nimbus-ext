@@ -67,7 +67,6 @@
           handleGetPairData(contractAddress);
         }
       } else {
-        console.log("HELLO WORLD");
         if (
           contractAddress &&
           contractAddress !== "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"

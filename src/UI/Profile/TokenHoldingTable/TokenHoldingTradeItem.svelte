@@ -46,8 +46,6 @@
     }
     return dayjs(date).fromNow();
   };
-
-  $: console.log("HELLO: ", data.profit);
 </script>
 
 <tr
