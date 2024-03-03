@@ -3,7 +3,6 @@
   import tooltip from "~/entries/contentScript/views/tooltip";
   import dayjs from "dayjs";
   import { nimbus } from "~/lib/network";
-  import { user } from "~/store";
 
   import Loading from "~/components/Loading.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";

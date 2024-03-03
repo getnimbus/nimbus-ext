@@ -3,19 +3,19 @@
   import CopyToClipboard from "svelte-copy-to-clipboard";
   import dayjs from "dayjs";
   import { nimbus } from "~/lib/network";
-  import { isDarkMode, typeWallet, user } from "~/store";
+  import { isDarkMode, typeWallet } from "~/store";
   import { shorterAddress, shorterName } from "~/utils";
+  import { detectedChain } from "~/lib/chains";
+  import { wait } from "~/entries/background/utils";
 
   import Image from "~/components/Image.svelte";
   import Loading from "~/components/Loading.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
-
-  import defaultToken from "~/assets/defaultToken.png";
   import OverlaySidebar from "~/components/OverlaySidebar.svelte";
   import Tooltip from "~/components/Tooltip.svelte";
-  import { wait } from "~/entries/background/utils";
   import TokenDetailSidebar from "../TokenDetail/TokenDetailSidebar.svelte";
-  import { detectedChain } from "~/lib/chains";
+
+  import defaultToken from "~/assets/defaultToken.png";
 
   export let selectedAddress;
   export let isSync = false;
@@ -117,9 +117,7 @@
 </script>
 
 <div class="col-span-4 grid xl:grid-cols-2 grid-cols-1 gap-5">
-  <div
-    class="flex flex-col justify-between gap-5 border border_0000001a rounded-xl pt-6 pb-2"
-  >
+  <div class="flex flex-col gap-5 border border_0000001a rounded-xl pt-6 pb-2">
     <div class="xl:text-xl text-2xl font-medium px-6">Top Profit (30D)</div>
 
     <div class="max-h-[280px]">
@@ -180,9 +178,7 @@
     </div>
   </div>
 
-  <div
-    class="flex flex-col justify-between gap-5 border border_0000001a rounded-xl pt-6 pb-2"
-  >
+  <div class="flex flex-col gap-5 border border_0000001a rounded-xl pt-6 pb-2">
     <div class="xl:text-xl text-2xl font-medium px-3">Top Loss (30D)</div>
 
     <div class="max-h-[280px]">
