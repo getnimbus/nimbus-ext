@@ -39,6 +39,13 @@
     Number(data?.avgCost) === 0
       ? 0
       : data.pnl / Math.abs(Number(data?.avgCost));
+
+  const formatTime = (date: Date) => {
+    if (dayjs().diff(date, "days") >= 1) {
+      return dayjs(date).format("YYYY-MM-DD");
+    }
+    return dayjs(date).fromNow();
+  };
 </script>
 
 <tr
@@ -261,7 +268,7 @@
     style={`${lastIndex ? "border-bottom-right-radius: 10px;" : ""}`}
   >
     <div class="text-right text-2xl font-medium xl:text-sm text_00000099">
-      {dayjs(data?.profit?.latestTrade).format("YYYY-MM-DD")}
+      {formatTime(data?.profit?.latestTrade)}
     </div>
   </td>
 </tr>
