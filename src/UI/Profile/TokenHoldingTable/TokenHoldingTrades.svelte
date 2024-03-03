@@ -33,23 +33,27 @@
       switch (selectedTimeFrame) {
         case "7D":
           return (
+            element?.profit &&
             dayjs().subtract(8, "day").valueOf() <
-            dayjs(element?.profit?.latestTrade).valueOf()
+              dayjs(element?.profit?.latestTrade).valueOf()
           );
         case "30D":
           return (
+            element?.profit &&
             dayjs().subtract(1, "month").valueOf() <
-            dayjs(element?.profit?.latestTrade).valueOf()
+              dayjs(element?.profit?.latestTrade).valueOf()
           );
         case "3M":
           return (
+            element?.profit &&
             dayjs().subtract(3, "month").valueOf() <
-            dayjs(element?.profit?.latestTrade).valueOf()
+              dayjs(element?.profit?.latestTrade).valueOf()
           );
         case "1Y":
           return (
+            element?.profit &&
             dayjs().subtract(1, "year").valueOf() <
-            dayjs(element?.profit?.latestTrade).valueOf()
+              dayjs(element?.profit?.latestTrade).valueOf()
           );
         case "ALL":
           return element;
