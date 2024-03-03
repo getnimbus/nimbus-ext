@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { chain, isDarkMode, typeWallet } from "~/store";
+  import { chain, isDarkMode } from "~/store";
   import { nimbus } from "~/lib/network";
   import { onMount } from "svelte";
 
@@ -19,18 +19,18 @@
   let pageToken = 1;
   let isDisabled = false;
 
-  const getRecentActivities = async (address, chain, page) => {
+  const getRecentActivities = async (address, chain, paginate) => {
     isLoading = true;
     try {
       const response: any = await nimbus.get(
-        `/v2/analysis/${address}/recent-activities?chain=${chain}&pageToken=${page}`
+        `/v2/analysis/${address}/recent-activities?chain=${chain}&pageToken=${paginate}`
       );
       if (response && response?.data) {
         data = [...data, ...response?.data?.data];
-        if (response.data.pageToken === pageToken) {
+        if (response.data.page === pageToken) {
           isDisabled = true;
         }
-        pageToken = response.data.pageToken;
+        pageToken = response.data.page;
       }
     } catch (e) {
       console.error("error: ", e);
@@ -44,11 +44,11 @@
   };
 
   $: {
-    if (selectedAddress || isFetch) {
-      data = [];
-      pageToken = 1;
-      isLoading = false;
+    if (selectedAddress || $chain) {
       if (selectedAddress?.length !== 0 && $chain?.length !== 0) {
+        data = [];
+        pageToken = 1;
+        isLoading = false;
         getRecentActivities(selectedAddress, $chain, 1);
       }
     }

@@ -26,7 +26,6 @@
   let ruggedHoldingPosition = [];
 
   let sumTokens = 0;
-  let sumNFT = 0;
 
   $: isFetch = isSync ? enabledFetchAllData : true;
 
@@ -218,110 +217,14 @@
     }
   }
 
-  const getHoldingNFT = async (address, chain) => {
-    let addressChain = chain;
-
-    if (addressChain === "ALL") {
-      const validateAccount = await handleValidateAddress(address);
-      addressChain = validateAccount?.type;
-    }
-
-    const response: any = await nimbus
-      .get(
-        `/v2/address/${address}/nft-holding?chain=${
-          addressChain === "BUNDLE" ? "" : addressChain
-        }`
-      )
-      .then((response) => response?.data);
-    return response;
-  };
-
-  $: queryNftHolding = createQuery({
-    queryKey: ["nft-holding", selectedAddress, $chain],
-    queryFn: () => getHoldingNFT(selectedAddress, $chain),
-    staleTime: Infinity,
-    enabled: Boolean(
-      enabledFetchAllData &&
-        selectedAddress &&
-        selectedAddress?.length !== 0 &&
-        $chain.length !== 0 &&
-        $chain !== "ALL" &&
-        isFetch
-    ),
-  });
-
-  $: queryAllNftHolding = createQueries(
-    chainListQueries.map((item) => {
-      return {
-        queryKey: ["nft-holding", selectedAddress, $chain, item],
-        queryFn: () => getHoldingNFT(selectedAddress, item),
-        staleTime: Infinity,
-        enabled: Boolean(
-          enabledFetchAllData &&
-            selectedAddress &&
-            selectedAddress?.length !== 0 &&
-            $chain.length !== 0 &&
-            $chain === "ALL" &&
-            isFetch
-        ),
-      };
-    })
-  );
-
-  $: {
-    if ($queryAllNftHolding.length !== 0) {
-      const allNfts = flatten(
-        $queryAllNftHolding
-          ?.filter((item) => Array.isArray(item.data))
-          ?.map((item) => item.data)
-      );
-      if (allNfts && allNfts.length !== 0) {
-        formatDataHoldingNFT(allNfts);
-      }
-    }
-  }
-
-  $: {
-    if (!$queryNftHolding.isError && $queryNftHolding.data !== undefined) {
-      formatDataHoldingNFT($queryNftHolding.data);
-    }
-  }
-
-  const formatDataHoldingNFT = (data) => {
-    const formatDataNFT = data
-      .map((item) => {
-        return {
-          ...item,
-          current_native_token: Number(item?.floorPrice) * item?.tokens?.length,
-          current_value:
-            Number(item?.floorPrice) *
-            Number(item?.marketPrice) *
-            item?.tokens?.length,
-        };
-      })
-      .sort((a, b) => {
-        if (a.current_native_token < b.current_native_token) {
-          return 1;
-        }
-        if (a.current_native_token > b.current_native_token) {
-          return -1;
-        }
-        return 0;
-      });
-    sumNFT = formatDataNFT.reduce((prev, item) => prev + item.current_value, 0);
-  };
-
   $: {
     if (
       ($chain === "ALL"
         ? !$queryAllTokenHolding.some((item) => item.isFetching === true)
         : !$queryTokenHolding.isFetching) &&
-      ($chain === "ALL"
-        ? !$queryAllNftHolding.some((item) => item.isFetching === true)
-        : !$queryNftHolding.isFetching) &&
-      (sumTokens || sumNFT)
+      sumTokens
     ) {
-      totalAssets.update((n) => (n = sumNFT + sumTokens));
+      totalAssets.update((n) => (n = sumTokens));
     }
   }
 </script>
