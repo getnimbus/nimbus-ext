@@ -23,7 +23,7 @@
     isLoading = true;
     try {
       const response: any = await nimbus.get(
-        `/v2/analysis/${address}/recent-activities?chain=${chain}&pageToken=${paginate}`
+        `/v2/analysis/${address}/recent-activities?chain=${chain}&page=${paginate}`
       );
       if (response && response?.data) {
         data = [...data, ...response?.data?.data];
