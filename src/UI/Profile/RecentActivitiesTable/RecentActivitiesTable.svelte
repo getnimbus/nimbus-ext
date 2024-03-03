@@ -20,19 +20,9 @@
 
   const getRecentActivities = async (address, chain, page) => {
     isLoading = true;
-    let selectedChain = chain;
-
-    if (chain === "ALL" && $typeWallet === "EVM") {
-      selectedChain = "ETH";
-    }
-
-    if (chain === "ALL" && $typeWallet === "MOVE") {
-      selectedChain = "SUI";
-    }
-
     try {
       const response: any = await nimbus.get(
-        `/v2/analysis/${address}/recent-activities?chain=${selectedChain}&pageToken=${page}`
+        `/v2/analysis/${address}/recent-activities?chain=${chain}&pageToken=${page}`
       );
       if (response && response?.data) {
         data = [...data, ...response?.data?.data];
