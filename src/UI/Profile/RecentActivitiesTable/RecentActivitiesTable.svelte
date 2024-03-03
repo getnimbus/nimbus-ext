@@ -6,6 +6,7 @@
   import Loading from "~/components/Loading.svelte";
   import Button from "~/components/Button.svelte";
   import RecentActivityItem from "./RecentActivityItem.svelte";
+  import { filterDuplicates } from "~/utils";
 
   export let selectedAddress;
   export let isSync = false;
@@ -141,7 +142,7 @@
               </td>
             </tr>
           {:else}
-            {#each data as item, index}
+            {#each filterDuplicates(data) as item, index}
               <RecentActivityItem
                 {item}
                 lastIndex={data.length - 1 === index}
