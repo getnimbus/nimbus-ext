@@ -215,7 +215,9 @@
     style={`${lastIndex ? "border-bottom-right-radius: 10px;" : ""}`}
   >
     <div class="text-right text-2xl font-medium xl:text-sm text_00000099">
-      {formatTime(data?.profit?.latestTrade)}
+      {#if data?.profit}
+        {formatTime(data?.profit?.latestTrade)}
+      {/if}
     </div>
   </td>
 </tr>
