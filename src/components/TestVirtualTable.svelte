@@ -47,6 +47,8 @@
   export let isLoading;
   export let triggerFireworkBonus = (data) => {};
 
+  $: console.log("HELLO: ", data);
+
   let isShowTooltipName = false;
   let isShowTooltipSymbol = false;
   let isShowCMC = false;
@@ -411,7 +413,7 @@
     {/if}
   </div>
 
-  {#if data && data.length === 0}
+  {#if data && data.length === 0 && !isLoading}
     <div
       class={`grid ${listSupported.includes($typeWallet) ? "grid-cols-9" : "grid-cols-8"}`}
     >
