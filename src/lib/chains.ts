@@ -91,38 +91,76 @@ export const listLogoCEX = [
   "https://s2.coinmarketcap.com/static/img/exchanges/64x64/37.png",
 ];
 
-export const listNotSupportHistoricalBalances = ["ROSE", "CANTO", "MOVR", "MANTA", "VIC", "MANTLE", "CRONOS", "LINEA", "ZKSYNC", "XDAI", "ARB", "AVAX", "OP", "BASE", "SCROLL", "KLAY", "XZO", "ZETA", "RON", "FANTOM", "AURORA", "EVMOS", "ONE", "GLMR", "METIS", "POLYGON_ZKEVM", "OPBNB", "BLAST"];
+export const listNotSupportHistoricalBalances = [
+  "ROSE",
+  "CANTO",
+  "MOVR",
+  "MANTA",
+  "VIC",
+  "MANTLE",
+  "CRONOS",
+  "LINEA",
+  "ZKSYNC",
+  "XDAI",
+  "ARB",
+  "AVAX",
+  "OP",
+  "BASE",
+  "SCROLL",
+  "KLAY",
+  "XZO",
+  "ZETA",
+  "RON",
+  "FANTOM",
+  "AURORA",
+  "EVMOS",
+  "ONE",
+  "GLMR",
+  "METIS",
+  "POLYGON_ZKEVM",
+  "OPBNB",
+];
 
-export const listSupported = ["BUNDLE", "EVM", "CEX", "MOVE", "SOL", "NEAR", "TON", "ALGO", "AURA"];
+export const listSupported = [
+  "BUNDLE",
+  "EVM",
+  "CEX",
+  "MOVE",
+  "SOL",
+  "NEAR",
+  "TON",
+  "ALGO",
+  "AURA",
+];
 
 export const bigGeneration = ["EVM", "MOVE"];
 export const otherGeneration = ["BTC", "SOL", "NEAR", "ALGO", "AURA", "TON"];
 export const generationLogo = [
   {
-    logo: EVM
+    logo: EVM,
   },
   {
-    logo: Move
+    logo: Move,
   },
   {
-    logo: Bitcoin
+    logo: Bitcoin,
   },
   {
-    logo: Solana
+    logo: Solana,
   },
   {
-    logo: Near
+    logo: Near,
   },
   {
-    logo: Aura
+    logo: Aura,
   },
   {
-    logo: Algorand
+    logo: Algorand,
   },
   {
-    logo: Ton
-  }
-]
+    logo: Ton,
+  },
+];
 
 export const chainMoveList = [
   {
@@ -304,262 +342,262 @@ export const detectedGeneration = (type) => {
   let logo = All;
   switch (type) {
     case "BUNDLE":
-      logo = Bundles
+      logo = Bundles;
       break;
     case "EVM":
-      logo = EVM
+      logo = EVM;
       break;
     case "MOVE":
-      logo = Move
+      logo = Move;
       break;
     case "BTC":
-      logo = Bitcoin
+      logo = Bitcoin;
       break;
     case "SOL":
-      logo = Solana
+      logo = Solana;
       break;
     case "NEAR":
-      logo = Near
+      logo = Near;
       break;
     case "TON":
-      logo = Ton
+      logo = Ton;
       break;
     case "AURA":
-      logo = Aura
+      logo = Aura;
       break;
     case "ALGO":
-      logo = Algorand
+      logo = Algorand;
       break;
   }
-  return logo
-}
+  return logo;
+};
 
 export const detectedChain = (type) => {
   let chain = {
     logo: All,
-    name: "All"
+    name: "All",
   };
   switch (type) {
     case "BTC":
       chain = {
         logo: Bitcoin,
-        name: "Bitcoin"
+        name: "Bitcoin",
       };
       break;
     case "AURA":
       chain = {
         logo: Aura,
-        name: "Aura"
+        name: "Aura",
       };
       break;
     case "SUI":
       chain = {
         logo: Sui,
-        name: "Sui"
+        name: "Sui",
       };
       break;
     case "SOL":
       chain = {
         logo: Solana,
-        name: "Solana"
+        name: "Solana",
       };
       break;
     case "NEAR":
       chain = {
         logo: Near,
-        name: "Near"
+        name: "Near",
       };
       break;
     case "TON":
       chain = {
         logo: Ton,
-        name: "Ton"
+        name: "Ton",
       };
       break;
     case "ALGO":
       chain = {
         logo: Algorand,
-        name: "Algorand"
+        name: "Algorand",
       };
       break;
     case "ETH":
       chain = {
         logo: Ethereum,
-        name: "Ethereum"
+        name: "Ethereum",
       };
       break;
     case "XDAI":
       chain = {
         logo: Gnosis,
-        name: "Gnosis"
+        name: "Gnosis",
       };
       break;
     case "BNB":
       chain = {
         logo: Bnb,
-        name: "Binance"
+        name: "Binance",
       };
       break;
     case "MATIC":
       chain = {
         logo: Matic,
-        name: "Polygon"
+        name: "Polygon",
       };
       break;
     case "OP":
       chain = {
         logo: Optimism,
-        name: "Optimism"
+        name: "Optimism",
       };
       break;
     case "AVAX":
       chain = {
         logo: Avax,
-        name: "Avalanche"
+        name: "Avalanche",
       };
       break;
     case "ARB":
       chain = {
         logo: Arbitrum,
-        name: "Arbitrum"
+        name: "Arbitrum",
       };
       break;
     case "BASE":
       chain = {
         logo: Base,
-        name: "Base"
+        name: "Base",
       };
       break;
     case "SCROLL":
       chain = {
         logo: Scroll,
-        name: "Scroll"
+        name: "Scroll",
       };
       break;
     case "ZKSYNC":
       chain = {
         logo: ZkSync,
-        name: "ZkSync"
+        name: "ZkSync",
       };
       break;
     case "LINEA":
       chain = {
         logo: Linea,
-        name: "Linea"
+        name: "Linea",
       };
       break;
     case "CRONOS":
       chain = {
         logo: Cronos,
-        name: "Cronos"
+        name: "Cronos",
       };
       break;
     case "MANTLE":
       chain = {
         logo: Mantle,
-        name: "Mantle"
+        name: "Mantle",
       };
       break;
     case "XZO":
       chain = {
         logo: Exzo,
-        name: "Exzo"
+        name: "Exzo",
       };
       break;
     case "KLAY":
       chain = {
         logo: Klaytn,
-        name: "Klaytn"
+        name: "Klaytn",
       };
       break;
     case "VIC":
       chain = {
         logo: Viction,
-        name: "Viction"
+        name: "Viction",
       };
       break;
     case "ZETA":
       chain = {
         logo: Zeta,
-        name: "Zeta (Testnet)"
+        name: "Zeta (Testnet)",
       };
       break;
     case "FANTOM":
       chain = {
         logo: Fantom,
-        name: "Fantom"
+        name: "Fantom",
       };
       break;
     case "EVMOS":
       chain = {
         logo: Evmos,
-        name: "Evmos"
+        name: "Evmos",
       };
       break;
     case "ONE":
       chain = {
         logo: Harmony,
-        name: "Harmony"
+        name: "Harmony",
       };
       break;
     case "GLMR":
       chain = {
         logo: Moonbeam,
-        name: "Moonbeam"
+        name: "Moonbeam",
       };
       break;
     case "METIS":
       chain = {
         logo: Metis,
-        name: "Metis"
+        name: "Metis",
       };
       break;
     case "AURORA":
       chain = {
         logo: Aurora,
-        name: "Aurora"
+        name: "Aurora",
       };
       break;
     case "RON":
       chain = {
         logo: Ronin,
-        name: "Ronin"
+        name: "Ronin",
       };
       break;
     case "POLYGON_ZKEVM":
       chain = {
         logo: zkEVM,
-        name: "Polygon zkEVM"
+        name: "Polygon zkEVM",
       };
       break;
     case "OPBNB":
       chain = {
         logo: opBNB,
-        name: "opBNB"
+        name: "opBNB",
       };
       break;
     case "MOVR":
       chain = {
         logo: Moonriver,
-        name: "Moonriver"
+        name: "Moonriver",
       };
       break;
     case "CANTO":
       chain = {
         logo: Canto,
-        name: "Canto"
+        name: "Canto",
       };
       break;
-      case "BLAST":
-        chain = {
-          logo: Blast,
-          name: "Blast"
-        };
-        break;
+    case "BLAST":
+      chain = {
+        logo: Blast,
+        name: "Blast",
+      };
+      break;
     case "ROSE":
       chain = {
         logo: Oasis,
-        name: "Oasis"
+        name: "Oasis",
       };
       break;
       // case "MANTA":
@@ -719,7 +757,7 @@ export const linkExplorer = (chain, hash) => {
     case "ZETA":
       links = {
         trx: `https://explorer.zetachain.com/evm/tx/${hash}`,
-        address: `https://explorer.zetachain.com/address/${hash}`
+        address: `https://explorer.zetachain.com/address/${hash}`,
       };
       break;
     case "FANTOM":
@@ -795,7 +833,7 @@ export const linkExplorer = (chain, hash) => {
       };
       break;
     case "BLAST":
-        links = {
+      links = {
         trx: `https://blastscan.io/tx/${hash}`,
         address: `https://blastscan.io/address/${hash}`,
       };
@@ -831,12 +869,12 @@ export const regexList = [
   {
     name: "BTC",
     regex_address: BTCAddressRegex,
-    regex_trx: BTCTrxRegex
+    regex_trx: BTCTrxRegex,
   },
   {
     name: "Solana",
     regex_address: SOLAddressRegex,
-    regex_trx: SOLTrxRegex
+    regex_trx: SOLTrxRegex,
   },
   // {
   //   name: "NEAR",
