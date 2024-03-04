@@ -47,8 +47,6 @@
   export let isLoading;
   export let triggerFireworkBonus = (data) => {};
 
-  $: console.log("HELLO: ", data);
-
   let isShowTooltipName = false;
   let isShowTooltipSymbol = false;
   let isShowCMC = false;
@@ -83,6 +81,7 @@
 
   let virtualList;
   let listSelectedIndex = [];
+  let selectedItemIndex = -1;
 
   const trigger = () => {
     showToast = true;
@@ -298,7 +297,7 @@
       .filter((item) => Number(item?.amount) !== 0);
   };
 
-  const handleSwapToken = (data: any, address: any) => {
+  const handleSwapToken = (data, address) => {
     const config = {
       displayMode: "integrated",
       integratedTargetId: `swap-${address}`,
@@ -405,11 +404,7 @@
     </div>
 
     {#if listSupported.includes($typeWallet)}
-      <div
-        class={`py-3 rounded-tr-[10px] ${
-          ["BUNDLE", "SOL"].includes($typeWallet) ? "w-20" : "w-12"
-        }`}
-      />
+      <div class="py-3 rounded-tr-[10px]" />
     {/if}
   </div>
 
@@ -434,7 +429,14 @@
       bind:this={virtualList}
       itemCount={data.length}
       itemSize={(index) => {
-        return listSelectedIndex.includes(index) ? 240 : 75;
+        const formatDataBreakdown = handleFormatDataBreakdown(
+          data[selectedItemIndex]
+        );
+        return listSelectedIndex.includes(index)
+          ? formatDataBreakdown.length > 12
+            ? 500 + 135
+            : formatDataBreakdown.length * 75 + 135
+          : 75;
       }}
     >
       <div
@@ -1208,10 +1210,8 @@
             style={`${data.length - 1 === index ? "border-bottom-right-radius: 10px;" : ""}`}
           >
             <div
-              class={`pl-6 w-full h-[40px] flex items-center xl:gap-4 gap-7 ${
-                ["BUNDLE", "SOL", "EVM"].includes($typeWallet)
-                  ? "justify-start"
-                  : "justify-center"
+              class={`pl-6 w-full h-[40px] flex items-center gap-6 ${
+                $typeWallet === "BUNDLE" ? "justify-start" : "justify-center"
               }`}
             >
               {#if $typeWallet === "BUNDLE"}
@@ -1233,6 +1233,7 @@
                           ))
                         : (listSelectedIndex = [...listSelectedIndex, index]);
 
+                      selectedItemIndex = index;
                       handleRecomputeHeight(index);
                     }}
                   >
