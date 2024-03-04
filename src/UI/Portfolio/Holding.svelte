@@ -345,6 +345,16 @@
               : Number(item.market_price)),
         };
       });
+      formatData = formatDataWithMarketPrice.sort((a, b) => {
+        if (a.value < b.value) {
+          return 1;
+        }
+        if (a.value > b.value) {
+          return -1;
+        }
+        return 0;
+      });
+      filteredHoldingDataToken = formatData.filter((item) => item.value > 1);
       sumTokens = formatDataWithMarketPrice.reduce(
         (prev, item) => prev + item.value,
         0
