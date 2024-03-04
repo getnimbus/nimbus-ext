@@ -13,7 +13,6 @@
     pastProfit,
   } from "~/store";
   import { filterTokenValueType, chunkArray, triggerFirework } from "~/utils";
-  import { listSupported } from "~/lib/chains";
   import { groupBy } from "lodash";
   import { priceMobulaSubscribe } from "~/lib/price-mobulaWs";
   import { priceSubscribe } from "~/lib/price-ws";
@@ -31,13 +30,14 @@
   export let selectedType;
   export let formatHoldingTokenData;
 
-  import HoldingToken from "~/UI/Portfolio/HoldingToken.svelte";
   import HoldingNFT from "~/UI/Portfolio/HoldingNFT.svelte";
   import Select from "~/components/Select.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import TooltipTitle from "~/components/TooltipTitle.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import Loading from "~/components/Loading.svelte";
+
+  import TestVirtualTable from "~/components/TestVirtualTable.svelte";
 
   let dataSubWS = [];
   let filteredUndefinedCmcHoldingTokenData = [];
@@ -345,16 +345,6 @@
               : Number(item.market_price)),
         };
       });
-      formatData = formatDataWithMarketPrice.sort((a, b) => {
-        if (a.value < b.value) {
-          return 1;
-        }
-        if (a.value > b.value) {
-          return -1;
-        }
-        return 0;
-      });
-      filteredHoldingDataToken = formatData.filter((item) => item.value > 1);
       sumTokens = formatDataWithMarketPrice.reduce(
         (prev, item) => prev + item.value,
         0
@@ -505,8 +495,6 @@
     }
   }
 
-  $: colspan = listSupported.includes($typeWallet) ? 8 : 7;
-
   $: {
     if ($wallet || $chain) {
       if ($wallet?.length !== 0 && $chain?.length !== 0) {
@@ -627,177 +615,13 @@
               </div>
             </div>
 
-            <div
-              class={`rounded-[10px] xl:overflow-visible overflow-x-auto h-full ${
-                $isDarkMode
-                  ? "bg-[#131313]"
-                  : "bg-[#fff] border border_0000000d"
-              }`}
-            >
-              <table class="table-auto xl:w-full w-[2000px] h-full">
-                <thead
-                  class={isStickyTableToken ? "sticky top-0 z-9" : ""}
-                  bind:this={tableTokenHeader}
-                >
-                  <tr class="bg_f4f5f8">
-                    <th
-                      class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8 w-[420px]"
-                    >
-                      <div
-                        class="text-left xl:text-xs text-xl uppercase font-medium"
-                      >
-                        {MultipleLang.assets}
-                      </div>
-                    </th>
-                    <th class="py-3">
-                      <div
-                        class="text-right xl:text-xs text-xl uppercase font-medium"
-                      >
-                        {MultipleLang.price}
-                      </div>
-                    </th>
-                    <th class="py-3">
-                      <div
-                        class="text-right xl:text-xs text-xl uppercase font-medium"
-                      >
-                        {MultipleLang.amount}
-                      </div>
-                    </th>
-                    <th class="py-3">
-                      <div
-                        class="text-right xl:text-xs text-xl uppercase font-medium"
-                      >
-                        {MultipleLang.value}
-                      </div>
-                    </th>
-                    <th class="py-3">
-                      <div
-                        class="text-right xl:text-xs text-xl uppercase font-medium"
-                      >
-                        Avg Cost
-                      </div>
-                    </th>
-                    <th class="py-3">
-                      <div
-                        class="text-right xl:text-xs text-xl uppercase font-medium"
-                      >
-                        Realized PnL
-                      </div>
-                    </th>
-                    <th
-                      class={`py-3 xl:pr-3 pr-6 ${
-                        listSupported.includes($typeWallet)
-                          ? ""
-                          : "rounded-tr-[10px]"
-                      }`}
-                    >
-                      <div
-                        class="text-right xl:text-xs text-xl uppercase font-medium"
-                      >
-                        Unrealized PnL
-                      </div>
-                    </th>
-                    {#if listSupported.includes($typeWallet)}
-                      <th
-                        class={`py-3 pr-3 rounded-tr-[10px] ${
-                          ["BUNDLE", "SOL"].includes($typeWallet)
-                            ? "xl:max-w-20 w-16"
-                            : "xl:w-12 w-32"
-                        }`}
-                      />
-                    {/if}
-                  </tr>
-                </thead>
-
-                {#if $chain === "ALL"}
-                  <tbody>
-                    {#if filteredHoldingDataToken && filteredHoldingDataToken.length === 0 && !isLoadingToken}
-                      <tr>
-                        <td {colspan}>
-                          <div
-                            class="flex justify-center items-center h-full py-3 px-3 xl:text-lg text-xl text-gray-400"
-                          >
-                            {#if holdingTokenData && holdingTokenData.length === 0}
-                              {MultipleLang.empty}
-                            {:else}
-                              All tokens less than $1
-                            {/if}
-                          </div>
-                        </td>
-                      </tr>
-                    {/if}
-                    {#each filteredHoldingDataToken as holding, index}
-                      <HoldingToken
-                        data={holding}
-                        lastIndex={filteredHoldingDataToken.length - 1 ===
-                          index}
-                        sumAllTokens={$totalAssets - sumNFT}
-                        index={index + 1}
-                        {triggerFireworkBonus}
-                      />
-                    {/each}
-                  </tbody>
-                  {#if isLoadingToken}
-                    <tbody>
-                      <tr>
-                        <td {colspan}>
-                          <div
-                            class="flex justify-center items-center h-full py-3 px-3"
-                          >
-                            <Loading />
-                          </div>
-                        </td>
-                      </tr>
-                    </tbody>
-                  {/if}
-                {/if}
-
-                {#if $chain !== "ALL"}
-                  {#if isLoadingToken}
-                    <tbody>
-                      <tr>
-                        <td {colspan}>
-                          <div
-                            class="flex justify-center items-center h-full py-3 px-3"
-                          >
-                            <Loading />
-                          </div>
-                        </td>
-                      </tr>
-                    </tbody>
-                  {:else}
-                    <tbody>
-                      {#if filteredHoldingDataToken && filteredHoldingDataToken.length === 0}
-                        <tr>
-                          <td {colspan}>
-                            <div
-                              class="flex justify-center items-center h-full py-3 px-3 xl:text-lg text-xl text-gray-400"
-                            >
-                              {#if holdingTokenData && holdingTokenData.length === 0}
-                                {MultipleLang.empty}
-                              {:else}
-                                All tokens less than $1
-                              {/if}
-                            </div>
-                          </td>
-                        </tr>
-                      {:else}
-                        {#each filteredHoldingDataToken as holding, index (holding.positionId)}
-                          <HoldingToken
-                            data={holding}
-                            lastIndex={filteredHoldingDataToken.length - 1 ==
-                              index}
-                            sumAllTokens={$totalAssets - sumNFT}
-                            index={index + 1}
-                            {triggerFireworkBonus}
-                          />
-                        {/each}
-                      {/if}
-                    </tbody>
-                  {/if}
-                {/if}
-              </table>
-            </div>
+            <TestVirtualTable
+              {sumNFT}
+              defaultData={holdingTokenData}
+              data={filteredHoldingDataToken}
+              isLoading={isLoadingToken}
+              {triggerFireworkBonus}
+            />
           </div>
         </div>
       {/if}
