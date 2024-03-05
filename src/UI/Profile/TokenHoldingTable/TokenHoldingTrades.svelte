@@ -3,6 +3,7 @@
   import dayjs from "dayjs";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { timeFrame } from "~/utils";
+  import VirtualList from "svelte-tiny-virtual-list";
 
   import Loading from "~/components/Loading.svelte";
   import TokenHoldingTradeItem from "./TokenHoldingTradeItem.svelte";
@@ -193,9 +194,6 @@
           <div
             class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
             on:click={() => {
-              if (formatData && formatData.length === 0) {
-                return;
-              }
               selectedTimeFrame = type.value;
             }}
           >
@@ -213,11 +211,7 @@
                 transition={{ type: "spring", duration: 0.6 }}
               >
                 <div
-                  class={`absolute inset-0 rounded-full z-1 ${
-                    formatData && formatData.length === 0
-                      ? "bg-[#dddddd]"
-                      : "bg-[#1E96FC]"
-                  }`}
+                  class="absolute inset-0 rounded-full z-1 bg-[#1E96FC]"
                   use:motion
                 />
               </Motion>

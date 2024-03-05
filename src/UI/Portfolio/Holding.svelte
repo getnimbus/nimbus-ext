@@ -31,13 +31,12 @@
   export let formatHoldingTokenData;
 
   import HoldingNFT from "~/UI/Portfolio/HoldingNFT.svelte";
+  import HoldingToken from "~/UI/Portfolio/HoldingToken.svelte";
   import Select from "~/components/Select.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import TooltipTitle from "~/components/TooltipTitle.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import Loading from "~/components/Loading.svelte";
-
-  import TestVirtualTable from "~/components/TestVirtualTable.svelte";
 
   let dataSubWS = [];
   let filteredUndefinedCmcHoldingTokenData = [];
@@ -624,8 +623,7 @@
                 />
               </div>
             </div>
-
-            <TestVirtualTable
+            <HoldingToken
               {sumNFT}
               defaultData={holdingTokenData}
               data={filteredHoldingDataToken}
