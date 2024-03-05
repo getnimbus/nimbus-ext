@@ -1280,8 +1280,8 @@
             search = "";
           }
         }}
-        autofocus
         bind:value={search}
+        autofocus={true}
         placeholder={MultipleLang.search_placeholder}
         type="text"
         class={`flex-1 xl:py-2 py-3 xl:text-sm text-2xl border-none focus:outline-none focus:ring-0 ${

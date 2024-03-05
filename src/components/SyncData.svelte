@@ -1,8 +1,9 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { wallet, chain } from "~/store";
+  import { wallet } from "~/store";
   import { wait } from "~/entries/background/utils";
   import { nimbus } from "~/lib/network";
+  import { createQuery } from "@tanstack/svelte-query";
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import Testimonial from "~/UI/Testimonial/Testimonial.svelte";
@@ -22,21 +23,25 @@
   });
 
   const handleValidateAddress = async (address: string) => {
-    try {
-      const response = await nimbus.get(`/v2/address/${address}/validate`);
-      return response?.data;
-    } catch (e) {
-      console.error(e);
-      return {
+    const response = await nimbus.get(`/v2/address/${address}/validate`);
+    return (
+      response?.data || {
         address: "",
         type: "",
-      };
-    }
+      }
+    );
   };
+
+  $: queryValidate = createQuery({
+    queryKey: ["validate", $wallet],
+    queryFn: () => handleValidateAddress($wallet),
+    staleTime: Infinity,
+    retry: false,
+  });
 
   const getSync = async () => {
     try {
-      const validateAccount = await handleValidateAddress($wallet);
+      const validateAccount = $queryValidate.data;
       await nimbus
         .get(
           `/v2/address/${address}/sync?chain=${
@@ -51,7 +56,8 @@
 
   const getSyncStatus = async () => {
     try {
-      const validateAccount = await handleValidateAddress($wallet);
+      const validateAccount = $queryValidate.data;
+
       const response = await nimbus
         .get(
           `/v2/address/${address}/sync-status?chain=${

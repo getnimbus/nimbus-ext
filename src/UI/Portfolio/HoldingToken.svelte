@@ -426,7 +426,7 @@
     <VirtualList
       scrollDirection="vertical"
       width="100%"
-      height={data.length < 10 ? data.length * 60 + 20 : 940}
+      height={data.length < 10 ? data.length * 75 + 20 : 940}
       bind:this={virtualList}
       itemCount={data.length}
       itemSize={(index) => {
@@ -643,7 +643,7 @@
                     </svg>
                     {#if isShowTooltipReport && selectedItemIndex === index}
                       <div
-                        class="absolute left-0 -top-8"
+                        class="absolute -top-8 left-1/2 transform -translate-x-1/2"
                         style="z-index: 2147483648;"
                       >
                         <Tooltip text="Report" />

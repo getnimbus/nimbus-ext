@@ -130,28 +130,34 @@
   };
 
   const handleValidateAddress = async (address: string) => {
-    try {
+    if (address) {
       const response = await nimbus.get(`/v2/address/${address}/validate`);
-      return response?.data;
-    } catch (e) {
-      console.error(e);
-      return {
-        address: "",
-        type: "",
-      };
+      return (
+        response?.data || {
+          address: "",
+          type: "",
+        }
+      );
     }
   };
 
-  const getAnalyticHistorical = async (address, chain) => {
+  $: queryValidate = createQuery({
+    queryKey: ["validate", $wallet],
+    queryFn: () => handleValidateAddress($wallet),
+    staleTime: Infinity,
+    retry: false,
+  });
+
+  const getAnalyticHistorical = async (chain) => {
     let addressChain = chain;
 
     if (addressChain === "ALL") {
-      const validateAccount = await handleValidateAddress(address);
+      const validateAccount = $queryValidate.data;
       addressChain = validateAccount?.type;
     }
 
     const response = await nimbus.get(
-      `/v2/analysis/${address}/historical?chain=${
+      `/v2/analysis/${$wallet}/historical?chain=${
         addressChain === "BUNDLE" ? "" : addressChain
       }`
     );
@@ -167,9 +173,9 @@
 
   $: query = createQuery({
     queryKey: ["historical", $wallet, $chain],
-    enabled: enabledQuery && isFetch,
-    queryFn: () => getAnalyticHistorical($wallet, $chain),
+    queryFn: () => getAnalyticHistorical($chain),
     staleTime: Infinity,
+    enabled: enabledQuery && isFetch && !$queryValidate.isFetching,
   });
 
   $: {
