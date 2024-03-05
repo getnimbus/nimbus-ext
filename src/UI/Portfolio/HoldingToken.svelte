@@ -52,6 +52,7 @@
   let isShowCMC = false;
   let isShowCoingecko = false;
   let isShowReport = false;
+  let isShowTooltipReport = false;
 
   let showTableVaults = false;
   let selectedVaults;
@@ -445,6 +446,34 @@
         let:index
         let:style
         {style}
+        on:mouseover={() => {
+          if ($user && Object.keys($user).length !== 0) {
+            selectedItemIndex = index;
+            isShowReport = true;
+          }
+          if (data[index]?.cmc_slug) {
+            selectedItemIndex = index;
+            isShowCMC = true;
+          }
+          if (data[index]?.cg_id) {
+            selectedItemIndex = index;
+            isShowCoingecko = true;
+          }
+        }}
+        on:mouseleave={() => {
+          if ($user && Object.keys($user).length !== 0) {
+            selectedItemIndex = -1;
+            isShowReport = false;
+          }
+          if (data[index]?.cmc_slug) {
+            selectedItemIndex = -1;
+            isShowCMC = false;
+          }
+          if (data[index]?.cg_id) {
+            selectedItemIndex = -1;
+            isShowCoingecko = false;
+          }
+        }}
       >
         <div
           class={`col-spans-2 pl-3 py-3 ${
@@ -459,33 +488,6 @@
           style={`${data.length - 1 === index ? "border-bottom-left-radius: 10px;" : ""}`}
         >
           <div class="relative flex items-center gap-3 text-left">
-            {#if isShowReport}
-              <div
-                class="hidden xl:block absolute w-5 cursor-pointer -left-8 top-3 opacity-80 hover:opacity-60"
-                on:click={() => (isShowReportTable = true)}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                >
-                  <g
-                    fill="none"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                  >
-                    <path d="M0 0h24v24H0z" />
-                    <path
-                      fill="currentColor"
-                      d="M19 4c.852 0 1.297.986.783 1.623l-.076.084L15.915 9.5l3.792 3.793c.603.602.22 1.614-.593 1.701L19 15H6v6a1 1 0 0 1-.883.993L5 22a1 1 0 0 1-.993-.883L4 21V5a1 1 0 0 1 .883-.993L5 4h14z"
-                    />
-                  </g>
-                </svg>
-              </div>
-            {/if}
-
             <div class="relative">
               <div class="rounded-full w-[30px] h-[30px] overflow-hidden">
                 <Image logo={data[index].logo} defaultLogo={defaultToken} />
@@ -508,9 +510,13 @@
                 <div
                   class="relative text-2xl font-medium xl:text-sm"
                   on:mouseover={() => {
+                    selectedItemIndex = index;
                     isShowTooltipName = true;
                   }}
-                  on:mouseleave={() => (isShowTooltipName = false)}
+                  on:mouseleave={() => {
+                    selectedItemIndex = -1;
+                    isShowTooltipName = false;
+                  }}
                 >
                   {#if data[index].name === undefined}
                     N/A
@@ -547,7 +553,7 @@
                       {/if}
                     </div>
                   {/if}
-                  {#if isShowTooltipName && data[index]?.name?.length > 20}
+                  {#if isShowTooltipName && selectedItemIndex === index && data[index]?.name?.length > 20}
                     <div
                       class="absolute left-0 -top-8"
                       style="z-index: 2147483648;"
@@ -576,20 +582,24 @@
                 {/if}
               </div>
 
-              <div class="flex items-center gap-2">
+              <div class="flex items-center gap-2 min-h-[20px]">
                 <div
                   class="relative text-lg font-medium text_00000080 xl:text-xs"
                   on:mouseover={() => {
+                    selectedItemIndex = index;
                     isShowTooltipSymbol = true;
                   }}
-                  on:mouseleave={() => (isShowTooltipSymbol = false)}
+                  on:mouseleave={() => {
+                    selectedItemIndex = -1;
+                    isShowTooltipSymbol = false;
+                  }}
                 >
                   {#if data[index].symbol === undefined}
                     N/A
                   {:else}
                     {shorterName(data[index].symbol, 20)}
                   {/if}
-                  {#if isShowTooltipSymbol && data[index].symbol.length > 20}
+                  {#if isShowTooltipSymbol && selectedItemIndex === index && data[index].symbol.length > 20}
                     <div
                       class="absolute left-0 -top-8"
                       style="z-index: 2147483648;"
@@ -599,7 +609,50 @@
                   {/if}
                 </div>
 
-                {#if isShowCMC}
+                {#if isShowReport && selectedItemIndex === index}
+                  <div
+                    class="relative w-5 cursor-pointer"
+                    on:click={() => (isShowReportTable = true)}
+                    on:mouseover={() => {
+                      selectedItemIndex = index;
+                      isShowTooltipReport = true;
+                    }}
+                    on:mouseleave={() => {
+                      selectedItemIndex = -1;
+                      isShowTooltipReport = false;
+                    }}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                    >
+                      <g
+                        fill="none"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                      >
+                        <path d="M0 0h24v24H0z" />
+                        <path
+                          fill="currentColor"
+                          d="M19 4c.852 0 1.297.986.783 1.623l-.076.084L15.915 9.5l3.792 3.793c.603.602.22 1.614-.593 1.701L19 15H6v6a1 1 0 0 1-.883.993L5 22a1 1 0 0 1-.993-.883L4 21V5a1 1 0 0 1 .883-.993L5 4h14z"
+                        />
+                      </g>
+                    </svg>
+                    {#if isShowTooltipReport && selectedItemIndex === index}
+                      <div
+                        class="absolute left-0 -top-8"
+                        style="z-index: 2147483648;"
+                      >
+                        <Tooltip text="Report" />
+                      </div>
+                    {/if}
+                  </div>
+                {/if}
+
+                {#if isShowCMC && selectedItemIndex === index}
                   <a
                     href={`https://coinmarketcap.com/currencies/${data[index]?.cmc_slug}`}
                     target="_blank"
@@ -618,7 +671,7 @@
                   </a>
                 {/if}
 
-                {#if isShowCoingecko}
+                {#if isShowCoingecko && selectedItemIndex === index}
                   <a
                     href={`https://www.coingecko.com/en/coins/${data[index]?.cg_id}`}
                     target="_blank"
@@ -836,10 +889,6 @@
                       />
                     </svg>
                   </a>
-                {/if}
-
-                {#if !isShowCMC || !isShowCoingecko}
-                  <div class="h-[20px]" />
                 {/if}
 
                 {#if data[index]?.positionType === "ERC_404"}
