@@ -20,6 +20,7 @@
   import Image from "~/components/Image.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
   import Button from "~/components/Button.svelte";
+  import Loading from "~/components/Loading.svelte";
   import NftDetailSidebar from "~/UI/NFTDetail/NFTDetailSidebar.svelte";
 
   import TrendUp from "~/assets/trend-up.svg";
@@ -368,7 +369,7 @@
                     </svg>
                     {#if isShowTooltipReport && selectedItemIndex === index}
                       <div
-                        class="absolute left-0 -top-8"
+                        class="absolute -top-8 left-1/2 transform -translate-x-1/2"
                         style="z-index: 2147483648;"
                       >
                         <Tooltip text="Report" />
@@ -698,6 +699,16 @@
         </div>
       </div>
     </VirtualList>
+  {/if}
+
+  {#if isLoading}
+    <div class="w-full h-full grid grid-cols-8">
+      <div
+        class="col-span-full flex justify-center items-center h-full py-3 px-3"
+      >
+        <Loading />
+      </div>
+    </div>
   {/if}
 </div>
 

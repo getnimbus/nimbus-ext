@@ -137,17 +137,23 @@
   });
 
   const handleValidateAddress = async (address: string) => {
-    try {
+    if (address) {
       const response = await nimbus.get(`/v2/address/${address}/validate`);
-      return response?.data;
-    } catch (e) {
-      console.error(e);
-      return {
-        address: "",
-        type: "",
-      };
+      return (
+        response?.data || {
+          address: "",
+          type: "",
+        }
+      );
     }
   };
+
+  $: queryValidate = createQuery({
+    queryKey: ["validate", $wallet],
+    queryFn: () => handleValidateAddress($wallet),
+    staleTime: Infinity,
+    retry: false,
+  });
 
   const getPersonalizeTag = async (address) => {
     const response = await nimbus
@@ -202,17 +208,17 @@
     }
   };
 
-  const getHoldingToken = async (address, chain) => {
+  const getHoldingToken = async (chain) => {
     let addressChain = chain;
 
     if (addressChain === "ALL") {
-      const validateAccount = await handleValidateAddress(address);
+      const validateAccount = $queryValidate.data;
       addressChain = validateAccount?.type;
     }
 
     const response: HoldingTokenRes = await nimbus
       .get(
-        `/v2/address/${address}/holding?chain=${
+        `/v2/address/${$wallet}/holding?chain=${
           addressChain === "BUNDLE" ? "" : addressChain
         }`
       )
@@ -394,8 +400,8 @@
   // query token holding
   $: queryTokenHolding = createQuery({
     queryKey: ["holding-token", $wallet, $chain],
-    enabled: !!$wallet,
-    queryFn: () => getHoldingToken($wallet, $chain),
+    enabled: !!$wallet && !$queryValidate.isFetching,
+    queryFn: () => getHoldingToken($chain),
     staleTime: Infinity,
   });
 

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { nimbus } from "~/lib/network";
   import { priceSubscribe } from "~/lib/price-ws";
-  import { wallet, isDarkMode, realtimePrice } from "~/store";
+  import { wallet, chain, isDarkMode, realtimePrice } from "~/store";
   import { createQuery } from "@tanstack/svelte-query";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
 
@@ -25,26 +25,37 @@
   let selectedTypeDisplay: "grid" | "table" = "grid";
 
   const handleValidateAddress = async (address: string) => {
-    try {
-      const response: any = await nimbus.get(`/v2/address/${address}/validate`);
-      return response?.data;
-    } catch (e) {
-      console.error(e);
-      return {
-        address: "",
-        type: "",
-      };
+    if (address) {
+      const response = await nimbus.get(`/v2/address/${address}/validate`);
+      return (
+        response?.data || {
+          address: "",
+          type: "",
+        }
+      );
     }
   };
 
+  $: queryValidate = createQuery({
+    queryKey: ["validate", $wallet],
+    queryFn: () => handleValidateAddress($wallet),
+    staleTime: Infinity,
+    retry: false,
+  });
+
   // nft holding
-  const getHoldingNFT = async (address) => {
-    const validateAccount = await handleValidateAddress(address);
+  const getHoldingNFT = async (chain) => {
+    let addressChain = chain;
+
+    if (addressChain === "ALL") {
+      const validateAccount = $queryValidate.data;
+      addressChain = validateAccount?.type;
+    }
 
     const response = await nimbus
       .get(
-        `/v2/address/${address}/nft-holding?chain=${
-          validateAccount?.type === "BUNDLE" ? "" : validateAccount?.type
+        `/v2/address/${$wallet}/nft-holding?chain=${
+          addressChain === "BUNDLE" ? "" : addressChain
         }`
       )
       .then((response: any) => response?.data);
@@ -88,11 +99,11 @@
 
   // query nft holding
   $: queryNftHolding = createQuery({
-    queryKey: ["nft-holding", $wallet],
-    queryFn: () => getHoldingNFT($wallet),
+    queryKey: ["nft-holding", $wallet, $chain],
+    queryFn: () => getHoldingNFT($chain),
     staleTime: Infinity,
     retry: false,
-    enabled: $wallet && $wallet.length !== 0,
+    enabled: $wallet && $wallet.length !== 0 && !$queryValidate.isFetching,
   });
 
   $: {

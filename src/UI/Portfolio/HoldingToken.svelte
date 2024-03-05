@@ -643,7 +643,7 @@
                     </svg>
                     {#if isShowTooltipReport && selectedItemIndex === index}
                       <div
-                        class="absolute left-0 -top-8"
+                        class="absolute -top-8 left-1/2 transform -translate-x-1/2"
                         style="z-index: 2147483648;"
                       >
                         <Tooltip text="Report" />
