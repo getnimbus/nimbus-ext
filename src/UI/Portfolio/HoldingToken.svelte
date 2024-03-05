@@ -353,7 +353,7 @@
   }`}
 >
   <div
-    class={`bg_f4f5f8 grid ${listSupported.includes($typeWallet) ? "grid-cols-9" : "grid-cols-8"} ${isStickyTableToken ? "sticky top-0 z-10" : ""}`}
+    class={`bg_f4f5f8 grid ${listSupported.includes($typeWallet) ? "grid-cols-9" : "grid-cols-8"} ${isStickyTableToken ? "sticky top-0 z-9" : ""}`}
     bind:this={tableTokenHeader}
   >
     <div class="col-spans-2 pl-3 py-3 rounded-tl-[10px]">
