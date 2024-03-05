@@ -280,7 +280,7 @@
     <VirtualList
       scrollDirection="vertical"
       width="100%"
-      height={data.length < 10 ? data.length * 60 + 20 : 940}
+      height={data.length < 10 ? data.length * 75 + 20 : 940}
       itemCount={data.length}
       itemSize={75}
     >
