@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { onMount } from "svelte";
   import { i18n } from "~/lib/i18n";
   import {
     wallet,
@@ -34,9 +33,7 @@
   import HoldingToken from "~/UI/Portfolio/HoldingToken.svelte";
   import Select from "~/components/Select.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
-  import TooltipTitle from "~/components/TooltipTitle.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
-  import Loading from "~/components/Loading.svelte";
 
   let dataSubWS = [];
   let filteredUndefinedCmcHoldingTokenData = [];
@@ -47,10 +44,6 @@
   let formatDataNFT = [];
   let sumTokens = 0;
   let sumNFT = 0;
-  let tableTokenHeader;
-  let isStickyTableToken = false;
-  let tableNFTHeader;
-  let isStickyTableNFT = false;
 
   let selectedTypeTable = {
     label: "",
@@ -67,35 +60,8 @@
     value: 1,
   };
 
-  onMount(() => {
-    const handleScroll = () => {
-      const clientRectTokenHeader = tableTokenHeader?.getBoundingClientRect();
-      isStickyTableToken = clientRectTokenHeader?.top <= 0;
-      const clientRectNFTHeader = tableNFTHeader?.getBoundingClientRect();
-      isStickyTableNFT = clientRectNFTHeader?.top <= 0;
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  });
-
   const MultipleLang = {
     holding: i18n("newtabPage.holding", "Holding"),
-    token: i18n("newtabPage.token", "Tokens"),
-    nft: i18n("newtabPage.nft", "NFTs"),
-    assets: i18n("newtabPage.assets", "Assets"),
-    price: i18n("newtabPage.price", "Price"),
-    amount: i18n("newtabPage.amount", "Amount"),
-    value: i18n("newtabPage.value", "Value"),
-    profit: i18n("newtabPage.profit", "Profit & Loss"),
-    total_spent: i18n("newtabPage.total_spent", "Total Spent"),
-    collection: i18n("newtabPage.collection", "Collection"),
-    floor_price: i18n("newtabPage.floor_price", "Floor Price"),
-    current_value: i18n("newtabPage.current_value", "Current Value"),
-    Balance: i18n("newtabPage.Balance", "Balance"),
-    hide: i18n("newtabPage.hide-less-than-1", "Hide tokens less than $1"),
-    empty: i18n("newtabPage.empty", "Empty"),
   };
 
   $: {
@@ -649,165 +615,11 @@
                 bind:selected={filterNFTType}
               />
             </div>
-
-            <div
-              class={`rounded-[10px] xl:overflow-visible overflow-x-auto h-full ${
-                $isDarkMode
-                  ? "bg-[#131313]"
-                  : "bg-[#fff] border border_0000000d"
-              }`}
-            >
-              <table class="table-auto xl:w-full w-[2000px] h-full">
-                <thead
-                  class={isStickyTableNFT ? "sticky top-0 z-9" : ""}
-                  bind:this={tableNFTHeader}
-                >
-                  <tr class="bg_f4f5f8">
-                    <th
-                      class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8 xl:w-[220px] w-[350px]"
-                    >
-                      <div
-                        class="text-left xl:text-xs text-xl uppercase font-medium"
-                      >
-                        {MultipleLang.collection}
-                      </div>
-                    </th>
-                    <th
-                      class="py-3 xl:static xl:bg-transparent sticky left-[350px] z-10 bg_f4f5f8 w-[200px]"
-                    >
-                      <div
-                        class="text-left xl:text-xs text-xl uppercase font-medium"
-                      >
-                        {MultipleLang.Balance}
-                      </div>
-                    </th>
-                    <th class="py-3">
-                      <div
-                        class="text-right xl:text-xs text-xl uppercase font-medium"
-                      >
-                        <TooltipTitle
-                          tooltipText={false
-                            ? "The Floor price from Magic Eden marketplace. "
-                            : "The Floor price of last 24h, if there is no volume, the floor price is 0"}
-                          link={false ? "https://magiceden.io/ordinals" : ""}
-                        >
-                          {MultipleLang.floor_price}
-                        </TooltipTitle>
-                      </div>
-                    </th>
-                    <th class="py-3">
-                      <div
-                        class="text-right xl:text-xs text-xl uppercase font-medium"
-                      >
-                        Cost
-                      </div>
-                    </th>
-                    <th class="py-3">
-                      <div
-                        class="text-right xl:text-xs text-xl uppercase font-medium"
-                      >
-                        {MultipleLang.current_value}
-                      </div>
-                    </th>
-                    <th class="py-3">
-                      <div
-                        class="text-right xl:text-xs text-xl uppercase font-medium"
-                      >
-                        <TooltipTitle
-                          tooltipText="Price NFTs now - Price NFTs at time you spent"
-                        >
-                          {MultipleLang.profit}
-                        </TooltipTitle>
-                      </div>
-                    </th>
-                    <th class="py-3 xl:w-12 w-32 rounded-tr-[10px]" />
-                  </tr>
-                </thead>
-
-                {#if $chain === "ALL"}
-                  <tbody>
-                    {#if filteredHoldingDataNFT && filteredHoldingDataNFT.length === 0 && !isLoadingNFT}
-                      <tr>
-                        <td colspan={7}>
-                          <div
-                            class="flex justify-center items-center h-full py-3 px-3 xl:text-lg text-xl text-gray-400 view-nft-detail"
-                          >
-                            {#if formatDataNFT && formatDataNFT.length === 0}
-                              {MultipleLang.empty}
-                            {:else}
-                              All NFT Collections less than $1
-                            {/if}
-                          </div>
-                        </td>
-                      </tr>
-                    {/if}
-                    {#each filteredHoldingDataNFT as holding, index}
-                      <HoldingNFT
-                        data={holding}
-                        {index}
-                        lastIndex={filteredHoldingDataNFT.length - 1 == index}
-                      />
-                    {/each}
-                  </tbody>
-                  {#if isLoadingNFT}
-                    <tbody>
-                      <tr>
-                        <td colspan={7}>
-                          <div
-                            class="flex justify-center items-center h-full py-3 px-3"
-                          >
-                            <Loading />
-                          </div>
-                        </td>
-                      </tr>
-                    </tbody>
-                  {/if}
-                {/if}
-
-                {#if $chain !== "ALL"}
-                  {#if isLoadingNFT}
-                    <tbody>
-                      <tr>
-                        <td colspan={7}>
-                          <div
-                            class="flex justify-center items-center h-full py-3 px-3"
-                          >
-                            <Loading />
-                          </div>
-                        </td>
-                      </tr>
-                    </tbody>
-                  {:else}
-                    <tbody>
-                      {#if filteredHoldingDataNFT && filteredHoldingDataNFT.length === 0}
-                        <tr>
-                          <td colspan={7}>
-                            <div
-                              class="flex justify-center items-center h-full py-3 px-3 xl:text-lg text-xl text-gray-400 view-nft-detail"
-                            >
-                              {#if formatDataNFT && formatDataNFT.length === 0}
-                                {MultipleLang.empty}
-                              {:else}
-                                All NFT Collections less than $1
-                              {/if}
-                            </div>
-                          </td>
-                        </tr>
-                      {:else}
-                        {#each filteredHoldingDataNFT as holding, index}
-                          <HoldingNFT
-                            lastIndex={filteredHoldingDataNFT.length - 1 ==
-                              index}
-                            data={holding}
-                            {index}
-                          />
-                        {/each}
-                      {/if}
-                    </tbody>
-                  {/if}
-                {/if}
-              </table>
-            </div>
+            <HoldingNFT
+              defaultData={holdingNFTData}
+              data={filteredHoldingDataNFT}
+              isLoading={isLoadingNFT}
+            />
           </div>
         {/if}
       {/if}
