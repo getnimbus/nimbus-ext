@@ -11,6 +11,8 @@
   import { nimbus } from "~/lib/network";
   import { formatBalance } from "~/utils";
 
+  import Loading from "~/components/Loading.svelte";
+
   export let id: string;
   export let mobile: boolean = false;
   export let contractAddress;
@@ -19,11 +21,13 @@
   export let sellHistoryTradeList;
   export let buyHistoryTradeList;
   export let selectedTypeChart;
+  export let avgCost;
 
   let CONTAINER_ID = "";
   let chartContainer;
   let baseAsset;
   let isEmpty = false;
+  let isLoading = false;
 
   const nativeTokenList = [
     "ETH",
@@ -84,6 +88,7 @@
   }
 
   const handleGetPairData = async (address: string) => {
+    isLoading = true;
     try {
       const blockchain = handleFormatBlockChainId(
         $typeWallet === "CEX" ? id : chain
@@ -96,7 +101,12 @@
         const res = await nimbus.get("/token/market-pairs/mobula", {
           params,
         });
-        if (res && res?.data && res?.data?.pairs.length !== 0) {
+        if (
+          res &&
+          res?.data &&
+          res?.data?.pairs &&
+          res?.data?.pairs?.length !== 0
+        ) {
           baseAsset = {
             name: id,
             address: res?.data?.pairs[0]?.address,
@@ -113,6 +123,8 @@
     } catch (error) {
       isEmpty = true;
       console.error(error);
+    } finally {
+      isLoading = false;
     }
   };
 
@@ -174,6 +186,26 @@
           tvWidget.onChartReady(() => {
             tvWidget.applyOverrides(overrides(!$isDarkMode) || {});
 
+            if (avgCost !== 0) {
+              tvWidget.activeChart().createShape(
+                {
+                  time: 0,
+                  price: Number(avgCost || 0),
+                },
+                {
+                  shape: "horizontal_line",
+                  lock: true,
+                  text: "Avg Cost",
+                  overrides: {
+                    linecolor: "#eab308",
+                    showLabel: true,
+                    textcolor: "#eab308",
+                    horzLabelsAlign: "right",
+                  },
+                }
+              );
+            }
+
             buyHistoryTradeList.forEach((item) => {
               tvWidget
                 .activeChart()
@@ -223,14 +255,28 @@
   }
 </script>
 
-{#if isEmpty}
+{#if isLoading}
   <div
     class="flex justify-center items-center text-lg text-gray-400 h-[485px] relative"
   >
-    Empty
+    <Loading />
   </div>
 {:else}
-  <div class="w-full h-[485px]" id={CONTAINER_ID} bind:this={chartContainer} />
+  <div>
+    {#if isEmpty}
+      <div
+        class="flex justify-center items-center text-lg text-gray-400 h-[485px] relative"
+      >
+        Empty
+      </div>
+    {:else}
+      <div
+        class="w-full h-[485px]"
+        id={CONTAINER_ID}
+        bind:this={chartContainer}
+      />
+    {/if}
+  </div>
 {/if}
 
 <style>

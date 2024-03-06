@@ -1027,6 +1027,7 @@
               {buyHistoryTradeList}
               {sellHistoryTradeList}
               {selectedTypeChart}
+              {avgCost}
             />
           </div>
         {/if}
