@@ -741,7 +741,7 @@
   </div>
 </div>
 
-<!-- <Banner /> -->
+<Banner />
 
 <!-- Mobile header -->
 <div
