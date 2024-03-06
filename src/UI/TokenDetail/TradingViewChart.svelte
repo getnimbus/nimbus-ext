@@ -197,6 +197,7 @@
                   lock: true,
                   text: "Avg Cost",
                   overrides: {
+                    linewidth: 0.5,
                     linecolor: "#eab308",
                     showLabel: true,
                     textcolor: "#eab308",
