@@ -904,7 +904,11 @@
       </div>
     </div>
   </div>
-  <NftDetailSidebar {selectedNftCollectionId} {selectedNftCollectionChain} />
+  <NftDetailSidebar
+    {showSideNftDetail}
+    {selectedNftCollectionId}
+    {selectedNftCollectionChain}
+  />
 </OverlaySidebar>
 
 {#if showToast}
