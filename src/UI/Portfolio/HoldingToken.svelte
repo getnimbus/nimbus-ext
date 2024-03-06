@@ -8,7 +8,6 @@
     realtimePrice,
     isDarkMode,
     typeWallet,
-    totalAssets,
   } from "~/store";
   import { shorterName, shorterAddress } from "~/utils";
   import { listSupported, detectedChain } from "~/lib/chains";
@@ -41,7 +40,7 @@
   import TrendDown from "~/assets/trend-down.svg";
   import defaultToken from "~/assets/defaultToken.png";
 
-  export let sumNFT;
+  export let sumTokens;
   export let defaultData;
   export let data;
   export let isLoading;
@@ -209,7 +208,7 @@
 
   const handleCalculateRatio = (data, price) => {
     const value = Number(data?.amount) * Number(price);
-    return (value / $totalAssets - sumNFT) * 100;
+    return (value / sumTokens) * 100;
   };
 
   const handleCalculateRealizedProfit = (data) => {
