@@ -57,7 +57,6 @@
   const getSyncStatus = async () => {
     try {
       const validateAccount = $queryValidate.data;
-
       const response = await nimbus
         .get(
           `/v2/address/${address}/sync-status?chain=${
@@ -127,7 +126,7 @@
   };
 
   $: {
-    if ($wallet) {
+    if ($wallet && !$queryValidate.isFetching) {
       address = $wallet;
       handleGetAllData();
     }
