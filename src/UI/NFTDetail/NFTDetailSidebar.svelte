@@ -14,6 +14,7 @@
   import NftDetailItem from "./NFTDetailItem.svelte";
   import NftTradeHistory from "./NFTTradeHistory.svelte";
 
+  export let showSideNftDetail;
   export let selectedNftCollectionId;
   export let selectedNftCollectionChain;
 
@@ -103,7 +104,11 @@
     queryFn: () => getHoldingNFT($chain),
     staleTime: Infinity,
     retry: false,
-    enabled: $wallet && $wallet.length !== 0 && !$queryValidate.isFetching,
+    enabled:
+      $wallet &&
+      $wallet.length !== 0 &&
+      showSideNftDetail &&
+      !$queryValidate.isFetching,
   });
 
   $: {
