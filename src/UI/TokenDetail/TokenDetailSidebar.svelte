@@ -14,6 +14,7 @@
   import { useNavigate } from "svelte-navigator";
   import dayjs from "dayjs";
 
+  import TooltipTitle from "~/components/TooltipTitle.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import OverviewCard from "~/components/OverviewCard.svelte";
@@ -115,6 +116,8 @@
 
   let sellHistoryTradeList = [];
   let buyHistoryTradeList = [];
+  let buyAmounts = 0;
+  let sellAmounts = 0;
   let dataHistoryTokenDetail = [];
   let dataCSV = [];
 
@@ -139,6 +142,14 @@
         (item) =>
           item?.to_token_address.toLowerCase() ===
           data?.contractAddress.toLowerCase()
+      );
+      buyAmounts = (buyHistoryTradeList || []).reduce(
+        (prev, item) => prev + Number(item.quantity_out),
+        0
+      );
+      sellAmounts = (sellHistoryTradeList || []).reduce(
+        (prev, item) => prev + Number(item.quantity_in),
+        0
       );
     }
   }
@@ -417,7 +428,16 @@
       }`}
     >
       <div class="flex justify-between items-center gap-6">
-        <div class="xl:text-2xl text-4xl font-medium">History</div>
+        {#if sellAmounts > buyAmounts}
+          <TooltipTitle
+            tooltipText="Unusual trade. Total sell amount > total buy amount"
+            type="warning"
+          >
+            <div class="pl-4 xl:text-2xl text-4xl font-medium">History</div>
+          </TooltipTitle>
+        {:else}
+          <div class="xl:text-2xl text-4xl font-medium">History</div>
+        {/if}
         <HistoryCsvExport
           data={dataCSV}
           name={`${shorterAddress($wallet)}_${data?.symbol}_Trades`}
