@@ -26,8 +26,6 @@
     realizedProfit: i18n("newtabPage.realizedProfit", "Realized PnL"),
     unrealizedProfit: i18n("newtabPage.unrealizedProfit", "Unrealized PnL"),
   };
-
-  $: networth = $totalAssets + $totalPositions;
 </script>
 
 <ErrorBoundary>
@@ -35,7 +33,11 @@
     <div class="flex flex-col justify-between flex-1 gap-6 md:flex-row">
       <OverviewCard title={MultipleLang.networth}>
         <div class="flex text-5xl xl:text-3xl">
-          <CountUpNumber number={networth} type="value" personalValue />
+          <CountUpNumber
+            number={$totalAssets + $totalPositions}
+            type="value"
+            personalValue
+          />
         </div>
         <div
           class={`flex items-center gap-3 ${

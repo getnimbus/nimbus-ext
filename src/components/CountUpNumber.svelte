@@ -23,7 +23,9 @@
   let showTooltip = false;
 
   $: {
-    myNumber.set(number);
+    if (number) {
+      myNumber.set(number);
+    }
   }
 
   $: formatted = derived(myNumber, ($myNumber) => $myNumber);
