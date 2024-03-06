@@ -32,7 +32,7 @@
     </div>
     <div class="flex flex-wrap items-center gap-x-4 xl:gap-y-2 gap-y-3">
       <div class="xl:text-sm text-2xl xl:leading-6 leading-8 flex items-center">
-        <strong class="font-semibold"
+        <strong class="font-semibold flex items-center gap-1"
           >Swap And Get <img src={goldImg} alt="" class="w-[18px] h-[18px]" /> GM
           Points</strong
         >
