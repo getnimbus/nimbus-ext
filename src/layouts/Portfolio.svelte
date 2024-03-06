@@ -787,7 +787,11 @@
 
   $: {
     if ($wallet || $chain) {
-      if ($wallet?.length !== 0 && $chain?.length !== 0) {
+      if (
+        $wallet?.length !== 0 &&
+        $chain?.length !== 0 &&
+        !$queryValidate.isFetching
+      ) {
         overviewDataPerformance = {
           performance: [],
           portfolioChart: [],
@@ -874,7 +878,7 @@
   }
 
   $: {
-    if ($triggerUpdateBundle) {
+    if ($triggerUpdateBundle && !$queryValidate.isFetching) {
       handleGetAllData("reload");
       triggerUpdateBundle.update((n) => (n = false));
     }
