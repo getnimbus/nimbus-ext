@@ -189,9 +189,20 @@
             if (avgCost !== 0) {
               tvWidget.activeChart().createShape(
                 {
+                  time: 0,
                   price: Number(avgCost || 0),
                 },
-                { shape: "horizontal_line", text: "Avg Cost" }
+                {
+                  shape: "horizontal_line",
+                  lock: true,
+                  text: "Avg Cost",
+                  overrides: {
+                    linecolor: "#eab308",
+                    showLabel: true,
+                    textcolor: "#eab308",
+                    horzLabelsAlign: "right",
+                  },
+                }
               );
             }
 
