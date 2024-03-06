@@ -873,7 +873,9 @@
       <div class="header header-container">
         <div class="flex flex-col max-w-[2000px] m-auto xl:w-[82%] w-[90%]">
           <div class="flex flex-col mb-5 gap-14">
-            <div class="flex items-center justify-between gap-6">
+            <div
+              class="flex lg:flex-row flex-col lg:items-center items-start justify-between gap-6"
+            >
               <!-- desktop list address wallet -->
               <div class="hidden xl:block">
                 {#if listAddress && listAddress?.length !== 0}
@@ -1137,7 +1139,7 @@
 
               <!-- btn add address wallet -->
               <div
-                class="relative xl:w-max w-[270px] flex justify-end"
+                class="relative xl:w-max lg:w-[290px] w-max flex justify-end"
                 on:mouseenter={() => {
                   if (
                     isDisabled ||
@@ -1338,6 +1340,7 @@
                       />
                     </div>
                   {/if}
+
                   <!-- <div
                     class="relative"
                     on:mouseenter={() => {
@@ -1364,6 +1367,7 @@
                       </div>
                     {/if}
                   </div> -->
+
                   <div class="hidden xl:block">
                     {#if $typeWallet === "BTC"}
                       <div
@@ -1418,7 +1422,7 @@
                 </div>
               </div>
 
-              <div class="flex flex-col gap-6">
+              <!-- <div class="flex flex-col gap-6">
                 <div class="block xl:hidden">
                   {#if $typeWallet === "BTC"}
                     <div
@@ -1492,7 +1496,7 @@
                     />
                   {/if}
                 {/if}
-              </div>
+              </div> -->
             </div>
 
             {#key $wallet || $chain}
@@ -1504,9 +1508,9 @@
         </div>
       </div>
 
-      {#key $wallet || $chain}
+      <!-- {#key $wallet || $chain}
         <slot name="body" />
-      {/key}
+      {/key} -->
     {/if}
   </div>
 {/if}
