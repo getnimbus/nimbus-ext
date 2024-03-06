@@ -132,21 +132,27 @@
   let chainListQueries = [];
 
   const handleValidateAddress = async (address: string) => {
-    try {
+    if (address) {
       const response = await nimbus.get(`/v2/address/${address}/validate`);
-      return response?.data;
-    } catch (e) {
-      console.error(e);
-      return {
-        address: "",
-        type: "",
-      };
+      return (
+        response?.data || {
+          address: "",
+          type: "",
+        }
+      );
     }
   };
 
+  $: queryValidate = createQuery({
+    queryKey: ["validate", $wallet],
+    queryFn: () => handleValidateAddress($wallet),
+    staleTime: Infinity,
+    retry: false,
+  });
+
   const getSync = async () => {
     try {
-      const validateAccount = await handleValidateAddress($wallet);
+      const validateAccount = $queryValidate.data;
       await nimbus
         .get(
           `/v2/address/${$wallet}/sync?chain=${
@@ -161,7 +167,7 @@
 
   const getSyncStatus = async () => {
     try {
-      const validateAccount = await handleValidateAddress($wallet);
+      const validateAccount = $queryValidate.data;
       const response: any = await nimbus
         .get(
           `/v2/address/${$wallet}/sync-status?chain=${
@@ -283,17 +289,17 @@
   };
 
   //// OVERVIEW
-  const getOverview = async (address, chain) => {
+  const getOverview = async (chain) => {
     let addressChain = chain;
 
     if (addressChain === "ALL") {
-      const validateAccount = await handleValidateAddress(address);
+      const validateAccount = $queryValidate.data;
       addressChain = validateAccount?.type;
     }
 
     const response: any = await nimbus
       .get(
-        `/v2/address/${address}/overview?chain=${
+        `/v2/address/${$wallet}/overview?chain=${
           addressChain === "BUNDLE" ? "" : addressChain
         }`
       )
@@ -303,9 +309,14 @@
 
   $: queryOverview = createQuery({
     queryKey: ["overview", $wallet, $chain],
-    queryFn: () => getOverview($wallet, $chain),
+    queryFn: () => getOverview($chain),
     staleTime: Infinity,
-    enabled: Boolean(enabledFetchAllData && $wallet && $wallet?.length !== 0),
+    enabled: Boolean(
+      enabledFetchAllData &&
+        $wallet &&
+        $wallet?.length !== 0 &&
+        !$queryValidate.isFetching
+    ),
   });
 
   $: {
@@ -369,17 +380,17 @@
   };
 
   //// NFT HOLDING
-  const getHoldingNFT = async (address, chain) => {
+  const getHoldingNFT = async (chain) => {
     let addressChain = chain;
 
     if (addressChain === "ALL") {
-      const validateAccount = await handleValidateAddress(address);
+      const validateAccount = $queryValidate.data;
       addressChain = validateAccount?.type;
     }
 
     const response: any = await nimbus
       .get(
-        `/v2/address/${address}/nft-holding?chain=${
+        `/v2/address/${$wallet}/nft-holding?chain=${
           addressChain === "BUNDLE" ? "" : addressChain
         }`
       )
@@ -389,12 +400,13 @@
 
   $: queryNftHolding = createQuery({
     queryKey: ["nft-holding", $wallet, $chain],
-    queryFn: () => getHoldingNFT($wallet, $chain),
+    queryFn: () => getHoldingNFT($chain),
     staleTime: Infinity,
     enabled: Boolean(
       enabledFetchAllData &&
         $wallet &&
         $wallet?.length !== 0 &&
+        !$queryValidate.isFetching &&
         $chain.length !== 0 &&
         $chain !== "ALL" &&
         $tab === "nft"
@@ -405,12 +417,13 @@
     chainListQueries.map((item) => {
       return {
         queryKey: ["nft-holding", $wallet, $chain, item],
-        queryFn: () => getHoldingNFT($wallet, item),
+        queryFn: () => getHoldingNFT(item),
         staleTime: Infinity,
         enabled: Boolean(
           enabledFetchAllData &&
             $wallet &&
             $wallet?.length !== 0 &&
+            !$queryValidate.isFetching &&
             $chain.length !== 0 &&
             $chain === "ALL" &&
             $tab === "nft"
@@ -444,17 +457,18 @@
   };
 
   //// VAULTS
-  const getVaults = async (address, chain) => {
+  const getVaults = async (chain) => {
     return []; // TODO: Fix the api query time later
+
     let addressChain = chain;
 
     if (addressChain === "ALL") {
-      const validateAccount = await handleValidateAddress(address);
+      const validateAccount = $queryValidate.data;
       addressChain = validateAccount?.type;
     }
 
     const response: any = await nimbus.get(
-      `/v2/investment/${address}/vaults?chain=${
+      `/v2/investment/${$wallet}/vaults?chain=${
         addressChain === "BUNDLE" ? "" : addressChain
       }`
     );
@@ -463,24 +477,29 @@
 
   $: queryVaults = createQuery({
     queryKey: ["vaults", $wallet, $chain],
-    queryFn: () => getVaults($wallet, $chain),
+    queryFn: () => getVaults($chain),
     staleTime: Infinity,
-    enabled: Boolean(enabledFetchAllData && $wallet && $wallet?.length !== 0),
+    enabled: Boolean(
+      enabledFetchAllData &&
+        $wallet &&
+        $wallet?.length !== 0 &&
+        !$queryValidate.isFetching
+    ),
     placeholderData: [],
   });
 
   //// TOKEN HOLDING
-  const getHoldingToken = async (address, chain) => {
+  const getHoldingToken = async (chain) => {
     let addressChain = chain;
 
     if (addressChain === "ALL") {
-      const validateAccount = await handleValidateAddress(address);
+      const validateAccount = $queryValidate.data;
       addressChain = validateAccount?.type;
     }
 
     const response: any = await nimbus
       .get(
-        `/v2/address/${address}/holding?chain=${
+        `/v2/address/${$wallet}/holding?chain=${
           addressChain === "BUNDLE" ? "" : addressChain
         }`
       )
@@ -490,12 +509,13 @@
 
   $: queryTokenHolding = createQuery({
     queryKey: ["token-holding", $wallet, $chain],
-    queryFn: () => getHoldingToken($wallet, $chain),
+    queryFn: () => getHoldingToken($chain),
     staleTime: Infinity,
     enabled: Boolean(
       enabledFetchAllData &&
         $wallet &&
         $wallet?.length !== 0 &&
+        !$queryValidate.isFetching &&
         $chain.length !== 0 &&
         $chain !== "ALL" &&
         $tab === "token"
@@ -506,12 +526,13 @@
     chainListQueries.map((item) => {
       return {
         queryKey: ["token-holding", $wallet, $chain, item],
-        queryFn: () => getHoldingToken($wallet, item),
+        queryFn: () => getHoldingToken(item),
         staleTime: Infinity,
         enabled: Boolean(
           enabledFetchAllData &&
             $wallet &&
             $wallet?.length !== 0 &&
+            !$queryValidate.isFetching &&
             $chain.length !== 0 &&
             $chain === "ALL" &&
             $tab === "token"
@@ -766,7 +787,11 @@
 
   $: {
     if ($wallet || $chain) {
-      if ($wallet?.length !== 0 && $chain?.length !== 0) {
+      if (
+        $wallet?.length !== 0 &&
+        $chain?.length !== 0 &&
+        !$queryValidate.isFetching
+      ) {
         overviewDataPerformance = {
           performance: [],
           portfolioChart: [],
@@ -853,7 +878,7 @@
   }
 
   $: {
-    if ($triggerUpdateBundle) {
+    if ($triggerUpdateBundle && !$queryValidate.isFetching) {
       handleGetAllData("reload");
       triggerUpdateBundle.update((n) => (n = false));
     }

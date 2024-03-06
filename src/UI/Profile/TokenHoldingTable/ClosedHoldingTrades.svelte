@@ -1,11 +1,29 @@
 <script lang="ts">
-  import { isDarkMode } from "~/store";
-  import dayjs from "dayjs";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { timeFrame } from "~/utils";
+  import VirtualList from "svelte-tiny-virtual-list";
+  import { typeWallet, isDarkMode } from "~/store";
+  import { detectedChain } from "~/lib/chains";
+  import { shorterAddress, shorterName } from "~/utils";
+  import dayjs from "dayjs";
+  import "dayjs/locale/en";
+  import "dayjs/locale/vi";
+  import relativeTime from "dayjs/plugin/relativeTime";
+  dayjs.extend(relativeTime);
+  import CopyToClipboard from "svelte-copy-to-clipboard";
+  import { wait } from "~/entries/background/utils";
 
   import Loading from "~/components/Loading.svelte";
-  import ClosedAndRuggedHoldingTradeItem from "./ClosedAndRuggedHoldingTradeItem.svelte";
+  import "~/components/Tooltip.custom.svelte";
+  import Image from "~/components/Image.svelte";
+  import Tooltip from "~/components/Tooltip.svelte";
+  import TooltipNumber from "~/components/TooltipNumber.svelte";
+  import TokenDetailSidebar from "~/UI/TokenDetail/TokenDetailSidebar.svelte";
+  import OverlaySidebar from "~/components/OverlaySidebar.svelte";
+
+  import TrendUp from "~/assets/trend-up.svg";
+  import TrendDown from "~/assets/trend-down.svg";
+  import defaultToken from "~/assets/defaultToken.png";
 
   export let holdingTokenData;
   export let isLoading;
@@ -13,6 +31,14 @@
   let sortTypeROI = "default";
   let sortTypeLastActivity = "asc";
   let selectedTimeFrame: "7D" | "30D" | "3M" | "1Y" | "ALL" = "30D";
+
+  let isShowTooltipName = false;
+  let isShowTooltipSymbol = false;
+
+  let showSideTokenDetail = false;
+  let selectedTokenDetail = {};
+  let isCopied = false;
+  let isShowTooltipContractAddress = false;
 
   $: formatData = holdingTokenData
     .map((item) => {
@@ -183,6 +209,19 @@
                     </g>
                   </svg>`;
   };
+
+  const handlePercentRealizedProfit = (data) => {
+    return Number(data?.avgCost) === 0
+      ? 0
+      : data.realizedProfit / Math.abs(Number(data?.avgCost));
+  };
+
+  const formatTime = (date: Date) => {
+    if (dayjs().diff(date, "days") >= 1) {
+      return dayjs(date).format("YYYY-MM-DD");
+    }
+    return dayjs(date).fromNow();
+  };
 </script>
 
 <div
@@ -196,9 +235,6 @@
           <div
             class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
             on:click={() => {
-              if (formatData && formatData.length === 0) {
-                return;
-              }
               selectedTimeFrame = type.value;
             }}
           >
@@ -216,11 +252,7 @@
                 transition={{ type: "spring", duration: 0.6 }}
               >
                 <div
-                  class={`absolute inset-0 rounded-full z-1 ${
-                    formatData && formatData.length === 0
-                      ? "bg-[#dddddd]"
-                      : "bg-[#1E96FC]"
-                  }`}
+                  class="absolute inset-0 rounded-full z-1 bg-[#1E96FC]"
                   use:motion
                 />
               </Motion>
@@ -232,89 +264,448 @@
   </div>
 
   <div
-    class={`rounded-[10px] xl:overflow-y-auto overflow-auto max-h-[405px] ${
+    class={`rounded-[10px] overflow-hidden w-full ${
       $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
     }`}
   >
-    <table class="table-auto xl:w-full w-[2000px] h-full">
-      <thead class="sticky top-0 z-9">
-        <tr class="bg_f4f5f8">
-          <th
-            class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8 w-[250px]"
-          >
-            <div class="text-left xl:text-xs text-xl uppercase font-medium">
-              Assets
-            </div>
-          </th>
-          <th class="py-3">
-            <div class="text-right xl:text-xs text-xl uppercase font-medium">
-              Avg Cost
-            </div>
-          </th>
-          <th class="py-3">
-            <div
-              class="flex items-center justify-end gap-2 cursor-pointer"
-              on:click={toggleSortROI}
-            >
-              <div class="text-right xl:text-xs text-xl uppercase font-medium">
-                ROI
-              </div>
-              <div>
-                {@html sortIcon(sortTypeROI)}
-              </div>
-            </div>
-          </th>
-          <th class="py-3 pr-3 rounded-tr-[10px]">
-            <div
-              class="flex items-center justify-end gap-2 cursor-pointer"
-              on:click={toggleSortLastActivity}
-            >
-              <div class="text-right xl:text-xs text-xl uppercase font-medium">
-                Last activity
-              </div>
-              <div>
-                {@html sortIcon(sortTypeLastActivity)}
-              </div>
-            </div>
-          </th>
-        </tr>
-      </thead>
+    <div class="bg_f4f5f8 grid grid-cols-5 sticky top-0 z-9">
+      <div class="col-spans-2 pl-3 py-3 rounded-tl-[10px]">
+        <div class="text-left xl:text-xs text-xl uppercase font-medium">
+          Assets
+        </div>
+      </div>
 
-      {#if isLoading}
-        <tbody>
-          <tr>
-            <td colspan={4}>
-              <div class="flex justify-center items-center h-full py-3 px-3">
-                <Loading />
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      {:else}
-        <tbody>
-          {#if formatData && formatData.length === 0}
-            <tr>
-              <td colspan={4}>
-                <div
-                  class="flex justify-center items-center h-full py-3 px-3 xl:text-lg text-xl text-gray-400"
-                >
-                  Empty
+      <div class="py-3">
+        <div class="text-right xl:text-xs text-xl uppercase font-medium">
+          Avg Cost
+        </div>
+      </div>
+
+      <div class="py-3">
+        <div
+          class="flex items-center justify-end gap-2 cursor-pointer"
+          on:click={toggleSortROI}
+        >
+          <div class="text-right xl:text-xs text-xl uppercase font-medium">
+            ROI
+          </div>
+          <div>
+            {@html sortIcon(sortTypeROI)}
+          </div>
+        </div>
+      </div>
+
+      <div class="py-3 pr-3 rounded-tr-[10px]">
+        <div
+          class="flex items-center justify-end gap-2 cursor-pointer"
+          on:click={toggleSortLastActivity}
+        >
+          <div class="text-right xl:text-xs text-xl uppercase font-medium">
+            Last activity
+          </div>
+          <div>
+            {@html sortIcon(sortTypeLastActivity)}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {#if ((holdingTokenData && holdingTokenData.length === 0) || (formatData && formatData.length === 0)) && !isLoading}
+      <div class="grid grid-cols-5">
+        <div
+          class="col-span-full flex justify-center items-center h-full py-3 px-3 xl:text-lg text-xl text-gray-400"
+        >
+          Empty
+        </div>
+      </div>
+    {:else}
+      <VirtualList
+        scrollDirection="vertical"
+        width="100%"
+        height={formatData.length < 10 ? formatData.length * 75 : 405}
+        itemCount={formatData.length}
+        itemSize={75}
+      >
+        <div
+          class="grid grid-cols-5 group transition-all cursor-pointer"
+          slot="item"
+          let:index
+          let:style
+          {style}
+          on:click={() => {
+            showSideTokenDetail = true;
+            selectedTokenDetail = formatData[index];
+          }}
+        >
+          <div
+            class={`col-spans-2 pl-3 py-3 ${
+              $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
+            }`}
+          >
+            <div class="relative flex items-center gap-3 text-left">
+              <div class="relative">
+                <div class="rounded-full w-[30px] h-[30px] overflow-hidden">
+                  <Image
+                    logo={formatData[index].logo}
+                    defaultLogo={defaultToken}
+                  />
                 </div>
-              </td>
-            </tr>
-          {:else}
-            {#each formatData as data, index}
-              <ClosedAndRuggedHoldingTradeItem
-                {data}
-                lastIndex={formatData.length - 1 === index}
+                {#if ($typeWallet === "EVM" || $typeWallet === "MOVE" || $typeWallet === "BUNDLE") && formatData[index]?.chain !== "CEX"}
+                  <div class="absolute -top-2 -right-1">
+                    <img
+                      src={detectedChain(formatData[index]?.chain)?.logo}
+                      alt=""
+                      width="15"
+                      height="15"
+                      class="rounded-full"
+                    />
+                  </div>
+                {/if}
+              </div>
+              <div class="flex flex-col gap-1">
+                <div class="flex items-start gap-2">
+                  <div
+                    class="relative text-2xl font-medium xl:text-sm"
+                    on:mouseover={() => {
+                      isShowTooltipName = true;
+                    }}
+                    on:mouseleave={() => (isShowTooltipName = false)}
+                  >
+                    {#if formatData[index].name === undefined}
+                      N/A
+                    {:else}
+                      <div class="flex">
+                        {formatData[index]?.name?.length > 20
+                          ? shorterName(formatData[index].name, 20)
+                          : formatData[index].name}
+                      </div>
+                    {/if}
+                    {#if isShowTooltipName && formatData[index]?.name?.length > 20}
+                      <div
+                        class="absolute left-0 -top-8"
+                        style="z-index: 2147483648;"
+                      >
+                        <Tooltip text={formatData[index].name} />
+                      </div>
+                    {/if}
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-2">
+                  <div
+                    class="relative text-lg font-medium text_00000080 xl:text-xs"
+                    on:mouseover={() => {
+                      isShowTooltipSymbol = true;
+                    }}
+                    on:mouseleave={() => (isShowTooltipSymbol = false)}
+                  >
+                    {#if formatData[index].symbol === undefined}
+                      N/A
+                    {:else}
+                      {shorterName(formatData[index].symbol, 20)}
+                    {/if}
+                    {#if isShowTooltipSymbol && formatData[index].symbol.length > 20}
+                      <div
+                        class="absolute left-0 -top-8"
+                        style="z-index: 2147483648;"
+                      >
+                        <Tooltip text={formatData[index].symbol} />
+                      </div>
+                    {/if}
+                  </div>
+
+                  {#if formatData[index]?.positionType === "ERC_404"}
+                    <span
+                      class="inline-flex items-center gap-x-1.5 rounded-full bg-yellow-100 px-1 py-0.5 text-[10px] font-medium text-yellow-800"
+                    >
+                      <svg
+                        class="h-1.5 w-1.5 fill-yellow-500"
+                        viewBox="0 0 6 6"
+                        aria-hidden="true"
+                      >
+                        <circle cx={3} cy={3} r={3} />
+                      </svg>
+                      ERC 404
+                    </span>
+                  {/if}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div
+            class={`py-3 ${
+              $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
+            }`}
+          >
+            <div
+              class="flex justify-end text-2xl font-medium xl:text-sm text_00000099"
+            >
+              $<TooltipNumber
+                number={formatData[index].profit.averageCost}
+                type="balance"
               />
-            {/each}
-          {/if}
-        </tbody>
-      {/if}
-    </table>
+            </div>
+          </div>
+
+          <div
+            class={`py-3 ${
+              $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
+            }`}
+          >
+            <div
+              class="flex items-center justify-end gap-1 text-2xl font-medium xl:text-sm view-token-detail1"
+            >
+              {#if ["BTC"].includes($typeWallet)}
+                N/A
+              {:else}
+                <div class="flex flex-col">
+                  <div
+                    class={`flex justify-end ${
+                      formatData[index].realizedProfit !== 0
+                        ? formatData[index].realizedProfit >= 0
+                          ? "text-[#00A878]"
+                          : "text-red-500"
+                        : "text_00000099"
+                    }`}
+                  >
+                    <TooltipNumber
+                      number={Math.abs(formatData[index].realizedProfit)}
+                      type="value"
+                      personalValue
+                    />
+                  </div>
+                  <div class="flex items-center justify-end gap-1">
+                    <div
+                      class={`flex items-center ${
+                        formatData[index].realizedProfit !== 0
+                          ? formatData[index].realizedProfit >= 0
+                            ? "text-[#00A878]"
+                            : "text-red-500"
+                          : "text_00000099"
+                      }`}
+                    >
+                      <TooltipNumber
+                        number={Math.abs(
+                          handlePercentRealizedProfit(formatData[index])
+                        ) * 100}
+                        type="percent"
+                      />
+                      <span>%</span>
+                    </div>
+                    {#if formatData[index].realizedProfit !== 0}
+                      <img
+                        src={formatData[index].realizedProfit >= 0
+                          ? TrendUp
+                          : TrendDown}
+                        alt="trend"
+                        class="mb-1"
+                      />
+                    {/if}
+                  </div>
+                </div>
+              {/if}
+            </div>
+          </div>
+
+          <div
+            class={`py-3 pr-3 ${$isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"}`}
+          >
+            <div
+              class="text-right text-2xl font-medium xl:text-sm text_00000099"
+            >
+              {#if formatData[index]?.profit?.latestTrade}
+                {formatTime(formatData[index]?.profit?.latestTrade)}
+              {/if}
+            </div>
+          </div>
+        </div>
+      </VirtualList>
+    {/if}
+
+    {#if isLoading}
+      <div class="w-full h-full grid grid-cols-5">
+        <div
+          class="col-span-full flex justify-center items-center h-full py-3 px-3"
+        >
+          <Loading />
+        </div>
+      </div>
+    {/if}
   </div>
 </div>
 
+<!-- Sidebar Token Detail -->
+<OverlaySidebar isOpen={showSideTokenDetail}>
+  <div class="flex justify-between items-start">
+    <div
+      class="xl:text-5xl text-6xl text-gray-500 cursor-pointer"
+      on:click|stopPropagation={() => {
+        showSideTokenDetail = false;
+        selectedTokenDetail = {};
+      }}
+    >
+      &times;
+    </div>
+    {#if selectedTokenDetail && Object.keys(selectedTokenDetail).length !== 0}
+      <div class="flex flex-col gap-2">
+        <div class="flex items-center gap-4">
+          <div class="relative">
+            <div class="rounded-full w-[46px] h-[46px] overflow-hidden">
+              <Image
+                logo={selectedTokenDetail?.logo}
+                defaultLogo={defaultToken}
+              />
+            </div>
+            {#if ($typeWallet === "EVM" || $typeWallet === "MOVE" || $typeWallet === "BUNDLE") && selectedTokenDetail?.chain !== "CEX"}
+              <div class="absolute -top-2 -right-1">
+                <img
+                  src={detectedChain(selectedTokenDetail?.chain)?.logo}
+                  alt=""
+                  width="26"
+                  height="26"
+                  class="rounded-full"
+                />
+              </div>
+            {/if}
+          </div>
+          <div class="flex flex-col">
+            <div class="flex items-start gap-2">
+              <div
+                class="relative font-medium xl:text-xl text-2xl"
+                on:mouseover={() => {
+                  isShowTooltipName = true;
+                }}
+                on:mouseleave={() => (isShowTooltipName = false)}
+              >
+                {#if selectedTokenDetail?.name === undefined}
+                  N/A
+                {:else}
+                  {selectedTokenDetail?.name?.length > 20
+                    ? shorterName(selectedTokenDetail?.name, 20)
+                    : selectedTokenDetail?.name}
+                {/if}
+                {#if isShowTooltipName && selectedTokenDetail?.name?.length > 20}
+                  <div
+                    class="absolute left-0 -top-8"
+                    style="z-index: 2147483648;"
+                  >
+                    <Tooltip text={selectedTokenDetail?.name} />
+                  </div>
+                {/if}
+              </div>
+            </div>
+
+            <div class="flex items-center gap-2">
+              <div
+                class="relative font-medium text_00000080 xl:text-base text-lg"
+                on:mouseover={() => {
+                  isShowTooltipSymbol = true;
+                }}
+                on:mouseleave={() => (isShowTooltipSymbol = false)}
+              >
+                {#if selectedTokenDetail?.symbol === undefined}
+                  N/A
+                {:else}
+                  {shorterName(selectedTokenDetail?.symbol, 20)}
+                {/if}
+                {#if isShowTooltipSymbol && selectedTokenDetail?.symbol.length > 20}
+                  <div
+                    class="absolute left-0 -top-8"
+                    style="z-index: 2147483648;"
+                  >
+                    <Tooltip text={selectedTokenDetail?.symbol} />
+                  </div>
+                {/if}
+              </div>
+              <CopyToClipboard
+                text={selectedTokenDetail?.contractAddress}
+                let:copy
+                on:copy={async () => {
+                  isCopied = true;
+                  await wait(1000);
+                  isCopied = false;
+                }}
+              >
+                <div
+                  class="cursor-pointer relative"
+                  on:mouseover={() => {
+                    isShowTooltipContractAddress = true;
+                  }}
+                  on:mouseleave={() => (isShowTooltipContractAddress = false)}
+                  on:click={copy}
+                >
+                  {#if isCopied}
+                    <svg
+                      width={20}
+                      height={20}
+                      id="Layer_1"
+                      data-name="Layer 1"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 122.88 74.46"
+                      fill={$isDarkMode ? "#d1d5db" : "#00000080"}
+                      ><path
+                        fill-rule="evenodd"
+                        d="M1.87,47.2a6.33,6.33,0,1,1,8.92-9c8.88,8.85,17.53,17.66,26.53,26.45l-3.76,4.45-.35.37a6.33,6.33,0,0,1-8.95,0L1.87,47.2ZM30,43.55a6.33,6.33,0,1,1,8.82-9.07l25,24.38L111.64,2.29c5.37-6.35,15,1.84,9.66,8.18L69.07,72.22l-.3.33a6.33,6.33,0,0,1-8.95.12L30,43.55Zm28.76-4.21-.31.33-9.07-8.85L71.67,4.42c5.37-6.35,15,1.83,9.67,8.18L58.74,39.34Z"
+                      /></svg
+                    >
+                  {:else}
+                    <svg
+                      width={20}
+                      height={20}
+                      viewBox="0 0 12 11"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M8.1875 3.3125H10.6875V10.1875H3.8125V7.6875"
+                        stroke={$isDarkMode ? "#d1d5db" : "#00000080"}
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                      <path
+                        d="M8.1875 0.8125H1.3125V7.6875H8.1875V0.8125Z"
+                        stroke={$isDarkMode ? "#d1d5db" : "#00000080"}
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                  {/if}
+
+                  {#if isShowTooltipContractAddress}
+                    <div
+                      class="absolute right-0 -top-8"
+                      style="z-index: 2147483648;"
+                    >
+                      <Tooltip
+                        text={shorterAddress(
+                          selectedTokenDetail?.contractAddress
+                        )}
+                      />
+                    </div>
+                  {/if}
+                </div>
+              </CopyToClipboard>
+            </div>
+          </div>
+        </div>
+        <div class="flex items-center font-medium xl:text-2xl text-3xl">
+          $<TooltipNumber
+            number={Number(selectedTokenDetail?.price.price)}
+            type="balance"
+          />
+        </div>
+      </div>
+    {/if}
+  </div>
+  <TokenDetailSidebar data={selectedTokenDetail} {showSideTokenDetail} />
+</OverlaySidebar>
+
 <style windi:preflights:global windi:safelist:global>
+  :global(body) .bg_fafafbff {
+    background: #fafafbff;
+  }
+  :global(body.dark) .bg_fafafbff {
+    background: #212121;
+  }
 </style>

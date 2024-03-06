@@ -1,11 +1,14 @@
 <script lang="ts">
+  import { onMount } from "svelte";
+  import VirtualList from "svelte-tiny-virtual-list";
   import {
     wallet,
-    typeWallet,
-    isDarkMode,
     user,
     selectedBundle,
     realtimePrice,
+    isDarkMode,
+    typeWallet,
+    totalAssets,
   } from "~/store";
   import { shorterName, shorterAddress } from "~/utils";
   import { listSupported, detectedChain } from "~/lib/chains";
@@ -29,18 +32,19 @@
   import OverlaySidebar from "~/components/OverlaySidebar.svelte";
   import OverlaySidebarSwap from "~/components/OverlaySidebarSwap.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
+  import Loading from "~/components/Loading.svelte";
   import VaultTable from "~/UI/Portfolio/VaultTable.svelte";
   import TokenDetailSidebar from "~/UI/TokenDetail/TokenDetailSidebar.svelte";
-  import SwapWidget from "../SwapWidget/SwapWidget.svelte";
+  import SwapWidget from "~/UI/SwapWidget/SwapWidget.svelte";
 
   import TrendUp from "~/assets/trend-up.svg";
   import TrendDown from "~/assets/trend-down.svg";
   import defaultToken from "~/assets/defaultToken.png";
 
+  export let sumNFT;
+  export let defaultData;
   export let data;
-  export let sumAllTokens;
-  export let lastIndex: boolean = false;
-  export let index: number;
+  export let isLoading;
   export let triggerFireworkBonus = (data) => {};
 
   let isShowTooltipName = false;
@@ -48,9 +52,9 @@
   let isShowCMC = false;
   let isShowCoingecko = false;
   let isShowReport = false;
+  let isShowTooltipReport = false;
 
   let showTableVaults = false;
-  let selectedHighestVault;
   let selectedVaults;
   let selectedVaultsSymbol;
 
@@ -59,7 +63,6 @@
   let isLoadingReportTrashCoin = false;
   let reportReasonList = [];
 
-  let isOpenTokenInfoBundle = false;
   let showTokenInfoBundle = false;
 
   let showSideTokenDetail = false;
@@ -74,6 +77,13 @@
 
   let showSideTokenSwap = false;
 
+  let tableTokenHeader;
+  let isStickyTableToken = false;
+
+  let virtualList;
+  let listSelectedIndex = [];
+  let selectedItemIndex = -1;
+
   const trigger = () => {
     showToast = true;
     counter = 5;
@@ -87,6 +97,21 @@
   };
 
   const MultipleLang = {
+    holding: i18n("newtabPage.holding", "Holding"),
+    token: i18n("newtabPage.token", "Tokens"),
+    nft: i18n("newtabPage.nft", "NFTs"),
+    assets: i18n("newtabPage.assets", "Assets"),
+    price: i18n("newtabPage.price", "Price"),
+    amount: i18n("newtabPage.amount", "Amount"),
+    value: i18n("newtabPage.value", "Value"),
+    profit: i18n("newtabPage.profit", "Profit & Loss"),
+    total_spent: i18n("newtabPage.total_spent", "Total Spent"),
+    collection: i18n("newtabPage.collection", "Collection"),
+    floor_price: i18n("newtabPage.floor_price", "Floor Price"),
+    current_value: i18n("newtabPage.current_value", "Current Value"),
+    Balance: i18n("newtabPage.Balance", "Balance"),
+    hide: i18n("newtabPage.hide-less-than-1", "Hide tokens less than $1"),
+    empty: i18n("newtabPage.empty", "Empty"),
     content: {
       modal_cancel: i18n(
         "optionsPage.accounts-page-content.modal-cancel",
@@ -98,6 +123,17 @@
       ),
     },
   };
+
+  onMount(() => {
+    const handleScroll = () => {
+      const clientRectTokenHeader = tableTokenHeader?.getBoundingClientRect();
+      isStickyTableToken = clientRectTokenHeader?.top <= 0;
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  });
 
   const reasonReport = [
     {
@@ -167,67 +203,106 @@
     }
   };
 
-  $: value = Number(data?.amount) * Number(data?.market_price);
+  const handleCalculateValue = (data, price) => {
+    return Number(data?.amount) * Number(price);
+  };
 
-  $: realizedProfit = data?.profit?.realizedProfit
-    ? Number(data?.profit?.realizedProfit)
-    : 0;
+  const handleCalculateRatio = (data, price) => {
+    const value = Number(data?.amount) * Number(price);
+    return (value / $totalAssets - sumNFT) * 100;
+  };
 
-  $: percentRealizedProfit =
-    Number(data?.avgCost) === 0
-      ? 0
-      : realizedProfit / Math.abs(Number(data?.avgCost));
+  const handleCalculateRealizedProfit = (data) => {
+    return {
+      realizedProfit: data?.profit?.realizedProfit
+        ? Number(data?.profit?.realizedProfit)
+        : 0,
+      percentRealizedProfit:
+        Number(data?.avgCost) === 0
+          ? 0
+          : (data?.profit?.realizedProfit
+              ? Number(data?.profit?.realizedProfit)
+              : 0) / Math.abs(Number(data?.avgCost)),
+    };
+  };
 
-  $: pnl =
-    Number(data?.balance || 0) * Number(data?.market_price || 0) +
-    Number(data?.profit?.totalGain || 0) -
-    Number(data?.profit?.cost || 0);
+  const handleCalculateUnrealizedProfit = (data) => {
+    const pnl =
+      Number(data?.balance || 0) *
+        Number(
+          $realtimePrice[
+            data?.cmc_id ||
+              data?.contractAddress ||
+              data?.symbol ||
+              data?.price?.symbol
+          ]
+            ? Number(
+                $realtimePrice[
+                  data?.cmc_id ||
+                    data?.contractAddress ||
+                    data?.symbol ||
+                    data?.price?.symbol
+                ]?.price
+              )
+            : Number(data.market_price) || 0
+        ) +
+      Number(data?.profit?.totalGain || 0) -
+      Number(data?.profit?.cost || 0);
 
-  $: unrealizedProfit =
-    Number(data?.avgCost) === 0 ? 0 : Number(pnl) - realizedProfit;
+    const realizedProfit = data?.profit?.realizedProfit
+      ? Number(data?.profit?.realizedProfit)
+      : 0;
 
-  $: percentUnrealizedProfit =
-    Number(data?.avgCost) === 0
-      ? 0
-      : unrealizedProfit / Math.abs(Number(data?.avgCost));
+    return {
+      unrealizedProfit:
+        Number(data?.avgCost) === 0 ? 0 : Number(pnl) - realizedProfit,
+      percentUnrealizedProfit:
+        Number(data?.avgCost) === 0
+          ? 0
+          : (Number(data?.avgCost) === 0 ? 0 : Number(pnl) - realizedProfit) /
+            Math.abs(Number(data?.avgCost)),
+    };
+  };
 
-  $: ratio = (value / sumAllTokens) * 100;
-
-  $: {
-    if (data?.vaults && data?.vaults.length !== 0) {
-      selectedHighestVault = data?.vaults.reduce(
+  const handleCheckVault = (data) => {
+    if (data && data?.vaults && data?.vaults?.length !== 0) {
+      return data?.vaults.reduce(
         (maxObject, currentObject) => {
           return currentObject.apy > maxObject.apy ? currentObject : maxObject;
         },
         { apy: -Infinity }
       );
-    } else {
-      selectedHighestVault = undefined;
     }
-  }
+    return undefined;
+  };
 
-  $: withinLast24Hours = dayjs().diff(dayjs(data?.last_transferred_at), "hour");
+  const handleCheckWithinLast24Hours = (data) => {
+    return dayjs().diff(dayjs(data?.last_transferred_at), "hour");
+  };
 
-  $: formatDataBreakdown = (data?.breakdown || [])
-    .map((item) => {
-      const selectedAddress = $selectedBundle?.accounts.find(
-        (account) =>
-          account?.id?.toLowerCase() === item?.owner?.toLowerCase() ||
-          account?.value?.toLowerCase() === item?.owner?.toLowerCase()
-      );
-      return {
-        ...item,
-        logo: selectedAddress?.logo,
-        type: selectedAddress?.type,
-        label: selectedAddress?.label,
-      };
-    })
-    .filter((item) => Number(item?.amount) !== 0);
+  const handleFormatDataBreakdown = (data) => {
+    return (data?.breakdown || [])
+      .map((item) => {
+        const selectedAddress = $selectedBundle?.accounts.find(
+          (account) =>
+            account?.id?.toLowerCase() === item?.owner?.toLowerCase() ||
+            account?.value?.toLowerCase() === item?.owner?.toLowerCase()
+        );
+        return {
+          ...item,
+          logo: selectedAddress?.logo,
+          type: selectedAddress?.type,
+          label: selectedAddress?.label,
+        };
+      })
+      .filter((item) => Number(item?.amount) !== 0)
+      .sort((a, b) => b.amount - a.amount);
+  };
 
-  const handleSwapToken = (data: any) => {
+  const handleSwapToken = (data, address) => {
     const config = {
       displayMode: "integrated",
-      integratedTargetId: `swap-${index}`,
+      integratedTargetId: `swap-${address}`,
       endpoint: "https://rpc.shyft.to?api_key=Gny0V25q6Y2kMjze",
       strictTokenList: false,
       defaultExplorer: "Solscan",
@@ -257,6 +332,10 @@
     });
   };
 
+  const handleRecomputeHeight = (index) => {
+    virtualList.recomputeSizes(index);
+  };
+
   $: {
     if (showSideTokenDetail) {
       mixpanel.track("token_detail_page", {
@@ -269,116 +348,284 @@
 
 <svelte:window on:keydown={closeSideBar} />
 
-<tr
-  key={data?.symbol}
-  class={`group transition-all ${
-    isOpenTokenInfoBundle ? ($isDarkMode ? "bg-[#000]" : "bg-gray-100") : ""
+<div
+  class={`rounded-[10px] overflow-hidden w-full ${
+    $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
   }`}
-  on:mouseover={() => {
-    if ($user && Object.keys($user).length !== 0) {
-      isShowReport = true;
-    }
-    if (data?.cmc_slug) {
-      isShowCMC = true;
-    }
-    if (data?.cg_id) {
-      isShowCoingecko = true;
-    }
-  }}
-  on:mouseleave={() => {
-    if ($user && Object.keys($user).length !== 0) {
-      isShowReport = false;
-    }
-    if (data?.cmc_slug) {
-      isShowCMC = false;
-    }
-    if (data?.cg_id) {
-      isShowCoingecko = false;
-    }
-  }}
 >
-  <td
-    class={`pl-3 py-3 xl:static sticky left-0 z-9 w-[450px] ${
-      isOpenTokenInfoBundle
-        ? $isDarkMode
-          ? "bg-[#000]"
-          : "bg-gray-100"
-        : $isDarkMode
-          ? "bg-[#131313] group-hover:bg-[#000]"
-          : "bg-white group-hover:bg-gray-100"
-    }`}
-    style={`${lastIndex ? "border-bottom-left-radius: 10px;" : ""}`}
+  <div
+    class={`bg_f4f5f8 grid ${listSupported.includes($typeWallet) ? "grid-cols-9" : "grid-cols-8"} ${isStickyTableToken ? "sticky top-0 z-9" : ""}`}
+    bind:this={tableTokenHeader}
   >
-    <div class="relative flex items-center gap-3 text-left">
-      <!-- icon report -->
-      {#if isShowReport}
-        <div
-          class="hidden xl:block absolute w-5 cursor-pointer -left-8 top-3 opacity-80 hover:opacity-60"
-          on:click={() => (isShowReportTable = true)}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-          >
-            <g
-              fill="none"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-            >
-              <path d="M0 0h24v24H0z" />
-              <path
-                fill="currentColor"
-                d="M19 4c.852 0 1.297.986.783 1.623l-.076.084L15.915 9.5l3.792 3.793c.603.602.22 1.614-.593 1.701L19 15H6v6a1 1 0 0 1-.883.993L5 22a1 1 0 0 1-.993-.883L4 21V5a1 1 0 0 1 .883-.993L5 4h14z"
-              />
-            </g>
-          </svg>
-        </div>
-      {/if}
-      <div class="relative">
-        <div class="rounded-full w-[30px] h-[30px] overflow-hidden">
-          <Image logo={data.logo} defaultLogo={defaultToken} />
-        </div>
-        {#if ($typeWallet === "EVM" || $typeWallet === "MOVE" || $typeWallet === "BUNDLE") && data?.chain !== "CEX"}
-          <div class="absolute -top-2 -right-1">
-            <img
-              src={detectedChain(data?.chain)?.logo}
-              alt=""
-              width="15"
-              height="15"
-              class="rounded-full"
-            />
-          </div>
+    <div class="col-spans-2 pl-3 py-3 rounded-tl-[10px]">
+      <div class="text-left xl:text-xs text-xl uppercase font-medium">
+        {MultipleLang.assets}
+      </div>
+    </div>
+
+    <div class="py-3">
+      <div class="text-right xl:text-xs text-xl uppercase font-medium">
+        {MultipleLang.price}
+      </div>
+    </div>
+
+    <div class="py-3">
+      <div class="text-right xl:text-xs text-xl uppercase font-medium">
+        {MultipleLang.amount}
+      </div>
+    </div>
+
+    <div class="py-3">
+      <div class="text-right xl:text-xs text-xl uppercase font-medium">
+        {MultipleLang.value}
+      </div>
+    </div>
+
+    <div class="py-3">
+      <div class="text-right xl:text-xs text-xl uppercase font-medium">
+        Avg Cost
+      </div>
+    </div>
+
+    <div class="py-3">
+      <div class="text-right xl:text-xs text-xl uppercase font-medium">
+        Realized PnL
+      </div>
+    </div>
+
+    <div
+      class={`py-3 ${
+        listSupported.includes($typeWallet) ? "" : "rounded-tr-[10px]"
+      }`}
+    >
+      <div class="text-right xl:text-xs text-xl uppercase font-medium">
+        Unrealized PnL
+      </div>
+    </div>
+
+    {#if listSupported.includes($typeWallet)}
+      <div class="py-3 rounded-tr-[10px]" />
+    {/if}
+  </div>
+
+  {#if data && data.length === 0 && !isLoading}
+    <div
+      class={`grid ${listSupported.includes($typeWallet) ? "grid-cols-9" : "grid-cols-8"}`}
+    >
+      <div
+        class="col-span-full flex justify-center items-center h-full py-3 px-3 xl:text-lg text-xl text-gray-400"
+      >
+        {#if defaultData && defaultData.length === 0}
+          {MultipleLang.empty}
+        {:else}
+          All tokens less than $1
         {/if}
       </div>
-      <div class="flex flex-col gap-1">
-        <div class="flex items-start gap-2">
-          <div
-            class="relative text-2xl font-medium xl:text-sm"
-            on:mouseover={() => {
-              isShowTooltipName = true;
-            }}
-            on:mouseleave={() => (isShowTooltipName = false)}
-          >
-            {#if data.name === undefined}
-              N/A
-            {:else}
-              <div class="flex">
-                {data?.name?.length > 20
-                  ? shorterName(data.name, 20)
-                  : data.name}
-                <!-- icon report -->
-                {#if isShowReport}
-                  <span
-                    class="xl:hidden flex items-center justify-center ml-3 opacity-80 hover:opacity-60"
+    </div>
+  {:else}
+    <VirtualList
+      scrollDirection="vertical"
+      width="100%"
+      height={data.length < 10 ? data.length * 75 : 940}
+      bind:this={virtualList}
+      itemCount={data.length}
+      itemSize={(index) => {
+        const formatDataBreakdown = handleFormatDataBreakdown(
+          data[selectedItemIndex]
+        );
+        return listSelectedIndex.includes(index)
+          ? formatDataBreakdown.length > 12
+            ? 500 + 135
+            : formatDataBreakdown.length * 75 + 135
+          : 75;
+      }}
+    >
+      <div
+        class={`grid ${listSupported.includes($typeWallet) ? "grid-cols-9" : "grid-cols-8"} group transition-all`}
+        slot="item"
+        let:index
+        let:style
+        {style}
+        on:mouseover={() => {
+          if ($user && Object.keys($user).length !== 0) {
+            selectedItemIndex = index;
+            isShowReport = true;
+          }
+          if (data[index]?.cmc_slug) {
+            selectedItemIndex = index;
+            isShowCMC = true;
+          }
+          if (data[index]?.cg_id) {
+            selectedItemIndex = index;
+            isShowCoingecko = true;
+          }
+        }}
+        on:mouseleave={() => {
+          if ($user && Object.keys($user).length !== 0) {
+            selectedItemIndex = -1;
+            isShowReport = false;
+          }
+          if (data[index]?.cmc_slug) {
+            selectedItemIndex = -1;
+            isShowCMC = false;
+          }
+          if (data[index]?.cg_id) {
+            selectedItemIndex = -1;
+            isShowCoingecko = false;
+          }
+        }}
+      >
+        <div
+          class={`col-spans-2 pl-3 py-3 ${
+            listSelectedIndex.includes(index)
+              ? $isDarkMode
+                ? "bg-[#000]"
+                : "bg-gray-100"
+              : $isDarkMode
+                ? "bg-[#131313] group-hover:bg-[#000]"
+                : "bg-white group-hover:bg-gray-100"
+          }`}
+          style={`${data.length - 1 === index ? "border-bottom-left-radius: 10px;" : ""}`}
+        >
+          <div class="relative flex items-center gap-3 text-left">
+            <div class="relative">
+              <div class="rounded-full w-[30px] h-[30px] overflow-hidden">
+                <Image logo={data[index].logo} defaultLogo={defaultToken} />
+              </div>
+              {#if ($typeWallet === "EVM" || $typeWallet === "MOVE" || $typeWallet === "BUNDLE") && data[index]?.chain !== "CEX"}
+                <div class="absolute -top-2 -right-1">
+                  <img
+                    src={detectedChain(data[index]?.chain)?.logo}
+                    alt=""
+                    width="15"
+                    height="15"
+                    class="rounded-full"
+                  />
+                </div>
+              {/if}
+            </div>
+
+            <div class="flex flex-col gap-1">
+              <div class="flex items-start gap-2">
+                <div
+                  class="relative text-2xl font-medium xl:text-sm"
+                  on:mouseover={() => {
+                    selectedItemIndex = index;
+                    isShowTooltipName = true;
+                  }}
+                  on:mouseleave={() => {
+                    selectedItemIndex = -1;
+                    isShowTooltipName = false;
+                  }}
+                >
+                  {#if data[index].name === undefined}
+                    N/A
+                  {:else}
+                    <div class="flex">
+                      {data[index]?.name?.length > 20
+                        ? shorterName(data[index].name, 20)
+                        : data[index].name}
+                      {#if isShowReport}
+                        <span
+                          class="xl:hidden flex items-center justify-center ml-3 opacity-80 hover:opacity-60"
+                          on:click={() => (isShowReportTable = true)}
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="26"
+                            height="26"
+                            viewBox="0 0 24 24"
+                          >
+                            <g
+                              fill="none"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                            >
+                              <path d="M0 0h24v24H0z" />
+                              <path
+                                fill="currentColor"
+                                d="M19 4c.852 0 1.297.986.783 1.623l-.076.084L15.915 9.5l3.792 3.793c.603.602.22 1.614-.593 1.701L19 15H6v6a1 1 0 0 1-.883.993L5 22a1 1 0 0 1-.993-.883L4 21V5a1 1 0 0 1 .883-.993L5 4h14z"
+                              />
+                            </g>
+                          </svg>
+                        </span>
+                      {/if}
+                    </div>
+                  {/if}
+                  {#if isShowTooltipName && selectedItemIndex === index && data[index]?.name?.length > 20}
+                    <div
+                      class="absolute left-0 -top-8"
+                      style="z-index: 2147483648;"
+                    >
+                      <Tooltip text={data[index].name} />
+                    </div>
+                  {/if}
+                </div>
+
+                {#if handleCheckVault(data[index]) !== undefined}
+                  <div
+                    class="flex items-center justyfy-center px-2 py-1 text_27326F xl:text-[10px] text-base font-medium bg-[#1e96fc33] rounded-[1000px] cursor-pointer"
+                    on:click={() => {
+                      showTableVaults = true;
+                      selectedVaults = data[index].vaults;
+                      selectedVaultsSymbol = data[index].symbol;
+                    }}
+                  >
+                    <div class="hidden xl:block">
+                      {`Farm up to ${numeral(
+                        handleCheckVault(data[index])?.apy * 100
+                      ).format("0,0.00")}% APY`}
+                    </div>
+                    <div class="block xl:hidden">Farm</div>
+                  </div>
+                {/if}
+              </div>
+
+              <div class="flex items-center gap-2 min-h-[20px]">
+                <div
+                  class="relative text-lg font-medium text_00000080 xl:text-xs"
+                  on:mouseover={() => {
+                    selectedItemIndex = index;
+                    isShowTooltipSymbol = true;
+                  }}
+                  on:mouseleave={() => {
+                    selectedItemIndex = -1;
+                    isShowTooltipSymbol = false;
+                  }}
+                >
+                  {#if data[index].symbol === undefined}
+                    N/A
+                  {:else}
+                    {shorterName(data[index].symbol, 20)}
+                  {/if}
+                  {#if isShowTooltipSymbol && selectedItemIndex === index && data[index].symbol.length > 20}
+                    <div
+                      class="absolute left-0 -top-8"
+                      style="z-index: 2147483648;"
+                    >
+                      <Tooltip text={data[index].symbol} />
+                    </div>
+                  {/if}
+                </div>
+
+                {#if isShowReport && selectedItemIndex === index}
+                  <div
+                    class="relative w-5 cursor-pointer"
                     on:click={() => (isShowReportTable = true)}
+                    on:mouseover={() => {
+                      selectedItemIndex = index;
+                      isShowTooltipReport = true;
+                    }}
+                    on:mouseleave={() => {
+                      selectedItemIndex = -1;
+                      isShowTooltipReport = false;
+                    }}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      width="26"
-                      height="26"
+                      width="16"
+                      height="16"
                       viewBox="0 0 24 24"
                     >
                       <g
@@ -394,96 +641,59 @@
                         />
                       </g>
                     </svg>
-                  </span>
+                    {#if isShowTooltipReport && selectedItemIndex === index}
+                      <div
+                        class="absolute -top-8 left-1/2 transform -translate-x-1/2"
+                        style="z-index: 2147483648;"
+                      >
+                        <Tooltip text="Report" />
+                      </div>
+                    {/if}
+                  </div>
                 {/if}
-              </div>
-            {/if}
-            {#if isShowTooltipName && data?.name?.length > 20}
-              <div class="absolute left-0 -top-8" style="z-index: 2147483648;">
-                <Tooltip text={data.name} />
-              </div>
-            {/if}
-          </div>
-          {#if selectedHighestVault !== undefined}
-            <div
-              class="flex items-center justyfy-center px-2 py-1 text_27326F xl:text-[10px] text-base font-medium bg-[#1e96fc33] rounded-[1000px] cursor-pointer"
-              on:click={() => {
-                showTableVaults = true;
-                selectedVaults = data.vaults;
-                selectedVaultsSymbol = data.symbol;
-              }}
-            >
-              <div class="hidden xl:block">
-                {`Farm up to ${numeral(selectedHighestVault.apy * 100).format(
-                  "0,0.00"
-                )}% APY`}
-              </div>
-              <div class="block xl:hidden">Farm</div>
-            </div>
-          {/if}
-        </div>
 
-        <div class="flex items-center gap-2">
-          <div
-            class="relative text-lg font-medium text_00000080 xl:text-xs"
-            on:mouseover={() => {
-              isShowTooltipSymbol = true;
-            }}
-            on:mouseleave={() => (isShowTooltipSymbol = false)}
-          >
-            {#if data.symbol === undefined}
-              N/A
-            {:else}
-              {shorterName(data.symbol, 20)}
-            {/if}
-            {#if isShowTooltipSymbol && data.symbol.length > 20}
-              <div class="absolute left-0 -top-8" style="z-index: 2147483648;">
-                <Tooltip text={data.symbol} />
-              </div>
-            {/if}
-          </div>
-          {#if isShowCMC}
-            <a
-              href={`https://coinmarketcap.com/currencies/${data?.cmc_slug}`}
-              target="_blank"
-              class="w-[20px] h-[20px] cursor-pointer"
-            >
-              <svg
-                viewBox="0 0 76.52 77.67"
-                xmlns="http://www.w3.org/2000/svg"
-                class="object-contain w-full h-full rounded-full"
-              >
-                <path
-                  d="m66.54 46.41a4.09 4.09 0 0 1 -4.17.28c-1.54-.87-2.37-2.91-2.37-5.69v-8.52c0-4.09-1.62-7-4.33-7.79-4.58-1.34-8 4.27-9.32 6.38l-8.1 13.11v-16c-.09-3.69-1.29-5.9-3.56-6.56-1.5-.44-3.75-.26-5.94 3.08l-18.11 29.07a32 32 0 0 1 -3.64-14.94c0-17.52 14-31.77 31.25-31.77s31.3 14.25 31.3 31.77v.09s0 .06 0 .09c.17 3.39-.93 6.09-3 7.4zm10-7.57v-.17c-.14-21.35-17.26-38.67-38.29-38.67s-38.25 17.42-38.25 38.83 17.16 38.84 38.25 38.84a37.81 37.81 0 0 0 26-10.36 3.56 3.56 0 0 0 .18-5 3.43 3.43 0 0 0 -4.86-.23 30.93 30.93 0 0 1 -44.57-2.08l16.3-26.2v12.09c0 5.81 2.25 7.69 4.14 8.24s4.78.17 7.81-4.75l9-14.57c.28-.47.55-.87.79-1.22v7.41c0 5.43 2.18 9.77 6 11.91a11 11 0 0 0 11.21-.45c4.2-2.73 6.49-7.67 6.25-13.62z"
-                  fill={`${$isDarkMode ? "#d1d5db" : "#17181b"}`}
-                />
-              </svg>
-            </a>
-          {/if}
+                {#if isShowCMC && selectedItemIndex === index}
+                  <a
+                    href={`https://coinmarketcap.com/currencies/${data[index]?.cmc_slug}`}
+                    target="_blank"
+                    class="w-[20px] h-[20px] cursor-pointer"
+                  >
+                    <svg
+                      viewBox="0 0 76.52 77.67"
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="object-contain w-full h-full rounded-full"
+                    >
+                      <path
+                        d="m66.54 46.41a4.09 4.09 0 0 1 -4.17.28c-1.54-.87-2.37-2.91-2.37-5.69v-8.52c0-4.09-1.62-7-4.33-7.79-4.58-1.34-8 4.27-9.32 6.38l-8.1 13.11v-16c-.09-3.69-1.29-5.9-3.56-6.56-1.5-.44-3.75-.26-5.94 3.08l-18.11 29.07a32 32 0 0 1 -3.64-14.94c0-17.52 14-31.77 31.25-31.77s31.3 14.25 31.3 31.77v.09s0 .06 0 .09c.17 3.39-.93 6.09-3 7.4zm10-7.57v-.17c-.14-21.35-17.26-38.67-38.29-38.67s-38.25 17.42-38.25 38.83 17.16 38.84 38.25 38.84a37.81 37.81 0 0 0 26-10.36 3.56 3.56 0 0 0 .18-5 3.43 3.43 0 0 0 -4.86-.23 30.93 30.93 0 0 1 -44.57-2.08l16.3-26.2v12.09c0 5.81 2.25 7.69 4.14 8.24s4.78.17 7.81-4.75l9-14.57c.28-.47.55-.87.79-1.22v7.41c0 5.43 2.18 9.77 6 11.91a11 11 0 0 0 11.21-.45c4.2-2.73 6.49-7.67 6.25-13.62z"
+                        fill={`${$isDarkMode ? "#d1d5db" : "#17181b"}`}
+                      />
+                    </svg>
+                  </a>
+                {/if}
 
-          {#if isShowCoingecko}
-            <a
-              href={`https://www.coingecko.com/en/coins/${data?.cg_id}`}
-              target="_blank"
-              class="w-[20px] h-[20px] cursor-pointer"
-            >
-              <svg
-                version="1.1"
-                id="Layer_1"
-                xmlns="http://www.w3.org/2000/svg"
-                xmlns:xlink="http://www.w3.org/1999/xlink"
-                x="0px"
-                y="0px"
-                class="object-contain w-full h-full rounded-full"
-                viewBox="0 0 130 130"
-                enable-background="new 0 0 130 130"
-                xml:space="preserve"
-              >
-                <path
-                  fill="#8CC640"
-                  opacity="1.000000"
-                  stroke="none"
-                  d="
+                {#if isShowCoingecko && selectedItemIndex === index}
+                  <a
+                    href={`https://www.coingecko.com/en/coins/${data[index]?.cg_id}`}
+                    target="_blank"
+                    class="w-[20px] h-[20px] cursor-pointer"
+                  >
+                    <svg
+                      version="1.1"
+                      id="Layer_1"
+                      xmlns="http://www.w3.org/2000/svg"
+                      xmlns:xlink="http://www.w3.org/1999/xlink"
+                      x="0px"
+                      y="0px"
+                      class="object-contain w-full h-full rounded-full"
+                      viewBox="0 0 130 130"
+                      enable-background="new 0 0 130 130"
+                      xml:space="preserve"
+                    >
+                      <path
+                        fill="#8CC640"
+                        opacity="1.000000"
+                        stroke="none"
+                        d="
                     M131.000000,57.000000 
                       C131.000000,63.021152 131.000000,69.042305 130.672409,75.726242 
                       C126.245422,96.442734 115.971336,112.377365 97.906433,122.312782 
@@ -524,60 +734,60 @@
                       C81.442947,81.894165 89.345863,79.361977 96.649796,76.835396 
                       C88.453735,76.963951 79.822350,77.099335 70.502975,77.108353 
                     z"
-                />
-                <path
-                  fill="#FEFEFD"
-                  opacity="1.000000"
-                  stroke="none"
-                  d="
+                      />
+                      <path
+                        fill="#FEFEFD"
+                        opacity="1.000000"
+                        stroke="none"
+                        d="
                     M131.000000,56.531342 
                       C128.329590,49.620987 126.526794,41.770519 122.822418,34.953358 
                       C112.630692,16.197533 96.446571,5.317031 75.209534,1.327464 
                       C93.593452,1.000000 112.186913,1.000000 131.000000,1.000000 
                       C131.000000,19.353643 131.000000,37.708164 131.000000,56.531342 
                     z"
-                />
-                <path
-                  fill="#FEFEFD"
-                  opacity="1.000000"
-                  stroke="none"
-                  d="
+                      />
+                      <path
+                        fill="#FEFEFD"
+                        opacity="1.000000"
+                        stroke="none"
+                        d="
                     M56.531342,1.000000 
                       C55.650108,1.433293 54.319679,1.944165 52.947453,2.288438 
                       C24.726683,9.368647 7.883286,27.381535 1.327633,55.805592 
                       C1.000000,37.739223 1.000000,19.478447 1.000000,1.000000 
                       C19.353655,1.000000 37.708168,1.000000 56.531342,1.000000 
                     z"
-                />
-                <path
-                  fill="#FEFEFD"
-                  opacity="1.000000"
-                  stroke="none"
-                  d="
+                      />
+                      <path
+                        fill="#FEFEFD"
+                        opacity="1.000000"
+                        stroke="none"
+                        d="
                     M75.468658,131.000000 
                       C82.667252,128.162033 90.821442,126.209435 97.906433,122.312782 
                       C115.971336,112.377365 126.245422,96.442734 130.672409,76.194504 
                       C131.000000,94.260780 131.000000,112.521553 131.000000,131.000000 
                       C112.646347,131.000000 94.291832,131.000000 75.468658,131.000000 
                     z"
-                />
-                <path
-                  fill="#FEFEFD"
-                  opacity="1.000000"
-                  stroke="none"
-                  d="
+                      />
+                      <path
+                        fill="#FEFEFD"
+                        opacity="1.000000"
+                        stroke="none"
+                        d="
                     M1.000000,76.468658 
                       C1.334888,76.519814 1.849081,76.998550 1.978957,77.565338 
                       C8.627264,106.579208 26.738447,123.925354 55.806419,130.671448 
                       C37.739883,131.000000 19.479769,131.000000 1.000000,131.000000 
                       C1.000000,112.979698 1.000000,94.958511 1.000000,76.468658 
                     z"
-                />
-                <path
-                  fill="#F8E987"
-                  opacity="1.000000"
-                  stroke="none"
-                  d="
+                      />
+                      <path
+                        fill="#F8E987"
+                        opacity="1.000000"
+                        stroke="none"
+                        d="
                     M67.161728,34.130535 
                       C58.658878,32.550331 50.463642,32.776325 42.244755,36.285854 
                       C30.065470,41.486504 24.379354,50.622173 23.929556,63.478218 
@@ -601,12 +811,12 @@
                       C88.945778,11.339518 75.633400,7.880075 68.937065,10.319439 
                       C70.920326,10.843212 72.457603,11.249201 74.766914,11.836439 
                     z"
-                />
-                <path
-                  fill="#F5F7F2"
-                  opacity="1.000000"
-                  stroke="none"
-                  d="
+                      />
+                      <path
+                        fill="#F5F7F2"
+                        opacity="1.000000"
+                        stroke="none"
+                        d="
                     M46.557922,46.678169 
                       C50.460312,40.761738 54.984890,38.808552 60.648354,40.346165 
                       C65.791763,41.742584 68.941345,45.582127 69.158218,50.720249 
@@ -619,12 +829,12 @@
                       C60.652447,59.966290 64.273163,58.019295 65.559769,53.998142 
                       C67.025444,49.417343 65.020790,45.732014 59.129066,43.321339 
                     z"
-                />
-                <path
-                  fill="#5E6658"
-                  opacity="1.000000"
-                  stroke="none"
-                  d="
+                      />
+                      <path
+                        fill="#5E6658"
+                        opacity="1.000000"
+                        stroke="none"
+                        d="
                     M70.846970,77.171539 
                       C79.822350,77.099335 88.453735,76.963951 96.649796,76.835396 
                       C89.345863,79.361977 81.442947,81.894165 72.876495,79.887817 
@@ -632,575 +842,782 @@
                       C69.385818,77.465889 69.444435,77.281075 69.544479,77.254951 
                       C69.855530,77.173737 70.182304,77.152718 70.846970,77.171539 
                     z"
-                />
-                <path
-                  fill="#249B48"
-                  opacity="1.000000"
-                  stroke="none"
-                  d="
+                      />
+                      <path
+                        fill="#249B48"
+                        opacity="1.000000"
+                        stroke="none"
+                        d="
                     M67.415672,34.362106 
                       C75.050224,31.958828 79.000679,33.218479 83.097733,39.484730 
                       C78.037468,38.062542 72.853539,36.328110 67.415672,34.362106 
                     z"
-                />
-                <path
-                  fill="#FDFDF4"
-                  opacity="1.000000"
-                  stroke="none"
-                  d="
+                      />
+                      <path
+                        fill="#FDFDF4"
+                        opacity="1.000000"
+                        stroke="none"
+                        d="
                     M122.734604,63.309586 
                       C122.599434,64.290619 122.471214,64.915009 122.356270,65.474770 
                       C117.481361,53.054993 112.618309,40.665421 107.482773,27.581638 
                       C117.821663,37.472195 121.931564,49.456993 122.734604,63.309586 
                     z"
-                />
-                <path
-                  fill="#FCFBEE"
-                  opacity="1.000000"
-                  stroke="none"
-                  d="
+                      />
+                      <path
+                        fill="#FCFBEE"
+                        opacity="1.000000"
+                        stroke="none"
+                        d="
                     M74.380898,11.745815 
                       C72.457603,11.249201 70.920326,10.843212 68.937065,10.319439 
                       C75.633400,7.880075 88.945778,11.339518 93.647499,16.800549 
                       C87.001877,15.053272 80.884399,13.444856 74.380898,11.745815 
                     z"
-                />
-                <path
-                  fill="#5B5C5E"
-                  opacity="1.000000"
-                  stroke="none"
-                  d="
+                      />
+                      <path
+                        fill="#5B5C5E"
+                        opacity="1.000000"
+                        stroke="none"
+                        d="
                     M59.497826,43.426590 
                       C65.020790,45.732014 67.025444,49.417343 65.559769,53.998142 
                       C64.273163,58.019295 60.652447,59.966290 56.005619,59.135765 
                       C51.976357,58.415615 49.652809,55.246601 49.880501,50.781902 
                       C50.128323,45.922436 52.905285,43.682343 59.497826,43.426590 
                     z"
-                />
-              </svg>
-            </a>
-          {/if}
+                      />
+                    </svg>
+                  </a>
+                {/if}
 
-          {#if !isShowCMC || !isShowCoingecko}
-            <div class="h-[20px]" />
-          {/if}
-
-          {#if data?.positionType === "ERC_404"}
-            <span
-              class="inline-flex items-center gap-x-1.5 rounded-full bg-yellow-100 px-1 py-0.5 text-[10px] font-medium text-yellow-800"
-            >
-              <svg
-                class="h-1.5 w-1.5 fill-yellow-500"
-                viewBox="0 0 6 6"
-                aria-hidden="true"
-              >
-                <circle cx={3} cy={3} r={3} />
-              </svg>
-              ERC 404
-            </span>
-          {/if}
-        </div>
-      </div>
-    </div>
-  </td>
-
-  <td
-    class={`py-3 ${
-      $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
-    }`}
-  >
-    <div class="flex justify-end text-2xl font-medium xl:text-sm text_00000099">
-      $<TooltipNumber number={data.market_price} type="balance" />
-    </div>
-  </td>
-
-  <td
-    class={`py-3 ${
-      $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
-    }`}
-  >
-    <div
-      class="flex items-center justify-end gap-1 text-2xl font-medium xl:text-sm text_00000099"
-    >
-      {#if withinLast24Hours < 24 && withinLast24Hours > 0}
-        <span
-          use:tooltip={{
-            content: `<tooltip-detail text="Changed ${withinLast24Hours} hrs ago" />`,
-            allowHTML: true,
-            placement: "top",
-            interactive: true,
-          }}
-          class="cursor-pointer"
-        >
-          <div class="w-2 h-2 bg-indigo-500 rounded-full" />
-        </span>
-      {/if}
-      <TooltipNumber number={data.amount} type="balance" personalValue />
-    </div>
-  </td>
-
-  <td
-    class={`py-3 ${
-      $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
-    }`}
-  >
-    <div class="flex flex-col gap-1">
-      <div
-        class="flex justify-end text-2xl font-medium xl:text-sm text_00000099"
-      >
-        <TooltipNumber number={value} type="value" personalValue />
-      </div>
-      <div class="flex flex-col items-end justify-end gap-1">
-        <div class="flex justify-end text-2xl text-gray-400 xl:text-sm">
-          <TooltipNumber number={ratio} type="percent" />%
-        </div>
-
-        <div class="w-3/4 max-w-20">
-          <Progressbar progress={ratio} animate size="h-1" />
-        </div>
-      </div>
-    </div>
-  </td>
-
-  <td
-    class={`py-3 ${
-      $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
-    }`}
-  >
-    <div class="flex justify-end text-2xl font-medium xl:text-sm text_00000099">
-      ${#if data?.profit}
-        <TooltipNumber number={data?.profit?.averageCost} type="balance" />
-      {:else}
-        0
-      {/if}
-    </div>
-  </td>
-
-  <td
-    class={`py-3 ${
-      $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
-    }`}
-  >
-    <div
-      class="flex items-center justify-end gap-1 text-2xl font-medium xl:text-sm view-token-detail1"
-    >
-      {#if ["BTC"].includes($typeWallet)}
-        N/A
-      {:else}
-        <div class="flex flex-col">
-          <div
-            class={`flex justify-end ${
-              realizedProfit !== 0
-                ? realizedProfit >= 0
-                  ? "text-[#00A878]"
-                  : "text-red-500"
-                : "text_00000099"
-            }`}
-          >
-            <TooltipNumber
-              number={Math.abs(realizedProfit)}
-              type="value"
-              personalValue
-            />
-          </div>
-          <div class="flex items-center justify-end gap-1">
-            <div
-              class={`flex items-center ${
-                realizedProfit !== 0
-                  ? realizedProfit >= 0
-                    ? "text-[#00A878]"
-                    : "text-red-500"
-                  : "text_00000099"
-              }`}
-            >
-              <TooltipNumber
-                number={Math.abs(percentRealizedProfit) * 100}
-                type="percent"
-              />
-              <span>%</span>
-            </div>
-            {#if realizedProfit !== 0}
-              <img
-                src={realizedProfit >= 0 ? TrendUp : TrendDown}
-                alt="trend"
-                class="mb-1"
-              />
-            {/if}
-          </div>
-        </div>
-      {/if}
-    </div>
-  </td>
-
-  <td
-    class={`py-3 xl:pr-3 pr-6 ${
-      $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
-    }`}
-  >
-    <div
-      class="flex items-center justify-end gap-1 text-2xl font-medium xl:text-sm view-token-detail2"
-    >
-      {#if ["BTC"].includes($typeWallet)}
-        N/A
-      {:else}
-        <div class="flex flex-col">
-          <div
-            class={`flex justify-end ${
-              unrealizedProfit !== 0
-                ? unrealizedProfit >= 0
-                  ? "text-[#00A878]"
-                  : "text-red-500"
-                : "text_00000099"
-            }`}
-          >
-            <TooltipNumber
-              number={Math.abs(unrealizedProfit)}
-              type="value"
-              personalValue
-            />
-          </div>
-          <div class="flex items-center justify-end gap-1">
-            <div
-              class={`flex items-center ${
-                unrealizedProfit !== 0
-                  ? unrealizedProfit >= 0
-                    ? "text-[#00A878]"
-                    : "text-red-500"
-                  : "text_00000099"
-              }`}
-            >
-              <TooltipNumber
-                number={Math.abs(percentUnrealizedProfit) * 100}
-                type="percent"
-              />
-              <span>%</span>
-            </div>
-            {#if unrealizedProfit !== 0}
-              <img
-                src={unrealizedProfit >= 0 ? TrendUp : TrendDown}
-                alt="trend"
-                class="mb-1"
-              />
-            {/if}
-          </div>
-        </div>
-      {/if}
-    </div>
-  </td>
-
-  {#if listSupported.includes($typeWallet)}
-    <td
-      class={`py-3 pr-3 w-full h-full flex items-center xl:gap-4 gap-7 ${
-        $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
-      } ${
-        ["BUNDLE", "SOL", "EVM"].includes($typeWallet)
-          ? "justify-start"
-          : "justify-center"
-      }`}
-      style={`${lastIndex ? "border-bottom-right-radius: 10px;" : ""}`}
-    >
-      {#if $typeWallet === "BUNDLE"}
-        <div
-          class="flex justify-center view-icon-detail"
-          use:tooltip={{
-            content: `<tooltip-detail text="Show bundles detail" />`,
-            allowHTML: true,
-            placement: "top",
-          }}
-        >
-          <div
-            class="xl:block hidden cursor-pointer transform rotate-180 xl:w-3 xl:h-3 w-5 h-5"
-            class:rotate-0={isOpenTokenInfoBundle}
-            on:click={() => (isOpenTokenInfoBundle = !isOpenTokenInfoBundle)}
-          >
-            <svg
-              width="12"
-              height="12"
-              viewBox="0 0 12 12"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M10 8.36365L6 4.00001L2 8.36365"
-                stroke={$isDarkMode ? "white" : "#00000080"}
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </svg>
-          </div>
-          <div
-            class="xl:hidden block"
-            on:click={() => (showTokenInfoBundle = true)}
-          >
-            <svg
-              width="34"
-              height="34"
-              viewBox="0 0 20 20"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                fill={$isDarkMode ? "white" : "#00000080"}
-                d="M3.5 4A1.5 1.5 0 0 0 2 5.5v2A1.5 1.5 0 0 0 3.5 9h2A1.5 1.5 0 0 0 7 7.5v-2A1.5 1.5 0 0 0 5.5 4h-2ZM3 5.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-2ZM9.5 5a.5.5 0 0 0 0 1h8a.5.5 0 0 0 0-1h-8Zm0 2a.5.5 0 0 0 0 1h6a.5.5 0 0 0 0-1h-6Zm-6 4A1.5 1.5 0 0 0 2 12.5v2A1.5 1.5 0 0 0 3.5 16h2A1.5 1.5 0 0 0 7 14.5v-2A1.5 1.5 0 0 0 5.5 11h-2ZM3 12.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-2Zm6.5-.5a.5.5 0 0 0 0 1h8a.5.5 0 0 0 0-1h-8Zm0 2a.5.5 0 0 0 0 1h6a.5.5 0 0 0 0-1h-6Z"
-              />
-            </svg>
-          </div>
-        </div>
-      {/if}
-
-      {#if listSupported.includes($typeWallet)}
-        <div
-          class="flex justify-center cursor-pointer view-icon-detail"
-          on:click={() => {
-            showSideTokenDetail = true;
-            selectedTokenDetail = data;
-          }}
-        >
-          <div
-            use:tooltip={{
-              content: `<tooltip-detail text="Show token detail" />`,
-              allowHTML: true,
-              placement: "top",
-            }}
-            class="xl:w-[14px] xl:h-[14px] w-[26px] h-[26px]"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              xmlns:xlink="http://www.w3.org/1999/xlink"
-              version="1.1"
-              viewBox="0 0 256 256"
-              xml:space="preserve"
-            >
-              <defs />
-              <g
-                style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill-rule: nonzero; opacity: 1;"
-                fill={$isDarkMode ? "white" : "#00000080"}
-                transform="translate(1.4065934065934016 1.4065934065934016) scale(2.81 2.81)"
-              >
-                <path
-                  d="M 87.994 0 H 69.342 c -1.787 0 -2.682 2.16 -1.418 3.424 l 5.795 5.795 l -33.82 33.82 L 28.056 31.196 l -3.174 -3.174 c -1.074 -1.074 -2.815 -1.074 -3.889 0 L 0.805 48.209 c -1.074 1.074 -1.074 2.815 0 3.889 l 3.174 3.174 c 1.074 1.074 2.815 1.074 3.889 0 l 15.069 -15.069 l 14.994 14.994 c 1.074 1.074 2.815 1.074 3.889 0 l 1.614 -1.614 c 0.083 -0.066 0.17 -0.125 0.247 -0.202 l 37.1 -37.1 l 5.795 5.795 C 87.84 23.34 90 22.445 90 20.658 V 2.006 C 90 0.898 89.102 0 87.994 0 z"
-                  style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill-rule: nonzero; opacity: 1;"
-                  transform=" matrix(1 0 0 1 0 0) "
-                  fill={$isDarkMode ? "white" : "#00000080"}
-                  stroke-linecap="round"
-                />
-                <path
-                  d="M 65.626 37.8 v 49.45 c 0 1.519 1.231 2.75 2.75 2.75 h 8.782 c 1.519 0 2.75 -1.231 2.75 -2.75 V 23.518 L 65.626 37.8 z"
-                  style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill-rule: nonzero; opacity: 1;"
-                  fill={$isDarkMode ? "white" : "#00000080"}
-                  transform=" matrix(1 0 0 1 0 0) "
-                  stroke-linecap="round"
-                />
-                <path
-                  d="M 47.115 56.312 V 87.25 c 0 1.519 1.231 2.75 2.75 2.75 h 8.782 c 1.519 0 2.75 -1.231 2.75 -2.75 V 42.03 L 47.115 56.312 z"
-                  style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill-rule: nonzero; opacity: 1;"
-                  fill={$isDarkMode ? "white" : "#00000080"}
-                  transform=" matrix(1 0 0 1 0 0) "
-                  stroke-linecap="round"
-                />
-                <path
-                  d="M 39.876 60.503 c -1.937 0 -3.757 -0.754 -5.127 -2.124 l -6.146 -6.145 V 87.25 c 0 1.519 1.231 2.75 2.75 2.75 h 8.782 c 1.519 0 2.75 -1.231 2.75 -2.75 V 59.844 C 41.952 60.271 40.933 60.503 39.876 60.503 z"
-                  style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill-rule: nonzero; opacity: 1;"
-                  fill={$isDarkMode ? "white" : "#00000080"}
-                  transform=" matrix(1 0 0 1 0 0) "
-                  stroke-linecap="round"
-                />
-                <path
-                  d="M 22.937 46.567 L 11.051 58.453 c -0.298 0.298 -0.621 0.562 -0.959 0.8 V 87.25 c 0 1.519 1.231 2.75 2.75 2.75 h 8.782 c 1.519 0 2.75 -1.231 2.75 -2.75 V 48.004 L 22.937 46.567 z"
-                  style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill-rule: nonzero; opacity: 1;"
-                  fill={$isDarkMode ? "white" : "#00000080"}
-                  transform=" matrix(1 0 0 1 0 0) "
-                  stroke-linecap="round"
-                />
-              </g>
-            </svg>
-          </div>
-        </div>
-      {/if}
-
-      {#if $user && Object.keys($user).length !== 0 && ($typeWallet === "SOL" || $typeWallet === "EVM" || ($typeWallet === "BUNDLE" && data?.chain !== "CEX"))}
-        <div
-          class="flex justify-center view-icon-detail"
-          use:tooltip={{
-            content: `<tooltip-detail text="Swap token" />`,
-            allowHTML: true,
-            placement: "top",
-          }}
-        >
-          <div
-            class="xl:block hidden cursor-pointer transform rotate-90"
-            on:click={() => {
-              showSideTokenSwap = true;
-              selectedTokenDetail = data;
-              if (
-                $typeWallet === "SOL" ||
-                ($typeWallet === "BUNDLE" && data?.chain === "SOL")
-              ) {
-                handleSwapToken(data);
-              }
-            }}
-          >
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 21 22"
-              fill={$isDarkMode ? "white" : "#00000080"}
-              xmlns="http://www.w3.org/2000/svg"
-              ><path
-                d="M6.51043 7.47998V14.99H7.77043V7.47998L9.66043 9.36998L10.5505 8.47994L7.5859 5.51453C7.3398 5.26925 6.94114 5.26925 6.69504 5.51453L3.73047 8.47994L4.62051 9.36998L6.51043 7.47998Z"
-                fill={$isDarkMode ? "white" : "#00000080"}
-              ></path><path
-                d="M14.4902 14.52V7.01001H13.2302V14.52L11.3402 12.63L10.4502 13.5201L13.4148 16.4855C13.6609 16.7308 14.0595 16.7308 14.3056 16.4855L17.2702 13.5201L16.3802 12.63L14.4902 14.52Z"
-                fill={$isDarkMode ? "white" : "#00000080"}
-              ></path></svg
-            >
-          </div>
-          <div
-            class="xl:hidden block cursor-pointer transform rotate-90"
-            on:click={() => {
-              showSideTokenSwap = true;
-              selectedTokenDetail = data;
-              if (
-                $typeWallet === "SOL" ||
-                ($typeWallet === "BUNDLE" && data?.chain === "SOL")
-              ) {
-                handleSwapToken(data);
-              }
-            }}
-          >
-            <svg
-              width="42"
-              height="42"
-              viewBox="0 0 21 22"
-              fill={$isDarkMode ? "white" : "#00000080"}
-              xmlns="http://www.w3.org/2000/svg"
-              ><path
-                d="M6.51043 7.47998V14.99H7.77043V7.47998L9.66043 9.36998L10.5505 8.47994L7.5859 5.51453C7.3398 5.26925 6.94114 5.26925 6.69504 5.51453L3.73047 8.47994L4.62051 9.36998L6.51043 7.47998Z"
-                fill={$isDarkMode ? "white" : "#00000080"}
-              ></path><path
-                d="M14.4902 14.52V7.01001H13.2302V14.52L11.3402 12.63L10.4502 13.5201L13.4148 16.4855C13.6609 16.7308 14.0595 16.7308 14.3056 16.4855L17.2702 13.5201L16.3802 12.63L14.4902 14.52Z"
-                fill={$isDarkMode ? "white" : "#00000080"}
-              ></path></svg
-            >
-          </div>
-        </div>
-      {/if}
-    </td>
-  {/if}
-</tr>
-
-{#if isOpenTokenInfoBundle}
-  <tr class="border-t-[1px] border_0000000d">
-    <td
-      class={`xl:pt-2 py-2 pl-3 ${$isDarkMode ? "bg-[#000]" : "bg-gray-100"}`}
-    >
-      <div class="xl:text-sm text-2xl">Token breakdown</div>
-    </td>
-    <td
-      colspan={8}
-      class={`xl:py-0 py-2 pr-3 ${$isDarkMode ? "bg-[#000]" : "bg-gray-100"}`}
-    />
-  </tr>
-
-  <tr>
-    <td colspan={8} class={`${$isDarkMode ? "bg-[#000]" : "bg-gray-100"}`}>
-      <div class="-mt-1 flex items-center">
-        <div class="py-2 pl-3 flex-1">
-          <div class="text-left xl:text-sm text-xl font-medium">Account</div>
-        </div>
-        <div class="py-2 flex-1">
-          <div class="text-right xl:text-sm text-xl font-medium">Amount</div>
-        </div>
-        <div class="py-2 pr-3 flex-1">
-          <div class="text-right xl:text-sm text-xl font-medium">Value</div>
-        </div>
-      </div>
-    </td>
-  </tr>
-
-  <tr>
-    <td colspan={8}>
-      <div
-        class={`-mt-2 -mx-[1px] max-h-[500px] overflow-y-auto ${
-          $isDarkMode ? "bg-[#000]" : "bg-gray-100"
-        }`}
-      >
-        {#each formatDataBreakdown as item}
-          <div class="flex items-center">
-            <div class="py-2 pl-3 flex-1">
-              <div class="flex items-center gap-3">
-                <div class="rounded-full w-[30px] h-[30px] overflow-hidden">
-                  <Image logo={data.logo} defaultLogo={defaultToken} />
-                </div>
-                <div class="flex flex-col items-start">
-                  <div class="font-medium xl:text-sm text-xl text_00000099">
-                    {item.label}
-                  </div>
-                  <div
-                    class="xl:text-sm text-2xl flex justify-end items-center"
+                {#if data[index]?.positionType === "ERC_404"}
+                  <span
+                    class="inline-flex items-center gap-x-1.5 rounded-full bg-yellow-100 px-1 py-0.5 text-[10px] font-medium text-yellow-800"
                   >
-                    <Copy
-                      address={item?.owner}
-                      iconColor={$isDarkMode ? "#fff" : "#000"}
-                      color={$isDarkMode ? "#fff" : "#000"}
-                      isShorten
-                    />
-                  </div>
-                </div>
+                    <svg
+                      class="h-1.5 w-1.5 fill-yellow-500"
+                      viewBox="0 0 6 6"
+                      aria-hidden="true"
+                    >
+                      <circle cx={3} cy={3} r={3} />
+                    </svg>
+                    ERC 404
+                  </span>
+                {/if}
               </div>
             </div>
+          </div>
+        </div>
 
-            <div class="py-2 flex-1">
-              <div
-                class="xl:text-sm text-2xl text_00000099 flex flex-col justify-end items-end gap-1"
+        <div
+          class={`py-3 ${
+            listSelectedIndex.includes(index)
+              ? $isDarkMode
+                ? "bg-[#000]"
+                : "bg-gray-100"
+              : $isDarkMode
+                ? "bg-[#131313] group-hover:bg-[#000]"
+                : "bg-white group-hover:bg-gray-100"
+          }`}
+        >
+          <div
+            class="flex justify-end text-2xl font-medium xl:text-sm text_00000099"
+          >
+            $<TooltipNumber
+              number={$realtimePrice[
+                data[index]?.cmc_id ||
+                  data[index]?.contractAddress ||
+                  data[index]?.symbol ||
+                  data[index]?.price?.symbol
+              ]
+                ? Number(
+                    $realtimePrice[
+                      data[index]?.cmc_id ||
+                        data[index]?.contractAddress ||
+                        data[index]?.symbol ||
+                        data[index]?.price?.symbol
+                    ]?.price
+                  )
+                : Number(data[index].market_price)}
+              type="balance"
+            />
+          </div>
+        </div>
+
+        <div
+          class={`py-3 ${
+            listSelectedIndex.includes(index)
+              ? $isDarkMode
+                ? "bg-[#000]"
+                : "bg-gray-100"
+              : $isDarkMode
+                ? "bg-[#131313] group-hover:bg-[#000]"
+                : "bg-white group-hover:bg-gray-100"
+          }`}
+        >
+          <div
+            class="flex items-center justify-end gap-1 text-2xl font-medium xl:text-sm text_00000099"
+          >
+            {#if handleCheckWithinLast24Hours(data[index]) < 24 && handleCheckWithinLast24Hours(data[index]) > 0}
+              <span
+                use:tooltip={{
+                  content: `<tooltip-detail text="Changed ${handleCheckWithinLast24Hours(data[index])} hrs ago" />`,
+                  allowHTML: true,
+                  placement: "top",
+                  interactive: true,
+                }}
+                class="cursor-pointer"
               >
-                <div
-                  class="flex justify-end items-center gap-1 text-2xl font-medium xl:text-sm text_00000099"
-                >
-                  <TooltipNumber number={item?.amount} type="balance" />
-                  {#if data.symbol === undefined}
-                    N/A
-                  {:else}
-                    {data.symbol}
-                  {/if}
-                </div>
+                <div class="w-2 h-2 bg-indigo-500 rounded-full" />
+              </span>
+            {/if}
+            <TooltipNumber
+              number={data[index].amount}
+              type="balance"
+              personalValue
+            />
+          </div>
+        </div>
 
-                <div class="flex flex-col items-end justify-end gap-1 w-full">
+        <div
+          class={`py-3 ${
+            listSelectedIndex.includes(index)
+              ? $isDarkMode
+                ? "bg-[#000]"
+                : "bg-gray-100"
+              : $isDarkMode
+                ? "bg-[#131313] group-hover:bg-[#000]"
+                : "bg-white group-hover:bg-gray-100"
+          }`}
+        >
+          <div class="flex flex-col gap-1">
+            <div
+              class="flex justify-end text-2xl font-medium xl:text-sm text_00000099"
+            >
+              <TooltipNumber
+                number={handleCalculateValue(
+                  data[index],
+                  $realtimePrice[
+                    data[index]?.cmc_id ||
+                      data[index]?.contractAddress ||
+                      data[index]?.symbol ||
+                      data[index]?.price?.symbol
+                  ]
+                    ? Number(
+                        $realtimePrice[
+                          data[index]?.cmc_id ||
+                            data[index]?.contractAddress ||
+                            data[index]?.symbol ||
+                            data[index]?.price?.symbol
+                        ]?.price
+                      )
+                    : Number(data[index].market_price)
+                )}
+                type="value"
+                personalValue
+              />
+            </div>
+            <div class="flex flex-col items-end justify-end gap-1">
+              <div class="flex justify-end text-2xl text-gray-400 xl:text-sm">
+                <TooltipNumber
+                  number={handleCalculateRatio(
+                    data[index],
+                    $realtimePrice[
+                      data[index]?.cmc_id ||
+                        data[index]?.contractAddress ||
+                        data[index]?.symbol ||
+                        data[index]?.price?.symbol
+                    ]
+                      ? Number(
+                          $realtimePrice[
+                            data[index]?.cmc_id ||
+                              data[index]?.contractAddress ||
+                              data[index]?.symbol ||
+                              data[index]?.price?.symbol
+                          ]?.price
+                        )
+                      : Number(data[index].market_price)
+                  )}
+                  type="percent"
+                />%
+              </div>
+
+              <div class="w-3/4 max-w-20">
+                <Progressbar
+                  progress={handleCalculateRatio(
+                    data[index],
+                    $realtimePrice[
+                      data[index]?.cmc_id ||
+                        data[index]?.contractAddress ||
+                        data[index]?.symbol ||
+                        data[index]?.price?.symbol
+                    ]
+                      ? Number(
+                          $realtimePrice[
+                            data[index]?.cmc_id ||
+                              data[index]?.contractAddress ||
+                              data[index]?.symbol ||
+                              data[index]?.price?.symbol
+                          ]?.price
+                        )
+                      : Number(data[index].market_price)
+                  )}
+                  animate
+                  size="h-1"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class={`py-3 ${
+            listSelectedIndex.includes(index)
+              ? $isDarkMode
+                ? "bg-[#000]"
+                : "bg-gray-100"
+              : $isDarkMode
+                ? "bg-[#131313] group-hover:bg-[#000]"
+                : "bg-white group-hover:bg-gray-100"
+          }`}
+        >
+          <div
+            class="flex justify-end text-2xl font-medium xl:text-sm text_00000099"
+          >
+            ${#if data[index]?.profit}
+              <TooltipNumber
+                number={data[index]?.profit?.averageCost}
+                type="balance"
+              />
+            {:else}
+              0
+            {/if}
+          </div>
+        </div>
+
+        <div
+          class={`py-3 ${
+            listSelectedIndex.includes(index)
+              ? $isDarkMode
+                ? "bg-[#000]"
+                : "bg-gray-100"
+              : $isDarkMode
+                ? "bg-[#131313] group-hover:bg-[#000]"
+                : "bg-white group-hover:bg-gray-100"
+          }`}
+        >
+          <div
+            class="flex items-center justify-end gap-1 text-2xl font-medium xl:text-sm view-token-detail1"
+          >
+            {#if ["BTC"].includes($typeWallet)}
+              N/A
+            {:else}
+              <div class="flex flex-col">
+                <div
+                  class={`flex justify-end ${
+                    handleCalculateRealizedProfit(data[index])
+                      ?.realizedProfit !== 0
+                      ? handleCalculateRealizedProfit(data[index])
+                          ?.realizedProfit >= 0
+                        ? "text-[#00A878]"
+                        : "text-red-500"
+                      : "text_00000099"
+                  }`}
+                >
+                  <TooltipNumber
+                    number={Math.abs(
+                      handleCalculateRealizedProfit(data[index])?.realizedProfit
+                    )}
+                    type="value"
+                    personalValue
+                  />
+                </div>
+                <div class="flex items-center justify-end gap-1">
                   <div
-                    class="flex justify-end text-2xl text-gray-400 xl:text-sm"
+                    class={`flex items-center ${
+                      handleCalculateRealizedProfit(data[index])
+                        ?.realizedProfit !== 0
+                        ? handleCalculateRealizedProfit(data[index])
+                            ?.realizedProfit >= 0
+                          ? "text-[#00A878]"
+                          : "text-red-500"
+                        : "text_00000099"
+                    }`}
                   >
                     <TooltipNumber
-                      number={Math.abs(item.amount / data.amount) * 100}
+                      number={Math.abs(
+                        handleCalculateRealizedProfit(data[index])
+                          ?.percentRealizedProfit
+                      ) * 100}
                       type="percent"
-                    />%
+                    />
+                    <span>%</span>
                   </div>
-                  <div class="w-3/4 max-w-20">
-                    <Progressbar
-                      progress={Math.abs(item.amount / data.amount) * 100}
-                      animate
-                      size="h-1"
+                  {#if handleCalculateRealizedProfit(data[index])?.realizedProfit !== 0}
+                    <img
+                      src={handleCalculateRealizedProfit(data[index])
+                        ?.realizedProfit >= 0
+                        ? TrendUp
+                        : TrendDown}
+                      alt="trend"
+                      class="mb-1"
+                    />
+                  {/if}
+                </div>
+              </div>
+            {/if}
+          </div>
+        </div>
+
+        <div
+          class={`py-3 ${
+            listSelectedIndex.includes(index)
+              ? $isDarkMode
+                ? "bg-[#000]"
+                : "bg-gray-100"
+              : $isDarkMode
+                ? "bg-[#131313] group-hover:bg-[#000]"
+                : "bg-white group-hover:bg-gray-100"
+          }`}
+        >
+          <div
+            class="flex items-center justify-end gap-1 text-2xl font-medium xl:text-sm view-token-detail2"
+          >
+            {#if ["BTC"].includes($typeWallet)}
+              N/A
+            {:else}
+              <div class="flex flex-col">
+                <div
+                  class={`flex justify-end ${
+                    handleCalculateUnrealizedProfit(data[index])
+                      ?.unrealizedProfit !== 0
+                      ? handleCalculateUnrealizedProfit(data[index])
+                          ?.unrealizedProfit >= 0
+                        ? "text-[#00A878]"
+                        : "text-red-500"
+                      : "text_00000099"
+                  }`}
+                >
+                  <TooltipNumber
+                    number={Math.abs(
+                      handleCalculateUnrealizedProfit(data[index])
+                        ?.unrealizedProfit
+                    )}
+                    type="value"
+                    personalValue
+                  />
+                </div>
+                <div class="flex items-center justify-end gap-1">
+                  <div
+                    class={`flex items-center ${
+                      handleCalculateUnrealizedProfit(data[index])
+                        ?.unrealizedProfit !== 0
+                        ? handleCalculateUnrealizedProfit(data[index])
+                            ?.unrealizedProfit >= 0
+                          ? "text-[#00A878]"
+                          : "text-red-500"
+                        : "text_00000099"
+                    }`}
+                  >
+                    <TooltipNumber
+                      number={Math.abs(
+                        handleCalculateUnrealizedProfit(data[index])
+                          ?.percentUnrealizedProfit
+                      ) * 100}
+                      type="percent"
+                    />
+                    <span>%</span>
+                  </div>
+                  {#if handleCalculateUnrealizedProfit(data[index])?.unrealizedProfit !== 0}
+                    <img
+                      src={handleCalculateUnrealizedProfit(data[index])
+                        ?.unrealizedProfit >= 0
+                        ? TrendUp
+                        : TrendDown}
+                      alt="trend"
+                      class="mb-1"
+                    />
+                  {/if}
+                </div>
+              </div>
+            {/if}
+          </div>
+        </div>
+
+        {#if listSupported.includes($typeWallet)}
+          <div
+            class={`py-3 w-full ${
+              listSelectedIndex.includes(index)
+                ? $isDarkMode
+                  ? "bg-[#000]"
+                  : "bg-gray-100"
+                : $isDarkMode
+                  ? "bg-[#131313] group-hover:bg-[#000]"
+                  : "bg-white group-hover:bg-gray-100"
+            }`}
+            style={`${data.length - 1 === index ? "border-bottom-right-radius: 10px;" : ""}`}
+          >
+            <div
+              class={`2xl:pl-14 pl-6 w-full h-[40px] flex items-center 2xl:gap-7 gap-6 ${
+                $typeWallet === "BUNDLE" ? "justify-start" : "justify-center"
+              }`}
+            >
+              {#if $typeWallet === "BUNDLE"}
+                <div
+                  class="flex justify-center view-icon-detail"
+                  use:tooltip={{
+                    content: `<tooltip-detail text="Show bundles detail" />`,
+                    allowHTML: true,
+                    placement: "top",
+                  }}
+                >
+                  <div
+                    class="xl:block hidden cursor-pointer transform rotate-180 xl:w-3 xl:h-3 w-5 h-5"
+                    class:rotate-0={listSelectedIndex.includes(index)}
+                    on:click={() => {
+                      listSelectedIndex.includes(index)
+                        ? (listSelectedIndex = listSelectedIndex.filter(
+                            (item) => item !== index
+                          ))
+                        : (listSelectedIndex = [...listSelectedIndex, index]);
+
+                      selectedItemIndex = index;
+                      handleRecomputeHeight(index);
+                    }}
+                  >
+                    <svg
+                      width="12"
+                      height="12"
+                      viewBox="0 0 12 12"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M10 8.36365L6 4.00001L2 8.36365"
+                        stroke={$isDarkMode ? "white" : "#00000080"}
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                  </div>
+                  <div
+                    class="xl:hidden block"
+                    on:click={() => (showTokenInfoBundle = true)}
+                  >
+                    <svg
+                      width="34"
+                      height="34"
+                      viewBox="0 0 20 20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        fill={$isDarkMode ? "white" : "#00000080"}
+                        d="M3.5 4A1.5 1.5 0 0 0 2 5.5v2A1.5 1.5 0 0 0 3.5 9h2A1.5 1.5 0 0 0 7 7.5v-2A1.5 1.5 0 0 0 5.5 4h-2ZM3 5.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-2ZM9.5 5a.5.5 0 0 0 0 1h8a.5.5 0 0 0 0-1h-8Zm0 2a.5.5 0 0 0 0 1h6a.5.5 0 0 0 0-1h-6Zm-6 4A1.5 1.5 0 0 0 2 12.5v2A1.5 1.5 0 0 0 3.5 16h2A1.5 1.5 0 0 0 7 14.5v-2A1.5 1.5 0 0 0 5.5 11h-2ZM3 12.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-2Zm6.5-.5a.5.5 0 0 0 0 1h8a.5.5 0 0 0 0-1h-8Zm0 2a.5.5 0 0 0 0 1h6a.5.5 0 0 0 0-1h-6Z"
+                      />
+                    </svg>
+                  </div>
+                </div>
+              {/if}
+
+              {#if listSupported.includes($typeWallet)}
+                <div
+                  class="flex justify-center cursor-pointer view-icon-detail"
+                  on:click={() => {
+                    showSideTokenDetail = true;
+                    selectedTokenDetail = data[index];
+                  }}
+                >
+                  <div
+                    use:tooltip={{
+                      content: `<tooltip-detail text="Show token detail" />`,
+                      allowHTML: true,
+                      placement: "top",
+                    }}
+                    class="xl:w-[14px] xl:h-[14px] w-[26px] h-[26px]"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      xmlns:xlink="http://www.w3.org/1999/xlink"
+                      version="1.1"
+                      viewBox="0 0 256 256"
+                      xml:space="preserve"
+                    >
+                      <defs />
+                      <g
+                        style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill-rule: nonzero; opacity: 1;"
+                        fill={$isDarkMode ? "white" : "#00000080"}
+                        transform="translate(1.4065934065934016 1.4065934065934016) scale(2.81 2.81)"
+                      >
+                        <path
+                          d="M 87.994 0 H 69.342 c -1.787 0 -2.682 2.16 -1.418 3.424 l 5.795 5.795 l -33.82 33.82 L 28.056 31.196 l -3.174 -3.174 c -1.074 -1.074 -2.815 -1.074 -3.889 0 L 0.805 48.209 c -1.074 1.074 -1.074 2.815 0 3.889 l 3.174 3.174 c 1.074 1.074 2.815 1.074 3.889 0 l 15.069 -15.069 l 14.994 14.994 c 1.074 1.074 2.815 1.074 3.889 0 l 1.614 -1.614 c 0.083 -0.066 0.17 -0.125 0.247 -0.202 l 37.1 -37.1 l 5.795 5.795 C 87.84 23.34 90 22.445 90 20.658 V 2.006 C 90 0.898 89.102 0 87.994 0 z"
+                          style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill-rule: nonzero; opacity: 1;"
+                          transform=" matrix(1 0 0 1 0 0) "
+                          fill={$isDarkMode ? "white" : "#00000080"}
+                          stroke-linecap="round"
+                        />
+                        <path
+                          d="M 65.626 37.8 v 49.45 c 0 1.519 1.231 2.75 2.75 2.75 h 8.782 c 1.519 0 2.75 -1.231 2.75 -2.75 V 23.518 L 65.626 37.8 z"
+                          style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill-rule: nonzero; opacity: 1;"
+                          fill={$isDarkMode ? "white" : "#00000080"}
+                          transform=" matrix(1 0 0 1 0 0) "
+                          stroke-linecap="round"
+                        />
+                        <path
+                          d="M 47.115 56.312 V 87.25 c 0 1.519 1.231 2.75 2.75 2.75 h 8.782 c 1.519 0 2.75 -1.231 2.75 -2.75 V 42.03 L 47.115 56.312 z"
+                          style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill-rule: nonzero; opacity: 1;"
+                          fill={$isDarkMode ? "white" : "#00000080"}
+                          transform=" matrix(1 0 0 1 0 0) "
+                          stroke-linecap="round"
+                        />
+                        <path
+                          d="M 39.876 60.503 c -1.937 0 -3.757 -0.754 -5.127 -2.124 l -6.146 -6.145 V 87.25 c 0 1.519 1.231 2.75 2.75 2.75 h 8.782 c 1.519 0 2.75 -1.231 2.75 -2.75 V 59.844 C 41.952 60.271 40.933 60.503 39.876 60.503 z"
+                          style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill-rule: nonzero; opacity: 1;"
+                          fill={$isDarkMode ? "white" : "#00000080"}
+                          transform=" matrix(1 0 0 1 0 0) "
+                          stroke-linecap="round"
+                        />
+                        <path
+                          d="M 22.937 46.567 L 11.051 58.453 c -0.298 0.298 -0.621 0.562 -0.959 0.8 V 87.25 c 0 1.519 1.231 2.75 2.75 2.75 h 8.782 c 1.519 0 2.75 -1.231 2.75 -2.75 V 48.004 L 22.937 46.567 z"
+                          style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill-rule: nonzero; opacity: 1;"
+                          fill={$isDarkMode ? "white" : "#00000080"}
+                          transform=" matrix(1 0 0 1 0 0) "
+                          stroke-linecap="round"
+                        />
+                      </g>
+                    </svg>
+                  </div>
+                </div>
+              {/if}
+
+              {#if $user && Object.keys($user).length !== 0 && ($typeWallet === "SOL" || $typeWallet === "EVM" || ($typeWallet === "BUNDLE" && data[index]?.chain !== "CEX"))}
+                <div
+                  class="flex justify-center view-icon-detail"
+                  use:tooltip={{
+                    content: `<tooltip-detail text="Swap token" />`,
+                    allowHTML: true,
+                    placement: "top",
+                  }}
+                >
+                  <div
+                    class="xl:block hidden cursor-pointer transform rotate-90"
+                    on:click={() => {
+                      showSideTokenSwap = true;
+                      selectedTokenDetail = data[index];
+                      if (
+                        $typeWallet === "SOL" ||
+                        ($typeWallet === "BUNDLE" &&
+                          data[index]?.chain === "SOL")
+                      ) {
+                        handleSwapToken(
+                          data[index],
+                          data[index].contractAddress
+                        );
+                      }
+                    }}
+                  >
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 21 22"
+                      fill={$isDarkMode ? "white" : "#00000080"}
+                      xmlns="http://www.w3.org/2000/svg"
+                      ><path
+                        d="M6.51043 7.47998V14.99H7.77043V7.47998L9.66043 9.36998L10.5505 8.47994L7.5859 5.51453C7.3398 5.26925 6.94114 5.26925 6.69504 5.51453L3.73047 8.47994L4.62051 9.36998L6.51043 7.47998Z"
+                        fill={$isDarkMode ? "white" : "#00000080"}
+                      ></path><path
+                        d="M14.4902 14.52V7.01001H13.2302V14.52L11.3402 12.63L10.4502 13.5201L13.4148 16.4855C13.6609 16.7308 14.0595 16.7308 14.3056 16.4855L17.2702 13.5201L16.3802 12.63L14.4902 14.52Z"
+                        fill={$isDarkMode ? "white" : "#00000080"}
+                      ></path></svg
+                    >
+                  </div>
+                  <div
+                    class="xl:hidden block cursor-pointer transform rotate-90"
+                    on:click={() => {
+                      showSideTokenSwap = true;
+                      selectedTokenDetail = data[index];
+                      if (
+                        $typeWallet === "SOL" ||
+                        ($typeWallet === "BUNDLE" &&
+                          data[index]?.chain === "SOL")
+                      ) {
+                        handleSwapToken(
+                          data[index],
+                          data[index].contractAddress
+                        );
+                      }
+                    }}
+                  >
+                    <svg
+                      width="42"
+                      height="42"
+                      viewBox="0 0 21 22"
+                      fill={$isDarkMode ? "white" : "#00000080"}
+                      xmlns="http://www.w3.org/2000/svg"
+                      ><path
+                        d="M6.51043 7.47998V14.99H7.77043V7.47998L9.66043 9.36998L10.5505 8.47994L7.5859 5.51453C7.3398 5.26925 6.94114 5.26925 6.69504 5.51453L3.73047 8.47994L4.62051 9.36998L6.51043 7.47998Z"
+                        fill={$isDarkMode ? "white" : "#00000080"}
+                      ></path><path
+                        d="M14.4902 14.52V7.01001H13.2302V14.52L11.3402 12.63L10.4502 13.5201L13.4148 16.4855C13.6609 16.7308 14.0595 16.7308 14.3056 16.4855L17.2702 13.5201L16.3802 12.63L14.4902 14.52Z"
+                        fill={$isDarkMode ? "white" : "#00000080"}
+                      ></path></svg
+                    >
+                  </div>
+                </div>
+              {/if}
+            </div>
+          </div>
+        {/if}
+
+        {#if listSelectedIndex.includes(index)}
+          <div
+            class={`col-span-full border-t-[1px] border_0000000d xl:pt-2 py-2 pl-3 ${$isDarkMode ? "bg-[#000]" : "bg-gray-100"}`}
+          >
+            <div class="xl:text-sm text-2xl">Token breakdown</div>
+          </div>
+
+          <div
+            class={`col-span-full ${$isDarkMode ? "bg-[#000]" : "bg-gray-100"}`}
+          >
+            <div class="-mt-1 flex items-center">
+              <div class="py-2 pl-3 flex-1">
+                <div class="text-left xl:text-sm text-xl font-medium">
+                  Account
+                </div>
+              </div>
+              <div class="py-2 flex-1">
+                <div class="text-right xl:text-sm text-xl font-medium">
+                  Amount
+                </div>
+              </div>
+              <div class="py-2 pr-3 flex-1">
+                <div class="text-right xl:text-sm text-xl font-medium">
+                  Value
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div
+            class={`col-span-full -mt-2 -mx-[1px] max-h-[500px] overflow-y-auto overflow-x-hidden ${
+              $isDarkMode ? "bg-[#000]" : "bg-gray-100"
+            }`}
+          >
+            {#each handleFormatDataBreakdown(data[index]) as item}
+              <div class="flex items-center">
+                <div class="py-2 pl-3 flex-1">
+                  <div class="flex items-center gap-3">
+                    <div class="rounded-full w-[30px] h-[30px] overflow-hidden">
+                      <Image
+                        logo={data[index].logo}
+                        defaultLogo={defaultToken}
+                      />
+                    </div>
+                    <div class="flex flex-col items-start">
+                      <div class="font-medium xl:text-sm text-xl text_00000099">
+                        {item.label}
+                      </div>
+                      <div
+                        class="xl:text-sm text-2xl flex justify-end items-center"
+                      >
+                        <Copy
+                          address={item?.owner}
+                          iconColor={$isDarkMode ? "#fff" : "#000"}
+                          color={$isDarkMode ? "#fff" : "#000"}
+                          isShorten
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="py-2 flex-1">
+                  <div
+                    class="xl:text-sm text-2xl text_00000099 flex flex-col justify-end items-end gap-1"
+                  >
+                    <div
+                      class="flex justify-end items-center gap-1 text-2xl font-medium xl:text-sm text_00000099"
+                    >
+                      <TooltipNumber number={item?.amount} type="balance" />
+                      {#if data[index].symbol === undefined}
+                        N/A
+                      {:else}
+                        {data[index].symbol}
+                      {/if}
+                    </div>
+
+                    <div
+                      class="flex flex-col items-end justify-end gap-1 w-full"
+                    >
+                      <div
+                        class="flex justify-end text-2xl text-gray-400 xl:text-sm"
+                      >
+                        <TooltipNumber
+                          number={Math.abs(item.amount / data[index].amount) *
+                            100}
+                          type="percent"
+                        />%
+                      </div>
+                      <div class="w-3/4 max-w-20">
+                        <Progressbar
+                          progress={Math.abs(item.amount / data[index].amount) *
+                            100}
+                          animate
+                          size="h-1"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="py-2 pr-3 flex-1">
+                  <div
+                    class="xl:text-sm text-2xl text_00000099 font-medium flex justify-end items-center"
+                  >
+                    $<TooltipNumber
+                      number={Number(item?.amount) *
+                        Number(
+                          $realtimePrice[
+                            data[index]?.cmc_id ||
+                              data[index]?.contractAddress ||
+                              data[index]?.symbol ||
+                              data[index]?.price?.symbol
+                          ]
+                            ? Number(
+                                $realtimePrice[
+                                  data[index]?.cmc_id ||
+                                    data[index]?.contractAddress ||
+                                    data[index]?.symbol ||
+                                    data[index]?.price?.symbol
+                                ]?.price
+                              )
+                            : Number(data[index].market_price)
+                        )}
+                      type="balance"
                     />
                   </div>
                 </div>
               </div>
-            </div>
-
-            <div class="py-2 pr-3 flex-1">
-              <div
-                class="xl:text-sm text-2xl text_00000099 font-medium flex justify-end items-center"
-              >
-                $<TooltipNumber
-                  number={Number(item?.amount) * Number(data?.market_price)}
-                  type="balance"
-                />
-              </div>
-            </div>
+            {/each}
           </div>
-        {/each}
+        {/if}
       </div>
-    </td>
-  </tr>
-{/if}
+    </VirtualList>
+  {/if}
+
+  {#if isLoading}
+    <div
+      class={`w-full h-full grid ${listSupported.includes($typeWallet) ? "grid-cols-9" : "grid-cols-8"}`}
+    >
+      <div
+        class="col-span-full flex justify-center items-center h-full py-3 px-3"
+      >
+        <Loading />
+      </div>
+    </div>
+  {/if}
+</div>
 
 <!-- Modal token holding information when bundle -->
 <AppOverlay
@@ -1220,7 +1637,8 @@
     >
       <table
         class={`table-auto xl:w-full w-[1200px] ${
-          formatDataBreakdown && formatDataBreakdown.length === 0
+          handleFormatDataBreakdown(selectedTokenDetail) &&
+          handleFormatDataBreakdown(selectedTokenDetail).length === 0
             ? "h-full"
             : ""
         }`}
@@ -1245,7 +1663,7 @@
           </tr>
         </thead>
         <tbody>
-          {#if formatDataBreakdown && formatDataBreakdown.length === 0}
+          {#if handleFormatDataBreakdown(selectedTokenDetail) && handleFormatDataBreakdown(selectedTokenDetail).length === 0}
             <tr>
               <td colspan="3">
                 <div
@@ -1256,7 +1674,7 @@
               </td>
             </tr>
           {:else}
-            {#each formatDataBreakdown as item}
+            {#each handleFormatDataBreakdown(selectedTokenDetail) as item}
               <tr class="transition-all cursor-pointer group">
                 <td
                   class={`pl-3 py-3 ${
@@ -1340,7 +1758,22 @@
                     class="xl:text-sm text-2xl text_00000099 font-medium flex justify-end items-center"
                   >
                     $<TooltipNumber
-                      number={Number(item?.amount) * Number(data?.market_price)}
+                      number={Number(item?.amount) *
+                      $realtimePrice[
+                        data?.cmc_id ||
+                          data?.contractAddress ||
+                          data?.symbol ||
+                          data?.price?.symbol
+                      ]
+                        ? Number(
+                            $realtimePrice[
+                              data?.cmc_id ||
+                                data?.contractAddress ||
+                                data?.symbol ||
+                                data?.price?.symbol
+                            ]?.price
+                          )
+                        : Number(data.market_price)}
                       type="balance"
                     />
                   </div>
@@ -1861,18 +2294,18 @@
     {/if}
   </div>
 
-  {#if $typeWallet === "SOL" || ($typeWallet === "BUNDLE" && data?.chain === "SOL")}
+  {#if $typeWallet === "SOL" || ($typeWallet === "BUNDLE" && selectedTokenDetail?.chain === "SOL")}
     {#if showSideTokenSwap}
-      <div id={`swap-${index}`}></div>
+      <div id={`swap-${selectedTokenDetail?.contractAddress}`}></div>
     {/if}
   {:else}
     <SwapWidget
-      chain={data?.chain}
-      address={data?.contractAddress}
+      chain={selectedTokenDetail?.chain}
+      address={selectedTokenDetail?.contractAddress}
       {showSideTokenSwap}
       owner={$typeWallet === "BUNDLE"
-        ? data?.breakdown?.map((item) => item.owner)
-        : [data?.owner]}
+        ? selectedTokenDetail?.breakdown?.map((item) => item.owner)
+        : [selectedTokenDetail?.owner]}
       {triggerFireworkBonus}
     />
   {/if}
@@ -1929,5 +2362,8 @@
   }
   :global(body.dark) .bg_fafafbff {
     background: #212121;
+  }
+  :global(.virtual-list-wrapper) {
+    overflow-x: hidden !important;
   }
 </style>

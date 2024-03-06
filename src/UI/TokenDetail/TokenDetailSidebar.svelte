@@ -42,10 +42,11 @@
       ? 0
       : realizedProfit / Math.abs(Number(data?.avgCost));
 
-  $: pnl =
-    Number(data?.balance || 0) * Number(data?.market_price || 0) +
-    Number(data?.profit?.totalGain || 0) -
-    Number(data?.profit?.cost || 0);
+  $: pnl = data?.pnl
+    ? Number(data?.pnl)
+    : Number(data?.balance || 0) * Number(data?.market_price || 0) +
+      Number(data?.profit?.totalGain || 0) -
+      Number(data?.profit?.cost || 0);
 
   $: unrealizedProfit =
     Number(data?.avgCost) === 0 ? 0 : Number(pnl) - realizedProfit;
