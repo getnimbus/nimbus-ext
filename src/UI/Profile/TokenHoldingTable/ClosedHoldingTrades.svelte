@@ -341,7 +341,6 @@
             class={`col-spans-2 pl-3 py-3 ${
               $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
             }`}
-            style={`${formatData.length - 1 === index ? "border-bottom-left-radius: 10px;" : ""}`}
           >
             <div class="relative flex items-center gap-3 text-left">
               <div class="relative">
@@ -510,29 +509,28 @@
           </div>
 
           <div
-            class={`py-3 pr-3 rounded-tr-[10px] ${$isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"}`}
-            style={`${formatData.length - 1 === index ? "border-bottom-right-radius: 10px;" : ""}`}
+            class={`py-3 pr-3 ${$isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"}`}
           >
             <div
               class="text-right text-2xl font-medium xl:text-sm text_00000099"
             >
-              {#if formatData[index]?.profit}
+              {#if formatData[index]?.profit?.latestTrade}
                 {formatTime(formatData[index]?.profit?.latestTrade)}
               {/if}
             </div>
           </div>
-
-          {#if isLoading}
-            <div class="w-full h-full grid grid-cols-5">
-              <div
-                class="col-span-full flex justify-center items-center h-full py-3 px-3"
-              >
-                <Loading />
-              </div>
-            </div>
-          {/if}
         </div>
       </VirtualList>
+    {/if}
+
+    {#if isLoading}
+      <div class="w-full h-full grid grid-cols-5">
+        <div
+          class="col-span-full flex justify-center items-center h-full py-3 px-3"
+        >
+          <Loading />
+        </div>
+      </div>
     {/if}
   </div>
 </div>
