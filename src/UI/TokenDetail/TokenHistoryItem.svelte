@@ -24,7 +24,8 @@
         ? Number(data?.quantity_in)
         : Number(data?.quantity_out)
       : Number(
-          contractAddress?.toLowerCase() === data.from_token_address
+          contractAddress?.toLowerCase() ===
+            data.from_token_address.toLowerCase()
             ? data?.quantity_in
             : data?.quantity_out
         );
