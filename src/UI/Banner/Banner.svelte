@@ -68,7 +68,7 @@
             src={goldImg}
             alt=""
             class="w-[18px] h-[18px]"
-          /> 5 GM Points for Every $1 Swap
+          /> 5 GM Points for every $1 swap
         </div>
       </div>
 
