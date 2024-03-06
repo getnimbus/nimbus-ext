@@ -620,7 +620,7 @@
         </div>
 
         <div
-          class={`py-3 flex justify-center w-full ${
+          class={`py-3 flex items-center justify-center w-full ${
             $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
           }`}
           style={`${data.length - 1 === index ? "border-bottom-right-radius: 10px;" : ""}`}
