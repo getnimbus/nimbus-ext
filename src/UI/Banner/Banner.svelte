@@ -13,7 +13,7 @@
   <div class="max-w-[2000px] m-auto w-[90%] isolate">
     <div class="flex flex-wrap items-center gap-x-4 xl:gap-y-2 gap-y-3">
       <div
-        class="xl:text-sm text-2xl xl:leading-6 leading-8 flex xl:flex-row flex-col xl:gap-0 gap-2 xl:items-center items-start"
+        class="xl:text-sm text-xl leading-6 flex xl:flex-row flex-col xl:gap-0 gap-2 xl:items-center items-start"
       >
         <div class="flex items-center">
           <strong class="font-semibold flex items-center gap-1"

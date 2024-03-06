@@ -484,14 +484,16 @@
 </svelte:head>
 
 <div
-  class="mobile-header-container py-1 border-b-[1px] border-[#ffffff1a] relative"
+  class="mobile-header-container md:py-1 pt-1 pb-5 border-b-[1px] border-[#ffffff1a] relative"
 >
-  <div class="flex items-center justify-between max-w-[2000px] m-auto w-[90%]">
+  <div
+    class="flex md:flex-row flex-col md:items-center items-start justify-between max-w-[2000px] m-auto w-[90%]"
+  >
     <Link to="/">
       <img
         src={Logo}
         alt="logo"
-        class="-ml-6 xl:w-[177px] w-[220px] xl:h-[60px] h-[100px]"
+        class="-ml-6 xl:w-[177px] w-[200px] xl:h-[60px] h-[80px]"
         on:click={() => {
           if ($user && Object.keys($user)?.length === 0) {
             user.update((n) => (n = {}));
@@ -654,10 +656,10 @@
       </Link> -->
     </div>
 
-    <div class="flex items-center justify-end gap-6 xl:gap-3">
+    <div class="flex items-center justify-end gap-6 xl:gap-3 md:w-max w-full">
       <!-- Search -->
       <div
-        class={`px-4 xl:w-[220px] w-[400px] flex items-center gap-1 rounded-[1000px] cursor-pointer ${
+        class={`px-4 xl:w-[220px] md:w-[400px] w-full flex items-center gap-1 rounded-[1000px] cursor-pointer ${
           $isDarkMode ? "bg-[#212121]" : "bg-[#525B8C]"
         }`}
       >
@@ -667,7 +669,7 @@
             showPopoverSearch = true;
             search = "";
           }}
-          class={`flex-1 xl:py-2 py-3 rounded-r-[1000px] text-[#ffffff80] xl:text-sm text-2xl ${
+          class={`flex-1 xl:py-2 py-3 rounded-r-[1000px] text-[#ffffff80] xl:text-sm text-xl ${
             $isDarkMode ? "bg-[#212121]" : "bg-[#525B8C]"
           }`}
         >
@@ -756,10 +758,10 @@
       <img
         src={Logo}
         alt=""
-        class="-ml-6 xl:w-[177px] w-[220px] xl:h-[60px] h-[100px]"
+        class="-ml-6 xl:w-[177px] w-[200px] xl:h-[60px] h-[80px]"
       />
       <div
-        class="-mr-1 text-6xl text-white"
+        class="-mr-1 text-5xl text-white"
         on:click={() => {
           isShowHeaderMobile.update((n) => (n = false));
         }}
@@ -1258,7 +1260,7 @@
         autofocus={true}
         placeholder={MultipleLang.search_placeholder}
         type="text"
-        class={`flex-1 xl:py-2 py-3 xl:text-sm text-2xl border-none focus:outline-none focus:ring-0 ${
+        class={`flex-1 xl:py-2 py-3 xl:text-sm text-xl border-none focus:outline-none focus:ring-0 ${
           $isDarkMode ? "bg-[#0f0f0f]" : "bg-[#fff]"
         }`}
       />
@@ -1266,7 +1268,7 @@
     {#if Object.keys($user).length !== 0}
       <div class="flex flex-col gap-2 mb-2">
         <div
-          class={`xl:text-xs text-sm ${
+          class={`xl:text-xs text-base ${
             $isDarkMode ? "text-gray-200" : "text-gray-400"
           }`}
         >
@@ -1331,7 +1333,7 @@
     {/if}
     <div class="flex flex-col gap-2">
       <div
-        class={`xl:text-xs text-sm ${
+        class={`xl:text-xs text-base ${
           $isDarkMode ? "text-gray-200" : "text-gray-400"
         }`}
       >
