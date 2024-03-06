@@ -401,9 +401,11 @@
             <div
               class="flex justify-start w-max"
               on:mouseenter={() => {
+                selectedItemIndex = index;
                 showTooltipListNFT = true;
               }}
               on:mouseleave={() => {
+                selectedItemIndex = -1;
                 showTooltipListNFT = false;
               }}
             >
@@ -435,7 +437,7 @@
                     ...
                   </div>
                 </div>
-                {#if showTooltipListNFT && data[index]?.tokens?.length > 5}
+                {#if showTooltipListNFT && selectedItemIndex === index && data[index]?.tokens?.length > 5}
                   <div
                     class="absolute -top-7 left-0"
                     style="z-index: 2147483648;"

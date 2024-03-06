@@ -15052,7 +15052,7 @@ verror@1.10.0:
     core-util-is "1.0.2"
     extsprintf "^1.2.0"
 
-vezgo-sdk-js@^1.0.9:
+vezgo-sdk-js@^1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/vezgo-sdk-js/-/vezgo-sdk-js-1.1.2.tgz#23c42eaf53236bdc4bae76d88072e87d2d2cf4a3"
   integrity sha512-zeyxhalHiobnA1AaPxYYwX8kEJbSG/uZA/XbwFPwATxM0xK+woaAbY+e7qpWJvV0kNbgm0FM7j9jLEVsnbmLFg==

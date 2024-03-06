@@ -110,7 +110,7 @@
     "tailwindcss": "^3.1.8",
     "tippy.js": "^6.3.7",
     "url-pattern": "^1.0.3",
-    "vezgo-sdk-js": "^1.0.9",
+    "vezgo-sdk-js": "^1.1.2",
     "viem": "^1.18.9",
     "vite-imagetools": "^4.0.4",
     "vite-plugin-pwa": "^0.16.5",
