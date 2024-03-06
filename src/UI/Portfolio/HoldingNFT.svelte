@@ -564,7 +564,7 @@
                   type="balance"
                 />
                 <div>
-                  {data?.nativeToken?.symbol || ""}
+                  {data[index]?.nativeToken?.symbol || ""}
                 </div>
               </div>
 

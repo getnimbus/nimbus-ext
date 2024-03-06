@@ -439,7 +439,7 @@
             }`}
           >
             <div
-              class="flex justify-end text-2xl font-medium xl:text-sm text_00000099"
+              class="h-full flex items-center justify-end text-2xl font-medium xl:text-sm text_00000099"
             >
               $<TooltipNumber
                 number={formatData[index].profit.averageCost}
@@ -512,7 +512,7 @@
             class={`py-3 pr-3 ${$isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"}`}
           >
             <div
-              class="text-right text-2xl font-medium xl:text-sm text_00000099"
+              class="h-full flex items-center justify-end text-2xl font-medium xl:text-sm text_00000099"
             >
               {#if formatData[index]?.profit?.latestTrade}
                 {formatTime(formatData[index]?.profit?.latestTrade)}
