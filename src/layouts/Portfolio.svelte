@@ -48,6 +48,7 @@
 
   import Reload from "~/assets/reload.svg";
   import defaultToken from "~/assets/defaultToken.png";
+  import axios from "axios";
 
   const MultipleLang = {
     portfolio: i18n("newtabPage.portfolio", "Portfolio"),
@@ -566,6 +567,7 @@
         return {
           ...item,
           value: Number(item?.amount) * Number(item?.price?.price),
+          logo: `https://logo.getnimbus.io/api/v1/logo?address=${item.contractAddress}&chain=${item.chain}`,
         };
       })
       .sort((a, b) => {
