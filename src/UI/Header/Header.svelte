@@ -770,11 +770,11 @@
       </div>
     </div>
 
-    <div class="flex flex-col gap-4 justify-between h-full">
-      <div class="flex flex-col gap-8">
+    <div class="flex flex-col gap-3 justify-between h-full">
+      <div class="flex flex-col gap-6">
         {#if $user && Object.keys($user).length !== 0}
           <div class="flex justify-between items-center px-4 text-white">
-            <div class="text-3xl">
+            <div class="text-2xl">
               GM 👋, {displayName
                 ? displayName
                 : shorterAddress(
@@ -784,7 +784,7 @@
           </div>
         {/if}
 
-        <div class="flex flex-col gap-1">
+        <div class="flex flex-col gap-3">
           {#if $user && Object.keys($user).length !== 0}
             <div
               on:click={() => {
@@ -795,7 +795,7 @@
             >
               <Link to="upgrade">
                 <div
-                  class={`flex items-center gap-3 text-white px-5 py-6 
+                  class={`flex items-center gap-3 text-white px-5 py-3
             ${
               $isDarkMode
                 ? navActive === "upgrade"
@@ -810,8 +810,8 @@
                   <div class="flex items-center gap-2">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      width="40"
-                      height="40"
+                      width="25"
+                      height="25"
                       viewBox="0 0 32 32"
                     >
                       <path
@@ -819,7 +819,7 @@
                         d="M21 24H11a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2a2 2 0 0 0-2-2zm0 4H11v-2h10zm7.707-13.707l-12-12a1 1 0 0 0-1.414 0l-12 12A1 1 0 0 0 4 16h5v4a2.002 2.002 0 0 0 2 2h10a2.003 2.003 0 0 0 2-2v-4h5a1 1 0 0 0 .707-1.707zM21 14v6H11v-6H6.414L16 4.414L25.586 14z"
                       />
                     </svg>
-                    <span class="text-3xl font-medium ml-1">Upgrade</span>
+                    <span class="text-2xl font-medium ml-1">Upgrade</span>
                     <svg
                       width="26"
                       height="26"
@@ -848,7 +848,7 @@
             >
               <Link to={`profile?id=${userID}`}>
                 <div
-                  class={`flex items-center gap-3 text-white px-5 py-6 
+                  class={`flex items-center gap-3 text-white px-5 py-3 
             ${
               $isDarkMode
                 ? navActive === "profile"
@@ -861,8 +861,8 @@
           `}
                 >
                   <svg
-                    width="35"
-                    height="35"
+                    width="30"
+                    height="30"
                     viewBox="0 0 24 24"
                     xmlns="http://www.w3.org/2000/svg"
                   >
@@ -873,7 +873,7 @@
                       clip-rule="evenodd"
                     />
                   </svg>
-                  <span class="text-3xl font-medium">My Profile</span>
+                  <span class="text-2xl font-medium">My Profile</span>
                 </div>
               </Link>
             </div>
@@ -887,7 +887,7 @@
           >
             <Link to="whales">
               <div
-                class={`flex items-center gap-3 text-white px-5 py-6 
+                class={`flex items-center gap-3 text-white px-5 py-3
             ${
               $isDarkMode
                 ? navActive === "whales"
@@ -899,8 +899,8 @@
             }
           `}
               >
-                <img src={WhaleIcon} alt="" width="40" height="40" />
-                <span class="text-3xl font-medium">
+                <img src={WhaleIcon} alt="" width="30" height="30" />
+                <span class="text-2xl font-medium">
                   {MultipleLang.whales}
                 </span>
               </div>
@@ -915,7 +915,7 @@
           >
             <Link to="news">
               <div
-                class={`flex items-center gap-3 text-white px-5 py-6 
+                class={`flex items-center gap-3 text-white px-5 py-3 
             ${
               $isDarkMode
                 ? navActive === "news"
@@ -927,8 +927,8 @@
             }
           `}
               >
-                <img src={NewsIcon} alt="" width="40" height="40" />
-                <span class="text-3xl font-medium">
+                <img src={NewsIcon} alt="" width="30" height="30" />
+                <span class="text-2xl font-medium">
                   {MultipleLang.news}
                 </span>
               </div>
@@ -945,7 +945,7 @@
             >
               <Link to="invitation">
                 <div
-                  class={`flex items-center gap-3 text-white px-5 py-6 
+                  class={`flex items-center gap-3 text-white px-5 py-3 
             ${
               $isDarkMode
                 ? navActive === "invitation"
@@ -959,15 +959,15 @@
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    width="40"
-                    height="40"
+                    width="30"
+                    height="30"
                     viewBox="0 0 24 24"
                     ><path
                       fill="currentColor"
                       d="M19 17v2H7v-2s0-4 6-4s6 4 6 4m-3-9a3 3 0 1 0-3 3a3 3 0 0 0 3-3m3.2 5.06A5.6 5.6 0 0 1 21 17v2h3v-2s0-3.45-4.8-3.94M18 5a2.91 2.91 0 0 0-.89.14a5 5 0 0 1 0 5.72A2.91 2.91 0 0 0 18 11a3 3 0 0 0 0-6M8 10H5V7H3v3H0v2h3v3h2v-3h3Z"
                     /></svg
                   >
-                  <span class="text-3xl font-medium">Invite</span>
+                  <span class="text-2xl font-medium">Invite</span>
                 </div>
               </Link>
             </div>
@@ -981,10 +981,10 @@
             <a
               href="https://nimbus.featurebase.app/"
               target="_blank"
-              class="flex items-center gap-3 text-white px-5 py-6 opacity-70"
+              class="flex items-center gap-3 text-white px-5 py-3 opacity-70"
             >
-              <img src={Chat} alt="" width="40" height="40" />
-              <span class="text-3xl font-medium">Feedback</span>
+              <img src={Chat} alt="" width="30" height="30" />
+              <span class="text-2xl font-medium">Feedback</span>
             </a>
           </div>
 
@@ -997,7 +997,7 @@
             >
               <Link to="daily-checkin">
                 <div
-                  class={`flex items-center gap-3 text-white px-5 py-6 
+                  class={`flex items-center gap-3 text-white px-5 py-3 
               ${
                 $isDarkMode
                   ? navActive === "daily-checkin"
@@ -1010,8 +1010,8 @@
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    width="40"
-                    height="40"
+                    width="30"
+                    height="30"
                     viewBox="0 0 24 24"
                   >
                     <g
@@ -1025,7 +1025,7 @@
                       <path d="M10 12L8 9.8l.6-1" />
                     </g>
                   </svg>
-                  <span class="text-3xl font-medium">Daily Checkin</span>
+                  <span class="text-2xl font-medium">Daily Checkin</span>
                 </div>
               </Link>
             </div>
@@ -1038,7 +1038,7 @@
             >
               <Link to="settings/?tab=accounts">
                 <div
-                  class={`flex items-center gap-3 text-white px-5 py-6 
+                  class={`flex items-center gap-3 text-white px-5 py-3 
             ${
               $isDarkMode
                 ? navActive === "settings"
@@ -1050,8 +1050,8 @@
             }
           `}
                 >
-                  <img src={SettingsIcon} alt="" width="40" height="40" />
-                  <span class="text-3xl font-medium">Settings</span>
+                  <img src={SettingsIcon} alt="" width="30" height="30" />
+                  <span class="text-2xl font-medium">Settings</span>
                 </div>
               </Link>
             </div>
@@ -1059,13 +1059,14 @@
         </div>
       </div>
 
-      <div class="flex flex-col gap-30 w-full pb-16">
+      <div class="flex flex-col gap-20 w-full pb-16">
         <div class="flex flex-col gap-7 px-4">
           <DarkModeFooter />
+
           <div class="w-max flex flex-col gap-6">
             {#if Object.keys($user).length === 0}
               <div
-                class="text-3xl font-semibold text-white cursor-pointer xl:text-base"
+                class="text-2xl font-semibold text-white cursor-pointer xl:text-base"
                 on:click={() => {
                   isOpenModalSync = true;
                   isShowHeaderMobile.update((n) => (n = false));
@@ -1076,11 +1077,12 @@
             {/if}
           </div>
         </div>
-        <div class="w-full flex justify-center gap-16 text-white">
+
+        <div class="w-full flex justify-center gap-10 text-white">
           <a
             href="https://github.com/getnimbus"
             target="_blank"
-            class="hover:text-[#3b82f6] transition-all w-14 h-14"
+            class="hover:text-[#3b82f6] transition-all w-12 h-12"
           >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
               <path
@@ -1089,10 +1091,11 @@
               />
             </svg>
           </a>
+
           <a
             href="https://twitter.com/get_nimbus"
             target="_blank"
-            class="hover:text-[#3b82f6] transition-all w-13 h-13"
+            class="hover:text-[#3b82f6] transition-all w-11 h-11"
           >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
               <path
@@ -1101,10 +1104,11 @@
               />
             </svg>
           </a>
+
           <a
             href="https://discord.gg/u5b9dTrSTr"
             target="_blank"
-            class="hover:text-[#3b82f6] transition-all w-14 h-14"
+            class="hover:text-[#3b82f6] transition-all w-12 h-12"
           >
             <svg viewBox="0 0 24 24">
               <title>media/discord</title><desc>Created with Sketch.</desc>
@@ -1123,10 +1127,11 @@
               </g>
             </svg>
           </a>
+
           <a
             href="https://t.me/getnimbus"
             target="_blank"
-            class="transition-all w-[52px] h-[52px]"
+            class="transition-all w-[42px] h-[42px]"
           >
             <svg
               fill="#fff"

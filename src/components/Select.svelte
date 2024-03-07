@@ -55,11 +55,11 @@
             class="xl:w-5 xl:h-5 w-7 h-7 rounded-full"
           />
         {/if}
-        <div class="text-white xl:text-sm text-2xl">
+        <div class="text-white xl:text-sm text-xl">
           {selected?.label || selectedChain[0]?.label}
         </div>
       {:else}
-        <div class="text-white xl:text-sm text-2xl">
+        <div class="text-white xl:text-sm text-xl">
           Other ({listSelect.length})
         </div>
       {/if}
@@ -108,7 +108,7 @@
             />
           {/if}
           <div
-            class={`xl:text-sm text-2xl name ${
+            class={`xl:text-sm text-xl name ${
               type === "chain" && disabledChains.includes(item.value)
                 ? "text-gray-400"
                 : ""
