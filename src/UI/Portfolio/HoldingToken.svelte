@@ -921,7 +921,7 @@
           }`}
         >
           <div
-            class="h-full flex items-center justify-end text-2xl font-medium xl:text-sm text_00000099"
+            class="h-[50px] flex items-center justify-end text-2xl font-medium xl:text-sm text_00000099"
           >
             $<TooltipNumber
               number={$realtimePrice[
@@ -956,7 +956,7 @@
           }`}
         >
           <div
-            class="h-full flex items-center justify-end gap-1 text-2xl font-medium xl:text-sm text_00000099"
+            class="h-[50px] flex items-center justify-end gap-1 text-2xl font-medium xl:text-sm text_00000099"
           >
             {#if handleCheckWithinLast24Hours(data[index]) < 24 && handleCheckWithinLast24Hours(data[index]) > 0}
               <span
@@ -1082,7 +1082,7 @@
           }`}
         >
           <div
-            class="h-full flex items-center justify-end text-2xl font-medium xl:text-sm text_00000099"
+            class="h-[50px] flex items-center justify-end text-2xl font-medium xl:text-sm text_00000099"
           >
             ${#if data[index]?.profit}
               <TooltipNumber
@@ -1258,7 +1258,7 @@
             style={`${data.length - 1 === index ? "border-bottom-right-radius: 10px;" : ""}`}
           >
             <div
-              class={`2xl:pl-14 pl-4 w-full h-[40px] flex items-center 2xl:gap-7 gap-6 ${
+              class={`2xl:pl-14 pl-4 w-full h-[50px] flex items-center 2xl:gap-7 gap-6 ${
                 $typeWallet === "BUNDLE" ? "justify-start" : "justify-center"
               }`}
             >
