@@ -88,17 +88,15 @@
   const toggleSortROI = () => {
     sortTypeLastActivity = "default";
     switch (sortTypeROI) {
-      case "default":
+      case "desc":
         sortTypeROI = "asc";
         break;
       case "asc":
         sortTypeROI = "desc";
         break;
-      case "desc":
-        sortTypeROI = "default";
+      case "default":
+        sortTypeROI = "asc";
         break;
-      default:
-        sortTypeROI = "default";
     }
 
     if (sortTypeROI === "asc") {
@@ -111,32 +109,20 @@
         (a, b) => a.realizedProfit - b.realizedProfit
       );
     }
-    if (sortTypeROI === "default") {
-      formatData = holdingTokenData.map((item) => {
-        return {
-          ...item,
-          realizedProfit: item?.profit?.realizedProfit
-            ? Number(item?.profit?.realizedProfit)
-            : 0,
-        };
-      });
-    }
   };
 
   const toggleSortLastActivity = () => {
     sortTypeROI = "default";
     switch (sortTypeLastActivity) {
-      case "default":
+      case "desc":
         sortTypeLastActivity = "asc";
         break;
       case "asc":
         sortTypeLastActivity = "desc";
         break;
-      case "desc":
-        sortTypeLastActivity = "default";
+      case "default":
+        sortTypeLastActivity = "asc";
         break;
-      default:
-        sortTypeLastActivity = "default";
     }
 
     if (sortTypeLastActivity === "asc") {
@@ -152,16 +138,6 @@
           dayjs(a?.profit?.latestTrade).valueOf() -
           dayjs(b?.profit?.latestTrade).valueOf()
       );
-    }
-    if (sortTypeLastActivity === "default") {
-      formatData = holdingTokenData.map((item) => {
-        return {
-          ...item,
-          realizedProfit: item?.profit?.realizedProfit
-            ? Number(item?.profit?.realizedProfit)
-            : 0,
-        };
-      });
     }
   };
 
