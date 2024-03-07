@@ -1576,9 +1576,9 @@
         </div>
       </div>
 
-      <!-- {#key $wallet || $chain}
+      {#key $wallet || $chain}
         <slot name="body" />
-      {/key} -->
+      {/key}
     {/if}
   </div>
 {/if}
