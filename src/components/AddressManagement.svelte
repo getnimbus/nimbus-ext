@@ -2050,25 +2050,25 @@
       </div>
 
       <div class="flex justify-end gap-2">
-        <div class="xl:w-[120px] flex-1">
+        <div class="w-[120px]">
           <Button
             variant="secondary"
             on:click={() => {
               isOpenModal = false;
             }}
           >
-            <div class="font-medium text-xl">
+            <div class="font-medium lg:text-xl text-lg">
               {MultipleLang.content.modal_cancel}
             </div>
           </Button>
         </div>
-        <div class="xl:w-[120px] flex-1">
+        <div class="w-[120px]">
           <Button
             type="submit"
             isLoading={isLoadingSendMail}
             disabled={isLoadingSendMail}
           >
-            <div class="font-medium text-xl">Submit</div>
+            <div class="font-medium lg:text-xl text-lg">Submit</div>
           </Button>
         </div>
       </div>
