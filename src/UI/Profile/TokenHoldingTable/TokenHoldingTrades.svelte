@@ -29,7 +29,7 @@
   export let holdingTokenData;
   export let isLoading;
 
-  let sortTypePnl = "default";
+  let sortTypePnl = "desc";
   let sortTypeLastActivity = "asc";
   let selectedTimeFrame: "7D" | "30D" | "3M" | "1Y" | "ALL" = "30D";
 
@@ -91,17 +91,15 @@
   const toggleSortPnl = () => {
     sortTypeLastActivity = "default";
     switch (sortTypePnl) {
-      case "default":
+      case "desc":
         sortTypePnl = "asc";
         break;
       case "asc":
         sortTypePnl = "desc";
         break;
-      case "desc":
-        sortTypePnl = "default";
+      case "default":
+        sortTypePnl = "asc";
         break;
-      default:
-        sortTypePnl = "default";
     }
 
     if (sortTypePnl === "asc") {
@@ -110,32 +108,20 @@
     if (sortTypePnl === "desc") {
       formatData = formatData.sort((a, b) => a.pnl - b.pnl);
     }
-    if (sortTypePnl === "default") {
-      formatData = holdingTokenData.map((item) => {
-        return {
-          ...item,
-          realizedProfit: item?.profit?.realizedProfit
-            ? Number(item?.profit?.realizedProfit)
-            : 0,
-        };
-      });
-    }
   };
 
   const toggleSortLastActivity = () => {
     sortTypePnl = "default";
     switch (sortTypeLastActivity) {
-      case "default":
+      case "desc":
         sortTypeLastActivity = "asc";
         break;
       case "asc":
         sortTypeLastActivity = "desc";
         break;
-      case "desc":
-        sortTypeLastActivity = "default";
+      case "default":
+        sortTypeLastActivity = "asc";
         break;
-      default:
-        sortTypeLastActivity = "default";
     }
 
     if (sortTypeLastActivity === "asc") {
@@ -151,16 +137,6 @@
           dayjs(a?.profit?.latestTrade).valueOf() -
           dayjs(b?.profit?.latestTrade).valueOf()
       );
-    }
-    if (sortTypeLastActivity === "default") {
-      formatData = holdingTokenData.map((item) => {
-        return {
-          ...item,
-          realizedProfit: item?.profit?.realizedProfit
-            ? Number(item?.profit?.realizedProfit)
-            : 0,
-        };
-      });
     }
   };
 
