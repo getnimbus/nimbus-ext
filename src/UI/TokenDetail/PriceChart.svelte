@@ -940,7 +940,7 @@
               on:click={() => (selectedTypeChart = type.value)}
             >
               <div
-                class={`relative z-20 ${
+                class={`relative z-2 ${
                   selectedTypeChart === type.value && "text-white"
                 }`}
               >
@@ -953,7 +953,7 @@
                   transition={{ type: "spring", duration: 0.6 }}
                 >
                   <div
-                    class="absolute inset-0 rounded-full bg-[#1E96FC] z-10"
+                    class="absolute inset-0 rounded-full bg-[#1E96FC] z-1"
                     use:motion
                   />
                 </Motion>
@@ -979,7 +979,7 @@
               }}
             >
               <div
-                class={`relative z-20 ${
+                class={`relative z-2 ${
                   type.value === selectedTimeFrame && "text-white"
                 }`}
               >
@@ -992,7 +992,7 @@
                   transition={{ type: "spring", duration: 0.6 }}
                 >
                   <div
-                    class="absolute inset-0 rounded-full z-10"
+                    class="absolute inset-0 rounded-full z-1"
                     style={`background:${
                       !$queryTokenPrice.isError ||
                       (dataPriceChart && dataPriceChart.length !== 0)
