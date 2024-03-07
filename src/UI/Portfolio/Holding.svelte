@@ -16,6 +16,7 @@
   import { priceMobulaSubscribe } from "~/lib/price-mobulaWs";
   import { priceSubscribe } from "~/lib/price-ws";
   import { wait } from "~/entries/background/utils";
+  import { detectedChain } from "~/lib/chains";
 
   import goldImg from "~/assets/Gold4.svg";
 
@@ -515,7 +516,8 @@
   }
 
   let openScreenBonusScore: boolean = false;
-  let bonusScore: number = 10;
+  let bonusScore: number = 0;
+  let selectedTokenHoldingPercent: number = 0;
 
   const triggerFireworkBonus = (score: number) => {
     bonusScore = score;
@@ -528,6 +530,23 @@
     await wait(2000);
     openScreenBonusScore = false;
   };
+
+  $: {
+    if (selectedTypeTable) {
+      if (
+        selectedDataPieChart?.series &&
+        selectedDataPieChart?.series[0]?.data &&
+        selectedDataPieChart?.series[0]?.data.length !== 0
+      ) {
+        selectedTokenHoldingPercent =
+          selectedDataPieChart?.series[0]?.data.find(
+            (item) =>
+              item.name === detectedChain(selectedTypeTable?.value)?.name ||
+              item.name === detectedChain(selectedTypeTable?.label)?.name
+          )?.value;
+      }
+    }
+  }
 </script>
 
 <div
@@ -568,11 +587,7 @@
               class="xl:text-xl text-2xl font-medium text-gray-400 text-right"
             >
               <TooltipNumber
-                number={selectedDataPieChart?.series[0]?.data.filter(
-                  (item) =>
-                    item.name === selectedTypeTable?.value ||
-                    item.name === selectedTypeTable?.label
-                )[0]?.value}
+                number={selectedTokenHoldingPercent}
                 type="percent"
               />%
             </div>
