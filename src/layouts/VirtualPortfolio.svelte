@@ -127,7 +127,13 @@
                         selectedVirtualPortfolio = item;
                       }}
                     >
-                      {item.portfolioName}
+                      <div
+                        class={`relative z-2 ${
+                          item === selectedVirtualPortfolio && "text-white"
+                        }`}
+                      >
+                        {item.portfolioName}
+                      </div>
                       {#if item === selectedVirtualPortfolio}
                         <Motion
                           let:motion
@@ -135,8 +141,7 @@
                           transition={{ type: "spring", duration: 0.6 }}
                         >
                           <div
-                            class="absolute inset-0 rounded-full bg-[#ffffff1c]"
-                            style="z-index: 1"
+                            class="absolute inset-0 z-1 rounded-full bg-[#ffffff1c]"
                             use:motion
                           />
                         </Motion>

@@ -254,7 +254,7 @@
                       on:click={() => (selectedTypeReturn = type.value)}
                     >
                       <div
-                        class={`relative z-20 ${
+                        class={`relative z-2 ${
                           selectedTypeReturn === type.value && "text-white"
                         }`}
                       >
@@ -267,7 +267,7 @@
                           transition={{ type: "spring", duration: 0.6 }}
                         >
                           <div
-                            class="absolute inset-0 rounded-full bg-[#1E96FC] z-10"
+                            class="absolute inset-0 rounded-full bg-[#1E96FC] z-1"
                             use:motion
                           />
                         </Motion>
