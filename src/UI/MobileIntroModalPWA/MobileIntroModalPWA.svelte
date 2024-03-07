@@ -77,7 +77,7 @@
     {/if}
 
     <div class="flex flex-col gap-8">
-      <div class="lg:text-xl text-3xl text-center">
+      <div class="text-xl text-center">
         {#if mobileOperationSystem === "Android"}
           Please open Nimbus app in your browser to install this app Click on
           <span class="font-medium">Three Vertical Dots</span>
@@ -99,7 +99,7 @@
             localStorage.setItem("blockShowMobileIntro", "true");
           }}
         >
-          <div class="font-medium text-white text-2xl">Don't show again</div>
+          <div class="font-medium text-white text-base">Don't show again</div>
         </Button>
       </div>
     </div>

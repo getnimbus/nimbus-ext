@@ -511,7 +511,7 @@
                     isOpenModal = true;
                   }}
                 >
-                  <div class="xl:text-sm text-2xl">Compare more</div>
+                  <div class="text-base">Compare more</div>
                 </Button>
               </div>
             </div>

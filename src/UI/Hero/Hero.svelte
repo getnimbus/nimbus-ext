@@ -114,7 +114,7 @@
       <div class="w-max">
         <Button variant="tertiary" on:click={handleOpenAddModal}>
           <img src={Plus} alt="" width="12" height="12" />
-          <div class="text-xl font-medium text-white xl:text-base">
+          <div class="font-medium text-white text-base">
             {btntext}
           </div>
         </Button>
@@ -194,7 +194,7 @@
                 drivePortfolio.destroy();
               }}
             >
-              <div class="text-xl font-medium xl:text-base">Connect Wallet</div>
+              <div class="font-medium text-base">Connect Wallet</div>
             </Button>
           </div>
 
@@ -205,17 +205,15 @@
                 drivePortfolio.destroy();
               }}
             >
-              <div class="text-xl font-medium xl:text-base">
-                Sync from Desktop
-              </div>
+              <div class="font-medium text-base">Sync from Desktop</div>
             </Button>
           </div>
         </div>
       </div>
     {/if}
 
-    <div class="flex items-center xl:gap-3 gap-6">
-      <div class="xl:text-base text-lg">Community</div>
+    <div class="flex items-center gap-3">
+      <div class="text-base">Community</div>
       <a target="_blank" href="https://discord.gg/u5b9dTrSTr">
         <img
           alt="link Discord"

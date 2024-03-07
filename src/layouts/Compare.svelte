@@ -1039,8 +1039,10 @@
                       on:click={() => {
                         searchCompare = "";
                         search = "";
-                      }}>Remove</Button
+                      }}
                     >
+                      <div class="font-medium text-base">Remove</div>
+                    </Button>
                   </div>
                 </div>
                 <div class="flex flex-col h-full gap-5 mt-3">
@@ -1143,7 +1145,7 @@
                                   variant="disabled"
                                 >
                                   <div
-                                    class={`xl:text-base text-2xl ${
+                                    class={`text-base ${
                                       $isDarkMode ? "text-gray-400" : ""
                                     }`}
                                   >
@@ -1177,7 +1179,7 @@
                                   value={search}
                                   placeholder={"Search address to compare"}
                                   type="text"
-                                  class={`w-full p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal h-full ${
+                                  class={`w-full p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-base font-normal h-full ${
                                     searchCompare && !$isDarkMode
                                       ? "bg-[#F0F2F7]"
                                       : "bg-transparent"
@@ -1195,15 +1197,11 @@
                                       searchCompare = search;
                                     }}
                                   >
-                                    <div class="text-2xl xl:text-base">
-                                      Compare
-                                    </div>
+                                    <div class="text-base">Compare</div>
                                   </Button>
                                 {:else}
                                   <Button disabled>
-                                    <div class="text-2xl xl:text-base">
-                                      Compare
-                                    </div>
+                                    <div class="text-base">Compare</div>
                                   </Button>
                                 {/if}
                               </div>
@@ -1233,28 +1231,24 @@
           {#if $query.isFetching || searchCompare.length === 0}
             <Button variant="disabled">
               <div class="flex items-center gap-1">
-                <div
-                  class={`xl:text-base text-2xl ${
-                    $isDarkMode ? "text-gray-400" : ""
-                  }`}
-                >
+                <div class={`text-base ${$isDarkMode ? "text-gray-400" : ""}`}>
                   Get re-balance action
                 </div>
                 <img
                   src={$isDarkMode ? LeftArrowBlack : LeftArrow}
                   alt=""
-                  class="xl:w-4 xl:h-4 w-6 h-6 transform rotate-180 mt-[2px]"
+                  class="w-4 h-4 transform rotate-180 mt-[2px]"
                 />
               </div>
             </Button>
           {:else}
             <Button on:click={() => (showCompareTable = true)}>
               <div class="flex items-center gap-1">
-                <div class="text-2xl xl:text-base">Get re-balance action</div>
+                <div class="text-base">Get re-balance action</div>
                 <img
                   src={LeftArrow}
                   alt=""
-                  class="xl:w-4 xl:h-4 w-6 h-6 transform rotate-180 mt-[2px]"
+                  class="w-4 h-4 transform rotate-180 mt-[2px]"
                 />
               </div>
             </Button>
@@ -1390,9 +1384,9 @@
           </div>
         </div>
         <div class="mt-2 w-max">
-          <Button variant="premium" on:click={() => navigate("/upgrade")}
-            >Upgrade Plan</Button
-          >
+          <Button variant="premium" on:click={() => navigate("/upgrade")}>
+            <div class="font-medium text-base">Upgrade Plan</div>
+          </Button>
         </div>
       </div>
     {/if}

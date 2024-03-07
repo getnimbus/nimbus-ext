@@ -76,7 +76,7 @@
               placeholder="Your email"
               required
               value=""
-              class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal ${
+              class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-base font-normal ${
                 email && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
               } ${
                 $isDarkMode
@@ -92,8 +92,10 @@
           <Button
             type="submit"
             isLoading={isLoadingSendMail}
-            disabled={isLoadingSendMail}>Submit</Button
+            disabled={isLoadingSendMail}
           >
+            <div class="font-medium text-base">Submit</div>
+          </Button>
         </div>
       </form>
     </div>

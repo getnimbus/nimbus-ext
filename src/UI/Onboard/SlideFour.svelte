@@ -52,10 +52,14 @@
     </div>
     <div class="flex items-center gap-3">
       <div class="w-[140px]">
-        <Button variant="secondary" on:click={skip}>Skip</Button>
+        <Button variant="secondary" on:click={skip}>
+          <div class="text-base font-medium">Skip</div>
+        </Button>
       </div>
       <div class="w-[140px]">
-        <Button className="next">Continue</Button>
+        <Button className="next">
+          <div class="text-base font-medium">Continue</div>
+        </Button>
       </div>
     </div>
   </div>

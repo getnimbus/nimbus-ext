@@ -323,7 +323,7 @@
           {#if isEdit}
             <div class="w-[120px]">
               <Button variant="secondary" on:click={handleCancelEditProfile}>
-                Cancel
+                <div class="text-base font-medium">Cancel</div>
               </Button>
             </div>
             <div class="w-[120px]">
@@ -332,13 +332,13 @@
                 isLoading={isLoadingSaveProfile}
                 disabled={isLoadingSaveProfile}
               >
-                Save
+                <div class="text-base font-medium">Save</div>
               </Button>
             </div>
           {:else}
             <div class="xl:w-[160px] w-[220px]">
               <Button on:click={() => (isEdit = true)}>
-                Edit your profile
+                <div class="text-base font-medium">Edit your profile</div>
               </Button>
             </div>
           {/if}
@@ -457,7 +457,7 @@
                           variant="secondary"
                           on:click={() => (isOpenModalSelectNFT = true)}
                         >
-                          Change
+                          <div class="text-base font-medium">Change</div>
                         </Button>
                       </div>
                     {/if}
@@ -517,7 +517,7 @@
                         variant="tertiary"
                         on:click={() => (isOpenModalSelectNFT = true)}
                       >
-                        Add NFT
+                        <div class="text-base font-medium">Add NFT</div>
                       </Button>
                     </div>
                   {/if}

@@ -191,16 +191,14 @@
               }}
             >
               <img src={Plus} alt="" class="xl:w-3 xl:h-3 w-4 h-4" />
-              <div class="xl:text-base text-2xl font-medium text-white">
+              <div class="text-base font-medium text-white">
                 Add virtual portfolio
               </div>
             </Button>
           </div>
         </div>
 
-        <div class="xl:text-5xl text-7xl font-medium text-white">
-          Virtual Portfolio
-        </div>
+        <div class="text-5xl font-medium text-white">Virtual Portfolio</div>
       </div>
       <div class="flex xl:flex-row flex-col justify-between gap-6">
         <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">

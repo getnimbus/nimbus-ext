@@ -534,8 +534,8 @@
 
 <div class="flex flex-col gap-4 min-h-screen">
   <div class="flex flex-col gap-1 border-b-[1.5px] border_0000000d pb-4">
-    <div class="xl:title-3 title-1">My Nimbus GM Points</div>
-    <div class="xl:text-base text-xl text-gray-500">
+    <div class="xl:title-3 title-2">My Nimbus GM Points</div>
+    <div class="text-base text-gray-500">
       Collect GM Points and redeem them for exclusive rewards and special offers
     </div>
   </div>
@@ -565,7 +565,7 @@
           <AnimateSharedLayout>
             {#each dailyCheckinTypePortfolio as type}
               <div
-                class="relative cursor-pointer xl:text-base text-xl font-medium py-2 px-3 rounded-xl transition-all"
+                class="relative cursor-pointer text-base font-medium py-2 px-3 rounded-xl transition-all"
                 on:click={() => (selectedType = type.value)}
               >
                 <div
@@ -596,10 +596,10 @@
           {#if selectedType === "collectGMPoint"}
             <div class="flex items-center justify-between">
               <div class="flex flex-col gap-1">
-                <div class="xl:text-lg text-xl font-medium">
+                <div class="text-lg font-medium">
                   Collect your GM Points every day
                 </div>
-                <div class="xl:text-base text-lg text-gray-500">
+                <div class="text-base text-gray-500">
                   Check in 7 days in a row, your rewards will grow
                 </div>
               </div>
@@ -613,17 +613,13 @@
                     }}
                     isLoading={isLoadingCheckin}
                   >
-                    <div
-                      class="py-1 text-2xl font-medium text-white xl:text-base"
-                    >
+                    <div class="py-1 font-medium text-white text-base">
                       👋 GM
                     </div>
                   </Button>
                 {:else}
                   <Button disabled>
-                    <div
-                      class="py-1 text-2xl font-medium text-white xl:text-base"
-                    >
+                    <div class="py-1 font-medium text-white text-base">
                       Checked
                     </div>
                   </Button>
@@ -633,7 +629,7 @@
 
             {#if $queryDailyCheckin?.data === undefined}
               <div
-                class="flex justify-center items-center h-full xl:text-lg text-xl text-gray-400 h-[152px]"
+                class="flex justify-center items-center h-full text-lg text-gray-400 h-[152px]"
               >
                 Empty
               </div>
@@ -657,11 +653,11 @@
                                 : "bg-gray-100"
                       }`}
                     >
-                      <div class="xl:text-lg text-xl font-medium">
+                      <div class="text-lg font-medium">
                         Day {index + 1}
                       </div>
                       <img src={goldImg} alt="" class="w-13" />
-                      <div class="xl:text-2xl text-3xl font-medium">
+                      <div class="text-2xl font-medium">
                         + {item}
                       </div>
                     </div>
@@ -671,12 +667,10 @@
             {/if}
 
             <div class="flex flex-col gap-4">
-              <div class="xl:text-lg text-xl font-medium">
-                This month reward
-              </div>
+              <div class="text-lg font-medium">This month reward</div>
               {#if $queryReward.data === undefined}
                 <div
-                  class="flex justify-center items-center h-full xl:text-lg text-xl text-gray-400 h-[152px]"
+                  class="flex justify-center items-center h-full text-lg text-gray-400 h-[152px]"
                 >
                   Empty
                 </div>
@@ -696,7 +690,7 @@
                         <div class="text-4xl font-medium text-center">
                           ${item.amount}
                         </div>
-                        <div class="xl:text-base text-lg text-center">
+                        <div class="text-base text-center">
                           {index + 1}{index === 0
                             ? "st"
                             : index == 1
@@ -712,7 +706,7 @@
             </div>
 
             <div class="flex flex-col gap-4 mt-5 view-checkin-quests">
-              <div class="xl:text-lg text-xl font-medium">
+              <div class="text-lg font-medium">
                 Want more GM Point? Complete these tasks!
               </div>
               {#if Object.keys($user).length !== 0}
@@ -732,16 +726,16 @@
                         />
                         <div class="flex-1 flex items-center gap-4">
                           <div class="flex-1 flex flex-col">
-                            <div class="xl:text-base text-lg font-medium">
+                            <div class="text-base font-medium">
                               {quest?.title}
                             </div>
-                            <div class="xl:text-sm text-base text-gray-500">
+                            <div class="text-sm text-gray-500">
                               {quest?.description}
                             </div>
                           </div>
                           <div class="flex justify-center items-center gap-1">
                             <img src={goldImg} alt="" />
-                            <div class="xl:text-base text-lg font-medium">
+                            <div class="text-base font-medium">
                               {quest?.point}
                             </div>
                           </div>
@@ -752,11 +746,19 @@
                           <div>
                             {#if quest.isDone}
                               <div class="py-1">
-                                <Button disabled>Collect!</Button>
+                                <Button disabled>
+                                  <div class="text-base font-medium">
+                                    Collect!
+                                  </div>
+                                </Button>
                               </div>
                             {:else}
                               <a href={quest?.url} class="py-1">
-                                <Button>Collect!</Button>
+                                <Button>
+                                  <div class="text-base font-medium">
+                                    Collect!
+                                  </div>
+                                </Button>
                               </a>
                             {/if}
                           </div>
@@ -764,7 +766,11 @@
                           <div>
                             {#if quest?.isInternalLink}
                               <a href={quest?.url} class="py-1">
-                                <Button>Collect!</Button>
+                                <Button>
+                                  <div class="text-base font-medium">
+                                    Collect!
+                                  </div>
+                                </Button>
                               </a>
                             {:else}
                               <div
@@ -777,8 +783,12 @@
                               >
                                 <Button
                                   disabled={isDisabledReceiveQuest ||
-                                    quest.isDone}>Collect!</Button
+                                    quest.isDone}
                                 >
+                                  <div class="text-base font-medium">
+                                    Collect!
+                                  </div>
+                                </Button>
                               </div>
                             {/if}
                           </div>
@@ -789,14 +799,14 @@
                 </div>
               {:else}
                 <div
-                  class="flex justify-center items-center h-full xl:text-lg text-xl text-gray-400 h-[152px]"
+                  class="flex justify-center items-center h-full text-lg text-gray-400 h-[152px]"
                 >
                   Empty
                 </div>
               {/if}
             </div>
           {:else}
-            <div class="xl:text-lg text-xl font-medium">Checkin History</div>
+            <div class="text-lg font-medium">Checkin History</div>
             <div
               class={`border border_0000000d rounded-[10px] w-full max-h-[600px] overflow-y-auto ${
                 $isDarkMode ? "bg-[#131313]" : "bg-[#fff]"
@@ -810,15 +820,13 @@
                     } `}
                   >
                     <th
-                      class="py-2 pl-3 text-left font-medium uppercase xl:text-xs text-xl"
+                      class="py-2 pl-3 text-left font-medium uppercase text-sm"
                     >
                       Date
                     </th>
                     <th class="py-2">
                       <div class="flex items-center justify-start gap-2">
-                        <div class="font-medium uppercase xl:text-xs text-xl">
-                          Type
-                        </div>
+                        <div class="font-medium uppercase text-sm">Type</div>
                         <div on:click={toggleSortType} class="cursor-pointer">
                           {@html sortIcon(sortTypeHistory)}
                         </div>
@@ -826,9 +834,7 @@
                     </th>
                     <th class="py-2 pr-3">
                       <div class="flex items-center justify-end gap-2">
-                        <div class="font-medium uppercase xl:text-xs text-xl">
-                          Point
-                        </div>
+                        <div class="font-medium uppercase text-sm">Point</div>
                         <div on:click={toggleSortPoint} class="cursor-pointer">
                           {@html sortIcon(sortPointHistory)}
                         </div>
@@ -841,7 +847,7 @@
                     <tr>
                       <td colspan="3">
                         <div
-                          class="flex items-center justify-center h-full px-3 py-4 xl:text-lg text-xl"
+                          class="flex items-center justify-center h-full px-3 py-4 text-base"
                         >
                           Please connect wallet
                         </div>
@@ -857,12 +863,12 @@
                     {/if}
                     {#each defaultDataCheckinHistory as { point, type, createdAt }}
                       <tr>
-                        <td class="py-2 pl-3 text-left xl:text-sm text-xl">
+                        <td class="py-2 pl-3 text-left text-sm">
                           {dayjs(createdAt).format("YYYY-MM-DD")}
                         </td>
-                        <td class="py-2 xl:text-sm text-xl">{type}</td>
+                        <td class="py-2 text-sm">{type}</td>
                         <td
-                          class={`py-2 pr-3 text-right xl:text-sm text-xl ${
+                          class={`py-2 pr-3 text-right text-sm ${
                             point > 0
                               ? "text-green-500"
                               : point < 0

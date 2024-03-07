@@ -778,7 +778,7 @@
                 Empty
               </div>
             {:else}
-              <div class={`${$typeWallet !== "BTC" ? "md:-mt-16 -mt-2" : ""}`}>
+              <div class={`${$typeWallet !== "BTC" ? "md:-mt-14 -mt-2" : ""}`}>
                 <TokenAllocation
                   {handleSelectedTableTokenHolding}
                   {holdingTokenData}

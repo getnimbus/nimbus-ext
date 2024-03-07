@@ -749,9 +749,7 @@
                 }}
               >
                 <img src={Plus} alt="" width="12" height="12" />
-                <div class="xl:text-base text-2xl font-medium text-white">
-                  Add Category
-                </div>
+                <div class="text-base font-medium text-white">Add Category</div>
               </Button>
             </div>
           </div>
@@ -886,7 +884,7 @@
                         height="12"
                       />
                       <div
-                        class={` font-medium ${
+                        class={`text-base font-medium ${
                           $isDarkMode ? "text-gray-400" : "text-white"
                         }`}
                       >
@@ -902,7 +900,9 @@
                       }}
                     >
                       <img src={Plus} alt="" width="12" height="12" />
-                      <div class="font-medium text-white">Add Category</div>
+                      <div class="text-base font-medium text-white">
+                        Add Category
+                      </div>
                     </Button>
                   {/if}
                 </div>
@@ -996,7 +996,7 @@
                         {#if query && !showSuggestListTag}
                           <button
                             type="submit"
-                            class="xl:text-sm text-2xl font-medium w-max text-[#1e96fc] cursor-pointer"
+                            class="text-sm font-medium w-max text-[#1e96fc] cursor-pointer"
                           >
                             Add Tag
                           </button>
@@ -1004,7 +1004,7 @@
 
                         {#if showSuggestListTag}
                           <button
-                            class="xl:text-sm text-2xl font-medium w-max text-red-500 cursor-pointer"
+                            class="text-sm font-medium w-max text-red-500 cursor-pointer"
                             on:click={() => {
                               showSuggestListTag = false;
                               query = "";
@@ -1151,7 +1151,7 @@
                           showSetTag = true;
                         }}
                       >
-                        <div class="text-white">Set Tag</div>
+                        <div class="text-base text-white">Set Tag</div>
                       </Button>
                     </div>
                   {/if}
@@ -1548,7 +1548,7 @@
             isOpenConfirmDelete = false;
           }}
         >
-          Cancel
+          <div class="text-base font-medium">Cancel</div>
         </Button>
       </div>
       <div class="lg:w-[120px] w-full">
@@ -1559,7 +1559,7 @@
             deleteCustomCategory();
           }}
         >
-          Delete
+          <div class="text-base font-medium">Delete</div>
         </Button>
       </div>
     </div>

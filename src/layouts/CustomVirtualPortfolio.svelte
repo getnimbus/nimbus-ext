@@ -326,7 +326,7 @@
                     height="12"
                   />
                   <div
-                    class={`text-2xl font-medium xl:text-base ${
+                    class={`font-medium text-base ${
                       $isDarkMode ? "text-gray-400" : "text-white"
                     }`}
                   >
@@ -339,7 +339,7 @@
                   on:click={() => (selectedVirtualPortfolio = {})}
                 >
                   <img src={Plus} alt="" width="12" height="12" />
-                  <div class="xl:text-base text-2xl font-medium text-white">
+                  <div class="text-base font-medium text-white">
                     Add virtual portfolio
                   </div>
                 </Button>

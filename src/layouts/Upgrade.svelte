@@ -287,18 +287,16 @@
                 isLoading={isLoadingSubmitCoupleCode}
                 disabled={isLoadingSubmitCoupleCode}
               >
-                Apply
+                <div class="text-base font-medium">Apply</div>
               </Button>
             </div>
           </form>
         </div>
 
         <div class="flex flex-col gap-3 items-center mt-5">
-          <div class="my-3 xl:text-base text-2xl">
-            Choose your prefer payment method
-          </div>
+          <div class="my-3 text-base">Choose your prefer payment method</div>
           {#each listChain as chain}
-            <div class="w-62 xl:text-lg text-xl">
+            <div class="w-62 text-base">
               <Button
                 variant="secondary"
                 isLoading={isLoadingBuy}
@@ -315,7 +313,7 @@
             </div>
           {/each}
           <div
-            class="text-[#1E96FC] cursor-pointer flex items-center gap-2 mt-2 xl:text-base text-2xl"
+            class="text-[#1E96FC] cursor-pointer flex items-center gap-2 mt-2 text-base"
             on:click={() => {
               selectedPackage = undefined;
             }}

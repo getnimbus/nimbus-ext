@@ -239,15 +239,17 @@
                 isOpenModal = false;
               }}
             >
-              Cancel
+              <div class="font-medium text-base">Cancel</div>
             </Button>
           </div>
           <div class="lg:w-[120px] w-full">
             <Button
               type="submit"
               isLoading={isLoadingSendMail}
-              disabled={isLoadingSendMail}>Submit</Button
+              disabled={isLoadingSendMail}
             >
+              <div class="font-medium text-white text-base">Submit</div>
+            </Button>
           </div>
         </div>
       </form>

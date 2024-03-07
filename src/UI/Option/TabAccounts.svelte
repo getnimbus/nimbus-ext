@@ -914,7 +914,7 @@
         {#if $user && Object.keys($user).length !== 0}
           <Button variant="tertiary" on:click={() => (isOpenAddModal = true)}>
             <img src={Plus} alt="" width="12" height="12" />
-            <div class="text-2xl font-medium text-white xl:text-base">
+            <div class="font-medium text-white text-base">
               {MultipleLang.content.btn_text}
             </div>
           </Button>
@@ -936,7 +936,7 @@
                 height="12"
               />
               <div
-                class={`text-2xl font-medium xl:text-base ${
+                class={`font-medium text-base ${
                   $isDarkMode ? "text-gray-400" : "text-white"
                 }`}
               >
@@ -1090,10 +1090,8 @@
                     selectedAddresses = [];
                   }}
                 >
-                  <img src={Plus} alt="" class="w-4 h-4 xl:w-3 xl:h-3" />
-                  <div class="text-2xl font-medium text-white xl:text-base">
-                    Add bundle
-                  </div>
+                  <img src={Plus} alt="" class="w-3 h-3" />
+                  <div class="font-medium text-white text-base">Add bundle</div>
                 </Button>
               </div>
             </div>
@@ -1126,8 +1124,8 @@
                         }
                       }}
                     >
-                      <img src={Plus} alt="" class="w-4 h-4 xl:w-3 xl:h-3" />
-                      <div class="text-2xl font-medium text-white xl:text-base">
+                      <img src={Plus} alt="" class="w-3 h-3" />
+                      <div class="font-medium text-white text-base">
                         Add account
                       </div>
                     </Button>
@@ -1136,10 +1134,10 @@
                       <img
                         src={$isDarkMode ? PlusBlack : Plus}
                         alt=""
-                        class="w-4 h-4 xl:w-3 xl:h-3"
+                        class="w-3 h-3"
                       />
                       <div
-                        class={`text-2xl font-medium xl:text-base ${
+                        class={`font-medium text-base ${
                           $isDarkMode ? "text-gray-400" : "text-white"
                         }`}
                       >
@@ -1155,8 +1153,8 @@
                     isOpenAddModal = true;
                   }}
                 >
-                  <img src={Plus} alt="" class="w-4 h-4 xl:w-3 xl:h-3" />
-                  <div class="text-2xl font-medium text-white xl:text-base">
+                  <img src={Plus} alt="" class="w-3 h-3" />
+                  <div class="font-medium text-white text-base">
                     Add account
                   </div>
                 </Button>

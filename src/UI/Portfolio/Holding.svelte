@@ -595,7 +595,7 @@
 
           <div class="flex flex-col gap-4">
             <div
-              class={`flex items-center ${
+              class={`flex items-center gap-3 ${
                 selectedTokenHolding &&
                 Object.keys(selectedTokenHolding).length !== 0 &&
                 selectedTokenHolding?.select.length !== 0
@@ -611,18 +611,28 @@
                   bind:selected={selectedTypeTable}
                 />
               {/if}
-              <div class="flex items-center justify-end gap-2">
-                <div
-                  class="md:block hidden xl:text-sm text-2xl font-regular text-gray-400"
-                >
+              <div
+                class="flex items-center xl:justify-end justify-start w-full gap-2"
+              >
+                <div class="xl:block hidden text-sm font-regular text-gray-400">
                   Hide tokens less than
                 </div>
-                <Select
-                  type="filter"
-                  positionSelectList="right-0"
-                  listSelect={filterTokenValueType}
-                  bind:selected={filterTokenType}
-                />
+                <div class="xk:block hidden">
+                  <Select
+                    type="filter"
+                    positionSelectList="right-0"
+                    listSelect={filterTokenValueType}
+                    bind:selected={filterTokenType}
+                  />
+                </div>
+                <div class="xk:hidden block">
+                  <Select
+                    type="filter"
+                    positionSelectList="left-0"
+                    listSelect={filterTokenValueType}
+                    bind:selected={filterTokenType}
+                  />
+                </div>
               </div>
             </div>
 
@@ -675,11 +685,9 @@
     }}
   >
     <div class="flex flex-col items-center justify-center gap-10">
-      <div class="xl:text-2xl text-4xl text-white font-medium">
-        Congratulation!!!
-      </div>
+      <div class="text-2xl text-white font-medium">Congratulation!!!</div>
       <img src={goldImg} alt="" class="w-40 h-40" />
-      <div class="xl:text-2xl text-4xl text-white font-medium">
+      <div class="text-2xl text-white font-medium">
         You have received {bonusScore} GM Points
       </div>
     </div>

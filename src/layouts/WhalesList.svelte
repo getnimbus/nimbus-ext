@@ -672,8 +672,11 @@
                             <Button
                               variant="premium"
                               on:click={() => navigate("/upgrade")}
-                              >Upgrade Plan</Button
                             >
+                              <div class="text-base font-medium">
+                                Upgrade Plan
+                              </div>
+                            </Button>
                           </div>
                         </td>
                       </tr>
@@ -704,8 +707,11 @@
                             <Button
                               variant="premium"
                               on:click={() => navigate("/upgrade")}
-                              >Upgrade Plan</Button
                             >
+                              <div class="text-base font-medium">
+                                Upgrade Plan
+                              </div>
+                            </Button>
                           </div>
                         </td>
                       </tr>
