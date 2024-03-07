@@ -946,7 +946,7 @@
             </div>
           {:else}
             <div
-              class="portfolio_container flex flex-col gap-7 rounded-[20px] xl:p-8 p-6"
+              class="portfolio_container flex flex-col xl:gap-7 gap-5 rounded-[20px] xl:p-8 p-4"
             >
               <div class="flex items-center gap-1">
                 <AnimateSharedLayout>

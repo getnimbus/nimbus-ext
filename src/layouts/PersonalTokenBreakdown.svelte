@@ -723,7 +723,7 @@
 
   <div class="max-w-[2000px] m-auto xl:w-[90%] w-[90%] -mt-26">
     <div
-      class="custom_token_breakdown_container rounded-[20px] xl:p-8 p-6 xl:shadow-md"
+      class="custom_token_breakdown_container rounded-[20px] xl:p-8 p-4 xl:shadow-md"
     >
       <div
         class={`rounded-[20px] p-6 flex flex-col gap-4 ${

@@ -61,7 +61,7 @@
   <span slot="body">
     <div class="max-w-[2000px] m-auto -mt-32 xl:w-[90%] w-[90%]">
       <SyncData let:address let:enabledFetchAllData>
-        <div class="analytic_container rounded-[20px] xl:p-8 p-6 space-y-4">
+        <div class="analytic_container rounded-[20px] xl:p-8 p-4 space-y-4">
           <div class="flex items-center justify-end gap-1">
             <div class="mr-1 xl:text-base text-2xl">Timeframe</div>
             <AnimateSharedLayout>

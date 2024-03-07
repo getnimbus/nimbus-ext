@@ -874,7 +874,7 @@
     {:else}
       <div class="header header-container">
         <div class="flex flex-col max-w-[2000px] m-auto xl:w-[82%] w-[90%]">
-          <div class="flex flex-col mb-5 gap-14">
+          <div class="flex flex-col mb-5 xl:gap-14 gap-7">
             <div
               class="flex lg:flex-row flex-col lg:items-center items-start justify-between gap-6"
             >
@@ -1498,7 +1498,7 @@
               </div>
             </div>
 
-            <div class="flex flex-col gap-6 md:hidden w-max -mt-6">
+            <div class="flex flex-col gap-6 md:hidden w-max -mt-2">
               {#if $typeWallet === "BTC"}
                 <div
                   use:tooltip={{

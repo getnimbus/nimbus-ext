@@ -612,7 +612,9 @@
                 />
               {/if}
               <div class="flex items-center justify-end gap-2">
-                <div class="xl:text-sm text-2xl font-regular text-gray-400">
+                <div
+                  class="md:block hidden xl:text-sm text-2xl font-regular text-gray-400"
+                >
                   Hide tokens less than
                 </div>
                 <Select
