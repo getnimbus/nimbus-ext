@@ -1980,7 +1980,10 @@
         <div class="flex items-center gap-4">
           <div class="relative">
             <div class="rounded-full w-[46px] h-[46px] overflow-hidden">
-              <Image logo={data.logo} defaultLogo={defaultToken} />
+              <Image
+                logo={selectedTokenDetail?.logo}
+                defaultLogo={defaultToken}
+              />
             </div>
             {#if ($typeWallet === "EVM" || $typeWallet === "MOVE" || $typeWallet === "BUNDLE") && selectedTokenDetail?.chain !== "CEX"}
               <div class="absolute -top-2 -right-1">
@@ -2156,7 +2159,10 @@
       <div class="flex items-center justify-end gap-4">
         <div class="relative">
           <div class="rounded-full w-[46px] h-[46px] overflow-hidden">
-            <Image logo={data.logo} defaultLogo={defaultToken} />
+            <Image
+              logo={selectedTokenDetail?.logo}
+              defaultLogo={defaultToken}
+            />
           </div>
           {#if ($typeWallet === "EVM" || $typeWallet === "MOVE" || $typeWallet === "BUNDLE") && selectedTokenDetail?.chain !== "CEX"}
             <div class="absolute -top-2 -right-1">
