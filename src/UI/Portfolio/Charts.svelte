@@ -900,16 +900,16 @@
             {:else}
               <div class="flex flex-col gap-4 relative">
                 <div
-                  class={`absolute md:top-8 top-16 md:left-20 left-24 flex flex-col rounded-[4px] px-2 py-1 z-2 ${
+                  class={`absolute md:top-8 top-16 md:left-20 left-24 flex flex-col rounded-[4px] w-max px-2 py-1 z-2 ${
                     $isDarkMode ? "bg-[#131313]" : "bg-white"
                   }`}
                   style="box-shadow: rgba(0, 0, 0, 0.2) 1px 2px 10px;"
                 >
-                  <div class="xl:text-lg text-xl font-medium flex items-center">
+                  <div class="text-lg font-medium flex items-center">
                     $<TooltipNumber number={networth} type="balance" />
                   </div>
                   <div
-                    class={`xl:text-sm text-base flex gap-1 ${
+                    class={`text-sm flex gap-1 ${
                       portfolioPercentChange >= 0
                         ? "text-[#00A878]"
                         : "text-red-500"

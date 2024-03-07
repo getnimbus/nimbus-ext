@@ -537,9 +537,9 @@
 >
   <ErrorBoundary>
     <div class="flex flex-col gap-2">
-      <div class="flex justify-between">
+      <div class="flex xl:flex-row flex-col gap-2 justify-between">
         <div class="flex items-end gap-3">
-          <div class="xl:text-2xl text-4xl font-medium">
+          <div class="xl:text-2xl text-3xl font-medium">
             {MultipleLang.holding}
           </div>
           <!-- <a
@@ -550,7 +550,7 @@
             Get investment opportunities notification
           </a> -->
         </div>
-        <div class="xl:text-3xl text-4xl font-medium">
+        <div class="text-3xl font-medium">
           {#if selectedType === "token"}
             <TooltipNumber number={sumTokens} type="value" personalValue />
           {/if}
@@ -565,7 +565,7 @@
         <div class="flex flex-col gap-2">
           {#if selectedTokenHolding && Object.keys(selectedTokenHolding).length !== 0 && selectedTokenHolding?.select.length !== 0}
             <div
-              class="xl:text-xl text-2xl font-medium text-gray-400 text-right"
+              class="xl:text-xl text-2xl font-medium text-gray-400 xl:text-right text-left"
             >
               <TooltipNumber
                 number={selectedDataPieChart?.series[0]?.data.filter(
@@ -608,6 +608,7 @@
                 />
               </div>
             </div>
+
             <HoldingToken
               {sumTokens}
               defaultData={holdingTokenData}
