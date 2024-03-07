@@ -225,7 +225,16 @@
     }
     return dayjs(date).fromNow();
   };
+
+  const closeSideBar = (event) => {
+    if (event.key === "Escape") {
+      showSideTokenDetail = false;
+      selectedTokenDetail = {};
+    }
+  };
 </script>
+
+<svelte:window on:keydown={closeSideBar} />
 
 <div
   class="col-span-4 border border_0000001a rounded-xl flex flex-col gap-3 p-6"
