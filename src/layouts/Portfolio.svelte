@@ -923,7 +923,7 @@
   </span>
 
   <span slot="body">
-    <div class="max-w-[2000px] m-auto w-[90%] -mt-26">
+    <div class="max-w-[2000px] m-auto w-[90%] -mt-34">
       {#if isLoadingSync}
         <div
           class="portfolio_container text-xl font-medium flex flex-col gap-5 justify-center items-center rounded-[20px] p-6 h-screen"

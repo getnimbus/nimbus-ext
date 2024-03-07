@@ -184,12 +184,10 @@
 </script>
 
 <div class="h-[563px] flex flex-col gap-4">
-  <div class="flex justify-between items-center xl:mt-6 mt-12">
-    <div class="text-4xl font-medium xl:text-2xl">
-      Yield farming opportunities
-    </div>
+  <div class="flex justify-between items-center mt-6">
+    <div class="font-medium text-2xl">Yield farming opportunities</div>
     <div class="flex items-center">
-      <div class="xl:text-sm text-2xl px-2 font-medium">Single</div>
+      <div class="text-sm px-2 font-medium">Single</div>
       <label class="switch">
         <input
           type="checkbox"
@@ -217,23 +215,17 @@
           <th
             class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 top-0 z-10 bg_f4f5f8 w-[550px]"
           >
-            <div class="font-medium text-left uppercase xl:text-xs text-xl">
-              Name
-            </div>
+            <div class="font-medium text-left uppercase text-sm">Name</div>
           </th>
           <th class="py-3">
-            <div class="font-medium text-right uppercase xl:text-xs text-xl">
-              Chain
-            </div>
+            <div class="font-medium text-right uppercase text-sm">Chain</div>
           </th>
           <th class="py-3">
-            <div class="font-medium text-right uppercase xl:text-xs text-xl">
-              Protocol
-            </div>
+            <div class="font-medium text-right uppercase text-sm">Protocol</div>
           </th>
           <th class="py-3">
             <div
-              class="flex items-center justify-end gap-2 font-medium text-right uppercase xl:text-xs text-xl"
+              class="flex items-center justify-end gap-2 font-medium text-right uppercase text-sm"
             >
               APY
               <div on:click={toggleSortAPY} class="cursor-pointer">
@@ -243,7 +235,7 @@
           </th>
           <th class="py-3 pr-3 rounded-tr-[10px]">
             <div
-              class="flex items-center justify-end gap-2 font-medium text-right uppercase xl:text-xs text-xl"
+              class="flex items-center justify-end gap-2 font-medium text-right uppercase text-sm"
             >
               <TooltipTitle
                 tooltipText={"Total value locked in this protocol"}
@@ -261,7 +253,7 @@
           <tr>
             <td colspan="5">
               <div
-                class="h-full flex items-center justify-center px-3 py-3 text-gray-400 xl:text-lg text-xl"
+                class="h-full flex items-center justify-center px-3 py-3 text-gray-400 text-base"
               >
                 Empty
               </div>
@@ -282,7 +274,7 @@
                     : "bg-white group-hover:bg-gray-100"
                 }`}
               >
-                <div class="font-medium text-left xl:text-sm text-2xl">
+                <div class="font-medium text-left text-sm">
                   {#if item.name === undefined}
                     N/A
                   {:else}
@@ -298,7 +290,7 @@
                     : "group-hover:bg-gray-100"
                 }`}
               >
-                <div class="flex justify-end font-medium xl:text-sm text-2xl">
+                <div class="flex justify-end font-medium text-sm">
                   {item.chain}
                 </div>
               </td>
@@ -310,9 +302,7 @@
                     : "group-hover:bg-gray-100"
                 }`}
               >
-                <div
-                  class="xl:text-sm text-2xl text_00000099 font-medium flex justify-end"
-                >
+                <div class="text_00000099 font-medium flex justify-end text-sm">
                   <div
                     class="relative"
                     on:mouseover={() => {
@@ -346,9 +336,7 @@
                     : "group-hover:bg-gray-100"
                 }`}
               >
-                <div
-                  class="xl:text-sm text-2xl text_00000099 font-medium flex justify-end"
-                >
+                <div class="text_00000099 font-medium flex justify-end text-sm">
                   <TooltipNumber number={item.apy} type="percent" />%
                 </div>
               </td>
@@ -360,9 +348,7 @@
                     : "group-hover:bg-gray-100"
                 }`}
               >
-                <div
-                  class="xl:text-sm text-2xl text_00000099 font-medium flex justify-end"
-                >
+                <div class="text_00000099 font-medium flex justify-end text-sm">
                   $<TooltipNumber number={item.tvl} type="balance" />
                 </div>
               </td>

@@ -55,8 +55,10 @@
       on:click={() => {
         triggerExportCSV();
       }}
-      {isLoading}>Download CSV</Button
+      {isLoading}
     >
+      <div class="font-medium text-base">Download CSV</div>
+    </Button>
   </div>
 {:else}
   <div
@@ -68,7 +70,9 @@
     }}
     class="w-max"
   >
-    <Button variant="premium" disabled>Download CSV</Button>
+    <Button variant="premium" disabled>
+      <div class="font-medium text-base">Download CSV</div></Button
+    >
   </div>
 {/if}
 

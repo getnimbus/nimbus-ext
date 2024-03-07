@@ -1591,7 +1591,7 @@
     on:close={() => (isOpenAddModal = false)}
   >
     <div class="flex flex-col gap-4">
-      <div class="font-medium xl:title-3 title-1">
+      <div class="font-medium title-3">
         {MultipleLang.content.modal_add_title}
       </div>
       <div class="flex flex-col gap-7">
@@ -1604,15 +1604,13 @@
                 disabled={isLoadingConnectCEX}
                 on:click={onSubmitCEX}
               >
-                <div class="font-medium text-white xl:text-base text-2xl">
+                <div class="font-medium text-white text-base">
                   Connect Exchange
                 </div>
               </Button>
             </div>
           </div>
-          <div
-            class="flex items-center justify-center gap-1 xl:text-base text-2xl"
-          >
+          <div class="flex items-center justify-center gap-1 text-base">
             <img src={Success} alt="" />
             Bank-level security/encryption.
             <a
@@ -1623,25 +1621,21 @@
           </div>
           <div class="flex items-center justify-center gap-6 my-3">
             {#each listLogoCEX as logo}
-              <img
-                src={logo}
-                alt=""
-                class="xl:w-8 xl:h-8 w-10 h-10 rounded-full"
-              />
+              <img src={logo} alt="" class="w-8 h-8 rounded-full" />
             {/each}
             <a
               href="https://getnimbus.io/chains-support"
               target="_blank"
-              class="text-blue-500 hover:underline cursor-pointer xl:text-base text-2xl"
+              class="text-blue-500 hover:underline cursor-pointer text-base"
               >More exchanges</a
             >
           </div>
         </div>
         <div class="border-t-[1px] relative">
           <div
-            class={`absolute xl:top-[-10px] top-[-14px] left-1/2 transform -translate-x-1/2 text-gray-400 ${
+            class={`absolute top-[-10px] left-1/2 transform -translate-x-1/2 text-gray-400 text-sm px-2 ${
               $isDarkMode ? "bg-[#0f0f0f]" : "bg-white"
-            } xl:text-sm text-xl px-2`}
+            }`}
           >
             Or
           </div>
@@ -1650,7 +1644,7 @@
           on:submit|preventDefault={onSubmit}
           class="flex flex-col gap-3 mt-2"
         >
-          <div class="flex flex-col xl:gap-3 gap-6">
+          <div class="flex flex-col gap-3">
             <div class="flex flex-col gap-1">
               <div
                 class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
@@ -1660,7 +1654,7 @@
                   errors.address.required}
               >
                 <div
-                  class={`xl:text-base text-2xl font-medium ${
+                  class={`text-base font-medium ${
                     $isDarkMode ? "text-gray-400" : "text-[#666666]"
                   }`}
                 >
@@ -1672,7 +1666,7 @@
                   name="address"
                   placeholder={"Your wallet address"}
                   value=""
-                  class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal ${
+                  class={`p-0 border-none focus:outline-none focus:ring-0 text-sm font-normal ${
                     address && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
                   } ${
                     $isDarkMode
@@ -1696,7 +1690,7 @@
                 class:input-border-error={errors.label && errors.label.required}
               >
                 <div
-                  class={`xl:text-base text-2xl font-medium ${
+                  class={`text-base font-medium ${
                     $isDarkMode ? "text-gray-400" : "text-[#666666]"
                   }`}
                 >
@@ -1708,7 +1702,7 @@
                   name="label"
                   placeholder={MultipleLang.content.modal_label_label}
                   value=""
-                  class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal ${
+                  class={`p-0 border-none focus:outline-none focus:ring-0 text-sm font-normal ${
                     label && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
                   } ${
                     $isDarkMode
@@ -1726,10 +1720,8 @@
               {/if}
             </div>
           </div>
-          <div
-            class="flex items-center justify-end gap-2 text-[#666666] xl:mt-0 mt-3"
-          >
-            <div class="xl:text-sm text-2xl">Is it your wallet?</div>
+          <div class="flex items-center justify-end gap-2 text-[#666666]">
+            <div class="text-sm">Is it your wallet?</div>
             <label class="switch">
               <input type="checkbox" bind:checked={groupedToBundles} />
               <span class="slider" />
@@ -1740,18 +1732,18 @@
               <img
                 src={item.logo}
                 alt=""
-                class="xl:w-8 xl:h-8 w-10 h-10 overflow-hidden rounded-full"
+                class="w-8 h-8 overflow-hidden rounded-full"
               />
             {/each}
             <a
               href="https://getnimbus.io/chains-support"
               target="_blank"
-              class="text-blue-500 hover:underline cursor-pointer xl:text-base text-2xl"
+              class="text-blue-500 hover:underline cursor-pointer text-base"
               >More chains</a
             >
           </div>
-          <div class="flex justify-end gap-6 lg:gap-2">
-            <div class="lg:w-[120px] w-full">
+          <div class="flex justify-end gap-2">
+            <div class="w-[120px]">
               <Button
                 variant="secondary"
                 on:click={() => {
@@ -1762,7 +1754,7 @@
                 {MultipleLang.content.modal_cancel}</Button
               >
             </div>
-            <div class="lg:w-[120px] w-full">
+            <div class="w-[120px]">
               <Button
                 type="submit"
                 variant="tertiary"
@@ -1795,7 +1787,7 @@
         <img
           src={$isDarkMode ? LogoWhite : Logo}
           alt=""
-          class="-ml-6 xl:w-[177px] w-[170px] xl:h-[60px] h-[80px]"
+          class="-ml-6 w-[170px] h-[80px]"
         />
         <div
           class="-mr-1 text-5xl"
@@ -1806,7 +1798,6 @@
           &times;
         </div>
       </div>
-
       <div class="flex flex-col gap-4">
         <div class="font-medium title-2">
           {MultipleLang.content.modal_add_title}
@@ -1854,7 +1845,6 @@
               >
             </div>
           </div>
-
           <div class="border-t-[1px] relative">
             <div
               class={`absolute top-[-14px] left-1/2 transform -translate-x-1/2 text-gray-400 ${
@@ -1864,12 +1854,11 @@
               Or
             </div>
           </div>
-
           <form
             on:submit|preventDefault={onSubmit}
             class="flex flex-col gap-3 mt-2"
           >
-            <div class="flex flex-col xl:gap-3 gap-6">
+            <div class="flex flex-col gap-3">
               <div class="flex flex-col gap-1">
                 <div
                   class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
@@ -1949,9 +1938,8 @@
                 {/if}
               </div>
             </div>
-
             <div
-              class="flex items-center justify-end gap-2 text-[#666666] xl:mt-0 mt-3"
+              class="flex items-center justify-end gap-2 text-[#666666] mt-3"
             >
               <div class="text-base">Is it your wallet?</div>
               <label class="switch">
@@ -1964,7 +1952,7 @@
                 <img
                   src={item.logo}
                   alt=""
-                  class="xl:w-8 xl:h-8 w-10 h-10 overflow-hidden rounded-full"
+                  class="w-10 h-10 overflow-hidden rounded-full"
                 />
               {/each}
               <a
@@ -2057,7 +2045,7 @@
               isOpenModal = false;
             }}
           >
-            <div class="font-medium lg:text-xl text-lg">
+            <div class="font-medium text-base">
               {MultipleLang.content.modal_cancel}
             </div>
           </Button>
@@ -2068,7 +2056,7 @@
             isLoading={isLoadingSendMail}
             disabled={isLoadingSendMail}
           >
-            <div class="font-medium lg:text-xl text-lg">Submit</div>
+            <div class="font-medium text-base">Submit</div>
           </Button>
         </div>
       </div>

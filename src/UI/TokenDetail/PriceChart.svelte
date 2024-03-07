@@ -936,7 +936,7 @@
         <AnimateSharedLayout>
           {#each typeChart as type}
             <div
-              class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
+              class="relative cursor-pointer xl:text-base text-lg font-medium py-1 px-3 rounded-[100px] transition-all"
               on:click={() => (selectedTypeChart = type.value)}
             >
               <div
