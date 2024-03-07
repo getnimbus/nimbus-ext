@@ -433,7 +433,7 @@
             tooltipText="Unusual trade. Total sell amount > total buy amount"
             type="warning"
           >
-            <div class="pl-4 xl:text-2xl text-4xl font-medium">History</div>
+            <div class="xl:text-2xl text-4xl font-medium">History</div>
           </TooltipTitle>
         {:else}
           <div class="xl:text-2xl text-4xl font-medium">History</div>
