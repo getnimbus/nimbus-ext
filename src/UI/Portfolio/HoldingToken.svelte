@@ -347,8 +347,9 @@
 
 <svelte:window on:keydown={closeSideBar} />
 
+<!-- Desktop view -->
 <div
-  class={`rounded-[10px] overflow-hidden w-full ${
+  class={`xl:block hidden rounded-[10px] overflow-hidden w-full ${
     $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
   }`}
 >
@@ -1617,6 +1618,9 @@
     </div>
   {/if}
 </div>
+
+<!-- Mobile view -->
+<div class="xl:hidden block">hello world</div>
 
 <!-- Modal token holding information when bundle -->
 <AppOverlay
