@@ -287,7 +287,7 @@
                 isLoading={isLoadingSubmitCoupleCode}
                 disabled={isLoadingSubmitCoupleCode}
               >
-                <div class="text-base font-medium">Apply</div>
+                Apply
               </Button>
             </div>
           </form>
@@ -304,10 +304,7 @@
                   handleBuy(chain.value);
                 }}
               >
-                <img
-                  src={chain.logo}
-                  class="xl:w-5 xl:h-5 w-7 h-7 rounded-full"
-                />
+                <img src={chain.logo} class="w-5 h-5 rounded-full" />
                 {chain.label}</Button
               >
             </div>

@@ -23,9 +23,7 @@
       </div>
     </div>
     <div class="w-[140px]">
-      <Button className="next">
-        <div class="text-base font-medium">Get Started</div>
-      </Button>
+      <Button className="next">Get Started</Button>
     </div>
   </div>
 </div>

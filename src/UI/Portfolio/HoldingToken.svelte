@@ -2743,9 +2743,7 @@
               isOldToken = false;
             }}
           >
-            <div class="font-medium text-base">
-              {MultipleLang.content.modal_cancel}
-            </div>
+            {MultipleLang.content.modal_cancel}
           </Button>
         </div>
         <div class="w-[120px]">
@@ -2755,9 +2753,7 @@
             isLoading={isLoadingReportTrashCoin}
             disabled={isLoadingReportTrashCoin}
           >
-            <div class="font-medium text-base">
-              {MultipleLang.content.modal_submitreport}
-            </div>
+            {MultipleLang.content.modal_submitreport}
           </Button>
         </div>
       </div>

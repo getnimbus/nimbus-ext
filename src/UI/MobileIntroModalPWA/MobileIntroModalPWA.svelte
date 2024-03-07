@@ -99,7 +99,7 @@
             localStorage.setItem("blockShowMobileIntro", "true");
           }}
         >
-          <div class="font-medium text-white text-base">Don't show again</div>
+          <div class="text-white">Don't show again</div>
         </Button>
       </div>
     </div>

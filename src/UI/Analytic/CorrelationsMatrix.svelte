@@ -511,7 +511,7 @@
                     isOpenModal = true;
                   }}
                 >
-                  <div class="text-base">Compare more</div>
+                  Compare more
                 </Button>
               </div>
             </div>

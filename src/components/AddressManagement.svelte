@@ -1176,9 +1176,7 @@
                         }}
                       >
                         <img src={Plus} alt="" class="w-3 h-3" />
-                        <div class="font-medium text-white text-base">
-                          Add account
-                        </div>
+                        <div class="text-white">Add account</div>
                       </Button>
                     {:else}
                       <Button variant="disabled" disabled>
@@ -1188,7 +1186,7 @@
                           class="w-3 h-3"
                         />
                         <div
-                          class={`font-medium text-base ${
+                          class={`${
                             $isDarkMode ? "text-gray-400" : "text-white"
                           }`}
                         >
@@ -1205,9 +1203,7 @@
                     }}
                   >
                     <img src={Plus} alt="" class="w-3 h-3" />
-                    <div class="font-medium text-white text-base">
-                      Add account
-                    </div>
+                    <div class="text-white">Add account</div>
                   </Button>
                 {/if}
 
@@ -1384,9 +1380,7 @@
                               $isDarkMode ? "text-gray-400" : "text-white"
                             }`}
                           >
-                            <div class="font-medium text-base">
-                              Optimize return
-                            </div>
+                            Optimize return
                           </div>
                         </Button>
                       </div>
@@ -1412,15 +1406,13 @@
                                 mixpanel.track("user_compare");
                               }}
                             >
-                              <div class="font-medium text-base">
-                                Optimize return
-                              </div>
+                              Optimize return
                             </Button>
                           </div>
                         {:else}
                           <Button variant="premium" disabled>
                             <div
-                              class={`font-medium text-base ${$isDarkMode ? "text-gray-400" : "text-white"}`}
+                              class={`${$isDarkMode ? "text-gray-400" : "text-white"}`}
                             >
                               Optimize return
                             </div>
@@ -1468,7 +1460,7 @@
                     >
                       <Button variant="premium" disabled>
                         <div
-                          class={`font-medium text-base ${$isDarkMode ? "text-gray-400" : "text-white"}`}
+                          class={`${$isDarkMode ? "text-gray-400" : "text-white"}`}
                         >
                           Optimize return
                         </div>
@@ -1494,15 +1486,13 @@
                               mixpanel.track("user_compare");
                             }}
                           >
-                            <div class="font-medium text-base">
-                              Optimize return
-                            </div>
+                            Optimize return
                           </Button>
                         </div>
                       {:else}
                         <Button variant="premium" disabled>
                           <div
-                            class={`font-medium text-base ${$isDarkMode ? "text-gray-400" : "text-white"}`}
+                            class={`${$isDarkMode ? "text-gray-400" : "text-white"}`}
                           >
                             Optimize return
                           </div>
@@ -1526,7 +1516,7 @@
                 >
                   <Button variant="premium" disabled>
                     <div
-                      class={`font-medium text-base ${$isDarkMode ? "text-gray-400" : "text-white"}`}
+                      class={`${$isDarkMode ? "text-gray-400" : "text-white"}`}
                     >
                       Optimize return
                     </div>
@@ -1552,13 +1542,13 @@
                           mixpanel.track("user_compare");
                         }}
                       >
-                        <div class="font-medium text-base">Optimize return</div>
+                        Optimize return
                       </Button>
                     </div>
                   {:else}
                     <Button variant="premium" disabled>
                       <div
-                        class={`font-medium text-base ${$isDarkMode ? "text-gray-400" : "text-white"}`}
+                        class={`${$isDarkMode ? "text-gray-400" : "text-white"}`}
                       >
                         Optimize return
                       </div>
@@ -1628,9 +1618,7 @@
                 disabled={isLoadingConnectCEX}
                 on:click={onSubmitCEX}
               >
-                <div class="font-medium text-white text-base">
-                  Connect Exchange
-                </div>
+                <div class="text-white">Connect Exchange</div>
               </Button>
             </div>
           </div>
@@ -1775,9 +1763,7 @@
                   isOpenAddModal = false;
                 }}
               >
-                <div class="font-medium text-base">
-                  {MultipleLang.content.modal_cancel}
-                </div>
+                {MultipleLang.content.modal_cancel}
               </Button>
             </div>
             <div class="w-[120px]">
@@ -1787,9 +1773,7 @@
                 isLoading={isLoadingAddDEX}
                 disabled={isLoadingAddDEX}
               >
-                <div class="font-medium text-base">
-                  {MultipleLang.content.modal_add}
-                </div>
+                {MultipleLang.content.modal_add}
               </Button>
             </div>
           </div>
@@ -1840,9 +1824,7 @@
                   disabled={isLoadingConnectCEX}
                   on:click={onSubmitCEX}
                 >
-                  <div class="font-medium text-white text-base">
-                    Connect Exchange
-                  </div>
+                  <div class="text-white">Connect Exchange</div>
                 </Button>
               </div>
             </div>
@@ -2000,9 +1982,7 @@
                     isOpenAddModal = false;
                   }}
                 >
-                  <div class="font-medium text-base">
-                    {MultipleLang.content.modal_cancel}
-                  </div>
+                  {MultipleLang.content.modal_cancel}
                 </Button>
               </div>
               <div class="w-[120px]">
@@ -2012,7 +1992,7 @@
                   isLoading={isLoadingAddDEX}
                   disabled={isLoadingAddDEX}
                 >
-                  <div class="font-medium text-white text-base">
+                  <div class="text-white">
                     {MultipleLang.content.modal_add}
                   </div>
                 </Button>
@@ -2073,9 +2053,7 @@
               isOpenModal = false;
             }}
           >
-            <div class="font-medium text-base">
-              {MultipleLang.content.modal_cancel}
-            </div>
+            {MultipleLang.content.modal_cancel}
           </Button>
         </div>
         <div class="w-[120px]">
@@ -2084,7 +2062,7 @@
             isLoading={isLoadingSendMail}
             disabled={isLoadingSendMail}
           >
-            <div class="font-medium text-base">Submit</div>
+            Submit
           </Button>
         </div>
       </div>

@@ -65,14 +65,11 @@
     <div class="h-[40px]">
       {#if isEdit}
         <Button variant={typeSocialMedia} on:click={() => (isOpenModal = true)}>
-          <div class="xl:text-base text-xl">Edit info</div>
+          Edit info
         </Button>
       {:else}
         <Button variant={typeSocialMedia}>
-          <a
-            target="_blank"
-            href={linkHref + socialData?.username}
-            class="xl:text-base text-xl"
+          <a target="_blank" href={linkHref + socialData?.username}
             >{typeSocialMedia === "Telegram" ? "Chat with me" : "Follow"}</a
           >
         </Button>
@@ -82,13 +79,11 @@
     <div class="h-[40px]">
       {#if isEdit}
         <Button variant={typeSocialMedia} on:click={() => (isOpenModal = true)}>
-          <div class="xl:text-base text-xl">Add info</div>
+          Add info
         </Button>
       {:else}
         <Button variant={typeSocialMedia} disabled>
-          <div class="xl:text-base text-xl">
-            {typeSocialMedia === "Telegram" ? "Chat with me" : "Follow"}
-          </div>
+          {typeSocialMedia === "Telegram" ? "Chat with me" : "Follow"}
         </Button>
       {/if}
     </div>

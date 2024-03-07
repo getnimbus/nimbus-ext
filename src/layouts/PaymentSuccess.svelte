@@ -153,13 +153,11 @@
                 queryClient.invalidateQueries(["users-me"]);
               }}
             >
-              <div class="text-base font-medium">Continue</div>
+              Continue
             </Button>
           </Link>
         {:else}
-          <Button isLoading={!status} variant="primary">
-            <div class="text-base font-medium">Continue</div>
-          </Button>
+          <Button isLoading={!status} variant="primary">Continue</Button>
         {/if}
       </div>
       <div class="text-gray-500 xl:text-sm text-base">

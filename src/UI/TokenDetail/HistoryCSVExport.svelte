@@ -57,7 +57,7 @@
       }}
       {isLoading}
     >
-      <div class="font-medium text-base">Download CSV</div>
+      Download CSV
     </Button>
   </div>
 {:else}
@@ -70,9 +70,7 @@
     }}
     class="w-max"
   >
-    <Button variant="premium" disabled>
-      <div class="font-medium text-base">Download CSV</div></Button
-    >
+    <Button variant="premium" disabled>Download CSV</Button>
   </div>
 {/if}
 

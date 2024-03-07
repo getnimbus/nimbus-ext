@@ -19,7 +19,7 @@
           window.close();
         }}
       >
-        <div class="text-base font-medium">Join Discord</div>
+        Join Discord
       </Button>
     </div>
   </div>

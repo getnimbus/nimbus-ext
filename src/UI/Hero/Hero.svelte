@@ -113,8 +113,8 @@
     {#if Object.keys($user).length !== 0}
       <div class="w-max">
         <Button variant="tertiary" on:click={handleOpenAddModal}>
-          <img src={Plus} alt="" width="12" height="12" />
-          <div class="font-medium text-white text-base">
+          <img src={Plus} alt="" class="w-3 h-3" />
+          <div class="text-white">
             {btntext}
           </div>
         </Button>
@@ -194,7 +194,7 @@
                 drivePortfolio.destroy();
               }}
             >
-              <div class="font-medium text-base">Connect Wallet</div>
+              Connect Wallet
             </Button>
           </div>
 
@@ -205,7 +205,7 @@
                 drivePortfolio.destroy();
               }}
             >
-              <div class="font-medium text-base">Sync from Desktop</div>
+              Sync from Desktop
             </Button>
           </div>
         </div>

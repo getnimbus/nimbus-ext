@@ -778,9 +778,7 @@
           href={`https://t.me/GetNimbusBot?start=${syncMobileCode}`}
           target="_blank"
         >
-          <Button variant="primary">
-            <div class="text-base font-medium">Sync to Telegram</div>
-          </Button>
+          <Button variant="primary">Sync to Telegram</Button>
         </a>
       </div>
     </div>

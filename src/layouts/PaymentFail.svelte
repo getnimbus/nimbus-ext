@@ -94,7 +94,7 @@
             isLoading={isLoadingSendMail}
             disabled={isLoadingSendMail}
           >
-            <div class="font-medium text-base">Submit</div>
+            Submit
           </Button>
         </div>
       </form>

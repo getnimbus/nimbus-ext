@@ -1041,7 +1041,7 @@
                         search = "";
                       }}
                     >
-                      <div class="font-medium text-base">Remove</div>
+                      Remove
                     </Button>
                   </div>
                 </div>
@@ -1145,7 +1145,7 @@
                                   variant="disabled"
                                 >
                                   <div
-                                    class={`text-base ${
+                                    class={`${
                                       $isDarkMode ? "text-gray-400" : ""
                                     }`}
                                   >
@@ -1197,12 +1197,10 @@
                                       searchCompare = search;
                                     }}
                                   >
-                                    <div class="text-base">Compare</div>
+                                    Compare
                                   </Button>
                                 {:else}
-                                  <Button disabled>
-                                    <div class="text-base">Compare</div>
-                                  </Button>
+                                  <Button disabled>Compare</Button>
                                 {/if}
                               </div>
                             </div>
@@ -1231,7 +1229,7 @@
           {#if $query.isFetching || searchCompare.length === 0}
             <Button variant="disabled">
               <div class="flex items-center gap-1">
-                <div class={`text-base ${$isDarkMode ? "text-gray-400" : ""}`}>
+                <div class={`${$isDarkMode ? "text-gray-400" : ""}`}>
                   Get re-balance action
                 </div>
                 <img
@@ -1244,7 +1242,7 @@
           {:else}
             <Button on:click={() => (showCompareTable = true)}>
               <div class="flex items-center gap-1">
-                <div class="text-base">Get re-balance action</div>
+                <div>Get re-balance action</div>
                 <img
                   src={LeftArrow}
                   alt=""
@@ -1385,7 +1383,7 @@
         </div>
         <div class="mt-2 w-max">
           <Button variant="premium" on:click={() => navigate("/upgrade")}>
-            <div class="font-medium text-base">Upgrade Plan</div>
+            Upgrade Plan
           </Button>
         </div>
       </div>

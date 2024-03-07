@@ -1217,7 +1217,7 @@
               isOpenModalSync = false;
             }}
           >
-            <div class="font-medium text-base">Cancel</div>
+            Cancel
           </Button>
         </div>
         <div class="w-[120px]">
@@ -1226,7 +1226,7 @@
             isLoading={isLoadingSyncMobile}
             disabled={isLoadingSyncMobile}
           >
-            <div class="font-medium text-base">Submit</div>
+            Submit
           </Button>
         </div>
       </div>

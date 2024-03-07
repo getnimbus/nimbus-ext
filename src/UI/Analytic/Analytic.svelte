@@ -130,9 +130,7 @@
                 </div>
                 <div class="xl:w-[164px] w-[284px]">
                   {#if isShowSoon && $user && Object.keys($user).length === 0}
-                    <Button disabled>
-                      <div class="text-base">Get suggestion</div>
-                    </Button>
+                    <Button disabled>Get suggestion</Button>
                   {:else}
                     <Button
                       on:click={() => {
@@ -142,7 +140,7 @@
                         mixpanel.track("user_compare");
                       }}
                     >
-                      <div class="text-base">Get suggestion</div>
+                      Get suggestion
                     </Button>
                   {/if}
                 </div>

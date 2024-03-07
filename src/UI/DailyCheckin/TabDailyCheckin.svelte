@@ -613,15 +613,11 @@
                     }}
                     isLoading={isLoadingCheckin}
                   >
-                    <div class="py-1 font-medium text-white text-base">
-                      👋 GM
-                    </div>
+                    <div class="py-1 text-white">👋 GM</div>
                   </Button>
                 {:else}
                   <Button disabled>
-                    <div class="py-1 font-medium text-white text-base">
-                      Checked
-                    </div>
+                    <div class="py-1 text-white">Checked</div>
                   </Button>
                 {/if}
               </div>
@@ -746,19 +742,11 @@
                           <div>
                             {#if quest.isDone}
                               <div class="py-1">
-                                <Button disabled>
-                                  <div class="text-base font-medium">
-                                    Collect!
-                                  </div>
-                                </Button>
+                                <Button disabled>Collect!</Button>
                               </div>
                             {:else}
                               <a href={quest?.url} class="py-1">
-                                <Button>
-                                  <div class="text-base font-medium">
-                                    Collect!
-                                  </div>
-                                </Button>
+                                <Button>Collect!</Button>
                               </a>
                             {/if}
                           </div>
@@ -766,11 +754,7 @@
                           <div>
                             {#if quest?.isInternalLink}
                               <a href={quest?.url} class="py-1">
-                                <Button>
-                                  <div class="text-base font-medium">
-                                    Collect!
-                                  </div>
-                                </Button>
+                                <Button>Collect!</Button>
                               </a>
                             {:else}
                               <div
@@ -785,9 +769,7 @@
                                   disabled={isDisabledReceiveQuest ||
                                     quest.isDone}
                                 >
-                                  <div class="text-base font-medium">
-                                    Collect!
-                                  </div>
+                                  Collect!
                                 </Button>
                               </div>
                             {/if}

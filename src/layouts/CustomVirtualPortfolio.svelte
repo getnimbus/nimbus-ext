@@ -194,7 +194,7 @@
     </div>
   </div>
 
-  <div class="max-w-[2000px] m-auto xl:w-[90%] w-[90%] -mt-34">
+  <div class="max-w-[2000px] m-auto xl:w-[90%] w-[90%] xl:-mt-26 -mt-34">
     <div class="bg-white rounded-[20px] xl:p-8 p-4 xl:shadow-md">
       <div
         class="border border_0000001a rounded-[20px] p-6 flex flex-col gap-4"
@@ -326,9 +326,7 @@
                     height="12"
                   />
                   <div
-                    class={`font-medium text-base ${
-                      $isDarkMode ? "text-gray-400" : "text-white"
-                    }`}
+                    class={`${$isDarkMode ? "text-gray-400" : "text-white"}`}
                   >
                     Add virtual portfolio
                   </div>
@@ -338,10 +336,8 @@
                   variant="tertiary"
                   on:click={() => (selectedVirtualPortfolio = {})}
                 >
-                  <img src={Plus} alt="" width="12" height="12" />
-                  <div class="text-base font-medium text-white">
-                    Add virtual portfolio
-                  </div>
+                  <img src={Plus} alt="" class="w-3 h-3" />
+                  <div class="text-white">Add virtual portfolio</div>
                 </Button>
               {/if}
               {#if showDisableAddBtn}

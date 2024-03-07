@@ -70,7 +70,7 @@
                   {redeemData?.cost}
                 </div>
               </div>
-              <div class="text-white text-base font-medium">Redeem</div>
+              <div class="text-white">Redeem</div>
             </Button>
           {:else}
             <Button
@@ -85,7 +85,7 @@
                   {redeemData?.cost}
                 </div>
               </div>
-              <div class="text-white text-base font-medium">Redeem</div>
+              <div class="text-white">Redeem</div>
             </Button>
           {/if}
         </div>

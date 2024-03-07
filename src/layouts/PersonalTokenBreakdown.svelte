@@ -721,7 +721,7 @@
     </div>
   </div>
 
-  <div class="max-w-[2000px] m-auto xl:w-[90%] w-[90%] -mt-34">
+  <div class="max-w-[2000px] m-auto xl:w-[90%] w-[90%] xl:-mt-26 -mt-34">
     <div
       class="custom_token_breakdown_container rounded-[20px] xl:p-8 p-4 xl:shadow-md"
     >
@@ -736,7 +736,7 @@
 
         {#if listCustom.length === 0}
           <div class="flex justify-between items-center gap-10">
-            <div class="xl:text-lg text-2xl flex-1">
+            <div class="text-lg flex-1">
               Add your custom token breakdown to keep track of investments by
               your way.
             </div>
@@ -748,8 +748,8 @@
                   handleResetState();
                 }}
               >
-                <img src={Plus} alt="" width="12" height="12" />
-                <div class="text-base font-medium text-white">Add Category</div>
+                <img src={Plus} alt="" class="w-3 h-3" />
+                <div class="text-white">Add Category</div>
               </Button>
             </div>
           </div>
@@ -884,7 +884,7 @@
                         height="12"
                       />
                       <div
-                        class={`text-base font-medium ${
+                        class={`${
                           $isDarkMode ? "text-gray-400" : "text-white"
                         }`}
                       >
@@ -899,10 +899,8 @@
                         handleResetState();
                       }}
                     >
-                      <img src={Plus} alt="" width="12" height="12" />
-                      <div class="text-base font-medium text-white">
-                        Add Category
-                      </div>
+                      <img src={Plus} alt="" class="w-3 h-3" />
+                      <div class="text-white">Add Category</div>
                     </Button>
                   {/if}
                 </div>
@@ -1151,7 +1149,7 @@
                           showSetTag = true;
                         }}
                       >
-                        <div class="text-base text-white">Set Tag</div>
+                        <div class="text-white">Set Tag</div>
                       </Button>
                     </div>
                   {/if}
@@ -1548,7 +1546,7 @@
             isOpenConfirmDelete = false;
           }}
         >
-          <div class="text-base font-medium">Cancel</div>
+          Cancel
         </Button>
       </div>
       <div class="lg:w-[120px] w-full">
@@ -1559,7 +1557,7 @@
             deleteCustomCategory();
           }}
         >
-          <div class="text-base font-medium">Delete</div>
+          Delete
         </Button>
       </div>
     </div>
