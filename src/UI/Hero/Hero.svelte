@@ -87,15 +87,13 @@
     class="xl:order-1 order-2 xl:flex-[0.7] flex-1 flex flex-col items-start gap-6"
   >
     <div class="flex flex-col gap-4">
-      <div class="font-bold xl:text-5xl text-6xl">
-        Your Personalized portfolio
-      </div>
+      <div class="font-bold text-5xl">Your Personalized portfolio</div>
       <div class="flex flex-col xl:gap-2 gap-4">
-        <div class="xl:text-lg text-3xl">
+        <div class="xl:text-lg text-xl">
           Track your Web3 investment across 60+ chains and CEX in one single
           place
         </div>
-        <div class="grid grid-cols-2 grid-rows-2 xl:text-base text-2xl">
+        <div class="grid grid-cols-2 grid-rows-2 xl:text-base text-lg">
           <div class="flex gap-1 items-center">
             <img src={checkMark} alt="" class="w-max h-max" /> Token & NFT
           </div>
@@ -116,7 +114,7 @@
       <div class="w-max">
         <Button variant="tertiary" on:click={handleOpenAddModal}>
           <img src={Plus} alt="" width="12" height="12" />
-          <div class="text-2xl font-medium text-white xl:text-base">
+          <div class="text-xl font-medium text-white xl:text-base">
             {btntext}
           </div>
         </Button>
@@ -142,7 +140,7 @@
               }}
               autofocus
               value={search}
-              class={`xl:px-5 xl:py-3 px-6 py-4 border border-gray-300 focus:ring-0 xl:text-sm text-lg font-normal rounded-xl w-full ${
+              class={`xl:px-5 xl:py-3 px-6 py-4 border border-gray-300 focus:ring-0 xl:text-sm text-base font-normal rounded-xl w-full ${
                 !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
               } ${
                 $isDarkMode
@@ -170,7 +168,7 @@
           </div>
 
           <div
-            class="hover:underline text-[#1E96FC] xl:text-base text-2xl cursor-pointer"
+            class="hover:underline text-[#1E96FC] xl:text-base text-xl cursor-pointer"
             on:click={() => {
               mixpanel.track("user_search");
               chain.update((n) => (n = "ALL"));
@@ -196,9 +194,7 @@
                 drivePortfolio.destroy();
               }}
             >
-              <div class="text-2xl font-medium xl:text-base">
-                Connect Wallet
-              </div>
+              <div class="text-xl font-medium xl:text-base">Connect Wallet</div>
             </Button>
           </div>
 
@@ -209,7 +205,7 @@
                 drivePortfolio.destroy();
               }}
             >
-              <div class="text-2xl font-medium xl:text-base">
+              <div class="text-xl font-medium xl:text-base">
                 Sync from Desktop
               </div>
             </Button>
@@ -228,7 +224,7 @@
           data-nimg="1"
           style="color:transparent"
           src="https://getnimbus.io/logoSocialMedia/discord.svg"
-          class="xl:w-[30px] xl:h-[30px] w-[40px] h-[40px]"
+          class="w-[30px] h-[30px]"
         />
       </a>
       <a target="_blank" href="https://t.me/getnimbus">
@@ -239,7 +235,7 @@
           data-nimg="1"
           style="color:transparent"
           src="https://getnimbus.io/logoSocialMedia/telegram.svg"
-          class="xl:w-[30px] xl:h-[30px] w-[40px] h-[40px]"
+          class="w-[30px] h-[30px]"
         />
       </a>
       <a target="_blank" href="https://twitter.com/get_nimbus">
@@ -250,7 +246,7 @@
           data-nimg="1"
           style="color:transparent"
           src="https://getnimbus.io/logoSocialMedia/twitterX1.svg"
-          class="xl:w-[26px] xl:h-[26px] w-[36px] h-[36px]"
+          class="w-[26px] h-[26px]"
         />
       </a>
     </div>

@@ -858,7 +858,7 @@
           <div
             class="flex flex-col items-center justify-center w-[70%] gap-4 p-6"
           >
-            <div class="xl:text-lg text-2xl">
+            <div class="xl:text-lg text-xl">
               {$query.error}
             </div>
           </div>
