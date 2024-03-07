@@ -2100,7 +2100,7 @@
 >
   <div class="flex flex-col gap-4">
     <div class="flex flex-col gap-1">
-      <div class="text-2xl xl:text-base">
+      <div class="text-base">
         Go to <a
           href="https://t.me/GetNimbusBot"
           target="_blank"
@@ -2108,7 +2108,7 @@
           >https://t.me/GetNimbusBot</a
         >
       </div>
-      <div class="text-2xl xl:text-base">Use the command as follow video</div>
+      <div class="text-base">Use the command as follow video</div>
     </div>
     <div class="xl:h-[350px] h-[650px]">
       <img src={FollowWhale} alt="" class="object-contain w-full h-full" />
