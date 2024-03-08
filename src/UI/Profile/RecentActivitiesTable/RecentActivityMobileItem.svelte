@@ -17,7 +17,6 @@
   import SuiLogo from "~/assets/chains/sui.png";
 
   export let item;
-  export let lastIndex: boolean = false;
 
   const formatTransactionTime = (date: Date) => {
     if (dayjs().diff(date, "days") >= 1) {
@@ -27,17 +26,13 @@
   };
 </script>
 
-<tr class="group transition-all">
-  <td
-    class={`pl-3 py-3 xl:static sticky left-0 z-9 w-[200px] ${
-      $isDarkMode
-        ? "bg-[#131313] group-hover:bg-[#000]"
-        : "bg-white group-hover:bg-gray-100"
-    }`}
-    style={`${lastIndex ? "border-bottom-left-radius: 10px;" : ""}`}
-  >
+<div
+  class="flex flex-col gap-4 border-b-[1px] border_0000000d last:border-none py-2"
+>
+  <div class="flex justify-between items-start">
+    <div class="text-right text-sm uppercase font-medium">From</div>
     <div
-      class="flex justify-start items-center gap-3 text-2xl font-medium xl:text-sm text_00000099"
+      class="flex justify-start items-center gap-3 font-medium text-sm text_00000099"
     >
       <div class="rounded-full w-[30px] h-[30px] overflow-hidden">
         <Image logo={item.from_token_logo} defaultLogo={defaultToken} />
@@ -61,17 +56,12 @@
         </div>
       </div>
     </div>
-  </td>
+  </div>
 
-  <td
-    class={`py-3 xl:static sticky left-[200px] z-9 w-[200px] ${
-      $isDarkMode
-        ? "bg-[#131313] group-hover:bg-[#000]"
-        : "bg-white group-hover:bg-gray-100"
-    }`}
-  >
+  <div class="flex justify-between items-start">
+    <div class="text-right text-sm uppercase font-medium">To</div>
     <div
-      class="flex justify-start items-center gap-3 text-2xl font-medium xl:text-sm text_00000099"
+      class="flex justify-start items-center gap-3 font-medium text-sm text_00000099"
     >
       <div class="rounded-full w-[30px] h-[30px] overflow-hidden">
         <Image logo={item.to_token_logo} defaultLogo={defaultToken} />
@@ -95,37 +85,27 @@
         </div>
       </div>
     </div>
-  </td>
+  </div>
 
-  <td
-    class={`py-3 ${
-      $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
-    }`}
-  >
-    <div class="flex justify-end text-2xl font-medium xl:text-sm text_00000099">
+  <div class="flex justify-between items-start">
+    <div class="text-right text-sm uppercase font-medium">Trade size</div>
+    <div class="flex justify-end font-medium text-sm text_00000099">
       $<TooltipNumber number={item?.amount_usd} type="balance" />
     </div>
-  </td>
+  </div>
 
-  <td
-    class={`py-3 ${
-      $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
-    }`}
-  >
-    <div class="flex justify-end text-2xl font-medium xl:text-sm text_00000099">
+  <div class="flex justify-between items-start">
+    <div class="text-right text-sm uppercase font-medium">Fee</div>
+    <div class="flex justify-end font-medium text-sm text_00000099">
       $<TooltipNumber number={item?.fee} type="balance" />
     </div>
-  </td>
+  </div>
 
-  <td
-    class={`py-3 pr-3 ${
-      $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
-    }`}
-    style={`${lastIndex ? "border-bottom-right-radius: 10px;" : ""}`}
-  >
+  <div class="flex justify-between items-start">
+    <div class="text-right text-sm uppercase font-medium">Transaction</div>
     <div class="flex justify-end">
       <div class="flex flex-col items-end space-y-2">
-        <div class="text-2xl xl:text-sm font-medium text_00000099 flex gap-2">
+        <div class="text-sm font-medium text_00000099 flex gap-2">
           {#if $typeWallet !== "CEX" && $typeWallet !== "BTC"}
             <img
               src={item?.chain === "SUI"
@@ -156,19 +136,13 @@
             />
           {/if}
         </div>
-        <div class="text-lg text-gray-400 xl:text-xs">
+        <div class="text-gray-400 text-xs">
           {formatTransactionTime(new Date(item?.created_at * 1000))}
         </div>
       </div>
     </div>
-  </td>
-</tr>
+  </div>
+</div>
 
 <style windi:preflights:global windi:safelist:global>
-  :global(body) .bg_fafafbff {
-    background: #fafafbff;
-  }
-  :global(body.dark) .bg_fafafbff {
-    background: #212121;
-  }
 </style>
