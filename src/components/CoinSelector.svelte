@@ -67,7 +67,7 @@
 
 <div class="wrapper" use:clickOutside on:click_outside={() => (open = false)}>
   <div
-    class={`button xl:text-sm text-2xl bg-[#1E96FC]`}
+    class={`button xl:text-sm text-lg bg-[#1E96FC]`}
     class:active={open}
     on:click={() => (open = !open)}
   >
@@ -78,7 +78,7 @@
           alt=""
           class="xl:w-5 xl:h-5 w-7 h-7"
         />
-        <div class={`xl:text-sm text-2xl name`}>
+        <div class="xl:text-sm text-lg name">
           {selected.name}
         </div>
       </div>
@@ -116,7 +116,7 @@
           class="xl:w-5 xl:h-5 w-9 h-9"
         />
         <input
-          class={`flex-1 xl:py-2 py-3 xl:text-sm text-2xl max-w-[100px] border-none focus:outline-none focus:ring-0 ${
+          class={`flex-1 xl:py-2 py-3 xl:text-sm text-lg max-w-[100px] border-none focus:outline-none focus:ring-0 ${
             $isDarkMode ? "bg-[#212121]" : "bg-[#eff0f4]"
           }`}
           placeholder="Search"
@@ -141,7 +141,7 @@
             {#if item.logo}
               <img src={item.logo} alt="" class="xl:w-5 xl:h-5 w-7 h-7" />
             {/if}
-            <div class={`xl:text-sm text-2xl name`}>
+            <div class="xl:text-sm text-lg name">
               {item.name}
             </div>
           </div>
@@ -186,7 +186,7 @@
   .content {
     overflow-y: overlay;
     position: absolute;
-    z-index: 2147483646;
+    z-index: 8;
     box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);
     border-radius: 10px;
     padding: 8px;

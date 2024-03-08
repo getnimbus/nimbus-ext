@@ -303,11 +303,11 @@
           }`}
         >
           <div class="flex flex-col justify-between gap-4 xl:flex-row">
-            <div class="xl:text-2xl text-4xl font-medium">
+            <div class="xl:text-2xl text-3xl font-medium">
               Historical Transactions
             </div>
             {#if $typeWallet === "EVM"}
-              <div class="flex items-center gap-4">
+              <div class="xl:flex hidden items-center gap-4">
                 <CoinSelector
                   bind:selected={selectedCoin}
                   positionSelectList="right-0"
@@ -317,6 +317,19 @@
                   bind:selected={selectedType}
                   listSelect={types}
                   positionSelectList="right-0"
+                />
+              </div>
+
+              <div class="xl:hidden flex items-center gap-4">
+                <CoinSelector
+                  bind:selected={selectedCoin}
+                  positionSelectList="left-0"
+                />
+                <Select
+                  type="lang"
+                  bind:selected={selectedType}
+                  listSelect={types}
+                  positionSelectList="left-0"
                 />
               </div>
             {/if}
