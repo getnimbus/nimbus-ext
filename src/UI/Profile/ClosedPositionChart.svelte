@@ -338,9 +338,7 @@
 <div
   class="col-span-4 border border_0000001a rounded-xl flex flex-col min-h-[465px]"
 >
-  <div
-    class="flex justify-start text-3xl font-medium xl:text-xl px-6 pb-3 pt-6"
-  >
+  <div class="flex justify-start font-medium text-2xl px-6 pb-3 pt-6">
     Positions 30D
   </div>
 
@@ -351,9 +349,7 @@
   {:else}
     <div class="h-full relative">
       {#if $queryTradingStats.isError}
-        <div
-          class="h-full flex justify-center items-center xl:text-base text-lg"
-        >
+        <div class="h-full flex justify-center items-center text-base">
           Empty
         </div>
       {:else}
@@ -363,7 +359,7 @@
               <AnimateSharedLayout>
                 {#each typeClosedHoldingTokenChart as type}
                   <div
-                    class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
+                    class="relative cursor-pointer text-base font-medium py-1 px-3 rounded-[100px] transition-all"
                     on:click={() => (selectedTypeChart = type.value)}
                   >
                     <div

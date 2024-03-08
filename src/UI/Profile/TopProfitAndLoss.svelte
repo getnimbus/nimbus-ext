@@ -118,7 +118,7 @@
 
 <div class="col-span-4 grid xl:grid-cols-2 grid-cols-1 gap-5">
   <div class="flex flex-col gap-5 border border_0000001a rounded-xl pt-6 pb-2">
-    <div class="xl:text-xl text-2xl font-medium px-6">Top Profit (30D)</div>
+    <div class="xl:text-xl text-2xl font-medium px-3">Top Profit (30D)</div>
 
     <div class="max-h-[280px]">
       {#if $queryTradingStats.isFetching}
@@ -152,12 +152,10 @@
                       <Image logo={item?.logo} defaultLogo={defaultToken} />
                     </div>
                     <span class="flex flex-col">
-                      <span class="text-lg xl:text-sm font-medium">
+                      <span class="text-sm font-medium">
                         {item.name}
                       </span>
-                      <span
-                        class="text-lg font-medium text_00000080 xl:text-xs"
-                      >
+                      <span class="font-medium text_00000080 text-xs">
                         {#if item.symbol === undefined}
                           N/A
                         {:else}
@@ -166,7 +164,7 @@
                       </span>
                     </span>
                   </div>
-                  <div class="text-[#00A878] xl:text-sm text-lg font-medium">
+                  <div class="text-[#00A878] text-sm font-medium">
                     <TooltipNumber number={item.realizedProfit} type="value" />
                   </div>
                 </div>
@@ -213,12 +211,10 @@
                       <Image logo={item?.logo} defaultLogo={defaultToken} />
                     </div>
                     <span class="flex flex-col">
-                      <span class="text-lg xl:text-sm font-medium">
+                      <span class="text-sm font-medium">
                         {item.name}
                       </span>
-                      <span
-                        class="text-lg font-medium text_00000080 xl:text-xs"
-                      >
+                      <span class="font-medium text_00000080 text-xs">
                         {#if item.symbol === undefined}
                           N/A
                         {:else}
@@ -227,7 +223,7 @@
                       </span>
                     </span>
                   </div>
-                  <div class="text-red-500 xl:text-sm text-lg font-medium">
+                  <div class="text-red-500 text-sm font-medium">
                     <TooltipNumber number={item.realizedProfit} type="value" />
                   </div>
                 </div>
