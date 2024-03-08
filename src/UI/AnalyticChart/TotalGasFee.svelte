@@ -7,6 +7,7 @@
   import { nimbus } from "~/lib/network";
 
   import CalendarChart from "~/components/CalendarChart.svelte";
+  import TooltipNumber from "~/components/TooltipNumber.svelte";
 
   export let packageSelected;
   export let darkMode;
@@ -245,23 +246,34 @@
     darkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
   }`}
 >
-  <CalendarChart
-    {option}
-    isEmptyDataChart={$query.isError}
-    isLoadingChart={$query.isFetching}
-    title="Total gas fee paid"
-    tooltipTitle=""
-    id="total-gasfee-paid"
-    {sum}
-    type="primary"
-  />
+  <div class="flex flex-col gap-1 pl-6">
+    <div class="font-medium flex justify-start z-10 w-max xl:text-xl text-2xl">
+      Total gas fee paid
+    </div>
+    <div class="text-lg font-medium flex">
+      $<TooltipNumber number={sum} type="balance" />
+    </div>
+  </div>
+
+  <div class="overflow-x-auto w-full mt-2">
+    <div class="min-w-[800px]">
+      <CalendarChart
+        {option}
+        isEmptyDataChart={$query.isError}
+        isLoadingChart={$query.isFetching}
+        id="total-gasfee-paid"
+        type="primary"
+      />
+    </div>
+  </div>
+
   {#if otherGeneration.includes($typeWallet)}
     <div
       class={`absolute top-0 left-0 rounded-[20px] z-30 w-full h-full flex items-center justify-center z-10 backdrop-blur-md ${
         darkMode ? "bg-black/90" : "bg-white/95"
       }`}
     >
-      <div class="text-2xl xl:text-lg">Coming soon 🚀</div>
+      <div class="text-lg">Coming soon 🚀</div>
     </div>
   {/if}
 </div>

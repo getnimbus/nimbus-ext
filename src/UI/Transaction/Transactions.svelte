@@ -24,6 +24,7 @@
   import Select from "~/components/Select.svelte";
 
   import All from "~/assets/all.svg";
+  import TooltipTitle from "~/components/TooltipTitle.svelte";
 
   const types = [
     {
@@ -284,19 +285,32 @@
               $isDarkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
             }`}
           >
-            <CalendarChart
-              {option}
-              isEmptyDataChart={$query.isError}
-              isLoadingChart={$query.isFetching}
-              isTrxPage
-              title="Historical Activities"
-              tooltipTitle="The chart shows only activities made by this wallet"
-              id="historical-activities"
-              type="normal"
-            />
+            <div class="flex flex-col gap-1 pl-6">
+              <div
+                class="font-medium flex justify-start z-10 w-max xl:text-2xl text-3xl"
+              >
+                <TooltipTitle
+                  tooltipText="The chart shows only activities made by this wallet"
+                  isBigIcon
+                >
+                  Historical Activities
+                </TooltipTitle>
+              </div>
+            </div>
+            <div class="overflow-x-auto w-full">
+              <div class="min-w-[800px]">
+                <CalendarChart
+                  {option}
+                  isEmptyDataChart={$query.isError}
+                  isLoadingChart={$query.isFetching}
+                  isTrxPage
+                  id="historical-activities"
+                  type="normal"
+                />
+              </div>
+            </div>
           </div>
         {/if} -->
-
         <div
           class={`rounded-[20px] p-6 flex flex-col gap-4 ${
             $isDarkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"

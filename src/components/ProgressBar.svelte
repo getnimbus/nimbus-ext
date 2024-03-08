@@ -24,7 +24,7 @@
         : range
     };`}
   >
-    <div class="absolute top-5 left-0 xl:text-sm text-xl">{leftLabel}</div>
+    <div class="absolute top-5 left-0 text-sm">{leftLabel}</div>
     <div
       class="w-[1px] h-5 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-gray-700"
     />
@@ -33,7 +33,7 @@
       style={`left: ${Math.min(Math.max(progress, 0), 100)}%;`}
     >
       <div class="relative text-white bg-black px-2 py-1 rounded-md">
-        <div class="xl:text-xs text-base whitespace-nowrap">
+        <div class="text-xs whitespace-nowrap">
           {tooltipText}
         </div>
         <div class="tooltip-arrow" />
@@ -45,7 +45,7 @@
         style={`left: ${Math.min(Math.max(progressTwo, 0), 100)}%;`}
       >
         <div class="relative text-white bg-black px-2 py-1 rounded-md">
-          <div class="xl:text-xs text-base whitespace-nowrap">
+          <div class="text-xs whitespace-nowrap">
             {tooltipTextTwo}
           </div>
           <div class="tooltip-arrow" />
@@ -53,11 +53,11 @@
       </div>
     {/if}
     <div
-      class="absolute top-5 xl:text-sm text-xl left-1/2 transform -translate-x-1/2 whitespace-nowrap"
+      class="absolute top-5 text-sm left-1/2 transform -translate-x-1/2 whitespace-nowrap"
     >
       {averageText}
     </div>
-    <div class="absolute top-5 right-0 xl:text-sm text-xl">{rightLabel}</div>
+    <div class="absolute top-5 right-0 text-sm">{rightLabel}</div>
   </div>
 </div>
 

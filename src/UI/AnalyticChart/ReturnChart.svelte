@@ -236,7 +236,7 @@
 
 <AnalyticSection {address} {isShowSoon}>
   <span slot="title">
-    <div class="flex justify-start text-4xl font-medium xl:text-2xl">
+    <div class="flex justify-start font-medium xl:text-2xl text-3xl">
       <TooltipTitle
         tooltipText={"Approximate daily profit & loss based on current token holdings"}
         isBigIcon
@@ -248,7 +248,7 @@
 
   <span slot="overview" class="relative">
     {#if !$query.isFetching && !$query.isError}
-      <div class="mb-4 text-3xl font-medium xl:text-xl px-6 pt-6">Overview</div>
+      <div class="mb-4 text-2xl font-medium xl:text-xl px-6 pt-6">Overview</div>
     {/if}
     {#if $query.isFetching}
       <div class="flex items-center justify-center h-[465px]">
@@ -258,7 +258,7 @@
       <div class="h-full relative min-h-[465px]">
         {#if $query.isError}
           <div
-            class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-9 backdrop-blur-md xl:text-xs text-lg ${
+            class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-9 backdrop-blur-md xl:text-xs text-base ${
               $isDarkMode ? "bg-black/90" : "bg-white/95"
             }`}
           >
@@ -274,12 +274,10 @@
             <div class="flex flex-col gap-4">
               <div class="grid grid-cols-2">
                 <div class="col-span-1">
-                  <div class="flex justify-start text-2xl xl:text-base">
-                    Return 1D
-                  </div>
+                  <div class="flex justify-start text-base">Return 1D</div>
                 </div>
                 <div class="flex items-center justify-end col-span-1">
-                  <div class={`xl:text-base text-2xl`}>
+                  <div class="text-base">
                     <span
                       class={`${
                         data?.base?.netWorthChange?.networth1D < 0
@@ -310,12 +308,10 @@
 
               <div class="grid grid-cols-2">
                 <div class="col-span-1">
-                  <div class="flex justify-start text-2xl xl:text-base">
-                    Return 7D
-                  </div>
+                  <div class="flex justify-start text-base">Return 7D</div>
                 </div>
                 <div class="flex items-center justify-end col-span-1">
-                  <div class={`xl:text-base text-2xl`}>
+                  <div class="text-base">
                     <span
                       class={`${
                         data?.base?.netWorthChange?.networth7D < 0
@@ -346,12 +342,10 @@
 
               <div class="grid grid-cols-2">
                 <div class="col-span-1">
-                  <div class="flex justify-start text-2xl xl:text-base">
-                    Return 30D
-                  </div>
+                  <div class="flex justify-start text-base">Return 30D</div>
                 </div>
                 <div class="flex items-center justify-end col-span-1">
-                  <div class={`xl:text-base text-2xl`}>
+                  <div class="text-base">
                     <span
                       class={`${
                         data?.base?.netWorthChange?.networth30D < 0
@@ -384,12 +378,10 @@
 
               <div class="grid grid-cols-2">
                 <div class="col-span-1">
-                  <div class="flex justify-start text-2xl xl:text-base">
-                    Return 1Y
-                  </div>
+                  <div class="flex justify-start text-base">Return 1Y</div>
                 </div>
                 <div class="flex items-center justify-end col-span-1">
-                  <div class={`xl:text-base text-2xl`}>
+                  <div class="text-base">
                     <span
                       class={`${
                         data?.base?.netWorthChange?.networth1Y < 0
@@ -420,12 +412,12 @@
 
               <!-- <div class="grid grid-cols-2">
                 <div class="col-span-1">
-                  <div class="flex justify-start text-2xl xl:text-base">
+                  <div class="flex justify-start text-base">
                     Return Lifetime
                   </div>
                 </div>
                 <div class="flex items-center justify-end col-span-1">
-                  <div class={`xl:text-base text-2xl`}>
+                  <div class="text-base">
                     <span
                       class={`${
                         data?.base?.changeLF?.portfolioChange < 0
@@ -455,7 +447,7 @@
               </div> -->
             </div>
             <div class="space-y-3">
-              <div class="text-2xl xl:text-base">
+              <div class="text-base">
                 <CtaIcon isGood={isReturn30Higher} />
                 30D return is {isReturn30Higher ? "higher" : "lower"} than Bitcoin
                 by
@@ -482,7 +474,7 @@
       <div class="h-full relative">
         {#if $query.isError}
           <div
-            class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-9 backdrop-blur-md xl:text-xs text-lg ${
+            class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-9 backdrop-blur-md xl:text-xs text-base ${
               $isDarkMode ? "bg-black/90" : "bg-white/95"
             }`}
           >

@@ -383,7 +383,7 @@
 
 <AnalyticSection {address} {isShowSoon}>
   <span slot="title">
-    <div class="flex justify-start text-4xl font-medium xl:text-2xl">
+    <div class="flex justify-start text-3xl font-medium xl:text-2xl">
       Money flow
     </div>
   </span>
@@ -391,7 +391,7 @@
   <span slot="overview">
     <div class="relative h-full">
       {#if !$query.isFetching}
-        <div class="mb-4 text-3xl font-medium xl:text-xl px-6 pt-6">
+        <div class="mb-4 text-2xl font-medium xl:text-xl px-6 pt-6">
           Overview
         </div>
       {/if}
@@ -403,36 +403,36 @@
         <div class="flex flex-col gap-4 px-6 pb-6">
           <div class="grid grid-cols-2">
             <div class="col-span-1">
-              <div class="flex justify-start text-2xl xl:text-base">
+              <div class="flex justify-start text-base">
                 {selectedTimeFrame} Money Inflow
               </div>
             </div>
             <div
-              class="flex items-center justify-end col-span-1 gap-1 xl:text-base text-2xl"
+              class="flex items-center justify-end col-span-1 gap-1 text-base"
             >
               <TooltipNumber number={Math.abs(sumData.inflow)} type="value" />
             </div>
           </div>
           <div class="grid grid-cols-2">
             <div class="col-span-1">
-              <div class="flex justify-start text-2xl xl:text-base">
+              <div class="flex justify-start text-base">
                 {selectedTimeFrame} Money Outflow
               </div>
             </div>
             <div
-              class="flex items-center justify-end col-span-1 gap-1 xl:text-base text-2xl"
+              class="flex items-center justify-end col-span-1 gap-1 text-base"
             >
               <TooltipNumber number={Math.abs(sumData.outflow)} type="value" />
             </div>
           </div>
           <div class="grid grid-cols-2">
             <div class="col-span-1">
-              <div class="flex justify-start text-2xl xl:text-base">
+              <div class="flex justify-start text-base">
                 {selectedTimeFrame} Money Netflow
               </div>
             </div>
             <div
-              class={`flex items-center justify-end col-span-1 xl:text-base text-2xl ${
+              class={`flex items-center justify-end col-span-1 text-base ${
                 sumData.inflow + sumData.outflow >= 0
                   ? "text-[#00A878]"
                   : "text-red-500"
@@ -453,7 +453,7 @@
             $isDarkMode ? "bg-black/90" : "bg-white/95"
           }`}
         >
-          <div class="text-2xl xl:text-lg">Coming soon 🚀</div>
+          <div class="text-lg">Coming soon 🚀</div>
         </div>
       {/if}
     </div>
@@ -469,7 +469,7 @@
         <div class="h-full relative min-h-[465px]">
           {#if $query.isError || ($query.data && $query.data.length === 0)}
             <div
-              class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-9 backdrop-blur-md xl:text-xs text-lg ${
+              class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-9 backdrop-blur-md xl:text-xs text-base ${
                 $isDarkMode ? "bg-black/90" : "bg-white/95"
               }`}
             >
@@ -504,7 +504,7 @@
             $isDarkMode ? "bg-black/90" : "bg-white/95"
           }`}
         >
-          <div class="text-2xl xl:text-lg">Coming soon 🚀</div>
+          <div class="text-lg">Coming soon 🚀</div>
         </div>
       {/if}
     </div>

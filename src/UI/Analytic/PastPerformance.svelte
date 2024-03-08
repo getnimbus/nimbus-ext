@@ -57,46 +57,17 @@
 
 <div class="flex flex-col gap-5">
   <div class="flex justify-between items-center">
-    <div class="xl:text-2xl text-4xl font-medium">Historical Activities</div>
+    <div class="xl:text-2xl text-3xl font-medium">Historical Activities</div>
     <!-- <DateRangePicker onChange={handleGetDateRange} /> -->
   </div>
-  <div class="flex flex-col gap-6 relative">
+  <div class="flex flex-col gap-6">
     <!-- <ProfitGrows isLoading={$query.isFetching} isEmpty={$query.isError} dataTotalValueHistory={$query.data.holdingHistory} />
     <TotalValueHistory isLoading={$query.isFetching} isEmpty={$query.isError} dataTotalValueHistory={$query.data.holdingHistory} />
     <DailyPnL isLoading={$query.isFetching} isEmpty={$query.isError} dataDailyPnL={$query.data.returnsChange} />
     <SectorGrowth /> -->
 
-    {#if $typeWallet === "DEX"}
-      <TotalGasFee {packageSelected} darkMode={$isDarkMode} {isFetch} />
-    {:else}
-      <HistoricalActivities
-        {packageSelected}
-        darkMode={$isDarkMode}
-        {isFetch}
-      />
-    {/if}
-
-    {#if isShowSoon && $user && Object.keys($user).length === 0}
-      <div
-        class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col justify-center items-center gap-3 z-9 backdrop-blur-md ${
-          $isDarkMode ? "bg-black/90" : "bg-white/95"
-        }`}
-      >
-        {#if $selectedPackage === "FREE"}
-          <div class="flex flex-col items-center gap-1">
-            <div class="text-lg font-medium">
-              Use Nimbus at its full potential
-            </div>
-            <div class="text-base text-gray-500">
-              Upgrade to Premium to access Analytics feature
-            </div>
-          </div>
-        {/if}
-        {#if $selectedPackage !== "FREE" && $typeWallet === "BTC"}
-          <div class="text-lg">Coming soon 🚀</div>
-        {/if}
-      </div>
-    {/if}
+    <TotalGasFee {packageSelected} darkMode={$isDarkMode} {isFetch} />
+    <HistoricalActivities {packageSelected} darkMode={$isDarkMode} {isFetch} />
   </div>
 </div>
 

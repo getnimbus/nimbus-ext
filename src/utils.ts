@@ -724,10 +724,10 @@ export const autoFontSize = () => {
   if (windowWidth) {
     if (windowWidth < 768) {
       // mobile
-      return 16;
+      return 12;
     } else if (windowWidth >= 768 && windowWidth < 1024) {
       // tablet
-      return 14;
+      return 13;
     } else {
       // pc
       return 14;

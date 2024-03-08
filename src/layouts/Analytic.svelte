@@ -176,11 +176,9 @@
       isOpenModal = false;
     }}
   >
-    <div class="flex flex-col gap-4">
+    <div class="flex flex-col gap-4 xl:mt-0 mt-4">
       <div class="flex flex-col">
-        <div class="xl:title-3 title-2 font-semibold">
-          Let's us know your email.
-        </div>
+        <div class="title-3 font-semibold">Let's us know your email.</div>
         <div class="text-sm text-gray-500">
           Add your email to get updates from us and receive exclusive benefits
           in the future.

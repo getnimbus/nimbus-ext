@@ -400,7 +400,7 @@
 </script>
 
 <div class="flex flex-col gap-5">
-  <div class="xl:text-2xl text-4xl font-medium">
+  <div class="xl:text-2xl text-3xl font-medium">
     <TooltipTitle
       tooltipText={"Positively correlated variables tend to move together, negatively correlated variables move inversely to each other, and uncorrelated variables move independently of each other."}
       isBigIcon
@@ -414,7 +414,7 @@
     }`}
   >
     <div
-      class={`flex flex-col gap-1 xl:text-sm text-xl ${
+      class={`flex flex-col gap-1 text-sm ${
         $isDarkMode ? "text-[#ebebeb]" : "text-gray-700"
       } `}
     >
@@ -455,22 +455,20 @@
           </div>
         {:else}
           <div class="flex gap-9 relative">
-            <div class="flex flex-col xl:flex-[0.2] flex-[0.4]">
-              <div class="font-medium xl:text-base text-2xl py-[6px]">
-                Selected Coins
-              </div>
+            <div class="flex flex-col flex-[0.2]">
+              <div class="font-medium text-base py-[6px]">Selected Coins</div>
               <div class="flex flex-col items-center justify-center w-full">
                 {#each listTokenHolding as item}
                   <div
-                    class={`border-b ${
+                    class={`border-b last:border-none py-2 px-1 w-full text-center flex items-center justify-between ${
                       $isDarkMode ? "border-[#0f0f0f]" : "border-gray-200"
-                    } last:border-none py-2 px-1 w-full text-center flex items-center justify-between`}
+                    }`}
                   >
                     <div class="flex items-center gap-2">
                       <div class="w-6 h-6 mx-auto rounded-full overflow-hidden">
                         <Image logo={item.logo} defaultLogo={defaultToken} />
                       </div>
-                      <div class="text-2xl xl:text-base">
+                      <div class="text-base">
                         {item.name.toLocaleUpperCase()}
                       </div>
                     </div>
@@ -511,7 +509,8 @@
                     isOpenModal = true;
                   }}
                 >
-                  Compare more
+                  <div class="xl:block hidden">Compare more</div>
+                  <div class="xl:hidden block">More</div>
                 </Button>
               </div>
             </div>
@@ -528,7 +527,7 @@
                   <tbody on:mouseleave={() => (colIndex = undefined)}>
                     {#each listTokenHolding as tokenItem, index}
                       <th
-                        class={`py-[6px] text-2xl xl:text-base font-medium ${
+                        class={`py-[6px] text-base font-medium ${
                           colIndex === index
                             ? $isDarkMode
                               ? "bg-[#cdcdcd26]"
@@ -575,7 +574,7 @@
                             </td>
                           {:else}
                             <td
-                              class={`py-2 px-1 text-2xl xl:text-base text-center border ${
+                              class={`py-2 px-1 text-base text-center border ${
                                 $isDarkMode
                                   ? "border-[#0f0f0f]"
                                   : "border-gray-200"
@@ -641,7 +640,7 @@
   on:close={() => (isOpenModal = false)}
 >
   <div class="flex flex-col gap-4">
-    <div class="font-medium xl:title-3 title-1">Search market token</div>
+    <div class="font-medium xl:title-3 title-2">Search market token</div>
     <div class="flex flex-col">
       <div
         class={`border focus:outline-none w-full py-[6px] px-3 rounded-lg ${
@@ -652,7 +651,7 @@
           on:keyup={({ target: { value } }) => debounceSearch(value)}
           value={searchValue}
           placeholder={"Find by token name"}
-          class={`w-full p-0 border-none focus:outline-none focus:ring-0 xl:text-base text-2xl font-normal ${
+          class={`w-full p-0 border-none focus:outline-none focus:ring-0 text-base font-normal ${
             searchValue && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
           } ${
             $isDarkMode ? "text-white" : "text-[#5E656B] placeholder-[#5E656B]"
@@ -667,7 +666,7 @@
         <div>
           {#if $queryHoldingToken.isError}
             <div
-              class="flex justify-center items-center p-[6px] text-lg text-gray-400 h-[465px]"
+              class="flex justify-center items-center p-[6px] text-base text-gray-400 h-[465px]"
             >
               Empty
             </div>
@@ -677,7 +676,7 @@
             >
               {#if searchDataResult.length === 0}
                 <div
-                  class="flex justify-center items-center p-[6px] text-lg text-gray-400"
+                  class="flex justify-center items-center p-[6px] text-base text-gray-400"
                 >
                   No result
                 </div>
@@ -692,7 +691,7 @@
                     <div class="w-7 h-7 rounded-full overflow-hidden">
                       <Image logo={item.logo} defaultLogo={defaultToken} />
                     </div>
-                    <div class="xl:text-sm text-2xl">
+                    <div class="text-sm">
                       {item.full_name}
                       <span
                         class={`${
