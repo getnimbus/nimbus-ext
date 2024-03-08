@@ -12,7 +12,6 @@
   dayjs.extend(relativeTime);
   import CopyToClipboard from "svelte-copy-to-clipboard";
   import { wait } from "~/entries/background/utils";
-  import VirtualList from "svelte-tiny-virtual-list";
 
   import Loading from "~/components/Loading.svelte";
   import "~/components/Tooltip.custom.svelte";
@@ -607,11 +606,7 @@
       <div
         class="flex justify-center items-center h-full py-3 px-3 text-xl text-gray-400"
       >
-        {#if holdingTokenData && holdingTokenData.length === 0}
-          Empty
-        {:else}
-          All tokens less than $1
-        {/if}
+        Empty
       </div>
     {:else}
       <VirtualList
