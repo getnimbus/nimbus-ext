@@ -225,7 +225,7 @@
   <div class="flex flex-col justify-between gap-6">
     <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
       <OverviewCard title={"Avg Cost"}>
-        <div class="flex justify-end xl:text-3xl text-5xl">
+        <div class="flex justify-end text-3xl">
           {#if data?.profit}
             <TooltipNumber
               number={data?.profit?.averageCost}
@@ -239,7 +239,7 @@
       </OverviewCard>
 
       <OverviewCard title={"30D Trx (Buy/Sell)"}>
-        <div class="xl:text-3xl text-5xl">
+        <div class="text-3xl">
           {buyHistoryTradeList.length}/{sellHistoryTradeList.length}
         </div>
       </OverviewCard>
@@ -249,7 +249,7 @@
       <OverviewCard title={"Realized PnL"}>
         <div class="flex flex-col">
           <div
-            class={`xl:text-3xl text-5xl ${
+            class={`text-3xl ${
               realizedProfit !== 0
                 ? realizedProfit >= 0
                   ? "text-[#00A878]"
@@ -265,7 +265,7 @@
           </div>
           <div class="flex items-center gap-1">
             <div
-              class={`flex items-center xl:text-lg text-3xl ${
+              class={`flex items-center text-lg ${
                 realizedProfit !== 0
                   ? realizedProfit >= 0
                     ? "text-[#00A878]"
@@ -293,7 +293,7 @@
       <OverviewCard title={"Unrealized PnL"}>
         <div class="flex flex-col">
           <div
-            class={`xl:text-3xl text-5xl ${
+            class={`text-3xl ${
               unrealizedProfit !== 0
                 ? percentUnrealizedProfit >= 0
                   ? "text-[#00A878]"
@@ -309,7 +309,7 @@
           </div>
           <div class="flex items-center gap-1">
             <div
-              class={`flex items-center xl:text-lg text-3xl ${
+              class={`flex items-center text-lg ${
                 unrealizedProfit !== 0
                   ? unrealizedProfit >= 0
                     ? "text-[#00A878]"
@@ -337,7 +337,7 @@
 
     <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
       <OverviewCard title={"Total Fee"}>
-        <div class="flex justify-end xl:text-3xl text-5xl">
+        <div class="flex justify-end text-3xl">
           ${#if $isHidePortfolio}
             ******
           {:else if totalFee}
@@ -349,7 +349,7 @@
       </OverviewCard>
 
       <OverviewCard title={"Avg Fee"}>
-        <div class="flex justify-end xl:text-3xl text-5xl">
+        <div class="flex justify-end text-3xl">
           ${#if $isHidePortfolio}
             ******
           {:else if avgFee}
@@ -370,9 +370,7 @@
         }`}
       >
         <div class="flex justify-between items-center">
-          <div class="xl:text-2xl text-4xl font-medium">
-            Avg Cost distribution
-          </div>
+          <div class="text-2xl font-medium">Avg Cost distribution</div>
           <Select
             type="lang"
             positionSelectList="right-0"
@@ -459,33 +457,25 @@
               <th
                 class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8 w-[100px]"
               >
-                <div class="text-left xl:text-xs text-xl uppercase font-medium">
+                <div class="text-left text-sm uppercase font-medium">
                   Amount
                 </div>
               </th>
 
               <th class="py-3">
-                <div
-                  class="text-right xl:text-xs text-xl uppercase font-medium"
-                >
+                <div class="text-right text-sm uppercase font-medium">
                   Cost/Gain
                 </div>
               </th>
 
               <th class="py-3">
-                <div
-                  class="text-right xl:text-xs text-xl uppercase font-medium"
-                >
+                <div class="text-right text-sm uppercase font-medium">
                   Price
                 </div>
               </th>
 
               <th class="py-3">
-                <div
-                  class="text-right xl:text-xs text-xl uppercase font-medium"
-                >
-                  Fee
-                </div>
+                <div class="text-right text-sm uppercase font-medium">Fee</div>
               </th>
 
               <th
@@ -500,11 +490,7 @@
                     : "pr-3"
                 }`}
               >
-                <div
-                  class="text-right xl:text-xs text-xl uppercase font-medium"
-                >
-                  Time
-                </div>
+                <div class="text-right text-sm uppercase font-medium">Time</div>
               </th>
 
               {#if listSupported
@@ -532,7 +518,7 @@
                 <tr>
                   <td {colspan}>
                     <div
-                      class="flex justify-center items-center h-full py-3 px-3 xl:text-lg text-xl text-gray-400"
+                      class="flex justify-center items-center h-full py-3 px-3 text-base text-gray-400"
                     >
                       Empty
                     </div>

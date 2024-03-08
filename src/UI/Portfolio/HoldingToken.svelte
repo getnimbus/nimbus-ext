@@ -296,8 +296,6 @@
       })
       .filter((item) => Number(item?.amount) !== 0)
       .sort((a, b) => b.amount - a.amount);
-    console.log("HELLO: ", test);
-    console.log("HI: ", selectedTokenDetail);
 
     return (data?.breakdown || [])
       .map((item) => {
@@ -1764,7 +1762,7 @@
 
               {#if isShowReport && selectedItemIndex === index}
                 <div
-                  class="relative w-5 cursor-pointer"
+                  class="relative cursor-pointer"
                   on:click={() => (isShowReportTable = true)}
                   on:mouseover={() => {
                     selectedItemIndex = index;

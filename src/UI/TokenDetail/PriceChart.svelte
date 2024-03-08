@@ -950,7 +950,7 @@
 </script>
 
 <div class="flex flex-col gap-4">
-  <div class="flex justify-between gap-6">
+  <div class="flex md:flex-row flex-col justify-between gap-6">
     {#if !symbol.includes("USD") && symbol !== "DAI" && $typeWallet !== "MOVE"}
       <div class="flex items-center">
         <AnimateSharedLayout>

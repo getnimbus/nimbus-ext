@@ -168,10 +168,10 @@
   <div class="flex flex-col justify-between gap-6">
     <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
       <OverviewCard title={"Position Value"}>
-        <div class="xl:text-3xl text-5xl flex">
+        <div class="text-3xl flex">
           <TooltipNumber number={data?.current_value} type="value" />
         </div>
-        <div class="xl:text-lg text-3xl flex">
+        <div class="text-lg flex">
           {tokens.length}
           {tokens.length > 1 ? "NFTs" : "NFT"}
         </div>
@@ -184,7 +184,7 @@
       >
         <div class="flex items-end gap-1">
           <div
-            class={`xl:text-3xl text-5xl ${
+            class={`text-3xl ${
               profitAndLoss !== 0
                 ? profitAndLoss >= 0
                   ? "text-[#00A878]"
@@ -199,7 +199,7 @@
           </span>
         </div>
         <div
-          class={`xl:text-lg text-3xl flex ${
+          class={`text-lg flex ${
             profitAndLossPercent !== 0
               ? profitAndLossPercent >= 0
                 ? "text-[#00A878]"
@@ -230,13 +230,13 @@
         tooltipText="Learn more"
         link="https://docs.getnimbus.io/metrics/average_cost/"
       >
-        <div class="xl:text-3xl text-5xl flex items-end gap-1">
+        <div class="text-3xl flex items-end gap-1">
           <TooltipNumber number={totalNativeTokenPrice} type="balance" />
           <span class="text-xl text-gray-500">
             {data?.nativeToken?.symbol || "-"}
           </span>
         </div>
-        <div class="xl:text-lg text-3xl flex">
+        <div class="text-lg flex">
           <TooltipNumber number={totalCost} type="value" />
         </div>
       </OverviewCard>
@@ -251,7 +251,7 @@
           ? `https://magiceden.io/ordinals/marketplace/${selectedNftCollectionId}`
           : ""}
       >
-        <div class="xl:text-3xl text-5xl flex items-end gap-1">
+        <div class="text-3xl flex items-end gap-1">
           <TooltipNumber
             number={Number(data?.floorPrice || 0)}
             type="balance"
@@ -260,7 +260,7 @@
             {data?.nativeToken?.symbol || "-"}
           </span>
         </div>
-        <div class="xl:text-lg text-3xl flex">
+        <div class="text-lg flex">
           <TooltipNumber
             number={Number(data?.floorPrice || 0) * (marketPriceNFT || 0)}
             type="value"
@@ -276,7 +276,7 @@
     }`}
   >
     <div class="flex justify-between items-center">
-      <div class="xl:text-2xl text-4xl font-medium">List NFT</div>
+      <div class="text-2xl font-medium">List NFT</div>
       <div class="flex items-center gap-2">
         <AnimateSharedLayout>
           <div
@@ -284,7 +284,7 @@
             on:click|stopPropagation={() => (selectedTypeDisplay = "grid")}
           >
             <div
-              class={`relative z-20 xl:w-[18px] xl:h-[18px] w-[32px] h-[32px] ${
+              class={`relative z-20 w-[18px] h-[18px] ${
                 selectedTypeDisplay === "grid" && "text-white"
               }`}
             >
@@ -331,7 +331,7 @@
             on:click|stopPropagation={() => (selectedTypeDisplay = "table")}
           >
             <div
-              class={`relative z-20 xl:w-[18px] xl:h-[18px] w-[32px] h-[32px] ${
+              class={`relative z-20 w-[18px] h-[18px] ${
                 selectedTypeDisplay === "table" && "text-white"
               }`}
             >
@@ -377,7 +377,7 @@
       </div>
     {:else if !$queryNftHolding.isFetching && tokens.length === 0}
       <div
-        class="min-h-[320px] flex justify-center items-center col-span-4 xl:text-lg text-xl text-gray-400"
+        class="min-h-[320px] flex justify-center items-center col-span-4 text-base text-gray-400"
       >
         Empty
       </div>
@@ -406,25 +406,19 @@
                   <th
                     class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8 w-[220px]"
                   >
-                    <div
-                      class="text-left xl:text-xs text-xl uppercase font-medium"
-                    >
+                    <div class="text-left text-sm uppercase font-medium">
                       Name
                     </div>
                   </th>
 
                   <th class="py-3">
-                    <div
-                      class="text-right xl:text-xs text-xl uppercase font-medium"
-                    >
+                    <div class="text-right text-sm uppercase font-medium">
                       Cost
                     </div>
                   </th>
 
                   <th class="py-3 pr-3 rounded-tr-[10px]">
-                    <div
-                      class="text-right xl:text-xs text-xl uppercase font-medium"
-                    >
+                    <div class="text-right text-sm uppercase font-medium">
                       <TooltipTitle
                         tooltipText="Price NFTs now - Price NFTs at time you spent"
                       >

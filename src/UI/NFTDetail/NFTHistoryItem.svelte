@@ -22,7 +22,7 @@
         : "bg-white group-hover:bg-gray-100"
     }`}
   >
-    <div class="xl:text-sm text-2xl font-medium flex justify-start">
+    <div class="text-sm font-medium flex justify-start">
       {data?.tokenId}
     </div>
   </td>
@@ -32,9 +32,7 @@
       $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
-    <div
-      class="xl:text-sm text-2xl text_00000099 font-medium flex justify-end gap-1"
-    >
+    <div class="text-sm text_00000099 font-medium flex justify-end gap-1">
       <TooltipNumber type="amount" number={Number(data?.price)} />{data?.chain} |
       <TooltipNumber type="value" number={Number(data?.priceUst)} />
     </div>
@@ -45,7 +43,7 @@
       $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
-    <div class="xl:text-sm text-2xl text_00000099 font-medium flex justify-end">
+    <div class="text-sm text_00000099 font-medium flex justify-end">
       <div
         class="w-max px-2 py-1 text_27326F font-normal bg-[#6AC7F533] rounded-[5px] capitalize"
       >
@@ -61,7 +59,7 @@
       $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
-    <div class="xl:text-sm text-2xl text_00000099 font-medium text-right">
+    <div class="text-sm text_00000099 font-medium text-right">
       {withinLast24Hours < 24
         ? dayjs(data?.timestamp).fromNow()
         : dayjs(data?.timestamp).format("YYYY-MM-DD")}

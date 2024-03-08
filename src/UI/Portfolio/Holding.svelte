@@ -651,8 +651,8 @@
       {#if selectedType === "nft"}
         {#if $typeWallet !== "CEX"}
           <div class="flex flex-col gap-4">
-            <div class="flex items-center justify-end gap-2">
-              <div class="xl:text-sm text-2xl font-regular text-gray-400">
+            <div class="flex items-center xl:justify-end justify-start gap-2">
+              <div class="xl:block hidden text-sm font-regular text-gray-400">
                 Hide NFT Collections less than
               </div>
               <Select
