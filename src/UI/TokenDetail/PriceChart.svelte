@@ -218,7 +218,21 @@
         }&period=1d&searchWidth=600`
       );
       const formatRes = response?.coins[`${params}`]?.prices.map((item) => {
-        return [item.timestamp * 1000, item.price];
+        return [Number(item.timestamp) * 1000, Number(item.price)];
+      });
+      return formatRes || [];
+    } else if (chain === "SUI" || $typeWallet === "MOVE") {
+      const from =
+        time === "ALL"
+          ? dayjs("01.01.2008").valueOf()
+          : dayjs().subtract(time, "day").valueOf();
+      const to = dayjs().valueOf();
+
+      const response = await nimbus.get(
+        `/token/${contractAddress}/chart?chain=SUI&from=${from}&to=${to}`
+      );
+      const formatRes = response?.data?.map((item) => {
+        return [Number(item.timestamp), Number(item.price)];
       });
       return formatRes || [];
     } else {
@@ -270,7 +284,7 @@
     staleTime: Infinity,
     retry: false,
     enabled:
-      Boolean(contractAddress || symbol || cgId || chain) &&
+      Boolean(contractAddress || symbol || cgId || chain || time) &&
       selectedTypeChart === "line",
   });
 
@@ -927,6 +941,12 @@
   }
 
   $: theme = $isDarkMode ? "dark" : "white";
+
+  $: {
+    if (symbol.includes("USD") || symbol === "DAI" || $typeWallet === "MOVE") {
+      selectedTypeChart = "line";
+    }
+  }
 </script>
 
 <div class="flex flex-col gap-4">
@@ -1009,6 +1029,7 @@
       </div>
     {/if}
   </div>
+
   {#if $queryTokenPrice.isFetching}
     <div class="flex items-center justify-center h-[475px]">
       <Loading />
@@ -1031,6 +1052,7 @@
             />
           </div>
         {/if}
+
         {#if selectedTypeChart === "line"}
           {#if $queryTokenPrice.isError || (dataPriceChart && dataPriceChart.length === 0)}
             <div
