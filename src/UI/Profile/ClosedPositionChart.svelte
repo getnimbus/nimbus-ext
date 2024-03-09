@@ -388,7 +388,7 @@
           {/if}
           {#if closedHoldingPosition && closedHoldingPosition.length === 0}
             <div
-              class="h-full flex justify-center items-center xl:text-base text-lg"
+              class="h-full w-full flex items-center justify-center px-4 text-center"
             >
               There are no closed holding position in the last 30 day
             </div>

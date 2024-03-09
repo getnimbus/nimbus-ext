@@ -96,7 +96,7 @@
   {:else}
     <div class="flex flex-col gap-3 p-6">
       {#if netWorth !== 0}
-        <div class="xl:text-base text-xl">
+        <div>
           Your Portfolio is value at
           <span class="font-medium">
             ${formatBalance(netWorth)}
@@ -110,7 +110,7 @@
           {/each} and other assets.
         </div>
         {#if closedHoldingPosition.length !== 0 && closedHoldingPosition[0]?.profit?.realizedProfit > 0}
-          <div class="xl:text-base text-xl">
+          <div>
             The best trading is
             <span class="font-medium">
               {closedHoldingPosition[0]?.name}
@@ -123,7 +123,7 @@
           </div>
         {/if}
       {:else}
-        <div class="xl:text-base text-xl">
+        <div>
           Your Portfolio is value at
           <span class="font-medium">
             ${formatBalance(netWorth)}
