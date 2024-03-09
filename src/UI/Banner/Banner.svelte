@@ -11,9 +11,9 @@
   style="z-index: 10;"
 >
   <div class="max-w-[2000px] m-auto w-[90%] isolate">
-    <div class="flex flex-wrap items-center gap-x-4 xl:gap-y-2 gap-y-3">
+    <div class="marquee flex flex-wrap items-center gap-x-4 xl:gap-y-2 gap-y-3">
       <div
-        class="xl:text-sm text-2xl xl:leading-6 leading-8 flex xl:flex-row flex-col xl:gap-0 gap-2 xl:items-center items-start"
+        class="marquee-1 xl:text-sm text-2xl xl:leading-6 leading-8 flex xl:flex-row flex-col xl:gap-0 gap-2 xl:items-center items-start"
       >
         <div class="flex items-center">
           <strong class="font-semibold flex items-center gap-1"
@@ -72,4 +72,53 @@
   </div>
 </div>
 
-<style></style>
+<style>
+  .marquee {
+    height: 50px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .marquee-1 {
+    position: absolute;
+    height: 50px;
+
+    -moz-transform: translateX(100%);
+    -webkit-transform: translateX(100%);
+    transform: translateX(100%);
+    -moz-animation: scroll-left 2s linear infinite;
+    -webkit-animation: scroll-left 2s linear infinite;
+    animation: scroll-left 20s linear infinite;
+  }
+
+  @-moz-keyframes scroll-left {
+    0% {
+      -moz-transform: translateX(100%);
+    }
+    100% {
+      -moz-transform: translateX(-100%);
+    }
+  }
+
+  @-webkit-keyframes scroll-left {
+    0% {
+      -webkit-transform: translateX(100%);
+    }
+    100% {
+      -webkit-transform: translateX(-100%);
+    }
+  }
+
+  @keyframes scroll-left {
+    0% {
+      -moz-transform: translateX(100%);
+      -webkit-transform: translateX(100%);
+      transform: translateX(100%);
+    }
+    100% {
+      -moz-transform: translateX(-100%);
+      -webkit-transform: translateX(-100%);
+      transform: translateX(-100%);
+    }
+  }
+</style>
