@@ -308,7 +308,7 @@
     class="max-w-[2000px] m-auto xl:w-[90%] w-[90%] py-8 flex flex-col gap-10"
   >
     <div class="flex flex-col justify-center gap-2">
-      <div class="xl:text-5xl text-7xl font-medium">My Profile</div>
+      <div class="font-medium text-5xl">My Profile</div>
       <div class="xl:text-xl text-3xl">
         One place that aggregates all your personal information
       </div>
@@ -440,7 +440,9 @@
           <div class="grid xl:grid-cols-4 grid-cols-2 gap-6">
             <Summary {selectedAddress} />
 
-            <div class="col-span-2 p-5 rounded-xl border border_0000001a">
+            <div
+              class="xl:col-span-2 col-span-2 p-5 rounded-xl border border_0000001a"
+            >
               {#if selectProfileNFT && Object.keys(selectProfileNFT).length !== 0}
                 <div class="h-full flex gap-3">
                   <div

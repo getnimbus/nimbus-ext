@@ -88,7 +88,7 @@
   }
 </script>
 
-<div class="col-span-2 border border_0000001a rounded-xl">
+<div class="xl:col-span-2 col-span-4 border border_0000001a rounded-xl">
   {#if $queryTokenHolding.isFetching}
     <div class="w-full h-full flex justify-center items-center p-6">
       <Loading />
