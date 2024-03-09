@@ -24,7 +24,6 @@
   import RiskReturnChart from "../AnalyticChart/RiskReturnChart.svelte";
   import CorrelationsMatrix from "./CorrelationsMatrix.svelte";
   import ClosedHoldingToken from "./ClosedHoldingToken.svelte";
-  import Personality from "./Personality.svelte";
 
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -61,13 +60,13 @@
   <span slot="body">
     <div class="max-w-[2000px] m-auto -mt-32 xl:w-[90%] w-[90%]">
       <SyncData let:address let:enabledFetchAllData>
-        <div class="analytic_container rounded-[20px] xl:p-8 p-6 space-y-4">
+        <div class="analytic_container rounded-[20px] xl:p-8 p-4 space-y-4">
           <div class="flex items-center justify-end gap-1">
-            <div class="mr-1 xl:text-base text-2xl">Timeframe</div>
+            <div class="xl:block hidden mr-1 text-base">Timeframe</div>
             <AnimateSharedLayout>
               {#each timeFrame as type}
                 <div
-                  class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
+                  class="relative cursor-pointer text-base font-medium py-1 px-3 rounded-[100px] transition-all"
                   on:click={() => {
                     if (
                       isShowSoon &&
@@ -119,20 +118,18 @@
 
             <section class="overflow-hidden">
               <div
-                class={`mx-auto max-w-c-1390 px-6 py-7 rounded-[20px] bg-gradient-to-t flex justify-between gap-10 ${
+                class={`mx-auto max-w-c-1390 px-6 py-7 rounded-[20px] bg-gradient-to-t flex md:flex-row flex-col justify-between md:gap-10 gap-6 ${
                   $isDarkMode
                     ? "from-[#0f0f0f] to-[#222222]"
                     : "from-[#F8F9FF] to-[#DEE7FF]"
                 }`}
               >
-                <div class="text-2xl xl:text-xl font-medium">
+                <div class="text-xl font-medium">
                   Minimize risk & maximize return by rebalance your portfolio 🚀
                 </div>
-                <div class="xl:w-[164px] w-[284px]">
+                <div class="xl:w-[164px] md:w-[324px] w-max">
                   {#if isShowSoon && $user && Object.keys($user).length === 0}
-                    <Button disabled>
-                      <div class="xl:text-base text-2xl">Get suggestion</div>
-                    </Button>
+                    <Button disabled>Get suggestion</Button>
                   {:else}
                     <Button
                       on:click={() => {
@@ -142,7 +139,7 @@
                         mixpanel.track("user_compare");
                       }}
                     >
-                      <div class="xl:text-base text-2xl">Get suggestion</div>
+                      Get suggestion
                     </Button>
                   {/if}
                 </div>
@@ -201,8 +198,6 @@
               isSync={true}
               {enabledFetchAllData}
             />
-
-            <!-- <Personality /> -->
           </div>
         </div>
       </SyncData>

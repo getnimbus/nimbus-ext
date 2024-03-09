@@ -974,7 +974,7 @@
               <div class="h-full">
                 {#if isEmptyDataPie}
                   <div
-                    class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-9 backdrop-blur-md xl:text-xs text-lg rounded-[20px] ${
+                    class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-8 backdrop-blur-md xl:text-xs text-lg rounded-[20px] ${
                       $isDarkMode ? "bg-black/90" : "bg-white/95"
                     }`}
                   >
@@ -1039,8 +1039,10 @@
                       on:click={() => {
                         searchCompare = "";
                         search = "";
-                      }}>Remove</Button
+                      }}
                     >
+                      Remove
+                    </Button>
                   </div>
                 </div>
                 <div class="flex flex-col h-full gap-5 mt-3">
@@ -1052,7 +1054,7 @@
                     <div class="h-full">
                       {#if compareData && Object.keys(compareData).length === 0}
                         <div
-                          class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-9 backdrop-blur-md xl:text-xs text-lg ${
+                          class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-8 backdrop-blur-md xl:text-xs text-lg ${
                             $isDarkMode ? "bg-black/90" : "bg-white/95"
                           }`}
                         >
@@ -1104,7 +1106,7 @@
                         Compare with
                       </div>
                       <div
-                        class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-9 backdrop-blur-md xl:text-xs text-lg rounded-[20px] ${
+                        class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-8 backdrop-blur-md xl:text-xs text-lg rounded-[20px] ${
                           $isDarkMode ? "bg-black/90" : "bg-white/95"
                         }`}
                       >
@@ -1143,7 +1145,7 @@
                                   variant="disabled"
                                 >
                                   <div
-                                    class={`xl:text-base text-2xl ${
+                                    class={`${
                                       $isDarkMode ? "text-gray-400" : ""
                                     }`}
                                   >
@@ -1177,7 +1179,7 @@
                                   value={search}
                                   placeholder={"Search address to compare"}
                                   type="text"
-                                  class={`w-full p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal h-full ${
+                                  class={`w-full p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-base font-normal h-full ${
                                     searchCompare && !$isDarkMode
                                       ? "bg-[#F0F2F7]"
                                       : "bg-transparent"
@@ -1195,16 +1197,10 @@
                                       searchCompare = search;
                                     }}
                                   >
-                                    <div class="text-2xl xl:text-base">
-                                      Compare
-                                    </div>
+                                    Compare
                                   </Button>
                                 {:else}
-                                  <Button disabled>
-                                    <div class="text-2xl xl:text-base">
-                                      Compare
-                                    </div>
-                                  </Button>
+                                  <Button disabled>Compare</Button>
                                 {/if}
                               </div>
                             </div>
@@ -1233,28 +1229,24 @@
           {#if $query.isFetching || searchCompare.length === 0}
             <Button variant="disabled">
               <div class="flex items-center gap-1">
-                <div
-                  class={`xl:text-base text-2xl ${
-                    $isDarkMode ? "text-gray-400" : ""
-                  }`}
-                >
+                <div class={`${$isDarkMode ? "text-gray-400" : ""}`}>
                   Get re-balance action
                 </div>
                 <img
                   src={$isDarkMode ? LeftArrowBlack : LeftArrow}
                   alt=""
-                  class="xl:w-4 xl:h-4 w-6 h-6 transform rotate-180 mt-[2px]"
+                  class="w-4 h-4 transform rotate-180 mt-[2px]"
                 />
               </div>
             </Button>
           {:else}
             <Button on:click={() => (showCompareTable = true)}>
               <div class="flex items-center gap-1">
-                <div class="text-2xl xl:text-base">Get re-balance action</div>
+                <div>Get re-balance action</div>
                 <img
                   src={LeftArrow}
                   alt=""
-                  class="xl:w-4 xl:h-4 w-6 h-6 transform rotate-180 mt-[2px]"
+                  class="w-4 h-4 transform rotate-180 mt-[2px]"
                 />
               </div>
             </Button>
@@ -1279,7 +1271,7 @@
           {#if compareData && Object.keys(compareData).length === 0}
             <div class="h-[433px]">
               <div
-                class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-9 backdrop-blur-md xl:text-xs text-lg rounded-[20px] ${
+                class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-8 backdrop-blur-md xl:text-xs text-lg rounded-[20px] ${
                   $isDarkMode ? "bg-black/90" : "bg-white/95"
                 }`}
               >
@@ -1338,7 +1330,7 @@
           {#if compareData && Object.keys(compareData).length === 0}
             <div class="h-[465px]">
               <div
-                class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-9 backdrop-blur-md xl:text-xs text-lg rounded-[20px] ${
+                class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-8 backdrop-blur-md xl:text-xs text-lg rounded-[20px] ${
                   $isDarkMode ? "bg-black/90" : "bg-white/95"
                 }`}
               >
@@ -1377,7 +1369,7 @@
 
     {#if $selectedPackage === "FREE"}
       <div
-        class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center justify-center gap-3 z-9 backdrop-blur-md ${
+        class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center justify-center gap-3 z-8 backdrop-blur-md ${
           $isDarkMode ? "bg-black/90" : "bg-white/95"
         }`}
       >
@@ -1390,9 +1382,9 @@
           </div>
         </div>
         <div class="mt-2 w-max">
-          <Button variant="premium" on:click={() => navigate("/upgrade")}
-            >Upgrade Plan</Button
-          >
+          <Button variant="premium" on:click={() => navigate("/upgrade")}>
+            Upgrade Plan
+          </Button>
         </div>
       </div>
     {/if}

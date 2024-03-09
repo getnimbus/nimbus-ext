@@ -913,8 +913,8 @@
       <div class="relative xl:w-max w-[200px]">
         {#if $user && Object.keys($user).length !== 0}
           <Button variant="tertiary" on:click={() => (isOpenAddModal = true)}>
-            <img src={Plus} alt="" width="12" height="12" />
-            <div class="text-2xl font-medium text-white xl:text-base">
+            <img src={Plus} alt="" class="w-3 h-3" />
+            <div class="text-white">
               {MultipleLang.content.btn_text}
             </div>
           </Button>
@@ -932,14 +932,9 @@
               <img
                 src={$isDarkMode ? PlusBlack : Plus}
                 alt=""
-                width="12"
-                height="12"
+                class="w-3 h-3"
               />
-              <div
-                class={`text-2xl font-medium xl:text-base ${
-                  $isDarkMode ? "text-gray-400" : "text-white"
-                }`}
-              >
+              <div class={`${$isDarkMode ? "text-gray-400" : "text-white"}`}>
                 {MultipleLang.content.btn_text}
               </div>
             </Button>
@@ -1090,10 +1085,8 @@
                     selectedAddresses = [];
                   }}
                 >
-                  <img src={Plus} alt="" class="w-4 h-4 xl:w-3 xl:h-3" />
-                  <div class="text-2xl font-medium text-white xl:text-base">
-                    Add bundle
-                  </div>
+                  <img src={Plus} alt="" class="w-3 h-3" />
+                  <div class="text-white">Add bundle</div>
                 </Button>
               </div>
             </div>
@@ -1126,20 +1119,18 @@
                         }
                       }}
                     >
-                      <img src={Plus} alt="" class="w-4 h-4 xl:w-3 xl:h-3" />
-                      <div class="text-2xl font-medium text-white xl:text-base">
-                        Add account
-                      </div>
+                      <img src={Plus} alt="" class="w-3 h-3" />
+                      <div class="text-white">Add account</div>
                     </Button>
                   {:else}
                     <Button variant="disabled" disabled>
                       <img
                         src={$isDarkMode ? PlusBlack : Plus}
                         alt=""
-                        class="w-4 h-4 xl:w-3 xl:h-3"
+                        class="w-3 h-3"
                       />
                       <div
-                        class={`text-2xl font-medium xl:text-base ${
+                        class={`${
                           $isDarkMode ? "text-gray-400" : "text-white"
                         }`}
                       >
@@ -1155,10 +1146,8 @@
                     isOpenAddModal = true;
                   }}
                 >
-                  <img src={Plus} alt="" class="w-4 h-4 xl:w-3 xl:h-3" />
-                  <div class="text-2xl font-medium text-white xl:text-base">
-                    Add account
-                  </div>
+                  <img src={Plus} alt="" class="w-3 h-3" />
+                  <div class="text-white">Add account</div>
                 </Button>
               {/if}
               {#if showDisableAddWallet}
@@ -1581,9 +1570,7 @@
               disabled={isLoadingConnectCEX}
               on:click={onSubmitCEX}
             >
-              <div class="text-2xl font-medium text-white xl:text-base">
-                Connect Exchange
-              </div>
+              <div class="text-white">Connect Exchange</div>
             </Button>
           </div>
         </div>

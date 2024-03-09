@@ -257,16 +257,14 @@
 </script>
 
 {#if isLoading}
-  <div
-    class="flex justify-center items-center text-lg text-gray-400 h-[485px] relative"
-  >
+  <div class="flex justify-center items-center text-gray-400 h-[485px]">
     <Loading />
   </div>
 {:else}
   <div>
     {#if isEmpty}
       <div
-        class="flex justify-center items-center text-lg text-gray-400 h-[485px] relative"
+        class="flex justify-center items-center text-base text-gray-400 h-[485px]"
       >
         Empty
       </div>

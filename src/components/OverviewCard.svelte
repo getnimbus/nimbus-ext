@@ -12,12 +12,12 @@
 >
   {#if isTooltip}
     <TooltipTitle {tooltipText} {link} isBigIcon>
-      <div class="text_00000099 xl:text-base text-3xl font-medium">
+      <div class="text_00000099 xl:text-base text-2xl font-medium">
         {title}
       </div>
     </TooltipTitle>
   {:else}
-    <div class="text_00000099 xl:text-base text-3xl font-medium">
+    <div class="text_00000099 xl:text-base text-2xl font-medium">
       {title}
     </div>
   {/if}

@@ -176,19 +176,17 @@
       isOpenModal = false;
     }}
   >
-    <div class="flex flex-col gap-4">
+    <div class="flex flex-col gap-4 xl:mt-0 mt-4">
       <div class="flex flex-col">
-        <div class="xl:title-3 title-1 font-semibold">
-          Let's us know your email.
-        </div>
-        <div class="xl:text-sm text-2xl text-gray-500">
+        <div class="title-3 font-semibold">Let's us know your email.</div>
+        <div class="text-sm text-gray-500">
           Add your email to get updates from us and receive exclusive benefits
           in the future.
         </div>
       </div>
       <form
         on:submit|preventDefault={onSubmit}
-        class="flex flex-col xl:gap-3 gap-10"
+        class="flex flex-col xl:gap-3 gap-6"
       >
         <div class="flex flex-col gap-1">
           <div class="flex flex-col gap-1">
@@ -198,7 +196,7 @@
               }`}
             >
               <div
-                class={`xl:text-base text-2xl text-[#666666] font-medium ${
+                class={`xl:text-base text-lg text-[#666666] font-medium ${
                   $isDarkMode ? "text-gray-400" : "text-[#666666]"
                 }`}
               >
@@ -210,7 +208,7 @@
                 name="email"
                 placeholder="Your email"
                 value=""
-                class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal ${
+                class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-base font-normal ${
                   email && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
                 } ${
                   $isDarkMode
@@ -223,8 +221,8 @@
             </div>
           </div>
         </div>
-        <div class="flex justify-end lg:gap-2 gap-6">
-          <div class="lg:w-[120px] w-full">
+        <div class="flex justify-end gap-2">
+          <div class="w-[120px]">
             <Button
               variant="secondary"
               on:click={() => {
@@ -242,12 +240,14 @@
               Cancel
             </Button>
           </div>
-          <div class="lg:w-[120px] w-full">
+          <div class="w-[120px]">
             <Button
               type="submit"
               isLoading={isLoadingSendMail}
-              disabled={isLoadingSendMail}>Submit</Button
+              disabled={isLoadingSendMail}
             >
+              <div class="text-white">Submit</div>
+            </Button>
           </div>
         </div>
       </form>

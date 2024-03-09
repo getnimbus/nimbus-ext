@@ -11,11 +11,9 @@
   style="z-index: 10;"
 >
   <div class="max-w-[2000px] m-auto w-[90%] isolate">
-    <div class="marquee flex flex-wrap items-center gap-x-4 xl:gap-y-2 gap-y-3">
-      <div
-        class="marquee-1 xl:text-sm text-2xl xl:leading-6 leading-8 flex xl:flex-row flex-col xl:gap-0 gap-2 xl:items-center items-start"
-      >
-        <div class="flex items-center">
+    <div class="marquee flex flex-wrap items-center gap-x-4 xl:gap-y-2 gap-y-1">
+      <div class="marquee-1 xl:text-sm xl:leading-6 flex xl:gap-0 gap-2">
+        <div class="flex items-center tracking-widest whitespace-nowrap">
           <strong class="font-semibold flex items-center gap-1"
             >Swap And Get <img src={goldImg} alt="" class="w-[18px] h-[18px]" />
             GM Points</strong
@@ -29,7 +27,7 @@
           </svg>
         </div>
 
-        <div class="flex flex-wrap items-center gap-1">
+        <div class="flex items-center gap-1 tracking-widest whitespace-nowrap">
           Click <div
             class="rounded-md w-[24px] h-[24px] p-2 flex justify-center items-center bg-[#a6b0c3]"
           >

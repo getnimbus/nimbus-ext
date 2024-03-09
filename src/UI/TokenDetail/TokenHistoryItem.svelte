@@ -41,7 +41,7 @@
         : "bg-white group-hover:bg-gray-100"
     }`}
   >
-    <div class="xl:text-sm text-2xl font-medium flex justify-start">
+    <div class="text-sm font-medium flex justify-start">
       {#if data?.to_token_address?.toLowerCase() === contractAddress?.toLowerCase()}
         <div class="flex items-center text-[#00A878]">
           <div>+</div>
@@ -61,7 +61,7 @@
       $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
-    <div class="xl:text-sm text-2xl font-medium flex justify-end">
+    <div class="text-sm font-medium flex justify-end">
       {#if data?.to_token_address?.toLowerCase() === contractAddress?.toLowerCase()}
         <div class="text_00000099">
           <TooltipNumber number={costBuy} type="value" />
@@ -80,7 +80,7 @@
       $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
-    <div class="xl:text-sm text-2xl text_00000099 font-medium flex justify-end">
+    <div class="text-sm text_00000099 font-medium flex justify-end">
       {#if data?.to_token_address?.toLowerCase() === contractAddress?.toLowerCase()}
         {#if data?.to_price < 1}
           $<TooltipNumber number={data?.to_price} type="balance" />
@@ -104,7 +104,7 @@
       $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
-    <div class="xl:text-sm text-2xl text_00000099 font-medium text-right">
+    <div class="text-sm text_00000099 font-medium text-right">
       {#if data?.fee < 1}
         $<TooltipNumber number={data?.fee} type="balance" />
       {:else}
@@ -121,7 +121,7 @@
         : "pr-3"
     } ${$isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"}`}
   >
-    <div class="xl:text-sm text-2xl text_00000099 font-medium text-right">
+    <div class="text-sm text_00000099 font-medium text-right">
       {withinLast24Hours < 24
         ? dayjs(data?.created_at * 1000).fromNow()
         : dayjs(data?.created_at * 1000).format("YYYY-MM-DD")}

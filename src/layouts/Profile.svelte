@@ -308,8 +308,8 @@
     class="max-w-[2000px] m-auto xl:w-[90%] w-[90%] py-8 flex flex-col gap-10"
   >
     <div class="flex flex-col justify-center gap-2">
-      <div class="xl:text-5xl text-7xl font-medium">My Profile</div>
-      <div class="xl:text-xl text-3xl">
+      <div class="text-5xl font-medium">My Profile</div>
+      <div class="xl:text-xl text-2xl">
         One place that aggregates all your personal information
       </div>
     </div>
@@ -346,7 +346,7 @@
       {/if}
 
       <div
-        class="w-full flex xl:flex-row flex-col rounded-xl py-10 px-10 gap-9 border-2 border_0000001a"
+        class="w-full flex xl:flex-row flex-col rounded-xl py-10 xl:px-10 px-4 gap-9 border-2 border_0000001a"
       >
         <div class="xl:w-[20%] w-full flex flex-col gap-5 items-center">
           <div class="flex flex-col gap-3 items-center justify-start">
@@ -436,15 +436,17 @@
           <InviterQr />
         </div>
         <div class="flex-1 flex flex-col gap-4">
-          <div class="xl:text-3xl text-4xl font-medium">My Story</div>
-          <div class="grid xl:grid-cols-4 grid-cols-2 gap-6">
+          <div class="text-3xl font-medium">My Story</div>
+          <div class="grid grid-cols-4 gap-6">
             <Summary {selectedAddress} />
 
-            <div class="col-span-2 p-5 rounded-xl border border_0000001a">
+            <div
+              class="xl:col-span-2 col-span-4 p-5 rounded-xl border border_0000001a"
+            >
               {#if selectProfileNFT && Object.keys(selectProfileNFT).length !== 0}
-                <div class="h-full flex gap-3">
+                <div class="h-full flex sm:flex-row flex-col gap-3">
                   <div
-                    class="w-2/5 flex flex-col gap-2 justify-center items-center"
+                    class="sm:w-2/5 w-full flex flex-col gap-2 justify-center items-center"
                   >
                     <img
                       src={selectProfileNFT?.imageUrl}
@@ -466,12 +468,10 @@
                     class="flex-1 w-full h-full flex flex-col justify-center gap-5"
                   >
                     <div class="flex flex-col">
-                      <div class="font-medium xl:text-lg text-2xl">
+                      <div class="font-medium text-lg">
                         {selectProfileNFT?.name}
                       </div>
-                      <div
-                        class="flex items-center gap-2 xl:text-lg text-2xl font-medium"
-                      >
+                      <div class="flex items-center gap-2 text-lg font-medium">
                         <div>
                           {$typeWallet === "EVM" || $typeWallet === "MOVE"
                             ? "Token ID"
@@ -483,7 +483,7 @@
                       </div>
                     </div>
 
-                    <div class="flex flex-col gap-2 xl:text-base text-xl">
+                    <div class="flex flex-col gap-2">
                       <div class="flex justify-between">
                         <div class="text-gray-400">Rarity</div>
                         <div>{selectProfileNFT?.rarityScore}</div>
@@ -508,9 +508,7 @@
                 <div
                   class="flex flex-col justify-center items-center gap-2 w-full h-full"
                 >
-                  <div class="xl:text-base text-lg">
-                    There is no NFT highlight yet in your profile
-                  </div>
+                  <div>There is no NFT highlight yet in your profile</div>
                   {#if Object.keys($user).length !== 0 && isEdit}
                     <div class="w-max">
                       <Button
@@ -526,14 +524,14 @@
             </div>
 
             <div
-              class="col-span-2 p-6 bg-dark-50 text-white xl:text-base text-xl rounded-xl"
+              class="xl:col-span-2 col-span-4 p-6 bg-dark-50 text-white rounded-xl"
             >
               {#if isEdit}
                 <textarea
                   maxlength="300"
                   rows="5"
                   value={description}
-                  class="bg-dark-50 text-white xl:text-base text-xl rounded-lg border-0 outline-none w-full"
+                  class="bg-dark-50 text-white rounded-lg border-0 outline-none w-full"
                   on:change={({ target: { value } }) => (description = value)}
                 />
               {:else}
@@ -541,7 +539,7 @@
               {/if}
             </div>
 
-            <div class="col-span-2 grid grid-cols-2 gap-6">
+            <div class="xl:col-span-2 col-span-4 grid grid-cols-2 gap-6">
               <SocialMedia
                 {isEdit}
                 typeSocialMedia="Twitter"
@@ -577,7 +575,7 @@
   }}
 >
   <div class="flex flex-col gap-4">
-    <div class="xl:title-3 title-1 font-semibold">
+    <div class="xl:title-3 title-2 font-semibold">
       Select your NFT to set your profile
     </div>
     {#if $queryNftHolding.isFetching}
@@ -588,7 +586,7 @@
       <div>
         {#if $queryNftHolding.isError || dataNftHolding.length === 0}
           <div
-            class="flex justify-center items-center p-[6px] text-lg text-gray-400 h-[465px]"
+            class="flex justify-center items-center p-[6px] text-gray-400 h-[465px]"
           >
             Empty
           </div>

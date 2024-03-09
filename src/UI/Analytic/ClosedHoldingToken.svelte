@@ -434,7 +434,7 @@
 
 <AnalyticSection {address} {isShowSoon}>
   <span slot="title">
-    <div class="flex justify-start text-4xl font-medium xl:text-2xl">
+    <div class="flex justify-start text-3xl font-medium xl:text-2xl">
       Closed Positions
     </div>
   </span>
@@ -442,7 +442,7 @@
   <span slot="overview">
     <div class="relative">
       {#if !$queryTokenHolding.isFetching && !$queryTokenHolding.isError}
-        <div class="mb-4 text-3xl font-medium xl:text-xl px-6 pt-6">
+        <div class="mb-4 text-2xl font-medium xl:text-xl px-6 pt-6">
           Overview
         </div>
       {/if}
@@ -454,7 +454,7 @@
         <div class="h-full relative min-h-[465px]">
           {#if $queryTokenHolding.isError}
             <div
-              class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-9 backdrop-blur-md xl:text-xs text-lg ${
+              class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-8 backdrop-blur-md xl:text-xs text-base ${
                 $isDarkMode ? "bg-black/90" : "bg-white/95"
               }`}
             >
@@ -469,12 +469,12 @@
             <div class="flex flex-col gap-4 px-6 pb-6">
               <div class="grid grid-cols-2">
                 <div class="col-span-1">
-                  <div class="flex justify-start text-2xl xl:text-base">
+                  <div class="flex justify-start text-base">
                     Total realized profit
                   </div>
                 </div>
                 <div
-                  class={`flex items-center justify-end xl:text-base text-2xl col-span-1 ${
+                  class={`flex items-center justify-end text-base col-span-1 ${
                     sumRealizedProfit >= 0 ? "" : "text-[#f25f5d]"
                   }`}
                 >
@@ -488,14 +488,14 @@
               <div class="flex items-center gap-3">
                 {#if worseLose && Object.keys(worseLose).length !== 0}
                   <div class="rounded-[20px] flex-1 bg_fafafbff px-4 pb-3 pt-5">
-                    <div class="xl:text-base text-xl text-[#6E7787FF] relative">
+                    <div class="text-base text-[#6E7787FF] relative">
                       <div
                         class="border border-red-500 absolute -top-1 left-0 w-[40px]"
                       />
                       Worse lose
                     </div>
-                    <div class="text-3xl xl:text-2xl">{worseLose?.symbol}</div>
-                    <div class="text-2xl xl:text-lg text-[#f25f5d]">
+                    <div class="text-2xl">{worseLose?.symbol}</div>
+                    <div class="text-lg text-[#f25f5d]">
                       <TooltipNumber
                         number={Math.abs(worseLose?.realizedProfit)}
                         type="value"
@@ -512,8 +512,8 @@
                       />
                       Biggest win
                     </div>
-                    <div class="text-3xl xl:text-2xl">{biggestWin?.symbol}</div>
-                    <div class="text-2xl xl:text-lg text-[#05a878]">
+                    <div class="text-2xl">{biggestWin?.symbol}</div>
+                    <div class="text-lg text-[#05a878]">
                       <TooltipNumber
                         number={Math.abs(biggestWin?.realizedProfit)}
                         type="value"
@@ -528,11 +528,11 @@
       {/if}
       {#if $typeWallet === "CEX"}
         <div
-          class={`absolute top-0 left-0 rounded-[20px] z-30 w-full h-full flex items-center justify-center z-9 backdrop-blur-md ${
+          class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex items-center justify-center z-8 backdrop-blur-md ${
             $isDarkMode ? "bg-black/90" : "bg-white/95"
           }`}
         >
-          <div class="text-2xl xl:text-lg">Coming soon 🚀</div>
+          <div class="text-lg">Coming soon 🚀</div>
         </div>
       {/if}
     </div>
@@ -548,7 +548,7 @@
         <div class="h-full relative">
           {#if $queryTokenHolding.isError}
             <div
-              class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-9 backdrop-blur-md xl:text-xs text-lg ${
+              class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-8 backdrop-blur-md xl:text-xs text-base ${
                 $isDarkMode ? "bg-black/90" : "bg-white/95"
               }`}
             >
@@ -564,7 +564,7 @@
               <AnimateSharedLayout>
                 {#each typeClosedHoldingTokenChart as type}
                   <div
-                    class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
+                    class="relative cursor-pointer text-base font-medium py-1 px-3 rounded-[100px] transition-all"
                     on:click={() => (selectedTypeChart = type.value)}
                   >
                     <div
@@ -592,7 +592,7 @@
             </div>
             {#if closedHoldingPosition && closedHoldingPosition.length === 0}
               <div
-                class="flex justify-center items-center h-[465px] xl:text-xs text-lg"
+                class="flex justify-center items-center h-[465px] xl:text-xs text-base"
               >
                 Empty
               </div>
@@ -624,11 +624,11 @@
       {/if}
       {#if $typeWallet === "CEX"}
         <div
-          class={`absolute top-0 left-0 rounded-[20px] z-30 w-full h-full flex items-center justify-center z-9 backdrop-blur-md ${
+          class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex items-center justify-center z-8 backdrop-blur-md ${
             $isDarkMode ? "bg-black/90" : "bg-white/95"
           }`}
         >
-          <div class="text-2xl xl:text-lg">Coming soon 🚀</div>
+          <div class="text-lg">Coming soon 🚀</div>
         </div>
       {/if}
     </div>

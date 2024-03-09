@@ -190,17 +190,13 @@
                 );
               }}
             >
-              <img src={Plus} alt="" class="xl:w-3 xl:h-3 w-4 h-4" />
-              <div class="xl:text-base text-2xl font-medium text-white">
-                Add virtual portfolio
-              </div>
+              <img src={Plus} alt="" class="w-3 h-3" />
+              <div class="text-white">Add virtual portfolio</div>
             </Button>
           </div>
         </div>
 
-        <div class="xl:text-5xl text-7xl font-medium text-white">
-          Virtual Portfolio
-        </div>
+        <div class="text-5xl font-medium text-white">Virtual Portfolio</div>
       </div>
       <div class="flex xl:flex-row flex-col justify-between gap-6">
         <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
@@ -310,8 +306,8 @@
     </div>
   </div>
 
-  <div class="max-w-[2000px] m-auto xl:w-[90%] w-[90%] -mt-26">
-    <div class="bg-white rounded-[20px] xl:p-8 p-6 xl:shadow-md">
+  <div class="max-w-[2000px] m-auto xl:w-[90%] w-[90%] xl:-mt-26 -mt-34">
+    <div class="bg-white rounded-[20px] xl:p-8 p-4 xl:shadow-md">
       <div
         class="border border_0000001a rounded-[20px] p-6 flex flex-col gap-4"
       >

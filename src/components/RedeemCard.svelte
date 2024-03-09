@@ -30,9 +30,7 @@
     <div class="flex-1 flex flex-col gap-2">
       <div class="flex items-center gap-2">
         <img src={Crown} alt="" class="w-[26px] h-[26px]" />
-        <div class="text-[#FFB800] xl:text-lg text-xl font-medium uppercase">
-          Premium
-        </div>
+        <div class="text-[#FFB800] text-lg font-medium uppercase">Premium</div>
       </div>
       <div class="text-4xl font-normal">
         {redeemData?.title}
@@ -60,7 +58,7 @@
     <div class="px-[16px]">
       {#if isRedeem}
         <div class="flex items-center gap-[40px]">
-          <div class="w-[100px] xl:text-base text-xl font-normal text-right">
+          <div class="w-[100px] text-base font-normal text-right">
             {redeemData?.remains} left
           </div>
 
@@ -68,13 +66,11 @@
             <Button disabled>
               <div class="flex items-center gap-1">
                 <img src={goldImg} alt="" class="w-[28px] h-[28px]" />
-                <div class="text-white xl:text-lg text-2xl font-medium">
+                <div class="text-white text-lg font-medium">
                   {redeemData?.cost}
                 </div>
               </div>
-              <div class="text-white xl:text-lg text-2xl font-medium">
-                Redeem
-              </div>
+              <div class="text-white">Redeem</div>
             </Button>
           {:else}
             <Button
@@ -85,13 +81,11 @@
             >
               <div class="flex items-center gap-1">
                 <img src={goldImg} alt="" class="w-[28px] h-[28px]" />
-                <div class="text-white xl:text-lg text-2xl font-medium">
+                <div class="text-white text-lg font-medium">
                   {redeemData?.cost}
                 </div>
               </div>
-              <div class="text-white xl:text-lg text-2xl font-medium">
-                Redeem
-              </div>
+              <div class="text-white">Redeem</div>
             </Button>
           {/if}
         </div>
@@ -99,7 +93,7 @@
         <div
           class="flex items-center justify-between p-[12px] bg-[#EEEEEE] rounded-[12px]"
         >
-          <div class="text-[#131313] xl:text-sm text-base">Your gift code</div>
+          <div class="text-[#131313] text-sm">Your gift code</div>
           {#if redeemData?.code}
             <Copy
               address={redeemData?.code || "N/A"}

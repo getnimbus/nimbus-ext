@@ -32,7 +32,7 @@
   <div class="flex flex-col justify-between gap-6 xl:flex-row">
     <div class="flex flex-col justify-between flex-1 gap-6 md:flex-row">
       <OverviewCard title={MultipleLang.networth}>
-        <div class="flex text-5xl xl:text-3xl">
+        <div class="flex text-4xl xl:text-3xl">
           <CountUpNumber
             number={$totalAssets + $totalPositions}
             type="value"
@@ -45,7 +45,7 @@
           }`}
         >
           <div
-            class={`flex xl:text-lg text-3xl font-medium ${
+            class={`flex xl:text-lg text-2xl font-medium ${
               data?.overview?.networthChange < 0
                 ? "text-red-500"
                 : "text-[#00A878]"
@@ -61,12 +61,12 @@
               type="percent"
             />%
           </div>
-          <div class="text-2xl font-medium text_00000066 xl:text-base">24h</div>
+          <div class="text-xl font-medium text_00000066 xl:text-base">24h</div>
         </div>
       </OverviewCard>
 
       <OverviewCard title={"Past Profit"}>
-        <div class="flex xl:text-3xl text-5xl">
+        <div class="flex xl:text-3xl text-4xl">
           {#if $pastProfit.toString().toLowerCase().includes("e-")}
             $<TooltipNumber number={$pastProfit} type="balance" personalValue />
           {:else}
@@ -87,7 +87,7 @@
 
     <div class="flex flex-col justify-between flex-1 gap-6 md:flex-row">
       <OverviewCard title={MultipleLang.realizedProfit}>
-        <div class="xl:text-3xl text-5xl flex">
+        <div class="xl:text-3xl text-4xl flex">
           <span>
             {#if $realizedProfit < 0 && !$isHidePortfolio}
               -
@@ -113,7 +113,7 @@
           }`}
         >
           <div
-            class={`flex xl:text-lg text-3xl font-medium ${
+            class={`flex xl:text-lg text-2xl font-medium ${
               data?.overview?.cumulativeInflow < 0
                 ? "text-red-500"
                 : "text-[#00A878]"
@@ -129,12 +129,12 @@
               type="percent"
             />%
           </div>
-          <div class="text-2xl font-medium text_00000066 xl:text-base">24h</div>
+          <div class="text-xl font-medium text_00000066 xl:text-base">24h</div>
         </div> -->
       </OverviewCard>
 
       <OverviewCard title={MultipleLang.unrealizedProfit}>
-        <div class="xl:text-3xl text-5xl flex">
+        <div class="xl:text-3xl text-4xl flex">
           <span>
             {#if $unrealizedProfit < 0 && !$isHidePortfolio}
               -
@@ -160,7 +160,7 @@
           }`}
         >
           <div
-            class={`flex xl:text-lg text-3xl font-medium ${
+            class={`flex xl:text-lg text-2xl font-medium ${
               data?.overview.postionNetworthChange < 0
                 ? "text-red-500"
                 : "text-[#00A878]"
@@ -176,7 +176,7 @@
               type="percent"
             />%
           </div>
-          <div class="text-2xl font-medium text_00000066 xl:text-base">24h</div>
+          <div class="text-xl font-medium text_00000066 xl:text-base">24h</div>
         </div> -->
       </OverviewCard>
     </div>

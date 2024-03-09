@@ -3,7 +3,9 @@
 </script>
 
 <div class="flex flex-col gap-5 h-[35vh]">
-  <blockquote class="text-lg font-normal leading-8 tracking-tight">
+  <blockquote
+    class="md:text-lg text-sm font-normal md:leading-8 leading-6 tracking-tight"
+  >
     <p>I need this for my portfolio 💪🔥</p>
   </blockquote>
   <figcaption class="flex items-center gap-x-6">

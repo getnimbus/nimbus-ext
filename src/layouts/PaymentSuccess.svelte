@@ -151,8 +151,10 @@
               variant="primary"
               on:click={() => {
                 queryClient.invalidateQueries(["users-me"]);
-              }}>Continue</Button
+              }}
             >
+              Continue
+            </Button>
           </Link>
         {:else}
           <Button isLoading={!status} variant="primary">Continue</Button>

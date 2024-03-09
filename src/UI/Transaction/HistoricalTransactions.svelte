@@ -29,8 +29,9 @@
   };
 </script>
 
+<!-- Desktop view -->
 <div
-  class={`rounded-[10px] border border_0000000d xl:overflow-hidden overflow-x-auto ${
+  class={`xl:block hidden rounded-[10px] border border_0000000d xl:overflow-hidden overflow-x-auto ${
     $isDarkMode ? "bg-[#131313]" : "bg-[#fff]"
   } ${
     (isLoading && pageToken?.length === 0) || (data && data?.length === 0)
@@ -285,6 +286,197 @@
       {/if}
     </tbody>
   </table>
+</div>
+
+<!-- Mobile view -->
+<div
+  class={`xl:hidden block rounded-[10px] p-2 overflow-hidden w-full ${
+    $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
+  }`}
+>
+  {#if isLoading && pageToken === 1}
+    <div class="flex justify-center items-center h-full py-3 px-3">
+      <Loading />
+    </div>
+  {:else}
+    <div>
+      {#if data && data.length === 0}
+        <div class="flex justify-center items-center h-full py-3 px-3">
+          Empty
+        </div>
+      {:else}
+        {#each data || [] as item}
+          <div
+            class="flex flex-col gap-4 border-b-[1px] border_0000000d last:border-none py-4"
+          >
+            <div class="flex justify-between items-start">
+              <div class="text-right text-sm uppercase font-medium">Trx</div>
+              <div class="flex items-start gap-2 text-left w-max">
+                <div class="flex flex-col space-y-2">
+                  <div class="text-sm flex gap-2">
+                    {#if $typeWallet !== "CEX" && $typeWallet !== "BTC"}
+                      <img
+                        src={item?.chain === "SUI"
+                          ? SuiLogo
+                          : chainList.find(
+                              (chain) => chain.value === item?.chain
+                            )?.logo || defaultToken}
+                        alt=""
+                        class="object-contain w-5 h-5 rounded-full"
+                      />
+                    {/if}
+                    {#if $typeWallet === "EVM" || $typeWallet === "MOVE"}
+                      <Copy
+                        address={item?.transaction_hash}
+                        textTooltip="Copy transaction to clipboard"
+                        iconColor={`${$isDarkMode ? "#fff" : "#000"}`}
+                        color={`${$isDarkMode ? "#fff" : "#000"}`}
+                        isShorten={true}
+                        isLink={true}
+                        link={`${
+                          linkExplorer(item?.chain, item?.transaction_hash).trx
+                        }`}
+                      />
+                    {:else}
+                      <Copy
+                        address={item?.transaction_hash}
+                        textTooltip="Copy transaction to clipboard"
+                        iconColor={`${$isDarkMode ? "#fff" : "#000"}`}
+                        color={`${$isDarkMode ? "#fff" : "#000"}`}
+                        isShorten={true}
+                      />
+                    {/if}
+                  </div>
+                  <div class="text-gray-400 text-xs">
+                    {formatTransactionTime(new Date(item?.detail.timestamp))}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex justify-between items-start">
+              <div class="text-right text-sm uppercase font-medium">From</div>
+              {#if item?.detail?.from}
+                <div class="w-max text-sm">
+                  {#if $typeWallet === "EVM" || $typeWallet === "MOVE"}
+                    <Copy
+                      address={item?.detail?.from}
+                      iconColor={`${$isDarkMode ? "#fff" : "#000"}`}
+                      color={`${$isDarkMode ? "#fff" : "#000"}`}
+                      textTooltip="Copy address"
+                      isShorten={true}
+                      isLink={true}
+                      link={`${
+                        linkExplorer(item?.chain, item?.detail?.from).address
+                      }`}
+                    />
+                  {:else}
+                    <Copy
+                      address={item?.detail?.from}
+                      textTooltip="Copy address"
+                      iconColor={`${$isDarkMode ? "#fff" : "#000"}`}
+                      color={`${$isDarkMode ? "#fff" : "#000"}`}
+                      isShorten={true}
+                    />
+                  {/if}
+                </div>
+              {:else}
+                <div class="w-max text-sm">-</div>
+              {/if}
+            </div>
+
+            <div class="flex justify-between items-start">
+              <div class="text-right text-sm uppercase font-medium">To</div>
+              {#if item?.detail?.to}
+                <div class="w-max text-sm">
+                  {#if $typeWallet === "EVM" || $typeWallet === "MOVE"}
+                    <Copy
+                      address={item?.detail?.to}
+                      iconColor={`${$isDarkMode ? "#fff" : "#000"}`}
+                      color={`${$isDarkMode ? "#fff" : "#000"}`}
+                      textTooltip="Copy address"
+                      isShorten={true}
+                      isLink={true}
+                      link={`${
+                        linkExplorer(item?.chain, item?.detail?.to).address
+                      }`}
+                    />
+                  {:else}
+                    <Copy
+                      address={item?.detail?.to}
+                      textTooltip="Copy address"
+                      iconColor={`${$isDarkMode ? "#fff" : "#000"}`}
+                      color={`${$isDarkMode ? "#fff" : "#000"}`}
+                      isShorten={true}
+                    />
+                  {/if}
+                </div>
+              {:else}
+                <div class="w-max text-sm">-</div>
+              {/if}
+            </div>
+
+            <div class="flex justify-between items-start">
+              <div class="text-right text-sm uppercase font-medium">Type</div>
+              <div class="flex justify-start font-medium text-sm text_00000099">
+                {#if item?.type}
+                  <div
+                    class="w-max px-2 py-1 text_27326F font-normal bg-[#6AC7F533] rounded-[5px] capitalize"
+                  >
+                    {item?.type}
+                  </div>
+                {/if}
+              </div>
+            </div>
+
+            <div class="flex justify-between items-start">
+              <div class="text-right text-sm uppercase font-medium">Change</div>
+              <div class="flex flex-col items-start gap-2 font-medium text-sm">
+                {#if item.changes && item.changes.length !== 0}
+                  {#each item.changes as change}
+                    <div class="flex items-center gap-2">
+                      <img
+                        src={change?.logo || defaultToken}
+                        alt=""
+                        class="object-contain overflow-hidden rounded-full w-6 h-6"
+                      />
+                      <div
+                        class={`flex gap-1 ${
+                          change?.total < 0 ? "text_00000099" : "text-[#00A878]"
+                        }`}
+                      >
+                        <div class="flex gap-1">
+                          <div class="flex">
+                            {change?.total < 0 ? "-" : "+"}<TooltipNumber
+                              number={Math.abs(change?.total)}
+                              type="balance"
+                            />
+                          </div>
+                          <div>
+                            {change?.symbol || change?.name || "⎯"}
+                          </div>
+                        </div>
+                        <div class="flex w-max">
+                          (<TooltipNumber
+                            number={Math.abs(
+                              change?.total * change?.price?.price
+                            )}
+                            type="value"
+                          />)
+                        </div>
+                      </div>
+                    </div>
+                  {/each}
+                {:else}
+                  <div class="w-max text-sm">-</div>
+                {/if}
+              </div>
+            </div>
+          </div>
+        {/each}
+      {/if}
+    </div>
+  {/if}
 </div>
 
 {#if pageToken && pageToken.length !== 0}

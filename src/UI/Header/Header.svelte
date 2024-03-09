@@ -39,6 +39,8 @@
   import Banner from "~/UI/Banner/Banner.svelte";
 
   import Logo from "~/assets/logo-white.svg";
+  import LogoBlack from "~/assets/logo-2.png";
+  import LogoWhite from "~/assets/logo-white.svg";
   import PortfolioIcon from "~/assets/portfolio.svg";
   import MarketIcon from "~/assets/market.svg";
   import WhaleIcon from "~/assets/whale.svg";
@@ -510,14 +512,16 @@
 </svelte:head>
 
 <div
-  class="mobile-header-container py-1 border-b-[1px] border-[#ffffff1a] relative"
+  class="mobile-header-container md:py-1 pt-1 pb-5 border-b-[1px] border-[#ffffff1a] relative"
 >
-  <div class="flex items-center justify-between max-w-[2000px] m-auto w-[90%]">
+  <div
+    class="flex md:flex-row flex-col md:items-center items-start justify-between max-w-[2000px] m-auto w-[90%]"
+  >
     <Link to="/">
       <img
         src={Logo}
         alt="logo"
-        class="-ml-6 xl:w-[177px] w-[220px] xl:h-[60px] h-[100px]"
+        class="-ml-6 xl:w-[177px] w-[200px] xl:h-[60px] h-[80px]"
         on:click={() => {
           if ($user && Object.keys($user)?.length === 0) {
             user.update((n) => (n = {}));
@@ -680,10 +684,10 @@
       </Link> -->
     </div>
 
-    <div class="flex items-center justify-end gap-6 xl:gap-3">
+    <div class="flex items-center justify-end gap-6 xl:gap-3 md:w-max w-full">
       <!-- Search -->
       <div
-        class={`px-4 xl:w-[220px] w-[400px] flex items-center gap-1 rounded-[1000px] cursor-pointer ${
+        class={`px-4 xl:w-[220px] md:w-[400px] w-full flex items-center gap-1 rounded-[1000px] cursor-pointer ${
           $isDarkMode ? "bg-[#212121]" : "bg-[#525B8C]"
         }`}
       >
@@ -693,7 +697,7 @@
             showPopoverSearch = true;
             search = "";
           }}
-          class={`flex-1 xl:py-2 py-3 rounded-r-[1000px] text-[#ffffff80] xl:text-sm text-2xl ${
+          class={`flex-1 xl:py-2 py-3 rounded-r-[1000px] text-[#ffffff80] xl:text-sm text-xl ${
             $isDarkMode ? "bg-[#212121]" : "bg-[#525B8C]"
           }`}
         >
@@ -782,10 +786,10 @@
       <img
         src={Logo}
         alt=""
-        class="-ml-6 xl:w-[177px] w-[220px] xl:h-[60px] h-[100px]"
+        class="-ml-6 xl:w-[177px] w-[200px] xl:h-[60px] h-[80px]"
       />
       <div
-        class="-mr-1 text-6xl text-white"
+        class="-mr-1 text-5xl text-white"
         on:click={() => {
           isShowHeaderMobile.update((n) => (n = false));
         }}
@@ -794,11 +798,11 @@
       </div>
     </div>
 
-    <div class="flex flex-col gap-4 justify-between h-full">
-      <div class="flex flex-col gap-8">
+    <div class="flex flex-col gap-3 justify-between h-full">
+      <div class="flex flex-col gap-6">
         {#if $user && Object.keys($user).length !== 0}
           <div class="flex justify-between items-center px-4 text-white">
-            <div class="text-3xl">
+            <div class="text-2xl">
               GM 👋, {displayName
                 ? displayName
                 : shorterAddress(
@@ -808,7 +812,7 @@
           </div>
         {/if}
 
-        <div class="flex flex-col gap-1">
+        <div class="flex flex-col gap-3">
           {#if $user && Object.keys($user).length !== 0}
             <div
               on:click={() => {
@@ -819,7 +823,7 @@
             >
               <Link to="upgrade">
                 <div
-                  class={`flex items-center gap-3 text-white px-5 py-6 
+                  class={`flex items-center gap-3 text-white px-5 py-3
             ${
               $isDarkMode
                 ? navActive === "upgrade"
@@ -834,8 +838,8 @@
                   <div class="flex items-center gap-2">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      width="40"
-                      height="40"
+                      width="25"
+                      height="25"
                       viewBox="0 0 32 32"
                     >
                       <path
@@ -843,7 +847,7 @@
                         d="M21 24H11a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2a2 2 0 0 0-2-2zm0 4H11v-2h10zm7.707-13.707l-12-12a1 1 0 0 0-1.414 0l-12 12A1 1 0 0 0 4 16h5v4a2.002 2.002 0 0 0 2 2h10a2.003 2.003 0 0 0 2-2v-4h5a1 1 0 0 0 .707-1.707zM21 14v6H11v-6H6.414L16 4.414L25.586 14z"
                       />
                     </svg>
-                    <span class="text-3xl font-medium ml-1">Upgrade</span>
+                    <span class="text-2xl font-medium ml-1">Upgrade</span>
                     <svg
                       width="26"
                       height="26"
@@ -872,7 +876,7 @@
             >
               <Link to={`profile?id=${userID}`}>
                 <div
-                  class={`flex items-center gap-3 text-white px-5 py-6 
+                  class={`flex items-center gap-3 text-white px-5 py-3 
             ${
               $isDarkMode
                 ? navActive === "profile"
@@ -885,8 +889,8 @@
           `}
                 >
                   <svg
-                    width="35"
-                    height="35"
+                    width="30"
+                    height="30"
                     viewBox="0 0 24 24"
                     xmlns="http://www.w3.org/2000/svg"
                   >
@@ -897,7 +901,7 @@
                       clip-rule="evenodd"
                     />
                   </svg>
-                  <span class="text-3xl font-medium">My Profile</span>
+                  <span class="text-2xl font-medium">My Profile</span>
                 </div>
               </Link>
             </div>
@@ -911,7 +915,7 @@
           >
             <Link to="whales">
               <div
-                class={`flex items-center gap-3 text-white px-5 py-6 
+                class={`flex items-center gap-3 text-white px-5 py-3
             ${
               $isDarkMode
                 ? navActive === "whales"
@@ -923,8 +927,8 @@
             }
           `}
               >
-                <img src={WhaleIcon} alt="" width="40" height="40" />
-                <span class="text-3xl font-medium">
+                <img src={WhaleIcon} alt="" width="30" height="30" />
+                <span class="text-2xl font-medium">
                   {MultipleLang.whales}
                 </span>
               </div>
@@ -939,7 +943,7 @@
           >
             <Link to="news">
               <div
-                class={`flex items-center gap-3 text-white px-5 py-6 
+                class={`flex items-center gap-3 text-white px-5 py-3 
             ${
               $isDarkMode
                 ? navActive === "news"
@@ -951,8 +955,8 @@
             }
           `}
               >
-                <img src={NewsIcon} alt="" width="40" height="40" />
-                <span class="text-3xl font-medium">
+                <img src={NewsIcon} alt="" width="30" height="30" />
+                <span class="text-2xl font-medium">
                   {MultipleLang.news}
                 </span>
               </div>
@@ -969,7 +973,7 @@
             >
               <Link to="invitation">
                 <div
-                  class={`flex items-center gap-3 text-white px-5 py-6 
+                  class={`flex items-center gap-3 text-white px-5 py-3 
             ${
               $isDarkMode
                 ? navActive === "invitation"
@@ -983,15 +987,15 @@
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    width="40"
-                    height="40"
+                    width="30"
+                    height="30"
                     viewBox="0 0 24 24"
                     ><path
                       fill="currentColor"
                       d="M19 17v2H7v-2s0-4 6-4s6 4 6 4m-3-9a3 3 0 1 0-3 3a3 3 0 0 0 3-3m3.2 5.06A5.6 5.6 0 0 1 21 17v2h3v-2s0-3.45-4.8-3.94M18 5a2.91 2.91 0 0 0-.89.14a5 5 0 0 1 0 5.72A2.91 2.91 0 0 0 18 11a3 3 0 0 0 0-6M8 10H5V7H3v3H0v2h3v3h2v-3h3Z"
                     /></svg
                   >
-                  <span class="text-3xl font-medium">Invite</span>
+                  <span class="text-2xl font-medium">Invite</span>
                 </div>
               </Link>
             </div>
@@ -1005,10 +1009,10 @@
             <a
               href="https://nimbus.featurebase.app/"
               target="_blank"
-              class="flex items-center gap-3 text-white px-5 py-6 opacity-70"
+              class="flex items-center gap-3 text-white px-5 py-3 opacity-70"
             >
-              <img src={Chat} alt="" width="40" height="40" />
-              <span class="text-3xl font-medium">Feedback</span>
+              <img src={Chat} alt="" width="30" height="30" />
+              <span class="text-2xl font-medium">Feedback</span>
             </a>
           </div>
 
@@ -1021,7 +1025,7 @@
             >
               <Link to="daily-checkin">
                 <div
-                  class={`flex items-center gap-3 text-white px-5 py-6 
+                  class={`flex items-center gap-3 text-white px-5 py-3 
               ${
                 $isDarkMode
                   ? navActive === "daily-checkin"
@@ -1034,8 +1038,8 @@
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    width="40"
-                    height="40"
+                    width="30"
+                    height="30"
                     viewBox="0 0 24 24"
                   >
                     <g
@@ -1049,7 +1053,7 @@
                       <path d="M10 12L8 9.8l.6-1" />
                     </g>
                   </svg>
-                  <span class="text-3xl font-medium">Daily Checkin</span>
+                  <span class="text-2xl font-medium">Daily Checkin</span>
                 </div>
               </Link>
             </div>
@@ -1062,7 +1066,7 @@
             >
               <Link to="settings/?tab=accounts">
                 <div
-                  class={`flex items-center gap-3 text-white px-5 py-6 
+                  class={`flex items-center gap-3 text-white px-5 py-3 
             ${
               $isDarkMode
                 ? navActive === "settings"
@@ -1074,8 +1078,8 @@
             }
           `}
                 >
-                  <img src={SettingsIcon} alt="" width="40" height="40" />
-                  <span class="text-3xl font-medium">Settings</span>
+                  <img src={SettingsIcon} alt="" width="30" height="30" />
+                  <span class="text-2xl font-medium">Settings</span>
                 </div>
               </Link>
             </div>
@@ -1083,13 +1087,14 @@
         </div>
       </div>
 
-      <div class="flex flex-col gap-30 w-full pb-16">
+      <div class="flex flex-col gap-20 w-full pb-16">
         <div class="flex flex-col gap-7 px-4">
           <DarkModeFooter />
+
           <div class="w-max flex flex-col gap-6">
             {#if Object.keys($user).length === 0}
               <div
-                class="text-3xl font-semibold text-white cursor-pointer xl:text-base"
+                class="text-2xl font-semibold text-white cursor-pointer xl:text-base"
                 on:click={() => {
                   isOpenModalSync = true;
                   isShowHeaderMobile.update((n) => (n = false));
@@ -1100,11 +1105,12 @@
             {/if}
           </div>
         </div>
-        <div class="w-full flex justify-center gap-16 text-white">
+
+        <div class="w-full flex justify-center gap-10 text-white">
           <a
             href="https://github.com/getnimbus"
             target="_blank"
-            class="hover:text-[#3b82f6] transition-all w-14 h-14"
+            class="hover:text-[#3b82f6] transition-all w-12 h-12"
           >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
               <path
@@ -1113,10 +1119,11 @@
               />
             </svg>
           </a>
+
           <a
             href="https://twitter.com/get_nimbus"
             target="_blank"
-            class="hover:text-[#3b82f6] transition-all w-13 h-13"
+            class="hover:text-[#3b82f6] transition-all w-11 h-11"
           >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
               <path
@@ -1125,10 +1132,11 @@
               />
             </svg>
           </a>
+
           <a
             href="https://discord.gg/u5b9dTrSTr"
             target="_blank"
-            class="hover:text-[#3b82f6] transition-all w-14 h-14"
+            class="hover:text-[#3b82f6] transition-all w-12 h-12"
           >
             <svg viewBox="0 0 24 24">
               <title>media/discord</title><desc>Created with Sketch.</desc>
@@ -1147,10 +1155,11 @@
               </g>
             </svg>
           </a>
+
           <a
             href="https://t.me/getnimbus"
             target="_blank"
-            class="transition-all w-[52px] h-[52px]"
+            class="transition-all w-[42px] h-[42px]"
           >
             <svg
               fill="#fff"
@@ -1177,15 +1186,14 @@
     isOpenModalSync = false;
   }}
 >
-  <div class="flex flex-col gap-4">
+  <div class="flex flex-col gap-4 xl:mt-0 mt-4">
     <div class="flex flex-col gap-1 items-start">
-      <div class="xl:title-3 title-1 font-semibold">
-        Input your code from desktop
-      </div>
-      <div class="xl:text-sm text-2xl text-gray-500">
+      <div class="title-3 font-semibold">Input your code from desktop</div>
+      <div class="text-sm text-gray-500">
         Investment in crypto more convenience with Nimbus anywhere, anytime
       </div>
     </div>
+
     <form
       on:submit|preventDefault={onSubmitGetCode}
       class="flex flex-col xl:gap-3 gap-10"
@@ -1198,7 +1206,7 @@
           class:input-border-error={errors.code && errors.code.required}
         >
           <div
-            class={`xl:text-base text-2xl font-medium ${
+            class={`xl:text-base text-lg font-medium ${
               $isDarkMode ? "text-gray-400" : "text-[#666666]"
             }`}
           >
@@ -1211,7 +1219,7 @@
             required
             placeholder="Your code"
             value=""
-            class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal ${
+            class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-base font-normal ${
               code && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
             } ${
               $isDarkMode
@@ -1227,8 +1235,8 @@
           </div>
         {/if}
       </div>
-      <div class="flex justify-end lg:gap-2 gap-6">
-        <div class="xl:w-[120px] w-full">
+      <div class="flex justify-end gap-2">
+        <div class="w-[120px]">
           <Button
             variant="secondary"
             on:click={() => {
@@ -1238,12 +1246,14 @@
             Cancel
           </Button>
         </div>
-        <div class="xl:w-[120px] w-full">
+        <div class="w-[120px]">
           <Button
             type="submit"
             isLoading={isLoadingSyncMobile}
-            disabled={isLoadingSyncMobile}>Submit</Button
+            disabled={isLoadingSyncMobile}
           >
+            Submit
+          </Button>
         </div>
       </div>
     </form>
@@ -1251,167 +1261,351 @@
 </AppOverlay>
 
 <!-- Modal search -->
-<AppOverlay
-  clickOutSideToClose
-  isOpen={showPopoverSearch}
-  on:close={() => {
-    search = "";
-    showPopoverSearch = false;
-  }}
->
-  <div class="-mt-6 flex flex-col xl:gap-3 gap-6 text-sm">
-    <div class="flex items-center">
-      <img
-        src={$isDarkMode ? Search : SearchBlack}
-        alt=""
-        class="xl:w-5 xl:h-5 w-9 h-9"
-      />
-      <input
-        on:keyup={({ target: { value } }) => debounceSearch(value)}
-        on:keydown={(event) => {
-          if (
-            search &&
-            search?.length !== 0 &&
-            (event.which == 13 || event.keyCode == 13) &&
-            selectedIndexAddress === -1
-          ) {
-            handleSearchAddress(search);
-            showPopoverSearch = false;
-            search = "";
-          }
-        }}
-        bind:value={search}
-        autofocus={true}
-        placeholder={MultipleLang.search_placeholder}
-        type="text"
-        class={`flex-1 xl:py-2 py-3 xl:text-sm text-2xl border-none focus:outline-none focus:ring-0 ${
-          $isDarkMode ? "bg-[#0f0f0f]" : "bg-[#fff]"
-        }`}
-      />
-    </div>
-    {#if Object.keys($user).length !== 0}
-      <div class="flex flex-col gap-2 mb-2">
+<div class="lg:block hidden">
+  <AppOverlay
+    clickOutSideToClose
+    isOpen={showPopoverSearch}
+    on:close={() => {
+      search = "";
+      showPopoverSearch = false;
+    }}
+  >
+    <div class="-mt-6 flex flex-col xl:gap-3 gap-6 text-sm">
+      <div class="flex items-center">
+        <img
+          src={$isDarkMode ? Search : SearchBlack}
+          alt=""
+          class="xl:w-5 xl:h-5 w-9 h-9"
+        />
+        <input
+          on:keyup={({ target: { value } }) => debounceSearch(value)}
+          on:keydown={(event) => {
+            if (
+              search &&
+              search?.length !== 0 &&
+              (event.which == 13 || event.keyCode == 13) &&
+              selectedIndexAddress === -1
+            ) {
+              handleSearchAddress(search);
+              showPopoverSearch = false;
+              search = "";
+            }
+          }}
+          bind:value={search}
+          autofocus={true}
+          placeholder={MultipleLang.search_placeholder}
+          type="text"
+          class={`flex-1 xl:py-2 py-3 xl:text-sm text-xl border-none focus:outline-none focus:ring-0 ${
+            $isDarkMode ? "bg-[#0f0f0f]" : "bg-[#fff]"
+          }`}
+        />
+      </div>
+      {#if Object.keys($user).length !== 0}
+        <div class="flex flex-col gap-2 mb-2">
+          <div
+            class={`xl:text-xs text-base ${
+              $isDarkMode ? "text-gray-200" : "text-gray-400"
+            }`}
+          >
+            List addresses
+          </div>
+          <div
+            class="xl:max-h-[310px] xl:h-[310px] max-h-[380px] h-[380px] w-full flex flex-col gap-2"
+            style="overflow-y: auto;"
+            bind:this={listAddressElement}
+          >
+            {#each searchListAddressResult as item, index}
+              <div
+                id={item.value}
+                class={`address-item relative xl:text-sm text-xl flex items-center gap-3 cursor-pointer p-2 rounded-md ${
+                  $isDarkMode ? "hover:bg-[#343434]" : "hover:bg-[#eff0f4]"
+                }`}
+                class:selected={index === selectedIndexAddress}
+                on:click={() => {
+                  if (selectedIndexAddress !== -1) {
+                    handleSearchAddress(item.value);
+                    showPopoverSearch = false;
+                  }
+                }}
+              >
+                <img
+                  src={item.logo}
+                  alt=""
+                  class={`w-6 h-6 ${
+                    item.type !== "BUNDLE" ? "rounded-full" : ""
+                  }`}
+                />
+                <div class="flex-1 flex justify-between items-center">
+                  <div class="hover:underline">{item.label}</div>
+                  <div
+                    class={`xl:text-sm text-base xl:flex hidden items-center gap-2 ${
+                      $isDarkMode ? "text-gray-300" : "text-gray-500"
+                    }`}
+                  >
+                    {#if index === selectedIndexAddress}
+                      <div class="text-[#a6b0c3]">Select</div>
+                      <div
+                        class="rounded-md w-[24px] h-[24px] p-2 flex justify-center items-center bg-[#a6b0c3] text-white text-sm"
+                      >
+                        ↵
+                      </div>
+                    {:else}
+                      {shorterAddress(item.value)}
+                    {/if}
+                  </div>
+                  <div
+                    class={`xl:text-sm text-base xl:hidden block ${
+                      $isDarkMode ? "text-gray-300" : "text-gray-500"
+                    }`}
+                  >
+                    {shorterAddress(item.value)}
+                  </div>
+                </div>
+              </div>
+            {/each}
+          </div>
+        </div>
+      {/if}
+      <div class="flex flex-col gap-2">
         <div
-          class={`xl:text-xs text-sm ${
+          class={`xl:text-xs text-base ${
             $isDarkMode ? "text-gray-200" : "text-gray-400"
           }`}
         >
-          List addresses
+          Recent searches
         </div>
-        <div
-          class="xl:max-h-[310px] xl:h-[310px] max-h-[380px] h-[380px] w-full flex flex-col gap-2"
-          style="overflow-y: auto;"
-          bind:this={listAddressElement}
-        >
-          {#each searchListAddressResult as item, index}
-            <div
-              id={item.value}
-              class={`address-item relative xl:text-sm text-xl flex items-center gap-3 cursor-pointer p-2 rounded-md ${
-                $isDarkMode ? "hover:bg-[#343434]" : "hover:bg-[#eff0f4]"
-              }`}
-              class:selected={index === selectedIndexAddress}
-              on:click={() => {
-                if (selectedIndexAddress !== -1) {
-                  handleSearchAddress(item.value);
+        {#if suggestList && suggestList?.length !== 0}
+          <div class="flex flex-col gap-2">
+            {#each suggestList as suggest}
+              <div
+                class="xl:text-sm text-xl cursor-pointer py-1 w-max"
+                on:click={() => {
+                  handleSearchAddress(suggest);
                   showPopoverSearch = false;
-                }
-              }}
-            >
-              <img
-                src={item.logo}
-                alt=""
-                class={`w-6 h-6 ${
-                  item.type !== "BUNDLE" ? "rounded-full" : ""
-                }`}
-              />
-              <div class="flex-1 flex justify-between items-center">
-                <div class="hover:underline">{item.label}</div>
-                <div
-                  class={`xl:text-sm text-base xl:flex hidden items-center gap-2 ${
-                    $isDarkMode ? "text-gray-300" : "text-gray-500"
-                  }`}
-                >
-                  {#if index === selectedIndexAddress}
-                    <div class="text-[#a6b0c3]">Select</div>
-                    <div
-                      class="rounded-md w-[24px] h-[24px] p-2 flex justify-center items-center bg-[#a6b0c3] text-white text-sm"
-                    >
-                      ↵
-                    </div>
-                  {:else}
-                    {shorterAddress(item.value)}
-                  {/if}
-                </div>
-                <div
-                  class={`xl:text-sm text-base xl:hidden block ${
-                    $isDarkMode ? "text-gray-300" : "text-gray-500"
-                  }`}
-                >
-                  {shorterAddress(item.value)}
-                </div>
+                }}
+              >
+                {suggest && suggest?.length > 9
+                  ? shorterAddress(suggest)
+                  : suggest}
               </div>
-            </div>
-          {/each}
-        </div>
-      </div>
-    {/if}
-    <div class="flex flex-col gap-2">
-      <div
-        class={`xl:text-xs text-sm ${
-          $isDarkMode ? "text-gray-200" : "text-gray-400"
-        }`}
-      >
-        Recent searches
-      </div>
-      <div class="flex flex-col gap-2">
-        {#each suggestList as suggest}
-          <div
-            class="xl:text-sm text-xl cursor-pointer py-1 w-max"
-            on:click={() => {
-              handleSearchAddress(suggest);
-              showPopoverSearch = false;
-            }}
-          >
-            {suggest && suggest?.length > 9 ? shorterAddress(suggest) : suggest}
+            {/each}
           </div>
-        {/each}
+        {:else}
+          <div class="xl:text-sm text-xl">Empty</div>
+        {/if}
+      </div>
+      <div
+        class="border-t-[1px] pt-4 border-gray-200 xl:flex hidden justify-between"
+      >
+        <div class="flex items-center gap-1">
+          <div
+            class="rounded-md w-[24px] h-[24px] p-2 flex justify-center items-center bg-[#a6b0c3] text-white text-sm"
+          >
+            ↑
+          </div>
+          <div
+            class="rounded-md w-[24px] h-[24px] p-2 flex justify-center items-center bg-[#a6b0c3] text-white text-sm"
+          >
+            ↓
+          </div>
+          <div class="text-sm text-gray-500">To Navigate</div>
+        </div>
+        <div class="flex items-center gap-1">
+          <div
+            class="rounded-md p-1 flex justify-center items-center bg-[#a6b0c3] text-white text-xs"
+          >
+            ESC
+          </div>
+          <div class="text-sm text-gray-500">To Cancel</div>
+        </div>
+        <div class="flex items-center gap-1">
+          <div
+            class="rounded-md w-[24px] h-[24px] p-2 flex justify-center items-center bg-[#a6b0c3] text-white text-sm"
+          >
+            ↵
+          </div>
+          <div class="text-sm text-gray-500">To Select</div>
+        </div>
       </div>
     </div>
-    <div class="border-t-[1px] pt-4 border-gray-200 flex justify-between">
-      <div class="flex items-center gap-1">
+  </AppOverlay>
+</div>
+
+<!-- Search Mobile -->
+<div class="lg:hidden block">
+  <div
+    class={`fixed inset-0 w-full search-mobile search-mobile-container ${
+      showPopoverSearch
+        ? "opacity-100 transform translate-x-[0px]"
+        : "opacity-0 transform translate-x-[-100vw]"
+    }`}
+  >
+    <div
+      class="max-w-[100vw] m-auto w-[90%] h-full flex flex-col gap-8 relative"
+    >
+      <div class="flex items-center justify-between py-3 border-b-[1px]">
+        <img
+          src={$isDarkMode ? LogoWhite : LogoBlack}
+          alt=""
+          class="-ml-6 xl:w-[177px] w-[170px] xl:h-[60px] h-[80px]"
+        />
         <div
-          class="rounded-md w-[24px] h-[24px] p-2 flex justify-center items-center bg-[#a6b0c3] text-white text-sm"
+          class="-mr-1 text-5xl"
+          on:click={() => {
+            showPopoverSearch = false;
+          }}
         >
-          ↑
+          &times;
         </div>
-        <div
-          class="rounded-md w-[24px] h-[24px] p-2 flex justify-center items-center bg-[#a6b0c3] text-white text-sm"
-        >
-          ↓
-        </div>
-        <div class="text-sm text-gray-500">To Navigate</div>
       </div>
-      <div class="flex items-center gap-1">
-        <div
-          class="rounded-md p-1 flex justify-center items-center bg-[#a6b0c3] text-white text-xs"
-        >
-          ESC
+
+      <div class="-mt-6 flex flex-col xl:gap-3 gap-6 text-sm">
+        <div class="flex items-center">
+          <img
+            src={$isDarkMode ? Search : SearchBlack}
+            alt=""
+            class="xl:w-5 xl:h-5 w-9 h-9"
+          />
+          <input
+            on:keyup={({ target: { value } }) => debounceSearch(value)}
+            on:keydown={(event) => {
+              if (
+                search &&
+                search?.length !== 0 &&
+                (event.which == 13 || event.keyCode == 13) &&
+                selectedIndexAddress === -1
+              ) {
+                handleSearchAddress(search);
+                showPopoverSearch = false;
+                search = "";
+              }
+            }}
+            bind:value={search}
+            autofocus={true}
+            placeholder={MultipleLang.search_placeholder}
+            type="text"
+            class={`flex-1 xl:py-2 py-3 xl:text-sm text-xl border-none focus:outline-none focus:ring-0 ${
+              $isDarkMode ? "bg-[#0f0f0f]" : "bg-[#fff]"
+            }`}
+          />
         </div>
-        <div class="text-sm text-gray-500">To Cancel</div>
-      </div>
-      <div class="flex items-center gap-1">
-        <div
-          class="rounded-md w-[24px] h-[24px] p-2 flex justify-center items-center bg-[#a6b0c3] text-white text-sm"
-        >
-          ↵
+        {#if Object.keys($user).length !== 0}
+          <div class="flex flex-col gap-2 mb-2">
+            <div
+              class={`xl:text-xs text-base ${
+                $isDarkMode ? "text-gray-200" : "text-gray-400"
+              }`}
+            >
+              List addresses
+            </div>
+            <div
+              class="xl:max-h-[310px] xl:h-[310px] max-h-[380px] h-[380px] w-full flex flex-col gap-2"
+              style="overflow-y: auto;"
+              bind:this={listAddressElement}
+            >
+              {#each searchListAddressResult as item, index}
+                <div
+                  id={item.value}
+                  class={`address-item relative xl:text-sm text-xl flex items-center gap-3 cursor-pointer p-2 rounded-md ${
+                    $isDarkMode ? "hover:bg-[#343434]" : "hover:bg-[#eff0f4]"
+                  }`}
+                  class:selected={index === selectedIndexAddress}
+                  on:click={() => {
+                    if (selectedIndexAddress !== -1) {
+                      handleSearchAddress(item.value);
+                      showPopoverSearch = false;
+                    }
+                  }}
+                >
+                  <img
+                    src={item.logo}
+                    alt=""
+                    class={`w-6 h-6 ${
+                      item.type !== "BUNDLE" ? "rounded-full" : ""
+                    }`}
+                  />
+                  <div class="flex-1 flex justify-between items-center">
+                    <div class="hover:underline">{item.label}</div>
+                    <div
+                      class={`xl:text-sm text-base xl:flex hidden items-center gap-2 ${
+                        $isDarkMode ? "text-gray-300" : "text-gray-500"
+                      }`}
+                    >
+                      {#if index === selectedIndexAddress}
+                        <div class="text-[#a6b0c3]">Select</div>
+                        <div
+                          class="rounded-md w-[24px] h-[24px] p-2 flex justify-center items-center bg-[#a6b0c3] text-white text-sm"
+                        >
+                          ↵
+                        </div>
+                      {:else}
+                        {shorterAddress(item.value)}
+                      {/if}
+                    </div>
+                    <div
+                      class={`xl:text-sm text-base xl:hidden block ${
+                        $isDarkMode ? "text-gray-300" : "text-gray-500"
+                      }`}
+                    >
+                      {shorterAddress(item.value)}
+                    </div>
+                  </div>
+                </div>
+              {/each}
+            </div>
+          </div>
+        {/if}
+        <div class="flex flex-col gap-2">
+          <div
+            class={`xl:text-xs text-base ${
+              $isDarkMode ? "text-gray-200" : "text-gray-400"
+            }`}
+          >
+            Recent searches
+          </div>
+          {#if suggestList && suggestList?.length !== 0}
+            <div class="flex flex-col gap-2">
+              {#each suggestList as suggest}
+                <div
+                  class="xl:text-sm text-xl cursor-pointer py-1 w-max"
+                  on:click={() => {
+                    handleSearchAddress(suggest);
+                    showPopoverSearch = false;
+                  }}
+                >
+                  {suggest && suggest?.length > 9
+                    ? shorterAddress(suggest)
+                    : suggest}
+                </div>
+              {/each}
+            </div>
+          {:else}
+            <div class="xl:text-sm text-xl">Empty</div>
+          {/if}
         </div>
-        <div class="text-sm text-gray-500">To Select</div>
       </div>
     </div>
   </div>
-</AppOverlay>
+</div>
 
 <style windi:preflights:global windi:safelist:global>
+  .search-mobile {
+    height: 100vh;
+    z-index: 2147483649;
+
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 250ms;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+
+    --tw-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1),
+      0 8px 10px -6px rgb(0 0 0 / 0.1);
+    --tw-shadow-colored: 0 20px 25px -5px var(--tw-shadow-color),
+      0 8px 10px -6px var(--tw-shadow-color);
+    box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),
+      var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+  }
+
   .mobile {
     height: 100vh;
     z-index: 2147483649;
@@ -1456,6 +1650,9 @@
     .mobile {
       height: 100dvh;
     }
+    .search-mobile {
+      height: 100dvh;
+    }
   }
 
   .input-border-error {
@@ -1474,6 +1671,13 @@
   }
   :global(body.dark) .mobile-header-container {
     background: #080808;
+  }
+
+  :global(body) .search-mobile-container {
+    background: white;
+  }
+  :global(body.dark) .search-mobile-container {
+    background: black;
   }
 
   :global(body) .select_content {

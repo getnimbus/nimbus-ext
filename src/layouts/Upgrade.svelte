@@ -294,11 +294,9 @@
         </div>
 
         <div class="flex flex-col gap-3 items-center mt-5">
-          <div class="my-3 xl:text-base text-2xl">
-            Choose your prefer payment method
-          </div>
+          <div class="my-3 text-base">Choose your prefer payment method</div>
           {#each listChain as chain}
-            <div class="w-62 xl:text-lg text-xl">
+            <div class="w-62 text-base">
               <Button
                 variant="secondary"
                 isLoading={isLoadingBuy}
@@ -306,16 +304,13 @@
                   handleBuy(chain.value);
                 }}
               >
-                <img
-                  src={chain.logo}
-                  class="xl:w-5 xl:h-5 w-7 h-7 rounded-full"
-                />
+                <img src={chain.logo} class="w-5 h-5 rounded-full" />
                 {chain.label}</Button
               >
             </div>
           {/each}
           <div
-            class="text-[#1E96FC] cursor-pointer flex items-center gap-2 mt-2 xl:text-base text-2xl"
+            class="text-[#1E96FC] cursor-pointer flex items-center gap-2 mt-2 text-base"
             on:click={() => {
               selectedPackage = undefined;
             }}

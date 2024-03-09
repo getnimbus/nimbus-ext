@@ -759,11 +759,11 @@
       $isDarkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
     }`}
   >
-    <div class="text-4xl font-medium xl:text-2xl">
+    <div class="text-3xl font-medium xl:text-2xl">
       {MultipleLang.token_allocation}
     </div>
 
-    <div class="flex justify-end w-full gap-5 xl:mt-0 mt-4">
+    <div class="flex md:flex-row flex-col justify-end w-full gap-5">
       <div
         class="relative flex items-center justify-between w-full gap-3 overflow-hidden"
         bind:this={container}
@@ -799,7 +799,7 @@
           <AnimateSharedLayout>
             {#each typeListCategory as type}
               <div
-                class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
+                class="relative cursor-pointer text-base font-medium py-1 px-3 rounded-[100px] transition-all"
                 on:click={() => (selectedType = type.value)}
               >
                 <div
@@ -851,7 +851,7 @@
           </div>
         {/if}
       </div>
-      <div class="flex-1">
+      <div class="flex-1 w-max">
         {#if $user && Object.keys($user).length !== 0}
           <div
             on:click={() => {
@@ -861,13 +861,13 @@
                 )}&address=${encodeURIComponent($wallet)}`
               );
             }}
-            class="mt-1 text-2xl font-medium text-blue-500 cursor-pointer xl:text-base hover:underline w-max"
+            class="mt-1 font-medium text-blue-500 cursor-pointer xl:text-base text-lg hover:underline w-max"
           >
             Custom category
           </div>
         {:else}
           <div
-            class="mt-1 text-2xl font-medium text-gray-500 cursor-pointer xl:text-base hover:underline w-max"
+            class="mt-1 font-medium text-gray-500 cursor-pointer xl:text-base text-lg hover:underline w-max"
           >
             Custom category
           </div>
@@ -884,7 +884,7 @@
         <div class="h-full">
           {#if $queryHoldingToken.isError || ($queryHoldingToken.data && $queryHoldingToken.data?.length === 0)}
             <div
-              class="flex justify-center items-center h-full text-lg text-gray-400 h-[475px]"
+              class="flex justify-center items-center h-full text-base text-gray-400 h-[475px]"
             >
               Empty
             </div>
@@ -920,19 +920,21 @@
       $isDarkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
     }`}
   >
-    <div class="flex justify-between items-start mb-6">
+    <div
+      class="flex md:flex-row flex-col md:gap-0 gap-3 justify-between items-start mb-6"
+    >
       <div class="flex justify-start">
         {#if listSupported.slice(2).includes($typeWallet)}
           <TooltipTitle
             tooltipText="The performance data can only get after 7 days you connect to Nimbus"
             type="warning"
           >
-            <div class="pl-4 text-4xl font-medium xl:text-2xl">
+            <div class="md:pl-4 text-3xl font-medium xl:text-2xl">
               {MultipleLang.performance}
             </div>
           </TooltipTitle>
         {:else}
-          <div class="pl-4 text-4xl font-medium xl:text-2xl">
+          <div class="md:pl-4 text-3xl font-medium xl:text-2xl">
             {MultipleLang.performance}
           </div>
         {/if}
@@ -942,7 +944,7 @@
           <AnimateSharedLayout>
             {#each performanceTypeChartPortfolio as type}
               <div
-                class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
+                class="relative cursor-pointer text-base font-medium py-1 px-3 rounded-[100px] transition-all"
                 on:click={() => (selectedTypeChart = type.value)}
               >
                 <div
@@ -970,6 +972,7 @@
         </div>
       {/if}
     </div>
+
     {#if $queryCompare.isFetching}
       <div class="flex items-center justify-center h-[485px]">
         <LoadingPremium />
@@ -978,7 +981,7 @@
       <div class="h-full">
         {#if $queryCompare.isError || ($queryCompare.data?.performance && $queryCompare.data?.performance.length === 0)}
           <div
-            class="flex justify-center items-center h-full xl:text-xs text-lg text-center h-[465px]"
+            class="flex justify-center items-center h-full xl:text-xs text-base text-center h-[465px]"
           >
             {#if $typeWallet === "CEX" && $queryCompare.isError}
               Not enough data. CEX integration can only get data from the day
