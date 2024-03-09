@@ -192,7 +192,7 @@
   }`}
 >
   <div
-    class="pl-6 font-medium flex justify-start z-10 w-max xl:text-xl text-2xl"
+    class="pl-6 font-medium flex justify-start z-8 w-max xl:text-xl text-2xl"
   >
     <TooltipTitle
       tooltipText="The chart shows only activities made by this wallet"
@@ -214,7 +214,7 @@
   </div>
   {#if otherGeneration.includes($typeWallet)}
     <div
-      class={`absolute top-0 left-0 rounded-[20px] z-30 w-full h-full flex items-center justify-center z-10 backdrop-blur-md ${
+      class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex items-center justify-center z-8 backdrop-blur-md ${
         darkMode ? "bg-black/90" : "bg-white/95"
       }`}
     >

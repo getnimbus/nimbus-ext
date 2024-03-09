@@ -247,7 +247,7 @@
   }`}
 >
   <div class="flex flex-col gap-1 pl-6">
-    <div class="font-medium flex justify-start z-10 w-max xl:text-xl text-2xl">
+    <div class="font-medium flex justify-start w-max xl:text-xl text-2xl">
       Total gas fee paid
     </div>
     <div class="text-lg font-medium flex">
@@ -269,7 +269,7 @@
 
   {#if otherGeneration.includes($typeWallet)}
     <div
-      class={`absolute top-0 left-0 rounded-[20px] z-30 w-full h-full flex items-center justify-center z-10 backdrop-blur-md ${
+      class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex items-center justify-center z-8 backdrop-blur-md ${
         darkMode ? "bg-black/90" : "bg-white/95"
       }`}
     >

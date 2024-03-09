@@ -60,7 +60,6 @@
   let isShowTooltipName = false;
   let isShowTooltipSymbol = false;
   let selectedHover = "";
-  let showSetTag = false;
   let toastMsg = "";
   let isSuccessToast = false;
   let counter = 3;
@@ -266,7 +265,6 @@
       if (response) {
         handleUpdateTable();
         query = "";
-        showSetTag = false;
         showSuggestListTag = false;
         selectedTokenList = [];
         isAddCustom = false;
@@ -638,12 +636,6 @@
 
   $: filteredListTag = listTag;
 
-  $: {
-    if (selectedTokenList.length === 0) {
-      showSetTag = false;
-    }
-  }
-
   $: searchDataResult = searchValue
     ? formatData.filter(
         (item) =>
@@ -699,20 +691,23 @@
           <Link to="/analytic" class="cusor-pointer">
             <div class="flex items-center gap-1 text-white">
               <img src={LeftArrow} alt="" class="xl:w-5 xl:h-5 w-7 h-7" />
-              <div class="xl:text-sm text-2xl font-medium">Analytics</div>
+              <div class="xl:text-sm text-xl font-medium">Analytics</div>
             </div>
           </Link>
         </div>
         <div class="flex items-center justify-between">
           <div class="flex flex-col gap-3">
             <div class="flex items-center gap-2 text-white">
-              <div class="xl:text-5xl text-7xl font-medium">
-                Custom Token Breakdown
-              </div>
+              <div class="text-5xl font-medium">Custom Token Breakdown</div>
             </div>
             {#if $wallet && $wallet?.length !== 0}
               <div class="text-base">
-                <Copy address={$wallet} iconColor="#fff" color="#fff" />
+                <Copy
+                  address={$wallet}
+                  iconColor="#fff"
+                  color="#fff"
+                  isShorten
+                />
               </div>
             {/if}
           </div>
@@ -730,12 +725,14 @@
           $isDarkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
         }`}
       >
-        <div class="xl:text-2xl text-4xl font-medium">
+        <div class="xl:text-2xl text-3xl font-medium">
           Custom Token Breakdown
         </div>
 
         {#if listCustom.length === 0}
-          <div class="flex justify-between items-center gap-10">
+          <div
+            class="flex md:flex-row flex-col justify-between md:items-center md:gap-10 gap-4"
+          >
             <div class="text-lg flex-1">
               Add your custom token breakdown to keep track of investments by
               your way.
@@ -754,7 +751,7 @@
             </div>
           </div>
         {:else}
-          <div class="flex justify-between gap-6">
+          <div class="flex md:flex-row flex-col justify-between gap-6">
             <div
               class="relative overflow-hidden w-full flex gap-3 justify-between items-center"
               bind:this={container}
@@ -791,7 +788,7 @@
                   {#each listCustom as item (item.category)}
                     <div
                       id={item.category}
-                      class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
+                      class="relative cursor-pointer text-base font-medium py-1 px-3 rounded-[100px] transition-all"
                       on:click={() => {
                         showSuggestListTag = false;
                         query = "";
@@ -853,7 +850,7 @@
             <div class="flex items-center gap-4 w-max">
               {#if selectedCustom && selectedCustom !== null && Object.keys(selectedCustom).length !== 0}
                 <div
-                  class="text-red-500 font-semibold cursor-pointer xl:text-base text-2xl"
+                  class="text-red-500 font-semibold cursor-pointer text-base"
                   on:click={() => {
                     isOpenConfirmDelete = true;
                   }}
@@ -927,7 +924,7 @@
               }`}
             >
               <div
-                class={`xl:text-base text-2xl font-medium ${
+                class={`xl:text-base text-lg font-medium ${
                   $isDarkMode ? "text-gray-400" : "text-[#666666]"
                 }`}
               >
@@ -937,7 +934,7 @@
                 type="text"
                 placeholder="Your category name"
                 required
-                class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal ${
+                class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-base font-normal ${
                   formData.category && !$isDarkMode
                     ? "bg-[#F0F2F7]"
                     : "bg-transparent"
@@ -957,206 +954,190 @@
             </div>
 
             <div class="flex flex-col gap-6">
-              <div class="flex justify-between items-center gap-8">
-                {#if selectedTokenList?.length !== 0}
-                  {#if showSetTag}
-                    <div class="w-[600px]">
-                      <div
-                        class={`flex justify-between gap-1 border bg-white focus:outline-none w-full py-[6px] px-3 rounded-t-lg ${
-                          query && !$isDarkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
-                        } ${
-                          showSuggestListTag ? "rounded-none" : "rounded-b-lg"
-                        }`}
+              {#if selectedTokenList?.length !== 0}
+                <div class="w-full">
+                  <div
+                    class={`flex justify-between gap-1 border bg-white focus:outline-none w-full py-[6px] px-3 rounded-t-lg ${
+                      query && !$isDarkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
+                    } ${showSuggestListTag ? "rounded-none" : "rounded-b-lg"}`}
+                  >
+                    <input
+                      type="text"
+                      placeholder="Your tag name"
+                      class={`flex-1 p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-base font-normal ${
+                        query && !$isDarkMode
+                          ? "bg-[#F0F2F7]"
+                          : "bg-transparent"
+                      } ${
+                        $isDarkMode
+                          ? "text-white"
+                          : "text-[#5E656B] placeholder-[#5E656B]"
+                      }`}
+                      on:focus={() => {
+                        showSuggestListTag = true;
+                      }}
+                      on:keyup={({ target: { value } }) => {
+                        filteredListTag = listTag.filter((tag) =>
+                          tag.toLowerCase().includes(value.toLowerCase())
+                        );
+                      }}
+                      bind:value={query}
+                    />
+
+                    {#if query && !showSuggestListTag}
+                      <button
+                        type="submit"
+                        class="text-sm font-medium w-max text-[#1e96fc] cursor-pointer"
                       >
-                        <input
-                          type="text"
-                          placeholder="Your tag name"
-                          class={`flex-1 p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal ${
-                            query && !$isDarkMode
-                              ? "bg-[#F0F2F7]"
-                              : "bg-transparent"
-                          } ${
-                            $isDarkMode
-                              ? "text-white"
-                              : "text-[#5E656B] placeholder-[#5E656B]"
-                          }`}
-                          on:focus={() => {
-                            showSuggestListTag = true;
-                          }}
-                          on:keyup={({ target: { value } }) => {
-                            filteredListTag = listTag.filter((tag) =>
-                              tag.toLowerCase().includes(value.toLowerCase())
-                            );
-                          }}
-                          bind:value={query}
-                        />
+                        Add Tag
+                      </button>
+                    {/if}
 
-                        {#if query && !showSuggestListTag}
-                          <button
-                            type="submit"
-                            class="text-sm font-medium w-max text-[#1e96fc] cursor-pointer"
-                          >
-                            Add Tag
-                          </button>
-                        {/if}
-
-                        {#if showSuggestListTag}
-                          <button
-                            class="text-sm font-medium w-max text-red-500 cursor-pointer"
-                            on:click={() => {
-                              showSuggestListTag = false;
-                              query = "";
-                              selectedTokenList = [];
-                              filteredListTag = listTag;
-                            }}
-                          >
-                            Cancel
-                          </button>
-                        {/if}
-                      </div>
-
-                      {#if showSuggestListTag}
-                        <div class="relative w-full">
-                          <div
-                            class={`absolute top-0 left-0 flex flex-col gap-1 border-b border-x-[1px] w-full ${
-                              $isDarkMode ? "bg-[#212121]" : "bg-white"
-                            } text-[#5E656B] rounded-b-lg py-2 px-3 z-50`}
-                          >
-                            <div class="xl:text-xs text-xl">
-                              Select an option or create one
-                            </div>
-                            <div class="flex flex-col gap-2">
-                              {#each filteredListTag as item}
-                                <div
-                                  class={`rounded-lg ${
-                                    editTag && editTag === item
-                                      ? $isDarkMode
-                                        ? "bg-[#00000033]"
-                                        : "bg-[#F0F2F7]"
-                                      : ""
-                                  }`}
-                                >
-                                  <div
-                                    class={`xl:text-sm text-2xl px-2 py-1 rounded-lg cursor-pointer flex justify-between ${
-                                      $isDarkMode
-                                        ? "hover:bg-[#00000033]"
-                                        : "hover:bg-[#F0F2F7]"
-                                    }`}
-                                  >
-                                    {#if editTag && editTag === item}
-                                      <div class="flex justify-between w-full">
-                                        <div class="flex-1">
-                                          <input
-                                            type="text"
-                                            placeholder="Your category name"
-                                            class={`bg-transparent p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal w-full ${
-                                              $isDarkMode
-                                                ? "text-white"
-                                                : "text-[#5E656B] placeholder-[#5E656B]"
-                                            }`}
-                                            bind:value={tag}
-                                            on:keyup={({ target: { value } }) =>
-                                              (tag = value)}
-                                          />
-                                        </div>
-                                        <div class="flex items-center gap-2">
-                                          <div
-                                            class="xl:text-sm text-base font-medium w-max text-[#1e96fc] cursor-pointer"
-                                            on:click={() => {
-                                              updatePersonalizeTag(
-                                                $wallet,
-                                                formData.category,
-                                                tag,
-                                                editTag
-                                              );
-                                            }}
-                                          >
-                                            Save
-                                          </div>
-                                          <div
-                                            class="xl:text-sm text-base font-medium w-max text-red-500 cursor-pointer"
-                                            on:click={() => {
-                                              editTag = "";
-                                              tag = "";
-                                            }}
-                                          >
-                                            Cancel
-                                          </div>
-                                        </div>
-                                      </div>
-                                    {:else}
-                                      <div
-                                        class="w-full"
-                                        on:click={() => {
-                                          showSuggestListTag = false;
-                                          query = item;
-                                        }}
-                                      >
-                                        {item}
-                                      </div>
-                                      <div
-                                        class={`flex justify-center items-center px-2 rounded ${
-                                          $isDarkMode
-                                            ? "hover:bg-[#222222]"
-                                            : "hover:bg-gray-200"
-                                        }`}
-                                        on:click={() => {
-                                          editTag = item;
-                                          tag = item;
-                                        }}
-                                      >
-                                        <img src={Edit} alt="" />
-                                      </div>
-                                    {/if}
-                                  </div>
-                                </div>
-                              {/each}
-
-                              {#if filteredListTag.length === 0}
-                                <div
-                                  class="flex items-center gap-2 xl:text-sm text-2xl"
-                                >
-                                  <div
-                                    class="cursor-pointer text-[#1e96fc]"
-                                    on:click={() => {
-                                      listTag = [...listTag, query];
-                                      showSuggestListTag = false;
-                                    }}
-                                  >
-                                    Create
-                                  </div>
-                                  <div
-                                    class={`py-1 px-2 rounded-lg flex-1 ${
-                                      $isDarkMode
-                                        ? "hover:bg-[#00000066]"
-                                        : "hover:bg-[#F0F2F7]"
-                                    }`}
-                                  >
-                                    {query}
-                                  </div>
-                                </div>
-                              {/if}
-                            </div>
-                          </div>
-                        </div>
-                      {/if}
-                    </div>
-                  {:else}
-                    <div class="w-max">
-                      <Button
-                        variant="tertiary"
+                    {#if showSuggestListTag}
+                      <button
+                        class="text-sm font-medium w-max text-red-500 cursor-pointer"
                         on:click={() => {
-                          showSetTag = true;
+                          showSuggestListTag = false;
+                          query = "";
+                          selectedTokenList = [];
+                          filteredListTag = listTag;
                         }}
                       >
-                        <div class="text-white">Set Tag</div>
-                      </Button>
+                        Cancel
+                      </button>
+                    {/if}
+                  </div>
+
+                  {#if showSuggestListTag}
+                    <div class="relative w-full">
+                      <div
+                        class={`absolute top-0 left-0 flex flex-col gap-1 border-b border-x-[1px] w-full text-[#5E656B] rounded-b-lg py-2 px-3 z-50 ${
+                          $isDarkMode ? "bg-[#212121]" : "bg-white"
+                        }`}
+                      >
+                        <div class="xl:text-xs text-sm">
+                          Select an option or create one
+                        </div>
+                        <div class="flex flex-col gap-2">
+                          {#each filteredListTag as item}
+                            <div
+                              class={`rounded-lg ${
+                                editTag && editTag === item
+                                  ? $isDarkMode
+                                    ? "bg-[#00000033]"
+                                    : "bg-[#F0F2F7]"
+                                  : ""
+                              }`}
+                            >
+                              <div
+                                class={`xl:text-sm text-base px-2 py-1 rounded-lg cursor-pointer flex justify-between ${
+                                  $isDarkMode
+                                    ? "hover:bg-[#00000033]"
+                                    : "hover:bg-[#F0F2F7]"
+                                }`}
+                              >
+                                {#if editTag && editTag === item}
+                                  <div class="flex justify-between w-full">
+                                    <div class="flex-1">
+                                      <input
+                                        type="text"
+                                        placeholder="Your category name"
+                                        class={`bg-transparent p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-base font-normal w-full ${
+                                          $isDarkMode
+                                            ? "text-white"
+                                            : "text-[#5E656B] placeholder-[#5E656B]"
+                                        }`}
+                                        bind:value={tag}
+                                        on:keyup={({ target: { value } }) =>
+                                          (tag = value)}
+                                      />
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                      <div
+                                        class="xl:text-sm text-base font-medium w-max text-[#1e96fc] cursor-pointer"
+                                        on:click={() => {
+                                          updatePersonalizeTag(
+                                            $wallet,
+                                            formData.category,
+                                            tag,
+                                            editTag
+                                          );
+                                        }}
+                                      >
+                                        Save
+                                      </div>
+                                      <div
+                                        class="xl:text-sm text-base font-medium w-max text-red-500 cursor-pointer"
+                                        on:click={() => {
+                                          editTag = "";
+                                          tag = "";
+                                        }}
+                                      >
+                                        Cancel
+                                      </div>
+                                    </div>
+                                  </div>
+                                {:else}
+                                  <div
+                                    class="w-full"
+                                    on:click={() => {
+                                      showSuggestListTag = false;
+                                      query = item;
+                                    }}
+                                  >
+                                    {item}
+                                  </div>
+                                  <div
+                                    class={`flex justify-center items-center px-2 rounded ${
+                                      $isDarkMode
+                                        ? "hover:bg-[#222222]"
+                                        : "hover:bg-gray-200"
+                                    }`}
+                                    on:click={() => {
+                                      editTag = item;
+                                      tag = item;
+                                    }}
+                                  >
+                                    <img src={Edit} alt="" />
+                                  </div>
+                                {/if}
+                              </div>
+                            </div>
+                          {/each}
+
+                          {#if filteredListTag.length === 0}
+                            <div
+                              class="flex items-center gap-2 xl:text-sm text-2xl"
+                            >
+                              <div
+                                class="cursor-pointer text-[#1e96fc]"
+                                on:click={() => {
+                                  listTag = [...listTag, query];
+                                  showSuggestListTag = false;
+                                }}
+                              >
+                                Create
+                              </div>
+                              <div
+                                class={`py-1 px-2 rounded-lg flex-1 ${
+                                  $isDarkMode
+                                    ? "hover:bg-[#00000066]"
+                                    : "hover:bg-[#F0F2F7]"
+                                }`}
+                              >
+                                {query}
+                              </div>
+                            </div>
+                          {/if}
+                        </div>
+                      </div>
                     </div>
                   {/if}
-                {:else}
-                  <div class="w-10" />
-                {/if}
-                <div class="w-max">
+                </div>
+              {/if}
+
+              <div class="flex flex-col items-end gap-4">
+                <div class="md:w-max w-full">
                   <div
                     class={`border focus:outline-none w-full py-[6px] px-3 rounded-lg ${
                       searchValue && !$isDarkMode
@@ -1166,9 +1147,9 @@
                   >
                     <input
                       bind:value={searchValue}
-                      placeholder={"Find by token name"}
+                      placeholder="Find by token name"
                       type="text"
-                      class={`w-full p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal ${
+                      class={`w-full p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-base font-normal ${
                         searchValue && !$isDarkMode
                           ? "bg-[#F0F2F7]"
                           : "bg-transparent"
@@ -1180,141 +1161,369 @@
                     />
                   </div>
                 </div>
-              </div>
 
-              <div
-                class={`rounded-[10px] xl:overflow-visible overflow-x-auto h-full ${
-                  $isDarkMode
-                    ? "bg-[#131313]"
-                    : "bg-[#fff] border border_0000000d"
-                }`}
-              >
-                <table class="table-auto xl:w-full w-[1400px] h-full">
-                  <thead
-                    class={isStickyTableToken ? "sticky top-0 z-9" : ""}
-                    bind:this={tableTokenHeader}
-                  >
-                    <tr class="bg_f4f5f8">
-                      <th
-                        class="py-3 w-10 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8"
-                      />
-                      <th
-                        class="py-3 xl:static xl:bg-transparent sticky left-10 z-10 bg_f4f5f8 xl:w-[230px] w-[280px]"
-                      >
-                        <div
-                          class="text-left xl:text-xs text-xl uppercase font-medium"
+                <!-- Desktop view -->
+                <div
+                  class={`xl:block hidden w-full rounded-[10px] xl:overflow-visible overflow-x-auto h-full ${
+                    $isDarkMode
+                      ? "bg-[#131313]"
+                      : "bg-[#fff] border border_0000000d"
+                  }`}
+                >
+                  <table class="table-auto xl:w-full w-[1400px] h-full">
+                    <thead
+                      class={isStickyTableToken ? "sticky top-0 z-9" : ""}
+                      bind:this={tableTokenHeader}
+                    >
+                      <tr class="bg_f4f5f8">
+                        <th
+                          class="py-3 w-10 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8"
+                        />
+                        <th
+                          class="py-3 xl:static xl:bg-transparent sticky left-10 z-10 bg_f4f5f8 xl:w-[230px] w-[280px]"
                         >
-                          {MultipleLang.assets}
-                        </div>
-                      </th>
-                      <th class="py-3">
-                        <div
-                          class="text-right xl:text-xs text-xl uppercase font-medium"
-                        >
-                          {MultipleLang.price}
-                        </div>
-                      </th>
-                      <th class="py-3">
-                        <div
-                          class="text-right xl:text-xs text-xl uppercase font-medium"
-                        >
-                          {MultipleLang.amount}
-                        </div>
-                      </th>
-                      <th class="py-3">
-                        <div
-                          class="text-right xl:text-xs text-xl uppercase font-medium"
-                        >
-                          {MultipleLang.value}
-                        </div>
-                      </th>
-                      <th class="py-3">
-                        <div
-                          class="text-right xl:text-xs text-xl uppercase font-medium"
-                        >
-                          <TooltipTitle
-                            tooltipText="Ratio based on total token holding"
-                          >
-                            Ratio
-                          </TooltipTitle>
-                        </div>
-                      </th>
-                      <th class="py-3 pr-3 rounded-tr-[10px]">
-                        <div
-                          class="text-right xl:text-xs text-xl uppercase font-medium flex items-center justify-end gap-2"
-                        >
-                          Tag
                           <div
-                            on:click={toggleSortOrderTag}
-                            class="cursor-pointer"
+                            class="text-left xl:text-xs text-xl uppercase font-medium"
                           >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              height="1.2em"
-                              viewBox="0 0 320 512"
-                              fill={$isDarkMode ? "#fff" : "#000"}
-                              ><path
-                                d="M41 288h238c21.4 0 32.1 25.9 17 41L177 448c-9.4 9.4-24.6 9.4-33.9 0L24 329c-15.1-15.1-4.4-41 17-41zm255-105L177 64c-9.4-9.4-24.6-9.4-33.9 0L24 183c-15.1 15.1-4.4 41 17 41h238c21.4 0 32.1-25.9 17-41z"
-                              /></svg
+                            {MultipleLang.assets}
+                          </div>
+                        </th>
+                        <th class="py-3">
+                          <div
+                            class="text-right xl:text-xs text-xl uppercase font-medium"
+                          >
+                            {MultipleLang.price}
+                          </div>
+                        </th>
+                        <th class="py-3">
+                          <div
+                            class="text-right xl:text-xs text-xl uppercase font-medium"
+                          >
+                            {MultipleLang.amount}
+                          </div>
+                        </th>
+                        <th class="py-3">
+                          <div
+                            class="text-right xl:text-xs text-xl uppercase font-medium"
+                          >
+                            {MultipleLang.value}
+                          </div>
+                        </th>
+                        <th class="py-3">
+                          <div
+                            class="text-right xl:text-xs text-xl uppercase font-medium"
+                          >
+                            <TooltipTitle
+                              tooltipText="Ratio based on total token holding"
                             >
+                              Ratio
+                            </TooltipTitle>
                           </div>
-                        </div>
-                      </th>
-                    </tr>
-                  </thead>
-                  {#if $queryTokenHolding.isFetching}
-                    <tbody>
-                      <tr>
-                        <td colspan={7}>
+                        </th>
+                        <th class="py-3 pr-3 rounded-tr-[10px]">
                           <div
-                            class="flex justify-center items-center h-full py-3 px-3"
+                            class="text-right xl:text-xs text-xl uppercase font-medium flex items-center justify-end gap-2"
                           >
-                            <Loading />
+                            Tag
+                            <div
+                              on:click={toggleSortOrderTag}
+                              class="cursor-pointer"
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                height="1.2em"
+                                viewBox="0 0 320 512"
+                                fill={$isDarkMode ? "#fff" : "#000"}
+                                ><path
+                                  d="M41 288h238c21.4 0 32.1 25.9 17 41L177 448c-9.4 9.4-24.6 9.4-33.9 0L24 329c-15.1-15.1-4.4-41 17-41zm255-105L177 64c-9.4-9.4-24.6-9.4-33.9 0L24 183c-15.1 15.1-4.4 41 17 41h238c21.4 0 32.1-25.9 17-41z"
+                                /></svg
+                              >
+                            </div>
                           </div>
-                        </td>
+                        </th>
                       </tr>
-                    </tbody>
-                  {:else}
-                    <tbody>
-                      {#if searchDataResult && searchDataResult.length === 0}
+                    </thead>
+                    {#if $queryTokenHolding.isFetching}
+                      <tbody>
                         <tr>
                           <td colspan={7}>
                             <div
-                              class="flex justify-center items-center h-full py-3 px-3 xl:text-lg text-xl text-gray-400"
+                              class="flex justify-center items-center h-full py-3 px-3"
                             >
-                              {MultipleLang.empty}
+                              <Loading />
                             </div>
                           </td>
                         </tr>
-                      {:else}
-                        {#each searchDataResult as data}
-                          <tr class="group transition-all">
-                            <td
-                              class={`py-3 w-10 xl:static xl:bg-transparent sticky left-0 z-9 ${
-                                $isDarkMode
-                                  ? "bg-[#131313] group-hover:bg-[#000]"
-                                  : "bg-white group-hover:bg-gray-100"
-                              }`}
-                            >
-                              <div class="flex justify-center">
-                                <input
-                                  type="checkbox"
-                                  value={data.chain +
-                                    "-" +
-                                    data.contractAddress}
-                                  bind:group={selectedTokenList}
-                                  class="cursor-pointer relative xl:w-4 xl:h-4 w-6 h-6 appearance-none rounded-[0.25rem] border outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white checked:focus:after:bg-transparent dark:border-neutral-600 dark:checked:border-primary dark:checked:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]"
-                                />
+                      </tbody>
+                    {:else}
+                      <tbody>
+                        {#if searchDataResult && searchDataResult.length === 0}
+                          <tr>
+                            <td colspan={7}>
+                              <div
+                                class="flex justify-center items-center h-full py-3 px-3 xl:text-lg text-xl text-gray-400"
+                              >
+                                {MultipleLang.empty}
                               </div>
                             </td>
+                          </tr>
+                        {:else}
+                          {#each searchDataResult as data}
+                            <tr class="group transition-all">
+                              <td
+                                class={`py-3 w-10 xl:static xl:bg-transparent sticky left-0 z-9 ${
+                                  $isDarkMode
+                                    ? "bg-[#131313] group-hover:bg-[#000]"
+                                    : "bg-white group-hover:bg-gray-100"
+                                }`}
+                              >
+                                <div class="flex justify-center">
+                                  <input
+                                    type="checkbox"
+                                    value={data.chain +
+                                      "-" +
+                                      data.contractAddress}
+                                    bind:group={selectedTokenList}
+                                    class="cursor-pointer relative w-4 h-4 appearance-none rounded-[0.25rem] border outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white checked:focus:after:bg-transparent dark:border-neutral-600 dark:checked:border-primary dark:checked:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]"
+                                  />
+                                </div>
+                              </td>
 
-                            <td
-                              class={`py-3 xl:static xl:bg-transparent sticky left-10 z-9 xl:w-[230px] w-[280px] ${
-                                $isDarkMode
-                                  ? "bg-[#131313] group-hover:bg-[#000]"
-                                  : "bg-white group-hover:bg-gray-100"
-                              }`}
-                            >
+                              <td
+                                class={`py-3 xl:static xl:bg-transparent sticky left-10 z-9 xl:w-[230px] w-[280px] ${
+                                  $isDarkMode
+                                    ? "bg-[#131313] group-hover:bg-[#000]"
+                                    : "bg-white group-hover:bg-gray-100"
+                                }`}
+                              >
+                                <div class="text-left flex items-center gap-3">
+                                  <div class="relative">
+                                    <img
+                                      src={data.logo}
+                                      alt=""
+                                      width="30"
+                                      height="30"
+                                      class="rounded-full"
+                                    />
+                                    {#if ($typeWallet === "EVM" || $typeWallet === "BUNDLE") && data?.chain !== "CEX"}
+                                      <div class="absolute -top-2 -right-1">
+                                        <img
+                                          src={detectedChain(data?.chain)?.logo}
+                                          alt=""
+                                          width="15"
+                                          height="15"
+                                          class="rounded-full"
+                                        />
+                                      </div>
+                                    {/if}
+                                  </div>
+                                  <div class="flex flex-col gap-1">
+                                    <div
+                                      class="xl:text-sm text-2xl font-medium relative"
+                                      on:mouseover={() => {
+                                        if (data?.name?.length > 20) {
+                                          selectedHover = data.name;
+                                          isShowTooltipName = true;
+                                        }
+                                      }}
+                                      on:mouseleave={() => {
+                                        if (data?.name?.length > 20) {
+                                          selectedHover = "";
+                                          isShowTooltipName = false;
+                                        }
+                                      }}
+                                    >
+                                      {#if data.name === undefined}
+                                        N/A
+                                      {:else}
+                                        {data?.name?.length > 20
+                                          ? shorterName(data.name, 20)
+                                          : data.name}
+                                      {/if}
+                                      {#if isShowTooltipName && selectedHover === data?.name && data?.name?.length > 20}
+                                        <div
+                                          class="absolute -top-8 left-0"
+                                          style="z-index: 2147483648;"
+                                        >
+                                          <Tooltip text={data.name} />
+                                        </div>
+                                      {/if}
+                                    </div>
+                                    <div
+                                      class="text_00000080 xl:text-xs text-lg font-medium relative"
+                                      on:mouseover={() => {
+                                        if (data?.symbol?.length > 20) {
+                                          selectedHover = data.symbol;
+                                          isShowTooltipSymbol = true;
+                                        }
+                                      }}
+                                      on:mouseleave={() => {
+                                        if (data?.symbol?.length > 20) {
+                                          selectedHover = "";
+                                          isShowTooltipSymbol = false;
+                                        }
+                                      }}
+                                    >
+                                      {#if data.symbol === undefined}
+                                        N/A
+                                      {:else}
+                                        {shorterName(data.symbol, 20)}
+                                      {/if}
+                                      {#if isShowTooltipSymbol && selectedHover === data?.symbol && data?.symbol?.length > 20}
+                                        <div
+                                          class="absolute -top-8 left-0"
+                                          style="z-index: 2147483648;"
+                                        >
+                                          <Tooltip text={data.symbol} />
+                                        </div>
+                                      {/if}
+                                    </div>
+                                  </div>
+                                </div>
+                              </td>
+
+                              <td
+                                class={`py-3 ${
+                                  $isDarkMode
+                                    ? "group-hover:bg-[#000]"
+                                    : "group-hover:bg-gray-100"
+                                }`}
+                              >
+                                <div
+                                  class="xl:text-sm text-2xl text_00000099 font-medium flex justify-end"
+                                >
+                                  $<TooltipNumber
+                                    number={data.market_price}
+                                    type="balance"
+                                  />
+                                </div>
+                              </td>
+
+                              <td
+                                class={`py-3 ${
+                                  $isDarkMode
+                                    ? "group-hover:bg-[#000]"
+                                    : "group-hover:bg-gray-100"
+                                }`}
+                              >
+                                <div
+                                  class="xl:text-sm text-2xl text_00000099 font-medium flex justify-end"
+                                >
+                                  <TooltipNumber
+                                    number={data.amount}
+                                    type="balance"
+                                  />
+                                </div>
+                              </td>
+
+                              <td
+                                class={`py-3 ${
+                                  $isDarkMode
+                                    ? "group-hover:bg-[#000]"
+                                    : "group-hover:bg-gray-100"
+                                }`}
+                              >
+                                <div
+                                  class="xl:text-sm text-2xl text_00000099 font-medium flex justify-end"
+                                >
+                                  <TooltipNumber
+                                    number={data?.amount * data?.market_price}
+                                    type="value"
+                                  />
+                                </div>
+                              </td>
+
+                              <td
+                                class={`py-3 ${
+                                  $isDarkMode
+                                    ? "group-hover:bg-[#000]"
+                                    : "group-hover:bg-gray-100"
+                                }`}
+                              >
+                                <div
+                                  class="flex flex-col gap-1 justify-end items-end"
+                                >
+                                  <div
+                                    class="xl:text-sm text-2xl text_00000099 font-medium flex justify-end"
+                                  >
+                                    <TooltipNumber
+                                      number={((data?.amount *
+                                        data?.market_price) /
+                                        sumTokens) *
+                                        100}
+                                      type="percent"
+                                    />%
+                                  </div>
+                                  <div class="w-3/4 max-w-20">
+                                    <Progressbar
+                                      progress={Number(
+                                        ((data?.amount * data?.market_price) /
+                                          sumTokens) *
+                                          100
+                                      )}
+                                      size="h-1"
+                                    />
+                                  </div>
+                                </div>
+                              </td>
+
+                              <td
+                                class={`pr-3 py-3 ${
+                                  $isDarkMode
+                                    ? "group-hover:bg-[#000]"
+                                    : "group-hover:bg-gray-100"
+                                }`}
+                              >
+                                <div class="flex justify-end">
+                                  <div
+                                    class="bg-[#6AC7F533] text_27326F xl:text-sm text-2xl w-max px-3 py-1 rounded-[5px]"
+                                  >
+                                    {data.tag}
+                                  </div>
+                                </div>
+                              </td>
+                            </tr>
+                          {/each}
+                        {/if}
+                      </tbody>
+                    {/if}
+                  </table>
+                </div>
+
+                <!-- Mobile view -->
+                <div
+                  class={`xl:hidden block rounded-[10px] p-2 w-full ${
+                    $isDarkMode
+                      ? "bg-[#131313]"
+                      : "bg-[#fff] border border_0000000d"
+                  }`}
+                >
+                  {#if $queryTokenHolding.isFetching}
+                    <div
+                      class="flex justify-center items-center h-full py-3 px-3"
+                    >
+                      <Loading />
+                    </div>
+                  {:else}
+                    <div>
+                      {#if searchDataResult && searchDataResult.length === 0}
+                        <div
+                          class="flex justify-center items-center h-full py-3 px-3"
+                        >
+                          {MultipleLang.empty}
+                        </div>
+                      {:else}
+                        {#each searchDataResult as data}
+                          <div
+                            class="flex flex-col gap-4 border-b-[1px] border_0000000d last:border-none py-4"
+                          >
+                            <div class="flex items-center gap-3">
+                              <input
+                                type="checkbox"
+                                value={data.chain + "-" + data.contractAddress}
+                                bind:group={selectedTokenList}
+                                class="cursor-pointer relative w-4 h-4 appearance-none rounded-[0.25rem] border outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white checked:focus:after:bg-transparent dark:border-neutral-600 dark:checked:border-primary dark:checked:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]"
+                              />
                               <div class="text-left flex items-center gap-3">
                                 <div class="relative">
                                   <img
@@ -1336,9 +1545,10 @@
                                     </div>
                                   {/if}
                                 </div>
+
                                 <div class="flex flex-col gap-1">
                                   <div
-                                    class="xl:text-sm text-2xl font-medium relative"
+                                    class="text-sm font-medium relative"
                                     on:mouseover={() => {
                                       if (data?.name?.length > 20) {
                                         selectedHover = data.name;
@@ -1368,8 +1578,9 @@
                                       </div>
                                     {/if}
                                   </div>
+
                                   <div
-                                    class="text_00000080 xl:text-xs text-lg font-medium relative"
+                                    class="text_00000080 text-xs font-medium relative"
                                     on:mouseover={() => {
                                       if (data?.symbol?.length > 20) {
                                         selectedHover = data.symbol;
@@ -1399,71 +1610,71 @@
                                   </div>
                                 </div>
                               </div>
-                            </td>
+                            </div>
 
-                            <td
-                              class={`py-3 ${
-                                $isDarkMode
-                                  ? "group-hover:bg-[#000]"
-                                  : "group-hover:bg-gray-100"
-                              }`}
-                            >
+                            <div class="flex justify-between items-start">
                               <div
-                                class="xl:text-sm text-2xl text_00000099 font-medium flex justify-end"
+                                class="text-right text-sm uppercase font-medium"
+                              >
+                                {MultipleLang.price}
+                              </div>
+                              <div
+                                class="text-sm text_00000099 font-medium flex justify-end"
                               >
                                 $<TooltipNumber
                                   number={data.market_price}
                                   type="balance"
                                 />
                               </div>
-                            </td>
+                            </div>
 
-                            <td
-                              class={`py-3 ${
-                                $isDarkMode
-                                  ? "group-hover:bg-[#000]"
-                                  : "group-hover:bg-gray-100"
-                              }`}
-                            >
+                            <div class="flex justify-between items-start">
                               <div
-                                class="xl:text-sm text-2xl text_00000099 font-medium flex justify-end"
+                                class="text-right text-sm uppercase font-medium"
+                              >
+                                {MultipleLang.amount}
+                              </div>
+                              <div
+                                class="text-sm text_00000099 font-medium flex justify-end"
                               >
                                 <TooltipNumber
                                   number={data.amount}
                                   type="balance"
                                 />
                               </div>
-                            </td>
+                            </div>
 
-                            <td
-                              class={`py-3 ${
-                                $isDarkMode
-                                  ? "group-hover:bg-[#000]"
-                                  : "group-hover:bg-gray-100"
-                              }`}
-                            >
+                            <div class="flex justify-between items-start">
                               <div
-                                class="xl:text-sm text-2xl text_00000099 font-medium flex justify-end"
+                                class="text-right text-sm uppercase font-medium"
+                              >
+                                {MultipleLang.value}
+                              </div>
+                              <div
+                                class="text-sm text_00000099 font-medium flex justify-end"
                               >
                                 <TooltipNumber
                                   number={data?.amount * data?.market_price}
                                   type="value"
                                 />
                               </div>
-                            </td>
+                            </div>
 
-                            <td
-                              class={`py-3 ${
-                                $isDarkMode
-                                  ? "group-hover:bg-[#000]"
-                                  : "group-hover:bg-gray-100"
-                              }`}
-                            >
+                            <div class="flex justify-between items-start">
+                              <div
+                                class="text-right text-sm uppercase font-medium"
+                              >
+                                <TooltipTitle
+                                  tooltipText="Ratio based on total token holding"
+                                >
+                                  Ratio
+                                </TooltipTitle>
+                              </div>
                               <div
                                 class="flex flex-col gap-1 justify-end items-end"
                               >
                                 <div
-                                  class="xl:text-sm text-2xl text_00000099 font-medium flex justify-end"
+                                  class="text-sm text_00000099 font-medium flex justify-end"
                                 >
                                   <TooltipNumber
                                     number={((data?.amount *
@@ -1484,40 +1695,64 @@
                                   />
                                 </div>
                               </div>
-                            </td>
+                            </div>
 
-                            <td
-                              class={`pr-3 py-3 ${
-                                $isDarkMode
-                                  ? "group-hover:bg-[#000]"
-                                  : "group-hover:bg-gray-100"
-                              }`}
-                            >
-                              <div class="flex justify-end">
+                            <div class="flex justify-between items-center">
+                              <div
+                                class="text-right text-sm uppercase font-medium"
+                              >
+                                Tag
+                              </div>
+                              <div
+                                class="text-sm text_00000099 font-medium flex justify-end"
+                              >
                                 <div
-                                  class="bg-[#6AC7F533] text_27326F xl:text-sm text-2xl w-max px-3 py-1 rounded-[5px]"
+                                  class="bg-[#6AC7F533] text_27326F text-sm w-max px-3 py-1 rounded-[5px]"
                                 >
                                   {data.tag}
                                 </div>
                               </div>
-                            </td>
-                          </tr>
+                            </div>
+                          </div>
                         {/each}
                       {/if}
-                    </tbody>
+                    </div>
                   {/if}
-                </table>
+                </div>
               </div>
             </div>
           </form>
         {:else}
-          <TokenHoldingTable
-            {toggleSortOrderTag}
-            isLoadingToken={$queryTokenHolding.isFetching}
-            {searchDataResult}
-            selectedWallet={$wallet}
-            {sumTokens}
-          />
+          <div class="flex flex-col items-end gap-4">
+            <div class="md:w-max w-full">
+              <div
+                class={`border focus:outline-none w-full py-[6px] px-3 rounded-lg ${
+                  searchValue && !$isDarkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
+                }`}
+              >
+                <input
+                  bind:value={searchValue}
+                  placeholder="Find by token name"
+                  type="text"
+                  class={`w-full p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-base font-normal ${
+                    searchValue && !$isDarkMode
+                      ? "bg-[#F0F2F7]"
+                      : "bg-transparent"
+                  } ${
+                    $isDarkMode
+                      ? "text-white"
+                      : "text-[#5E656B] placeholder-[#5E656B]"
+                  }`}
+                />
+              </div>
+            </div>
+            <TokenHoldingTable
+              {toggleSortOrderTag}
+              isLoadingToken={$queryTokenHolding.isFetching}
+              {searchDataResult}
+              {sumTokens}
+            />
+          </div>
         {/if}
       </div>
     </div>
@@ -1530,16 +1765,16 @@
   isOpen={isOpenConfirmDelete}
   on:close={() => (isOpenConfirmDelete = false)}
 >
-  <div class="flex flex-col xl:gap-4 gap-10">
+  <div class="flex flex-col gap-4 xl:mt-0 mt-4">
     <div class="flex flex-col gap-1 items-start">
-      <div class="xl:title-3 title-1 font-semibold">Are you sure?</div>
-      <div class="xl:text-sm text-2xl text-gray-500">
+      <div class="title-3 font-semibold">Are you sure?</div>
+      <div class="text-sm text-gray-500">
         Do you really want to delete this custom token breakdown? This process
         cannot revert
       </div>
     </div>
-    <div class="flex justify-end lg:gap-2 gap-6">
-      <div class="lg:w-[120px] w-full">
+    <div class="flex justify-end gap-2">
+      <div class="w-[120px]">
         <Button
           variant="secondary"
           on:click={() => {
@@ -1549,7 +1784,7 @@
           Cancel
         </Button>
       </div>
-      <div class="lg:w-[120px] w-full">
+      <div class="w-[120px]">
         <Button
           variant="delete"
           isLoading={isLoadingDelete}

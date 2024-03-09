@@ -611,7 +611,7 @@
 
     {#if isShowSoon && $user && Object.keys($user).length === 0}
       <div
-        class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col justify-center items-center gap-3 z-9 backdrop-blur-md ${
+        class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col justify-center items-center gap-3 z-8 backdrop-blur-md ${
           $isDarkMode ? "bg-black/90" : "bg-white/95"
         }`}
       >

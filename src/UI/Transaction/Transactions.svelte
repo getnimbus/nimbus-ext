@@ -359,7 +359,7 @@
 
       {#if otherGeneration.includes($typeWallet)}
         <div
-          class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center gap-3 justify-center z-9 backdrop-blur-md ${
+          class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center gap-3 justify-center z-8 backdrop-blur-md ${
             $isDarkMode ? "bg-black/90" : "bg-white/95"
           }`}
         >

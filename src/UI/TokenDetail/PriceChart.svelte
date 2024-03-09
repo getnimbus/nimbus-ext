@@ -1061,7 +1061,7 @@
               Empty
               {#if ["SOL", "BTC", "TON", "NEAR", "ALGO"].includes(chain)}
                 <div
-                  class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center gap-3 pt-62 z-9 backdrop-blur-md ${
+                  class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center gap-3 pt-62 z-8 backdrop-blur-md ${
                     $isDarkMode ? "bg-black/90" : "bg-white/95"
                   }`}
                 >
@@ -1090,7 +1090,7 @@
               </div>
               {#if ["BTC", "TON"].includes(chain)}
                 <div
-                  class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center gap-3 pt-62 z-9 backdrop-blur-md ${
+                  class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center gap-3 pt-62 z-8 backdrop-blur-md ${
                     $isDarkMode ? "bg-black/90" : "bg-white/95"
                   }`}
                 >
@@ -1109,7 +1109,7 @@
               Empty
               {#if ["SOL", "BTC", "TON", "NEAR", "ALGO"].includes(chain)}
                 <div
-                  class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center gap-3 pt-62 z-9 backdrop-blur-md ${
+                  class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center gap-3 pt-62 z-8 backdrop-blur-md ${
                     $isDarkMode ? "bg-black/90" : "bg-white/95"
                   }`}
                 >
@@ -1138,7 +1138,7 @@
               </div>
               {#if ["BTC", "TON"].includes(chain)}
                 <div
-                  class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center gap-3 pt-62 z-9 backdrop-blur-md ${
+                  class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center gap-3 pt-62 z-8 backdrop-blur-md ${
                     $isDarkMode ? "bg-black/90" : "bg-white/95"
                   }`}
                 >

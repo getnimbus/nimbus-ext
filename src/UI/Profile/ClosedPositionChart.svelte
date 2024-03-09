@@ -335,9 +335,7 @@
   $: theme = $isDarkMode ? "dark" : "white";
 </script>
 
-<div
-  class="col-span-4 border border_0000001a rounded-xl flex flex-col min-h-[465px]"
->
+<div class="col-span-4 border border_0000001a rounded-xl flex flex-col">
   <div class="flex justify-start font-medium text-2xl px-6 pb-3 pt-6">
     Positions 30D
   </div>
@@ -386,9 +384,10 @@
               </AnimateSharedLayout>
             </div>
           {/if}
+
           {#if closedHoldingPosition && closedHoldingPosition.length === 0}
             <div
-              class="h-full w-full flex items-center justify-center px-4 text-center"
+              class="h-full flex items-center justify-center text-center py-4 px-6"
             >
               There are no closed holding position in the last 30 day
             </div>
