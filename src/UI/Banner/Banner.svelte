@@ -72,14 +72,14 @@
 
 <style>
   .marquee {
-    height: 40px;
+    height: 20px;
     overflow: hidden;
     position: relative;
   }
 
   .marquee-1 {
     position: absolute;
-    height: 50px;
+    height: 100%;
 
     -moz-transform: translateX(100%);
     -webkit-transform: translateX(100%);
