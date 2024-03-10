@@ -226,7 +226,7 @@
     <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
       <OverviewCard title={"Avg Cost"}>
         <div class="flex justify-end xl:text-3xl text-5xl">
-          {#if data?.profit}
+          ${#if data?.profit}
             <TooltipNumber
               number={data?.profit?.averageCost}
               type="balance"
