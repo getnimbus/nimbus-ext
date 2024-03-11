@@ -2128,7 +2128,7 @@
   isOpen={isOpenEditModal}
   on:close={() => (isOpenEditModal = false)}
 >
-  <div class="flex flex-col gap-4">
+  <div class="flex flex-col gap-4 xl:mt-0 mt-4">
     <div class="font-semibold title-3">
       {MultipleLang.content.modal_edit_title}
     </div>

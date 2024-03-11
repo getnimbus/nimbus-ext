@@ -212,17 +212,17 @@
   isOpen={isOpenConfirmDelete}
   on:close={() => (isOpenConfirmDelete = false)}
 >
-  <div class="flex flex-col gap-10 xl:gap-4">
+  <div class="flex flex-col gap-4 xl:mt-0 mt-4">
     <div class="flex flex-col items-start gap-1">
-      <div class="font-semibold xl:title-3 title-2">
+      <div class="font-semibold title-3">
         {MultipleLang.content.modal_delete_title}
       </div>
-      <div class="text-lg text-gray-500 xl:text-sm">
+      <div class="text-gray-500 text-sm">
         {MultipleLang.content.modal_delete_sub_title}
       </div>
     </div>
-    <div class="flex justify-end gap-6 lg:gap-2">
-      <div class="lg:w-[120px] w-full">
+    <div class="flex justify-end gap-2">
+      <div class="w-[120px]">
         <Button
           variant="secondary"
           on:click={() => {
@@ -232,7 +232,7 @@
           {MultipleLang.content.modal_cancel}
         </Button>
       </div>
-      <div class="lg:w-[120px] w-full">
+      <div class="w-[120px]">
         <Button
           isLoading={isLoadingDelete}
           disabled={isLoadingDelete}
