@@ -1343,7 +1343,10 @@
       </div>
       <div class="text-xl">
         <Copy
-          address={selectedNft?.tokens[0]?.contractAddress}
+          address={selectedNft &&
+            selectedNft?.tokens &&
+            selectedNft?.tokens.length !== 0 &&
+            selectedNft?.tokens[0]?.contractAddress}
           isShorten
           iconColor={`${$isDarkMode ? "#fff" : "#000"}`}
           color={`${$isDarkMode ? "#fff" : "#000"}`}
