@@ -25,37 +25,25 @@
         <th
           class="pl-3 py-3 rounded-tl-[10px] 2xl:w-[250px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8"
         >
-          <div class="text-left xl:text-xs text-xl uppercase font-medium">
-            Address
-          </div>
+          <div class="text-left text-sm uppercase font-medium">Address</div>
         </th>
         <th class="py-3">
-          <div class="text-right xl:text-xs text-xl uppercase font-medium">
-            Net Worth
-          </div>
+          <div class="text-right text-sm uppercase font-medium">Net Worth</div>
         </th>
         <th class="py-3">
-          <div class="text-right xl:text-xs text-xl uppercase font-medium">
-            1D
-          </div>
+          <div class="text-right text-sm uppercase font-medium">1D</div>
         </th>
         <th class="py-3">
-          <div class="text-right xl:text-xs text-xl uppercase font-medium">
-            7D
-          </div>
+          <div class="text-right text-sm uppercase font-medium">7D</div>
         </th>
         <th class="py-3">
-          <div class="text-right xl:text-xs text-xl uppercase font-medium">
-            30D
-          </div>
+          <div class="text-right text-sm uppercase font-medium">30D</div>
         </th>
         <th class="py-3">
-          <div class="text-right xl:text-xs text-xl uppercase font-medium">
-            1Y
-          </div>
+          <div class="text-right text-sm uppercase font-medium">1Y</div>
         </th>
         <th class="py-3">
-          <div class="text-right xl:text-xs text-xl uppercase font-medium">
+          <div class="text-right text-sm uppercase font-medium">
             <TooltipTitle
               tooltipText={"Volatility measures the extent of price fluctuations for an asset over time."}
               isBigIcon
@@ -65,7 +53,7 @@
           </div>
         </th>
         <th class="py-3">
-          <div class="text-right xl:text-xs text-xl uppercase font-medium">
+          <div class="text-right text-sm uppercase font-medium">
             <TooltipTitle
               tooltipText={"Max drawdown is the biggest loss experienced by an investment or portfolio."}
               isBigIcon
@@ -75,7 +63,7 @@
           </div>
         </th>
         <th class="py-3">
-          <div class="text-right xl:text-xs text-xl uppercase font-medium">
+          <div class="text-right text-sm uppercase font-medium">
             <TooltipTitle
               tooltipText={"The Sharpe ratio measures how well an investment performs relative to its risk."}
               isBigIcon
@@ -103,7 +91,7 @@
           <tr>
             <td colspan="11">
               <div
-                class="h-full flex justify-center items-center py-4 px-3 text-gray-400 xl:text-lg text-xl"
+                class="h-full flex justify-center items-center py-4 px-3 text-gray-400 text-base"
               >
                 Empty
               </div>

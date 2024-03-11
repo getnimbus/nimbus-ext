@@ -168,7 +168,7 @@
 
 <div class="h-[563px] flex flex-col gap-4">
   <div class="flex justify-between">
-    <div class="xl:text-2xl text-4xl font-medium">Re-balance Action</div>
+    <div class="text-2xl font-medium">Re-balance Action</div>
     <Select
       type="lang"
       positionSelectList="right-0"
@@ -179,8 +179,7 @@
   <div
     class={`border border_0000000d rounded-[10px] overflow-x-auto overflow-y-auto h-[563px] relative ${
       darkMode ? "bg-[#131313]" : "bg-[#fff]"
-    }
-    `}
+    }`}
   >
     <table
       class={`table-auto xl:w-full w-[1200px] ${
@@ -192,27 +191,27 @@
           <th
             class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8 xl:w-[230px] w-[280px]"
           >
-            <div class="text-left xl:text-xs text-xl uppercase font-medium">
+            <div class="text-left text-sm uppercase font-medium">
               {MultipleLang.assets}
             </div>
           </th>
           <th class="py-3">
-            <div class="text-right xl:text-xs text-xl uppercase font-medium">
+            <div class="text-right text-sm uppercase font-medium">
               {MultipleLang.price}
             </div>
           </th>
           <th class="py-3">
-            <div class="text-right xl:text-xs text-xl uppercase font-medium">
+            <div class="text-right text-sm uppercase font-medium">
               Amount change
             </div>
           </th>
           <th class="py-3">
-            <div class="text-right xl:text-xs text-xl uppercase font-medium">
+            <div class="text-right text-sm uppercase font-medium">
               Value change
             </div>
           </th>
           <th class="py-3 pr-3 rounded-tr-[10px]">
-            <div class="text-right xl:text-xs text-xl uppercase font-medium">
+            <div class="text-right text-sm uppercase font-medium">
               <TooltipTitle tooltipText="Ratio based on total token holding">
                 Ratio
               </TooltipTitle>
@@ -225,7 +224,7 @@
           <tr>
             <td colspan="5">
               <div
-                class="flex justify-center items-center py-3 px-3 xl:text-lg text-xl text-gray-400"
+                class="flex justify-center items-center py-3 px-3 text-base text-gray-400"
               >
                 {MultipleLang.empty}
               </div>
