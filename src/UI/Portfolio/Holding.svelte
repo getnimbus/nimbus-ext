@@ -555,8 +555,8 @@
         selectedTokenHoldingPercent =
           selectedDataPieChart?.series[0]?.data.find(
             (item) =>
-              item.name === detectedChain(selectedTypeTable?.value)?.name ||
-              item.name === detectedChain(selectedTypeTable?.label)?.name
+              item?.name?.toString().toLowerCase() ===
+              selectedTypeTable?.label?.toString().toLowerCase()
           )?.value;
       }
     }
@@ -578,7 +578,7 @@
           <!-- <a
             href="https://forms.gle/HfmvSTzd5frPPYDz8"
             target="_blank"
-            class="xl:text-sm text-2xl font-normal text-blue-500 mb-[2px] hover:text-blue-700 transition-all"
+            class="text-sm font-normal text-blue-500 mb-[2px] hover:text-blue-700 transition-all"
           >
             Get investment opportunities notification
           </a> -->
@@ -631,7 +631,7 @@
                 <div class="xl:block hidden text-sm font-regular text-gray-400">
                   Hide tokens less than
                 </div>
-                <div class="xk:block hidden">
+                <div class="xl:block hidden">
                   <Select
                     type="filter"
                     positionSelectList="right-0"
@@ -639,7 +639,7 @@
                     bind:selected={filterTokenType}
                   />
                 </div>
-                <div class="xk:hidden block">
+                <div class="xl:hidden block">
                   <Select
                     type="filter"
                     positionSelectList="left-0"
@@ -649,7 +649,6 @@
                 </div>
               </div>
             </div>
-
             <HoldingToken
               {sumTokens}
               defaultData={holdingTokenData}
@@ -669,12 +668,22 @@
               <div class="xl:block hidden text-sm font-regular text-gray-400">
                 Hide NFT Collections less than
               </div>
-              <Select
-                type="filter"
-                positionSelectList="right-0"
-                listSelect={filterTokenValueType}
-                bind:selected={filterNFTType}
-              />
+              <div class="xl:block hidden">
+                <Select
+                  type="filter"
+                  positionSelectList="right-0"
+                  listSelect={filterTokenValueType}
+                  bind:selected={filterNFTType}
+                />
+              </div>
+              <div class="xl:hidden block">
+                <Select
+                  type="filter"
+                  positionSelectList="left-0"
+                  listSelect={filterTokenValueType}
+                  bind:selected={filterNFTType}
+                />
+              </div>
             </div>
             <HoldingNFT
               defaultData={holdingNFTData}
