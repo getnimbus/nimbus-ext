@@ -2305,8 +2305,10 @@
           </div>
         </div>
 
-        <div class="flex justify-between items-start">
-          <div class="text-right text-sm uppercase font-medium">Action</div>
+        <div class="flex justify-between items-center">
+          <div class="text-right text-sm uppercase font-medium mt-1">
+            Action
+          </div>
           <div class="flex items-center gap-4">
             {#if $typeWallet === "BUNDLE"}
               <div
