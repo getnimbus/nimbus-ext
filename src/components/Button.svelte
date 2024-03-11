@@ -135,28 +135,6 @@
     padding: 4px 7px;
   }
 
-  @media screen and (max-width: 1280px) {
-    .button {
-      width: 100%;
-      font-size: 24px;
-    }
-
-    .large {
-      font-size: 26px;
-      padding: 18px 26px;
-    }
-
-    .small {
-      font-size: 22px;
-      padding: 10px 13px;
-    }
-
-    .supper-small {
-      font-size: 20px;
-      padding: 8px 11px;
-    }
-  }
-
   .secondary {
     color: #27326f;
     border: 1px solid #27326f;
@@ -259,5 +237,136 @@
   .recap[type="submit"],
   .recap[type="button"] {
     background: #4dcedf;
+  }
+
+  @media screen and (max-width: 1280px) {
+    .large {
+      font-size: 26px;
+      padding: 18px 26px;
+    }
+
+    .small {
+      font-size: 22px;
+      padding: 10px 13px;
+    }
+
+    .supper-small {
+      font-size: 20px;
+      padding: 8px 11px;
+    }
+
+    .secondary {
+      font-size: 20px;
+    }
+    .secondary[type="submit"],
+    .secondary[type="button"] {
+      font-size: 20px;
+    }
+
+    .premium[type="submit"],
+    .premium[type="button"] {
+      font-size: 20px;
+    }
+
+    .tertiary[type="submit"],
+    .tertiary[type="button"] {
+      font-size: 20px;
+    }
+
+    .delete {
+      font-size: 20px;
+    }
+    .delete[type="submit"],
+    .delete[type="button"] {
+      font-size: 20px;
+    }
+
+    .no_outlined {
+      font-size: 20px;
+    }
+    .no_outlined[type="submit"],
+    .no_outlined[type="button"] {
+      font-size: 20px;
+    }
+
+    .twitter {
+      font-size: 20px;
+    }
+    .twitter[type="button"] {
+      font-size: 20px;
+    }
+
+    .telegram {
+      font-size: 20px;
+    }
+    .telegram[type="button"] {
+      font-size: 20px;
+    }
+
+    .disabled {
+      font-size: 20px;
+    }
+    .disabled[type="submit"],
+    .disabled[type="button"] {
+      font-size: 20px;
+    }
+  }
+
+  @media screen and (max-width: 768px) {
+    .secondary {
+      font-size: 16px;
+    }
+    .secondary[type="submit"],
+    .secondary[type="button"] {
+      font-size: 16px;
+    }
+
+    .premium[type="submit"],
+    .premium[type="button"] {
+      font-size: 16px;
+    }
+
+    .tertiary[type="submit"],
+    .tertiary[type="button"] {
+      font-size: 16px;
+    }
+
+    .delete {
+      font-size: 16px;
+    }
+    .delete[type="submit"],
+    .delete[type="button"] {
+      font-size: 16px;
+    }
+
+    .no_outlined {
+      font-size: 16px;
+    }
+    .no_outlined[type="submit"],
+    .no_outlined[type="button"] {
+      font-size: 16px;
+    }
+
+    .twitter {
+      font-size: 16px;
+    }
+    .twitter[type="button"] {
+      font-size: 16px;
+    }
+
+    .telegram {
+      font-size: 16px;
+    }
+    .telegram[type="button"] {
+      font-size: 16px;
+    }
+
+    .disabled {
+      font-size: 16px;
+    }
+    .disabled[type="submit"],
+    .disabled[type="button"] {
+      font-size: 16px;
+    }
   }
 </style>
