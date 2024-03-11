@@ -1120,10 +1120,12 @@
                         <div
                           class="flex flex-col justify-center gap-6 row-span-10"
                         >
-                          <div class="flex items-center gap-4">
+                          <div
+                            class="flex md:flex-row flex-col items-center gap-4"
+                          >
                             {#each listSuggestion as suggestion (suggestion.name)}
                               <div
-                                class="flex-1"
+                                class="flex-1 w-full"
                                 id={suggestion.name}
                                 use:tooltip={{
                                   content: `<tooltip-detail text="Coming soon!" />`,
@@ -1162,7 +1164,7 @@
                           <div class="flex flex-col gap-2">
                             <div class="grid grid-cols-3 items-center gap-4">
                               <div
-                                class={`col-span-2 border focus:outline-none w-full h-full px-3 rounded-lg ${
+                                class={`md:col-span-2 col-span-3 border focus:outline-none w-full h-full md:py-0 md:px-3 p-3 rounded-lg ${
                                   searchCompare && !$isDarkMode
                                     ? "bg-[#F0F2F7]"
                                     : "bg_fafafbff"
@@ -1185,7 +1187,7 @@
                                   }`}
                                 />
                               </div>
-                              <div class="col-span-1 h-full">
+                              <div class="col-span-1 h-full md:block hidden">
                                 {#if search}
                                   <Button
                                     on:click={() => {
@@ -1207,6 +1209,19 @@
                               >
                                 Get inspired from the whale list
                               </div>
+                            </div>
+                            <div class="md:hidden block mt-2">
+                              {#if search}
+                                <Button
+                                  on:click={() => {
+                                    searchCompare = search;
+                                  }}
+                                >
+                                  Compare
+                                </Button>
+                              {:else}
+                                <Button disabled>Compare</Button>
+                              {/if}
                             </div>
                           </div>
                         </div>
