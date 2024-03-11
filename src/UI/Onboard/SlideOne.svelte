@@ -15,7 +15,7 @@
         class="mr-[10px]"
       />
       <div class="flex flex-col items-center gap-4">
-        <div class="text-5xl  font-normal">Welcome</div>
+        <div class="text-5xl font-normal">Welcome</div>
         <div class="text-lg text_00000099 font-normal">
           Nimbus is a personalized portfolio that makes you investment more
           efficiency

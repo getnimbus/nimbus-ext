@@ -33,7 +33,7 @@
     }`}
   >
     <div
-      class={`flex flex-col items-center gap-2 cursor-pointer hover:opacity-100 transition-all ${
+      class={`flex flex-col items-center gap-1 cursor-pointer hover:opacity-100 transition-all ${
         $isDarkMode
           ? navActive === "portfolio"
             ? "opacity-100"
@@ -48,8 +48,8 @@
       }}
     >
       <svg
-        width="50"
-        height="50"
+        width="26"
+        height="26"
         viewBox="0 0 20 20"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -76,7 +76,7 @@
           stroke-linejoin="round"
         />
       </svg>
-      <span class="font-medium text-2xl">
+      <span class="font-medium text-base">
         {MultipleLang.portfolio}
       </span>
     </div>
@@ -90,7 +90,7 @@
     }`}
   >
     <div
-      class={`flex flex-col items-center gap-2 cursor-pointer hover:opacity-100 transition-all
+      class={`flex flex-col items-center gap-1 cursor-pointer hover:opacity-100 transition-all
           ${
             $isDarkMode
               ? navActive === "analytic"
@@ -107,8 +107,8 @@
       }}
     >
       <svg
-        width="45"
-        height="45"
+        width="25"
+        height="25"
         viewBox="0 0 20 20"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -136,11 +136,11 @@
         </defs>
       </svg>
       <span class="flex gap-[1px]">
-        <span class="font-medium text-2xl">
+        <span class="font-medium text-base">
           {MultipleLang.analytics}
         </span>
         <span class="flex items-center gap-[1px] -mt-2">
-          <img src={Crown} alt="" width="19" height="18" />
+          <img src={Crown} alt="" width="16" height="17" />
         </span>
       </span>
     </div>
@@ -154,7 +154,7 @@
     }`}
   >
     <div
-      class={`flex flex-col items-center gap-2 cursor-pointer py-2 hover:opacity-100 transition-all
+      class={`flex flex-col items-center gap-1 cursor-pointer hover:opacity-100 transition-all
           ${
             $isDarkMode
               ? navActive === "transactions"
@@ -170,8 +170,8 @@
       }}
     >
       <svg
-        width="45"
-        height="45"
+        width="25"
+        height="25"
         viewBox="0 0 20 20"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -226,14 +226,14 @@
           </clipPath>
         </defs>
       </svg>
-      <span class="font-medium text-2xl">
+      <span class="font-medium text-base">
         {MultipleLang.transactions}
       </span>
     </div>
   </Link>
 
   <div
-    class={`flex flex-col items-center gap-2 cursor-pointer py-2 hover:opacity-100 transition-all
+    class={`flex flex-col items-center gap-1 cursor-pointer hover:opacity-100 transition-all
           ${
             $isDarkMode
               ? navActive === "more"
@@ -250,8 +250,8 @@
     }}
   >
     <svg
-      width="50"
-      height="50"
+      width="29"
+      height="29"
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -266,7 +266,7 @@
       <circle cx="12.0025" cy="12.0025" r="1.40871" fill="currentColor" />
       <circle cx="7.38527" cy="12.0025" r="1.40871" fill="currentColor" />
     </svg>
-    <span class="font-medium text-2xl">More</span>
+    <span class="font-medium text-base -mt-1">More</span>
   </div>
 </div>
 

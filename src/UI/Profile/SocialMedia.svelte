@@ -65,14 +65,11 @@
     <div class="h-[40px]">
       {#if isEdit}
         <Button variant={typeSocialMedia} on:click={() => (isOpenModal = true)}>
-          <div class="xl:text-base text-xl">Edit info</div>
+          Edit info
         </Button>
       {:else}
         <Button variant={typeSocialMedia}>
-          <a
-            target="_blank"
-            href={linkHref + socialData?.username}
-            class="xl:text-base text-xl"
+          <a target="_blank" href={linkHref + socialData?.username}
             >{typeSocialMedia === "Telegram" ? "Chat with me" : "Follow"}</a
           >
         </Button>
@@ -82,13 +79,11 @@
     <div class="h-[40px]">
       {#if isEdit}
         <Button variant={typeSocialMedia} on:click={() => (isOpenModal = true)}>
-          <div class="xl:text-base text-xl">Add info</div>
+          Add info
         </Button>
       {:else}
         <Button variant={typeSocialMedia} disabled>
-          <div class="xl:text-base text-xl">
-            {typeSocialMedia === "Telegram" ? "Chat with me" : "Follow"}
-          </div>
+          {typeSocialMedia === "Telegram" ? "Chat with me" : "Follow"}
         </Button>
       {/if}
     </div>
@@ -103,13 +98,11 @@
     isOpenModal = false;
   }}
 >
-  <div class="flex flex-col gap-4">
-    <div class="xl:title-3 title-1 font-semibold">
-      Add your social information
-    </div>
+  <div class="flex flex-col gap-4 xl:mt-0 mt-4">
+    <div class="title-3 font-semibold">Add your social information</div>
     <form
       on:submit|preventDefault={onSubmitGetSocialInfo}
-      class="flex flex-col xl:gap-3 gap-10"
+      class="flex flex-col gap-3"
     >
       <div
         class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
@@ -117,7 +110,7 @@
         }`}
       >
         <div
-          class={`xl:text-base text-2xl font-medium ${
+          class={`xl:text-base text-lg font-medium ${
             $isDarkMode ? "text-gray-400" : "text-[#666666]"
           }`}
         >
@@ -129,7 +122,7 @@
           name="label"
           placeholder="Your label"
           value={label}
-          class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal ${
+          class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-base font-normal text-[#5E656B] placeholder-[#5E656B] ${
             label && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
           } ${
             $isDarkMode ? "text-white" : "text-[#5E656B] placeholder-[#5E656B]"
@@ -144,7 +137,7 @@
         }`}
       >
         <div
-          class={`xl:text-base text-2xl font-medium ${
+          class={`xl:text-base text-lg font-medium ${
             $isDarkMode ? "text-gray-400" : "text-[#666666]"
           }`}
         >
@@ -156,7 +149,7 @@
           name="username"
           placeholder="Your username"
           value={userName}
-          class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal ${
+          class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-base font-normal text-[#5E656B] placeholder-[#5E656B] ${
             userName && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
           } ${
             $isDarkMode ? "text-white" : "text-[#5E656B] placeholder-[#5E656B]"
@@ -165,8 +158,8 @@
         />
       </div>
 
-      <div class="flex justify-end lg:gap-2 gap-6">
-        <div class="xl:w-[120px] w-full">
+      <div class="flex justify-end gap-2">
+        <div class="w-[120px]">
           <Button
             variant="secondary"
             on:click={() => {
@@ -178,7 +171,7 @@
             Cancel</Button
           >
         </div>
-        <div class="xl:w-[120px] w-full">
+        <div class="w-[120px]">
           <Button type="submit">Submit</Button>
         </div>
       </div>

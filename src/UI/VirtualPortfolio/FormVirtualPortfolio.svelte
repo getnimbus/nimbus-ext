@@ -264,7 +264,7 @@
                 <tr>
                   <td colspan={2}>
                     <div
-                      class="flex justify-center items-center py-3 px-3 xl:text-lg text-xl text-gray-400"
+                      class="flex justify-center items-center py-3 px-3 text-base text-gray-400"
                     >
                       {MultipleLang.empty}
                     </div>
@@ -527,11 +527,7 @@
     <div class="md:w-[120px] w-full">
       {#if remaining !== 100 || virtualPortfolioName.length === 0}
         <Button variant="disabled" disabled>
-          <div
-            class={`xl:text-base text-2xl font-medium ${
-              $isDarkMode ? "text-gray-400" : "text-white"
-            }`}
-          >
+          <div class={`${$isDarkMode ? "text-gray-400" : "text-white"}`}>
             {defaultData && Object.keys(defaultData).length !== 0
               ? "Edit"
               : "Create"}
@@ -557,11 +553,9 @@
                 : "add"
             )}
         >
-          <div class="xl:text-base text-2xl font-medium">
-            {defaultData && Object.keys(defaultData).length !== 0
-              ? "Edit"
-              : "Create"}
-          </div>
+          {defaultData && Object.keys(defaultData).length !== 0
+            ? "Edit"
+            : "Create"}
         </Button>
       {/if}
     </div>

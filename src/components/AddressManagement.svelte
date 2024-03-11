@@ -53,6 +53,8 @@
   import HiddenValue from "../UI/HiddenValue/HiddenValue.svelte";
   import Hero from "../UI/Hero/Hero.svelte";
 
+  import Logo from "~/assets/logo-2.png";
+  import LogoWhite from "~/assets/logo-white.svg";
   import Plus from "~/assets/plus.svg";
   import PlusBlack from "~/assets/plus-black.svg";
   import FollowWhale from "~/assets/whale-tracking.gif";
@@ -856,7 +858,7 @@
           <div
             class="flex flex-col items-center justify-center w-[70%] gap-4 p-6"
           >
-            <div class="xl:text-lg text-2xl">
+            <div class="xl:text-lg text-xl">
               {$query.error}
             </div>
           </div>
@@ -872,8 +874,10 @@
     {:else}
       <div class="header header-container">
         <div class="flex flex-col max-w-[2000px] m-auto xl:w-[82%] w-[90%]">
-          <div class="flex flex-col mb-5 gap-14">
-            <div class="flex items-center justify-between gap-6">
+          <div class="flex flex-col mb-5 xl:gap-14 gap-7">
+            <div
+              class="flex lg:flex-row flex-col lg:items-center items-start justify-between gap-6"
+            >
               <!-- desktop list address wallet -->
               <div class="hidden xl:block">
                 {#if listAddress && listAddress?.length !== 0}
@@ -1077,7 +1081,7 @@
                     }) as item}
                       <div
                         id={item.value}
-                        class="w-max flex-shrink-0 relative text-2xl text-white py-1 px-3 flex items-center gap-2 rounded-[100px]"
+                        class="w-max flex-shrink-0 relative text-xl text-white py-1 px-3 flex items-center gap-2 rounded-[100px]"
                         class:hover:no-underline={item.value === $wallet}
                         on:click={() => {
                           wallet.update((n) => (n = item.value));
@@ -1137,7 +1141,7 @@
 
               <!-- btn add address wallet -->
               <div
-                class="relative xl:w-max w-[270px] flex justify-end"
+                class="relative xl:w-max lg:w-[290px] w-max flex justify-end"
                 on:mouseenter={() => {
                   if (
                     isDisabled ||
@@ -1171,22 +1175,18 @@
                           }
                         }}
                       >
-                        <img src={Plus} alt="" class="w-4 h-4 xl:w-3 xl:h-3" />
-                        <div
-                          class="text-2xl font-medium text-white xl:text-base"
-                        >
-                          Add account
-                        </div>
+                        <img src={Plus} alt="" class="w-3 h-3" />
+                        <div class="text-white">Add account</div>
                       </Button>
                     {:else}
                       <Button variant="disabled" disabled>
                         <img
                           src={$isDarkMode ? PlusBlack : Plus}
                           alt=""
-                          class="w-4 h-4 xl:w-3 xl:h-3"
+                          class="w-3 h-3"
                         />
                         <div
-                          class={`text-2xl font-medium xl:text-base ${
+                          class={`${
                             $isDarkMode ? "text-gray-400" : "text-white"
                           }`}
                         >
@@ -1202,10 +1202,8 @@
                       isOpenAddModal = true;
                     }}
                   >
-                    <img src={Plus} alt="" class="w-4 h-4 xl:w-3 xl:h-3" />
-                    <div class="text-2xl font-medium text-white xl:text-base">
-                      Add account
-                    </div>
+                    <img src={Plus} alt="" class="w-3 h-3" />
+                    <div class="text-white">Add account</div>
                   </Button>
                 {/if}
 
@@ -1229,11 +1227,11 @@
             <div class="flex items-end justify-between">
               <div class="flex flex-col gap-3">
                 <div class="flex items-end gap-6">
-                  <div class="font-medium text-white xl:text-5xl text-7xl">
+                  <div class="font-medium text-white text-5xl">
                     {title}
                   </div>
                   {#if type === "portfolio"}
-                    <span class="xl:pb-0 pb-3 xl:-ml-2">
+                    <span class="xl:pb-0 pb-2 xl:-ml-2">
                       <HiddenValue />
                     </span>
                     <div class="xl:block hidden">
@@ -1291,11 +1289,11 @@
                           {#each $selectedBundle?.accounts as item}
                             <div class="hidden xl:flex xl:flex-col">
                               <div
-                                class="text-2xl xl:text-xs font-medium text_00000099"
+                                class="text-xl xl:text-xs font-medium text_00000099"
                               >
                                 {item.label}
                               </div>
-                              <div class="text-3xl xl:text-sm">
+                              <div class="text-2xl xl:text-sm">
                                 <Copy
                                   address={item?.value}
                                   iconColor={$isDarkMode ? "#fff" : "#000"}
@@ -1306,11 +1304,11 @@
                             </div>
                             <div class="flex flex-col xl:hidden">
                               <div
-                                class="text-2xl xl:text-xs font-medium text_00000099"
+                                class="text-xl xl:text-xs font-medium text_00000099"
                               >
                                 {item.label}
                               </div>
-                              <div class="text-3xl xl:text-sm">
+                              <div class="text-2xl xl:text-sm">
                                 <Copy
                                   address={item?.value}
                                   iconColor={$isDarkMode ? "#fff" : "#000"}
@@ -1325,10 +1323,10 @@
                       {/if}
                     </div>
                   {:else}
-                    <div class="hidden text-3xl xl:text-base xl:block">
+                    <div class="hidden text-2xl xl:text-base xl:block">
                       <Copy address={$wallet} iconColor="#fff" color="#fff" />
                     </div>
-                    <div class="block text-3xl xl:text-base xl:hidden">
+                    <div class="block text-2xl xl:text-base xl:hidden">
                       <Copy
                         address={$wallet}
                         iconColor="#fff"
@@ -1338,6 +1336,7 @@
                       />
                     </div>
                   {/if}
+
                   <!-- <div
                     class="relative"
                     on:mouseenter={() => {
@@ -1364,6 +1363,7 @@
                       </div>
                     {/if}
                   </div> -->
+
                   <div class="hidden xl:block">
                     {#if $typeWallet === "BTC"}
                       <div
@@ -1404,13 +1404,19 @@
                                   )}`
                                 );
                                 mixpanel.track("user_compare");
-                              }}>Optimize return</Button
+                              }}
                             >
+                              Optimize return
+                            </Button>
                           </div>
                         {:else}
-                          <Button variant="premium" disabled
-                            >Optimize return</Button
-                          >
+                          <Button variant="premium" disabled>
+                            <div
+                              class={`${$isDarkMode ? "text-gray-400" : "text-white"}`}
+                            >
+                              Optimize return
+                            </div>
+                          </Button>
                         {/if}
                       </div>
                     {/if}
@@ -1418,58 +1424,7 @@
                 </div>
               </div>
 
-              <div class="flex flex-col gap-6">
-                <div class="block xl:hidden">
-                  {#if $typeWallet === "BTC"}
-                    <div
-                      use:tooltip={{
-                        content: `<tooltip-detail text="Coming soon!" />`,
-                        allowHTML: true,
-                        placement: "top",
-                        interactive: true,
-                      }}
-                    >
-                      <Button variant="premium" disabled>
-                        <div
-                          class={`${
-                            $isDarkMode ? "text-gray-400" : "text-white"
-                          }`}
-                        >
-                          Optimize return
-                        </div>
-                      </Button>
-                    </div>
-                  {:else}
-                    <div>
-                      {#if Object.keys($user).length !== 0}
-                        <div
-                          use:tooltip={{
-                            content: `<tooltip-detail text="Optimize this portfolio by Minimizing risk & Maximizing return" />`,
-                            allowHTML: true,
-                            placement: "top",
-                            interactive: true,
-                          }}
-                        >
-                          <Button
-                            variant="premium"
-                            on:click={() => {
-                              navigate(
-                                `/compare?address=${encodeURIComponent(
-                                  $wallet
-                                )}`
-                              );
-                              mixpanel.track("user_compare");
-                            }}>Optimize return</Button
-                          >
-                        </div>
-                      {:else}
-                        <Button variant="premium" disabled
-                          >Optimize return</Button
-                        >
-                      {/if}
-                    </div>
-                  {/if}
-                </div>
+              <div class="md:flex flex-col gap-6 hidden">
                 {#if $typeWallet === "EVM" || $typeWallet === "MOVE"}
                   {#if $typeWallet === "EVM"}
                     <Select
@@ -1492,7 +1447,138 @@
                     />
                   {/if}
                 {/if}
+
+                <div class="xl:hidden block">
+                  {#if $typeWallet === "BTC"}
+                    <div
+                      use:tooltip={{
+                        content: `<tooltip-detail text="Coming soon!" />`,
+                        allowHTML: true,
+                        placement: "top",
+                        interactive: true,
+                      }}
+                    >
+                      <Button variant="premium" disabled>
+                        <div
+                          class={`${$isDarkMode ? "text-gray-400" : "text-white"}`}
+                        >
+                          Optimize return
+                        </div>
+                      </Button>
+                    </div>
+                  {:else}
+                    <div>
+                      {#if Object.keys($user).length !== 0}
+                        <div
+                          use:tooltip={{
+                            content: `<tooltip-detail text="Optimize this portfolio by Minimizing risk & Maximizing return" />`,
+                            allowHTML: true,
+                            placement: "top",
+                            interactive: true,
+                          }}
+                        >
+                          <Button
+                            variant="premium"
+                            on:click={() => {
+                              navigate(
+                                `/compare?address=${encodeURIComponent($wallet)}`
+                              );
+                              mixpanel.track("user_compare");
+                            }}
+                          >
+                            Optimize return
+                          </Button>
+                        </div>
+                      {:else}
+                        <Button variant="premium" disabled>
+                          <div
+                            class={`${$isDarkMode ? "text-gray-400" : "text-white"}`}
+                          >
+                            Optimize return
+                          </div>
+                        </Button>
+                      {/if}
+                    </div>
+                  {/if}
+                </div>
               </div>
+            </div>
+
+            <div class="flex flex-col gap-6 md:hidden w-max -mt-2">
+              {#if $typeWallet === "BTC"}
+                <div
+                  use:tooltip={{
+                    content: `<tooltip-detail text="Coming soon!" />`,
+                    allowHTML: true,
+                    placement: "top",
+                    interactive: true,
+                  }}
+                >
+                  <Button variant="premium" disabled>
+                    <div
+                      class={`${$isDarkMode ? "text-gray-400" : "text-white"}`}
+                    >
+                      Optimize return
+                    </div>
+                  </Button>
+                </div>
+              {:else}
+                <div>
+                  {#if Object.keys($user).length !== 0}
+                    <div
+                      use:tooltip={{
+                        content: `<tooltip-detail text="Optimize this portfolio by Minimizing risk & Maximizing return" />`,
+                        allowHTML: true,
+                        placement: "top",
+                        interactive: true,
+                      }}
+                    >
+                      <Button
+                        variant="premium"
+                        on:click={() => {
+                          navigate(
+                            `/compare?address=${encodeURIComponent($wallet)}`
+                          );
+                          mixpanel.track("user_compare");
+                        }}
+                      >
+                        Optimize return
+                      </Button>
+                    </div>
+                  {:else}
+                    <Button variant="premium" disabled>
+                      <div
+                        class={`${$isDarkMode ? "text-gray-400" : "text-white"}`}
+                      >
+                        Optimize return
+                      </div>
+                    </Button>
+                  {/if}
+                </div>
+              {/if}
+
+              {#if $typeWallet === "EVM" || $typeWallet === "MOVE"}
+                {#if $typeWallet === "EVM"}
+                  <Select
+                    type="chain"
+                    positionSelectList="left-0"
+                    listSelect={chainList.sort((a, b) =>
+                      a.label.localeCompare(b.label)
+                    )}
+                    bind:selected={$chain}
+                  />
+                {/if}
+                {#if $typeWallet === "MOVE"}
+                  <Select
+                    type="chain"
+                    positionSelectList="left-0"
+                    listSelect={chainMoveList.sort((a, b) =>
+                      a.label.localeCompare(b.label)
+                    )}
+                    bind:selected={$chain}
+                  />
+                {/if}
+              {/if}
             </div>
 
             {#key $wallet || $chain}
@@ -1512,208 +1598,487 @@
 {/if}
 
 <!-- Modal add DEX account -->
+<div class="lg:block hidden">
+  <AppOverlay
+    clickOutSideToClose
+    isOpen={isOpenAddModal}
+    on:close={() => (isOpenAddModal = false)}
+  >
+    <div class="flex flex-col gap-4">
+      <div class="font-medium title-3">
+        {MultipleLang.content.modal_add_title}
+      </div>
+      <div class="flex flex-col gap-7">
+        <div class="flex flex-col gap-3">
+          <div class="flex justify-center">
+            <div class="w-max">
+              <Button
+                variant="tertiary"
+                isLoading={isLoadingConnectCEX}
+                disabled={isLoadingConnectCEX}
+                on:click={onSubmitCEX}
+              >
+                <div class="text-white">Connect Exchange</div>
+              </Button>
+            </div>
+          </div>
+          <div class="flex items-center justify-center gap-1 text-base">
+            <img src={Success} alt="" />
+            Bank-level security/encryption.
+            <a
+              href="https://vezgo.com/security"
+              class="text-blue-500 cursor-pointer"
+              target="_blank">Learn more</a
+            >
+          </div>
+          <div class="flex items-center justify-center gap-6 my-3">
+            {#each listLogoCEX as logo}
+              <img src={logo} alt="" class="w-8 h-8 rounded-full" />
+            {/each}
+            <a
+              href="https://getnimbus.io/chains-support"
+              target="_blank"
+              class="text-blue-500 hover:underline cursor-pointer text-base"
+              >More exchanges</a
+            >
+          </div>
+        </div>
+        <div class="border-t-[1px] relative">
+          <div
+            class={`absolute top-[-10px] left-1/2 transform -translate-x-1/2 text-gray-400 text-sm px-2 ${
+              $isDarkMode ? "bg-[#0f0f0f]" : "bg-white"
+            }`}
+          >
+            Or
+          </div>
+        </div>
+        <form
+          on:submit|preventDefault={onSubmit}
+          class="flex flex-col gap-3 mt-2"
+        >
+          <div class="flex flex-col gap-3">
+            <div class="flex flex-col gap-1">
+              <div
+                class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
+                  address && !$isDarkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
+                }`}
+                class:input-border-error={errors.address &&
+                  errors.address.required}
+              >
+                <div
+                  class={`text-base font-medium ${
+                    $isDarkMode ? "text-gray-400" : "text-[#666666]"
+                  }`}
+                >
+                  Address
+                </div>
+                <input
+                  type="text"
+                  id="address"
+                  name="address"
+                  placeholder={"Your wallet address"}
+                  value=""
+                  class={`p-0 border-none focus:outline-none focus:ring-0 text-sm font-normal ${
+                    address && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+                  } ${
+                    $isDarkMode
+                      ? "text-white"
+                      : "text-[#5E656B] placeholder-[#5E656B]"
+                  }`}
+                  on:keyup={({ target: { value } }) => (address = value)}
+                />
+              </div>
+              {#if errors.address && errors.address.required}
+                <div class="text-red-500">
+                  {errors.address.msg}
+                </div>
+              {/if}
+            </div>
+            <div class="flex flex-col gap-1">
+              <div
+                class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
+                  label && !$isDarkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
+                }`}
+                class:input-border-error={errors.label && errors.label.required}
+              >
+                <div
+                  class={`text-base font-medium ${
+                    $isDarkMode ? "text-gray-400" : "text-[#666666]"
+                  }`}
+                >
+                  {MultipleLang.content.modal_label_label}
+                </div>
+                <input
+                  type="text"
+                  id="label"
+                  name="label"
+                  placeholder={MultipleLang.content.modal_label_label}
+                  value=""
+                  class={`p-0 border-none focus:outline-none focus:ring-0 text-sm font-normal ${
+                    label && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+                  } ${
+                    $isDarkMode
+                      ? "text-white"
+                      : "text-[#5E656B] placeholder-[#5E656B]"
+                  }
+              `}
+                  on:keyup={({ target: { value } }) => (label = value)}
+                />
+              </div>
+              {#if errors.label && errors.label.required}
+                <div class="text-red-500">
+                  {errors.label.msg}
+                </div>
+              {/if}
+            </div>
+          </div>
+          <div class="flex items-center justify-end gap-2 text-[#666666]">
+            <div class="text-sm">Is it your wallet?</div>
+            <label class="switch">
+              <input type="checkbox" bind:checked={groupedToBundles} />
+              <span class="slider" />
+            </label>
+          </div>
+          <div class="flex items-center justify-center gap-6 my-3">
+            {#each generationLogo as item}
+              <img
+                src={item.logo}
+                alt=""
+                class="w-8 h-8 overflow-hidden rounded-full"
+              />
+            {/each}
+            <a
+              href="https://getnimbus.io/chains-support"
+              target="_blank"
+              class="text-blue-500 hover:underline cursor-pointer text-base"
+              >More chains</a
+            >
+          </div>
+          <div class="flex justify-end gap-2">
+            <div class="w-[120px]">
+              <Button
+                variant="secondary"
+                on:click={() => {
+                  errors = {};
+                  isOpenAddModal = false;
+                }}
+              >
+                {MultipleLang.content.modal_cancel}
+              </Button>
+            </div>
+            <div class="w-[120px]">
+              <Button
+                type="submit"
+                variant="tertiary"
+                isLoading={isLoadingAddDEX}
+                disabled={isLoadingAddDEX}
+              >
+                {MultipleLang.content.modal_add}
+              </Button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </AppOverlay>
+</div>
+
+<!-- Add DEX account Mobile -->
+<div class="lg:hidden block">
+  <div
+    class={`fixed inset-0 w-full mobile mobile-container ${
+      isOpenAddModal
+        ? "opacity-100 transform translate-x-[0px]"
+        : "opacity-0 transform translate-x-[-100vw]"
+    }`}
+  >
+    <div
+      class="max-w-[100vw] m-auto w-[90%] h-full flex flex-col gap-8 relative"
+    >
+      <div class="flex items-center justify-between py-3 border-b-[1px]">
+        <img
+          src={$isDarkMode ? LogoWhite : Logo}
+          alt=""
+          class="-ml-6 w-[170px] h-[80px]"
+        />
+        <div
+          class="-mr-1 text-5xl"
+          on:click={() => {
+            isOpenAddModal = false;
+          }}
+        >
+          &times;
+        </div>
+      </div>
+      <div class="flex flex-col gap-4">
+        <div class="font-medium title-2">
+          {MultipleLang.content.modal_add_title}
+        </div>
+        <div class="flex flex-col gap-7">
+          <div class="flex flex-col gap-3">
+            <div class="flex justify-center">
+              <div class="w-max">
+                <Button
+                  variant="tertiary"
+                  isLoading={isLoadingConnectCEX}
+                  disabled={isLoadingConnectCEX}
+                  on:click={onSubmitCEX}
+                >
+                  <div class="text-white">Connect Exchange</div>
+                </Button>
+              </div>
+            </div>
+            <div
+              class="flex flex-wrap items-center justify-center gap-1 text-xl"
+            >
+              <img src={Success} alt="" />
+              Bank-level security/encryption.
+              <a
+                href="https://vezgo.com/security"
+                class="text-blue-500 cursor-pointer"
+                target="_blank">Learn more</a
+              >
+            </div>
+            <div class="flex items-center justify-center gap-6 my-3">
+              {#each listLogoCEX.slice(0, 3) as logo}
+                <img
+                  src={logo}
+                  alt=""
+                  class="xl:w-8 xl:h-8 w-10 h-10 rounded-full"
+                />
+              {/each}
+              <a
+                href="https://getnimbus.io/chains-support"
+                target="_blank"
+                class="text-blue-500 hover:underline cursor-pointer text-lg"
+                >More exchanges</a
+              >
+            </div>
+          </div>
+          <div class="border-t-[1px] relative">
+            <div
+              class={`absolute top-[-14px] left-1/2 transform -translate-x-1/2 text-gray-400 ${
+                $isDarkMode ? "bg-[#0f0f0f]" : "bg-white"
+              } text-lg px-2`}
+            >
+              Or
+            </div>
+          </div>
+          <form
+            on:submit|preventDefault={onSubmit}
+            class="flex flex-col gap-3 mt-2"
+          >
+            <div class="flex flex-col gap-3">
+              <div class="flex flex-col gap-1">
+                <div
+                  class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
+                    address && !$isDarkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
+                  }`}
+                  class:input-border-error={errors.address &&
+                    errors.address.required}
+                >
+                  <div
+                    class={`text-lg font-medium ${
+                      $isDarkMode ? "text-gray-400" : "text-[#666666]"
+                    }`}
+                  >
+                    Address
+                  </div>
+                  <input
+                    type="text"
+                    id="address"
+                    name="address"
+                    placeholder={"Your wallet address"}
+                    value=""
+                    class={`p-0 border-none focus:outline-none focus:ring-0 text-base font-normal ${
+                      address && !$isDarkMode
+                        ? "bg-[#F0F2F7]"
+                        : "bg-transparent"
+                    } ${
+                      $isDarkMode
+                        ? "text-white"
+                        : "text-[#5E656B] placeholder-[#5E656B]"
+                    }`}
+                    on:keyup={({ target: { value } }) => (address = value)}
+                  />
+                </div>
+                {#if errors.address && errors.address.required}
+                  <div class="text-red-500">
+                    {errors.address.msg}
+                  </div>
+                {/if}
+              </div>
+
+              <div class="flex flex-col gap-1">
+                <div
+                  class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
+                    label && !$isDarkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
+                  }`}
+                  class:input-border-error={errors.label &&
+                    errors.label.required}
+                >
+                  <div
+                    class={`text-lg font-medium ${
+                      $isDarkMode ? "text-gray-400" : "text-[#666666]"
+                    }`}
+                  >
+                    {MultipleLang.content.modal_label_label}
+                  </div>
+                  <input
+                    type="text"
+                    id="label"
+                    name="label"
+                    placeholder={MultipleLang.content.modal_label_label}
+                    value=""
+                    class={`p-0 border-none focus:outline-none focus:ring-0 text-base font-normal ${
+                      label && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+                    } ${
+                      $isDarkMode
+                        ? "text-white"
+                        : "text-[#5E656B] placeholder-[#5E656B]"
+                    }
+              `}
+                    on:keyup={({ target: { value } }) => (label = value)}
+                  />
+                </div>
+                {#if errors.label && errors.label.required}
+                  <div class="text-red-500">
+                    {errors.label.msg}
+                  </div>
+                {/if}
+              </div>
+            </div>
+            <div
+              class="flex items-center justify-end gap-2 text-[#666666] mt-3"
+            >
+              <div class="text-base">Is it your wallet?</div>
+              <label class="switch">
+                <input type="checkbox" bind:checked={groupedToBundles} />
+                <span class="slider" />
+              </label>
+            </div>
+            <div class="flex items-center justify-center gap-6 my-3">
+              {#each generationLogo.slice(0, 4) as item}
+                <img
+                  src={item.logo}
+                  alt=""
+                  class="w-10 h-10 overflow-hidden rounded-full"
+                />
+              {/each}
+              <a
+                href="https://getnimbus.io/chains-support"
+                target="_blank"
+                class="text-blue-500 hover:underline cursor-pointer text-lg"
+                >More chains</a
+              >
+            </div>
+
+            <div class="flex justify-end gap-2">
+              <div class="w-[120px]">
+                <Button
+                  variant="secondary"
+                  on:click={() => {
+                    errors = {};
+                    isOpenAddModal = false;
+                  }}
+                >
+                  {MultipleLang.content.modal_cancel}
+                </Button>
+              </div>
+              <div class="w-[120px]">
+                <Button
+                  type="submit"
+                  variant="tertiary"
+                  isLoading={isLoadingAddDEX}
+                  disabled={isLoadingAddDEX}
+                >
+                  <div class="text-white">
+                    {MultipleLang.content.modal_add}
+                  </div>
+                </Button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal get user email -->
 <AppOverlay
   clickOutSideToClose
-  isOpen={isOpenAddModal}
-  on:close={() => (isOpenAddModal = false)}
+  isOpen={isOpenModal}
+  on:close={() => {
+    isOpenModal = false;
+  }}
 >
-  <div class="flex flex-col gap-4">
-    <div class="font-medium xl:title-3 title-1">
-      {MultipleLang.content.modal_add_title}
+  <div class="flex flex-col gap-4 xl:mt-0 mt-4">
+    <div class="flex flex-col gap-1 items-start">
+      <div class="title-3 font-semibold">Let's us know your email</div>
+      <div class="text-sm text-gray-500">
+        Add your email to get updates from us and receive exclusive benefits
+        soon.
+      </div>
     </div>
-    <div class="flex flex-col gap-7">
-      <div class="flex flex-col gap-3">
-        <div class="flex justify-center">
-          <div class="w-max">
-            <Button
-              variant="tertiary"
-              isLoading={isLoadingConnectCEX}
-              disabled={isLoadingConnectCEX}
-              on:click={onSubmitCEX}
-            >
-              <div class="font-medium text-white xl:text-base text-2xl">
-                Connect Exchange
-              </div>
-            </Button>
-          </div>
-        </div>
-        <div
-          class="flex items-center justify-center gap-1 xl:text-base text-2xl"
-        >
-          <img src={Success} alt="" />
-          Bank-level security/encryption.
-          <a
-            href="https://vezgo.com/security"
-            class="text-blue-500 cursor-pointer"
-            target="_blank">Learn more</a
-          >
-        </div>
-        <div class="flex items-center justify-center gap-6 my-3">
-          {#each listLogoCEX as logo}
-            <img
-              src={logo}
-              alt=""
-              class="xl:w-8 xl:h-8 w-10 h-10 rounded-full"
-            />
-          {/each}
-          <a
-            href="https://getnimbus.io/chains-support"
-            target="_blank"
-            class="text-blue-500 hover:underline cursor-pointer xl:text-base text-2xl"
-            >More exchanges</a
-          >
-        </div>
-      </div>
-      <div class="border-t-[1px] relative">
-        <div
-          class={`absolute xl:top-[-10px] top-[-14px] left-1/2 transform -translate-x-1/2 text-gray-400 ${
-            $isDarkMode ? "bg-[#0f0f0f]" : "bg-white"
-          } xl:text-sm text-xl px-2`}
-        >
-          Or
-        </div>
-      </div>
-      <form
-        on:submit|preventDefault={onSubmit}
-        class="flex flex-col gap-3 mt-2"
+    <form
+      on:submit|preventDefault={onSubmitGetEmail}
+      class="flex flex-col xl:gap-3 gap-6"
+    >
+      <div
+        class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
+          email && !$isDarkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
+        }`}
       >
-        <div class="flex flex-col xl:gap-3 gap-6">
-          <div class="flex flex-col gap-1">
-            <div
-              class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
-                address && !$isDarkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
-              }`}
-              class:input-border-error={errors.address &&
-                errors.address.required}
-            >
-              <div
-                class={`xl:text-base text-2xl font-medium ${
-                  $isDarkMode ? "text-gray-400" : "text-[#666666]"
-                }`}
-              >
-                Address
-              </div>
-              <input
-                type="text"
-                id="address"
-                name="address"
-                placeholder={"Your wallet address"}
-                value=""
-                class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal ${
-                  address && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
-                } ${
-                  $isDarkMode
-                    ? "text-white"
-                    : "text-[#5E656B] placeholder-[#5E656B]"
-                }`}
-                on:keyup={({ target: { value } }) => (address = value)}
-              />
-            </div>
-            {#if errors.address && errors.address.required}
-              <div class="text-red-500">
-                {errors.address.msg}
-              </div>
-            {/if}
-          </div>
-          <div class="flex flex-col gap-1">
-            <div
-              class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
-                label && !$isDarkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
-              }`}
-              class:input-border-error={errors.label && errors.label.required}
-            >
-              <div
-                class={`xl:text-base text-2xl font-medium ${
-                  $isDarkMode ? "text-gray-400" : "text-[#666666]"
-                }`}
-              >
-                {MultipleLang.content.modal_label_label}
-              </div>
-              <input
-                type="text"
-                id="label"
-                name="label"
-                placeholder={MultipleLang.content.modal_label_label}
-                value=""
-                class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal ${
-                  label && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
-                } ${
-                  $isDarkMode
-                    ? "text-white"
-                    : "text-[#5E656B] placeholder-[#5E656B]"
-                }
-              `}
-                on:keyup={({ target: { value } }) => (label = value)}
-              />
-            </div>
-            {#if errors.label && errors.label.required}
-              <div class="text-red-500">
-                {errors.label.msg}
-              </div>
-            {/if}
-          </div>
-        </div>
-        <div
-          class="flex items-center justify-end gap-2 text-[#666666] xl:mt-0 mt-3"
-        >
-          <div class="xl:text-sm text-2xl">Is it your wallet?</div>
-          <label class="switch">
-            <input type="checkbox" bind:checked={groupedToBundles} />
-            <span class="slider" />
-          </label>
-        </div>
-        <div class="flex items-center justify-center gap-6 my-3">
-          {#each generationLogo as item}
-            <img
-              src={item.logo}
-              alt=""
-              class="xl:w-8 xl:h-8 w-10 h-10 overflow-hidden rounded-full"
-            />
-          {/each}
-          <a
-            href="https://getnimbus.io/chains-support"
-            target="_blank"
-            class="text-blue-500 hover:underline cursor-pointer xl:text-base text-2xl"
-            >More chains</a
+        <div class="xl:text-base text-lg text-[#666666] font-medium">Email</div>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          required
+          placeholder="Your email"
+          value=""
+          class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-base font-normal text-[#5E656B] placeholder-[#5E656B] ${
+            email && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+          }`}
+          on:keyup={({ target: { value } }) => (email = value)}
+        />
+      </div>
+
+      <div class="flex justify-end gap-2">
+        <div class="w-[120px]">
+          <Button
+            variant="secondary"
+            on:click={() => {
+              isOpenModal = false;
+            }}
           >
+            {MultipleLang.content.modal_cancel}
+          </Button>
         </div>
-        <div class="flex justify-end gap-6 lg:gap-2">
-          <div class="lg:w-[120px] w-full">
-            <Button
-              variant="secondary"
-              on:click={() => {
-                errors = {};
-                isOpenAddModal = false;
-              }}
-            >
-              {MultipleLang.content.modal_cancel}</Button
-            >
-          </div>
-          <div class="lg:w-[120px] w-full">
-            <Button
-              type="submit"
-              variant="tertiary"
-              isLoading={isLoadingAddDEX}
-              disabled={isLoadingAddDEX}
-            >
-              {MultipleLang.content.modal_add}</Button
-            >
-          </div>
+        <div class="w-[120px]">
+          <Button
+            type="submit"
+            isLoading={isLoadingSendMail}
+            disabled={isLoadingSendMail}
+          >
+            Submit
+          </Button>
         </div>
-      </form>
-    </div>
+      </div>
+    </form>
   </div>
 </AppOverlay>
 
 <!-- Modal follow Whales -->
-<AppOverlay
+<!-- <AppOverlay
   clickOutSideToClose
   isOpen={isOpenFollowWhaleModal}
   on:close={() => (isOpenFollowWhaleModal = false)}
 >
   <div class="flex flex-col gap-4">
     <div class="flex flex-col gap-1">
-      <div class="text-2xl xl:text-base">
+      <div class="text-base">
         Go to <a
           href="https://t.me/GetNimbusBot"
           target="_blank"
@@ -1721,7 +2086,7 @@
           >https://t.me/GetNimbusBot</a
         >
       </div>
-      <div class="text-2xl xl:text-base">Use the command as follow video</div>
+      <div class="text-base">Use the command as follow video</div>
     </div>
     <div class="xl:h-[350px] h-[650px]">
       <img src={FollowWhale} alt="" class="object-contain w-full h-full" />
@@ -1767,73 +2132,7 @@
       </CopyToClipboard>
     </div>
   </div>
-</AppOverlay>
-
-<!-- Modal get user email -->
-<AppOverlay
-  clickOutSideToClose
-  isOpen={isOpenModal}
-  on:close={() => {
-    isOpenModal = false;
-  }}
->
-  <div class="flex flex-col gap-4">
-    <div class="flex flex-col gap-1 items-start">
-      <div class="xl:title-3 title-1 font-semibold">
-        Let's us know your email
-      </div>
-      <div class="xl:text-sm text-2xl text-gray-500">
-        Add your email to get updates from us and receive exclusive benefits
-        soon.
-      </div>
-    </div>
-    <form
-      on:submit|preventDefault={onSubmitGetEmail}
-      class="flex flex-col xl:gap-3 gap-10"
-    >
-      <div
-        class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
-          email && !$isDarkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
-        }`}
-      >
-        <div class="xl:text-base text-2xl text-[#666666] font-medium">
-          Email
-        </div>
-        <input
-          type="email"
-          id="email"
-          name="email"
-          required
-          placeholder="Your email"
-          value=""
-          class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
-            email && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
-          }`}
-          on:keyup={({ target: { value } }) => (email = value)}
-        />
-      </div>
-      <div class="flex justify-end lg:gap-2 gap-6">
-        <div class="xl:w-[120px] w-full">
-          <Button
-            variant="secondary"
-            on:click={() => {
-              isOpenModal = false;
-            }}
-          >
-            {MultipleLang.content.modal_cancel}</Button
-          >
-        </div>
-        <div class="xl:w-[120px] w-full">
-          <Button
-            type="submit"
-            isLoading={isLoadingSendMail}
-            disabled={isLoadingSendMail}>Submit</Button
-          >
-        </div>
-      </div>
-    </form>
-  </div>
-</AppOverlay>
+</AppOverlay> -->
 
 {#if showToast}
   <div class="fixed top-3 right-3 w-full" style="z-index: 2147483648;">
@@ -2003,5 +2302,43 @@
       -ms-transform: translateX(26px);
       transform: translateX(26px);
     }
+  }
+
+  .mobile {
+    height: 100vh;
+    z-index: 2147483649;
+
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 250ms;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+
+    --tw-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1),
+      0 8px 10px -6px rgb(0 0 0 / 0.1);
+    --tw-shadow-colored: 0 20px 25px -5px var(--tw-shadow-color),
+      0 8px 10px -6px var(--tw-shadow-color);
+    box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),
+      var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+  }
+
+  @media (min-width: 1536px) {
+    :global(body) .absolute-center {
+      /* position: absolute; */
+      left: 49.5%;
+      transform: translate(-50%, -50%);
+    }
+  }
+
+  @supports (height: 100dvh) {
+    .mobile {
+      height: 100dvh;
+    }
+  }
+
+  :global(body) .mobile-container {
+    background: white;
+  }
+  :global(body.dark) .mobile-container {
+    background: black;
   }
 </style>

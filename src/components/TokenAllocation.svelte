@@ -636,16 +636,29 @@
 <div class="w-full">
   {#if listOptionTypeCategory && listOptionTypeCategory.length === 0}
     {#if $typeWallet !== "BTC"}
-      <div class="flex justify-end mb-5">
-        <Select
-          type="lang"
-          positionSelectList="right-0"
-          listSelect={listOptionTypeCategory &&
-          listOptionTypeCategory.length !== 0
-            ? listOptionTypeCategory
-            : typeListCategory}
-          bind:selected={selectedType}
-        />
+      <div class="flex md:justify-end justify-start mb-5">
+        <div class="md:block hidden">
+          <Select
+            type="lang"
+            positionSelectList="right-0"
+            listSelect={listOptionTypeCategory &&
+            listOptionTypeCategory.length !== 0
+              ? listOptionTypeCategory
+              : typeListCategory}
+            bind:selected={selectedType}
+          />
+        </div>
+        <div class="md:hidden block">
+          <Select
+            type="lang"
+            positionSelectList="left-0"
+            listSelect={listOptionTypeCategory &&
+            listOptionTypeCategory.length !== 0
+              ? listOptionTypeCategory
+              : typeListCategory}
+            bind:selected={selectedType}
+          />
+        </div>
       </div>
     {/if}
   {/if}

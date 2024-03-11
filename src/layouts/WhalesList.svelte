@@ -11,7 +11,8 @@
 
   import Loading from "~/components/Loading.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
-  import PublicPortfolioItem from "~/components/PublicPortfolioItem.svelte";
+  import PublicPortfolioItem from "~/UI/WhalesList/PublicPortfolioItem.svelte";
+  import PublicPortfolioMobileItem from "~/UI/WhalesList/PublicPortfolioMobileItem.svelte";
   import Button from "~/components/Button.svelte";
   import Tooltip from "~/components/Tooltip.svelte";
 
@@ -341,10 +342,10 @@
       class="flex xl:flex-row flex-col justify-between xl:items-end xl:gap-0 gap-4"
     >
       <div class="flex flex-col gap-2">
-        <div class="xl:text-5xl text-7xl font-semibold">
+        <div class="text-4xl font-semibold">
           {MultipleLang.whale}
         </div>
-        <div class="xl:text-xl text-3xl w-max">
+        <div class="xl:text-xl text-2xl">
           {MultipleLang.whales_page_title}
         </div>
       </div>
@@ -353,7 +354,7 @@
           {#each whalesFilter as item}
             <div
               id={item.label}
-              class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
+              class="relative cursor-pointer text-base font-medium py-1 px-3 rounded-[100px] transition-all"
               on:click={() => {
                 selectedFilter = item;
                 queryClient.invalidateQueries(["whaleslist"]);
@@ -382,8 +383,9 @@
       </div>
     </div>
 
+    <!-- Desktop view -->
     <div
-      class={`rounded-[10px] border border_0000000d xl:overflow-visible overflow-x-auto ${
+      class={`xl:block hidden rounded-[10px] border border_0000000d xl:overflow-visible overflow-x-auto ${
         $isDarkMode ? "bg-[#131313]" : "bg-[#fff]"
       } ${
         ($queryWhalesList.isLoading && $queryWhalesList.isError) ||
@@ -398,13 +400,13 @@
             <th
               class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8"
             >
-              <div class="text-left xl:text-xs text-xl uppercase font-medium">
+              <div class="text-left xl:text-xs text-lg uppercase font-medium">
                 Address
               </div>
             </th>
             <th class="py-3">
               <div
-                class="flex items-center justify-end xl:gap-2 gap-4 text-right xl:text-xs text-xl uppercase font-medium"
+                class="flex items-center justify-end xl:gap-2 gap-4 text-right xl:text-xs text-lg uppercase font-medium"
               >
                 ETH Balance
                 <div
@@ -422,7 +424,7 @@
             </th>
             <th class="py-3">
               <div
-                class="flex items-center justify-end xl:gap-2 gap-4 text-right xl:text-xs text-xl uppercase font-medium"
+                class="flex items-center justify-end xl:gap-2 gap-4 text-right xl:text-xs . uppercase font-medium"
               >
                 1D Pnl
                 <div
@@ -440,7 +442,7 @@
             </th>
             <th class="py-3">
               <div
-                class="flex items-center justify-end xl:gap-2 gap-4 text-right xl:text-xs text-xl uppercase font-medium"
+                class="flex items-center justify-end xl:gap-2 gap-4 text-right xl:text-xs uppercase font-medium"
               >
                 7D Pnl
                 <div
@@ -458,7 +460,7 @@
             </th>
             <th class="py-3">
               <div
-                class="flex items-center justify-end xl:gap-2 gap-4 text-right xl:text-xs text-xl uppercase font-medium"
+                class="flex items-center justify-end xl:gap-2 gap-4 text-right xl:text-xs uppercase font-medium"
               >
                 30D Pnl
                 <div
@@ -476,7 +478,7 @@
             </th>
             <th class="py-3">
               <div
-                class="flex items-center justify-end xl:gap-2 gap-4 text-right xl:text-xs text-xl uppercase font-medium"
+                class="flex items-center justify-end xl:gap-2 gap-4 text-right xl:text-xs uppercase font-medium"
               >
                 Realized Profit
 
@@ -495,7 +497,7 @@
             </th>
             <th class="py-3">
               <div
-                class="flex items-center justify-end xl:gap-2 gap-4 text-right xl:text-xs text-xl uppercase font-medium"
+                class="flex items-center justify-end xl:gap-2 gap-4 text-right xl:text-xs uppercase font-medium"
               >
                 30D TXs
                 <div
@@ -513,7 +515,7 @@
             </th>
             <th class="py-3">
               <div
-                class="flex items-center justify-end xl:gap-1 gap-4 text-right xl:text-xs text-xl uppercase font-medium relative"
+                class="flex items-center justify-end xl:gap-1 gap-4 text-right xl:text-xs uppercase font-medium relative"
               >
                 AHT
                 <div
@@ -558,7 +560,7 @@
             </th>
             <th class="py-3">
               <div
-                class="flex items-center justify-end xl:gap-2 gap-4 text-right xl:text-xs text-xl uppercase font-medium"
+                class="flex items-center justify-end xl:gap-2 gap-4 text-right xl:text-xs uppercase font-medium"
               >
                 Last Time
                 <div
@@ -576,7 +578,7 @@
             </th>
             <th class="pr-3 py-3 rounded-tr-[10px]">
               <div
-                class="flex gap-1 justify-end items-center text-right xl:text-xs text-xl uppercase font-medium relative"
+                class="flex gap-1 justify-end items-center text-right xl:text-xs uppercase font-medium relative"
               >
                 RPT
                 <div
@@ -672,8 +674,9 @@
                             <Button
                               variant="premium"
                               on:click={() => navigate("/upgrade")}
-                              >Upgrade Plan</Button
                             >
+                              Upgrade Plan
+                            </Button>
                           </div>
                         </td>
                       </tr>
@@ -704,8 +707,9 @@
                             <Button
                               variant="premium"
                               on:click={() => navigate("/upgrade")}
-                              >Upgrade Plan</Button
                             >
+                              Upgrade Plan
+                            </Button>
                           </div>
                         </td>
                       </tr>
@@ -719,46 +723,104 @@
       </table>
     </div>
 
-    <!-- <div class="flex justify-center gap-3 xl:-mt-4">
-      <div class="w-[50px]">
-        {#if pageValue === 0}
-          <Button variant="disabled" disabled>
-            <div class="text-2xl -mt-1">&lsaquo;</div>
-          </Button>
-        {:else}
-          <Button
-            variant="secondary"
-            on:click={() => {
-              if (pageValue > 1) {
-                pageValue = pageValue - 1;
-              } else {
-                pageValue = 0;
-              }
-              getPublicPortfolio();
-            }}
-          >
-            <div class="text-2xl -mt-1">&lsaquo;</div>
-          </Button>
-        {/if}
-      </div>
-      <div class="w-[50px]">
-        {#if whalesData && whalesData.length === 0}
-          <Button variant="disabled" disabled>
-            <div class="text-2xl -mt-1">&rsaquo;</div>
-          </Button>
-        {:else}
-          <Button
-            variant="secondary"
-            on:click={() => {
-              pageValue = pageValue + 1;
-              getPublicPortfolio();
-            }}
-          >
-            <div class="text-2xl -mt-1">&rsaquo;</div>
-          </Button>
-        {/if}
-      </div>
-    </div> -->
+    <!-- Mobile view -->
+    <div
+      class={`xl:hidden block rounded-[10px] p-2 w-full ${
+        $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
+      }`}
+    >
+      {#if $queryWhalesList.isLoading}
+        <div class="flex justify-center items-center h-full py-3 px-3">
+          <Loading />
+        </div>
+      {:else}
+        <div>
+          {#if whalesData && whalesData?.length === 0}
+            <div
+              class="flex justify-center items-center h-full py-3 px-3 text-lg text-gray-400"
+            >
+              Empty
+            </div>
+          {:else}
+            <!-- {#each whalesData as data} -->
+            {#each (filterDuplicates(whalesData) || [])?.slice(0, $selectedPackage === "FREE" ? 5 : undefined) as data, whalePosition}
+              <PublicPortfolioMobileItem
+                {data}
+                typeData={selectedFilter.label}
+                {whalePosition}
+              />
+            {/each}
+            {#if $selectedPackage === "FREE"}
+              <tr>
+                <td colspan="8">
+                  {#if whalesData.length > 5}
+                    <tr
+                      class={`flex justify-center py-10 px-4 backdrop-blur-md bg-gradient-to-t to-transparent ${
+                        $isDarkMode
+                          ? "bg-black/90 from-[#000] via-[#222222]"
+                          : "bg-white/95 from-white via-white"
+                      }`}
+                    >
+                      <td colspan="5" class="flex flex-col items-center gap-1">
+                        <div class="text-lg font-medium">
+                          Use Nimbus at its full potential
+                        </div>
+                        <div class="text-base text-gray-500">
+                          Upgrade to Premium to access all other <span
+                            class="font-medium"
+                            >{whalesData.length - 5 > 0
+                              ? whalesData.length - 5
+                              : ""}</span
+                          > opportunities
+                        </div>
+                        <div class="mt-2 w-max">
+                          <Button
+                            variant="premium"
+                            on:click={() => navigate("/upgrade")}
+                          >
+                            Upgrade Plan
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  {:else}
+                    <tr
+                      class={`absolute left-0 right-0 bottom-0 top-[120px] flex justify-center pt-10 backdrop-blur-md bg-gradient-to-t to-transparent ${
+                        $isDarkMode
+                          ? "bg-black/90 from-[#000] via-[#222222]"
+                          : "bg-white/95 from-white via-white"
+                      }`}
+                    >
+                      <td colspan="5" class="flex flex-col items-center gap-1">
+                        <div class="text-lg font-medium">
+                          Use Nimbus at its full potential
+                        </div>
+                        <div class="text-base text-gray-500">
+                          Upgrade to Premium to access all other <span
+                            class="font-medium"
+                            >{whalesData.length - 5 > 0
+                              ? whalesData.length - 5
+                              : ""}</span
+                          > opportunities
+                        </div>
+                        <div class="mt-2 w-max">
+                          <Button
+                            variant="premium"
+                            on:click={() => navigate("/upgrade")}
+                          >
+                            Upgrade Plan
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  {/if}
+                </td>
+              </tr>
+            {/if}
+          {/if}
+        </div>
+      {/if}
+    </div>
   </div>
 </ErrorBoundary>
 

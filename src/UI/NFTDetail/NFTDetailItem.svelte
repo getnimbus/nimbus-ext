@@ -32,7 +32,7 @@
     }`}
   >
     <div class="flex items-center gap-4">
-      <div class="flex-1 xl:text-sm text-2xl font-medium">
+      <div class="flex-1 text-sm font-medium">
         {item?.name ? item?.name : "N/A"}
       </div>
       <div class="w-12 h-12 rounded-md border border-gray-300 overflow-hidden">
@@ -50,7 +50,7 @@
     }`}
   >
     <div
-      class="xl:text-sm text-2xl text_00000099 font-medium flex flex-col items-end gap-1"
+      class="text-sm text_00000099 font-medium flex flex-col items-end gap-1"
     >
       <div class="w-max flex items-center gap-1">
         <TooltipNumber number={Number(item?.price || 0)} type="balance" />
@@ -67,9 +67,7 @@
       $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
-    <div
-      class="flex items-center justify-end gap-1 xl:text-sm text-2xl font-medium"
-    >
+    <div class="flex items-center justify-end gap-1 text-sm font-medium">
       <div class="flex flex-col">
         <div
           class={`flex justify-end gap-1 ${

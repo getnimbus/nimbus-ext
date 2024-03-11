@@ -6,9 +6,7 @@
   <div class="flex flex-col items-center gap-10">
     <div class="flex-1">
       <div class="flex flex-col items-center gap-6">
-        <div class="text-5xl  font-normal">
-          You are ready to enjoy
-        </div>
+        <div class="text-5xl font-normal">You are ready to enjoy</div>
         <div class="text-lg text_00000099 font-normal">
           Join us on Discord and build Nimbus together. WAGMI 🙌
         </div>
@@ -19,8 +17,10 @@
         on:click={() => {
           window.open(`https://discord.gg/u5b9dTrSTr`, "_blank");
           window.close();
-        }}>Join Discord</Button
+        }}
       >
+        Join Discord
+      </Button>
     </div>
   </div>
 </div>

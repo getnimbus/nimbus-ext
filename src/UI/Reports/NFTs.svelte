@@ -8,6 +8,8 @@
   import Button from "~/components/Button.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
   import Loading from "~/components/Loading.svelte";
+  import TooltipNumber from "~/components/TooltipNumber.svelte";
+  import Copy from "~/components/Copy.svelte";
 
   const MultipleLang = {
     content: {
@@ -111,8 +113,9 @@
   };
 </script>
 
+<!-- Desktop View -->
 <div
-  class={`border border_0000000d rounded-[10px] overflow-x-auto h-full ${
+  class={`xl:block hidden border border_0000000d rounded-[10px] overflow-x-auto h-full ${
     $isDarkMode ? "bg-[#131313]" : "bg-[#fff]"
   }`}
 >
@@ -245,22 +248,98 @@
   </table>
 </div>
 
+<!-- Mobile View -->
+<div class="xl:hidden block">
+  {#if $query.isError}
+    <div class="flex items-center justify-center h-full px-3 py-4">
+      Please connect wallet
+    </div>
+  {:else if $query.isLoading}
+    <div class="flex items-center justify-center h-full px-3 py-4">
+      <Loading />
+    </div>
+  {:else}
+    <div class="flex flex-col">
+      {#if ($query.data && $query.data.length === 0) || $query.isError}
+        <div
+          class="flex items-center justify-center h-full px-3 py-4 text-base"
+        >
+          No report nft collection
+        </div>
+      {:else}
+        {#each $query.data as item}
+          <div
+            class="flex flex-col gap-4 border-b-[1px] border_0000000d last:border-none py-2"
+          >
+            <div class="flex justify-between items-start">
+              <div class="text-sm font-medium flex justify-end gap-1">
+                <div class="text-sm">
+                  {item.contractName}
+                </div>
+              </div>
+              <div
+                class="text-sm font-semibold text-red-600 transition-all cursor-pointer hover:underline dark:text-red-500 text-right"
+                on:click={() => {
+                  selectedItemDelete = {
+                    chain: item.chain,
+                    contractAddress: item.contractAddress,
+                    type: "nft",
+                  };
+                  isOpenConfirmDelete = true;
+                }}
+              >
+                {MultipleLang.content.modal_delete}
+              </div>
+            </div>
+
+            <div class="flex justify-between items-start">
+              <div class="text-right text-sm uppercase font-medium">
+                {MultipleLang.content.contract_address_header_table}
+              </div>
+              <div class="text-sm text-left">
+                <Copy
+                  address={item?.contractAddress}
+                  textTooltip="Copy address to clipboard"
+                  iconColor={$isDarkMode ? "#fff" : "#000"}
+                  color={$isDarkMode ? "#ccc" : "#00000099"}
+                  isShorten={true}
+                  isLink={true}
+                  link={`/?type=EVM&chain=ALL&address=${item?.contractAddress}`}
+                />
+              </div>
+            </div>
+
+            <div class="flex justify-between items-start">
+              <div class="text-right text-sm uppercase font-medium">
+                {MultipleLang.content.chain_header_table}
+              </div>
+              <div class="text-sm text_00000099">
+                {item.chain}
+              </div>
+            </div>
+          </div>
+        {/each}
+      {/if}
+    </div>
+  {/if}
+</div>
+
 <AppOverlay
   clickOutSideToClose
   isOpen={isOpenConfirmDelete}
   on:close={() => (isOpenConfirmDelete = false)}
 >
-  <div class="flex flex-col gap-10 xl:gap-4">
+  <div class="flex flex-col gap-4 xl:mt-0 mt-4">
     <div class="flex flex-col items-start gap-1">
-      <div class="font-semibold xl:title-3 title-1">
+      <div class="font-semibold title-3">
         {MultipleLang.content.modal_delete_title}
       </div>
-      <div class="text-2xl text-gray-500 xl:text-sm">
+      <div class="text-gray-500 text-sm">
         {MultipleLang.content.modal_delete_sub_title}
       </div>
     </div>
-    <div class="flex justify-end gap-6 lg:gap-2">
-      <div class="lg:w-[120px] w-full">
+    <div class="flex justify-end gap-2">
+      <div class="w-[120px]">
         <Button
           variant="secondary"
           on:click={() => {
@@ -270,7 +349,7 @@
           {MultipleLang.content.modal_cancel}
         </Button>
       </div>
-      <div class="lg:w-[120px] w-full">
+      <div class="w-[120px]">
         <Button
           isLoading={isLoadingDelete}
           disabled={isLoadingDelete}

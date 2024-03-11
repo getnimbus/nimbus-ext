@@ -758,11 +758,11 @@
 <ErrorBoundary>
   <div class="flex flex-col justify-between gap-6 xl:flex-row view-the-pnl">
     <div
-      class={`xl:w-1/2 w-full rounded-[20px] p-6 xl:block hidden ${
-        $isDarkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
+      class={`xl:w-1/2 w-full rounded-[20px] p-6 ${
+        $isDarkMode ? "bg-[#222222]" : "bg-[#fff] xl:border border_0000001a"
       }`}
     >
-      <div class="text-4xl font-medium xl:text-2xl mb-6">Allocation</div>
+      <div class="text-3xl font-medium xl:text-2xl mb-6">Allocation</div>
 
       {#if isLoadingBreakdownTokens && isLoadingBreakdownNfts}
         <div class="flex items-center justify-center h-[465px]">
@@ -773,12 +773,12 @@
           {#if selectedType === "token"}
             {#if isEmptyDataPieTokens}
               <div
-                class="flex justify-center items-center h-full xl:text-lg text-xl text-gray-400 h-[465px]"
+                class="flex justify-center items-center h-[465px] text-base text-gray-400"
               >
                 Empty
               </div>
             {:else}
-              <div class={`${$typeWallet !== "BTC" ? "-mt-15" : ""}`}>
+              <div class={`${$typeWallet !== "BTC" ? "md:-mt-14 -mt-2" : ""}`}>
                 <TokenAllocation
                   {handleSelectedTableTokenHolding}
                   {holdingTokenData}
@@ -796,7 +796,7 @@
           {#if selectedType === "nft"}
             {#if isEmptyDataPieNfts}
               <div
-                class="flex justify-center items-center h-full xl:text-lg text-xl text-gray-400 h-[465px]"
+                class="flex justify-center items-center h-[465px] text-base text-gray-400"
               >
                 Empty
               </div>
@@ -816,44 +816,47 @@
 
     <div
       class={`xl:w-1/2 w-full rounded-[20px] p-6 relative ${
-        $isDarkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
+        $isDarkMode ? "bg-[#222222]" : "bg-[#fff] xl:border border_0000001a"
       }`}
     >
       {#if $typeWallet === "BTC"}
-        <div class="pl-4 text-4xl font-medium xl:text-2xl">
+        <div class="md:pl-4 text-3xl font-medium xl:text-2xl">
           {MultipleLang.performance}
         </div>
         <div
-          class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex items-center justify-center z-9 backdrop-blur-md ${
+          class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex items-center justify-center z-8 backdrop-blur-md ${
             $isDarkMode ? "bg-black/90" : "bg-white/95"
           }`}
         >
           <div class="text-2xl xl:text-lg">Coming soon 🚀</div>
         </div>
       {:else}
-        <div class="flex justify-between mb-4">
+        <div class="flex md:flex-row flex-col gap-3 justify-between mb-4">
           {#if ($typeWallet === "EVM" && listNotSupportHistoricalBalances.includes($chain)) || listSupported
               .slice(2)
               .includes($typeWallet) || $selectedBundle?.accounts?.find((item) => item.type === "CEX") !== undefined}
-            <TooltipTitle
-              tooltipText="The performance data can only get after 7 days you connect to Nimbus"
-              type="warning"
-            >
-              <div class="pl-4 text-4xl font-medium xl:text-2xl">
-                {MultipleLang.performance}
-              </div>
-            </TooltipTitle>
+            <div>
+              <TooltipTitle
+                tooltipText="The performance data can only get after 7 days you connect to Nimbus"
+                type="warning"
+              >
+                <div class="md:pl-4 text-3xl font-medium xl:text-2xl">
+                  {MultipleLang.performance}
+                </div>
+              </TooltipTitle>
+            </div>
           {:else}
-            <div class="pl-4 text-4xl font-medium xl:text-2xl">
+            <div class="md:pl-4 text-3xl font-medium xl:text-2xl">
               {MultipleLang.performance}
             </div>
           {/if}
+
           {#if overviewDataPerformance?.performance?.length !== 0 || overviewDataPerformance?.portfolioChart?.length !== 0}
             <div class="flex items-center gap-2">
               <AnimateSharedLayout>
                 {#each performanceTypeChartPortfolio as type}
                   <div
-                    class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
+                    class="relative cursor-pointer xl:text-base text-lg font-medium py-1 px-3 rounded-[100px] transition-all"
                     on:click={() => (selectedTypePerformance = type.value)}
                   >
                     <div
@@ -881,6 +884,7 @@
             </div>
           {/if}
         </div>
+
         {#if isLoading}
           <div class="flex items-center justify-center h-[465px]">
             <Loading />
@@ -889,23 +893,23 @@
           <div>
             {#if overviewDataPerformance?.performance?.length === 0 || overviewDataPerformance?.portfolioChart?.length === 0}
               <div
-                class="flex justify-center items-center h-full xl:text-lg text-xl text-gray-400 h-[465px]"
+                class="flex justify-center items-center h-[465px] text-base text-gray-400"
               >
                 Empty
               </div>
             {:else}
               <div class="flex flex-col gap-4 relative">
                 <div
-                  class={`absolute top-8 left-20 flex flex-col rounded-[4px] px-2 py-1 z-2 ${
+                  class={`absolute md:top-8 top-16 md:left-20 left-24 flex flex-col rounded-[4px] w-max px-2 py-1 z-2 ${
                     $isDarkMode ? "bg-[#131313]" : "bg-white"
                   }`}
                   style="box-shadow: rgba(0, 0, 0, 0.2) 1px 2px 10px;"
                 >
-                  <div class="xl:text-lg text-xl font-medium flex items-center">
+                  <div class="text-lg font-medium flex items-center">
                     $<TooltipNumber number={networth} type="balance" />
                   </div>
                   <div
-                    class={`xl:text-sm text-base flex gap-1 ${
+                    class={`text-sm flex gap-1 ${
                       portfolioPercentChange >= 0
                         ? "text-[#00A878]"
                         : "text-red-500"

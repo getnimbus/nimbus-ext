@@ -950,13 +950,13 @@
 </script>
 
 <div class="flex flex-col gap-4">
-  <div class="flex justify-between gap-6">
+  <div class="flex md:flex-row flex-col justify-between gap-6">
     {#if !symbol.includes("USD") && symbol !== "DAI" && $typeWallet !== "MOVE"}
       <div class="flex items-center">
         <AnimateSharedLayout>
           {#each typeChart as type}
             <div
-              class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
+              class="relative cursor-pointer xl:text-base text-lg font-medium py-1 px-3 rounded-[100px] transition-all"
               on:click={() => (selectedTypeChart = type.value)}
             >
               <div
@@ -1056,12 +1056,12 @@
         {#if selectedTypeChart === "line"}
           {#if $queryTokenPrice.isError || (dataPriceChart && dataPriceChart.length === 0)}
             <div
-              class="flex justify-center items-center text-lg text-gray-400 h-[485px] relative"
+              class="flex justify-center items-center h-[485px] text-base text-gray-400 relative"
             >
               Empty
               {#if ["SOL", "BTC", "TON", "NEAR", "ALGO"].includes(chain)}
                 <div
-                  class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center gap-3 pt-62 z-9 backdrop-blur-md ${
+                  class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center gap-3 pt-62 z-8 backdrop-blur-md ${
                     $isDarkMode ? "bg-black/90" : "bg-white/95"
                   }`}
                 >
@@ -1090,7 +1090,7 @@
               </div>
               {#if ["BTC", "TON"].includes(chain)}
                 <div
-                  class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center gap-3 pt-62 z-9 backdrop-blur-md ${
+                  class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center gap-3 pt-62 z-8 backdrop-blur-md ${
                     $isDarkMode ? "bg-black/90" : "bg-white/95"
                   }`}
                 >
@@ -1104,12 +1104,12 @@
         <div class="h-full">
           {#if $queryTokenPrice.isError || (dataPriceChart && dataPriceChart.length === 0)}
             <div
-              class="flex justify-center items-center text-lg text-gray-400 h-[485px] relative"
+              class="flex justify-center items-center h-[485px] text-base text-gray-400 relative"
             >
               Empty
               {#if ["SOL", "BTC", "TON", "NEAR", "ALGO"].includes(chain)}
                 <div
-                  class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center gap-3 pt-62 z-9 backdrop-blur-md ${
+                  class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center gap-3 pt-62 z-8 backdrop-blur-md ${
                     $isDarkMode ? "bg-black/90" : "bg-white/95"
                   }`}
                 >
@@ -1138,7 +1138,7 @@
               </div>
               {#if ["BTC", "TON"].includes(chain)}
                 <div
-                  class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center gap-3 pt-62 z-9 backdrop-blur-md ${
+                  class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center gap-3 pt-62 z-8 backdrop-blur-md ${
                     $isDarkMode ? "bg-black/90" : "bg-white/95"
                   }`}
                 >

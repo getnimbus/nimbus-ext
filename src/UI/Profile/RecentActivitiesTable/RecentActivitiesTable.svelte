@@ -2,11 +2,12 @@
   import { chain, isDarkMode } from "~/store";
   import { nimbus } from "~/lib/network";
   import { onMount } from "svelte";
+  import { filterDuplicates } from "~/utils";
 
   import Loading from "~/components/Loading.svelte";
   import Button from "~/components/Button.svelte";
   import RecentActivityItem from "./RecentActivityItem.svelte";
-  import { filterDuplicates } from "~/utils";
+  import RecentActivityMobileItem from "./RecentActivityMobileItem.svelte";
 
   export let selectedAddress;
   export let isSync = false;
@@ -70,14 +71,13 @@
 </script>
 
 <div
-  class="col-span-4 border border_0000001a rounded-xl flex flex-col gap-3 p-6"
+  class="col-span-4 xl:border border_0000001a rounded-xl flex flex-col gap-3 xl:p-6 py-3"
 >
-  <div class="flex justify-start text-3xl font-medium xl:text-xl">
-    Recent Trades
-  </div>
+  <div class="flex justify-start text-2xl font-medium">Recent Trades</div>
 
+  <!-- Desktop view -->
   <div
-    class={`rounded-[10px] xl:overflow-visible overflow-x-auto h-full ${
+    class={`xl:block hidden rounded-[10px] xl:overflow-visible overflow-x-auto h-full ${
       $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
     }`}
   >
@@ -135,7 +135,7 @@
             <tr>
               <td colspan={5}>
                 <div
-                  class="flex justify-center items-center h-full py-3 px-3 xl:text-lg text-xl text-gray-400"
+                  class="flex justify-center items-center h-full py-3 px-3 text-base text-gray-400"
                 >
                   Empty
                 </div>
@@ -152,6 +152,33 @@
         </tbody>
       {/if}
     </table>
+  </div>
+
+  <!-- Mobile view -->
+  <div
+    class={`xl:hidden block rounded-[10px] p-2 overflow-hidden w-full ${
+      $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
+    }`}
+  >
+    {#if isLoading && pageToken === 1}
+      <div class="flex justify-center items-center h-full py-3 px-3">
+        <Loading />
+      </div>
+    {:else}
+      <div>
+        {#if data && data.length === 0}
+          <div
+            class="flex justify-center items-center h-full py-3 px-3 text-base text-gray-400"
+          >
+            Empty
+          </div>
+        {:else}
+          {#each filterDuplicates(data) as item}
+            <RecentActivityMobileItem {item} />
+          {/each}
+        {/if}
+      </div>
+    {/if}
   </div>
 
   <div class="mx-auto">

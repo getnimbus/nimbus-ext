@@ -154,109 +154,101 @@
     </div>
   </div>
 
-  <div class={`${isLoading ? "h-[400px]" : ""}`}>
-    <div
-      class={`border border_0000000d rounded-[10px] xl:overflow-hidden overflow-x-auto h-full ${
-        $isDarkMode ? "bg-[#131313]" : "bg-[#fff]"
-      }`}
-    >
-      <table class="table-auto xl:w-full w-[1200px] h-full">
-        <thead>
-          <tr class="bg_f4f5f8">
-            <th class="pl-3 py-3">
-              <div
-                class="text-left xl:text-sm text-2xl uppercase font-semibold"
-              >
-                {MultipleLang.content.label_header_table}
+  <div
+    class={`border border_0000000d rounded-[10px] xl:overflow-hidden overflow-x-auto h-full ${
+      $isDarkMode ? "bg-[#131313]" : "bg-[#fff]"
+    }`}
+  >
+    <table class="table-auto xl:w-full w-[1200px] h-full">
+      <thead>
+        <tr class="bg_f4f5f8">
+          <th class="pl-3 py-3">
+            <div class="text-left xl:text-sm text-2xl uppercase font-semibold">
+              {MultipleLang.content.label_header_table}
+            </div>
+          </th>
+          <th class="py-3">
+            <div class="text-left xl:text-sm text-2xl uppercase font-semibold">
+              {MultipleLang.content.address_header_table}
+            </div>
+          </th>
+          <th class="pr-3 py-3">
+            <div class="text-right xl:text-sm text-2xl uppercase font-semibold">
+              {MultipleLang.content.action_header_table}
+            </div>
+          </th>
+        </tr>
+      </thead>
+      {#if isLoading}
+        <tbody>
+          <tr>
+            <td colspan="3">
+              <div class="flex justify-center items-center h-full py-4 px-3">
+                <Loading />
               </div>
-            </th>
-            <th class="py-3">
-              <div
-                class="text-left xl:text-sm text-2xl uppercase font-semibold"
-              >
-                {MultipleLang.content.address_header_table}
-              </div>
-            </th>
-            <th class="pr-3 py-3">
-              <div
-                class="text-right xl:text-sm text-2xl uppercase font-semibold"
-              >
-                {MultipleLang.content.action_header_table}
-              </div>
-            </th>
+            </td>
           </tr>
-        </thead>
-        {#if isLoading}
-          <tbody>
+        </tbody>
+      {:else}
+        <tbody>
+          {#if listAddressLabel && listAddressLabel.length === 0}
             <tr>
               <td colspan="3">
-                <div class="flex justify-center items-center h-full py-4 px-3">
-                  <Loading />
+                <div
+                  class="flex justify-center items-center h-full py-4 px-3 xl:text-base text-2xl"
+                >
+                  No highlight
                 </div>
               </td>
             </tr>
-          </tbody>
-        {:else}
-          <tbody>
-            {#if listAddressLabel && listAddressLabel.length === 0}
-              <tr>
-                <td colspan="3">
+          {:else}
+            {#each listAddressLabel as item}
+              <tr class="hover:bg-gray-100 transition-all">
+                <td class="pl-3 py-4">
                   <div
-                    class="flex justify-center items-center h-full py-4 px-3 xl:text-base text-2xl"
+                    class="bg-[#6AC7F533] text_27326F xl:text-base text-2xl w-max px-3 py-1 rounded-[5px]"
                   >
-                    No highlight
+                    {item.label}
+                  </div>
+                </td>
+
+                <td class="py-4">
+                  <div
+                    class="text-left xl:text-base text-2xl flex items-start gap-2"
+                  >
+                    <Copy
+                      address={item.address}
+                      iconColor={`${$isDarkMode ? "#fff" : "#000"}`}
+                      color={`${$isDarkMode ? "#fff" : "#000"}`}
+                    />
+                  </div>
+                </td>
+
+                <td class="pr-3 py-4">
+                  <div class="flex justify-end gap-6">
+                    <div
+                      class="text-red-600 xl:text-base text-2xl hover:underline transition-all cursor-pointer font-semibold"
+                      on:click={() => {
+                        isOpenConfirmDelete = true;
+                        selectedHighlight = item;
+                      }}
+                    >
+                      {MultipleLang.content.modal_delete}
+                    </div>
+                    <div
+                      class="text-blue-600 xl:text-base text-2xl hover:underline transition-all cursor-pointer font-semibold"
+                      on:click={() => handleEdit(item)}
+                    >
+                      {MultipleLang.content.modal_edit}
+                    </div>
                   </div>
                 </td>
               </tr>
-            {:else}
-              {#each listAddressLabel as item}
-                <tr class="hover:bg-gray-100 transition-all">
-                  <td class="pl-3 py-4">
-                    <div
-                      class="bg-[#6AC7F533] text_27326F xl:text-base text-2xl w-max px-3 py-1 rounded-[5px]"
-                    >
-                      {item.label}
-                    </div>
-                  </td>
-
-                  <td class="py-4">
-                    <div
-                      class="text-left xl:text-base text-2xl flex items-start gap-2"
-                    >
-                      <Copy
-                        address={item.address}
-                        iconColor={`${$isDarkMode ? "#fff" : "#000"}`}
-                        color={`${$isDarkMode ? "#fff" : "#000"}`}
-                      />
-                    </div>
-                  </td>
-
-                  <td class="pr-3 py-4">
-                    <div class="flex justify-end gap-6">
-                      <div
-                        class="text-red-600 xl:text-base text-2xl hover:underline transition-all cursor-pointer font-semibold"
-                        on:click={() => {
-                          isOpenConfirmDelete = true;
-                          selectedHighlight = item;
-                        }}
-                      >
-                        {MultipleLang.content.modal_delete}
-                      </div>
-                      <div
-                        class="text-blue-600 xl:text-base text-2xl hover:underline transition-all cursor-pointer font-semibold"
-                        on:click={() => handleEdit(item)}
-                      >
-                        {MultipleLang.content.modal_edit}
-                      </div>
-                    </div>
-                  </td>
-                </tr>
-              {/each}
-            {/if}
-          </tbody>
-        {/if}
-      </table>
-    </div>
+            {/each}
+          {/if}
+        </tbody>
+      {/if}
+    </table>
   </div>
 </div>
 

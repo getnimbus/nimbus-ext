@@ -52,11 +52,11 @@
 </script>
 
 <div
-  class={`rounded-[20px] p-6 flex flex-col gap-4 ${
-    $isDarkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
+  class={`rounded-[20px] xl:p-6 flex flex-col gap-4 ${
+    $isDarkMode ? "bg-[#222222]" : "bg-[#fff] xl:border border_0000001a"
   }`}
 >
-  <div class="xl:text-2xl text-4xl font-medium">History</div>
+  <div class="text-2xl font-medium">History</div>
   <div
     class={`rounded-[10px] overflow-x-auto overflow-y-auto h-[563px] relative ${
       $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
@@ -75,27 +75,19 @@
           <th
             class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8 w-[100px]"
           >
-            <div class="text-left xl:text-xs text-xl uppercase font-medium">
-              Token ID
-            </div>
+            <div class="text-left text-sm uppercase font-medium">Token ID</div>
           </th>
 
           <th class="py-3">
-            <div class="text-right xl:text-xs text-xl uppercase font-medium">
-              Cost
-            </div>
+            <div class="text-right text-sm uppercase font-medium">Cost</div>
           </th>
 
           <th class="py-3">
-            <div class="text-right xl:text-xs text-xl uppercase font-medium">
-              Type
-            </div>
+            <div class="text-right text-sm uppercase font-medium">Type</div>
           </th>
 
           <th class="py-3">
-            <div class="text-right xl:text-xs text-xl uppercase font-medium">
-              Time
-            </div>
+            <div class="text-right text-sm uppercase font-medium">Time</div>
           </th>
 
           <th class="py-3 w-10" />
@@ -117,7 +109,7 @@
             <tr>
               <td colspan="7">
                 <div
-                  class="flex justify-center items-center h-full py-3 px-3 xl:text-lg text-xl text-gray-400"
+                  class="flex justify-center items-center h-full py-3 px-3 text-base text-gray-400"
                 >
                   Empty
                 </div>

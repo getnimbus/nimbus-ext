@@ -7,6 +7,7 @@
   import type { AnalyticHistoricalFormat } from "~/types/AnalyticHistoricalData";
 
   import CalendarChart from "~/components/CalendarChart.svelte";
+  import TooltipTitle from "~/components/TooltipTitle.svelte";
 
   export let packageSelected;
   export let darkMode;
@@ -186,26 +187,39 @@
 </script>
 
 <div
-  class={`rounded-[20px] py-6 relative ${
-    darkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
+  class={`rounded-[20px] xl:py-6 py-3 relative overflow-x-auto ${
+    darkMode ? "bg-[#222222]" : "bg-[#fff] xl:border border_0000001a"
   }`}
 >
-  <CalendarChart
-    {option}
-    isEmptyDataChart={$query.isError}
-    isLoadingChart={$query.isFetching}
-    title="Activities"
-    tooltipTitle="The chart shows only activities made by this wallet"
-    id="historical-activities-analytic"
-    type="normal"
-  />
+  <div
+    class="xl:pl-6 font-medium flex justify-start z-8 w-max xl:text-xl text-2xl"
+  >
+    <TooltipTitle
+      tooltipText="The chart shows only activities made by this wallet"
+      isBigIcon
+    >
+      Activities
+    </TooltipTitle>
+  </div>
+  <div class="overflow-x-auto w-full mt-2">
+    <div class="min-w-[800px]">
+      <CalendarChart
+        {option}
+        isEmptyDataChart={$query.isError}
+        isLoadingChart={$query.isFetching}
+        isTrxPage={false}
+        id="historical-activities-analytic"
+        type="normal"
+      />
+    </div>
+  </div>
   {#if otherGeneration.includes($typeWallet)}
     <div
-      class={`absolute top-0 left-0 rounded-[20px] z-30 w-full h-full flex items-center justify-center z-10 backdrop-blur-md ${
+      class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex items-center justify-center z-8 backdrop-blur-md ${
         darkMode ? "bg-black/90" : "bg-white/95"
       }`}
     >
-      <div class="text-2xl xl:text-lg">Coming soon 🚀</div>
+      <div class="text-lg">Coming soon 🚀</div>
     </div>
   {/if}
 </div>

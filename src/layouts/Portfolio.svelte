@@ -923,7 +923,7 @@
   </span>
 
   <span slot="body">
-    <div class="max-w-[2000px] m-auto xl:w-[90%] w-[90%] -mt-26">
+    <div class="max-w-[2000px] m-auto w-[90%] xl:-mt-26 -mt-34">
       {#if isLoadingSync}
         <div
           class="portfolio_container text-xl font-medium flex flex-col gap-5 justify-center items-center rounded-[20px] p-6 h-screen"
@@ -946,13 +946,13 @@
             </div>
           {:else}
             <div
-              class="portfolio_container flex flex-col gap-7 rounded-[20px] xl:p-8 p-6"
+              class="portfolio_container flex flex-col xl:gap-7 gap-5 rounded-[20px] xl:p-8 p-4"
             >
               <div class="flex items-center gap-1">
                 <AnimateSharedLayout>
                   {#each typePortfolioPage as type}
                     <div
-                      class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
+                      class="relative cursor-pointer xl:text-base text-lg font-medium py-1 px-3 rounded-[100px] transition-all"
                       id={type.id}
                       on:click={() => {
                         tab.update((n) => (n = type.value));

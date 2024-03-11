@@ -209,8 +209,9 @@
 
 <svelte:window on:keydown={closeSideNFTDetail} />
 
+<!-- Desktop view -->
 <div
-  class={`rounded-[10px] overflow-hidden w-full ${
+  class={`xl:block hidden rounded-[10px] overflow-hidden w-full ${
     $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
   }`}
 >
@@ -271,7 +272,7 @@
   {#if data && data.length === 0 && !isLoading}
     <div class="grid grid-cols-9">
       <div
-        class="col-span-full flex justify-center items-center h-full py-3 px-3 xl:text-lg text-xl text-gray-400"
+        class="col-span-full flex justify-center items-center h-full py-3 px-3 text-base text-gray-400"
       >
         {#if defaultData && defaultData.length === 0}
           {MultipleLang.empty}
@@ -720,6 +721,444 @@
   {/if}
 </div>
 
+<!-- Mobile view -->
+<div
+  class={`xl:hidden block rounded-[10px] p-2 overflow-hidden w-full ${
+    $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
+  }`}
+>
+  {#if data && data.length === 0 && !isLoading}
+    <div
+      class="flex justify-center items-center h-full py-3 px-3 text-base text-gray-400"
+    >
+      {#if defaultData && defaultData.length === 0}
+        {MultipleLang.empty}
+      {:else}
+        All NFT Collections less than $1
+      {/if}
+    </div>
+  {:else}
+    <VirtualList
+      scrollDirection="vertical"
+      width="100%"
+      height={data.length < 10 ? data.length * 420 : 940}
+      itemCount={data.length}
+      itemSize={420}
+    >
+      <div
+        class="flex flex-col gap-4 border-b-[1px] border_0000000d last:border-none py-2"
+        slot="item"
+        let:index
+        let:style
+        {style}
+        on:mouseover={() => {
+          if ($user && Object.keys($user).length !== 0) {
+            selectedItemIndex = index;
+            isShowReport = true;
+          }
+        }}
+        on:mouseleave={() => {
+          if ($user && Object.keys($user).length !== 0) {
+            selectedItemIndex = -1;
+            isShowReport = false;
+          }
+        }}
+      >
+        <div class="flex flex-col gap-1">
+          <div class="flex items-center gap-2">
+            <div
+              class="text-lg font-medium flex justify-start relative"
+              on:mouseover={() => {
+                selectedItemIndex = index;
+                isShowTooltipName = true;
+              }}
+              on:mouseleave={() => {
+                selectedItemIndex = -1;
+                isShowTooltipName = false;
+              }}
+            >
+              {data[index]?.collection?.name
+                ? data[index]?.collection?.name.length > 24
+                  ? shorterName(data[index]?.collection?.name, 20)
+                  : data[index]?.collection?.name
+                : "N/A"}
+
+              {#if isShowTooltipName && selectedItemIndex === index && data[index]?.collection?.name?.length > 24}
+                <div
+                  class="absolute -top-8 left-0"
+                  style="z-index: 2147483648;"
+                >
+                  <Tooltip text={data[index]?.collection?.name} />
+                </div>
+              {/if}
+            </div>
+
+            {#if isShowReport && selectedItemIndex === index}
+              <div
+                class="relative cursor-pointer"
+                on:click={() => (isShowReportTable = true)}
+                on:mouseover={() => {
+                  selectedItemIndex = index;
+                  isShowTooltipReport = true;
+                }}
+                on:mouseleave={() => {
+                  selectedItemIndex = -1;
+                  isShowTooltipReport = false;
+                }}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  width="22"
+                  height="22"
+                >
+                  <g
+                    fill="none"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                  >
+                    <path d="M0 0h24v24H0z" />
+                    <path
+                      fill="currentColor"
+                      d="M19 4c.852 0 1.297.986.783 1.623l-.076.084L15.915 9.5l3.792 3.793c.603.602.22 1.614-.593 1.701L19 15H6v6a1 1 0 0 1-.883.993L5 22a1 1 0 0 1-.993-.883L4 21V5a1 1 0 0 1 .883-.993L5 4h14z"
+                    />
+                  </g>
+                </svg>
+                {#if isShowTooltipReport && selectedItemIndex === index}
+                  <div
+                    class="absolute -top-8 left-1/2 transform -translate-x-1/2"
+                    style="z-index: 2147483648;"
+                  >
+                    <Tooltip text="Report" />
+                  </div>
+                {/if}
+              </div>
+            {/if}
+          </div>
+
+          {#if ($typeWallet === "EVM" || $typeWallet === "BUNDLE") && data[index]?.nativeToken?.symbol !== "CEX"}
+            <img
+              src={detectedChain(data[index]?.nativeToken?.symbol)?.logo}
+              alt=""
+              width="20"
+              height="20"
+              class="rounded-full"
+            />
+          {/if}
+        </div>
+
+        <div class="relative">
+          <div
+            class="flex justify-start w-max"
+            on:mouseenter={() => {
+              selectedItemIndex = index;
+              showTooltipListNFT = true;
+            }}
+            on:mouseleave={() => {
+              selectedItemIndex = -1;
+              showTooltipListNFT = false;
+            }}
+          >
+            {#if data[index]?.tokens?.length > 5}
+              {#each data[index]?.tokens.slice(0, 4) as token, index}
+                <div
+                  class={`xl:w-9 xl:h-9 w-12 h-12 rounded-md border-2 border-white overflow-hidden ${
+                    index > 0 && "-ml-2"
+                  }`}
+                >
+                  <Image
+                    logo={token?.imageUrl}
+                    defaultLogo="https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"
+                  />
+                </div>
+              {/each}
+              <div class="relative xl:w-9 xl:h-9 w-12 h-12">
+                <div
+                  class="xl:w-9 xl:h-9 w-12 h-12 rounded-md border-2 border-white overflow-hidden -ml-2"
+                >
+                  <Image
+                    logo={data[index]?.tokens[4].imageUrl}
+                    defaultLogo="https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"
+                  />
+                </div>
+                <div
+                  class="absolute top-0 -left-2 w-full h-full bg-[#00000066] text-white text-center flex justify-center items-center pb-2 rounded-md"
+                >
+                  ...
+                </div>
+              </div>
+              {#if showTooltipListNFT && selectedItemIndex === index && data[index]?.tokens?.length > 5}
+                <div
+                  class="absolute -top-7 left-0"
+                  style="z-index: 2147483648;"
+                >
+                  <Tooltip
+                    text={`${data[index]?.tokens?.length} NFTs on collection ${data[index]?.collection?.name}`}
+                  />
+                </div>
+              {/if}
+            {:else}
+              {#each data[index]?.tokens as token, index}
+                <div
+                  class={`xl:w-9 xl:h-9 w-12 h-12 rounded-md border-2 border-white overflow-hidden ${
+                    index > 0 && "-ml-2"
+                  }`}
+                >
+                  <Image
+                    logo={token?.imageUrl}
+                    defaultLogo="https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"
+                  />
+                </div>
+              {/each}
+            {/if}
+          </div>
+        </div>
+
+        <div class="flex justify-between items-start">
+          <div class="text-right text-sm uppercase font-medium">
+            <TooltipTitle
+              tooltipText={false
+                ? "The Floor price from Magic Eden marketplace. "
+                : "The Floor price of last 24h, if there is no volume, the floor price is 0"}
+              link={false ? "https://magiceden.io/ordinals" : ""}
+            >
+              {MultipleLang.floor_price}
+            </TooltipTitle>
+          </div>
+          <div
+            class="text-sm text_00000099 font-medium flex flex-col items-end gap-1"
+          >
+            <div class="w-max flex items-center gap-1">
+              <TooltipNumber
+                number={Number(data[index]?.floorPrice)}
+                type="balance"
+              />
+              <div>{data[index]?.nativeToken?.symbol || ""}</div>
+            </div>
+            <div class="w-max">
+              <TooltipNumber
+                number={Number(data[index]?.floorPrice) *
+                  data[index]?.marketPrice}
+                type="value"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="flex justify-between items-start">
+          <div class="text-right text-sm uppercase font-medium">Cost</div>
+          <div
+            class="text-sm text_00000099 font-medium flex flex-col items-end gap-1"
+          >
+            <div class="w-max flex items-center gap-1">
+              <TooltipNumber
+                number={handleCalculateTotalNativeTokenPrice(data[index])}
+                type="balance"
+              />
+              <div>
+                {data[index]?.nativeToken?.symbol || ""}
+              </div>
+            </div>
+            <div class="w-max">
+              <TooltipNumber
+                number={handleCalculateTotalCost(data[index])}
+                type="value"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="flex justify-between items-start">
+          <div class="text-right text-sm uppercase font-medium">
+            {MultipleLang.current_value}
+          </div>
+          <div
+            class="text-sm text_00000099 font-medium flex flex-col items-end gap-1"
+          >
+            <div class="w-max flex items-center gap-1">
+              <TooltipNumber
+                number={Number(data[index]?.current_native_token)}
+                type="balance"
+              />
+              <div>
+                {data[index]?.nativeToken?.symbol || ""}
+              </div>
+            </div>
+            <TooltipNumber
+              number={Number(data[index]?.current_native_token) *
+                data[index]?.marketPrice}
+              type="value"
+            />
+          </div>
+        </div>
+
+        <div class="flex justify-between items-start">
+          <div class="text-right text-sm uppercase font-medium">
+            <TooltipTitle
+              tooltipText="Price NFTs now - Price NFTs at time you spent"
+            >
+              {MultipleLang.profit}
+            </TooltipTitle>
+          </div>
+          <div class="flex items-center justify-end gap-1 text-sm font-medium">
+            <div class="flex flex-col">
+              <div
+                class={`flex justify-end gap-1 ${
+                  handleCalculateProfitAndLoss(data[index]) !== 0
+                    ? handleCalculateProfitAndLoss(data[index]) >= 0
+                      ? "text-[#00A878]"
+                      : "text-red-500"
+                    : "text_00000099"
+                }`}
+              >
+                <TooltipNumber
+                  number={Math.abs(handleCalculateProfitAndLoss(data[index]))}
+                  type="balance"
+                />
+                <div>
+                  {data[index]?.nativeToken?.symbol || ""}
+                </div>
+              </div>
+
+              <div
+                class={`flex justify-end ${
+                  handleCalculateProfitAndLoss(data[index]) !== 0
+                    ? handleCalculateProfitAndLoss(data[index]) >= 0
+                      ? "text-[#00A878]"
+                      : "text-red-500"
+                    : "text_00000099"
+                }`}
+              >
+                <TooltipNumber
+                  number={Math.abs(handleCalculateProfitAndLoss(data[index])) *
+                    data[index]?.marketPrice}
+                  type="value"
+                />
+              </div>
+
+              <div class="flex items-center justify-end gap-1">
+                <div
+                  class={`flex items-center ${
+                    handleCalculatePnlPercent(data[index]) !== 0
+                      ? handleCalculatePnlPercent(data[index]) >= 0
+                        ? "text-[#00A878]"
+                        : "text-red-500"
+                      : "text_00000099"
+                  }`}
+                >
+                  <TooltipNumber
+                    number={Math.abs(handleCalculatePnlPercent(data[index])) *
+                      100}
+                    type={Math.abs(
+                      Number(handleCalculatePnlPercent(data[index]))
+                    ) > 100
+                      ? "balance"
+                      : "percent"}
+                  />
+                  <span>%</span>
+                </div>
+                {#if handleCalculatePnlPercent(data[index]) !== 0}
+                  <img
+                    src={handleCalculatePnlPercent(data[index]) >= 0
+                      ? TrendUp
+                      : TrendDown}
+                    alt="trend"
+                    class="mb-1"
+                  />
+                {/if}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex justify-between items-start">
+          <div class="text-right text-sm uppercase font-medium">Action</div>
+          <div
+            class="cursor-pointer view-icon-detail"
+            on:click={() => {
+              showSideNftDetail = true;
+              selectedNft = data[index];
+              selectedNftCollectionId = data[index]?.collectionId;
+              selectedNftCollectionChain = data[index]?.nativeToken?.symbol;
+              mixpanel.track("nft_detail_page", {
+                address: $wallet,
+                collection_type: data[index].collectionId,
+              });
+            }}
+          >
+            <div
+              use:tooltip={{
+                content: `<tooltip-detail text="Show nfts detail" />`,
+                allowHTML: true,
+                placement: "top",
+              }}
+              class="w-[20px] h-[20px]"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink"
+                version="1.1"
+                viewBox="0 0 256 256"
+                xml:space="preserve"
+              >
+                <defs />
+                <g
+                  style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill-rule: nonzero; opacity: 1;"
+                  fill={$isDarkMode ? "white" : "#00000080"}
+                  transform="translate(1.4065934065934016 1.4065934065934016) scale(2.81 2.81)"
+                >
+                  <path
+                    d="M 87.994 0 H 69.342 c -1.787 0 -2.682 2.16 -1.418 3.424 l 5.795 5.795 l -33.82 33.82 L 28.056 31.196 l -3.174 -3.174 c -1.074 -1.074 -2.815 -1.074 -3.889 0 L 0.805 48.209 c -1.074 1.074 -1.074 2.815 0 3.889 l 3.174 3.174 c 1.074 1.074 2.815 1.074 3.889 0 l 15.069 -15.069 l 14.994 14.994 c 1.074 1.074 2.815 1.074 3.889 0 l 1.614 -1.614 c 0.083 -0.066 0.17 -0.125 0.247 -0.202 l 37.1 -37.1 l 5.795 5.795 C 87.84 23.34 90 22.445 90 20.658 V 2.006 C 90 0.898 89.102 0 87.994 0 z"
+                    style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill-rule: nonzero; opacity: 1;"
+                    transform=" matrix(1 0 0 1 0 0) "
+                    fill={$isDarkMode ? "white" : "#00000080"}
+                    stroke-linecap="round"
+                  />
+                  <path
+                    d="M 65.626 37.8 v 49.45 c 0 1.519 1.231 2.75 2.75 2.75 h 8.782 c 1.519 0 2.75 -1.231 2.75 -2.75 V 23.518 L 65.626 37.8 z"
+                    style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill-rule: nonzero; opacity: 1;"
+                    fill={$isDarkMode ? "white" : "#00000080"}
+                    transform=" matrix(1 0 0 1 0 0) "
+                    stroke-linecap="round"
+                  />
+                  <path
+                    d="M 47.115 56.312 V 87.25 c 0 1.519 1.231 2.75 2.75 2.75 h 8.782 c 1.519 0 2.75 -1.231 2.75 -2.75 V 42.03 L 47.115 56.312 z"
+                    style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill-rule: nonzero; opacity: 1;"
+                    fill={$isDarkMode ? "white" : "#00000080"}
+                    transform=" matrix(1 0 0 1 0 0) "
+                    stroke-linecap="round"
+                  />
+                  <path
+                    d="M 39.876 60.503 c -1.937 0 -3.757 -0.754 -5.127 -2.124 l -6.146 -6.145 V 87.25 c 0 1.519 1.231 2.75 2.75 2.75 h 8.782 c 1.519 0 2.75 -1.231 2.75 -2.75 V 59.844 C 41.952 60.271 40.933 60.503 39.876 60.503 z"
+                    style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill-rule: nonzero; opacity: 1;"
+                    fill={$isDarkMode ? "white" : "#00000080"}
+                    transform=" matrix(1 0 0 1 0 0) "
+                    stroke-linecap="round"
+                  />
+                  <path
+                    d="M 22.937 46.567 L 11.051 58.453 c -0.298 0.298 -0.621 0.562 -0.959 0.8 V 87.25 c 0 1.519 1.231 2.75 2.75 2.75 h 8.782 c 1.519 0 2.75 -1.231 2.75 -2.75 V 48.004 L 22.937 46.567 z"
+                    style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill-rule: nonzero; opacity: 1;"
+                    fill={$isDarkMode ? "white" : "#00000080"}
+                    transform=" matrix(1 0 0 1 0 0) "
+                    stroke-linecap="round"
+                  />
+                </g>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div></VirtualList
+    >
+  {/if}
+
+  {#if isLoading}
+    <div class="flex justify-center items-center h-full py-3 px-3">
+      <Loading />
+    </div>
+  {/if}
+</div>
+
 <!-- Modal report spam/trash nft  -->
 <AppOverlay
   clickOutSideToClose
@@ -730,11 +1169,11 @@
     selectedNft = {};
   }}
 >
-  <div class="flex flex-col gap-4">
-    <div class="font-medium xl:title-3 title-1">Blacklist NFT Collection</div>
+  <div class="flex flex-col gap-4 xl:mt-0 mt-4">
+    <div class="font-medium title-3">Blacklist NFT Collection</div>
     <form
       on:submit|preventDefault={handleReportTrashNFT}
-      class="flex flex-col gap-10 xl:gap-3"
+      class="flex flex-col xl:gap-3 gap-6"
     >
       <div class="flex flex-col gap-6 xl:gap-3">
         <div
@@ -800,7 +1239,7 @@
               : "bg_fafafbff"
           }`}
         >
-          <div class="xl:text-base text-2xl text-[#666666] font-medium">
+          <div class="xl:text-base text-lg text-[#666666] font-medium">
             Reason
           </div>
 
@@ -816,7 +1255,7 @@
               />
               <label
                 for={item.id}
-                class="xl:text-sm text-2xl font-normal text-[#5E656B] cursor-pointer"
+                class="xl:text-sm text-base font-normal text-[#5E656B] cursor-pointer"
               >
                 {item.content}
               </label>
@@ -835,7 +1274,7 @@
             />
             <label
               for="outdated"
-              class="xl:text-sm text-2xl font-normal text-[#5E656B] cursor-pointer"
+              class="xl:text-sm text-base font-normal text-[#5E656B] cursor-pointer"
             >
               The NFT Collection is outdate
             </label>
@@ -847,7 +1286,7 @@
               rows="5"
               id="reason"
               name="reason"
-              class={`mb-2 p-0 input-2 input-border w-full py-[6px] px-3 focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal ${
+              class={`mb-2 p-0 input-2 input-border w-full py-[6px] px-3 focus:outline-none focus:ring-0 xl:text-sm text-base font-normal ${
                 !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
               } ${
                 $isDarkMode
@@ -858,8 +1297,8 @@
           {/if}
         </div>
 
-        <div class="flex justify-end gap-6 lg:gap-2">
-          <div class="xl:w-[120px] w-full">
+        <div class="flex justify-end gap-2">
+          <div class="w-[120px]">
             <Button
               variant="secondary"
               on:click={() => {
@@ -871,7 +1310,7 @@
               {MultipleLang.content.modal_cancel}
             </Button>
           </div>
-          <div class="xl:w-[120px] w-full">
+          <div class="w-[120px]">
             <Button
               type="submit"
               variant="tertiary"
@@ -891,7 +1330,7 @@
 <OverlaySidebar isOpen={showSideNftDetail}>
   <div class="flex justify-between items-start">
     <div
-      class="xl:text-5xl text-6xl text-gray-500 cursor-pointer"
+      class="text-5xl text-gray-500 cursor-pointer"
       on:click|stopPropagation={() => {
         showSideNftDetail = false;
       }}
@@ -899,12 +1338,15 @@
       &times;
     </div>
     <div class="flex flex-col items-end">
-      <div class="xl:text-3xl text-4xl font-semibold">
+      <div class="text-3xl font-semibold">
         {selectedNft?.collection?.name || "N/A"}
       </div>
-      <div class="text-3xl xl:text-xl">
+      <div class="text-xl">
         <Copy
-          address={selectedNft?.tokens[0]?.contractAddress}
+          address={selectedNft &&
+            selectedNft?.tokens &&
+            selectedNft?.tokens.length !== 0 &&
+            selectedNft?.tokens[0]?.contractAddress}
           isShorten
           iconColor={`${$isDarkMode ? "#fff" : "#000"}`}
           color={`${$isDarkMode ? "#fff" : "#000"}`}

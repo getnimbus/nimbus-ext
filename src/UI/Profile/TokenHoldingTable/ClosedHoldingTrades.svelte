@@ -210,15 +210,15 @@
 <svelte:window on:keydown={closeSideBar} />
 
 <div
-  class="col-span-4 border border_0000001a rounded-xl flex flex-col gap-3 p-6"
+  class="col-span-4 xl:border border_0000001a rounded-xl flex flex-col gap-3 xl:p-6 py-3"
 >
-  <div class="flex justify-between text-3xl font-medium xl:text-xl">
-    <div class="text-3xl font-medium xl:text-xl">Closed Trades</div>
+  <div class="flex md:flex-row flex-col gap-4 justify-between">
+    <div class="text-2xl font-medium">Closed Trades</div>
     <div class="flex justify-between">
       <AnimateSharedLayout>
         {#each timeFrame as type}
           <div
-            class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
+            class="relative cursor-pointer text-base font-medium py-1 px-3 rounded-[100px] transition-all"
             on:click={() => {
               selectedTimeFrame = type.value;
             }}
@@ -248,8 +248,9 @@
     </div>
   </div>
 
+  <!-- Desktop view -->
   <div
-    class={`rounded-[10px] overflow-hidden w-full ${
+    class={`xl:block hidden rounded-[10px] overflow-hidden w-full ${
       $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
     }`}
   >
@@ -298,7 +299,7 @@
     {#if ((holdingTokenData && holdingTokenData.length === 0) || (formatData && formatData.length === 0)) && !isLoading}
       <div class="grid grid-cols-5">
         <div
-          class="col-span-full flex justify-center items-center h-full py-3 px-3 xl:text-lg text-xl text-gray-400"
+          class="col-span-full flex justify-center items-center h-full py-3 px-3 text-base text-gray-400"
         >
           Empty
         </div>
@@ -518,13 +519,224 @@
       </div>
     {/if}
   </div>
+
+  <!-- Mobile view -->
+  <div
+    class={`xl:hidden block rounded-[10px] p-2 overflow-hidden w-full ${
+      $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
+    }`}
+  >
+    {#if ((holdingTokenData && holdingTokenData.length === 0) || (formatData && formatData.length === 0)) && !isLoading}
+      <div
+        class="flex justify-center items-center h-full py-3 px-3 text-base text-gray-400"
+      >
+        Empty
+      </div>
+    {:else}
+      <VirtualList
+        scrollDirection="vertical"
+        width="100%"
+        height={formatData.length < 10 ? formatData.length * 200 : 405}
+        itemCount={formatData.length}
+        itemSize={200}
+      >
+        <div
+          class="flex flex-col gap-4 border-b-[1px] border_0000000d last:border-none py-2"
+          slot="item"
+          let:index
+          let:style
+          {style}
+          on:click={() => {
+            showSideTokenDetail = true;
+            selectedTokenDetail = formatData[index];
+          }}
+        >
+          <div class="relative flex items-center gap-3 text-left">
+            <div class="relative">
+              <div class="rounded-full w-[30px] h-[30px] overflow-hidden">
+                <Image
+                  logo={formatData[index].logo}
+                  defaultLogo={defaultToken}
+                />
+              </div>
+              {#if ($typeWallet === "EVM" || $typeWallet === "MOVE" || $typeWallet === "BUNDLE") && formatData[index]?.chain !== "CEX"}
+                <div class="absolute -top-2 -right-1">
+                  <img
+                    src={detectedChain(formatData[index]?.chain)?.logo}
+                    alt=""
+                    width="15"
+                    height="15"
+                    class="rounded-full"
+                  />
+                </div>
+              {/if}
+            </div>
+            <div class="flex flex-col gap-1">
+              <div class="flex items-start gap-2">
+                <div
+                  class="relative font-medium text-sm"
+                  on:mouseover={() => {
+                    isShowTooltipName = true;
+                  }}
+                  on:mouseleave={() => (isShowTooltipName = false)}
+                >
+                  {#if formatData[index].name === undefined}
+                    N/A
+                  {:else}
+                    <div class="flex">
+                      {formatData[index]?.name?.length > 20
+                        ? shorterName(formatData[index].name, 20)
+                        : formatData[index].name}
+                    </div>
+                  {/if}
+                  {#if isShowTooltipName && formatData[index]?.name?.length > 20}
+                    <div
+                      class="absolute left-0 -top-8"
+                      style="z-index: 2147483648;"
+                    >
+                      <Tooltip text={formatData[index].name} />
+                    </div>
+                  {/if}
+                </div>
+              </div>
+
+              <div class="flex items-center gap-2">
+                <div
+                  class="relative font-medium text_00000080 text-xs"
+                  on:mouseover={() => {
+                    isShowTooltipSymbol = true;
+                  }}
+                  on:mouseleave={() => (isShowTooltipSymbol = false)}
+                >
+                  {#if formatData[index].symbol === undefined}
+                    N/A
+                  {:else}
+                    {shorterName(formatData[index].symbol, 20)}
+                  {/if}
+                  {#if isShowTooltipSymbol && formatData[index].symbol.length > 20}
+                    <div
+                      class="absolute left-0 -top-8"
+                      style="z-index: 2147483648;"
+                    >
+                      <Tooltip text={formatData[index].symbol} />
+                    </div>
+                  {/if}
+                </div>
+
+                {#if formatData[index]?.positionType === "ERC_404"}
+                  <span
+                    class="inline-flex items-center gap-x-1.5 rounded-full bg-yellow-100 px-1 py-0.5 text-[10px] font-medium text-yellow-800"
+                  >
+                    <svg
+                      class="h-1.5 w-1.5 fill-yellow-500"
+                      viewBox="0 0 6 6"
+                      aria-hidden="true"
+                    >
+                      <circle cx={3} cy={3} r={3} />
+                    </svg>
+                    ERC 404
+                  </span>
+                {/if}
+              </div>
+            </div>
+          </div>
+
+          <div class="flex justify-between items-start">
+            <div class="text-right text-sm uppercase font-medium">Avg Cost</div>
+            <div
+              class="flex items-center justify-end font-medium text-sm text_00000099"
+            >
+              ${#if formatData[index]?.profit}
+                <TooltipNumber
+                  number={formatData[index]?.profit?.averageCost}
+                  type="balance"
+                />
+              {:else}
+                0
+              {/if}
+            </div>
+          </div>
+
+          <div class="flex justify-between items-start">
+            <div class="text-right text-sm uppercase font-medium">ROI</div>
+            <div
+              class="flex items-center justify-end gap-1 font-medium text-sm view-token-detail1"
+            >
+              {#if ["BTC"].includes($typeWallet)}
+                N/A
+              {:else}
+                <div class="flex flex-col">
+                  <div
+                    class={`flex justify-end ${
+                      formatData[index].realizedProfit !== 0
+                        ? formatData[index].realizedProfit >= 0
+                          ? "text-[#00A878]"
+                          : "text-red-500"
+                        : "text_00000099"
+                    }`}
+                  >
+                    <TooltipNumber
+                      number={Math.abs(formatData[index].realizedProfit)}
+                      type="value"
+                      personalValue
+                    />
+                  </div>
+                  <div class="flex items-center justify-end gap-1">
+                    <div
+                      class={`flex items-center ${
+                        formatData[index].realizedProfit !== 0
+                          ? formatData[index].realizedProfit >= 0
+                            ? "text-[#00A878]"
+                            : "text-red-500"
+                          : "text_00000099"
+                      }`}
+                    >
+                      <TooltipNumber
+                        number={Math.abs(
+                          handlePercentRealizedProfit(formatData[index])
+                        ) * 100}
+                        type="percent"
+                      />
+                      <span>%</span>
+                    </div>
+                    {#if formatData[index].realizedProfit !== 0}
+                      <img
+                        src={formatData[index].realizedProfit >= 0
+                          ? TrendUp
+                          : TrendDown}
+                        alt="trend"
+                        class="mb-1"
+                      />
+                    {/if}
+                  </div>
+                </div>
+              {/if}
+            </div>
+          </div>
+
+          <div class="flex justify-between items-start">
+            <div class="text-right text-sm uppercase font-medium">
+              Last activity
+            </div>
+            <div
+              class="flex items-center justify-end font-medium text-sm text_00000099"
+            >
+              {#if formatData[index]?.profit?.latestTrade}
+                {formatTime(formatData[index]?.profit?.latestTrade)}
+              {/if}
+            </div>
+          </div>
+        </div>
+      </VirtualList>
+    {/if}
+  </div>
 </div>
 
 <!-- Sidebar Token Detail -->
 <OverlaySidebar isOpen={showSideTokenDetail}>
   <div class="flex justify-between items-start">
     <div
-      class="xl:text-5xl text-6xl text-gray-500 cursor-pointer"
+      class="text-5xl text-gray-500 cursor-pointer"
       on:click|stopPropagation={() => {
         showSideTokenDetail = false;
         selectedTokenDetail = {};
@@ -557,7 +769,7 @@
           <div class="flex flex-col">
             <div class="flex items-start gap-2">
               <div
-                class="relative font-medium xl:text-xl text-2xl"
+                class="relative font-medium text-xl"
                 on:mouseover={() => {
                   isShowTooltipName = true;
                 }}
@@ -583,7 +795,7 @@
 
             <div class="flex items-center gap-2">
               <div
-                class="relative font-medium text_00000080 xl:text-base text-lg"
+                class="relative font-medium text_00000080 text-base"
                 on:mouseover={() => {
                   isShowTooltipSymbol = true;
                 }}
@@ -674,7 +886,7 @@
             </div>
           </div>
         </div>
-        <div class="flex items-center font-medium xl:text-2xl text-3xl">
+        <div class="flex items-center font-medium text-2xl">
           $<TooltipNumber
             number={Number(selectedTokenDetail?.price.price)}
             type="balance"

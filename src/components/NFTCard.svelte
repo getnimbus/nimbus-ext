@@ -32,16 +32,16 @@
     $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
   }`}
 >
-  <div class="rounded-[10px] overflow-hidden xl:h-[270px] h-[470px]">
+  <div class="rounded-[10px] overflow-hidden h-[270px]">
     <Image
       logo={data?.imageUrl}
       defaultLogo="https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"
     />
   </div>
 
-  <div class="flex flex-col xl:gap-2 gap-4">
+  <div class="flex flex-col gap-2">
     <div
-      class="xl:text-base text-3xl font-semibold relative"
+      class="text-base font-semibold relative"
       on:mouseenter={() => (showTooltipName = true)}
       on:mouseleave={() => (showTooltipName = false)}
     >
@@ -57,7 +57,7 @@
     </div>
 
     <div
-      class="xl:text-sm text-2xl font-normal flex xl:items-center items-start justify-between gap-1"
+      class="text-sm font-normal flex xl:items-center items-start justify-between gap-1"
     >
       <div class="text-[#616b84]">Cost</div>
       <div class="flex xl:flex-row flex-col xl:items-center items-end gap-1">
@@ -74,9 +74,7 @@
       </div>
     </div>
 
-    <div
-      class="xl:text-sm text-2xl font-normal flex items-start justify-between gap-1"
-    >
+    <div class="text-sm font-normal flex items-start justify-between gap-1">
       <div class="text-[#616b84]">PnL</div>
       <div class="flex flex-col items-end">
         <div class="flex xl:flex-row flex-col xl:items-center items-end gap-1">

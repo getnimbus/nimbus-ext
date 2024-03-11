@@ -224,14 +224,14 @@
   }
 </script>
 
-<div class="col-span-4 border border_0000001a rounded-xl p-6">
+<div class="col-span-4 xl:border border_0000001a rounded-xl xl:p-6">
   {#if $queryTokenHolding.isFetching && $queryTradingStats.isFetching}
     <div class="h-full flex items-center justify-center">
       <Loading />
     </div>
   {:else}
     <div class="flex flex-col gap-4">
-      <div class="grid xl:grid-cols-6 grid-cols-3 gap-5">
+      <div class="grid xl:grid-cols-6 md:grid-cols-2 grid-cols-1 gap-5">
         <div class="flex flex-col gap-2 justify-between">
           <div class="text-xl xl:text-sm font-medium text_00000099">
             Portfolio Value

@@ -34,7 +34,7 @@
 
 <div class="wrapper" use:clickOutside on:click_outside={() => (open = false)}>
   <div
-    class={`button xl:text-sm text-2xl ${
+    class={`button ${
       type === "lang" || type === "filter" ? "bg-[#1E96FC]" : ""
     }`}
     class:active={open}
@@ -55,11 +55,11 @@
             class="xl:w-5 xl:h-5 w-7 h-7 rounded-full"
           />
         {/if}
-        <div class="text-white xl:text-sm text-2xl">
+        <div class="text-white xl:text-sm text-lg">
           {selected?.label || selectedChain[0]?.label}
         </div>
       {:else}
-        <div class="text-white xl:text-sm text-2xl">
+        <div class="text-white xl:text-sm text-lg">
           Other ({listSelect.length})
         </div>
       {/if}
@@ -67,14 +67,14 @@
     <img
       src={UpArrow}
       alt=""
-      class="transform rotate-180 xl:w-3 xl:h-3 w-5 h-5"
+      class="transform rotate-180 w-3 h-3"
       class:rotate-0={open}
     />
   </div>
 
   {#if open}
     <div
-      class={`select_content content group xl:max-h-[300px] xl:w-[200px] xl:min-w-[200px] xl:max-h-[310px] max-h-[380px] w-[300px] min-w-[300px] mt-2 ${positionSelectList}`}
+      class={`select_content content group xl:max-h-[300px] xl:w-[200px] xl:min-w-[200px] xl:max-h-[310px] max-h-[380px] md:w-[300px] md:min-w-[300px] w-[240px] min-w-[240px] mt-2 ${positionSelectList}`}
     >
       {#each listSelect as item}
         <div
@@ -104,11 +104,11 @@
             <img
               src={item.value === "ALL" ? All : item.logo}
               alt=""
-              class="xl:w-5 xl:h-5 w-7 h-7 rounded-full"
+              class="w-5 h-5 rounded-full"
             />
           {/if}
           <div
-            class={`xl:text-sm text-2xl name ${
+            class={`xl:text-sm text-lg name ${
               type === "chain" && disabledChains.includes(item.value)
                 ? "text-gray-400"
                 : ""
@@ -163,7 +163,7 @@
   .content {
     overflow-y: overlay;
     position: absolute;
-    z-index: 9;
+    z-index: 8;
     box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);
     border-radius: 10px;
     padding: 8px;

@@ -462,24 +462,26 @@
 
 <AnalyticSection>
   <span slot="title">
-    <div class="flex justify-start text-4xl font-medium xl:text-2xl">
+    <div class="flex justify-start font-medium xl:text-2xl text-3xl">
       Volatility & Returns
     </div>
   </span>
 
   <span slot="overview">
     {#if !($query.isFetching || $queryBreakdown.isFetching) && !$query.isError}
-      <div class="px-6 pt-6 mb-4 text-3xl font-medium xl:text-xl">Overview</div>
+      <div class="xl:px-6 xl:pt-6 mb-4 text-2xl font-medium xl:text-xl">
+        Overview
+      </div>
     {/if}
     {#if $query.isFetching || $queryBreakdown.isFetching}
       <div class="flex items-center justify-center h-[465px]">
         <LoadingPremium />
       </div>
     {:else}
-      <div class="h-full relative min-h-[465px]">
+      <div class="h-full relative xl:min-h-[465px]">
         {#if $query.isError}
           <div
-            class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-9 backdrop-blur-md xl:text-xs text-lg ${
+            class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-8 backdrop-blur-md text-base text-gray-400 ${
               $isDarkMode ? "bg-black/90" : "bg-white/95"
             }`}
           >
@@ -491,12 +493,12 @@
             {/if}
           </div>
         {:else}
-          <div class="flex flex-col gap-8 px-6 pb-8">
+          <div class="flex flex-col gap-8 xl:px-6 pb-8">
             <div class="flex flex-col gap-3">
               <div class="flex flex-col gap-4">
                 <div class="grid grid-cols-2">
                   <div class="col-span-1">
-                    <div class="flex justify-start text-2xl xl:text-base">
+                    <div class="flex justify-start text-base">
                       <TooltipTitle
                         tooltipText={getTooltipContent(
                           "The Sharpe ratio measures how well an investment performs relative to its risk.",
@@ -513,7 +515,7 @@
                     </div>
                   </div>
                   <div class="flex items-center justify-end col-span-1">
-                    <div class="text-2xl xl:text-base">
+                    <div class="text-base">
                       <TooltipNumber
                         number={data?.base?.sharpeRatio}
                         type="percent"
@@ -522,7 +524,7 @@
                   </div>
                 </div>
                 {#if data?.base?.sharpeRatio < 1}
-                  <div class="text-2xl xl:text-base">
+                  <div class="text-base">
                     <CtaIcon isGood={false} />
                     <span class="text-red-500"
                       >Your portfolio is not "balance" between risk and return:</span
@@ -539,17 +541,17 @@
               <div class="flex items-center gap-3">
                 {#if badPerf}
                   <div class="rounded-[20px] flex-1 bg_fafafbff px-4 pb-3 pt-5">
-                    <div class="xl:text-base text-xl text-[#6E7787FF] relative">
+                    <div class="text-base text-[#6E7787FF] relative">
                       <div
                         class="border border-red-500 absolute -top-1 left-0 w-[40px]"
                       />
                       Worse return
                     </div>
-                    <div class="text-3xl xl:text-2xl">{badPerf?.symbol}</div>
+                    <div class="text-2xl">{badPerf?.symbol}</div>
 
                     <div class="flex flex-col">
                       <div
-                        class={`flex text-2xl xl:text-lg ${
+                        class={`flex text-lg ${
                           badPerfValue >= 0 ? "text-[#00A878]" : "text-red-500"
                         }`}
                       >
@@ -558,7 +560,7 @@
                           type="balance"
                         />
                       </div>
-                      <div class="flex items-center gap-1 text-2xl xl:text-lg">
+                      <div class="flex items-center gap-1 text-lg">
                         <img
                           src={badPerf?.change30DPercent >= 0
                             ? TrendUp
@@ -586,17 +588,17 @@
 
                 {#if goodPerf}
                   <div class="rounded-[20px] flex-1 bg_fafafbff px-4 pb-3 pt-5">
-                    <div class="xl:text-base text-xl text-[#6E7787FF] relative">
+                    <div class="text-base text-[#6E7787FF] relative">
                       <div
                         class="border border-[#00A878] absolute -top-1 left-0 w-[40px]"
                       />
                       Best return
                     </div>
-                    <div class="text-3xl xl:text-2xl">{goodPerf?.symbol}</div>
+                    <div class="text-2xl">{goodPerf?.symbol}</div>
 
                     <div class="flex flex-col">
                       <div
-                        class={`flex text-2xl xl:text-lg ${
+                        class={`flex text-lg ${
                           goodPerfValue >= 0 ? "text-[#00A878]" : "text-red-500"
                         }`}
                       >
@@ -605,7 +607,7 @@
                           type="balance"
                         />
                       </div>
-                      <div class="flex items-center gap-1 text-2xl xl:text-lg">
+                      <div class="flex items-center gap-1 text-lg">
                         <img
                           src={goodPerf?.change30DPercent >= 0
                             ? TrendUp
@@ -633,7 +635,7 @@
               </div>
             </div>
             <div class="flex flex-col gap-3">
-              <div class="text-2xl font-medium xl:text-lg">
+              <div class="font-medium text-lg">
                 <TooltipTitle
                   tooltipText={"Compare with top 100 by CoinMarketCap."}
                   isBigIcon
@@ -641,14 +643,16 @@
                   Compare to Market
                 </TooltipTitle>
               </div>
-              <ProgressBar
-                leftLabel="Low"
-                rightLabel="High"
-                averageText={`Avg Market (${sharpeRatioAvgMarket})`}
-                progress={sharpeRatioCompareAvg}
-                lowerIsBetter={false}
-                tooltipText="Shapre Ratio"
-              />
+              <div class="px-6">
+                <ProgressBar
+                  leftLabel="Low"
+                  rightLabel="High"
+                  averageText={`Avg Market (${sharpeRatioAvgMarket})`}
+                  progress={sharpeRatioCompareAvg}
+                  lowerIsBetter={false}
+                  tooltipText="Shapre Ratio"
+                />
+              </div>
             </div>
           </div>
         {/if}
@@ -658,14 +662,14 @@
 
   <span slot="chart">
     {#if $query.isFetching || $queryBreakdown.isFetching}
-      <div class="flex items-center justify-center h-[465px] p-6">
+      <div class="flex items-center justify-center h-[465px] xl:p-6 py-3">
         <LoadingPremium />
       </div>
     {:else}
       <div class="relative h-full">
         {#if $query.isError}
           <div
-            class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-9 backdrop-blur-md xl:text-xs text-lg ${
+            class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-8 backdrop-blur-md text-base text-gray-400 ${
               $isDarkMode ? "bg-black/90" : "bg-white/95"
             }`}
           >
@@ -677,11 +681,11 @@
             {/if}
           </div>
         {:else}
-          <div class="flex flex-row p-6 mb-2">
+          <div class="flex flex-row xl:p-6 py-3 mb-2">
             <AnimateSharedLayout>
               {#each riskTypeChart as type}
                 <div
-                  class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
+                  class="relative cursor-pointer text-base font-medium py-1 px-3 rounded-[100px] transition-all"
                   on:click={() => (selectedTypeChart = type.value)}
                 >
                   <div

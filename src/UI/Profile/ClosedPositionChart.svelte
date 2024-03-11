@@ -336,34 +336,30 @@
 </script>
 
 <div
-  class="col-span-4 border border_0000001a rounded-xl flex flex-col min-h-[465px]"
+  class="col-span-4 xl:border border_0000001a rounded-xl flex flex-col gap-3 xl:p-6 py-3"
 >
-  <div
-    class="flex justify-start text-3xl font-medium xl:text-xl px-6 pb-3 pt-6"
-  >
-    Positions 30D
-  </div>
+  <div class="flex justify-start font-medium text-2xl">Positions 30D</div>
 
   {#if $queryTradingStats.isFetching}
-    <div class="flex items-center justify-center px-6 pb-6 flex-1">
+    <div class="flex items-center justify-center flex-1">
       <LoadingPremium />
     </div>
   {:else}
     <div class="h-full relative">
       {#if $queryTradingStats.isError}
         <div
-          class="h-full flex justify-center items-center xl:text-base text-lg"
+          class="h-full flex justify-center items-center text-base text-gray-400"
         >
           Empty
         </div>
       {:else}
         <div class="h-full">
           {#if closedHoldingPosition && closedHoldingPosition.length !== 0}
-            <div class="flex flex-row px-6">
+            <div class="flex flex-row">
               <AnimateSharedLayout>
                 {#each typeClosedHoldingTokenChart as type}
                   <div
-                    class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
+                    class="relative cursor-pointer text-base font-medium py-1 px-3 rounded-[100px] transition-all"
                     on:click={() => (selectedTypeChart = type.value)}
                   >
                     <div
@@ -390,10 +386,9 @@
               </AnimateSharedLayout>
             </div>
           {/if}
+
           {#if closedHoldingPosition && closedHoldingPosition.length === 0}
-            <div
-              class="h-full flex justify-center items-center xl:text-base text-lg"
-            >
+            <div class="h-full flex items-center justify-center text-center">
               There are no closed holding position in the last 30 day
             </div>
           {:else}

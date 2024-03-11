@@ -5,65 +5,20 @@
   import isBetween from "dayjs/plugin/isBetween";
   dayjs.extend(isBetween);
   import { nimbus } from "~/lib/network";
-  import { wallet, user, isDarkMode, selectedPackage } from "~/store";
+  import { wallet, isDarkMode, selectedPackage } from "~/store";
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
   import Analytic from "~/UI/Analytic/Analytic.svelte";
   import Button from "~/components/Button.svelte";
-  import Loading from "~/components/Loading.svelte";
 
   const currentDate = dayjs();
   const next7Days = currentDate.add(7, "day");
-
-  // let listNft = [];
-  // let isLoading = false;
 
   let allowScroll = false;
   let isOpenModal = false;
   let isLoadingSendMail = false;
   let email = "";
-
-  // const handleBuy = async () => {
-  //   const res = await nimbus
-  //     .get("/payments/create-session")
-  //     .then((response) => response);
-  //   if (res) {
-  //     window.location.replace(res.data.payment_url);
-  //   }
-  // };
-
-  // const handleGetNft = async () => {
-  //   try {
-  //     isLoading = true;
-  //     const solanaAddress = localStorage.getItem("solana_address");
-  //     const solanaToken = localStorage.getItem("solana_token");
-  //     if (solanaAddress && solanaToken) {
-  //       const res = await nimbus
-  //         .get(`/nft/${solanaAddress}`, {
-  //           headers: {
-  //             Authorization: `${solanaToken}`,
-  //           },
-  //         })
-  //         .then((response) => response);
-  //       if (res) {
-  //         listNft = res?.data?.result;
-  //       }
-  //     }
-  //   } catch (e) {
-  //     console.error("error: ", e);
-  //   } finally {
-  //     isLoading = false;
-  //   }
-  // };
-
-  // $: {
-  //   if (Object.keys($user).length !== 0) {
-  //     handleGetNft();
-  //   } else {
-  //     listNft = [];
-  //   }
-  // }
 
   const onSubmit = async (e) => {
     isLoadingSendMail = true;
@@ -127,44 +82,6 @@
 </script>
 
 <ErrorBoundary>
-  <!-- {#if Object.keys($user).length === 0}
-    <div class="flex justify-center items-center h-screen">
-      <div class="p-6 w-2/3 flex flex-col gap-4 justify-center items-center">
-        <div class="text-lg">Please connect wallet to use this feature</div>
-      </div>
-    </div>
-  {:else}
-    <div>
-      {#if isLoading}
-        <div class="flex justify-center items-center h-screen">
-          <div
-            class="p-6 w-2/3 flex flex-col gap-4 justify-center items-center"
-          >
-            <Loading />
-          </div>
-        </div>
-      {:else}
-        <div>
-          {#if listNft && listNft.length !== 0}
-            <Analytic />
-          {:else}
-            <div class="flex justify-center items-center h-screen">
-              <div
-                class="p-6 w-2/3 flex flex-col gap-4 justify-center items-center"
-              >
-                <div class="text-lg">
-                  You need Nimbus NFT to unlock this feature
-                </div>
-                <Button variant="secondary" on:click={() => handleBuy()}
-                  >Buy</Button
-                >
-              </div>
-            </div>
-          {/if}
-        </div>
-      {/if}
-    </div>
-  {/if} -->
   <Analytic />
 
   <AppOverlay
@@ -176,19 +93,17 @@
       isOpenModal = false;
     }}
   >
-    <div class="flex flex-col gap-4">
+    <div class="flex flex-col gap-4 xl:mt-0 mt-4">
       <div class="flex flex-col">
-        <div class="xl:title-3 title-1 font-semibold">
-          Let's us know your email.
-        </div>
-        <div class="xl:text-sm text-2xl text-gray-500">
+        <div class="title-3 font-semibold">Let's us know your email.</div>
+        <div class="text-sm text-gray-500">
           Add your email to get updates from us and receive exclusive benefits
           in the future.
         </div>
       </div>
       <form
         on:submit|preventDefault={onSubmit}
-        class="flex flex-col xl:gap-3 gap-10"
+        class="flex flex-col xl:gap-3 gap-6"
       >
         <div class="flex flex-col gap-1">
           <div class="flex flex-col gap-1">
@@ -198,7 +113,7 @@
               }`}
             >
               <div
-                class={`xl:text-base text-2xl text-[#666666] font-medium ${
+                class={`xl:text-base text-lg text-[#666666] font-medium ${
                   $isDarkMode ? "text-gray-400" : "text-[#666666]"
                 }`}
               >
@@ -210,7 +125,7 @@
                 name="email"
                 placeholder="Your email"
                 value=""
-                class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal ${
+                class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-base font-normal ${
                   email && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
                 } ${
                   $isDarkMode
@@ -223,8 +138,8 @@
             </div>
           </div>
         </div>
-        <div class="flex justify-end lg:gap-2 gap-6">
-          <div class="lg:w-[120px] w-full">
+        <div class="flex justify-end gap-2">
+          <div class="w-[120px]">
             <Button
               variant="secondary"
               on:click={() => {
@@ -242,12 +157,14 @@
               Cancel
             </Button>
           </div>
-          <div class="lg:w-[120px] w-full">
+          <div class="w-[120px]">
             <Button
               type="submit"
               isLoading={isLoadingSendMail}
-              disabled={isLoadingSendMail}>Submit</Button
+              disabled={isLoadingSendMail}
             >
+              <div class="text-white">Submit</div>
+            </Button>
           </div>
         </div>
       </form>

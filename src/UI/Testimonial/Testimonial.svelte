@@ -17,7 +17,7 @@
 <ErrorBoundary>
   <div class="flex flex-col items-center gap-5">
     <Loading />
-    <div class="mx-auto max-w-2xl mt-5">
+    <div class="mx-auto xl:max-w-2xl md:max-w-xl max-w-xs mt-5">
       <Swiper
         cssMode={true}
         slidesPerView={1}

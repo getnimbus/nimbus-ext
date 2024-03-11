@@ -843,12 +843,11 @@
 
 <ErrorBoundary>
   <div
-    class="max-w-[2000px] m-auto xl:w-[90%] w-[90%] py-8 flex flex-col gap-10 relative"
+    class="max-w-[2000px] m-auto xl:w-[90%] w-[90%] py-8 flex flex-col xl:gap-10 gap-6"
   >
     <div class="flex flex-col justify-center gap-2">
-      <div class="font-semibold xl:text-5xl text-7xl">
-        Optimize your portfolio
-      </div>
+      <div class="font-semibold text-4xl">Optimize your portfolio</div>
+
       {#if $selectedBundle && Object.keys($selectedBundle).length !== 0 && $selectedBundle?.type === "BUNDLE"}
         <div
           class="relative w-max"
@@ -896,10 +895,10 @@
             >
               {#each $selectedBundle?.accounts as item}
                 <div class="hidden xl:flex xl:flex-col">
-                  <div class="text-2xl xl:text-xs font-medium text_00000099">
+                  <div class="text-sm xl:text-xs font-medium text_00000099">
                     {item.label}
                   </div>
-                  <div class="text-3xl xl:text-sm">
+                  <div class="text-base xl:text-sm">
                     <Copy
                       address={item?.value}
                       iconColor={$isDarkMode ? "#fff" : "#000"}
@@ -909,10 +908,10 @@
                   </div>
                 </div>
                 <div class="flex flex-col xl:hidden">
-                  <div class="text-2xl xl:text-xs font-medium text_00000099">
+                  <div class="text-sn xl:text-xs font-medium text_00000099">
                     {item.label}
                   </div>
-                  <div class="text-3xl xl:text-sm">
+                  <div class="text-base xl:text-sm">
                     <Copy
                       address={item?.value}
                       iconColor={$isDarkMode ? "#fff" : "#000"}
@@ -927,14 +926,14 @@
           {/if}
         </div>
       {:else}
-        <div class="hidden text-3xl xl:text-base xl:block">
+        <div class="hidden text-base xl:block">
           <Copy
             address={$wallet}
             iconColor={$isDarkMode ? "#fff" : "#000"}
             color={$isDarkMode ? "#fff" : "#000"}
           />
         </div>
-        <div class="block text-3xl xl:text-base xl:hidden">
+        <div class="block text-base xl:hidden">
           <Copy
             address={$wallet}
             iconColor={$isDarkMode ? "#fff" : "#000"}
@@ -946,7 +945,7 @@
       {/if}
     </div>
 
-    <div class="flex flex-col gap-2">
+    <div class="flex flex-col gap-2 relative">
       <div class="flex justify-start">
         <Select
           type="lang"
@@ -963,7 +962,7 @@
               $isDarkMode ? "bg-[#222222]" : "bg-white border border_0000001a"
             }`}
           >
-            <div class="w-full mb-6 text-4xl font-medium xl:text-2xl">
+            <div class="w-full mb-6 font-medium text-2xl">
               {MultipleLang.token_allocation}
             </div>
             {#if $query.isFetching}
@@ -974,7 +973,7 @@
               <div class="h-full">
                 {#if isEmptyDataPie}
                   <div
-                    class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-9 backdrop-blur-md xl:text-xs text-lg rounded-[20px] ${
+                    class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-8 backdrop-blur-md rounded-[20px] text-lg text-gray-400 ${
                       $isDarkMode ? "bg-black/90" : "bg-white/95"
                     }`}
                   >
@@ -1021,9 +1020,7 @@
               <div class="flex flex-col">
                 <div class="flex items-center justify-between">
                   <div class="flex items-end gap-3">
-                    <div class="text-4xl font-medium xl:text-2xl">
-                      Comparing with
-                    </div>
+                    <div class="font-medium text-2xl">Comparing with</div>
                     <div class="font-medium">
                       <Copy
                         isShorten
@@ -1039,8 +1036,10 @@
                       on:click={() => {
                         searchCompare = "";
                         search = "";
-                      }}>Remove</Button
+                      }}
                     >
+                      Remove
+                    </Button>
                   </div>
                 </div>
                 <div class="flex flex-col h-full gap-5 mt-3">
@@ -1052,7 +1051,7 @@
                     <div class="h-full">
                       {#if compareData && Object.keys(compareData).length === 0}
                         <div
-                          class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-9 backdrop-blur-md xl:text-xs text-lg ${
+                          class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-8 backdrop-blur-md text-lg text-gray-400 ${
                             $isDarkMode ? "bg-black/90" : "bg-white/95"
                           }`}
                         >
@@ -1091,20 +1090,18 @@
             {:else}
               <div class="h-full">
                 {#if $query.isFetching}
-                  <div class="w-full text-4xl font-medium xl:text-2xl">
-                    Compare with
-                  </div>
+                  <div class="w-full font-medium text-2xl">Compare with</div>
                   <div class="flex items-center justify-center h-full">
                     <LoadingPremium />
                   </div>
                 {:else}
                   <div class="h-full">
                     {#if compareData && Object.keys(compareData).length === 0}
-                      <div class="w-full text-4xl font-medium xl:text-2xl">
+                      <div class="w-full font-medium text-2xl">
                         Compare with
                       </div>
                       <div
-                        class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-9 backdrop-blur-md xl:text-xs text-lg rounded-[20px] ${
+                        class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-8 backdrop-blur-md rounded-[20px] text-lg text-gray-400 ${
                           $isDarkMode ? "bg-black/90" : "bg-white/95"
                         }`}
                       >
@@ -1117,16 +1114,18 @@
                       </div>
                     {:else}
                       <div class="grid h-full grid-rows-11">
-                        <div class="w-full text-4xl font-medium xl:text-2xl">
+                        <div class="w-full font-medium text-2xl">
                           Compare with
                         </div>
                         <div
                           class="flex flex-col justify-center gap-6 row-span-10"
                         >
-                          <div class="flex items-center gap-4">
+                          <div
+                            class="flex md:flex-row flex-col items-center gap-4"
+                          >
                             {#each listSuggestion as suggestion (suggestion.name)}
                               <div
-                                class="flex-1"
+                                class="flex-1 w-full"
                                 id={suggestion.name}
                                 use:tooltip={{
                                   content: `<tooltip-detail text="Coming soon!" />`,
@@ -1143,7 +1142,7 @@
                                   variant="disabled"
                                 >
                                   <div
-                                    class={`xl:text-base text-2xl ${
+                                    class={`${
                                       $isDarkMode ? "text-gray-400" : ""
                                     }`}
                                   >
@@ -1155,9 +1154,9 @@
                           </div>
                           <div class="border-t-[1px] relative">
                             <div
-                              class={`absolute xl:top-[-10px] top-[-14px] left-1/2 transform -translate-x-1/2 text-gray-400 ${
+                              class={`absolute xl:top-[-10px] top-[-14px] left-1/2 transform -translate-x-1/2 text-gray-400 text-sm px-2 ${
                                 $isDarkMode ? "bg-[#222222]" : "bg-white"
-                              } xl:text-sm text-xl px-2`}
+                              }`}
                             >
                               Or
                             </div>
@@ -1165,7 +1164,7 @@
                           <div class="flex flex-col gap-2">
                             <div class="grid grid-cols-3 items-center gap-4">
                               <div
-                                class={`col-span-2 border focus:outline-none w-full h-full px-3 rounded-lg ${
+                                class={`md:col-span-2 col-span-3 border focus:outline-none w-full h-full md:py-0 md:px-3 p-3 rounded-lg ${
                                   searchCompare && !$isDarkMode
                                     ? "bg-[#F0F2F7]"
                                     : "bg_fafafbff"
@@ -1177,7 +1176,7 @@
                                   value={search}
                                   placeholder={"Search address to compare"}
                                   type="text"
-                                  class={`w-full p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal h-full ${
+                                  class={`w-full p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-base font-normal h-full ${
                                     searchCompare && !$isDarkMode
                                       ? "bg-[#F0F2F7]"
                                       : "bg-transparent"
@@ -1188,27 +1187,21 @@
                                   }`}
                                 />
                               </div>
-                              <div class="col-span-1 h-full">
+                              <div class="col-span-1 h-full md:block hidden">
                                 {#if search}
                                   <Button
                                     on:click={() => {
                                       searchCompare = search;
                                     }}
                                   >
-                                    <div class="text-2xl xl:text-base">
-                                      Compare
-                                    </div>
+                                    Compare
                                   </Button>
                                 {:else}
-                                  <Button disabled>
-                                    <div class="text-2xl xl:text-base">
-                                      Compare
-                                    </div>
-                                  </Button>
+                                  <Button disabled>Compare</Button>
                                 {/if}
                               </div>
                             </div>
-                            <div class="flex justify-start text-xl xl:text-sm">
+                            <div class="flex justify-start text-sm">
                               <div
                                 on:click={() =>
                                   (showCompareWhalesSuggest = true)}
@@ -1216,6 +1209,19 @@
                               >
                                 Get inspired from the whale list
                               </div>
+                            </div>
+                            <div class="md:hidden block mt-2">
+                              {#if search}
+                                <Button
+                                  on:click={() => {
+                                    searchCompare = search;
+                                  }}
+                                >
+                                  Compare
+                                </Button>
+                              {:else}
+                                <Button disabled>Compare</Button>
+                              {/if}
                             </div>
                           </div>
                         </div>
@@ -1233,34 +1239,52 @@
           {#if $query.isFetching || searchCompare.length === 0}
             <Button variant="disabled">
               <div class="flex items-center gap-1">
-                <div
-                  class={`xl:text-base text-2xl ${
-                    $isDarkMode ? "text-gray-400" : ""
-                  }`}
-                >
+                <div class={`${$isDarkMode ? "text-gray-400" : ""}`}>
                   Get re-balance action
                 </div>
                 <img
                   src={$isDarkMode ? LeftArrowBlack : LeftArrow}
                   alt=""
-                  class="xl:w-4 xl:h-4 w-6 h-6 transform rotate-180 mt-[2px]"
+                  class="w-4 h-4 transform rotate-180 mt-[2px]"
                 />
               </div>
             </Button>
           {:else}
             <Button on:click={() => (showCompareTable = true)}>
               <div class="flex items-center gap-1">
-                <div class="text-2xl xl:text-base">Get re-balance action</div>
+                <div>Get re-balance action</div>
                 <img
                   src={LeftArrow}
                   alt=""
-                  class="xl:w-4 xl:h-4 w-6 h-6 transform rotate-180 mt-[2px]"
+                  class="w-4 h-4 transform rotate-180 mt-[2px]"
                 />
               </div>
             </Button>
           {/if}
         </div>
       </div>
+
+      {#if $selectedPackage === "FREE"}
+        <div
+          class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center gap-3 z-8 backdrop-blur-md ${
+            $isDarkMode ? "bg-black/90" : "bg-white/95"
+          }`}
+        >
+          <div class="flex flex-col items-center gap-1">
+            <div class="text-lg font-medium">
+              Use Nimbus at its full potential
+            </div>
+            <div class="text-base text-gray-500">
+              Upgrade to Premium to access Compare feature
+            </div>
+          </div>
+          <div class="mt-2 w-max">
+            <Button variant="premium" on:click={() => navigate("/upgrade")}>
+              Upgrade Plan
+            </Button>
+          </div>
+        </div>
+      {/if}
     </div>
 
     <!-- Performance chart -->
@@ -1269,7 +1293,7 @@
         $isDarkMode ? "bg-[#222222]" : "bg-white border border_0000001a"
       }`}
     >
-      <div class="mb-3 text-4xl font-medium xl:text-2xl">Performance</div>
+      <div class="mb-3 font-medium text-2xl">Performance</div>
       {#if $query.isFetching}
         <div class="flex items-center justify-center h-[433px]">
           <LoadingPremium />
@@ -1279,7 +1303,7 @@
           {#if compareData && Object.keys(compareData).length === 0}
             <div class="h-[433px]">
               <div
-                class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-9 backdrop-blur-md xl:text-xs text-lg rounded-[20px] ${
+                class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-8 backdrop-blur-md rounded-[20px] text-lg text-gray-400 ${
                   $isDarkMode ? "bg-black/90" : "bg-white/95"
                 }`}
               >
@@ -1323,7 +1347,7 @@
       }`}
     >
       <div class="w-full mb-1">
-        <div class="flex justify-start text-4xl font-medium xl:text-2xl">
+        <div class="flex justify-start font-medium text-2xl">
           <TooltipTitle tooltipText={"The lower the better"} isBigIcon>
             Risks
           </TooltipTitle>
@@ -1338,7 +1362,7 @@
           {#if compareData && Object.keys(compareData).length === 0}
             <div class="h-[465px]">
               <div
-                class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-9 backdrop-blur-md xl:text-xs text-lg rounded-[20px] ${
+                class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-8 backdrop-blur-md rounded-[20px] text-lg text-gray-400 ${
                   $isDarkMode ? "bg-black/90" : "bg-white/95"
                 }`}
               >
@@ -1374,28 +1398,6 @@
         </div>
       {/if}
     </div>
-
-    {#if $selectedPackage === "FREE"}
-      <div
-        class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center justify-center gap-3 z-9 backdrop-blur-md ${
-          $isDarkMode ? "bg-black/90" : "bg-white/95"
-        }`}
-      >
-        <div class="flex flex-col items-center gap-1">
-          <div class="text-lg font-medium">
-            Use Nimbus at its full potential
-          </div>
-          <div class="text-base text-gray-500">
-            Upgrade to Premium to access Compare feature
-          </div>
-        </div>
-        <div class="mt-2 w-max">
-          <Button variant="premium" on:click={() => navigate("/upgrade")}
-            >Upgrade Plan</Button
-          >
-        </div>
-      </div>
-    {/if}
   </div>
 
   <!-- Compare result table -->
@@ -1407,7 +1409,7 @@
       showCompareTable = false;
     }}
   >
-    <div class="mt-12 xl:mt-9">
+    <div class="mt-9">
       <CompareResult
         darkMode={$isDarkMode}
         {holdingTokenData}
@@ -1433,7 +1435,7 @@
         closeModal={handleCloseWhalesListModal}
         isLoading={$querySimilar.isFetching}
       />
-      <div class="mt-3 text-2xl text-right xl:text-base">
+      <div class="mt-3 text-right text-base">
         <a
           class="text-blue-500 cursor-pointer"
           href="/whales"

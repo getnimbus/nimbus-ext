@@ -34,6 +34,8 @@
   import Copy from "~/components/Copy.svelte";
   import Loading from "~/components/Loading.svelte";
 
+  import Logo from "~/assets/logo-2.png";
+  import LogoWhite from "~/assets/logo-white.svg";
   import Plus from "~/assets/plus.svg";
   import PlusBlack from "~/assets/plus-black.svg";
   import User from "~/assets/user.png";
@@ -167,6 +169,7 @@
     isScrollEnd = scrollLeft + clientWidth >= scrollWidth - 1;
   };
 
+  let checkAll = false;
   let selectedAddresses = [];
   let nameBundle = "";
   let listBundle = [];
@@ -756,6 +759,9 @@
           addresses: item?.accounts?.map((eachAccount) => eachAccount.address),
         };
       });
+      if (listBundle.length === listAddressWithoutBundle.length) {
+        checkAll = true;
+      }
     }
   }
 
@@ -893,28 +899,30 @@
   const handleToggleCheckAll = (e) => {
     if (e.target.checked) {
       selectedAddresses = listAddressWithoutBundle.map((item) => item.address);
+      checkAll = true;
     } else {
       selectedAddresses = [];
+      checkAll = false;
     }
   };
 </script>
 
 <div class="flex flex-col gap-4">
   {#if (listAddress && listAddress.length === 0) || $query.isError}
-    <div class="flex items-center justify-between">
+    <div class="flex md:flex-row flex-col items-start justify-between">
       <div class="flex flex-col gap-1">
-        <div class="xl:title-3 title-1">
+        <div class="xl:title-3 title-2">
           {MultipleLang.title}
         </div>
-        <div class="xl:text-base text-xl text-gray-500">
+        <div class="xl:text-base text-lg text-gray-500">
           Management your wallet address and bundles
         </div>
       </div>
       <div class="relative xl:w-max w-[200px]">
         {#if $user && Object.keys($user).length !== 0}
           <Button variant="tertiary" on:click={() => (isOpenAddModal = true)}>
-            <img src={Plus} alt="" width="12" height="12" />
-            <div class="text-2xl font-medium text-white xl:text-base">
+            <img src={Plus} alt="" class="w-3 h-3" />
+            <div class="text-white">
               {MultipleLang.content.btn_text}
             </div>
           </Button>
@@ -932,14 +940,9 @@
               <img
                 src={$isDarkMode ? PlusBlack : Plus}
                 alt=""
-                width="12"
-                height="12"
+                class="w-3 h-3"
               />
-              <div
-                class={`text-2xl font-medium xl:text-base ${
-                  $isDarkMode ? "text-gray-400" : "text-white"
-                }`}
-              >
+              <div class={`${$isDarkMode ? "text-gray-400" : "text-white"}`}>
                 {MultipleLang.content.btn_text}
               </div>
             </Button>
@@ -958,17 +961,20 @@
   {:else}
     <div class="flex flex-col gap-4">
       <div class="flex flex-col gap-1">
-        <div class="xl:title-3 title-1">
+        <div class="xl:title-3 title-2">
           {MultipleLang.title}
         </div>
-        <div class="xl:text-base text-xl text-gray-500">
+        <div class="xl:text-base text-lg text-gray-500">
           Management your wallet address and bundles
         </div>
       </div>
+
       {#if !$query.isError}
-        <div class="flex items-center justify-between gap-10">
+        <div
+          class="flex lg:flex-row flex-col lg:items-center items-start justify-between lg:gap-10 gap-5"
+        >
           {#if listBundle && listBundle.length === 0}
-            <div class="text-xl xl:text-base">
+            <div class="text-base">
               Create your bundle with up to 7 addresses per bundle!
             </div>
           {:else}
@@ -1012,7 +1018,7 @@
                     return 0;
                   }) as item}
                     <div
-                      class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
+                      class="relative cursor-pointer text-base font-medium py-1 px-3 rounded-[100px] transition-all"
                       on:click={() => {
                         selectedBundle = item;
                         selectedAddresses = item.addresses;
@@ -1070,18 +1076,22 @@
               {/if}
             </div>
           {/if}
-          <div class="flex justify-end flex-1 gap-4">
-            <!-- add bundle -->
+
+          <div
+            class="flex md:flex-row flex-col md:items-center items-start justify-end flex-1 gap-4"
+          >
+            {#if listBundle && listBundle.length !== 0 && selectedBundle && Object.keys(selectedBundle).length !== 0 && selectedBundle?.name !== "Your wallets"}
+              <div
+                class="font-semibold text-red-500 cursor-pointer w-max xl:text-base text-lg"
+                on:click={() => (isOpenConfirmDeleteBundles = true)}
+              >
+                Delete
+              </div>
+            {/if}
+
             <div class="flex items-center gap-4">
-              {#if listBundle && listBundle.length !== 0 && selectedBundle && Object.keys(selectedBundle).length !== 0 && selectedBundle?.name !== "Your wallets"}
-                <div
-                  class="text-2xl font-semibold text-red-500 cursor-pointer w-max xl:text-base"
-                  on:click={() => (isOpenConfirmDeleteBundles = true)}
-                >
-                  Delete
-                </div>
-              {/if}
-              <div class="xl:w-max w-[200px]">
+              <!-- add bundle -->
+              <div class="w-max">
                 <Button
                   variant="tertiary"
                   on:click={() => {
@@ -1090,85 +1100,87 @@
                     selectedAddresses = [];
                   }}
                 >
-                  <img src={Plus} alt="" class="w-4 h-4 xl:w-3 xl:h-3" />
-                  <div class="text-2xl font-medium text-white xl:text-base">
-                    Add bundle
-                  </div>
+                  <img src={Plus} alt="" class="w-3 h-3" />
+                  <div class="text-white">Add bundle</div>
                 </Button>
               </div>
-            </div>
 
-            <!-- add account -->
-            <div
-              class="relative xl:w-max w-[200px]"
-              on:mouseenter={() => {
-                if (isDisabled || ($user && Object.keys($user).length === 0)) {
-                  showDisableAddWallet = true;
-                }
-              }}
-              on:mouseleave={() => {
-                if (isDisabled || ($user && Object.keys($user).length === 0)) {
-                  showDisableAddWallet = false;
-                }
-              }}
-            >
-              {#if isDisabled || ($user && Object.keys($user).length === 0)}
-                <div>
-                  {#if localStorage.getItem("isGetUserEmailYet") !== null && localStorage.getItem("isGetUserEmailYet") === "false"}
-                    <Button
-                      variant="tertiary"
-                      on:click={() => {
-                        if (
-                          localStorage.getItem("isGetUserEmailYet") !== null &&
-                          localStorage.getItem("isGetUserEmailYet") === "false"
-                        ) {
-                          isOpenModal = true;
-                        }
-                      }}
-                    >
-                      <img src={Plus} alt="" class="w-4 h-4 xl:w-3 xl:h-3" />
-                      <div class="text-2xl font-medium text-white xl:text-base">
-                        Add account
-                      </div>
-                    </Button>
-                  {:else}
-                    <Button variant="disabled" disabled>
-                      <img
-                        src={$isDarkMode ? PlusBlack : Plus}
-                        alt=""
-                        class="w-4 h-4 xl:w-3 xl:h-3"
-                      />
-                      <div
-                        class={`text-2xl font-medium xl:text-base ${
-                          $isDarkMode ? "text-gray-400" : "text-white"
-                        }`}
+              <!-- add account -->
+              <div
+                class="relative w-max"
+                on:mouseenter={() => {
+                  if (
+                    isDisabled ||
+                    ($user && Object.keys($user).length === 0)
+                  ) {
+                    showDisableAddWallet = true;
+                  }
+                }}
+                on:mouseleave={() => {
+                  if (
+                    isDisabled ||
+                    ($user && Object.keys($user).length === 0)
+                  ) {
+                    showDisableAddWallet = false;
+                  }
+                }}
+              >
+                {#if isDisabled || ($user && Object.keys($user).length === 0)}
+                  <div>
+                    {#if localStorage.getItem("isGetUserEmailYet") !== null && localStorage.getItem("isGetUserEmailYet") === "false"}
+                      <Button
+                        variant="tertiary"
+                        on:click={() => {
+                          if (
+                            localStorage.getItem("isGetUserEmailYet") !==
+                              null &&
+                            localStorage.getItem("isGetUserEmailYet") ===
+                              "false"
+                          ) {
+                            isOpenModal = true;
+                          }
+                        }}
                       >
-                        Add account
-                      </div>
-                    </Button>
-                  {/if}
-                </div>
-              {:else}
-                <Button
-                  variant="tertiary"
-                  on:click={() => {
-                    isOpenAddModal = true;
-                  }}
-                >
-                  <img src={Plus} alt="" class="w-4 h-4 xl:w-3 xl:h-3" />
-                  <div class="text-2xl font-medium text-white xl:text-base">
-                    Add account
+                        <img src={Plus} alt="" class="w-3 h-3" />
+                        <div class="text-white">Add account</div>
+                      </Button>
+                    {:else}
+                      <Button variant="disabled" disabled>
+                        <img
+                          src={$isDarkMode ? PlusBlack : Plus}
+                          alt=""
+                          class="w-3 h-3"
+                        />
+                        <div
+                          class={`${
+                            $isDarkMode ? "text-gray-400" : "text-white"
+                          }`}
+                        >
+                          Add account
+                        </div>
+                      </Button>
+                    {/if}
                   </div>
-                </Button>
-              {/if}
-              {#if showDisableAddWallet}
-                <div
-                  class="absolute right-0 transform -top-12"
-                  style="z-index: 2147483648;"
-                >
-                  <Tooltip text={tooltipDisableAddBtn} />
-                </div>
-              {/if}
+                {:else}
+                  <Button
+                    variant="tertiary"
+                    on:click={() => {
+                      isOpenAddModal = true;
+                    }}
+                  >
+                    <img src={Plus} alt="" class="w-3 h-3" />
+                    <div class="text-white">Add account</div>
+                  </Button>
+                {/if}
+                {#if showDisableAddWallet}
+                  <div
+                    class="absolute right-0 transform -top-12"
+                    style="z-index: 2147483648;"
+                  >
+                    <Tooltip text={tooltipDisableAddBtn} />
+                  </div>
+                {/if}
+              </div>
             </div>
           </div>
         </div>
@@ -1189,7 +1201,7 @@
           }`}
         >
           <div
-            class={`xl:text-base text-2xl font-medium ${
+            class={`xl:text-base text-lg font-medium ${
               $isDarkMode ? "text-gray-400" : "text-[#666666]"
             }`}
           >
@@ -1198,7 +1210,7 @@
           <input
             type="text"
             placeholder="Your bundle name"
-            class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal ${
+            class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-base font-normal ${
               nameBundle && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
             } ${
               $isDarkMode
@@ -1211,192 +1223,23 @@
           />
         </div>
 
-        <div class={`${$query.isLoading ? "h-[400px]" : ""}`}>
-          <div
-            class={`border border_0000000d rounded-[10px] xl:overflow-hidden overflow-x-auto h-full ${
-              $isDarkMode ? "bg-[#131313]" : "bg-[#fff]"
-            }`}
-          >
-            <table class="table-auto xl:w-full w-[1800px] h-full">
-              <thead>
-                <tr class="bg_f4f5f8">
-                  <th class="flex items-center justify-start gap-6 py-3 pl-3">
-                    <input
-                      type="checkbox"
-                      on:change={handleToggleCheckAll}
-                      class="cursor-pointer relative w-5 h-5 appearance-none rounded-[0.25rem] border outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white checked:focus:after:bg-transparent dark:border-neutral-600 dark:checked:border-primary dark:checked:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]"
-                    />
-                    <div class="text-xl font-semibold uppercase xl:text-xs">
-                      {MultipleLang.content.label_header_table}
-                    </div>
-                  </th>
-                  <th class="py-3">
-                    <div
-                      class="text-xl font-semibold text-left uppercase xl:text-xs"
-                    >
-                      {MultipleLang.content.address_header_table}
-                    </div>
-                  </th>
-                  <th class="py-3 pr-3">
-                    <div
-                      class="text-xl font-semibold text-right uppercase xl:text-xs"
-                    >
-                      {MultipleLang.content.action_header_table}
-                    </div>
-                  </th>
-                </tr>
-              </thead>
-              {#if $query.isLoading}
-                <tbody>
-                  <tr>
-                    <td colspan="3">
-                      <div
-                        class="flex items-center justify-center h-full px-3 py-4"
-                      >
-                        <Loading />
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              {:else}
-                <tbody>
-                  {#if listAddress && listAddress.length === 0}
-                    <tr>
-                      <td colspan="3">
-                        <div
-                          class="flex items-center justify-center h-full px-3 py-4"
-                        >
-                          No address
-                        </div>
-                      </td>
-                    </tr>
-                  {:else}
-                    {#each listAddressWithoutBundle as item (item.id)}
-                      <tr class="transition-all group">
-                        <td
-                          class={`pl-3 py-3 ${
-                            $isDarkMode
-                              ? "group-hover:bg-[#000]"
-                              : "group-hover:bg-gray-100"
-                          }`}
-                        >
-                          <div
-                            class="flex items-center gap-6 text-2xl text-left xl:text-base"
-                          >
-                            <div class="flex justify-center">
-                              <input
-                                type="checkbox"
-                                value={item.address}
-                                bind:group={selectedAddresses}
-                                class="cursor-pointer relative w-5 h-5 appearance-none rounded-[0.25rem] border outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white checked:focus:after:bg-transparent dark:border-neutral-600 dark:checked:border-primary dark:checked:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]"
-                              />
-                            </div>
-                            <div class="flex items-center gap-2">
-                              <img
-                                src={item.logo}
-                                alt=""
-                                class="w-5 h-5 xl:w-4 xl:h-4 rounded-full"
-                              />
-                              {item.label}
-                            </div>
-                          </div>
-                        </td>
-
-                        <td
-                          class={`py-3  ${
-                            $isDarkMode
-                              ? "group-hover:bg-[#000]"
-                              : "group-hover:bg-gray-100"
-                          }`}
-                        >
-                          <div
-                            class="bg-[#6AC7F533] text_27326F w-max px-3 py-1 rounded-[5px] xl:text-base text-2xl"
-                          >
-                            <Copy
-                              address={item.address}
-                              iconColor={`${$isDarkMode ? "#fff" : "#000"}`}
-                              color={`${$isDarkMode ? "#fff" : "#000"}`}
-                            />
-                          </div>
-                        </td>
-
-                        <td
-                          class={`py-3 pr-3 ${
-                            $isDarkMode
-                              ? "group-hover:bg-[#000]"
-                              : "group-hover:bg-gray-100"
-                          }`}
-                        >
-                          <div class="flex justify-end gap-6">
-                            {#if item.label !== "My address" || item.address !== $userPublicAddress}
-                              <div
-                                class="text-2xl font-semibold text-red-600 transition-all cursor-pointer hover:underline xl:text-base"
-                                on:click={() => {
-                                  isOpenConfirmDelete = true;
-                                  selectedWallet = item;
-                                }}
-                              >
-                                {MultipleLang.content.modal_delete}
-                              </div>
-                            {/if}
-                            <div
-                              class="text-2xl font-semibold text-blue-600 transition-all cursor-pointer hover:underline xl:text-base"
-                              on:click={() => handleSelectedEdit(item)}
-                            >
-                              {MultipleLang.content.modal_edit}
-                            </div>
-                          </div>
-                        </td>
-                      </tr>
-                    {/each}
-                  {/if}
-                </tbody>
-              {/if}
-            </table>
-          </div>
-        </div>
-        <div class="flex justify-end gap-6 lg:gap-2">
-          <div class="w-[120px]">
-            <Button
-              variant="secondary"
-              on:click={() => {
-                selectedAddresses = selectedBundle.addresses;
-                isAddBundle = false;
-                handleResetBundleState();
-              }}
-            >
-              {MultipleLang.content.modal_cancel}</Button
-            >
-          </div>
-          <div class="w-[120px]">
-            <Button
-              type="submit"
-              variant="tertiary"
-              isLoading={isLoadingBundle}
-            >
-              {#if selectedBundle && Object.keys(selectedBundle).length !== 0}
-                Save
-              {:else}
-                {MultipleLang.content.modal_add}
-              {/if}
-            </Button>
-          </div>
-        </div>
-      </form>
-    {:else}
-      <div class={`${$query.isLoading ? "h-[400px]" : ""}`}>
+        <!-- Desktop View -->
         <div
-          class={`border border_0000000d rounded-[10px] xl:overflow-hidden overflow-x-auto h-full ${
+          class={`xl:block hidden border border_0000000d rounded-[10px] xl:overflow-hidden overflow-x-auto h-full ${
             $isDarkMode ? "bg-[#131313]" : "bg-[#fff]"
           }`}
         >
           <table class="table-auto xl:w-full w-[1800px] h-full">
             <thead>
               <tr class="bg_f4f5f8">
-                <th class="py-3 pl-3">
-                  <div
-                    class="text-xl font-semibold text-left uppercase xl:text-xs"
-                  >
+                <th class="flex items-center justify-start gap-6 py-3 pl-3">
+                  <input
+                    type="checkbox"
+                    on:change={handleToggleCheckAll}
+                    bind:checked={checkAll}
+                    class="cursor-pointer relative w-5 h-5 appearance-none rounded-[0.25rem] border outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white checked:focus:after:bg-transparent dark:border-neutral-600 dark:checked:border-primary dark:checked:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]"
+                  />
+                  <div class="text-xl font-semibold uppercase xl:text-xs">
                     {MultipleLang.content.label_header_table}
                   </div>
                 </th>
@@ -1416,19 +1259,7 @@
                 </th>
               </tr>
             </thead>
-            {#if $query.isError}
-              <tbody>
-                <tr>
-                  <td colspan="3">
-                    <div
-                      class="flex items-center justify-center h-full px-3 py-4"
-                    >
-                      Please connect wallet
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            {:else if $query.isLoading}
+            {#if $query.isLoading}
               <tbody>
                 <tr>
                   <td colspan="3">
@@ -1441,28 +1272,12 @@
                 </tr>
               </tbody>
             {:else}
-              <tbody
-                use:dndzone={{
-                  items: listAddressWithoutBundle,
-                  flipDurationMs: 300,
-                  dropTargetStyle: { outline: "none" },
-                  transformDraggedElement: (draggedEl, data, index) => {
-                    draggedEl.classList.add("myStyle");
-                  },
-                }}
-                on:consider={(e) => {
-                  listAddressWithoutBundle = e.detail.items;
-                }}
-                on:finalize={(e) => {
-                  listAddressWithoutBundle = e.detail.items;
-                  debounceSort(e.detail.items);
-                }}
-              >
-                {#if (listAddressWithoutBundle && listAddressWithoutBundle.length === 0) || $query.isError}
+              <tbody>
+                {#if listAddress && listAddress.length === 0}
                   <tr>
                     <td colspan="3">
                       <div
-                        class="flex items-center justify-center h-full px-3 py-4 text-2xl xl:text-base"
+                        class="flex items-center justify-center h-full px-3 py-4"
                       >
                         No address
                       </div>
@@ -1479,20 +1294,16 @@
                         }`}
                       >
                         <div
-                          class="flex items-center gap-3 text-2xl text-left xl:text-base"
+                          class="flex items-center gap-6 text-2xl text-left xl:text-base"
                         >
-                          <svg
-                            width="18"
-                            height="18"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              d="M21 7.75H3C2.59 7.75 2.25 7.41 2.25 7C2.25 6.59 2.59 6.25 3 6.25H21C21.41 6.25 21.75 6.59 21.75 7C21.75 7.41 21.41 7.75 21 7.75ZM21 12.75H3C2.59 12.75 2.25 12.41 2.25 12C2.25 11.59 2.59 11.25 3 11.25H21C21.41 11.25 21.75 11.59 21.75 12C21.75 12.41 21.41 12.75 21 12.75ZM21 17.75H3C2.59 17.75 2.25 17.41 2.25 17C2.25 16.59 2.59 16.25 3 16.25H21C21.41 16.25 21.75 16.59 21.75 17C21.75 17.41 21.41 17.75 21 17.75Z"
-                              fill="#9ca3af"
+                          <div class="flex justify-center">
+                            <input
+                              type="checkbox"
+                              value={item.address}
+                              bind:group={selectedAddresses}
+                              class="cursor-pointer relative w-5 h-5 appearance-none rounded-[0.25rem] border outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white checked:focus:after:bg-transparent dark:border-neutral-600 dark:checked:border-primary dark:checked:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]"
                             />
-                          </svg>
+                          </div>
                           <div class="flex items-center gap-2">
                             <img
                               src={item.logo}
@@ -1505,7 +1316,7 @@
                       </td>
 
                       <td
-                        class={`py-3 ${
+                        class={`py-3  ${
                           $isDarkMode
                             ? "group-hover:bg-[#000]"
                             : "group-hover:bg-gray-100"
@@ -1556,6 +1367,345 @@
             {/if}
           </table>
         </div>
+
+        <!-- Mobile view -->
+        <div class="xl:hidden block">
+          <div class="flex items-center justify-start gap-4">
+            <input
+              type="checkbox"
+              on:change={handleToggleCheckAll}
+              bind:checked={checkAll}
+              class="cursor-pointer relative w-5 h-5 appearance-none rounded-[0.25rem] border outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white checked:focus:after:bg-transparent dark:border-neutral-600 dark:checked:border-primary dark:checked:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]"
+            />
+            <div class="uppercase">All</div>
+          </div>
+
+          <div class="flex flex-col gap-4 mt-4">
+            {#each listAddress as item}
+              <div class="flex flex-col gap-2 pb-3 border-b last:border-none">
+                <div class="flex justify-between gap-2">
+                  <div class="flex items-center gap-4 text-base text-left">
+                    <div class="flex justify-center">
+                      <input
+                        type="checkbox"
+                        value={item.address}
+                        bind:group={selectedAddresses}
+                        class="cursor-pointer relative w-5 h-5 appearance-none rounded-[0.25rem] border outline-none"
+                      />
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <img
+                        src={item.logo}
+                        alt=""
+                        class="w-6 h-6 rounded-full"
+                      />
+                      {item.label}
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-4">
+                    <div
+                      class="text-base font-semibold text-blue-600 transition-all cursor-pointer hover:underline"
+                      on:click={() => handleSelectedEdit(item)}
+                    >
+                      {MultipleLang.content.modal_edit}
+                    </div>
+                    <div
+                      class="text-base font-semibold text-red-600 transition-all cursor-pointer hover:underline"
+                      on:click={() => {
+                        isOpenConfirmDelete = true;
+                        selectedWallet = item;
+                      }}
+                    >
+                      Delete
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="bg-[#6AC7F533] text_27326F w-max px-3 py-1 rounded-[5px] text-base"
+                >
+                  <Copy
+                    address={item.address}
+                    iconColor={`${$isDarkMode ? "#fff" : "#000"}`}
+                    color={`${$isDarkMode ? "#fff" : "#000"}`}
+                    isShorten
+                  />
+                </div>
+              </div>
+            {/each}
+          </div>
+        </div>
+
+        <div class="flex justify-end gap-2">
+          <div class="w-[120px]">
+            <Button
+              variant="secondary"
+              on:click={() => {
+                selectedAddresses = selectedBundle.addresses;
+                isAddBundle = false;
+                handleResetBundleState();
+              }}
+            >
+              {MultipleLang.content.modal_cancel}</Button
+            >
+          </div>
+          <div class="w-[120px]">
+            <Button
+              type="submit"
+              variant="tertiary"
+              isLoading={isLoadingBundle}
+            >
+              {#if selectedBundle && Object.keys(selectedBundle).length !== 0}
+                Save
+              {:else}
+                {MultipleLang.content.modal_add}
+              {/if}
+            </Button>
+          </div>
+        </div>
+      </form>
+    {:else}
+      <!-- Desktop View -->
+      <div
+        class={`xl:block hidden border border_0000000d rounded-[10px] xl:overflow-hidden overflow-x-auto h-full ${
+          $isDarkMode ? "bg-[#131313]" : "bg-[#fff]"
+        }`}
+      >
+        <table class="table-auto xl:w-full w-[1800px] h-full">
+          <thead>
+            <tr class="bg_f4f5f8">
+              <th class="py-3 pl-3">
+                <div
+                  class="text-xl font-semibold text-left uppercase xl:text-xs"
+                >
+                  {MultipleLang.content.label_header_table}
+                </div>
+              </th>
+              <th class="py-3">
+                <div
+                  class="text-xl font-semibold text-left uppercase xl:text-xs"
+                >
+                  {MultipleLang.content.address_header_table}
+                </div>
+              </th>
+              <th class="py-3 pr-3">
+                <div
+                  class="text-xl font-semibold text-right uppercase xl:text-xs"
+                >
+                  {MultipleLang.content.action_header_table}
+                </div>
+              </th>
+            </tr>
+          </thead>
+          {#if $query.isError}
+            <tbody>
+              <tr>
+                <td colspan="3">
+                  <div
+                    class="flex items-center justify-center h-full px-3 py-4"
+                  >
+                    Please connect wallet
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          {:else if $query.isLoading}
+            <tbody>
+              <tr>
+                <td colspan="3">
+                  <div
+                    class="flex items-center justify-center h-full px-3 py-4"
+                  >
+                    <Loading />
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          {:else}
+            <tbody
+              use:dndzone={{
+                items: listAddressWithoutBundle,
+                flipDurationMs: 300,
+                dropTargetStyle: { outline: "none" },
+                transformDraggedElement: (draggedEl, data, index) => {
+                  draggedEl.classList.add("myStyle");
+                },
+              }}
+              on:consider={(e) => {
+                listAddressWithoutBundle = e.detail.items;
+              }}
+              on:finalize={(e) => {
+                listAddressWithoutBundle = e.detail.items;
+                debounceSort(e.detail.items);
+              }}
+            >
+              {#if (listAddressWithoutBundle && listAddressWithoutBundle.length === 0) || $query.isError}
+                <tr>
+                  <td colspan="3">
+                    <div
+                      class="flex items-center justify-center h-full px-3 py-4 text-2xl xl:text-base"
+                    >
+                      No address
+                    </div>
+                  </td>
+                </tr>
+              {:else}
+                {#each listAddressWithoutBundle as item (item.id)}
+                  <tr class="transition-all group">
+                    <td
+                      class={`pl-3 py-3 ${
+                        $isDarkMode
+                          ? "group-hover:bg-[#000]"
+                          : "group-hover:bg-gray-100"
+                      }`}
+                    >
+                      <div
+                        class="flex items-center gap-3 text-2xl text-left xl:text-base"
+                      >
+                        <svg
+                          width="18"
+                          height="18"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M21 7.75H3C2.59 7.75 2.25 7.41 2.25 7C2.25 6.59 2.59 6.25 3 6.25H21C21.41 6.25 21.75 6.59 21.75 7C21.75 7.41 21.41 7.75 21 7.75ZM21 12.75H3C2.59 12.75 2.25 12.41 2.25 12C2.25 11.59 2.59 11.25 3 11.25H21C21.41 11.25 21.75 11.59 21.75 12C21.75 12.41 21.41 12.75 21 12.75ZM21 17.75H3C2.59 17.75 2.25 17.41 2.25 17C2.25 16.59 2.59 16.25 3 16.25H21C21.41 16.25 21.75 16.59 21.75 17C21.75 17.41 21.41 17.75 21 17.75Z"
+                            fill="#9ca3af"
+                          />
+                        </svg>
+                        <div class="flex items-center gap-2">
+                          <img
+                            src={item.logo}
+                            alt=""
+                            class="w-5 h-5 xl:w-4 xl:h-4 rounded-full"
+                          />
+                          {item.label}
+                        </div>
+                      </div>
+                    </td>
+
+                    <td
+                      class={`py-3 ${
+                        $isDarkMode
+                          ? "group-hover:bg-[#000]"
+                          : "group-hover:bg-gray-100"
+                      }`}
+                    >
+                      <div
+                        class="bg-[#6AC7F533] text_27326F w-max px-3 py-1 rounded-[5px] xl:text-base text-2xl"
+                      >
+                        <Copy
+                          address={item.address}
+                          iconColor={`${$isDarkMode ? "#fff" : "#000"}`}
+                          color={`${$isDarkMode ? "#fff" : "#000"}`}
+                        />
+                      </div>
+                    </td>
+
+                    <td
+                      class={`py-3 pr-3 ${
+                        $isDarkMode
+                          ? "group-hover:bg-[#000]"
+                          : "group-hover:bg-gray-100"
+                      }`}
+                    >
+                      <div class="flex justify-end gap-6">
+                        {#if item.label !== "My address" || item.address !== $userPublicAddress}
+                          <div
+                            class="text-2xl font-semibold text-red-600 transition-all cursor-pointer hover:underline xl:text-base"
+                            on:click={() => {
+                              isOpenConfirmDelete = true;
+                              selectedWallet = item;
+                            }}
+                          >
+                            {MultipleLang.content.modal_delete}
+                          </div>
+                        {/if}
+                        <div
+                          class="text-2xl font-semibold text-blue-600 transition-all cursor-pointer hover:underline xl:text-base"
+                          on:click={() => handleSelectedEdit(item)}
+                        >
+                          {MultipleLang.content.modal_edit}
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                {/each}
+              {/if}
+            </tbody>
+          {/if}
+        </table>
+      </div>
+
+      <!-- Mobile view -->
+      <div class="xl:hidden block">
+        {#if $query.isError}
+          <div class="flex items-center justify-center h-full px-3 py-4">
+            Please connect wallet
+          </div>
+        {:else if $query.isLoading}
+          <div class="flex items-center justify-center h-full px-3 py-4">
+            <Loading />
+          </div>
+        {:else}
+          <div>
+            {#if (listAddressWithoutBundle && listAddressWithoutBundle.length === 0) || $query.isError}
+              <div
+                class="flex items-center justify-center h-full px-3 py-4 text-base"
+              >
+                No address
+              </div>
+            {:else}
+              <div class="flex flex-col gap-4">
+                {#each listAddressWithoutBundle as item}
+                  <div
+                    class="flex flex-col gap-2 pb-3 border-b last:border-none"
+                  >
+                    <div class="flex items-start justify-between gap-6">
+                      <div class="flex items-center gap-3 text-base text-left">
+                        <div class="flex items-center gap-2">
+                          <img
+                            src={item.logo}
+                            alt=""
+                            class="w-6 h-6 rounded-full"
+                          />
+                          {item.label}
+                        </div>
+                      </div>
+                      <div class="flex items-center gap-4">
+                        <div
+                          class="text-base font-semibold text-blue-600 transition-all cursor-pointer hover:underline"
+                          on:click={() => handleSelectedEdit(item)}
+                        >
+                          {MultipleLang.content.modal_edit}
+                        </div>
+                        <div
+                          class="text-base font-semibold text-red-600 transition-all cursor-pointer hover:underline"
+                          on:click={() => {
+                            isOpenConfirmDelete = true;
+                            selectedWallet = item;
+                          }}
+                        >
+                          Delete
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="bg-[#6AC7F533] text_27326F w-max px-3 py-1 rounded-[5px] text-base"
+                    >
+                      <Copy
+                        address={item.address}
+                        iconColor={`${$isDarkMode ? "#fff" : "#000"}`}
+                        color={`${$isDarkMode ? "#fff" : "#000"}`}
+                        isShorten
+                      />
+                    </div>
+                  </div>
+                {/each}
+              </div>
+            {/if}
+          </div>
+        {/if}
       </div>
     {/if}
   </div>
@@ -1568,7 +1718,7 @@
   on:close={() => (isOpenAddModal = false)}
 >
   <div class="flex flex-col gap-4">
-    <div class="font-semibold xl:title-3 title-1">
+    <div class="font-semibold title-3">
       {MultipleLang.content.modal_add_title}
     </div>
     <div class="flex flex-col gap-7">
@@ -1581,15 +1731,11 @@
               disabled={isLoadingConnectCEX}
               on:click={onSubmitCEX}
             >
-              <div class="text-2xl font-medium text-white xl:text-base">
-                Connect Exchange
-              </div>
+              <div class="text-white">Connect Exchange</div>
             </Button>
           </div>
         </div>
-        <div
-          class="flex items-center justify-center gap-1 text-2xl xl:text-base"
-        >
+        <div class="flex items-center justify-center gap-1 text-base">
           <img src={Success} alt="" />
           Bank-level security/encryption.
           <a
@@ -1609,16 +1755,16 @@
           <a
             href="https://getnimbus.io/chains-support"
             target="_blank"
-            class="text-blue-500 hover:underline cursor-pointer xl:text-base text-2xl"
+            class="text-blue-500 hover:underline cursor-pointer text-base"
             >More exchanges</a
           >
         </div>
       </div>
       <div class="border-t-[1px] relative">
         <div
-          class={`absolute xl:top-[-10px] top-[-14px] left-1/2 transform -translate-x-1/2 text-gray-400 ${
+          class={`absolute top-[-10px] left-1/2 transform -translate-x-1/2 text-gray-400 text-sm px-2 ${
             $isDarkMode ? "bg-[#0f0f0f]" : "bg-white"
-          } xl:text-sm text-xl px-2`}
+          }`}
         >
           Or
         </div>
@@ -1627,7 +1773,7 @@
         on:submit|preventDefault={onSubmit}
         class="flex flex-col gap-3 mt-2"
       >
-        <div class="flex flex-col gap-6 xl:gap-3">
+        <div class="flex flex-col gap-3">
           <div class="flex flex-col gap-1">
             <div
               class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
@@ -1637,7 +1783,7 @@
                 errors.address.required}
             >
               <div
-                class={`xl:text-base text-2xl font-medium ${
+                class={`xl:text-base text-lg font-medium ${
                   $isDarkMode ? "text-gray-400" : "text-[#666666]"
                 }`}
               >
@@ -1649,7 +1795,7 @@
                 name="address"
                 placeholder="Your wallet address"
                 value=""
-                class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal ${
+                class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-base font-normal ${
                   address && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
                 } ${
                   $isDarkMode
@@ -1674,7 +1820,7 @@
               class:input-border-error={errors.label && errors.label.required}
             >
               <div
-                class={`xl:text-base text-2xl font-medium ${
+                class={`text-base font-medium ${
                   $isDarkMode ? "text-gray-400" : "text-[#666666]"
                 }`}
               >
@@ -1686,7 +1832,7 @@
                 name="label"
                 placeholder={MultipleLang.content.modal_label_label}
                 value=""
-                class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal ${
+                class={`p-0 border-none focus:outline-none focus:ring-0 text-sm font-normal ${
                   label && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
                 } ${
                   $isDarkMode
@@ -1704,10 +1850,8 @@
             {/if}
           </div>
         </div>
-        <div
-          class="flex items-center justify-end gap-2 text-[#666666] xl:mt-0 mt-3"
-        >
-          <div class="xl:text-sm text-2xl">Is it your wallet?</div>
+        <div class="flex items-center justify-end gap-2 text-[#666666]">
+          <div class="text-sm">Is it your wallet?</div>
           <label class="switch">
             <input type="checkbox" bind:checked={groupedToBundles} />
             <span class="slider" />
@@ -1718,18 +1862,18 @@
             <img
               src={item.logo}
               alt=""
-              class="xl:w-8 xl:h-8 w-10 h-10 overflow-hidden rounded-full"
+              class="w-8 h-8 overflow-hidden rounded-full"
             />
           {/each}
           <a
             href="https://getnimbus.io/chains-support"
             target="_blank"
-            class="text-blue-500 hover:underline cursor-pointer xl:text-base text-2xl"
+            class="text-blue-500 hover:underline cursor-pointer text-base"
             >More chains</a
           >
         </div>
-        <div class="flex justify-end gap-6 lg:gap-2">
-          <div class="lg:w-[120px] w-full">
+        <div class="flex justify-end gap-2">
+          <div class="w-[120px]">
             <Button
               variant="secondary"
               on:click={() => {
@@ -1740,7 +1884,7 @@
               {MultipleLang.content.modal_cancel}</Button
             >
           </div>
-          <div class="lg:w-[120px] w-full">
+          <div class="w-[120px]">
             <Button
               type="submit"
               variant="tertiary"
@@ -1756,21 +1900,240 @@
   </div>
 </AppOverlay>
 
+<!-- Add DEX account Mobile -->
+<div class="lg:hidden block">
+  <div
+    class={`fixed inset-0 w-full mobile mobile-container ${
+      isOpenAddModal
+        ? "opacity-100 transform translate-x-[0px]"
+        : "opacity-0 transform translate-x-[-100vw]"
+    }`}
+  >
+    <div
+      class="max-w-[100vw] m-auto w-[90%] h-full flex flex-col gap-8 relative"
+    >
+      <div class="flex items-center justify-between py-3 border-b-[1px]">
+        <img
+          src={$isDarkMode ? LogoWhite : Logo}
+          alt=""
+          class="-ml-6 w-[170px] h-[80px]"
+        />
+        <div
+          class="-mr-1 text-5xl"
+          on:click={() => {
+            isOpenAddModal = false;
+          }}
+        >
+          &times;
+        </div>
+      </div>
+      <div class="flex flex-col gap-4">
+        <div class="font-medium title-2">
+          {MultipleLang.content.modal_add_title}
+        </div>
+        <div class="flex flex-col gap-7">
+          <div class="flex flex-col gap-3">
+            <div class="flex justify-center">
+              <div class="w-max">
+                <Button
+                  variant="tertiary"
+                  isLoading={isLoadingConnectCEX}
+                  disabled={isLoadingConnectCEX}
+                  on:click={onSubmitCEX}
+                >
+                  <div class="text-white">Connect Exchange</div>
+                </Button>
+              </div>
+            </div>
+            <div
+              class="flex flex-wrap items-center justify-center gap-1 text-xl"
+            >
+              <img src={Success} alt="" />
+              Bank-level security/encryption.
+              <a
+                href="https://vezgo.com/security"
+                class="text-blue-500 cursor-pointer"
+                target="_blank">Learn more</a
+              >
+            </div>
+            <div class="flex items-center justify-center gap-6 my-3">
+              {#each listLogoCEX.slice(0, 3) as logo}
+                <img
+                  src={logo}
+                  alt=""
+                  class="xl:w-8 xl:h-8 w-10 h-10 rounded-full"
+                />
+              {/each}
+              <a
+                href="https://getnimbus.io/chains-support"
+                target="_blank"
+                class="text-blue-500 hover:underline cursor-pointer text-lg"
+                >More exchanges</a
+              >
+            </div>
+          </div>
+          <div class="border-t-[1px] relative">
+            <div
+              class={`absolute top-[-14px] left-1/2 transform -translate-x-1/2 text-gray-400 ${
+                $isDarkMode ? "bg-[#0f0f0f]" : "bg-white"
+              } text-lg px-2`}
+            >
+              Or
+            </div>
+          </div>
+          <form
+            on:submit|preventDefault={onSubmit}
+            class="flex flex-col gap-3 mt-2"
+          >
+            <div class="flex flex-col gap-3">
+              <div class="flex flex-col gap-1">
+                <div
+                  class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
+                    address && !$isDarkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
+                  }`}
+                  class:input-border-error={errors.address &&
+                    errors.address.required}
+                >
+                  <div
+                    class={`text-lg font-medium ${
+                      $isDarkMode ? "text-gray-400" : "text-[#666666]"
+                    }`}
+                  >
+                    Address
+                  </div>
+                  <input
+                    type="text"
+                    id="address"
+                    name="address"
+                    placeholder={"Your wallet address"}
+                    value=""
+                    class={`p-0 border-none focus:outline-none focus:ring-0 text-base font-normal ${
+                      address && !$isDarkMode
+                        ? "bg-[#F0F2F7]"
+                        : "bg-transparent"
+                    } ${
+                      $isDarkMode
+                        ? "text-white"
+                        : "text-[#5E656B] placeholder-[#5E656B]"
+                    }`}
+                    on:keyup={({ target: { value } }) => (address = value)}
+                  />
+                </div>
+                {#if errors.address && errors.address.required}
+                  <div class="text-red-500">
+                    {errors.address.msg}
+                  </div>
+                {/if}
+              </div>
+
+              <div class="flex flex-col gap-1">
+                <div
+                  class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
+                    label && !$isDarkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
+                  }`}
+                  class:input-border-error={errors.label &&
+                    errors.label.required}
+                >
+                  <div
+                    class={`text-lg font-medium ${
+                      $isDarkMode ? "text-gray-400" : "text-[#666666]"
+                    }`}
+                  >
+                    {MultipleLang.content.modal_label_label}
+                  </div>
+                  <input
+                    type="text"
+                    id="label"
+                    name="label"
+                    placeholder={MultipleLang.content.modal_label_label}
+                    value=""
+                    class={`p-0 border-none focus:outline-none focus:ring-0 text-base font-normal ${
+                      label && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+                    } ${
+                      $isDarkMode
+                        ? "text-white"
+                        : "text-[#5E656B] placeholder-[#5E656B]"
+                    }
+              `}
+                    on:keyup={({ target: { value } }) => (label = value)}
+                  />
+                </div>
+                {#if errors.label && errors.label.required}
+                  <div class="text-red-500">
+                    {errors.label.msg}
+                  </div>
+                {/if}
+              </div>
+            </div>
+            <div
+              class="flex items-center justify-end gap-2 text-[#666666] mt-3"
+            >
+              <div class="text-base">Is it your wallet?</div>
+              <label class="switch">
+                <input type="checkbox" bind:checked={groupedToBundles} />
+                <span class="slider" />
+              </label>
+            </div>
+            <div class="flex items-center justify-center gap-6 my-3">
+              {#each generationLogo.slice(0, 4) as item}
+                <img
+                  src={item.logo}
+                  alt=""
+                  class="w-10 h-10 overflow-hidden rounded-full"
+                />
+              {/each}
+              <a
+                href="https://getnimbus.io/chains-support"
+                target="_blank"
+                class="text-blue-500 hover:underline cursor-pointer text-lg"
+                >More chains</a
+              >
+            </div>
+
+            <div class="flex justify-end gap-2">
+              <div class="w-[120px]">
+                <Button
+                  variant="secondary"
+                  on:click={() => {
+                    errors = {};
+                    isOpenAddModal = false;
+                  }}
+                >
+                  {MultipleLang.content.modal_cancel}
+                </Button>
+              </div>
+              <div class="w-[120px]">
+                <Button
+                  type="submit"
+                  variant="tertiary"
+                  isLoading={isLoadingAddDEX}
+                  disabled={isLoadingAddDEX}
+                >
+                  <div class="text-white">
+                    {MultipleLang.content.modal_add}
+                  </div>
+                </Button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Modal edit account -->
 <AppOverlay
   clickOutSideToClose
   isOpen={isOpenEditModal}
   on:close={() => (isOpenEditModal = false)}
 >
-  <div class="flex flex-col gap-4">
-    <div class="font-semibold xl:title-3 title-1">
+  <div class="flex flex-col gap-4 xl:mt-0 mt-4">
+    <div class="font-semibold title-3">
       {MultipleLang.content.modal_edit_title}
     </div>
-    <form
-      on:submit|preventDefault={onSubmitEdit}
-      class="flex flex-col gap-10 xl:gap-3"
-    >
-      <div class="flex flex-col gap-6 xl:gap-3">
+    <form on:submit|preventDefault={onSubmitEdit} class="flex flex-col gap-3">
+      <div class="flex flex-col gap-3">
         <div class="flex flex-col gap-1 opacity-50">
           <div
             class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
@@ -1778,7 +2141,7 @@
             }`}
           >
             <div
-              class={`xl:text-base text-2xl font-semibold ${
+              class={`xl:text-base text-lg font-semibold ${
                 $isDarkMode ? "text-gray-400" : "text-[#666666]"
               }`}
             >
@@ -1791,7 +2154,7 @@
               name="address"
               placeholder={MultipleLang.content.modal_address_label}
               value={address}
-              class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal ${
+              class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-base font-normal ${
                 address && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
               } ${
                 $isDarkMode
@@ -1810,7 +2173,7 @@
               errorsEdit.label.required}
           >
             <div
-              class={`xl:text-base text-2xl font-semibold ${
+              class={`xl:text-base text-lg font-semibold ${
                 $isDarkMode ? "text-gray-400" : "text-[#666666]"
               }`}
             >
@@ -1822,7 +2185,7 @@
               name="label"
               placeholder={MultipleLang.content.modal_label_label}
               bind:value={label}
-              class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal ${
+              class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-base font-normal ${
                 label && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
               } ${
                 $isDarkMode
@@ -1839,8 +2202,8 @@
           {/if}
         </div>
       </div>
-      <div class="flex justify-end gap-6 lg:gap-2">
-        <div class="lg:w-[120px] w-full">
+      <div class="flex justify-end gap-2">
+        <div class="w-[120px]">
           <Button
             variant="secondary"
             on:click={() => {
@@ -1851,7 +2214,7 @@
             {MultipleLang.content.modal_cancel}</Button
           >
         </div>
-        <div class="lg:w-[120px] w-full">
+        <div class="w-[120px]">
           <Button
             type="submit"
             variant="tertiary"
@@ -1872,17 +2235,17 @@
   isOpen={isOpenConfirmDelete}
   on:close={() => (isOpenConfirmDelete = false)}
 >
-  <div class="flex flex-col gap-10 xl:gap-4">
+  <div class="flex flex-col gap-4 xl:mt-0 mt-4">
     <div class="flex flex-col items-start gap-1">
-      <div class="font-semibold xl:title-3 title-1">
+      <div class="font-semibold title-3">
         {MultipleLang.content.modal_delete_title}
       </div>
-      <div class="text-2xl text-gray-500 xl:text-sm">
+      <div class="text-gray-500 text-sm">
         {MultipleLang.content.modal_delete_sub_title}
       </div>
     </div>
-    <div class="flex justify-end gap-6 lg:gap-2">
-      <div class="lg:w-[120px] w-full">
+    <div class="flex justify-end gap-2">
+      <div class="w-[120px]">
         <Button
           variant="secondary"
           on:click={() => {
@@ -1893,7 +2256,7 @@
           {MultipleLang.content.modal_cancel}
         </Button>
       </div>
-      <div class="lg:w-[120px] w-full">
+      <div class="w-[120px]">
         <Button
           variant="delete"
           isLoading={isLoadingDelete}
@@ -1915,17 +2278,17 @@
   isOpen={isOpenConfirmDeleteBundles}
   on:close={() => (isOpenConfirmDeleteBundles = false)}
 >
-  <div class="flex flex-col gap-10 xl:gap-4">
+  <div class="flex flex-col gap-4 xl:mt-0 mt-4">
     <div class="flex flex-col items-start gap-1">
-      <div class="font-semibold xl:title-3 title-1">
+      <div class="font-semibold title-3">
         {MultipleLang.content.modal_delete_title}
       </div>
-      <div class="text-2xl text-gray-500 xl:text-sm">
+      <div class="text-gray-500 text-sm">
         Do you really want to delete this bundles? This process cannot revert
       </div>
     </div>
-    <div class="flex justify-end gap-6 lg:gap-2">
-      <div class="lg:w-[120px] w-full">
+    <div class="flex justify-end gap-2">
+      <div class="w-[120px]">
         <Button
           variant="secondary"
           on:click={() => {
@@ -1935,7 +2298,7 @@
           {MultipleLang.content.modal_cancel}
         </Button>
       </div>
-      <div class="lg:w-[120px] w-full">
+      <div class="w-[120px]">
         <Button
           variant="delete"
           isLoading={isLoadingDeleteBundles}
@@ -1957,19 +2320,17 @@
     isOpenModal = false;
   }}
 >
-  <div class="flex flex-col gap-4">
+  <div class="flex flex-col gap-4 xl:mt-0 mt-4">
     <div class="flex flex-col items-start gap-1">
-      <div class="font-semibold xl:title-3 title-1">
-        Let's us know your email
-      </div>
-      <div class="text-2xl text-gray-500 xl:text-sm">
+      <div class="font-semibold title-3">Let's us know your email</div>
+      <div class="text-gray-500 text-sm">
         Add your email to get updates from us and receive exclusive benefits
         soon.
       </div>
     </div>
     <form
       on:submit|preventDefault={onSubmitGetEmail}
-      class="flex flex-col gap-10 xl:gap-3"
+      class="flex flex-col gap-6 xl:gap-3"
     >
       <div
         class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
@@ -1977,7 +2338,7 @@
         }`}
       >
         <div
-          class={`xl:text-base text-2xl font-medium ${
+          class={`xl:text-base text-lg font-medium ${
             $isDarkMode ? "text-gray-400" : "text-[#666666]"
           }`}
         >
@@ -1990,7 +2351,7 @@
           required
           placeholder="Your email"
           value=""
-          class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal ${
+          class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-base font-normal ${
             email && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
           } ${
             $isDarkMode ? "text-white" : "text-[#5E656B] placeholder-[#5E656B]"
@@ -1999,8 +2360,8 @@
           on:keyup={({ target: { value } }) => (email = value)}
         />
       </div>
-      <div class="flex justify-end gap-6 lg:gap-2">
-        <div class="xl:w-[120px] w-full">
+      <div class="flex justify-end gap-2">
+        <div class="w-[120px]">
           <Button
             variant="secondary"
             on:click={() => {
@@ -2010,7 +2371,7 @@
             {MultipleLang.content.modal_cancel}</Button
           >
         </div>
-        <div class="xl:w-[120px] w-full">
+        <div class="w-[120px]">
           <Button
             type="submit"
             isLoading={isLoadingSendMail}
@@ -2178,5 +2539,43 @@
       -ms-transform: translateX(26px);
       transform: translateX(26px);
     }
+  }
+
+  .mobile {
+    height: 100vh;
+    z-index: 2147483649;
+
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 250ms;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+
+    --tw-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1),
+      0 8px 10px -6px rgb(0 0 0 / 0.1);
+    --tw-shadow-colored: 0 20px 25px -5px var(--tw-shadow-color),
+      0 8px 10px -6px var(--tw-shadow-color);
+    box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),
+      var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+  }
+
+  @media (min-width: 1536px) {
+    :global(body) .absolute-center {
+      /* position: absolute; */
+      left: 49.5%;
+      transform: translate(-50%, -50%);
+    }
+  }
+
+  @supports (height: 100dvh) {
+    .mobile {
+      height: 100dvh;
+    }
+  }
+
+  :global(body) .mobile-container {
+    background: white;
+  }
+  :global(body.dark) .mobile-container {
+    background: black;
   }
 </style>

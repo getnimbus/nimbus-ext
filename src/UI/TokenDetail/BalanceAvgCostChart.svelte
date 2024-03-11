@@ -395,7 +395,7 @@
     <div class="h-full">
       {#if $queryHistoryTokenDetailAnalysis.isError || ($queryHistoryTokenDetailAnalysis.data !== undefined && $queryHistoryTokenDetailAnalysis.data.length === 0)}
         <div
-          class="flex justify-center items-center text-lg text-gray-400 h-[475px]"
+          class="flex justify-center items-center h-[475px] text-base text-gray-400"
         >
           Empty
         </div>
@@ -425,7 +425,7 @@
 
   <div class="flex flex-col gap-14">
     <div class="flex flex-col gap-2">
-      <div class="xl:text-lg text-xl">Win / Lose addresses</div>
+      <div class="text-lg">Win / Lose addresses</div>
       <div
         class="h-2 rounded-lg relative"
         style={`background: ${
@@ -440,13 +440,13 @@
               ).toFixed(2)}%)`
         }`}
       >
-        <div class="absolute top-5 left-0 xl:text-sm text-xl">
+        <div class="absolute top-5 left-0 text-sm">
           <TooltipNumber
             number={(sumCountWinHistoryTokenDetail / sumCount) * 100}
             type="percent"
           />% Win
         </div>
-        <div class="absolute top-5 right-0 xl:text-sm text-xl">
+        <div class="absolute top-5 right-0 text-sm">
           <TooltipNumber
             number={(sumCountLossHistoryTokenDetail / sumCount) * 100}
             type="percent"
@@ -456,7 +456,7 @@
     </div>
 
     <div class="flex flex-col gap-2">
-      <div class="xl:text-lg text-xl">Profit / Loss</div>
+      <div class="text-lg">Profit / Loss</div>
       <div
         class="h-2 rounded-lg relative"
         style={`background: ${
@@ -475,14 +475,14 @@
               )?.toFixed(2)}%)`
         }`}
       >
-        <div class="flex gap-1 absolute top-5 left-0 xl:text-sm text-xl w-max">
+        <div class="flex gap-1 absolute top-5 left-0 text-sm w-max">
           Profit
           <TooltipNumber
             number={Math.abs(sumWinProfitHistoryTokenDetail)}
             type="value"
           />
         </div>
-        <div class="flex gap-1 absolute top-5 right-0 xl:text-sm text-xl">
+        <div class="flex gap-1 absolute top-5 right-0 text-sm">
           Loss
           <TooltipNumber
             number={Math.abs(sumLossProfitHistoryTokenDetail)}

@@ -45,7 +45,7 @@
           </div>
         {:else}
           <div
-            class="flex justify-center items-center h-full text-lg text-gray-400"
+            class="flex justify-center items-center h-full text-base text-gray-400"
           >
             Empty
           </div>

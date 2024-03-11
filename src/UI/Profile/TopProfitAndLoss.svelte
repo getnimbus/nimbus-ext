@@ -117,8 +117,10 @@
 </script>
 
 <div class="col-span-4 grid xl:grid-cols-2 grid-cols-1 gap-5">
-  <div class="flex flex-col gap-5 border border_0000001a rounded-xl pt-6 pb-2">
-    <div class="xl:text-xl text-2xl font-medium px-6">Top Profit (30D)</div>
+  <div
+    class="flex flex-col gap-5 xl:border border_0000001a rounded-xl xl:pt-6 xl:pb-2"
+  >
+    <div class="xl:text-xl text-2xl font-medium xl:px-3">Top Profit (30D)</div>
 
     <div class="max-h-[280px]">
       {#if $queryTradingStats.isFetching}
@@ -130,14 +132,14 @@
           <div class="h-full flex flex-col">
             {#if topProfitToken.length === 0}
               <div
-                class="h-full flex items-center justify-center text-center py-4 px-6"
+                class="h-full flex items-center justify-center text-center py-4 xl:px-6"
               >
                 There are no closed holding position in the last 30 day
               </div>
             {:else}
               {#each topProfitToken as item}
                 <div
-                  class={`flex items-center justify-between gap-2 py-2 px-6 cursor-pointer ${
+                  class={`flex items-center justify-between gap-2 py-2 xl:px-6 cursor-pointer ${
                     $isDarkMode
                       ? "bg-[#131313] hover:bg-[#000]"
                       : "bg-white hover:bg-gray-100"
@@ -152,12 +154,10 @@
                       <Image logo={item?.logo} defaultLogo={defaultToken} />
                     </div>
                     <span class="flex flex-col">
-                      <span class="text-lg xl:text-sm font-medium">
+                      <span class="text-sm font-medium">
                         {item.name}
                       </span>
-                      <span
-                        class="text-lg font-medium text_00000080 xl:text-xs"
-                      >
+                      <span class="font-medium text_00000080 text-xs">
                         {#if item.symbol === undefined}
                           N/A
                         {:else}
@@ -166,7 +166,7 @@
                       </span>
                     </span>
                   </div>
-                  <div class="text-[#00A878] xl:text-sm text-lg font-medium">
+                  <div class="text-[#00A878] text-sm font-medium">
                     <TooltipNumber number={item.realizedProfit} type="value" />
                   </div>
                 </div>
@@ -178,8 +178,10 @@
     </div>
   </div>
 
-  <div class="flex flex-col gap-5 border border_0000001a rounded-xl pt-6 pb-2">
-    <div class="xl:text-xl text-2xl font-medium px-3">Top Loss (30D)</div>
+  <div
+    class="flex flex-col gap-5 xl:border border_0000001a xl:rounded-xl xl:pt-6 xl:pb-2"
+  >
+    <div class="xl:text-xl text-2xl font-medium xl:px-3">Top Loss (30D)</div>
 
     <div class="max-h-[280px]">
       {#if $queryTradingStats.isLoading}
@@ -191,14 +193,14 @@
           <div class="h-full flex flex-col">
             {#if topLossToken.length === 0}
               <div
-                class="h-full flex items-center justify-center text-center py-4 px-6"
+                class="h-full flex items-center justify-center text-center py-4 xl:px-6"
               >
                 There are no closed holding position in the last 30 day
               </div>
             {:else}
               {#each topLossToken as item}
                 <div
-                  class={`flex items-center justify-between gap-2 py-2 px-6 cursor-pointer ${
+                  class={`flex items-center justify-between gap-2 py-2 xl:px-6 cursor-pointer ${
                     $isDarkMode
                       ? "bg-[#131313] hover:bg-[#000]"
                       : "bg-white hover:bg-gray-100"
@@ -213,12 +215,10 @@
                       <Image logo={item?.logo} defaultLogo={defaultToken} />
                     </div>
                     <span class="flex flex-col">
-                      <span class="text-lg xl:text-sm font-medium">
+                      <span class="text-sm font-medium">
                         {item.name}
                       </span>
-                      <span
-                        class="text-lg font-medium text_00000080 xl:text-xs"
-                      >
+                      <span class="font-medium text_00000080 text-xs">
                         {#if item.symbol === undefined}
                           N/A
                         {:else}
@@ -227,7 +227,7 @@
                       </span>
                     </span>
                   </div>
-                  <div class="text-red-500 xl:text-sm text-lg font-medium">
+                  <div class="text-red-500 text-sm font-medium">
                     <TooltipNumber number={item.realizedProfit} type="value" />
                   </div>
                 </div>

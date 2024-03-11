@@ -551,14 +551,14 @@
 
 <div
   class={`flex flex-col gap-6 rounded-[20px] p-6 ${
-    $isDarkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
+    $isDarkMode ? "bg-[#222222]" : "bg-[#fff] xl:border border_0000001a"
   }`}
 >
   <ErrorBoundary>
     <div class="flex flex-col gap-2">
-      <div class="flex justify-between">
+      <div class="flex xl:flex-row flex-col gap-2 justify-between">
         <div class="flex items-end gap-3">
-          <div class="xl:text-2xl text-4xl font-medium">
+          <div class="xl:text-2xl text-3xl font-medium">
             {MultipleLang.holding}
           </div>
           <!-- <a
@@ -569,7 +569,7 @@
             Get investment opportunities notification
           </a> -->
         </div>
-        <div class="xl:text-3xl text-4xl font-medium">
+        <div class="text-3xl font-medium">
           {#if selectedType === "token"}
             <TooltipNumber number={sumTokens} type="value" personalValue />
           {/if}
@@ -584,7 +584,7 @@
         <div class="flex flex-col gap-2">
           {#if selectedTokenHolding && Object.keys(selectedTokenHolding).length !== 0 && selectedTokenHolding?.select.length !== 0}
             <div
-              class="xl:text-xl text-2xl font-medium text-gray-400 text-right"
+              class="xl:text-xl text-2xl font-medium text-gray-400 xl:text-right text-left"
             >
               <TooltipNumber
                 number={selectedTokenHoldingPercent}
@@ -595,7 +595,7 @@
 
           <div class="flex flex-col gap-4">
             <div
-              class={`flex items-center ${
+              class={`flex items-center gap-3 ${
                 selectedTokenHolding &&
                 Object.keys(selectedTokenHolding).length !== 0 &&
                 selectedTokenHolding?.select.length !== 0
@@ -611,18 +611,31 @@
                   bind:selected={selectedTypeTable}
                 />
               {/if}
-              <div class="flex items-center justify-end gap-2">
-                <div class="xl:text-sm text-2xl font-regular text-gray-400">
+              <div
+                class="flex items-center xl:justify-end justify-start w-full gap-2"
+              >
+                <div class="xl:block hidden text-sm font-regular text-gray-400">
                   Hide tokens less than
                 </div>
-                <Select
-                  type="filter"
-                  positionSelectList="right-0"
-                  listSelect={filterTokenValueType}
-                  bind:selected={filterTokenType}
-                />
+                <div class="xk:block hidden">
+                  <Select
+                    type="filter"
+                    positionSelectList="right-0"
+                    listSelect={filterTokenValueType}
+                    bind:selected={filterTokenType}
+                  />
+                </div>
+                <div class="xk:hidden block">
+                  <Select
+                    type="filter"
+                    positionSelectList="left-0"
+                    listSelect={filterTokenValueType}
+                    bind:selected={filterTokenType}
+                  />
+                </div>
               </div>
             </div>
+
             <HoldingToken
               {sumTokens}
               defaultData={holdingTokenData}
@@ -638,8 +651,8 @@
       {#if selectedType === "nft"}
         {#if $typeWallet !== "CEX"}
           <div class="flex flex-col gap-4">
-            <div class="flex items-center justify-end gap-2">
-              <div class="xl:text-sm text-2xl font-regular text-gray-400">
+            <div class="flex items-center xl:justify-end justify-start gap-2">
+              <div class="xl:block hidden text-sm font-regular text-gray-400">
                 Hide NFT Collections less than
               </div>
               <Select
@@ -672,11 +685,9 @@
     }}
   >
     <div class="flex flex-col items-center justify-center gap-10">
-      <div class="xl:text-2xl text-4xl text-white font-medium">
-        Congratulation!!!
-      </div>
+      <div class="text-2xl text-white font-medium">Congratulation!!!</div>
       <img src={goldImg} alt="" class="w-40 h-40" />
-      <div class="xl:text-2xl text-4xl text-white font-medium">
+      <div class="text-2xl text-white font-medium">
         You have received {bonusScore} GM Points
       </div>
     </div>

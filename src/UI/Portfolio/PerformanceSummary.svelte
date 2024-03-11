@@ -77,10 +77,10 @@
   });
 </script>
 
-<div class="-mt-15" id="target-performance-summary">
+<div class="xl:-mt-15" id="target-performance-summary">
   <SyncData let:address let:enabledFetchAllData>
     <div class="flex flex-col gap-6">
-      <div class="flex items-center justify-end">
+      <div class="xl:flex hidden items-center justify-end">
         <button
           id="btn-share-summary"
           class="flex items-center justify-center gap-2 xl:text-base text-2xl font-medium text-white bg-[#1e96fc] px-[9px] py-[7px] rounded-xl"
@@ -104,17 +104,17 @@
       </div>
 
       <div
-        class="w-full xl:grid grid-cols-4 flex flex-col rounded-xl py-10 md:px-10 px-4 gap-9 border-2 border_0000001a"
+        class="w-full xl:grid grid-cols-4 flex flex-col rounded-xl xl:py-10 py-4 md:px-10 px-4 gap-9 xl:border-2 border_0000001a"
       >
         <div class="w-full flex flex-col gap-5 justify-between col-span-1">
           <div>
             <div class="flex flex-col gap-3 items-center justify-start">
-              <div class="xl:w-[80px] xl:h-[80px] w-32 h-32">
+              <div class="w-[80px] h-[80px]">
                 <img src={User} alt="" class="object-cover w-full h-full" />
               </div>
 
               <div
-                class={`text-2xl xl:text-base font-medium flex items-center gap-2 ${
+                class={`text-base font-medium flex items-center gap-2 ${
                   $isDarkMode ? "text-white" : "text-black"
                 }`}
               >
@@ -136,10 +136,9 @@
             https://getnimbus.io/
           </a>
         </div>
+
         <div class="flex-1 flex flex-col gap-4 col-span-3">
-          <div class="xl:text-3xl text-4xl font-medium">
-            Performance Summary
-          </div>
+          <div class="text-3xl font-medium">Performance Summary</div>
           <div class="grid xl:grid-cols-4 grid-cols-2 gap-6">
             <ProfitData
               selectedAddress={address}

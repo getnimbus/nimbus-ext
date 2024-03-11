@@ -514,7 +514,7 @@
       <div class="h-full">
         {#if isEmptySectorGrowth}
           <div
-            class="flex justify-center items-center h-full xl:text-lg text-xl text-gray-400 h-[465px]"
+            class="flex justify-center items-center h-[465px] text-base text-gray-400"
           >
             Empty
           </div>
