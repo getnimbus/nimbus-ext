@@ -341,10 +341,10 @@
       class="flex xl:flex-row flex-col justify-between xl:items-end xl:gap-0 gap-4"
     >
       <div class="flex flex-col gap-2">
-        <div class="xl:text-5xl text-7xl font-semibold">
+        <div class="text-4xl font-semibold">
           {MultipleLang.whale}
         </div>
-        <div class="xl:text-xl text-3xl w-max">
+        <div class="xl:text-xl text-2xl w-max">
           {MultipleLang.whales_page_title}
         </div>
       </div>
@@ -353,7 +353,7 @@
           {#each whalesFilter as item}
             <div
               id={item.label}
-              class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
+              class="relative cursor-pointer xl:text-base text-xl font-medium py-1 px-3 rounded-[100px] transition-all"
               on:click={() => {
                 selectedFilter = item;
                 queryClient.invalidateQueries(["whaleslist"]);
@@ -398,13 +398,13 @@
             <th
               class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8"
             >
-              <div class="text-left xl:text-xs text-xl uppercase font-medium">
+              <div class="text-left xl:text-xs text-lg uppercase font-medium">
                 Address
               </div>
             </th>
             <th class="py-3">
               <div
-                class="flex items-center justify-end xl:gap-2 gap-4 text-right xl:text-xs text-xl uppercase font-medium"
+                class="flex items-center justify-end xl:gap-2 gap-4 text-right xl:text-xs text-lg uppercase font-medium"
               >
                 ETH Balance
                 <div
@@ -422,7 +422,7 @@
             </th>
             <th class="py-3">
               <div
-                class="flex items-center justify-end xl:gap-2 gap-4 text-right xl:text-xs text-xl uppercase font-medium"
+                class="flex items-center justify-end xl:gap-2 gap-4 text-right xl:text-xs . uppercase font-medium"
               >
                 1D Pnl
                 <div
@@ -440,7 +440,7 @@
             </th>
             <th class="py-3">
               <div
-                class="flex items-center justify-end xl:gap-2 gap-4 text-right xl:text-xs text-xl uppercase font-medium"
+                class="flex items-center justify-end xl:gap-2 gap-4 text-right xl:text-xs uppercase font-medium"
               >
                 7D Pnl
                 <div
@@ -458,7 +458,7 @@
             </th>
             <th class="py-3">
               <div
-                class="flex items-center justify-end xl:gap-2 gap-4 text-right xl:text-xs text-xl uppercase font-medium"
+                class="flex items-center justify-end xl:gap-2 gap-4 text-right xl:text-xs uppercase font-medium"
               >
                 30D Pnl
                 <div
@@ -476,7 +476,7 @@
             </th>
             <th class="py-3">
               <div
-                class="flex items-center justify-end xl:gap-2 gap-4 text-right xl:text-xs text-xl uppercase font-medium"
+                class="flex items-center justify-end xl:gap-2 gap-4 text-right xl:text-xs uppercase font-medium"
               >
                 Realized Profit
 
@@ -495,7 +495,7 @@
             </th>
             <th class="py-3">
               <div
-                class="flex items-center justify-end xl:gap-2 gap-4 text-right xl:text-xs text-xl uppercase font-medium"
+                class="flex items-center justify-end xl:gap-2 gap-4 text-right xl:text-xs uppercase font-medium"
               >
                 30D TXs
                 <div
@@ -513,7 +513,7 @@
             </th>
             <th class="py-3">
               <div
-                class="flex items-center justify-end xl:gap-1 gap-4 text-right xl:text-xs text-xl uppercase font-medium relative"
+                class="flex items-center justify-end xl:gap-1 gap-4 text-right xl:text-xs uppercase font-medium relative"
               >
                 AHT
                 <div
@@ -558,7 +558,7 @@
             </th>
             <th class="py-3">
               <div
-                class="flex items-center justify-end xl:gap-2 gap-4 text-right xl:text-xs text-xl uppercase font-medium"
+                class="flex items-center justify-end xl:gap-2 gap-4 text-right xl:text-xs uppercase font-medium"
               >
                 Last Time
                 <div
@@ -576,7 +576,7 @@
             </th>
             <th class="pr-3 py-3 rounded-tr-[10px]">
               <div
-                class="flex gap-1 justify-end items-center text-right xl:text-xs text-xl uppercase font-medium relative"
+                class="flex gap-1 justify-end items-center text-right xl:text-xs uppercase font-medium relative"
               >
                 RPT
                 <div

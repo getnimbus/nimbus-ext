@@ -28,7 +28,7 @@
   }`}
 >
   <td
-    class={`pl-3 xl:py-3 py-6 xl:static xl:bg-transparent text-left sticky left-0 z-9 ${
+    class={`pl-3 xl:py-3 py-6 xl:static xl:bg-transparent text-left sticky left-0 ${
       $isDarkMode
         ? "bg-[#131313] group-hover:bg-[#000]"
         : "bg-white group-hover:bg-gray-100"
@@ -41,7 +41,7 @@
         {/if}
         {#if data?.name}
           <a
-            class={`text-ellipsis overflow-hidden whitespace-nowrap xl:text-sm text-2xl hover:text-blue-500 ${
+            class={`text-ellipsis overflow-hidden whitespace-nowrap xl:text-sm text-xl hover:text-blue-500 ${
               $isDarkMode ? "text-white" : "text-black"
             }`}
             href={`/?type=EVM&chain=ALL&address=${data?.address}`}
@@ -50,7 +50,7 @@
             {data?.name}
           </a>
         {:else}
-          <div class="xl:text-sm text-2xl">
+          <div class="xl:text-sm text-xl">
             <Copy
               address={data?.address}
               textTooltip="Copy address to clipboard"
@@ -82,7 +82,7 @@
           </a>
         {/if}
       {:else}
-        <div class="xl:text-sm text-2xl">
+        <div class="xl:text-sm text-xl">
           <Copy
             address={data?.address}
             textTooltip="Copy address to clipboard"
@@ -103,7 +103,7 @@
     }`}
   >
     <div
-      class="text-right xl:text-sm text-2xl font-medium flex justify-end gap-1"
+      class="text-right xl:text-sm text-xl font-medium flex justify-end gap-1"
     >
       <TooltipNumber number={Number(data?.eth_balance)} type="balance" />
       <span>ETH</span>
@@ -116,7 +116,7 @@
     }`}
   >
     <div
-      class="xl:text-sm text-2xl text-right font-medium flex flex-col items-end gap-1"
+      class="xl:text-sm text-xl text-right font-medium flex flex-col items-end gap-1"
     >
       {#if data?.pnl_1d === null}
         <div>--</div>
@@ -149,7 +149,7 @@
     }`}
   >
     <div
-      class="xl:text-sm text-2xl text-right font-medium flex flex-col items-end gap-1"
+      class="xl:text-sm text-xl text-right font-medium flex flex-col items-end gap-1"
     >
       {#if data?.pnl_7d === null}
         <div>--</div>
@@ -182,7 +182,7 @@
     }`}
   >
     <div
-      class="xl:text-sm text-2xl text-right font-medium flex flex-col items-end gap-1"
+      class="xl:text-sm text-xl text-right font-medium flex flex-col items-end gap-1"
     >
       {#if data?.pnl_30d === null}
         <div>--</div>
@@ -215,7 +215,7 @@
     }`}
   >
     <div
-      class="xl:text-sm text-2xl text-right font-medium flex flex-col items-end gap-1"
+      class="xl:text-sm text-xl text-right font-medium flex flex-col items-end gap-1"
     >
       {#if data?.realized_profit === null}
         <div>--</div>
@@ -250,7 +250,7 @@
       <div class="text-right">--</div>
     {:else}
       <div
-        class="xl:text-sm text-2xl text-right font-medium flex justify-end items-center"
+        class="xl:text-sm text-xl text-right font-medium flex justify-end items-center"
       >
         {Number(data?.txs_30d)}
       </div>
@@ -266,7 +266,7 @@
       <div class="text-right">--</div>
     {:else}
       <div
-        class="xl:text-sm text-2xl text-right font-medium flex justify-end items-center"
+        class="xl:text-sm text-xl text-right font-medium flex justify-end items-center"
       >
         {formatAHT(Number(data?.avg_hold_time * 1000))}
       </div>
@@ -282,7 +282,7 @@
       <div class="text-right">--</div>
     {:else}
       <div
-        class="xl:text-sm text-2xl text-right font-medium flex justify-end items-center"
+        class="xl:text-sm text-xl text-right font-medium flex justify-end items-center"
       >
         {formatActiveTime(Number(data?.last_active * 1000))}
       </div>
