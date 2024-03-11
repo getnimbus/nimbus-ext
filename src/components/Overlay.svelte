@@ -37,7 +37,7 @@
 {#if isOpen}
   <div
     class="w-screen h-screen fixed top-0 left-0 flex overflow-y-auto justify-center items-center"
-    style="z-index: 10; background-color: rgba(0, 0, 0, 0.55); backdrop-blur: blur(4px);"
+    style="z-index: 69; background-color: rgba(0, 0, 0, 0.55); backdrop-blur: blur(4px);"
     on:click={clickOutSideToClose ? handleClose : null}
   >
     <Motion
@@ -72,44 +72,5 @@
   </div>
 {/if}
 
-<!-- <div
-  class={`xl:hidden block fixed inset-0 h-screen w-full mobile ${
-    isOpen
-      ? "opacity-100 transform translate-x-[0px]"
-      : "opacity-0 transform translate-x-[-100vw]"
-  }`}
->
-  <div class={`h-full ${$isDarkMode ? "bg-[#0f0f0f]" : "bg-white"}`}>
-    <div
-      class="h-[100px] max-w-[100vw] m-auto w-[90%] flex justify-end items-center"
-    >
-      <div
-        class="cursor-pointer xl:text-4xl text-6xl text-gray-500 z-10"
-        on:click={handleClose}
-      >
-        &times;
-      </div>
-    </div>
-    <div class="max-w-[100vw] m-auto w-[90%] -mt-14 h-full">
-      <slot />
-    </div>
-  </div>
-</div> -->
-
 <style>
-  /* .mobile {
-    z-index: 2147483649;
-
-    transition-property: all;
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-    transition-duration: 250ms;
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-
-    --tw-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1),
-      0 8px 10px -6px rgb(0 0 0 / 0.1);
-    --tw-shadow-colored: 0 20px 25px -5px var(--tw-shadow-color),
-      0 8px 10px -6px var(--tw-shadow-color);
-    box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),
-      var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
-  } */
 </style>
