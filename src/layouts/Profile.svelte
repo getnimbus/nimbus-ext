@@ -588,7 +588,7 @@
       <div>
         {#if $queryNftHolding.isError || dataNftHolding.length === 0}
           <div
-            class="flex justify-center items-center p-[6px] text-gray-400 h-[465px]"
+            class="flex justify-center items-center p-[6px] h-[465px] text-lg text-gray-400"
           >
             Empty
           </div>

@@ -1261,7 +1261,7 @@
                           <tr>
                             <td colspan={7}>
                               <div
-                                class="flex justify-center items-center h-full py-3 px-3 xl:text-lg text-xl text-gray-400"
+                                class="flex justify-center items-center h-full py-3 px-3 text-base text-gray-400"
                               >
                                 {MultipleLang.empty}
                               </div>
@@ -1508,7 +1508,7 @@
                     <div>
                       {#if searchDataResult && searchDataResult.length === 0}
                         <div
-                          class="flex justify-center items-center h-full py-3 px-3"
+                          class="flex justify-center items-center h-full py-3 px-3 text-base text-gray-400"
                         >
                           {MultipleLang.empty}
                         </div>

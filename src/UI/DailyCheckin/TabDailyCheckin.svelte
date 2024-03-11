@@ -629,7 +629,7 @@
 
             {#if $queryDailyCheckin?.data === undefined}
               <div
-                class="flex justify-center items-center h-full text-lg text-gray-400 h-[152px]"
+                class="flex justify-center items-center h-[152px] text-base text-gray-400"
               >
                 Empty
               </div>
@@ -670,7 +670,7 @@
               <div class="text-lg font-medium">This month reward</div>
               {#if $queryReward.data === undefined}
                 <div
-                  class="flex justify-center items-center h-full text-lg text-gray-400 h-[152px]"
+                  class="flex justify-center items-center h-[152px] text-base text-gray-400"
                 >
                   Empty
                 </div>
@@ -715,16 +715,16 @@
                 <div class="border-y-1 border_0000000d">
                   {#each quests as quest}
                     <div
-                      class="flex sm:flex-row flex-col justify-between items-center gap-5 py-4 border-b-1 last:border-none border_0000000d"
+                      class="flex sm:flex-row flex-col justify-between md:items-center items-start gap-5 py-4 border-b-1 last:border-none border_0000000d"
                     >
-                      <div class="flex-1 flex items-start gap-2">
+                      <div
+                        class="flex-1 flex md:flex-row flex-col items-start gap-2"
+                      >
                         <img
                           src={quest?.img ||
                             "https://s2.coinmarketcap.com/static/cloud/img/loyalty-program/Flags_3D_1.svg"}
                           alt=""
-                          class="bg-yellow-200 rounded-lg mt-1"
-                          width="32"
-                          height="32"
+                          class="bg-yellow-200 rounded-lg mt-1 md:w-[32px] md:h-[32px] w-[52px] h-[52px]"
                         />
                         <div class="flex-1 flex items-center gap-4">
                           <div class="flex-1 flex flex-col">
@@ -735,7 +735,9 @@
                               {quest?.description}
                             </div>
                           </div>
-                          <div class="flex justify-center items-center gap-1">
+                          <div
+                            class="md:flex hidden justify-center items-center gap-1"
+                          >
                             <img src={goldImg} alt="" />
                             <div class="text-base font-medium">
                               {quest?.point}
@@ -743,51 +745,63 @@
                           </div>
                         </div>
                       </div>
-                      <div class="sm:w-[170px] w-[120px]">
-                        {#if quest?.id === "link-google"}
-                          <div>
-                            {#if quest.isDone}
-                              <div class="py-1">
-                                <Button disabled>Collect!</Button>
-                              </div>
-                            {:else}
-                              <a href={quest?.url} class="py-1">
-                                <Button>Collect!</Button>
-                              </a>
-                            {/if}
-                          </div>
-                        {:else}
-                          <div>
-                            {#if quest?.isInternalLink}
-                              <a href={quest?.url} class="py-1">
-                                <Button>Collect!</Button>
-                              </a>
-                            {:else}
-                              <div
-                                on:click={() => {
-                                  if (!quest.isDone) {
-                                    handleReceiveQuest(quest?.url, quest?.id);
-                                  }
-                                }}
-                                class="py-1"
-                              >
-                                <Button
-                                  disabled={isDisabledReceiveQuest ||
-                                    quest.isDone}
+
+                      <div class="flex items-center gap-4">
+                        <div class="sm:w-[170px] w-[120px]">
+                          {#if quest?.id === "link-google"}
+                            <div>
+                              {#if quest.isDone}
+                                <div class="py-1">
+                                  <Button disabled>Collect!</Button>
+                                </div>
+                              {:else}
+                                <a href={quest?.url} class="py-1">
+                                  <Button>Collect!</Button>
+                                </a>
+                              {/if}
+                            </div>
+                          {:else}
+                            <div>
+                              {#if quest?.isInternalLink}
+                                <a href={quest?.url} class="py-1">
+                                  <Button>Collect!</Button>
+                                </a>
+                              {:else}
+                                <div
+                                  on:click={() => {
+                                    if (!quest.isDone) {
+                                      handleReceiveQuest(quest?.url, quest?.id);
+                                    }
+                                  }}
+                                  class="py-1"
                                 >
-                                  Collect!
-                                </Button>
-                              </div>
-                            {/if}
+                                  <Button
+                                    disabled={isDisabledReceiveQuest ||
+                                      quest.isDone}
+                                  >
+                                    Collect!
+                                  </Button>
+                                </div>
+                              {/if}
+                            </div>
+                          {/if}
+                        </div>
+
+                        <div
+                          class="md:hidden flex justify-center items-center gap-1"
+                        >
+                          <img src={goldImg} alt="" />
+                          <div class="text-base font-medium">
+                            {quest?.point}
                           </div>
-                        {/if}
+                        </div>
                       </div>
                     </div>
                   {/each}
                 </div>
               {:else}
                 <div
-                  class="flex justify-center items-center h-full text-lg text-gray-400 h-[152px]"
+                  class="flex justify-center items-center h-[152px] text-base text-gray-400"
                 >
                   Empty
                 </div>

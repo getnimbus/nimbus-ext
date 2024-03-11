@@ -843,7 +843,7 @@
 
 <ErrorBoundary>
   <div
-    class="max-w-[2000px] m-auto xl:w-[90%] w-[90%] py-8 flex flex-col xl:gap-10 gap-6 relative"
+    class="max-w-[2000px] m-auto xl:w-[90%] w-[90%] py-8 flex flex-col xl:gap-10 gap-6"
   >
     <div class="flex flex-col justify-center gap-2">
       <div class="font-semibold text-4xl">Optimize your portfolio</div>
@@ -945,7 +945,7 @@
       {/if}
     </div>
 
-    <div class="flex flex-col gap-2">
+    <div class="flex flex-col gap-2 relative">
       <div class="flex justify-start">
         <Select
           type="lang"
@@ -973,7 +973,7 @@
               <div class="h-full">
                 {#if isEmptyDataPie}
                   <div
-                    class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-8 backdrop-blur-md xl:text-xs text-base rounded-[20px] ${
+                    class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-8 backdrop-blur-md rounded-[20px] text-lg text-gray-400 ${
                       $isDarkMode ? "bg-black/90" : "bg-white/95"
                     }`}
                   >
@@ -1051,7 +1051,7 @@
                     <div class="h-full">
                       {#if compareData && Object.keys(compareData).length === 0}
                         <div
-                          class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-8 backdrop-blur-md xl:text-xs text-base ${
+                          class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-8 backdrop-blur-md text-lg text-gray-400 ${
                             $isDarkMode ? "bg-black/90" : "bg-white/95"
                           }`}
                         >
@@ -1101,7 +1101,7 @@
                         Compare with
                       </div>
                       <div
-                        class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-8 backdrop-blur-md xl:text-xs text-base rounded-[20px] ${
+                        class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-8 backdrop-blur-md rounded-[20px] text-lg text-gray-400 ${
                           $isDarkMode ? "bg-black/90" : "bg-white/95"
                         }`}
                       >
@@ -1263,6 +1263,28 @@
           {/if}
         </div>
       </div>
+
+      {#if $selectedPackage === "FREE"}
+        <div
+          class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center gap-3 z-8 backdrop-blur-md ${
+            $isDarkMode ? "bg-black/90" : "bg-white/95"
+          }`}
+        >
+          <div class="flex flex-col items-center gap-1">
+            <div class="text-lg font-medium">
+              Use Nimbus at its full potential
+            </div>
+            <div class="text-base text-gray-500">
+              Upgrade to Premium to access Compare feature
+            </div>
+          </div>
+          <div class="mt-2 w-max">
+            <Button variant="premium" on:click={() => navigate("/upgrade")}>
+              Upgrade Plan
+            </Button>
+          </div>
+        </div>
+      {/if}
     </div>
 
     <!-- Performance chart -->
@@ -1281,7 +1303,7 @@
           {#if compareData && Object.keys(compareData).length === 0}
             <div class="h-[433px]">
               <div
-                class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-8 backdrop-blur-md xl:text-xs text-base rounded-[20px] ${
+                class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-8 backdrop-blur-md rounded-[20px] text-lg text-gray-400 ${
                   $isDarkMode ? "bg-black/90" : "bg-white/95"
                 }`}
               >
@@ -1340,7 +1362,7 @@
           {#if compareData && Object.keys(compareData).length === 0}
             <div class="h-[465px]">
               <div
-                class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-8 backdrop-blur-md xl:text-xs text-base rounded-[20px] ${
+                class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-8 backdrop-blur-md rounded-[20px] text-lg text-gray-400 ${
                   $isDarkMode ? "bg-black/90" : "bg-white/95"
                 }`}
               >
@@ -1376,28 +1398,6 @@
         </div>
       {/if}
     </div>
-
-    {#if $selectedPackage === "FREE"}
-      <div
-        class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center justify-center gap-3 z-8 backdrop-blur-md ${
-          $isDarkMode ? "bg-black/90" : "bg-white/95"
-        }`}
-      >
-        <div class="flex flex-col items-center gap-1">
-          <div class="text-lg font-medium">
-            Use Nimbus at its full potential
-          </div>
-          <div class="text-base text-gray-500">
-            Upgrade to Premium to access Compare feature
-          </div>
-        </div>
-        <div class="mt-2 w-max">
-          <Button variant="premium" on:click={() => navigate("/upgrade")}>
-            Upgrade Plan
-          </Button>
-        </div>
-      </div>
-    {/if}
   </div>
 
   <!-- Compare result table -->

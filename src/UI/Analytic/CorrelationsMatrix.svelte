@@ -517,7 +517,7 @@
 
             {#if listTokenHolding && listTokenHolding.length === 0}
               <div
-                class="flex justify-center items-center p-[6px] text-lg text-gray-400 flex-1"
+                class="flex justify-center items-center p-[6px] flex-1 text-lg text-gray-400"
               >
                 Empty
               </div>
@@ -666,7 +666,7 @@
         <div>
           {#if $queryHoldingToken.isError}
             <div
-              class="flex justify-center items-center p-[6px] text-base text-gray-400 h-[465px]"
+              class="flex justify-center items-center p-[6px] h-[465px] text-base text-gray-400"
             >
               Empty
             </div>

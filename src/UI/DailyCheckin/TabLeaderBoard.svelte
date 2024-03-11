@@ -231,14 +231,14 @@
         <thead>
           <tr class="bg-[#FFB800] sticky top-0">
             <th colspan="3" class="pt-2 px-6 rounded-t-xl font-medium">
-              <div class="flex justify-start xl:text-sm">Your current rank</div>
+              <div class="flex justify-start text-sm">Your current rank</div>
             </th>
           </tr>
 
           <tr class="bg-[#FFB800] sticky top-[29px]">
             <th class="py-2 pl-6 font-medium">
               <div
-                class={`flex justify-start font-normal text-xl w-6 ${
+                class={`flex justify-start font-normal text-lg w-6 ${
                   !$isDarkMode && "text-[#27326F]"
                 }`}
               >
@@ -247,12 +247,12 @@
             </th>
 
             <th class="py-2 font-medium">
-              <div class="flex items-end justify-start">
+              <div class="flex items-end justify-start text-sm">
                 {formatDataLeaderboard[currentUserRank]?.owner
                   ? shorterAddress(
                       formatDataLeaderboard[currentUserRank]?.owner
                     )
-                  : "You are not checkin yet"}
+                  : "Not checkin yet"}
               </div>
             </th>
 
@@ -323,7 +323,7 @@
                   }`}
                 >
                   <div
-                    class={`flex justify-start text-xl font-normal w-6 ${
+                    class={`flex justify-start text-lg font-normal w-6 ${
                       !$isDarkMode && "text-[#27326F]"
                     }`}
                   >
@@ -342,7 +342,7 @@
                         : "group-hover:bg-gray-100"
                   }`}
                 >
-                  <div class="flex items-end justify-start">
+                  <div class="flex items-end justify-start text-sm">
                     {shorterAddress(item?.owner)}
                   </div>
                 </td>

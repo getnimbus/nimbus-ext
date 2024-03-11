@@ -1367,7 +1367,7 @@
             {/each}
           </div>
         {:else}
-          <div class="xl:text-sm text-xl">Empty</div>
+          <div class="text-base text-gray-400">Empty</div>
         {/if}
       </div>
       <div
@@ -1543,7 +1543,7 @@
             <div class="flex flex-col gap-2">
               {#each suggestList as suggest}
                 <div
-                  class="xl:text-sm text-xl cursor-pointer py-1 w-max"
+                  class="xl:text-sm text-base cursor-pointer py-1 w-max"
                   on:click={() => {
                     handleSearchAddress(suggest);
                     showPopoverSearch = false;
@@ -1556,7 +1556,7 @@
               {/each}
             </div>
           {:else}
-            <div class="xl:text-sm text-xl">Empty</div>
+            <div class="text-base text-gray-400">Empty</div>
           {/if}
         </div>
       </div>

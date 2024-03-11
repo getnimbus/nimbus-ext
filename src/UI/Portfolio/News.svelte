@@ -37,7 +37,7 @@
             {/each}
           </div>
         {:else}
-          <div class="flex items-center justify-center text-lg text-gray-400">
+          <div class="flex items-center justify-center text-base text-gray-400">
             Empty
           </div>
         {/if}

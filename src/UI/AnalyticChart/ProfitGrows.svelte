@@ -187,7 +187,7 @@
       <div class="h-full">
         {#if isEmpty}
           <div
-            class="flex justify-center items-center h-full xl:text-lg text-xl text-gray-400 h-[415px]"
+            class="flex justify-center items-center h-[415px] text-base text-gray-400"
           >
             Empty
           </div>

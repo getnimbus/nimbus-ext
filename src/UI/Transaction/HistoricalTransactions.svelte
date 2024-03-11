@@ -86,7 +86,7 @@
         <tr>
           <td colspan={5}>
             <div
-              class="flex items-center justify-center h-full px-3 py-4 text-lg text-gray-400"
+              class="flex items-center justify-center h-full px-3 py-4 text-base text-gray-400"
             >
               Empty
             </div>
@@ -301,7 +301,9 @@
   {:else}
     <div>
       {#if data && data.length === 0}
-        <div class="flex justify-center items-center h-full py-3 px-3">
+        <div
+          class="flex justify-center items-center h-full py-3 px-3 text-base text-gray-400"
+        >
           Empty
         </div>
       {:else}

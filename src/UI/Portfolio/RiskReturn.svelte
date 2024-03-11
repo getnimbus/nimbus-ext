@@ -60,7 +60,7 @@
           <div class="xl:text-2xl text-4xl font-medium px-6 pt-6">Risks</div>
           {#if isError}
             <div
-              class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-8 backdrop-blur-md xl:text-xs text-lg ${
+              class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-8 backdrop-blur-md text-base text-gray-400 ${
                 $isDarkMode ? "bg-black/90" : "bg-white/95"
               }`}
             >
@@ -280,7 +280,7 @@
           </div>
           {#if isError}
             <div
-              class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-8 backdrop-blur-md xl:text-xs text-lg ${
+              class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-8 backdrop-blur-md text-base text-gray-400 ${
                 $isDarkMode ? "bg-black/90" : "bg-white/95"
               }`}
             >

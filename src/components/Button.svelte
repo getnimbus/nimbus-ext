@@ -255,6 +255,15 @@
       padding: 8px 11px;
     }
 
+    .button {
+      font-size: 20px;
+    }
+
+    .button[type="submit"],
+    .button[type="button"] {
+      font-size: 20px;
+    }
+
     .secondary {
       font-size: 20px;
     }
@@ -313,6 +322,15 @@
   }
 
   @media screen and (max-width: 768px) {
+    .button {
+      font-size: 16px;
+    }
+
+    .button[type="submit"],
+    .button[type="button"] {
+      font-size: 16px;
+    }
+
     .secondary {
       font-size: 16px;
     }

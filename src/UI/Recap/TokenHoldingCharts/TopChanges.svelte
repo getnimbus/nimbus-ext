@@ -148,16 +148,14 @@
 >
   <div class="text-white text-xl font-medium">Top changes</div>
   {#if loading}
-    <div
-      class="flex justify-center items-center h-full xl:text-lg text-xl text-white h-[335px]"
-    >
+    <div class="flex justify-center items-center h-[335px]">
       <Loading />
     </div>
   {:else}
     <div>
       {#if isEmptyData}
         <div
-          class="flex justify-center items-center h-full xl:text-lg text-xl text-white h-[335px]"
+          class="flex justify-center items-center h-[335px] text-base text-gray-400"
         >
           Empty
         </div>

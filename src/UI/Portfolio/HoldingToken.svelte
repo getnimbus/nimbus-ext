@@ -430,7 +430,7 @@
       class={`grid ${listSupported.includes($typeWallet) ? "grid-cols-9" : "grid-cols-8"}`}
     >
       <div
-        class="col-span-full flex justify-center items-center h-full py-3 px-3 xl:text-lg text-xl text-gray-400"
+        class="col-span-full flex justify-center items-center h-full py-3 px-3 text-base text-gray-400"
       >
         {#if defaultData && defaultData.length === 0}
           {MultipleLang.empty}
@@ -1571,7 +1571,7 @@
 >
   {#if data && data.length === 0 && !isLoading}
     <div
-      class="flex justify-center items-center h-full py-3 px-3 text-xl text-gray-400"
+      class="flex justify-center items-center h-full py-3 px-3 text-base text-gray-400"
     >
       {#if defaultData && defaultData.length === 0}
         {MultipleLang.empty}
@@ -2495,7 +2495,7 @@
             <tr>
               <td colspan="3">
                 <div
-                  class="flex items-center justify-center px-3 py-3 text-gray-400 text-base"
+                  class="flex items-center justify-center px-3 py-3 text-base text-gray-400"
                 >
                   Empty
                 </div>

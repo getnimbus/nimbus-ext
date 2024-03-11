@@ -177,7 +177,7 @@
               {/if}
             </div>
           {:else}
-            <div class="xl:text-lg text-2xl text-white">Empty</div>
+            <div class="text-lg text-gray-400">Empty</div>
           {/if}
           <div class="w-max">
             <Button

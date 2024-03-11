@@ -736,7 +736,9 @@
       {:else}
         <div>
           {#if whalesData && whalesData?.length === 0}
-            <div class="flex justify-center items-center h-full py-3 px-3">
+            <div
+              class="flex justify-center items-center h-full py-3 px-3 text-lg text-gray-400"
+            >
               Empty
             </div>
           {:else}

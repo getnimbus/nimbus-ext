@@ -454,7 +454,7 @@
         <div class="h-full relative xl:min-h-[465px]">
           {#if $queryTokenHolding.isError}
             <div
-              class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-8 backdrop-blur-md xl:text-xs text-base ${
+              class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-8 backdrop-blur-md text-lg text-gray-400 ${
                 $isDarkMode ? "bg-black/90" : "bg-white/95"
               }`}
             >
@@ -548,7 +548,7 @@
         <div class="h-full relative">
           {#if $queryTokenHolding.isError}
             <div
-              class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-8 backdrop-blur-md xl:text-xs text-base ${
+              class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-8 backdrop-blur-md text-lg text-gray-400 ${
                 $isDarkMode ? "bg-black/90" : "bg-white/95"
               }`}
             >
@@ -592,7 +592,7 @@
             </div>
             {#if closedHoldingPosition && closedHoldingPosition.length === 0}
               <div
-                class="flex justify-center items-center h-[465px] xl:text-xs text-base"
+                class="flex justify-center items-center h-[465px] text-lg text-gray-400"
               >
                 Empty
               </div>

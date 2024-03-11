@@ -272,7 +272,7 @@
     <div>
       {#if isEmptyDataPieTokens}
         <div
-          class="flex justify-center items-center h-full xl:text-lg text-xl text-white h-[225px]"
+          class="flex justify-center items-center h-[225px] text-base text-gray-400"
         >
           Empty
         </div>

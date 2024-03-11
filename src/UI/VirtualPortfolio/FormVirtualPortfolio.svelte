@@ -264,7 +264,7 @@
                 <tr>
                   <td colspan={2}>
                     <div
-                      class="flex justify-center items-center py-3 px-3 xl:text-lg text-xl text-gray-400"
+                      class="flex justify-center items-center py-3 px-3 text-base text-gray-400"
                     >
                       {MultipleLang.empty}
                     </div>

@@ -148,7 +148,7 @@
       </div>
     {/each}
   {:else}
-    <div class="flex justify-center items-center text-lg text-gray-400">
+    <div class="flex justify-center items-center text-base text-gray-400">
       Empty
     </div>
   {/if}
