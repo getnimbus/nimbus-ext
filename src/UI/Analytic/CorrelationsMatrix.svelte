@@ -409,8 +409,8 @@
     </TooltipTitle>
   </div>
   <div
-    class={`flex flex-col gap-2 rounded-[20px] p-6 relative ${
-      $isDarkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
+    class={`flex flex-col gap-2 rounded-[20px] xl:p-6 py-3 relative ${
+      $isDarkMode ? "bg-[#222222]" : "bg-[#fff] xl:border border_0000001a"
     }`}
   >
     <div

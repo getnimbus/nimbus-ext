@@ -469,14 +469,16 @@
 
   <span slot="overview">
     {#if !($query.isFetching || $queryBreakdown.isFetching) && !$query.isError}
-      <div class="px-6 pt-6 mb-4 text-2xl font-medium xl:text-xl">Overview</div>
+      <div class="xl:px-6 xl:pt-6 mb-4 text-2xl font-medium xl:text-xl">
+        Overview
+      </div>
     {/if}
     {#if $query.isFetching || $queryBreakdown.isFetching}
       <div class="flex items-center justify-center h-[465px]">
         <LoadingPremium />
       </div>
     {:else}
-      <div class="h-full relative min-h-[465px]">
+      <div class="h-full relative xl:min-h-[465px]">
         {#if $query.isError}
           <div
             class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-8 backdrop-blur-md xl:text-xs text-base ${
@@ -491,7 +493,7 @@
             {/if}
           </div>
         {:else}
-          <div class="flex flex-col gap-8 px-6 pb-8">
+          <div class="flex flex-col gap-8 xl:px-6 pb-8">
             <div class="flex flex-col gap-3">
               <div class="flex flex-col gap-4">
                 <div class="grid grid-cols-2">
@@ -641,14 +643,16 @@
                   Compare to Market
                 </TooltipTitle>
               </div>
-              <ProgressBar
-                leftLabel="Low"
-                rightLabel="High"
-                averageText={`Avg Market (${sharpeRatioAvgMarket})`}
-                progress={sharpeRatioCompareAvg}
-                lowerIsBetter={false}
-                tooltipText="Shapre Ratio"
-              />
+              <div class="px-6">
+                <ProgressBar
+                  leftLabel="Low"
+                  rightLabel="High"
+                  averageText={`Avg Market (${sharpeRatioAvgMarket})`}
+                  progress={sharpeRatioCompareAvg}
+                  lowerIsBetter={false}
+                  tooltipText="Shapre Ratio"
+                />
+              </div>
             </div>
           </div>
         {/if}
@@ -658,7 +662,7 @@
 
   <span slot="chart">
     {#if $query.isFetching || $queryBreakdown.isFetching}
-      <div class="flex items-center justify-center h-[465px] p-6">
+      <div class="flex items-center justify-center h-[465px] xl:p-6 py-3">
         <LoadingPremium />
       </div>
     {:else}
@@ -677,7 +681,7 @@
             {/if}
           </div>
         {:else}
-          <div class="flex flex-row p-6 mb-2">
+          <div class="flex flex-row xl:p-6 py-3 mb-2">
             <AnimateSharedLayout>
               {#each riskTypeChart as type}
                 <div

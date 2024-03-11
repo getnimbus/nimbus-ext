@@ -52,8 +52,8 @@
 </script>
 
 <div
-  class={`rounded-[20px] p-6 flex flex-col gap-4 ${
-    $isDarkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
+  class={`rounded-[20px] xl:p-6 flex flex-col gap-4 ${
+    $isDarkMode ? "bg-[#222222]" : "bg-[#fff] xl:border border_0000001a"
   }`}
 >
   <div class="text-2xl font-medium">History</div>

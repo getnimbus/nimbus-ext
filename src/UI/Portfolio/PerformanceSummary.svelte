@@ -104,7 +104,7 @@
       </div>
 
       <div
-        class="w-full xl:grid grid-cols-4 flex flex-col rounded-xl py-10 md:px-10 px-4 gap-9 border-2 border_0000001a"
+        class="w-full xl:grid grid-cols-4 flex flex-col rounded-xl xl:py-10 py-4 md:px-10 px-4 gap-9 xl:border-2 border_0000001a"
       >
         <div class="w-full flex flex-col gap-5 justify-between col-span-1">
           <div>

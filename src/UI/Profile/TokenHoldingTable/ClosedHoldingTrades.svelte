@@ -210,7 +210,7 @@
 <svelte:window on:keydown={closeSideBar} />
 
 <div
-  class="col-span-4 border border_0000001a rounded-xl flex flex-col gap-3 p-6"
+  class="col-span-4 xl:border border_0000001a rounded-xl flex flex-col gap-3 xl:p-6 py-3"
 >
   <div class="flex md:flex-row flex-col gap-4 justify-between">
     <div class="text-2xl font-medium">Closed Trades</div>

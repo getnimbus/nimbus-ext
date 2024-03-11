@@ -335,13 +335,13 @@
   $: theme = $isDarkMode ? "dark" : "white";
 </script>
 
-<div class="col-span-4 border border_0000001a rounded-xl flex flex-col">
-  <div class="flex justify-start font-medium text-2xl px-6 pb-3 pt-6">
-    Positions 30D
-  </div>
+<div
+  class="col-span-4 xl:border border_0000001a rounded-xl flex flex-col gap-3 xl:p-6 py-3"
+>
+  <div class="flex justify-start font-medium text-2xl">Positions 30D</div>
 
   {#if $queryTradingStats.isFetching}
-    <div class="flex items-center justify-center px-6 pb-6 flex-1">
+    <div class="flex items-center justify-center flex-1">
       <LoadingPremium />
     </div>
   {:else}
@@ -353,7 +353,7 @@
       {:else}
         <div class="h-full">
           {#if closedHoldingPosition && closedHoldingPosition.length !== 0}
-            <div class="flex flex-row px-6">
+            <div class="flex flex-row">
               <AnimateSharedLayout>
                 {#each typeClosedHoldingTokenChart as type}
                   <div
@@ -386,9 +386,7 @@
           {/if}
 
           {#if closedHoldingPosition && closedHoldingPosition.length === 0}
-            <div
-              class="h-full flex items-center justify-center text-center py-4 px-6"
-            >
+            <div class="h-full flex items-center justify-center text-center">
               There are no closed holding position in the last 30 day
             </div>
           {:else}
