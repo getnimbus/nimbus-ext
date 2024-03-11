@@ -17,7 +17,7 @@
       ? "opacity-100 transform translate-x-[0px]"
       : "opacity-0 transform translate-x-[100vw]"
   }`}
-  style="z-index: 68;"
+  style="z-index: 9;"
 >
   <div
     class={`h-full fixed top-0 right-0 2xl:w-[50%] xl:w-[70%] w-[100%] flex flex-col gap-6 p-6 sidebar sidebar-container ${
@@ -33,7 +33,7 @@
 
 <style windi:preflights:global windi:safelist:global>
   .sidebar {
-    z-index: 2147483647;
+    z-index: 9;
     backdrop-filter: blur(12px);
 
     transition-property: all;
