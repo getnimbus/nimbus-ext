@@ -430,7 +430,7 @@
       class={`grid ${listSupported.includes($typeWallet) ? "grid-cols-9" : "grid-cols-8"}`}
     >
       <div
-        class="col-span-full flex justify-center items-center h-full py-3 px-3 text-base text-gray-400"
+        class="col-span-full flex justify-center items-center h-[465px] py-3 px-3 text-base text-gray-400"
       >
         {#if defaultData && defaultData.length === 0}
           {MultipleLang.empty}

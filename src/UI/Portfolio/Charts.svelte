@@ -764,7 +764,7 @@
     >
       <div class="text-3xl font-medium xl:text-2xl mb-6">Allocation</div>
 
-      {#if isLoadingBreakdownTokens && isLoadingBreakdownNfts}
+      {#if isLoadingBreakdownTokens || isLoadingBreakdownNfts}
         <div class="flex items-center justify-center h-[465px]">
           <Loading />
         </div>

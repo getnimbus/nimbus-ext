@@ -33,9 +33,6 @@
   let tableNFTHeader;
   let isStickyTableNFT = false;
 
-  let chainValue;
-  let addressValue;
-
   onMount(() => {
     const handleScroll = () => {
       const clientRectNFTHeader = tableNFTHeader?.getBoundingClientRect();
@@ -272,7 +269,7 @@
   {#if data && data.length === 0 && !isLoading}
     <div class="grid grid-cols-9">
       <div
-        class="col-span-full flex justify-center items-center h-full py-3 px-3 text-base text-gray-400"
+        class="col-span-full flex justify-center items-center h-[465px] py-3 px-3 text-base text-gray-400"
       >
         {#if defaultData && defaultData.length === 0}
           {MultipleLang.empty}

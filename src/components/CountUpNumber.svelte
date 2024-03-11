@@ -6,7 +6,7 @@
     formatCurrency,
     formatValue,
   } from "~/utils";
-  import { isHidePortfolio } from "~/store";
+  import { isHidePortfolio, wallet, chain } from "~/store";
   import { tweened } from "svelte/motion";
   import { quintOut } from "svelte/easing";
   import { derived } from "svelte/store";
@@ -23,8 +23,18 @@
   let showTooltip = false;
 
   $: {
+    if ($wallet || $chain) {
+      myNumber.set(0);
+      numberFormat = 0;
+      numberSize = "";
+    }
+  }
+
+  $: {
     if (number) {
       myNumber.set(number);
+    } else {
+      myNumber.set(0);
     }
   }
 
