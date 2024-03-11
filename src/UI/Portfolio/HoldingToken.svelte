@@ -182,9 +182,9 @@
         chain: document.getElementById("chain").value,
         contractAddress: document.getElementById("contract_address").value,
         reason: reason,
-        contractName: data.name,
-        contractTickerSymbol: data.symbol,
-        logoUrl: data.logo,
+        contractName: selectedTokenDetail?.name,
+        contractTickerSymbol: selectedTokenDetail?.symbol,
+        logoUrl: selectedTokenDetail?.logo,
         type: "token",
       };
       await nimbus.post("/holding/trash/report", formData);
@@ -601,7 +601,10 @@
                 {#if isShowReport && selectedItemIndex === index}
                   <div
                     class="relative w-5 cursor-pointer"
-                    on:click={() => (isShowReportTable = true)}
+                    on:click={() => {
+                      isShowReportTable = true;
+                      selectedTokenDetail = data[index];
+                    }}
                     on:mouseover={() => {
                       selectedItemIndex = index;
                       isShowTooltipReport = true;
@@ -2614,6 +2617,7 @@
   on:close={() => {
     isShowReportTable = false;
     isOldToken = false;
+    selectedTokenDetail = {};
   }}
 >
   <div class="flex flex-col gap-4 xl:mt-0 mt-4">
@@ -2639,7 +2643,7 @@
             type="text"
             id="chain"
             name="chain"
-            value={data[selectedItemIndex]?.chain}
+            value={selectedTokenDetail?.chain}
             class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal ${
               !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
             } ${
@@ -2667,7 +2671,7 @@
             type="text"
             id="contract_address"
             name="contract_address"
-            value={data[selectedItemIndex]?.contractAddress}
+            value={selectedTokenDetail?.contractAddress}
             class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal ${
               !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
             } ${
@@ -2751,6 +2755,7 @@
               on:click={() => {
                 isShowReportTable = false;
                 isOldToken = false;
+                selectedTokenDetail = {};
               }}
             >
               {MultipleLang.content.modal_cancel}
