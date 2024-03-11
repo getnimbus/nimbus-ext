@@ -43,6 +43,7 @@
   import Loading from "~/components/Loading.svelte";
   import Button from "~/components/Button.svelte";
   import GoogleAuth from "./GoogleAuth.svelte";
+  import TwitterAuth from "./TwitterAuth.svelte";
   import SuiAuth from "./SUIAuth.svelte";
   import SolanaAuth from "./SolanaAuth.svelte";
 
@@ -779,6 +780,7 @@
       <SolanaAuth text="Login with Solana" />
       <SuiAuth {handleCloseAuthModal} />
       <GoogleAuth {handleCloseAuthModal} />
+      <TwitterAuth {handleCloseAuthModal} />
     </div>
   </div>
 </AppOverlay>

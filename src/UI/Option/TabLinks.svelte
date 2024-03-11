@@ -6,6 +6,7 @@
   import { shorterAddress } from "~/utils";
   import mixpanel from "mixpanel-browser";
 
+  import Twitter from "../SocialLinks/Twitter.svelte";
   import Google from "../SocialLinks/Google.svelte";
   import Solana from "../MainWalletLinks/Solana.svelte";
   import Evm from "../MainWalletLinks/Evm.svelte";
@@ -57,7 +58,7 @@
     try {
       const response: any = await nimbus.get(`/accounts/link?id=${id}`);
       dataUserSocialLogin = response?.data[0] || {};
-      if (dataUserSocialLogin?.publicAddress) {
+      if (response?.data[0]?.publicAddress !== null) {
         getLinkViaAddress(dataUserSocialLogin?.publicAddress);
         userSocialPublicAddress.update(
           (n) => (n = dataUserSocialLogin?.publicAddress)
@@ -79,6 +80,8 @@
       handleValidateAddress($userPublicAddress);
     }
   }
+
+  $: console.log("dataUserSocialLogin: ", dataUserSocialLogin);
 </script>
 
 <div class="flex flex-col gap-4">
@@ -110,21 +113,34 @@
             />
           {/if}
           {#if dataUserSocialLogin?.type === "twitter"}
-            <div>Twitter</div>
+            <Twitter
+              data={dataUserSocialLogin}
+              isDisabledRemove
+              reCallAPI={() => {
+                getLinkViaAddress($userPublicAddress);
+              }}
+            />
           {/if}
         {:else}
           <div class="flex flex-col gap-3">
-            {#each socialData as item}
-              {#if localStorage.getItem("socialAuthType") === "google"}
-                <Google
-                  data={item}
-                  isDisabledRemove
-                  reCallAPI={() => {
-                    getLinkViaAddress($userPublicAddress);
-                  }}
-                />
-              {/if}
-            {/each}
+            {#if localStorage.getItem("socialAuthType") === "google"}
+              <Google
+                data={socialData.find((data) => data.type === "google")}
+                isDisabledRemove
+                reCallAPI={() => {
+                  getLinkViaAddress($userPublicAddress);
+                }}
+              />
+            {/if}
+            {#if localStorage.getItem("socialAuthType") === "twitter"}
+              <Twitter
+                data={socialData.find((data) => data.type === "twitter")}
+                isDisabledRemove
+                reCallAPI={() => {
+                  getLinkViaAddress($userPublicAddress);
+                }}
+              />
+            {/if}
           </div>
         {/if}
       {/if}
@@ -161,7 +177,7 @@
 
     {#if dataUserSocialLogin && Object.keys(dataUserSocialLogin).length !== 0 && localStorage.getItem("auth_token")}
       <div class="flex flex-col gap-2">
-        {#if !dataUserSocialLogin?.publicAddress}
+        {#if dataUserSocialLogin?.publicAddress === null}
           <div class="xl:text-base text-xl font-medium">
             Connect your main wallet
           </div>
