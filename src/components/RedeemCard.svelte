@@ -32,7 +32,7 @@
         <img src={Crown} alt="" class="w-[26px] h-[26px]" />
         <div class="text-[#FFB800] text-lg font-medium uppercase">Premium</div>
       </div>
-      <div class="text-4xl font-normal">
+      <div class="lg:text-4xl text-3xl font-normal">
         {redeemData?.title}
       </div>
       <div class="text-sm font-normal">

@@ -90,7 +90,7 @@
 
 <div class="flex flex-col gap-4 min-h-screen">
   <div
-    class="flex justify-between items-center border-b-[1.5px] border_0000000d pb-4"
+    class="flex sm:flex-row flex-col sm:justify-between sm:items-center gap-4 border-b-[1.5px] border_0000000d pb-4"
   >
     <div class="flex flex-col gap-1">
       <div class="xl:title-3 title-2">Rewards</div>
@@ -99,10 +99,10 @@
       </div>
     </div>
     <div
-      class="py-2 px-3 min-w-[100px] rounded-full bg-[#27326F] flex justify-center items-center gap-2"
+      class="flex justify-center items-center gap-2 py-2 px-3 max-w-[120px] rounded-full bg-[#27326F]"
     >
       <img src={goldImg} alt="" class="w-8" />
-      <div class="text-white text-xl font-medium">
+      <div class="text-white md:text-xl text-lg font-medium">
         {$queryDailyCheckin?.data?.totalPoint || 0}
       </div>
     </div>
@@ -119,7 +119,7 @@
           <AnimateSharedLayout>
             {#each dailyCheckinRewardsTypePortfolio as type}
               <div
-                class="relative cursor-pointer xl:text-base text-xl font-medium py-2 px-3 rounded-xl transition-all"
+                class="relative cursor-pointer xl:text-base text-lg font-medium py-1 px-3 rounded-[100px] transition-all"
                 on:click={() => (selectedType = type.value)}
               >
                 <div

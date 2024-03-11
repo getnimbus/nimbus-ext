@@ -675,7 +675,7 @@
                   Empty
                 </div>
               {:else}
-                <div class="overflow-x-auto">
+                <div class="overflow-x-auto py-4">
                   <div class="flex gap-6 w-[650px]">
                     {#each $queryReward?.data?.monthRewards || [] as item, index}
                       <div>

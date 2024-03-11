@@ -28,7 +28,7 @@
   }`}
 >
   <td
-    class={`pl-3 xl:py-3 py-6 xl:static xl:bg-transparent text-left sticky left-0 ${
+    class={`pl-3 xl:py-3 py-6 xl:static xl:bg-transparent text-left sticky w-[170px] left-0 ${
       $isDarkMode
         ? "bg-[#131313] group-hover:bg-[#000]"
         : "bg-white group-hover:bg-gray-100"

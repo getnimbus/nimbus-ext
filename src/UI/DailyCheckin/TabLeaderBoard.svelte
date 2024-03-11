@@ -58,9 +58,11 @@
   }
 </script>
 
-<div class="flex flex-col gap-1 border-b-[1.5px] border_0000000d pb-4 mb-60">
-  <div class="xl:title-3 title-1">Leaderboard</div>
-  <div class="xl:text-base text-xl text-gray-500">
+<div
+  class="flex flex-col gap-1 border-b-[1.5px] border_0000000d pb-4 lg:mb-60 sm:mb-32 mb-10"
+>
+  <div class="xl:title-3 title-2">Leaderboard</div>
+  <div class="xl:text-base text-lg text-gray-500">
     Take a look at the leaderboard to see how ranked you are
   </div>
 </div>
@@ -140,53 +142,53 @@
   <div class="relative md:hidden block">
     <div class="flex flex-col items-center justify-center">
       <div class="w-full flex">
-        <div class="flex-1 flex flex-col justify-end h-[350px]">
-          <div class="h-[145px] w-full">
+        <div class="flex-1 flex flex-col justify-end h-[350px] h-300">
+          <div class="h-[105px] w-full">
             <img src={rank2} alt="" class="w-full h-full object-contain" />
           </div>
           <div class="flex flex-col justify-center items-center gap-1 -mt-1">
-            <div class="text-lg font-bold">
+            <div class="font-semibold text-sm">
               {shorterAddress(formatDataLeaderboard[1]?.owner) || "-"}
             </div>
             <div class="flex items-center gap-1">
-              <div class="text-xl text-[#FFCB59] font-semibold">
+              <div class="text-[#FFCB59] font-semibold">
                 {formatDataLeaderboard[1]?.point || 0}
               </div>
-              <div class="font-normal">GM Point</div>
+              <div class="text-sm font-normal">GM Point</div>
             </div>
           </div>
         </div>
 
         <div class="flex-1">
-          <div class="h-[175px] w-full">
+          <div class="h-[145px] w-full">
             <img src={rank1} alt="" class="w-full h-full object-contain" />
           </div>
           <div class="flex flex-col justify-center items-center gap-1">
-            <div class="text-lg font-bold">
+            <div class="font-semibold text-sm">
               {shorterAddress(formatDataLeaderboard[0]?.owner) || "-"}
             </div>
             <div class="flex items-center gap-1">
-              <div class="text-xl text-[#FFCB59] font-semibold">
+              <div class="text-[#FFCB59] font-semibold">
                 {formatDataLeaderboard[0]?.point || 0}
               </div>
-              <div class="font-normal">GM Point</div>
+              <div class="text-sm font-normal">GM Point</div>
             </div>
           </div>
         </div>
 
-        <div class="flex-1 flex flex-col justify-end h-[350px]">
+        <div class="flex-1 flex flex-col justify-end h-[350px] h-300">
           <div class="h-[105px] w-full">
             <img src={rank3} alt="" class="w-full h-full object-contain" />
           </div>
           <div class="flex flex-col justify-center items-center gap-1 -mt-1">
-            <div class="text-lg font-bold">
+            <div class="font-semibold text-sm">
               {shorterAddress(formatDataLeaderboard[2]?.owner) || "-"}
             </div>
             <div class="flex items-center gap-1">
-              <div class="text-xl text-[#FFCB59] font-semibold">
+              <div class="text-[#FFCB59] font-semibold">
                 {formatDataLeaderboard[2]?.point || 0}
               </div>
-              <div class="font-normal">GM Point</div>
+              <div class="text-sm font-normal">GM Point</div>
             </div>
           </div>
         </div>
@@ -196,7 +198,7 @@
       </div>
     </div>
     <div
-      class="absolute -top-[208px] left-1/2 transform -translate-x-1/2 -z-20 w-full h-full opacity-60"
+      class="absolute -top-[168px] left-1/2 transform -translate-x-1/2 -z-20 w-full h-full opacity-60"
     >
       <img src={frameLeaderboard} alt="" class="w-full h-full object-contain" />
     </div>
@@ -236,7 +238,7 @@
           <tr class="bg-[#FFB800] sticky top-[29px]">
             <th class="py-2 pl-6 font-medium">
               <div
-                class={`flex justify-start font-normal text-2xl w-6 ${
+                class={`flex justify-start font-normal text-xl w-6 ${
                   !$isDarkMode && "text-[#27326F]"
                 }`}
               >
@@ -245,7 +247,7 @@
             </th>
 
             <th class="py-2 font-medium">
-              <div class="flex items-end justify-start xl:text-base text-lg">
+              <div class="flex items-end justify-start">
                 {formatDataLeaderboard[currentUserRank]?.owner
                   ? shorterAddress(
                       formatDataLeaderboard[currentUserRank]?.owner
@@ -256,17 +258,17 @@
 
             <th class="py-2 pr-6 font-medium">
               <div class="flex items-center justify-end gap-1">
-                <div class="text-2xl">
+                <div class="text-xl">
                   {formatDataLeaderboard[currentUserRank]?.point || 0}
                 </div>
-                <div class="xl:text-xl text-lg font-normal">GM point</div>
+                <div class="xl:text-xl font-normal">GM point</div>
               </div>
             </th>
           </tr>
 
           <tr>
             <th colspan="3" class="py-2 px-6 font-medium">
-              <div class="flex justify-start xl:text-sm">Runners up</div>
+              <div class="flex justify-start text-sm">Runners up</div>
             </th>
           </tr>
         </thead>
@@ -321,7 +323,7 @@
                   }`}
                 >
                   <div
-                    class={`flex justify-start text-2xl font-normal w-6 ${
+                    class={`flex justify-start text-xl font-normal w-6 ${
                       !$isDarkMode && "text-[#27326F]"
                     }`}
                   >
@@ -340,9 +342,7 @@
                         : "group-hover:bg-gray-100"
                   }`}
                 >
-                  <div
-                    class="flex items-end justify-start xl:text-base text-lg"
-                  >
+                  <div class="flex items-end justify-start">
                     {shorterAddress(item?.owner)}
                   </div>
                 </td>
@@ -358,8 +358,8 @@
                         : "group-hover:bg-gray-100"
                   }`}
                 >
-                  <div class="flex items-center justify-end gap-1">
-                    <div class="text-yellow-400 xl:text-xl text-xl">
+                  <div class="flex items-center text-right justify-end gap-1">
+                    <div class="text-yellow-400 xl:text-xl text-lg">
                       {item?.point || 0}
                     </div>
                     <div>GM point</div>
@@ -375,4 +375,9 @@
 {/if}
 
 <style windi:preflights:global windi:safelist:global>
+  @media (min-height: 320px) {
+    .h-300 {
+      height: 300px;
+    }
+  }
 </style>
