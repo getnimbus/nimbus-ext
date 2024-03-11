@@ -698,7 +698,7 @@
         <div class="flex items-center justify-between">
           <div class="flex flex-col gap-3">
             <div class="flex items-center gap-2 text-white">
-              <div class="text-5xl font-medium">Custom Token Breakdown</div>
+              <div class="text-4xl font-medium">Custom Token Breakdown</div>
             </div>
             {#if $wallet && $wallet?.length !== 0}
               <div class="text-base">
