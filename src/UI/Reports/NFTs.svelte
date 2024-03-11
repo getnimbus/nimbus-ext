@@ -207,10 +207,10 @@
 >
   <div class="flex flex-col gap-10 xl:gap-4">
     <div class="flex flex-col items-start gap-1">
-      <div class="font-semibold xl:title-3 title-1">
+      <div class="font-semibold xl:title-3 title-2">
         {MultipleLang.content.modal_delete_title}
       </div>
-      <div class="text-2xl text-gray-500 xl:text-sm">
+      <div class="text-lg text-gray-500 xl:text-sm">
         {MultipleLang.content.modal_delete_sub_title}
       </div>
     </div>
