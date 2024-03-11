@@ -93,8 +93,8 @@
     class="flex justify-between items-center border-b-[1.5px] border_0000000d pb-4"
   >
     <div class="flex flex-col gap-1">
-      <div class="xl:title-3 title-1">Rewards</div>
-      <div class="xl:text-base text-xl text-gray-500">
+      <div class="xl:title-3 title-2">Rewards</div>
+      <div class="xl:text-base text-lg text-gray-500">
         Use GM Points to redeem gifts
       </div>
     </div>
@@ -102,7 +102,7 @@
       class="py-2 px-3 min-w-[100px] rounded-full bg-[#27326F] flex justify-center items-center gap-2"
     >
       <img src={goldImg} alt="" class="w-8" />
-      <div class="text-white xl:text-xl text-2xl font-medium">
+      <div class="text-white text-xl font-medium">
         {$queryDailyCheckin?.data?.totalPoint || 0}
       </div>
     </div>
@@ -119,7 +119,7 @@
           <AnimateSharedLayout>
             {#each dailyCheckinRewardsTypePortfolio as type}
               <div
-                class="relative cursor-pointer xl:text-base text-2xl font-medium py-2 px-3 rounded-xl transition-all"
+                class="relative cursor-pointer xl:text-base text-xl font-medium py-2 px-3 rounded-xl transition-all"
                 on:click={() => (selectedType = type.value)}
               >
                 <div
@@ -159,7 +159,7 @@
               {/if}
             </div>
 
-            <div class="grid grid-cols-2 gap-10">
+            <div class="grid lg:grid-cols-2 grid-cols-1 gap-10">
               {#each $queryReward?.data?.redeemable || [] as item}
                 <RedeemCard isRedeem redeemData={item} {handleRedeem} />
               {/each}
@@ -180,7 +180,7 @@
               {/if}
             </div>
 
-            <div class="grid grid-cols-2 gap-10">
+            <div class="grid lg:grid-cols-2 grid-cols-1 gap-10">
               {#each $queryReward?.data?.ownRewards || [] as item}
                 <RedeemCard redeemData={item} handleRedeem={() => {}} />
               {/each}

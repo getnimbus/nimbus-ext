@@ -671,32 +671,34 @@
                   Empty
                 </div>
               {:else}
-                <div class="flex gap-6">
-                  {#each $queryReward?.data?.monthRewards || [] as item, index}
-                    <div>
-                      <div
-                        class="relative h-[250px] w-[185px] flex flex-col items-center justify-center gap-3 text-white"
-                      >
-                        <img
-                          src={rankBackground[index]}
-                          alt=""
-                          class="absolute top-0 left-0 -z-99"
-                        />
-                        <img src={rank[index]} alt="" class="h-[70px] mb-2" />
-                        <div class="text-4xl font-medium text-center">
-                          ${item.amount}
-                        </div>
-                        <div class="text-base text-center">
-                          {index + 1}{index === 0
-                            ? "st"
-                            : index == 1
-                              ? "nd"
-                              : "rd"}
-                          Rank
+                <div class="overflow-x-auto">
+                  <div class="flex gap-6 w-[650px]">
+                    {#each $queryReward?.data?.monthRewards || [] as item, index}
+                      <div>
+                        <div
+                          class="relative h-[250px] w-[185px] flex flex-col items-center justify-center gap-3 text-white"
+                        >
+                          <img
+                            src={rankBackground[index]}
+                            alt=""
+                            class="absolute top-0 left-0 -z-99"
+                          />
+                          <img src={rank[index]} alt="" class="h-[70px] mb-2" />
+                          <div class="text-4xl font-medium text-center">
+                            ${item.amount}
+                          </div>
+                          <div class="text-base text-center">
+                            {index + 1}{index === 0
+                              ? "st"
+                              : index == 1
+                                ? "nd"
+                                : "rd"}
+                            Rank
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  {/each}
+                    {/each}
+                  </div>
                 </div>
               {/if}
             </div>
@@ -709,7 +711,7 @@
                 <div class="border-y-1 border_0000000d">
                   {#each quests as quest}
                     <div
-                      class="flex justify-between items-center gap-5 py-4 border-b-1 last:border-none border_0000000d"
+                      class="flex sm:flex-row flex-col justify-between items-center gap-5 py-4 border-b-1 last:border-none border_0000000d"
                     >
                       <div class="flex-1 flex items-start gap-2">
                         <img
@@ -737,7 +739,7 @@
                           </div>
                         </div>
                       </div>
-                      <div class="w-[170px]">
+                      <div class="sm:w-[170px] w-[120px]">
                         {#if quest?.id === "link-google"}
                           <div>
                             {#if quest.isDone}
