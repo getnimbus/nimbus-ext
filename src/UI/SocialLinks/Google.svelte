@@ -227,10 +227,10 @@
 
 <div class="bg_f4f5f8 rounded-[10px] px-4 py-3 flex flex-col gap-2">
   <div class="flex justify-between items-center gap-4">
-    <div class="font-medium xl:text-lg text-3xl">Google</div>
+    <div class="font-medium xl:text-lg text-xl">Google</div>
     {#if data && Object.keys(data).length !== 0 && !isDisabledRemove}
       <div
-        class="cursor-pointer text-red-600 font-medium text-2xl xl:text-base"
+        class="cursor-pointer text-red-600 font-medium text-xl xl:text-base"
         on:click={handleRemoveGoogle}
       >
         Remove
@@ -241,7 +241,7 @@
   {#if data && Object.keys(data).length !== 0}
     <div class="flex items-center gap-2">
       <img src={Google} alt="" width="22" height="22" />
-      <div class="xl:text-base text-2xl">{data?.info}</div>
+      <div class="xl:text-base text-lg">{data?.info}</div>
     </div>
     <div class="mt-2 flex items-center justify-start gap-2">
       <input

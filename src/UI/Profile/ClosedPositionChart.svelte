@@ -347,7 +347,9 @@
   {:else}
     <div class="h-full relative">
       {#if $queryTradingStats.isError}
-        <div class="h-full flex justify-center items-center text-base">
+        <div
+          class="h-full flex justify-center items-center text-base text-gray-400"
+        >
           Empty
         </div>
       {:else}

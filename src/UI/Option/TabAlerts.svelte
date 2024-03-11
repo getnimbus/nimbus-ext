@@ -399,16 +399,16 @@
 
 <div class="flex flex-col gap-4">
   <div
-    class="flex justify-between items-end border-b-[1.5px] border_0000000d pb-4"
+    class="flex md:flex-row flex-col justify-between md:items-end items-start border-b-[1.5px] border_0000000d pb-4"
   >
     <div class="flex flex-col gap-1">
-      <div class="xl:title-3 title-1">Alert Settings</div>
-      <div class="xl:text-base text-xl text-gray-500">
+      <div class="xl:title-3 title-2">Alert Settings</div>
+      <div class="xl:text-base text-lg text-gray-500">
         Management your setup alerts
       </div>
     </div>
     <div
-      class="xl:text-base text-xl text-blue-500 cursor-pointer hover:underline"
+      class="xl:text-base text-lg text-blue-500 cursor-pointer hover:underline"
       on:click={() => {
         isOpenFollowWhaleModal = true;
         handleGetCodeSyncMobile();
@@ -421,6 +421,7 @@
       How to start alerts on Telegram?
     </div>
   </div>
+
   <form
     on:submit|preventDefault={onSubmitSettingAlert}
     class="flex flex-col gap-8"
@@ -517,15 +518,17 @@
     </div> -->
 
     <div class="flex flex-col gap-4">
-      <div class="xl:title-4 title-2">Portfolio summary alerts</div>
+      <div class="xl:title-4 title-3">Portfolio summary alerts</div>
       <div class="flex flex-col gap-8">
-        <div class="flex flex-col gap-4">
-          <div class="flex justify-between items-center gap-6">
+        <div class="flex flex-col md:gap-4 gap-6">
+          <div
+            class="flex md:flex-row flex-col justify-between md:items-center items-start gap-6"
+          >
             <div class="flex flex-col">
-              <div class="xl:text-base text-2xl">
+              <div class="xl:text-base text-lg">
                 Frequency of portfolio summary notification
               </div>
-              <div class="xl:text-sm text-xl text-gray-400">
+              <div class="xl:text-sm text-base text-gray-400">
                 Receive portfolio summary every daily, weekly or monthly
               </div>
             </div>
@@ -540,6 +543,7 @@
               <span class="slider" />
             </label>
           </div>
+
           <div class="flex flex-col gap-3">
             {#each summaryList as item}
               <div
@@ -551,14 +555,14 @@
                   name={item.id}
                   id={item.id}
                   value={item.value}
-                  class={`cursor-pointer relative xl:w-4 xl:h-4 w-6 h-6 appearance-none rounded-full border outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white checked:focus:after:bg-transparent dark:border-neutral-600 dark:checked:border-primary dark:checked:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] ${
+                  class={`cursor-pointer relative xl:w-4 xl:h-4 w-5 h-5 appearance-none rounded-full border outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white checked:focus:after:bg-transparent dark:border-neutral-600 dark:checked:border-primary dark:checked:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] ${
                     summary ? "" : "bg-gray-200 border-gray-200"
                   }`}
                   bind:group={selectedSummary}
                 />
                 <label
                   for={item.id}
-                  class="xl:text-sm text-2xl font-normal cursor-pointer"
+                  class="xl:text-sm text-base font-normal cursor-pointer"
                 >
                   {item.content}
                 </label>
@@ -569,121 +573,173 @@
 
         <div class="flex flex-col gap-4">
           <div class="flex flex-col">
-            <div class="xl:text-base text-2xl">
+            <div class="xl:text-base text-lg">
               Custom portfolio summary notification
             </div>
-            <div class="xl:text-sm text-xl text-gray-400">
+            <div class="xl:text-sm text-base text-gray-400">
               Select portfolio you want to receive notification
             </div>
           </div>
-          <div class={`${$query.isLoading ? "h-[400px]" : ""}`}>
-            <div
-              class={`border border_0000000d rounded-[10px] xl:overflow-hidden overflow-x-auto h-full ${
-                $isDarkMode ? "bg-[#131313]" : "bg-[#fff]"
-              }`}
-            >
-              <table class="table-auto xl:w-full w-[1800px] h-full">
-                <thead>
-                  <tr class="bg_f4f5f8">
-                    <th class="flex items-center justify-start gap-6 py-3 pl-3">
-                      <input
-                        type="checkbox"
-                        on:change={handleToggleCheckAll}
-                        bind:checked={checkAll}
-                        class="cursor-pointer relative w-5 h-5 appearance-none rounded-[0.25rem] border outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white checked:focus:after:bg-transparent dark:border-neutral-600 dark:checked:border-primary dark:checked:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]"
-                      />
-                      <div class="text-xl font-semibold uppercase xl:text-xs">
-                        {MultipleLang.content.label_header_table}
-                      </div>
-                    </th>
-                    <th class="py-3 pr-3">
+          <!-- Desktop view -->
+          <div
+            class={`xl:block hidden border border_0000000d rounded-[10px] xl:overflow-hidden overflow-x-auto h-full ${
+              $isDarkMode ? "bg-[#131313]" : "bg-[#fff]"
+            }`}
+          >
+            <table class="table-auto xl:w-full w-[1800px] h-full">
+              <thead>
+                <tr class="bg_f4f5f8">
+                  <th class="flex items-center justify-start gap-6 py-3 pl-3">
+                    <input
+                      type="checkbox"
+                      on:change={handleToggleCheckAll}
+                      bind:checked={checkAll}
+                      class="cursor-pointer relative w-5 h-5 appearance-none rounded-[0.25rem] border outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white checked:focus:after:bg-transparent dark:border-neutral-600 dark:checked:border-primary dark:checked:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]"
+                    />
+                    <div class="text-xl font-semibold uppercase xl:text-xs">
+                      {MultipleLang.content.label_header_table}
+                    </div>
+                  </th>
+                  <th class="py-3 pr-3">
+                    <div
+                      class="text-xl font-semibold text-left uppercase xl:text-xs"
+                    >
+                      {MultipleLang.content.address_header_table}
+                    </div>
+                  </th>
+                </tr>
+              </thead>
+              {#if $query.isLoading}
+                <tbody>
+                  <tr>
+                    <td colspan="2">
                       <div
-                        class="text-xl font-semibold text-left uppercase xl:text-xs"
+                        class="flex items-center justify-center h-full px-3 py-4"
                       >
-                        {MultipleLang.content.address_header_table}
+                        <Loading />
                       </div>
-                    </th>
+                    </td>
                   </tr>
-                </thead>
-                {#if $query.isLoading}
-                  <tbody>
+                </tbody>
+              {:else}
+                <tbody>
+                  {#if listAddress && listAddress.length === 0}
                     <tr>
                       <td colspan="2">
                         <div
                           class="flex items-center justify-center h-full px-3 py-4"
                         >
-                          <Loading />
+                          No address
                         </div>
                       </td>
                     </tr>
-                  </tbody>
-                {:else}
-                  <tbody>
-                    {#if listAddress && listAddress.length === 0}
-                      <tr>
-                        <td colspan="2">
+                  {:else}
+                    {#each listAddress as item (item.id)}
+                      <tr class="transition-all group">
+                        <td
+                          class={`pl-3 py-3 ${
+                            $isDarkMode
+                              ? "group-hover:bg-[#000]"
+                              : "group-hover:bg-gray-100"
+                          }`}
+                        >
                           <div
-                            class="flex items-center justify-center h-full px-3 py-4"
+                            class="flex items-center gap-6 text-2xl text-left xl:text-base"
                           >
-                            No address
+                            <div class="flex justify-center">
+                              <input
+                                type="checkbox"
+                                value={item.address}
+                                bind:group={blacklistAddress}
+                                class="cursor-pointer relative w-5 h-5 appearance-none rounded-[0.25rem] border outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white checked:focus:after:bg-transparent dark:border-neutral-600 dark:checked:border-primary dark:checked:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]"
+                              />
+                            </div>
+                            <div class="flex items-center gap-2">
+                              <img
+                                src={item.logo}
+                                alt=""
+                                class="w-5 h-5 xl:w-4 xl:h-4 rounded-full"
+                              />
+                              {item.label}
+                            </div>
+                          </div>
+                        </td>
+
+                        <td
+                          class={`py-3  ${
+                            $isDarkMode
+                              ? "group-hover:bg-[#000]"
+                              : "group-hover:bg-gray-100"
+                          }`}
+                        >
+                          <div
+                            class="bg-[#6AC7F533] text_27326F w-max px-3 py-1 rounded-[5px] xl:text-base text-2xl"
+                          >
+                            <Copy
+                              address={item.address}
+                              iconColor={`${$isDarkMode ? "#fff" : "#000"}`}
+                              color={`${$isDarkMode ? "#fff" : "#000"}`}
+                            />
                           </div>
                         </td>
                       </tr>
-                    {:else}
-                      {#each listAddress as item (item.id)}
-                        <tr class="transition-all group">
-                          <td
-                            class={`pl-3 py-3 ${
-                              $isDarkMode
-                                ? "group-hover:bg-[#000]"
-                                : "group-hover:bg-gray-100"
-                            }`}
-                          >
-                            <div
-                              class="flex items-center gap-6 text-2xl text-left xl:text-base"
-                            >
-                              <div class="flex justify-center">
-                                <input
-                                  type="checkbox"
-                                  value={item.address}
-                                  bind:group={blacklistAddress}
-                                  class="cursor-pointer relative w-5 h-5 appearance-none rounded-[0.25rem] border outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white checked:focus:after:bg-transparent dark:border-neutral-600 dark:checked:border-primary dark:checked:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]"
-                                />
-                              </div>
-                              <div class="flex items-center gap-2">
-                                <img
-                                  src={item.logo}
-                                  alt=""
-                                  class="w-5 h-5 xl:w-4 xl:h-4 rounded-full"
-                                />
-                                {item.label}
-                              </div>
-                            </div>
-                          </td>
+                    {/each}
+                  {/if}
+                </tbody>
+              {/if}
+            </table>
+          </div>
 
-                          <td
-                            class={`py-3  ${
-                              $isDarkMode
-                                ? "group-hover:bg-[#000]"
-                                : "group-hover:bg-gray-100"
-                            }`}
-                          >
-                            <div
-                              class="bg-[#6AC7F533] text_27326F w-max px-3 py-1 rounded-[5px] xl:text-base text-2xl"
-                            >
-                              <Copy
-                                address={item.address}
-                                iconColor={`${$isDarkMode ? "#fff" : "#000"}`}
-                                color={`${$isDarkMode ? "#fff" : "#000"}`}
-                              />
-                            </div>
-                          </td>
-                        </tr>
-                      {/each}
-                    {/if}
-                  </tbody>
-                {/if}
-              </table>
+          <!-- Mobile view -->
+          <div class="xl:hidden block">
+            <div class="flex items-center justify-start gap-4">
+              <input
+                type="checkbox"
+                on:change={handleToggleCheckAll}
+                bind:checked={checkAll}
+                class="cursor-pointer relative w-5 h-5 appearance-none rounded-[0.25rem] border outline-none"
+              />
+              <div class="uppercase">All</div>
+            </div>
+            <div class="flex flex-col gap-4 mt-4">
+              {#each listAddress as item, index}
+                <div
+                  class="flex justify-between gap-2"
+                  style={`${
+                    listAddress.length - 1 === index ? "border: none;" : ""
+                  }`}
+                >
+                  <div class="flex items-center gap-4 text-base text-left">
+                    <div class="flex justify-center">
+                      <input
+                        type="checkbox"
+                        value={item.address}
+                        bind:group={blacklistAddress}
+                        class="cursor-pointer relative w-5 h-5 appearance-none rounded-[0.25rem] border outline-none"
+                      />
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <img
+                        src={item.logo}
+                        alt=""
+                        class="w-6 h-6 rounded-full"
+                      />
+                      {item.label}
+                    </div>
+                  </div>
+
+                  <div
+                    class="bg-[#6AC7F533] text_27326F w-max px-3 py-1 rounded-[5px] text-base"
+                  >
+                    <Copy
+                      address={item.address}
+                      iconColor={`${$isDarkMode ? "#fff" : "#000"}`}
+                      color={`${$isDarkMode ? "#fff" : "#000"}`}
+                      isShorten
+                    />
+                  </div>
+                </div>
+              {/each}
             </div>
           </div>
         </div>

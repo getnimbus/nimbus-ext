@@ -773,7 +773,7 @@
           {#if selectedType === "token"}
             {#if isEmptyDataPieTokens}
               <div
-                class="flex justify-center items-center h-full xl:text-lg text-xl text-gray-400 h-[465px]"
+                class="flex justify-center items-center h-[465px] text-base text-gray-400"
               >
                 Empty
               </div>
@@ -796,7 +796,7 @@
           {#if selectedType === "nft"}
             {#if isEmptyDataPieNfts}
               <div
-                class="flex justify-center items-center h-full xl:text-lg text-xl text-gray-400 h-[465px]"
+                class="flex justify-center items-center h-[465px] text-base text-gray-400"
               >
                 Empty
               </div>
@@ -893,7 +893,7 @@
           <div>
             {#if overviewDataPerformance?.performance?.length === 0 || overviewDataPerformance?.portfolioChart?.length === 0}
               <div
-                class="flex justify-center items-center h-full xl:text-lg text-xl text-gray-400 h-[465px]"
+                class="flex justify-center items-center h-[465px] text-base text-gray-400"
               >
                 Empty
               </div>

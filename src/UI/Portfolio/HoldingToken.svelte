@@ -182,9 +182,9 @@
         chain: document.getElementById("chain").value,
         contractAddress: document.getElementById("contract_address").value,
         reason: reason,
-        contractName: data.name,
-        contractTickerSymbol: data.symbol,
-        logoUrl: data.logo,
+        contractName: selectedTokenDetail?.name,
+        contractTickerSymbol: selectedTokenDetail?.symbol,
+        logoUrl: selectedTokenDetail?.logo,
         type: "token",
       };
       await nimbus.post("/holding/trash/report", formData);
@@ -430,7 +430,7 @@
       class={`grid ${listSupported.includes($typeWallet) ? "grid-cols-9" : "grid-cols-8"}`}
     >
       <div
-        class="col-span-full flex justify-center items-center h-full py-3 px-3 xl:text-lg text-xl text-gray-400"
+        class="col-span-full flex justify-center items-center h-full py-3 px-3 text-base text-gray-400"
       >
         {#if defaultData && defaultData.length === 0}
           {MultipleLang.empty}
@@ -601,7 +601,10 @@
                 {#if isShowReport && selectedItemIndex === index}
                   <div
                     class="relative w-5 cursor-pointer"
-                    on:click={() => (isShowReportTable = true)}
+                    on:click={() => {
+                      isShowReportTable = true;
+                      selectedTokenDetail = data[index];
+                    }}
                     on:mouseover={() => {
                       selectedItemIndex = index;
                       isShowTooltipReport = true;
@@ -1568,7 +1571,7 @@
 >
   {#if data && data.length === 0 && !isLoading}
     <div
-      class="flex justify-center items-center h-full py-3 px-3 text-xl text-gray-400"
+      class="flex justify-center items-center h-full py-3 px-3 text-base text-gray-400"
     >
       {#if defaultData && defaultData.length === 0}
         {MultipleLang.empty}
@@ -2302,8 +2305,10 @@
           </div>
         </div>
 
-        <div class="flex justify-between items-start">
-          <div class="text-right text-sm uppercase font-medium">Action</div>
+        <div class="flex justify-between items-center">
+          <div class="text-right text-sm uppercase font-medium mt-1">
+            Action
+          </div>
           <div class="flex items-center gap-4">
             {#if $typeWallet === "BUNDLE"}
               <div
@@ -2490,7 +2495,7 @@
             <tr>
               <td colspan="3">
                 <div
-                  class="flex items-center justify-center px-3 py-3 text-gray-400 text-base"
+                  class="flex items-center justify-center px-3 py-3 text-base text-gray-400"
                 >
                   Empty
                 </div>
@@ -2614,6 +2619,7 @@
   on:close={() => {
     isShowReportTable = false;
     isOldToken = false;
+    selectedTokenDetail = {};
   }}
 >
   <div class="flex flex-col gap-4 xl:mt-0 mt-4">
@@ -2622,144 +2628,151 @@
       on:submit|preventDefault={handleReportTrashCoin}
       class="flex flex-col xl:gap-3 gap-6"
     >
-      <div
-        class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
-          !$isDarkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
-        }`}
-      >
+      <div class="flex flex-col gap-6 xl:gap-3">
         <div
-          class={`xl:text-base text-lg font-medium ${
-            $isDarkMode ? "text-gray-400" : "text-[#666666]"
+          class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
+            !$isDarkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
           }`}
         >
-          Chain
-        </div>
-        <input
-          type="text"
-          id="chain"
-          name="chain"
-          value={data.chain}
-          class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-base font-normal ${
-            !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
-          } ${
-            $isDarkMode ? "text-white" : "text-[#5E656B] placeholder-[#5E656B]"
-          }`}
-          disabled
-        />
-      </div>
-
-      <div
-        class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
-          !$isDarkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
-        }`}
-      >
-        <div
-          class={`xl:text-base text-lg font-medium ${
-            $isDarkMode ? "text-gray-400" : "text-[#666666]"
-          }`}
-        >
-          Contract Address
-        </div>
-        <input
-          type="text"
-          id="contract_address"
-          name="contract_address"
-          value={data.contractAddress}
-          class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-base font-normal ${
-            !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
-          } ${
-            $isDarkMode ? "text-white" : "text-[#5E656B] placeholder-[#5E656B]"
-          }`}
-          disabled
-        />
-      </div>
-
-      <div
-        class={`flex flex-col gap-3 input-2 input-border w-full py-[8px] px-3 ${
-          (reportReasonList.length !== 0 || isOldToken) && !$isDarkMode
-            ? "bg-[#F0F2F7]"
-            : "bg_fafafbff"
-        }`}
-      >
-        <div class="xl:text-base text-lg text-[#666666] font-medium">
-          Reason
-        </div>
-
-        {#each reasonReport as item}
-          <div class="flex items-center gap-2 cursor-pointer w-max">
-            <input
-              type="checkbox"
-              name={item.id}
-              id={item.id}
-              value={item.id}
-              bind:group={reportReasonList}
-              class="cursor-pointer relative xl:w-4 xl:h-4 w-6 h-6 appearance-none rounded-[0.25rem] border outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white checked:focus:after:bg-transparent dark:border-neutral-600 dark:checked:border-primary dark:checked:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]"
-            />
-            <label
-              for={item.id}
-              class="xl:text-sm text-base font-normal text-[#5E656B] cursor-pointer"
-            >
-              {item.content}
-            </label>
-          </div>
-        {/each}
-
-        <div class="flex items-center gap-2 cursor-pointer w-max">
-          <input
-            type="checkbox"
-            name="outdated"
-            id="outdated"
-            class="cursor-pointer relative xl:w-4 xl:h-4 w-6 h-6 appearance-none rounded-[0.25rem] border outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white checked:focus:after:bg-transparent dark:border-neutral-600 dark:checked:border-primary dark:checked:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]"
-            on:change={(e) => {
-              isOldToken = e.target.checked;
-            }}
-          />
-          <label
-            for="outdated"
-            class="xl:text-sm text-base font-normal text-[#5E656B] cursor-pointer"
+          <div
+            class={`xl:text-base text-2xl font-medium ${
+              $isDarkMode ? "text-gray-400" : "text-[#666666]"
+            }`}
           >
-            The token is outdate
-          </label>
-        </div>
-
-        {#if isOldToken}
-          <textarea
-            placeholder="Please type info about that token"
-            rows="5"
-            id="reason"
-            name="reason"
-            class={`mb-2 p-0 input-2 input-border w-full py-[6px] px-3 focus:outline-none focus:ring-0 xl:text-sm text-base font-normal ${
+            Chain
+          </div>
+          <input
+            type="text"
+            id="chain"
+            name="chain"
+            value={selectedTokenDetail?.chain}
+            class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal ${
               !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
             } ${
               $isDarkMode
                 ? "text-white"
                 : "text-[#5E656B] placeholder-[#5E656B]"
             }`}
+            disabled
           />
-        {/if}
-      </div>
-
-      <div class="flex justify-end gap-2">
-        <div class="w-[120px]">
-          <Button
-            variant="secondary"
-            on:click={() => {
-              isShowReportTable = false;
-              isOldToken = false;
-            }}
-          >
-            {MultipleLang.content.modal_cancel}
-          </Button>
         </div>
-        <div class="w-[120px]">
-          <Button
-            type="submit"
-            variant="tertiary"
-            isLoading={isLoadingReportTrashCoin}
-            disabled={isLoadingReportTrashCoin}
+
+        <div
+          class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
+            !$isDarkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
+          }`}
+        >
+          <div
+            class={`xl:text-base text-2xl font-medium ${
+              $isDarkMode ? "text-gray-400" : "text-[#666666]"
+            }`}
           >
-            {MultipleLang.content.modal_submitreport}
-          </Button>
+            Contract Address
+          </div>
+          <input
+            type="text"
+            id="contract_address"
+            name="contract_address"
+            value={selectedTokenDetail?.contractAddress}
+            class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal ${
+              !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+            } ${
+              $isDarkMode
+                ? "text-white"
+                : "text-[#5E656B] placeholder-[#5E656B]"
+            }`}
+            disabled
+          />
+        </div>
+
+        <div
+          class={`flex flex-col gap-3 input-2 input-border w-full py-[8px] px-3 ${
+            (reportReasonList.length !== 0 || isOldToken) && !$isDarkMode
+              ? "bg-[#F0F2F7]"
+              : "bg_fafafbff"
+          }`}
+        >
+          <div class="xl:text-base text-lg text-[#666666] font-medium">
+            Reason
+          </div>
+
+          {#each reasonReport as item}
+            <div class="flex items-center gap-2 cursor-pointer w-max">
+              <input
+                type="checkbox"
+                name={item.id}
+                id={item.id}
+                value={item.id}
+                bind:group={reportReasonList}
+                class="cursor-pointer relative xl:w-4 xl:h-4 w-6 h-6 appearance-none rounded-[0.25rem] border outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white checked:focus:after:bg-transparent dark:border-neutral-600 dark:checked:border-primary dark:checked:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]"
+              />
+              <label
+                for={item.id}
+                class="xl:text-sm text-base font-normal text-[#5E656B] cursor-pointer"
+              >
+                {item.content}
+              </label>
+            </div>
+          {/each}
+
+          <div class="flex items-center gap-2 cursor-pointer w-max">
+            <input
+              type="checkbox"
+              name="outdated"
+              id="outdated"
+              class="cursor-pointer relative xl:w-4 xl:h-4 w-6 h-6 appearance-none rounded-[0.25rem] border outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white checked:focus:after:bg-transparent dark:border-neutral-600 dark:checked:border-primary dark:checked:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]"
+              on:change={(e) => {
+                isOldToken = e.target.checked;
+              }}
+            />
+            <label
+              for="outdated"
+              class="xl:text-sm text-base font-normal text-[#5E656B] cursor-pointer"
+            >
+              The token is outdate
+            </label>
+          </div>
+
+          {#if isOldToken}
+            <textarea
+              placeholder="Please type info about that token"
+              rows="5"
+              id="reason"
+              name="reason"
+              class={`mb-2 p-0 input-2 input-border w-full py-[6px] px-3 focus:outline-none focus:ring-0 xl:text-sm text-base font-normal ${
+                !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+              } ${
+                $isDarkMode
+                  ? "text-white"
+                  : "text-[#5E656B] placeholder-[#5E656B]"
+              }`}
+            />
+          {/if}
+        </div>
+
+        <div class="flex justify-end gap-2">
+          <div class="w-[120px]">
+            <Button
+              variant="secondary"
+              on:click={() => {
+                isShowReportTable = false;
+                isOldToken = false;
+                selectedTokenDetail = {};
+              }}
+            >
+              {MultipleLang.content.modal_cancel}
+            </Button>
+          </div>
+          <div class="w-[120px]">
+            <Button
+              type="submit"
+              variant="tertiary"
+              isLoading={isLoadingReportTrashCoin}
+              disabled={isLoadingReportTrashCoin}
+            >
+              {MultipleLang.content.modal_submitreport}
+            </Button>
+          </div>
         </div>
       </div>
     </form>

@@ -736,18 +736,87 @@
       {:else}
         <div>
           {#if whalesData && whalesData?.length === 0}
-            <div class="flex justify-center items-center h-full py-3 px-3">
+            <div
+              class="flex justify-center items-center h-full py-3 px-3 text-lg text-gray-400"
+            >
               Empty
             </div>
           {:else}
             <!-- {#each whalesData as data} -->
-            {#each (filterDuplicates(whalesData) || [])?.slice(0, $selectedPackage === "FREE" ? 10 : undefined) as data, whalePosition}
+            {#each (filterDuplicates(whalesData) || [])?.slice(0, $selectedPackage === "FREE" ? 5 : undefined) as data, whalePosition}
               <PublicPortfolioMobileItem
                 {data}
                 typeData={selectedFilter.label}
                 {whalePosition}
               />
             {/each}
+            {#if $selectedPackage === "FREE"}
+              <tr>
+                <td colspan="8">
+                  {#if whalesData.length > 5}
+                    <tr
+                      class={`flex justify-center py-10 px-4 backdrop-blur-md bg-gradient-to-t to-transparent ${
+                        $isDarkMode
+                          ? "bg-black/90 from-[#000] via-[#222222]"
+                          : "bg-white/95 from-white via-white"
+                      }`}
+                    >
+                      <td colspan="5" class="flex flex-col items-center gap-1">
+                        <div class="text-lg font-medium">
+                          Use Nimbus at its full potential
+                        </div>
+                        <div class="text-base text-gray-500">
+                          Upgrade to Premium to access all other <span
+                            class="font-medium"
+                            >{whalesData.length - 5 > 0
+                              ? whalesData.length - 5
+                              : ""}</span
+                          > opportunities
+                        </div>
+                        <div class="mt-2 w-max">
+                          <Button
+                            variant="premium"
+                            on:click={() => navigate("/upgrade")}
+                          >
+                            Upgrade Plan
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  {:else}
+                    <tr
+                      class={`absolute left-0 right-0 bottom-0 top-[120px] flex justify-center pt-10 backdrop-blur-md bg-gradient-to-t to-transparent ${
+                        $isDarkMode
+                          ? "bg-black/90 from-[#000] via-[#222222]"
+                          : "bg-white/95 from-white via-white"
+                      }`}
+                    >
+                      <td colspan="5" class="flex flex-col items-center gap-1">
+                        <div class="text-lg font-medium">
+                          Use Nimbus at its full potential
+                        </div>
+                        <div class="text-base text-gray-500">
+                          Upgrade to Premium to access all other <span
+                            class="font-medium"
+                            >{whalesData.length - 5 > 0
+                              ? whalesData.length - 5
+                              : ""}</span
+                          > opportunities
+                        </div>
+                        <div class="mt-2 w-max">
+                          <Button
+                            variant="premium"
+                            on:click={() => navigate("/upgrade")}
+                          >
+                            Upgrade Plan
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  {/if}
+                </td>
+              </tr>
+            {/if}
           {/if}
         </div>
       {/if}

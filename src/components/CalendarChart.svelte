@@ -23,7 +23,7 @@
   <div class="h-full">
     {#if isEmptyDataChart}
       <div
-        class="flex justify-center items-center h-full text-base text-gray-400 h-[152px]"
+        class="flex justify-center items-center h-[152px] text-lg text-gray-400"
       >
         Empty
       </div>
@@ -70,7 +70,7 @@
   <div class="h-full">
     {#if isEmptyDataChart}
       <div
-        class="flex justify-center items-center h-full text-base text-gray-400 h-[152px]"
+        class="flex justify-center items-center h-[152px] text-lg text-gray-400"
       >
         Empty
       </div>

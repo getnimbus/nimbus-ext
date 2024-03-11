@@ -253,7 +253,7 @@
           <tr>
             <td colspan="5">
               <div
-                class="h-full flex items-center justify-center px-3 py-3 text-gray-400 text-base"
+                class="h-full flex items-center justify-center px-3 py-3 text-base text-gray-400"
               >
                 Empty
               </div>

@@ -1056,7 +1056,7 @@
         {#if selectedTypeChart === "line"}
           {#if $queryTokenPrice.isError || (dataPriceChart && dataPriceChart.length === 0)}
             <div
-              class="flex justify-center items-center text-lg text-gray-400 h-[485px] relative"
+              class="flex justify-center items-center h-[485px] text-base text-gray-400 relative"
             >
               Empty
               {#if ["SOL", "BTC", "TON", "NEAR", "ALGO"].includes(chain)}
@@ -1104,7 +1104,7 @@
         <div class="h-full">
           {#if $queryTokenPrice.isError || (dataPriceChart && dataPriceChart.length === 0)}
             <div
-              class="flex justify-center items-center text-lg text-gray-400 h-[485px] relative"
+              class="flex justify-center items-center h-[485px] text-base text-gray-400 relative"
             >
               Empty
               {#if ["SOL", "BTC", "TON", "NEAR", "ALGO"].includes(chain)}

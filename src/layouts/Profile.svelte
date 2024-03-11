@@ -363,7 +363,7 @@
               }}
             >
               <div
-                class={`text-2xl xl:text-base font-medium flex items-center gap-2 ${
+                class={`text-lg xl:text-base font-medium flex items-center gap-2 ${
                   $isDarkMode || isEdit ? "text-white" : "text-black"
                 }`}
               >
@@ -380,7 +380,7 @@
 
               {#if showPopover}
                 <div
-                  class="select_content mt-2 absolute left-1/2 transform -translate-x-1/2 z-50 flex flex-col xl:gap-3 gap-6 px-3 xl:py-2 py-3 text-sm transform rounded-lg top-8 w-max xl:max-h-[310px] max-h-[380px]"
+                  class="select_content mt-2 absolute left-1/2 transform -translate-x-1/2 z-8 flex flex-col xl:gap-3 gap-6 px-3 xl:py-2 py-3 text-sm transform rounded-lg top-8 w-max xl:max-h-[310px] max-h-[380px]"
                   style="box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15); overflow-y: overlay;"
                   use:clickOutside
                   on:click_outside={() => (showPopover = false)}
@@ -413,12 +413,12 @@
                         />
                         <div class="flex flex-col">
                           <div
-                            class="text-2xl xl:text-xs font-medium text_00000099"
+                            class="text-sm xl:text-xs font-medium text_00000099"
                           >
                             {item.label}
                           </div>
                           <div
-                            class={`text-3xl xl:text-sm ${
+                            class={`text-base xl:text-sm ${
                               $isDarkMode ? "text-white" : "text-black"
                             }`}
                           >
@@ -539,7 +539,9 @@
               {/if}
             </div>
 
-            <div class="xl:col-span-2 col-span-4 grid grid-cols-2 gap-6">
+            <div
+              class="xl:col-span-2 col-span-4 grid md:grid-cols-2 grid-cols-1 gap-6"
+            >
               <SocialMedia
                 {isEdit}
                 typeSocialMedia="Twitter"
@@ -586,7 +588,7 @@
       <div>
         {#if $queryNftHolding.isError || dataNftHolding.length === 0}
           <div
-            class="flex justify-center items-center p-[6px] text-gray-400 h-[465px]"
+            class="flex justify-center items-center p-[6px] h-[465px] text-lg text-gray-400"
           >
             Empty
           </div>

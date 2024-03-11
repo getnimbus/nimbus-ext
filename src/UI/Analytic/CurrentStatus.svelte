@@ -884,7 +884,7 @@
         <div class="h-full">
           {#if $queryHoldingToken.isError || ($queryHoldingToken.data && $queryHoldingToken.data?.length === 0)}
             <div
-              class="flex justify-center items-center h-full text-base text-gray-400 h-[475px]"
+              class="flex justify-center items-center h-[475px] text-base text-gray-400"
             >
               Empty
             </div>
@@ -981,7 +981,7 @@
       <div class="h-full">
         {#if $queryCompare.isError || ($queryCompare.data?.performance && $queryCompare.data?.performance.length === 0)}
           <div
-            class="flex justify-center items-center h-full xl:text-xs text-base text-center h-[465px]"
+            class="flex justify-center items-center text-center h-[465px] text-base text-gray-400"
           >
             {#if $typeWallet === "CEX" && $queryCompare.isError}
               Not enough data. CEX integration can only get data from the day

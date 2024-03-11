@@ -314,7 +314,7 @@
     {#if ((holdingTokenData && holdingTokenData.length === 0) || (formatData && formatData.length === 0)) && !isLoading}
       <div class="grid grid-cols-7">
         <div
-          class="col-span-full flex justify-center items-center h-full py-3 px-3 xl:text-lg text-xl text-gray-400"
+          class="col-span-full flex justify-center items-center h-full py-3 px-3 text-base text-gray-400"
         >
           Empty
         </div>
@@ -604,7 +604,7 @@
   >
     {#if ((holdingTokenData && holdingTokenData.length === 0) || (formatData && formatData.length === 0)) && !isLoading}
       <div
-        class="flex justify-center items-center h-full py-3 px-3 text-xl text-gray-400"
+        class="flex justify-center items-center h-full py-3 px-3 text-base text-gray-400"
       >
         Empty
       </div>

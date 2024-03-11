@@ -83,17 +83,17 @@
 
 <div class="flex flex-col gap-4">
   <div class="flex flex-col gap-1 border-b-[1.5px] border_0000000d pb-4">
-    <div class="xl:title-3 title-1">
+    <div class="xl:title-3 title-2">
       {MultipleLang.title}
     </div>
-    <div class="xl:text-base text-xl text-gray-500">
+    <div class="xl:text-base text-lg text-gray-500">
       Management your main wallet or social accounts
     </div>
   </div>
 
   <div class="flex flex-col gap-6">
     <div class="flex flex-col gap-2">
-      <div class="xl:text-base text-2xl font-medium">
+      <div class="xl:text-base text-xl font-medium">
         Link your social accounts
       </div>
 
@@ -162,7 +162,7 @@
     {#if dataUserSocialLogin && Object.keys(dataUserSocialLogin).length !== 0 && localStorage.getItem("auth_token")}
       <div class="flex flex-col gap-2">
         {#if !dataUserSocialLogin?.publicAddress}
-          <div class="xl:text-base text-2xl font-medium">
+          <div class="xl:text-base text-xl font-medium">
             Connect your main wallet
           </div>
           <div class="flex flex-col gap-3">
@@ -184,10 +184,10 @@
             />
           </div>
         {:else}
-          <div class="xl:text-base text-2xl font-medium">
+          <div class="xl:text-base text-xl font-medium">
             Your main wallet address
           </div>
-          <div class="xl:text-lg text-3xl flex items-center gap-3">
+          <div class="text-lg flex items-center gap-3">
             {#if chain === "EVM"}
               <img
                 src={EvmLogo}
@@ -212,10 +212,10 @@
       </div>
     {:else}
       <div class="flex flex-col gap-2">
-        <div class="xl:text-base text-2xl font-medium">
+        <div class="xl:text-base text-xl font-medium">
           Your main wallet address
         </div>
-        <div class="xl:text-lg text-3xl flex items-center gap-3">
+        <div class="xl:text-lg text-2xl flex items-center gap-3">
           {#if chain === "EVM"}
             <img
               src={EvmLogo}
