@@ -11,8 +11,8 @@
   export let whalePosition;
   export let typeData: "ALL" | "SMART" | "FRESH" | "KOL" = "ALL";
 
-  import TooltipNumber from "./TooltipNumber.svelte";
-  import Copy from "./Copy.svelte";
+  import TooltipNumber from "~/components/TooltipNumber.svelte";
+  import Copy from "~/components/Copy.svelte";
 
   import TrendUp from "~/assets/trend-up.svg";
   import TrendDown from "~/assets/trend-down.svg";
@@ -22,26 +22,19 @@
   let selectedToken;
 </script>
 
-<tr
-  class={`group transition-all ${
-    $isDarkMode ? "text-gray-400" : "text-[#666666]"
-  }`}
+<div
+  class="flex flex-col gap-4 border-b-[1px] border_0000000d last:border-none py-4"
 >
-  <td
-    class={`pl-3 xl:py-3 py-6 xl:static xl:bg-transparent text-left sticky left-0 ${
-      $isDarkMode
-        ? "bg-[#131313] group-hover:bg-[#000]"
-        : "bg-white group-hover:bg-gray-100"
-    }`}
-  >
-    <div class="flex gap-2 items-center max-w-[250px]">
+  <div class="flex justify-between items-start">
+    <div class="text-right text-sm uppercase font-medium">Address</div>
+    <div class="flex gap-2 items-center">
       {#if typeData === "KOL"}
         {#if data?.avatar}
           <img src={data?.avatar} alt="" class="w-5 h-5 rounded-full" />
         {/if}
         {#if data?.name}
           <a
-            class={`text-ellipsis overflow-hidden whitespace-nowrap xl:text-sm text-xl hover:text-blue-500 ${
+            class={`text-ellipsis overflow-hidden whitespace-nowrap text-sm hover:text-blue-500 ${
               $isDarkMode ? "text-white" : "text-black"
             }`}
             href={`/?type=EVM&chain=ALL&address=${data?.address}`}
@@ -50,7 +43,7 @@
             {data?.name}
           </a>
         {:else}
-          <div class="xl:text-sm text-xl">
+          <div class="text-sm">
             <Copy
               address={data?.address}
               textTooltip="Copy address to clipboard"
@@ -82,7 +75,7 @@
           </a>
         {/if}
       {:else}
-        <div class="xl:text-sm text-xl">
+        <div class="text-sm">
           <Copy
             address={data?.address}
             textTooltip="Copy address to clipboard"
@@ -95,31 +88,21 @@
         </div>
       {/if}
     </div>
-  </td>
+  </div>
 
-  <td
-    class={`xl:py-3 py-6 ${
-      $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
-    }`}
-  >
-    <div
-      class="text-right xl:text-sm text-xl font-medium flex justify-end gap-1"
-    >
+  <div class="flex justify-between items-start">
+    <div class="text-right text-sm uppercase font-medium">ETH Balance</div>
+    <div class="text-sm text_00000099 font-medium flex justify-end gap-1">
       <TooltipNumber number={Number(data?.eth_balance)} type="balance" />
       <span>ETH</span>
     </div>
-  </td>
+  </div>
 
-  <td
-    class={`xl:py-3 py-6 ${
-      $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
-    }`}
-  >
-    <div
-      class="xl:text-sm text-xl text-right font-medium flex flex-col items-end gap-1"
-    >
+  <div class="flex justify-between items-start">
+    <div class="text-right text-sm uppercase font-medium">1D PnL</div>
+    <div class="text-sm text-right font-medium flex flex-col items-end gap-1">
       {#if data?.pnl_1d === null}
-        <div>--</div>
+        <div class="text-right text_00000099">--</div>
       {:else}
         <div
           class={`flex items-center ${
@@ -141,18 +124,13 @@
         </div>
       {/if}
     </div>
-  </td>
+  </div>
 
-  <td
-    class={`xl:py-3 py-6 ${
-      $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
-    }`}
-  >
-    <div
-      class="xl:text-sm text-xl text-right font-medium flex flex-col items-end gap-1"
-    >
+  <div class="flex justify-between items-start">
+    <div class="text-right text-sm uppercase font-medium">7D PnL</div>
+    <div class="text-sm text-right font-medium flex flex-col items-end gap-1">
       {#if data?.pnl_7d === null}
-        <div>--</div>
+        <div class="text-right text_00000099">--</div>
       {:else}
         <div
           class={`flex items-center ${
@@ -174,18 +152,13 @@
         </div>
       {/if}
     </div>
-  </td>
+  </div>
 
-  <td
-    class={`xl:py-3 py-6 ${
-      $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
-    }`}
-  >
-    <div
-      class="xl:text-sm text-xl text-right font-medium flex flex-col items-end gap-1"
-    >
+  <div class="flex justify-between items-start">
+    <div class="text-right text-sm uppercase font-medium">30D PnL</div>
+    <div class="text-sm text-right font-medium flex flex-col items-end gap-1">
       {#if data?.pnl_30d === null}
-        <div>--</div>
+        <div class="text-right text_00000099">--</div>
       {:else}
         <div
           class={`flex items-center ${
@@ -207,18 +180,13 @@
         </div>
       {/if}
     </div>
-  </td>
+  </div>
 
-  <td
-    class={`xl:py-3 py-6 ${
-      $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
-    }`}
-  >
-    <div
-      class="xl:text-sm text-xl text-right font-medium flex flex-col items-end gap-1"
-    >
+  <div class="flex justify-between items-start">
+    <div class="text-right text-sm uppercase font-medium">Realized Profit</div>
+    <div class="text-sm text-right font-medium flex flex-col items-end gap-1">
       {#if data?.realized_profit === null}
-        <div>--</div>
+        <div class="text-right text_00000099">--</div>
       {:else}
         <div
           class={`flex items-center ${
@@ -239,62 +207,50 @@
         </div>
       {/if}
     </div>
-  </td>
+  </div>
 
-  <td
-    class={`xl:py-3 py-6 ${
-      $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
-    }`}
-  >
+  <div class="flex justify-between items-start">
+    <div class="text-right text-sm uppercase font-medium">30D Txs</div>
     {#if data?.txs_30d === null}
-      <div class="text-right">--</div>
+      <div class="text-right text_00000099">--</div>
     {:else}
       <div
-        class="xl:text-sm text-xl text-right font-medium flex justify-end items-center"
+        class="text-sm text-right text_00000099 font-medium flex justify-end items-center"
       >
         {Number(data?.txs_30d)}
       </div>
     {/if}
-  </td>
+  </div>
 
-  <td
-    class={`xl:py-3 py-6 ${
-      $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
-    }`}
-  >
+  <div class="flex justify-between items-start">
+    <div class="text-right text-sm uppercase font-medium">AHT</div>
     {#if data?.avg_hold_time === null}
-      <div class="text-right">--</div>
+      <div class="text-right text_00000099">--</div>
     {:else}
       <div
-        class="xl:text-sm text-xl text-right font-medium flex justify-end items-center"
+        class="text-sm text-right text_00000099 font-medium flex justify-end items-center"
       >
         {formatAHT(Number(data?.avg_hold_time * 1000))}
       </div>
     {/if}
-  </td>
+  </div>
 
-  <td
-    class={`xl:py-3 py-6 ${
-      $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
-    }`}
-  >
+  <div class="flex justify-between items-start">
+    <div class="text-right text-sm uppercase font-medium">Last time</div>
     {#if data?.last_active === null}
-      <div class="text-right">--</div>
+      <div class="text-right text_00000099">--</div>
     {:else}
       <div
-        class="xl:text-sm text-xl text-right font-medium flex justify-end items-center"
+        class="text-sm text-right text_00000099 font-medium flex justify-end items-center"
       >
         {formatActiveTime(Number(data?.last_active * 1000))}
       </div>
     {/if}
-  </td>
+  </div>
 
-  <td
-    class={`xl:py-3 py-6 pr-3 ${
-      $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
-    }`}
-  >
-    <div class="flex justify-end items-center -space-x-2 pl-3">
+  <div class="flex justify-between items-start">
+    <div class="text-right text-sm uppercase font-medium">RPT</div>
+    <div class="flex justify-end items-center -space-x-2">
       {#each data?.recent_buy_tokens as token, index}
         <div
           class={`relative z-1 ${index > 0 && "-ml-2"}`}
@@ -310,7 +266,7 @@
           <img
             src={token.logo || defaultToken}
             alt=""
-            class="xl:w-7 xl:h-7 h-10 w-10 object-contain rounded-full bg-white"
+            class="w-7 h-7 object-contain rounded-full bg-white"
             on:error={(e) => handleImgError(e, defaultToken)}
           />
           {#if isShowSymbol && selectedToken === token}
@@ -326,8 +282,8 @@
         </div>
       {/each}
     </div>
-  </td>
-</tr>
+  </div>
+</div>
 
 <style windi:preflights:global windi:safelist:global>
 </style>
