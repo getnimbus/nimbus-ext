@@ -313,11 +313,7 @@
 </div>
 
 <!-- Mobile View -->
-<div
-  class={`xl:hidden block border border_0000000d rounded-[10px] h-full ${
-    $isDarkMode ? "bg-[#131313]" : "bg-[#fff]"
-  }`}
->
+<div class="xl:hidden block">
   {#if $query.isError}
     <div class="flex items-center justify-center h-full px-3 py-4 text-base">
       Please connect wallet
@@ -337,12 +333,10 @@
       {:else}
         {#each $query.data as item}
           <div
-            class="flex flex-col gap-4 border-b-[1px] border_0000000d last:border-none py-4 px-4"
+            class="flex flex-col gap-4 py-2 border-b-[1px] border_0000000d last:border-none"
           >
             <div class="flex justify-between items-start">
-              <div
-                class="text-sm text_00000099 font-medium flex justify-end gap-1"
-              >
+              <div class="text-sm font-medium flex justify-end gap-1">
                 <div class="flex items-center justify-start gap-2">
                   <div class="w-6 h-6 rounded-full overflow-hidden">
                     <Image logo={item?.logoUrl} defaultLogo={defaultToken} />
@@ -423,12 +417,12 @@
               <div class="text-right text-sm uppercase font-medium">
                 {MultipleLang.content.contract_address_header_table}
               </div>
-              <div class="text-sm text-left">
+              <div class="text-sm text_00000099">
                 <Copy
                   address={item?.contractAddress}
                   textTooltip="Copy address to clipboard"
                   iconColor={$isDarkMode ? "#fff" : "#000"}
-                  color={$isDarkMode ? "#fff" : "#000"}
+                  color={$isDarkMode ? "#ccc" : "#00000099"}
                   isShorten={true}
                   isLink={true}
                   link={`/?type=EVM&chain=ALL&address=${item?.contractAddress}`}
@@ -440,7 +434,7 @@
               <div class="text-right text-sm uppercase font-medium">
                 {MultipleLang.content.chain_header_table}
               </div>
-              <div class="text-sm text-left">
+              <div class="text-sm text_00000099">
                 {item.chain}
               </div>
             </div>
