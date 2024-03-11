@@ -242,7 +242,11 @@
       dataCheckinHistory = $queryDailyCheckin?.data?.checkinLogs;
       quests = $queryDailyCheckin?.data?.quests.map((item, index) => {
         const selectedLogs = dataCheckinHistory
-          .filter((log) => log.type === "QUEST" && log.note !== "id-generate")
+          .filter(
+            (log) =>
+              log.type === "QUEST" &&
+              (log.note !== "id-generate" || log.note !== "review-trust-pilot")
+          )
           .find((log) => log.note === item.id);
 
         return {
