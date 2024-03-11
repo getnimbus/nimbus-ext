@@ -491,10 +491,13 @@
       if ($wallet?.length !== 0 && $chain?.length !== 0) {
         sumTokens = 0;
         sumNFT = 0;
+        dataSubWS = [];
         formatData = [];
         formatDataNFT = [];
         filteredHoldingDataToken = [];
         filteredHoldingDataNFT = [];
+        filteredUndefinedCmcHoldingTokenData = [];
+        filteredNullCmcHoldingTokenData = [];
         totalAssets.update((n) => (n = 0));
         unrealizedProfit.update((n) => (n = 0));
         realizedProfit.update((n) => (n = 0));
@@ -510,8 +513,19 @@
       selectedTokenHolding.data.length !== 0 &&
       selectedTokenHolding?.data?.data?.length === 0
     ) {
-      filteredHoldingDataToken = [];
       sumTokens = 0;
+      sumNFT = 0;
+      dataSubWS = [];
+      formatData = [];
+      formatDataNFT = [];
+      filteredHoldingDataToken = [];
+      filteredHoldingDataNFT = [];
+      filteredUndefinedCmcHoldingTokenData = [];
+      filteredNullCmcHoldingTokenData = [];
+      totalAssets.update((n) => (n = 0));
+      unrealizedProfit.update((n) => (n = 0));
+      realizedProfit.update((n) => (n = 0));
+      pastProfit.update((n) => (n = 0));
     }
   }
 

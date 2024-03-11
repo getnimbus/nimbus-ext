@@ -835,6 +835,7 @@
         newsData = [];
         holdingNFTData = [];
         holdingTokenData = [];
+        formatHoldingTokenData = [];
         isErrorAllData = false;
         isLoadingSync = false;
         enabledFetchAllData = false;
