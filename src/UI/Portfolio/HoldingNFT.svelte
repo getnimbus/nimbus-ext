@@ -746,7 +746,7 @@
             type="text"
             id="chain"
             name="chain"
-            value={data?.nativeToken?.symbol}
+            value={data[selectedItemIndex]?.nativeToken?.symbol}
             class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal ${
               !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
             } ${
@@ -774,7 +774,7 @@
             type="text"
             id="contract_address"
             name="contract_address"
-            value={data?.collectionId}
+            value={data[selectedItemIndex]?.collectionId}
             class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal ${
               !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
             } ${
