@@ -759,7 +759,7 @@
   <div class="flex flex-col justify-between gap-6 xl:flex-row view-the-pnl">
     <div
       class={`xl:w-1/2 w-full rounded-[20px] p-6 ${
-        $isDarkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
+        $isDarkMode ? "bg-[#222222]" : "bg-[#fff] xl:border border_0000001a"
       }`}
     >
       <div class="text-3xl font-medium xl:text-2xl mb-6">Allocation</div>
@@ -816,7 +816,7 @@
 
     <div
       class={`xl:w-1/2 w-full rounded-[20px] p-6 relative ${
-        $isDarkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
+        $isDarkMode ? "bg-[#222222]" : "bg-[#fff] xl:border border_0000001a"
       }`}
     >
       {#if $typeWallet === "BTC"}

@@ -242,11 +242,11 @@
 </script>
 
 <div
-  class={`rounded-[20px] py-6 relative ${
-    darkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
+  class={`rounded-[20px] xl:py-6 py-3 relative ${
+    darkMode ? "bg-[#222222]" : "bg-[#fff] xl:border border_0000001a"
   }`}
 >
-  <div class="flex flex-col gap-1 pl-6">
+  <div class="flex flex-col gap-1 xl:pl-6">
     <div class="font-medium flex justify-start w-max xl:text-xl text-2xl">
       Total gas fee paid
     </div>
@@ -261,6 +261,7 @@
         {option}
         isEmptyDataChart={$query.isError}
         isLoadingChart={$query.isFetching}
+        isTrxPage={false}
         id="total-gasfee-paid"
         type="primary"
       />

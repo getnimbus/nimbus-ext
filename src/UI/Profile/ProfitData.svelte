@@ -224,7 +224,7 @@
   }
 </script>
 
-<div class="col-span-4 border border_0000001a rounded-xl p-6">
+<div class="col-span-4 xl:border border_0000001a rounded-xl xl:p-6">
   {#if $queryTokenHolding.isFetching && $queryTradingStats.isFetching}
     <div class="h-full flex items-center justify-center">
       <Loading />

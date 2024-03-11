@@ -755,8 +755,8 @@
 <div class="flex flex-col justify-between gap-6 xl:flex-row">
   <!-- Token allocation -->
   <div
-    class={`xl:w-1/2 w-full flex flex-col justify-between items-start gap-2 rounded-[20px] p-6 ${
-      $isDarkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
+    class={`xl:w-1/2 w-full flex flex-col justify-between items-start gap-2 rounded-[20px] xl:p-6 py-3 ${
+      $isDarkMode ? "bg-[#222222]" : "bg-[#fff] xl:border border_0000001a"
     }`}
   >
     <div class="text-3xl font-medium xl:text-2xl">
@@ -916,8 +916,8 @@
 
   <!-- Performance -->
   <div
-    class={`xl:w-1/2 w-full relative rounded-[20px] p-6 ${
-      $isDarkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
+    class={`xl:w-1/2 w-full relative rounded-[20px] xl:p-6 py-3 ${
+      $isDarkMode ? "bg-[#222222]" : "bg-[#fff] xl:border border_0000001a"
     }`}
   >
     <div

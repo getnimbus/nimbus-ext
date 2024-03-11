@@ -187,12 +187,12 @@
 </script>
 
 <div
-  class={`rounded-[20px] py-6 relative overflow-x-auto ${
-    darkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
+  class={`rounded-[20px] xl:py-6 py-3 relative overflow-x-auto ${
+    darkMode ? "bg-[#222222]" : "bg-[#fff] xl:border border_0000001a"
   }`}
 >
   <div
-    class="pl-6 font-medium flex justify-start z-8 w-max xl:text-xl text-2xl"
+    class="xl:pl-6 font-medium flex justify-start z-8 w-max xl:text-xl text-2xl"
   >
     <TooltipTitle
       tooltipText="The chart shows only activities made by this wallet"
@@ -207,6 +207,7 @@
         {option}
         isEmptyDataChart={$query.isError}
         isLoadingChart={$query.isFetching}
+        isTrxPage={false}
         id="historical-activities-analytic"
         type="normal"
       />

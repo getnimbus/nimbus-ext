@@ -551,7 +551,7 @@
 
 <div
   class={`flex flex-col gap-6 rounded-[20px] p-6 ${
-    $isDarkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
+    $isDarkMode ? "bg-[#222222]" : "bg-[#fff] xl:border border_0000001a"
   }`}
 >
   <ErrorBoundary>

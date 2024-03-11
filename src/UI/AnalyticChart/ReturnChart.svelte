@@ -248,14 +248,16 @@
 
   <span slot="overview" class="relative">
     {#if !$query.isFetching && !$query.isError}
-      <div class="mb-4 text-2xl font-medium xl:text-xl px-6 pt-6">Overview</div>
+      <div class="mb-4 text-2xl font-medium xl:text-xl xl:px-6 xl:pt-6">
+        Overview
+      </div>
     {/if}
     {#if $query.isFetching}
       <div class="flex items-center justify-center h-[465px]">
         <LoadingPremium />
       </div>
     {:else}
-      <div class="h-full relative min-h-[465px]">
+      <div class="h-full relative xl:min-h-[465px]">
         {#if $query.isError}
           <div
             class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-8 backdrop-blur-md xl:text-xs text-base ${
@@ -270,7 +272,7 @@
             {/if}
           </div>
         {:else}
-          <div class="flex flex-col gap-8 px-6 pb-6">
+          <div class="flex flex-col gap-8 xl:px-6 pb-6">
             <div class="flex flex-col gap-4">
               <div class="grid grid-cols-2">
                 <div class="col-span-1">
@@ -467,7 +469,7 @@
 
   <span slot="chart">
     {#if $query.isFetching}
-      <div class="flex items-center justify-center h-[465px] p-6">
+      <div class="flex items-center justify-center h-[465px] xl:p-6 py-3">
         <LoadingPremium />
       </div>
     {:else}
@@ -486,7 +488,7 @@
             {/if}
           </div>
         {:else}
-          <div class="relative p-6">
+          <div class="relative xl:p-6 py-3">
             <EChart
               id="return-chart-analytic"
               {theme}
