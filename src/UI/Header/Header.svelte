@@ -773,7 +773,7 @@
     </div>
 
     <div class="flex flex-col gap-3 justify-between h-full">
-      <div class="flex flex-col gap-6">
+      <div class="flex flex-col gap-4">
         {#if $user && Object.keys($user).length !== 0}
           <div class="flex justify-between items-center px-4 text-white">
             <div class="text-2xl">
@@ -1061,8 +1061,8 @@
         </div>
       </div>
 
-      <div class="flex flex-col gap-20 w-full pb-16">
-        <div class="flex flex-col gap-7 px-4">
+      <div class="flex flex-col gap-16 w-full pb-14">
+        <div class="flex flex-col gap-4 px-4">
           <DarkModeFooter />
 
           <div class="w-max flex flex-col gap-6">
