@@ -14,7 +14,7 @@
 </script>
 
 <div
-  class={`py-4 w-[438px] min-h-[280px] rounded-[16px] border border_0000000d flex flex-col justify-between gap-4 ${
+  class={`py-4 sm:w-[438px] w-full min-h-[280px] rounded-[16px] border border_0000000d flex flex-col justify-between gap-4 ${
     $isDarkMode ? "bg-[#212121]" : "bg-white"
   }`}
 >
@@ -66,11 +66,11 @@
             <Button disabled>
               <div class="flex items-center gap-1">
                 <img src={goldImg} alt="" class="w-[28px] h-[28px]" />
-                <div class="text-white text-lg font-medium">
+                <div class="text-white sm:text-lg text-smxs font-medium">
                   {redeemData?.cost}
                 </div>
               </div>
-              <div class="text-white">Redeem</div>
+              <div class="text-white text-smxs">Redeem</div>
             </Button>
           {:else}
             <Button
@@ -81,11 +81,11 @@
             >
               <div class="flex items-center gap-1">
                 <img src={goldImg} alt="" class="w-[28px] h-[28px]" />
-                <div class="text-white text-lg font-medium">
+                <div class="text-white sm:text-lg text-smxs font-medium">
                   {redeemData?.cost}
                 </div>
               </div>
-              <div class="text-white">Redeem</div>
+              <div class="text-white text-smxs">Redeem</div>
             </Button>
           {/if}
         </div>
@@ -112,4 +112,10 @@
 </div>
 
 <style>
+  @media (max-width: 320) {
+    .text-smxs {
+      font-size: 14px;
+      line-height: 20px;
+    }
+  }
 </style>
