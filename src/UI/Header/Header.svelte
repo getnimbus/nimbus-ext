@@ -1102,6 +1102,8 @@
               >
                 Sync from Desktop
               </div>
+            {:else}
+              <Auth {displayName} {publicAddress} {buyPackage} />
             {/if}
           </div>
         </div>

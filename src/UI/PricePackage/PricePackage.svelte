@@ -71,8 +71,10 @@
           : item.content.alpha;
 
     return `
-      <div class="text-xl">
-        ${contentData.description}
+      <div class="sm:text-xl flex justify-end gap-2">
+        <span class="text-right">
+          ${contentData.description}
+        </span>
         <span class="w-4 h-4 ml-1">
           ${compareResult(contentData)}
         </span>
@@ -85,12 +87,13 @@
 
 <div class="flex flex-col xl:gap-4 gap-8">
   <div
-    class="p-4 text-2xl text-green-600 rounded-lg xl:text-base bg-green-50"
+    class="p-4 text-xl text-green-600 rounded-lg xl:text-base bg-green-50"
     role="alert"
   >
     <span class="mr-2 xl:mr-1">⭐️</span> We're giving 1000 coupon codes
-    <span class="font-bold">EARLY-BIRD</span>
-    which get <span class="font-bold">30%</span> off for the first-time payment.
+    <span class="sm:font-bold font-semibold">EARLY-BIRD</span>
+    which get <span class="sm:font-bold font-semibold">30%</span> off for the first-time
+    payment.
   </div>
 
   <div class="flex flex-col gap-10 mt-4">
@@ -453,7 +456,7 @@
     <!-- Pricing Table Tablet/Mobile -->
     <div class="xl:hidden flex flex-col items-center gap-8">
       <div class="flex flex-col gap-8">
-        <div class="text-center text-3xl font-medium text-[#1e96fc]">
+        <div class="text-center text-xl font-medium text-[#1e96fc]">
           {#if buyPackage !== "Free"}
             Your <span class="uppercase"
               >{buyPackage === "Professional" ? "Alpha" : buyPackage}</span
@@ -472,14 +475,14 @@
             <input type="checkbox" bind:checked={checkedTypePackage} />
             <span class="slider" />
           </label>
-          <div class="text-2xl font-medium">
+          <div class="text-xl font-medium">
             Annual Billing <span class="text-green-500">(Save 17%)</span>
           </div>
         </div>
 
-        <div class="flex gap-5">
+        <div class="flex justify-center gap-5">
           <div
-            class={`uppercase py-3 px-4 text-3xl font-medium rounded-2xl cursor-pointer ${
+            class={`uppercase py-3 px-4 text-lg font-medium rounded-2xl cursor-pointer ${
               selectedPricePackage === "Free" && !$isDarkMode
                 ? "bg-blue-100 text-primary"
                 : selectedPricePackage === "Free" && $isDarkMode
@@ -496,7 +499,7 @@
           </div>
 
           <div
-            class={`uppercase py-3 px-4 text-3xl font-medium rounded-2xl cursor-pointer ${
+            class={`uppercase py-3 px-4 text-lg font-medium rounded-2xl cursor-pointer ${
               selectedPricePackage === "Explorer" && !$isDarkMode
                 ? "bg-blue-100 text-primary"
                 : selectedPricePackage === "Explorer" && $isDarkMode
@@ -513,7 +516,7 @@
           </div>
 
           <div
-            class={`uppercase py-3 px-4 text-3xl font-medium rounded-2xl cursor-pointer ${
+            class={`uppercase py-3 px-4 text-lg font-medium rounded-2xl cursor-pointer ${
               selectedPricePackage === "Professional" && !$isDarkMode
                 ? "bg-blue-100 text-primary"
                 : selectedPricePackage === "Professional" && $isDarkMode
@@ -534,9 +537,9 @@
           {#if selectedPricePackage === "Free"}
             <div class="flex flex-col gap-4">
               <div class="flex flex-col gap-2 justify-center items-center">
-                <div class="text-2xl font-medium uppercase">Free</div>
-                <span class="text-5xl font-semibold">0 USDC</span>
-                <div class="text-xl">For those who starting to invest</div>
+                <div class="text-lg font-medium uppercase">Free</div>
+                <span class="text-2xl font-semibold">0 USDC</span>
+                <div class="text-lg">For those who starting to invest</div>
               </div>
               <div class=" min-h-[30px]"></div>
             </div>
@@ -545,17 +548,17 @@
           {#if selectedPricePackage === "Explorer"}
             <div class="flex flex-col gap-4">
               <div class="flex flex-col gap-2 justify-center items-center">
-                <div class="text-2xl font-medium uppercase">
+                <div class="text-lg font-medium uppercase">
                   Explorer{" "}
                   {#if selectedTypePackage === "year"}
                     <span
-                      class="text-white px-2 py-1 font-normal text-lg ml-3 bg-[#10b981] rounded-lg"
+                      class="text-white px-2 py-1 font-normal ml-3 bg-[#10b981] rounded-lg"
                     >
                       Save 1.75 USDC
                     </span>
                   {/if}
                 </div>
-                <div class="text-5xl font-medium">
+                <div class="text-2xl font-medium">
                   {selectedTypePackage === "year"
                     ? "8.25 USDC"
                     : "9.99 USDC"}{" "}
@@ -563,14 +566,14 @@
                     /month
                   </span>
                 </div>
-                <div class="text-xl">
+                <div class="text-lg">
                   Boost your return and reduce your risk
                 </div>
               </div>
 
               <div class="flex justify-center min-h-[30px]">
                 {#if selectedTypePackage === "month"}
-                  <div class="font-medium text-2xl">
+                  <div class="font-medium text-xl">
                     {#if buyPackage === "Free"}
                       <div
                         class="flex items-center gap-2 cursor-pointer text-[#1E96FC]"
@@ -600,7 +603,7 @@
                 {/if}
 
                 {#if selectedTypePackage === "year"}
-                  <div class="font-medium text-2xl">
+                  <div class="font-medium text-xl">
                     {#if buyPackage === "Free"}
                       <div
                         class="flex items-center gap-2 cursor-pointer text-[#1E96FC]"
@@ -635,17 +638,17 @@
           {#if selectedPricePackage === "Professional"}
             <div class="flex flex-col gap-4">
               <div class="flex flex-col gap-2 justify-center items-center">
-                <div class="text-2xl font-medium uppercase">
+                <div class="text-lg font-medium uppercase">
                   Alpha{" "}
                   {#if selectedTypePackage === "year"}
                     <span
-                      class="text-white px-2 py-1 font-normal text-lg ml-3 bg-[#10b981] rounded-lg"
+                      class="text-white px-2 py-1 font-normal ml-3 bg-[#10b981] rounded-lg"
                     >
                       Save 17.5 USDC
                     </span>
                   {/if}
                 </div>
-                <div class="text-5xl font-medium">
+                <div class="text-2xl font-medium">
                   {selectedTypePackage === "year"
                     ? "82.5 USDC"
                     : "99.99 USDC"}{" "}
@@ -653,14 +656,14 @@
                     /month
                   </span>
                 </div>
-                <div class="text-xl">
+                <div class="text-lg">
                   Enjoy all the features without any limited
                 </div>
               </div>
 
               <div class="flex justify-center min-h-[30px]">
                 {#if selectedTypePackage === "month"}
-                  <div class="font-medium text-2xl w-max">
+                  <div class="font-medium text-xl w-max">
                     {#if buyPackage === "Free"}
                       <div
                         class="flex items-center gap-2 cursor-pointer text-[#1E96FC]"
@@ -690,7 +693,7 @@
                 {/if}
 
                 {#if selectedTypePackage === "year"}
-                  <div class="font-medium text-2xl w-max">
+                  <div class="font-medium text-xl w-max">
                     {#if buyPackage === "Free"}
                       <div
                         class="flex items-center gap-2 cursor-pointer text-[#1E96FC]"
@@ -731,7 +734,7 @@
               {#if item.featureStatus === "main"}
                 <tr class={`${$isDarkMode ? "bg-[#1C1C1C]" : "bg-gray-50"}`}>
                   <td colspan="8" class="py-4 px-3">
-                    <div class="text-2xl text-left font-medium">
+                    <div class="text-lg text-left font-medium">
                       {item.title}
                     </div>
                   </td>
@@ -746,7 +749,7 @@
                         : "group-hover:bg-gray-100"
                     }`}
                   >
-                    <div class="text-xl w-max">
+                    <div class="w-max w-[200px]">
                       {#if item.tippy.used}
                         <div
                           use:tooltip={{

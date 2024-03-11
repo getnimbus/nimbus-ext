@@ -204,10 +204,10 @@
     class="max-w-[2000px] m-auto xl:w-[90%] w-[90%] py-8 flex flex-col gap-10"
   >
     <div class="flex flex-col gap-2 justify-center">
-      <div class="xl:text-5xl text-7xl font-semibold text-center">
+      <div class="sm:text-5xl text-4xl font-semibold text-center">
         Upgrade Plan
       </div>
-      <div class="xl:text-xl text-3xl text-center">
+      <div class="text-xl text-center">
         Use Nimbus at its full potential. Tracking your portfolio, reduce risk,
         maximize return.
       </div>
@@ -216,15 +216,15 @@
     {#if selectedPackage && Object.keys(selectedPackage).length !== 0}
       <div class="flex flex-col justify-center min-h-[70vh]">
         <div class="flex flex-col items-center gap-1">
-          <div class="flex items-center gap-1 xl:text-lg text-2xl">
+          <div class="flex flex-wrap items-center gap-1 text-lg">
             You're going to upgrade to plan <span
-              class="font-semibold uppercase"
+              class="sm:font-semibold font-medium uppercase"
               >{selectedPackage.plan === "Professional"
                 ? "Alpha"
                 : selectedPackage.plan}</span
             >
             with
-            <span class="flex items-end gap-1 font-semibold">
+            <span class="flex items-end gap-1 sm:font-semibold font-medium">
               {selectedPackage.selectedTypePackage === "year"
                 ? `${
                     discountPercent !== 0
@@ -271,7 +271,7 @@
                 required
                 placeholder="Couple code"
                 value=""
-                class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal ${
+                class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal ${
                   code && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
                 } ${
                   $isDarkMode
@@ -347,7 +347,7 @@
           </div>
         </div>
 
-        <div class="text-center text-gray-500 xl:text-sm text-xl mt-8">
+        <div class="text-center text-gray-500 xl:text-sm text-lg mt-8">
           If missing your prefer payment method<br /> please contact Telegram
           <a
             href="https://t.me/thanhle27"

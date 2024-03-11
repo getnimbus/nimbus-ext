@@ -14,7 +14,7 @@
 </script>
 
 <div class="flex flex-col gap-4">
-  <div class="xl:text-xl text-3xl font-medium w-full">
+  <div class="xl:text-xl text-2xl font-medium w-full">
     Compare with other apps
   </div>
   <div
@@ -24,36 +24,26 @@
       <thead>
         <tr class="bg_f4f5f8">
           <th
-            class="py-3 pl-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8"
+            class="py-3 pl-3 rounded-tl-[10px] xl:static xl:bg-transparent w-[180px] sm:w-auto sticky left-0 bg_f4f5f8"
           >
-            <div class="text-left xl:text-sm text-xl uppercase font-medium">
-              #
-            </div>
+            <div class="text-left xl:text-sm uppercase font-medium">#</div>
           </th>
           <th class="py-3">
-            <div class="text-left xl:text-sm text-xl uppercase font-medium">
-              Nimbus
-            </div>
+            <div class="text-left xl:text-sm uppercase font-medium">Nimbus</div>
           </th>
           <th class="py-3">
-            <div class="text-left xl:text-sm text-xl uppercase font-medium">
-              Excel
-            </div>
+            <div class="text-left xl:text-sm uppercase font-medium">Excel</div>
           </th>
           <th class="py-3">
-            <div class="text-left xl:text-sm text-xl uppercase font-medium">
+            <div class="text-left xl:text-sm uppercase font-medium">
               CoinStats
             </div>
           </th>
           <th class="py-3">
-            <div class="text-left xl:text-sm text-xl uppercase font-medium">
-              DeBank
-            </div>
+            <div class="text-left xl:text-sm uppercase font-medium">DeBank</div>
           </th>
           <th class="py-3 rounded-tr-[10px]">
-            <div class="text-left xl:text-sm text-xl uppercase font-medium">
-              Nansen
-            </div>
+            <div class="text-left xl:text-sm uppercase font-medium">Nansen</div>
           </th>
         </tr>
       </thead>
@@ -61,13 +51,13 @@
         {#each compareTable as item}
           <tr class="group transition-all">
             <td
-              class={`pl-3 py-4 xl:static xl:bg-transparent sticky left-0 z-9 ${
+              class={`pl-3 py-4 xl:static xl:bg-transparent sticky w-[180px] sm:w-auto left-0 ${
                 $isDarkMode
                   ? "bg-[#131313] group-hover:bg-[#000]"
                   : "bg-white group-hover:bg-gray-100"
               }`}
             >
-              <div class="text-left xl:text-base text-xl">
+              <div class="text-left">
                 {item.title}
               </div>
             </td>
@@ -79,7 +69,7 @@
                   : "group-hover:bg-gray-100"
               }`}
             >
-              <div class="xl:text-base text-xl">
+              <div>
                 <span class="w-4 h-4 mr-1">
                   {compareResult(item.content.nimbus)}
                 </span>
@@ -94,7 +84,7 @@
                   : "group-hover:bg-gray-100"
               }`}
             >
-              <div class="xl:text-base text-xl">
+              <div>
                 <span class="w-4 h-4 mr-1">
                   {compareResult(item.content.excel)}
                 </span>
@@ -109,7 +99,7 @@
                   : "group-hover:bg-gray-100"
               }`}
             >
-              <div class="xl:text-base text-xl">
+              <div>
                 <span class="w-4 h-4 mr-1">
                   {compareResult(item.content.coinstats)}
                 </span>
@@ -124,7 +114,7 @@
                   : "group-hover:bg-gray-100"
               }`}
             >
-              <div class="xl:text-base text-2xl">
+              <div>
                 <span class="w-4 h-4 mr-1">
                   {compareResult(item.content.debank)}
                 </span>
@@ -139,7 +129,7 @@
                   : "group-hover:bg-gray-100"
               }`}
             >
-              <div class="xl:text-base text-xl">
+              <div>
                 <span class="w-4 h-4 mr-1">
                   {compareResult(item.content.nansen)}
                 </span>

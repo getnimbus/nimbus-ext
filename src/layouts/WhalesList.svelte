@@ -11,7 +11,8 @@
 
   import Loading from "~/components/Loading.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
-  import PublicPortfolioItem from "~/components/PublicPortfolioItem.svelte";
+  import PublicPortfolioItem from "~/UI/WhalesList/PublicPortfolioItem.svelte";
+  import PublicPortfolioMobileItem from "~/UI/WhalesList/PublicPortfolioMobileItem.svelte";
   import Button from "~/components/Button.svelte";
   import Tooltip from "~/components/Tooltip.svelte";
 
@@ -344,7 +345,7 @@
         <div class="text-4xl font-semibold">
           {MultipleLang.whale}
         </div>
-        <div class="xl:text-xl text-2xl w-max">
+        <div class="xl:text-xl text-2xl">
           {MultipleLang.whales_page_title}
         </div>
       </div>
@@ -353,7 +354,7 @@
           {#each whalesFilter as item}
             <div
               id={item.label}
-              class="relative cursor-pointer xl:text-base text-xl font-medium py-1 px-3 rounded-[100px] transition-all"
+              class="relative cursor-pointer text-base font-medium py-1 px-3 rounded-[100px] transition-all"
               on:click={() => {
                 selectedFilter = item;
                 queryClient.invalidateQueries(["whaleslist"]);
@@ -382,8 +383,9 @@
       </div>
     </div>
 
+    <!-- Desktop view -->
     <div
-      class={`rounded-[10px] border border_0000000d xl:overflow-visible overflow-x-auto ${
+      class={`xl:block hidden rounded-[10px] border border_0000000d xl:overflow-visible overflow-x-auto ${
         $isDarkMode ? "bg-[#131313]" : "bg-[#fff]"
       } ${
         ($queryWhalesList.isLoading && $queryWhalesList.isError) ||
@@ -721,46 +723,35 @@
       </table>
     </div>
 
-    <!-- <div class="flex justify-center gap-3 xl:-mt-4">
-      <div class="w-[50px]">
-        {#if pageValue === 0}
-          <Button variant="disabled" disabled>
-            <div class="text-2xl -mt-1">&lsaquo;</div>
-          </Button>
-        {:else}
-          <Button
-            variant="secondary"
-            on:click={() => {
-              if (pageValue > 1) {
-                pageValue = pageValue - 1;
-              } else {
-                pageValue = 0;
-              }
-              getPublicPortfolio();
-            }}
-          >
-            <div class="text-2xl -mt-1">&lsaquo;</div>
-          </Button>
-        {/if}
-      </div>
-      <div class="w-[50px]">
-        {#if whalesData && whalesData.length === 0}
-          <Button variant="disabled" disabled>
-            <div class="text-2xl -mt-1">&rsaquo;</div>
-          </Button>
-        {:else}
-          <Button
-            variant="secondary"
-            on:click={() => {
-              pageValue = pageValue + 1;
-              getPublicPortfolio();
-            }}
-          >
-            <div class="text-2xl -mt-1">&rsaquo;</div>
-          </Button>
-        {/if}
-      </div>
-    </div> -->
+    <!-- Mobile view -->
+    <div
+      class={`xl:hidden block rounded-[10px] p-2 w-full ${
+        $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
+      }`}
+    >
+      {#if $queryWhalesList.isLoading}
+        <div class="flex justify-center items-center h-full py-3 px-3">
+          <Loading />
+        </div>
+      {:else}
+        <div>
+          {#if whalesData && whalesData?.length === 0}
+            <div class="flex justify-center items-center h-full py-3 px-3">
+              Empty
+            </div>
+          {:else}
+            <!-- {#each whalesData as data} -->
+            {#each (filterDuplicates(whalesData) || [])?.slice(0, $selectedPackage === "FREE" ? 10 : undefined) as data, whalePosition}
+              <PublicPortfolioMobileItem
+                {data}
+                typeData={selectedFilter.label}
+                {whalePosition}
+              />
+            {/each}
+          {/if}
+        </div>
+      {/if}
+    </div>
   </div>
 </ErrorBoundary>
 
