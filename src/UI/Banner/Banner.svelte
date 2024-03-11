@@ -10,7 +10,7 @@
   }`}
   style="z-index: 10;"
 >
-  <div class="max-w-[2000px] m-auto w-[90%] isolate">
+  <div class="max-w-[2000px] m-auto w-full isolate">
     <div class="marquee flex flex-wrap items-center gap-x-4 xl:gap-y-2 gap-y-1">
       <div class="marquee-1 xl:text-sm xl:leading-6 flex xl:gap-0 gap-2">
         <div class="flex items-center tracking-widest whitespace-nowrap">
