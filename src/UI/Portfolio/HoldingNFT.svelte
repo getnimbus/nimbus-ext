@@ -33,6 +33,9 @@
   let tableNFTHeader;
   let isStickyTableNFT = false;
 
+  let chainValue;
+  let addressValue;
+
   onMount(() => {
     const handleScroll = () => {
       const clientRectNFTHeader = tableNFTHeader?.getBoundingClientRect();
@@ -148,12 +151,11 @@
       if (document.getElementById("outdated").checked) {
         reason += document.getElementById("reason").value;
       }
-
       const formData = {
         chain: document.getElementById("chain").value,
         contractAddress: document.getElementById("contract_address").value,
         reason: reason,
-        contractName: data.collection.name,
+        contractName: selectedNft?.collection?.name,
         type: "nft",
       };
       await nimbus.post("/holding-nft/trash/report", formData);
@@ -166,6 +168,7 @@
       isSuccessToast = false;
       console.error("error:", error);
     } finally {
+      selectedNft = {};
       isShowReportTable = false;
       trigger();
     }
@@ -342,7 +345,10 @@
               {#if isShowReport && selectedItemIndex === index}
                 <div
                   class="relative w-5 cursor-pointer"
-                  on:click={() => (isShowReportTable = true)}
+                  on:click={() => {
+                    isShowReportTable = true;
+                    selectedNft = data[index];
+                  }}
                   on:mouseover={() => {
                     selectedItemIndex = index;
                     isShowTooltipReport = true;
@@ -721,6 +727,7 @@
   on:close={() => {
     isShowReportTable = false;
     isOldNFT = false;
+    selectedNft = {};
   }}
 >
   <div class="flex flex-col gap-4">
@@ -746,7 +753,7 @@
             type="text"
             id="chain"
             name="chain"
-            value={data[selectedItemIndex]?.nativeToken?.symbol}
+            value={selectedNft?.nativeToken?.symbol}
             class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal ${
               !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
             } ${
@@ -774,7 +781,7 @@
             type="text"
             id="contract_address"
             name="contract_address"
-            value={data[selectedItemIndex]?.collectionId}
+            value={selectedNft?.collectionId}
             class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal ${
               !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
             } ${
@@ -856,12 +863,13 @@
             <Button
               variant="secondary"
               on:click={() => {
+                selectedNft = {};
                 isShowReportTable = false;
                 isOldNFT = false;
               }}
             >
-              {MultipleLang.content.modal_cancel}</Button
-            >
+              {MultipleLang.content.modal_cancel}
+            </Button>
           </div>
           <div class="xl:w-[120px] w-full">
             <Button
@@ -870,8 +878,8 @@
               isLoading={isLoadingReportTrashNFT}
               disabled={isLoadingReportTrashNFT}
             >
-              {MultipleLang.content.modal_submitreport}</Button
-            >
+              {MultipleLang.content.modal_submitreport}
+            </Button>
           </div>
         </div>
       </div>
