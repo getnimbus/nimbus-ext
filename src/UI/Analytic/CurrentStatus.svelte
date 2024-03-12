@@ -755,7 +755,7 @@
 <div class="flex flex-col justify-between gap-6 xl:flex-row">
   <!-- Token allocation -->
   <div
-    class={`xl:w-1/2 w-full flex flex-col justify-between items-start gap-2 rounded-[20px] xl:p-6 py-3 ${
+    class={`xl:w-1/2 w-full flex flex-col justify-between items-start gap-2 rounded-[20px] xl:p-6 py-4 px-3 ${
       $isDarkMode ? "bg-[#222222]" : "bg-[#fff] xl:border border_0000001a"
     }`}
   >
@@ -792,7 +792,7 @@
           >
         </div>
         <div
-          class="flex gap-3 overflow-x-auto w-max whitespace-nowrap px-2"
+          class="flex gap-3 overflow-x-auto w-max whitespace-nowrap"
           bind:this={scrollContainer}
           on:scroll={handleScroll}
         >
@@ -916,7 +916,7 @@
 
   <!-- Performance -->
   <div
-    class={`xl:w-1/2 w-full relative rounded-[20px] xl:p-6 py-3 ${
+    class={`xl:w-1/2 w-full relative rounded-[20px] xl:p-6 py-4 px-3 ${
       $isDarkMode ? "bg-[#222222]" : "bg-[#fff] xl:border border_0000001a"
     }`}
   >

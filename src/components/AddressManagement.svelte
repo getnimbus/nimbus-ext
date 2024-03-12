@@ -1638,7 +1638,7 @@
             <a
               href="https://getnimbus.io/chains-support"
               target="_blank"
-              class="text-blue-500 hover:underline cursor-pointer text-base"
+              class="text-blue-500 hover:underline cursor-pointer"
               >More exchanges</a
             >
           </div>
@@ -1828,9 +1828,7 @@
                 </Button>
               </div>
             </div>
-            <div
-              class="flex flex-wrap items-center justify-center gap-1 text-xl"
-            >
+            <div class="flex flex-wrap items-center justify-center gap-1">
               <img src={Success} alt="" />
               Bank-level security/encryption.
               <a
@@ -1839,18 +1837,14 @@
                 target="_blank">Learn more</a
               >
             </div>
-            <div class="flex items-center justify-center gap-6 my-3">
+            <div class="flex items-center justify-center gap-6 my-2">
               {#each listLogoCEX.slice(0, 3) as logo}
-                <img
-                  src={logo}
-                  alt=""
-                  class="xl:w-8 xl:h-8 w-10 h-10 rounded-full"
-                />
+                <img src={logo} alt="" class="w-8 h-8 rounded-full" />
               {/each}
               <a
                 href="https://getnimbus.io/chains-support"
                 target="_blank"
-                class="text-blue-500 hover:underline cursor-pointer text-lg"
+                class="text-blue-500 hover:underline cursor-pointer text-sm"
                 >More exchanges</a
               >
             </div>
@@ -1949,7 +1943,7 @@
               </div>
             </div>
             <div
-              class="flex items-center justify-end gap-2 text-[#666666] mt-3"
+              class="flex items-center justify-end gap-2 text-[#666666] mt-2"
             >
               <div class="text-base">Is it your wallet?</div>
               <label class="switch">
@@ -1957,18 +1951,18 @@
                 <span class="slider" />
               </label>
             </div>
-            <div class="flex items-center justify-center gap-6 my-3">
+            <div class="flex items-center justify-center gap-6 my-2">
               {#each generationLogo.slice(0, 4) as item}
                 <img
                   src={item.logo}
                   alt=""
-                  class="w-10 h-10 overflow-hidden rounded-full"
+                  class="w-8 h-8 overflow-hidden rounded-full"
                 />
               {/each}
               <a
                 href="https://getnimbus.io/chains-support"
                 target="_blank"
-                class="text-blue-500 hover:underline cursor-pointer text-lg"
+                class="text-blue-500 hover:underline cursor-pointer text-sm"
                 >More chains</a
               >
             </div>
