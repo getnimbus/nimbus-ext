@@ -2536,7 +2536,7 @@
   }
 
   .mobile {
-    height: 70vh;
+    height: 100vh;
     z-index: 2147483649;
 
     transition-property: all;
