@@ -665,11 +665,11 @@
     <div class="flex items-center justify-end gap-6 xl:gap-3 md:w-max w-full">
       <!-- Search -->
       <div
-        class={`px-4 xl:w-[220px] md:w-[400px] w-full flex items-center gap-1 rounded-[1000px] cursor-pointer ${
+        class={`pl-4 xl:w-[220px] md:w-[400px] w-full flex items-center gap-4 rounded-[1000px] cursor-pointer ${
           $isDarkMode ? "bg-[#212121]" : "bg-[#525B8C]"
         }`}
       >
-        <img src={Search} alt="" class="xl:w-5 xl:h-5 w-9 h-9" />
+        <img src={Search} alt="" class="xl:w-5 xl:h-5 w-7 h-7" />
         <div
           on:click={() => {
             showPopoverSearch = true;
@@ -761,11 +761,7 @@
 >
   <div class="max-w-[100vw] m-auto w-[90%] h-full flex flex-col gap-8 relative">
     <div class="flex items-center justify-between py-3 border-b-[1px]">
-      <img
-        src={Logo}
-        alt=""
-        class="-ml-6 xl:w-[177px] w-[200px] xl:h-[60px] h-[80px]"
-      />
+      <img src={Logo} alt="" class="-ml-6 w-[200px] h-[80px]" />
       <div
         class="-mr-1 text-5xl text-white"
         on:click={() => {
@@ -1250,13 +1246,9 @@
       showPopoverSearch = false;
     }}
   >
-    <div class="-mt-6 flex flex-col xl:gap-3 gap-6 text-sm">
+    <div class="-mt-6 flex flex-col gap-3">
       <div class="flex items-center">
-        <img
-          src={$isDarkMode ? Search : SearchBlack}
-          alt=""
-          class="xl:w-5 xl:h-5 w-9 h-9"
-        />
+        <img src={$isDarkMode ? Search : SearchBlack} alt="" class="w-5 h-5" />
         <input
           on:keyup={({ target: { value } }) => debounceSearch(value)}
           on:keydown={(event) => {
@@ -1275,7 +1267,7 @@
           autofocus={true}
           placeholder={MultipleLang.search_placeholder}
           type="text"
-          class={`flex-1 xl:py-2 py-3 xl:text-sm text-xl border-none focus:outline-none focus:ring-0 ${
+          class={`flex-1 py-2 text-sm border-none focus:outline-none focus:ring-0 ${
             $isDarkMode ? "bg-[#0f0f0f]" : "bg-[#fff]"
           }`}
         />
@@ -1283,21 +1275,18 @@
       {#if Object.keys($user).length !== 0}
         <div class="flex flex-col gap-2 mb-2">
           <div
-            class={`xl:text-xs text-base ${
-              $isDarkMode ? "text-gray-200" : "text-gray-400"
-            }`}
+            class={`text-xs ${$isDarkMode ? "text-gray-200" : "text-gray-400"}`}
           >
             List addresses
           </div>
           <div
-            class="xl:max-h-[310px] xl:h-[310px] max-h-[380px] h-[380px] w-full flex flex-col gap-2"
-            style="overflow-y: auto;"
+            class="max-h-[310px] h-[310px] w-full flex flex-col gap-2 overflow-y-auto"
             bind:this={listAddressElement}
           >
             {#each searchListAddressResult as item, index}
               <div
                 id={item.value}
-                class={`address-item relative xl:text-sm text-xl flex items-center gap-3 cursor-pointer p-2 rounded-md ${
+                class={`relative text-sm flex items-center gap-3 cursor-pointer p-2 rounded-md ${
                   $isDarkMode ? "hover:bg-[#343434]" : "hover:bg-[#eff0f4]"
                 }`}
                 class:selected={index === selectedIndexAddress}
@@ -1318,7 +1307,7 @@
                 <div class="flex-1 flex justify-between items-center">
                   <div class="hover:underline">{item.label}</div>
                   <div
-                    class={`xl:text-sm text-base xl:flex hidden items-center gap-2 ${
+                    class={`text-sm flex items-center gap-2 ${
                       $isDarkMode ? "text-gray-300" : "text-gray-500"
                     }`}
                   >
@@ -1333,13 +1322,6 @@
                       {shorterAddress(item.value)}
                     {/if}
                   </div>
-                  <div
-                    class={`xl:text-sm text-base xl:hidden block ${
-                      $isDarkMode ? "text-gray-300" : "text-gray-500"
-                    }`}
-                  >
-                    {shorterAddress(item.value)}
-                  </div>
                 </div>
               </div>
             {/each}
@@ -1348,9 +1330,7 @@
       {/if}
       <div class="flex flex-col gap-2">
         <div
-          class={`xl:text-xs text-base ${
-            $isDarkMode ? "text-gray-200" : "text-gray-400"
-          }`}
+          class={`text-xs ${$isDarkMode ? "text-gray-200" : "text-gray-400"}`}
         >
           Recent searches
         </div>
@@ -1358,7 +1338,7 @@
           <div class="flex flex-col gap-2">
             {#each suggestList as suggest}
               <div
-                class="xl:text-sm text-xl cursor-pointer py-1 w-max"
+                class="text-sm cursor-pointer py-1 w-max"
                 on:click={() => {
                   handleSearchAddress(suggest);
                   showPopoverSearch = false;
@@ -1374,9 +1354,7 @@
           <div class="text-base text-gray-400">Empty</div>
         {/if}
       </div>
-      <div
-        class="border-t-[1px] pt-4 border-gray-200 xl:flex hidden justify-between"
-      >
+      <div class="border-t-[1px] pt-4 border-gray-200 flex justify-between">
         <div class="flex items-center gap-1">
           <div
             class="rounded-md w-[24px] h-[24px] p-2 flex justify-center items-center bg-[#a6b0c3] text-white text-sm"
@@ -1421,13 +1399,13 @@
     }`}
   >
     <div
-      class="max-w-[100vw] m-auto w-[90%] h-full flex flex-col gap-8 relative"
+      class="max-w-[100vw] m-auto w-[90%] h-full flex flex-col gap-4 relative"
     >
       <div class="flex items-center justify-between py-3 border-b-[1px]">
         <img
           src={$isDarkMode ? LogoWhite : LogoBlack}
           alt=""
-          class="-ml-6 xl:w-[177px] w-[170px] xl:h-[60px] h-[80px]"
+          class="-ml-6 w-[170px] h-[80px]"
         />
         <div
           class="-mr-1 text-5xl"
@@ -1439,16 +1417,16 @@
         </div>
       </div>
 
-      <div class="-mt-6 flex flex-col xl:gap-3 gap-6 text-sm">
+      <div class="flex flex-col gap-4">
         <div
-          class={`px-4 w-full flex items-center gap-1 rounded-[1000px] cursor-pointer ${
+          class={`pl-4 w-full flex items-center gap-1 rounded-[1000px] cursor-pointer ${
             $isDarkMode ? "bg-[#212121]" : "bg-[#525B8C]"
           }`}
         >
           <img
             src={$isDarkMode ? Search : SearchBlack}
             alt=""
-            class="xl:w-5 xl:h-5 w-9 h-9"
+            class="w-7 h-7"
           />
           <input
             on:keyup={({ target: { value } }) => debounceSearch(value)}
@@ -1468,27 +1446,26 @@
             autofocus={true}
             placeholder={MultipleLang.search_placeholder}
             type="text"
-            class={`flex-1 xl:py-2 py-3 xl:text-sm text-xl border-none focus:outline-none focus:ring-0 bg-transparent`}
+            class="flex-1 py-3 text-xl border-none focus:outline-none focus:ring-0 bg-transparent"
           />
         </div>
         {#if Object.keys($user).length !== 0}
           <div class="flex flex-col gap-2 mb-2">
             <div
-              class={`xl:text-xs text-base ${
+              class={`text-base ${
                 $isDarkMode ? "text-gray-200" : "text-gray-400"
               }`}
             >
               List addresses
             </div>
             <div
-              class="xl:max-h-[310px] xl:h-[310px] max-h-[380px] h-[380px] w-full flex flex-col gap-2"
-              style="overflow-y: auto;"
+              class="max-h-[380px] h-[380px] w-full flex flex-col gap-2 overflow-y-auto"
               bind:this={listAddressElement}
             >
               {#each searchListAddressResult as item, index}
                 <div
                   id={item.value}
-                  class={`address-item relative xl:text-sm text-xl flex items-center gap-3 cursor-pointer p-2 rounded-md ${
+                  class={`relative flex items-center gap-3 cursor-pointer p-2 rounded-md ${
                     $isDarkMode ? "hover:bg-[#343434]" : "hover:bg-[#eff0f4]"
                   }`}
                   class:selected={index === selectedIndexAddress}
@@ -1509,23 +1486,7 @@
                   <div class="flex-1 flex justify-between items-center">
                     <div class="hover:underline text-base">{item.label}</div>
                     <div
-                      class={`text-sm xl:flex hidden items-center gap-2 ${
-                        $isDarkMode ? "text-gray-300" : "text-gray-500"
-                      }`}
-                    >
-                      {#if index === selectedIndexAddress}
-                        <div class="text-[#a6b0c3]">Select</div>
-                        <div
-                          class="rounded-md w-[24px] h-[24px] p-2 flex justify-center items-center bg-[#a6b0c3] text-white text-sm"
-                        >
-                          ↵
-                        </div>
-                      {:else}
-                        {shorterAddress(item.value)}
-                      {/if}
-                    </div>
-                    <div
-                      class={`xl:text-sm text-base xl:hidden block ${
+                      class={`text-base ${
                         $isDarkMode ? "text-gray-300" : "text-gray-500"
                       }`}
                     >
@@ -1539,7 +1500,7 @@
         {/if}
         <div class="flex flex-col gap-2">
           <div
-            class={`xl:text-xs text-base ${
+            class={`text-base ${
               $isDarkMode ? "text-gray-200" : "text-gray-400"
             }`}
           >
@@ -1549,7 +1510,7 @@
             <div class="flex flex-col gap-2">
               {#each suggestList as suggest}
                 <div
-                  class="xl:text-sm text-base cursor-pointer py-1 w-max"
+                  class="text-base cursor-pointer py-1 w-max"
                   on:click={() => {
                     handleSearchAddress(suggest);
                     showPopoverSearch = false;
