@@ -16,7 +16,6 @@
   import { priceMobulaSubscribe } from "~/lib/price-mobulaWs";
   import { priceSubscribe } from "~/lib/price-ws";
   import { wait } from "~/entries/background/utils";
-  import { detectedChain } from "~/lib/chains";
 
   import goldImg from "~/assets/Gold4.svg";
 
@@ -533,12 +532,8 @@
   let bonusScore: number = 0;
   let selectedTokenHoldingPercent: number = 0;
 
-  const triggerFireworkBonus = (score: number) => {
+  const triggerFireworkBonus = async (score: number) => {
     bonusScore = score;
-    triggerBonusScore();
-  };
-
-  const triggerBonusScore = async () => {
     openScreenBonusScore = true;
     triggerFirework();
     await wait(2000);
