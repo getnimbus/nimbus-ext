@@ -57,7 +57,7 @@
               ↑
             {/if}
             <CountUpNumber
-              number={Math.abs(data?.overview?.networthChange)}
+              number={Math.abs(data?.overview?.networthChange || 0)}
               type="percent"
             />%
           </div>
@@ -94,7 +94,7 @@
             {/if}
           </span>
           <CountUpNumber
-            number={Math.abs($realizedProfit)}
+            number={Math.abs($realizedProfit || 0)}
             type="value"
             personalValue
           />
@@ -141,7 +141,7 @@
             {/if}
           </span>
           <CountUpNumber
-            number={Math.abs($unrealizedProfit)}
+            number={Math.abs($unrealizedProfit || 0)}
             type="value"
             personalValue
           />
