@@ -187,7 +187,7 @@
 </script>
 
 <div
-  class={`rounded-[20px] xl:py-6 py-3 relative overflow-x-auto ${
+  class={`rounded-[20px] xl:p-6 py-4 px-3 relative overflow-x-auto ${
     darkMode ? "bg-[#222222]" : "bg-[#fff] xl:border border_0000001a"
   }`}
 >
