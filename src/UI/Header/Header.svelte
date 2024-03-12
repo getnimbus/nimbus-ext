@@ -1533,9 +1533,9 @@
                     }`}
                   />
                   <div class="flex-1 flex justify-between items-center">
-                    <div class="hover:underline">{item.label}</div>
+                    <div class="hover:underline text-base">{item.label}</div>
                     <div
-                      class={`xl:text-sm text-base xl:flex hidden items-center gap-2 ${
+                      class={`text-sm xl:flex hidden items-center gap-2 ${
                         $isDarkMode ? "text-gray-300" : "text-gray-500"
                       }`}
                     >
