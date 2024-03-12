@@ -324,7 +324,7 @@
           {/if} -->
 
           <div
-            class={`rounded-[20px] xl:p-6 py-3 flex flex-col gap-4 ${
+            class={`rounded-[20px] xl:p-6 py-4 px-3 flex flex-col gap-4 ${
               $isDarkMode
                 ? "bg-[#222222]"
                 : "bg-[#fff] xl:border border_0000001a"
@@ -373,7 +373,7 @@
 
         {#if otherGeneration.includes($typeWallet)}
           <div
-            class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center gap-3 justify-center z-8 backdrop-blur-md ${
+            class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center gap-3 justify-center z-7 backdrop-blur-md ${
               $isDarkMode ? "bg-black/90" : "bg-white/95"
             }`}
           >

@@ -515,7 +515,7 @@
       <div class="h-full relative xl:min-h-[465px]">
         {#if $query.isError}
           <div
-            class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-8 backdrop-blur-md text-base text-gray-400 ${
+            class={`xl:rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-7 backdrop-blur-md text-base text-gray-400 ${
               $isDarkMode ? "bg-black/90" : "bg-white/95"
             }`}
           >
@@ -682,7 +682,7 @@
       <div class="relative h-full">
         {#if $query.isError}
           <div
-            class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-8 backdrop-blur-md text-base text-gray-400 ${
+            class={`xl:rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-7 backdrop-blur-md text-base text-gray-400 ${
               $isDarkMode ? "bg-black/90" : "bg-white/95"
             }`}
           >

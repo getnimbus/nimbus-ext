@@ -1462,7 +1462,11 @@
       </div>
 
       <div class="-mt-6 flex flex-col xl:gap-3 gap-6 text-sm">
-        <div class="flex items-center">
+        <div
+          class={`px-4 w-full flex items-center gap-1 rounded-[1000px] cursor-pointer ${
+            $isDarkMode ? "bg-[#212121]" : "bg-[#525B8C]"
+          }`}
+        >
           <img
             src={$isDarkMode ? Search : SearchBlack}
             alt=""
@@ -1486,9 +1490,7 @@
             autofocus={true}
             placeholder={MultipleLang.search_placeholder}
             type="text"
-            class={`flex-1 xl:py-2 py-3 xl:text-sm text-xl border-none focus:outline-none focus:ring-0 ${
-              $isDarkMode ? "bg-[#0f0f0f]" : "bg-[#fff]"
-            }`}
+            class={`flex-1 xl:py-2 py-3 xl:text-sm text-xl border-none focus:outline-none focus:ring-0 bg-transparent`}
           />
         </div>
         {#if Object.keys($user).length !== 0}

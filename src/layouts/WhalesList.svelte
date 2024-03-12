@@ -649,7 +649,7 @@
                   <td colspan="8">
                     {#if whalesData.length > 5}
                       <tr
-                        class={`absolute z-9 left-0 right-0 bottom-0 top-[270px] flex justify-center pt-10 backdrop-blur-md bg-gradient-to-t to-transparent ${
+                        class={`absolute z-7 left-0 right-0 bottom-0 top-[270px] flex justify-center pt-10 backdrop-blur-md bg-gradient-to-t to-transparent ${
                           $isDarkMode
                             ? "bg-black/90 from-[#000] via-[#222222]"
                             : "bg-white/95 from-white via-white"
@@ -682,7 +682,7 @@
                       </tr>
                     {:else}
                       <tr
-                        class={`absolute z-9 left-0 right-0 bottom-0 top-[120px] flex justify-center pt-10 backdrop-blur-md bg-gradient-to-t to-transparent ${
+                        class={`absolute z-7 left-0 right-0 bottom-0 top-[120px] flex justify-center pt-10 backdrop-blur-md bg-gradient-to-t to-transparent ${
                           $isDarkMode
                             ? "bg-black/90 from-[#000] via-[#222222]"
                             : "bg-white/95 from-white via-white"
@@ -785,7 +785,7 @@
                     </tr>
                   {:else}
                     <tr
-                      class={`absolute left-0 right-0 bottom-0 top-[120px] flex justify-center pt-10 backdrop-blur-md bg-gradient-to-t to-transparent ${
+                      class={`absolute left-0 right-0 z-7 bottom-0 top-[120px] flex justify-center pt-10 backdrop-blur-md bg-gradient-to-t to-transparent ${
                         $isDarkMode
                           ? "bg-black/90 from-[#000] via-[#222222]"
                           : "bg-white/95 from-white via-white"
