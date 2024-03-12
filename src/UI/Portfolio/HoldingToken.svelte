@@ -1584,7 +1584,6 @@
       scrollDirection="vertical"
       width="100%"
       height={data.length < 10 ? data.length * 420 : 940}
-      bind:this={virtualList}
       itemCount={data.length}
       itemSize={420}
     >
