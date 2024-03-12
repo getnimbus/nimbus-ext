@@ -280,23 +280,6 @@
   };
 
   const handleFormatDataBreakdown = (data) => {
-    const test = (data?.breakdown || [])
-      .map((item) => {
-        const selectedAddress = $selectedBundle?.accounts.find(
-          (account) =>
-            account?.id?.toLowerCase() === item?.owner?.toLowerCase() ||
-            account?.value?.toLowerCase() === item?.owner?.toLowerCase()
-        );
-        return {
-          ...item,
-          logo: selectedAddress?.logo,
-          type: selectedAddress?.type,
-          label: selectedAddress?.label,
-        };
-      })
-      .filter((item) => Number(item?.amount) !== 0)
-      .sort((a, b) => b.amount - a.amount);
-
     return (data?.breakdown || [])
       .map((item) => {
         const selectedAddress = $selectedBundle?.accounts.find(
