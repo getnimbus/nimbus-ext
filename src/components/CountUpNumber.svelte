@@ -23,18 +23,8 @@
   let showTooltip = false;
 
   $: {
-    if ($wallet || $chain) {
-      myNumber.set(0);
-      numberFormat = 0;
-      numberSize = "";
-    }
-  }
-
-  $: {
     if (number) {
       myNumber.set(number);
-    } else {
-      myNumber.set(0);
     }
   }
 
