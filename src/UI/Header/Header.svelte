@@ -14,6 +14,8 @@
     userId,
     userPublicAddress,
     triggerSync,
+    triggerModalAddAddress,
+    triggerConnectWallet,
   } from "~/store";
   import { shorterAddress } from "~/utils";
   import mixpanel from "mixpanel-browser";
@@ -316,7 +318,9 @@
     });
 
     Mousetrap.bindGlobal(["/"], function () {
-      showPopoverSearch = true;
+      if (!$triggerModalAddAddress && !$triggerConnectWallet) {
+        showPopoverSearch = true;
+      }
     });
 
     Mousetrap.bindGlobal(["esc"], function () {

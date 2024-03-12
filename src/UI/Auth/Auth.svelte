@@ -98,8 +98,6 @@
   let loading = false;
   let isShowTooltipCopy = false;
 
-  let isOpenAuthModal = false;
-
   onMount(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const invitationParams = urlParams.get("invitation");
@@ -269,7 +267,7 @@
     try {
       const res: any = await nimbus.post("/auth/evm", data);
       if (res?.data?.result) {
-        handleCloseAuthModal();
+        triggerConnectWallet.update((n) => (n = false));
         localStorage.removeItem("auth_token");
         localStorage.setItem("evm_token", res?.data?.result);
         user.update(
@@ -300,7 +298,7 @@
     if (solanaPublicAddress) {
       const solanaToken = localStorage.getItem("solana_token");
       if (!solanaToken) {
-        handleCloseAuthModal();
+        triggerConnectWallet.update((n) => (n = false));
         if ($user && Object.keys($user).length === 0) {
           handleGetSolanaNonce(solanaPublicAddress);
         }
@@ -352,7 +350,7 @@
     try {
       const res: any = await nimbus.post("/auth/solana", data);
       if (res?.data?.result) {
-        handleCloseAuthModal();
+        triggerConnectWallet.update((n) => (n = false));
         localStorage.removeItem("auth_token");
         localStorage.setItem("solana_token", res?.data?.result);
         user.update(
@@ -387,15 +385,9 @@
 
   $: {
     if ($triggerConnectWallet) {
-      isOpenAuthModal = true;
       mixpanel.track("user_connect_wallet");
-      triggerConnectWallet.update((n) => (n = false));
     }
   }
-
-  const handleCloseAuthModal = () => {
-    isOpenAuthModal = false;
-  };
 </script>
 
 {#if $user && Object.keys($user).length !== 0}
@@ -564,7 +556,7 @@
 {:else}
   <div
     on:click={() => {
-      isOpenAuthModal = true;
+      triggerConnectWallet.update((n) => (n = true));
       mixpanel.track("user_connect_wallet");
       isShowHeaderMobile.update((n) => (n = false));
     }}
@@ -754,8 +746,10 @@
 <!-- Modal connect wallet -->
 <AppOverlay
   clickOutSideToClose
-  isOpen={isOpenAuthModal}
-  on:close={() => (isOpenAuthModal = false)}
+  isOpen={$triggerConnectWallet}
+  on:close={() => {
+    triggerConnectWallet.update((n) => (n = false));
+  }}
 >
   <div class="flex flex-col gap-4">
     <div class="xl:title-3 title-1 font-medium text-center">
@@ -777,8 +771,8 @@
         <div class="font-semibold text-[15px]">Login with EVM</div>
       </div>
       <SolanaAuth text="Login with Solana" />
-      <SuiAuth {handleCloseAuthModal} />
-      <GoogleAuth {handleCloseAuthModal} />
+      <SuiAuth />
+      <GoogleAuth />
     </div>
   </div>
 </AppOverlay>

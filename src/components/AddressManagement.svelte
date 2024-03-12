@@ -11,6 +11,7 @@
     isDarkMode,
     selectedBundle,
     userPublicAddress,
+    triggerModalAddAddress,
   } from "~/store";
   import { i18n } from "~/lib/i18n";
   import dayjs from "dayjs";
@@ -149,7 +150,6 @@
   let label = "";
   let errors: any = {};
   let isLoadingAddDEX = false;
-  let isOpenAddModal = false;
   let isOpenFollowWhaleModal = false;
   let isOpenModal = false;
   let isLoadingSendMail = false;
@@ -568,7 +568,7 @@
 
         e.target.reset();
         errors = {};
-        isOpenAddModal = false;
+        triggerModalAddAddress.update((n) => (n = false));
         isLoadingAddDEX = false;
 
         toastMsg = "Successfully add On-Chain account!";
@@ -647,7 +647,7 @@
             queryClient.invalidateQueries(["list-address"]);
 
             isLoadingConnectCEX = false;
-            isOpenAddModal = false;
+            triggerModalAddAddress.update((n) => (n = false));
 
             toastMsg = "Successfully add CEX account!";
             isSuccessToast = true;
@@ -658,7 +658,7 @@
             console.error("connection vezgo error", error);
             queryClient.invalidateQueries(["list-address"]);
             isLoadingConnectCEX = false;
-            isOpenAddModal = false;
+            triggerModalAddAddress.update((n) => (n = false));
             toastMsg =
               "Something wrong when add CEX account. Please try again!";
             isSuccessToast = false;
@@ -840,10 +840,6 @@
       handleUpdateParams();
     }
   };
-
-  const handleOpenAddModal = () => {
-    isOpenAddModal = true;
-  };
 </script>
 
 {#if $query.isFetching}
@@ -864,10 +860,7 @@
           </div>
         {:else}
           <div class="max-w-[2000px] m-auto w-[90%]">
-            <Hero
-              btntext={MultipleLang.content.btn_text}
-              {handleOpenAddModal}
-            />
+            <Hero />
           </div>
         {/if}
       </div>
@@ -1199,7 +1192,7 @@
                   <Button
                     variant="tertiary"
                     on:click={() => {
-                      isOpenAddModal = true;
+                      triggerModalAddAddress.update((n) => (n = true));
                     }}
                   >
                     <img src={Plus} alt="" class="w-3 h-3" />
@@ -1601,8 +1594,10 @@
 <div class="lg:block hidden">
   <AppOverlay
     clickOutSideToClose
-    isOpen={isOpenAddModal}
-    on:close={() => (isOpenAddModal = false)}
+    isOpen={$triggerModalAddAddress}
+    on:close={() => {
+      triggerModalAddAddress.update((n) => (n = false));
+    }}
   >
     <div class="flex flex-col gap-4">
       <div class="font-medium title-3">
@@ -1760,7 +1755,7 @@
                 variant="secondary"
                 on:click={() => {
                   errors = {};
-                  isOpenAddModal = false;
+                  triggerModalAddAddress.update((n) => (n = false));
                 }}
               >
                 {MultipleLang.content.modal_cancel}
@@ -1787,7 +1782,7 @@
 <div class="lg:hidden block">
   <div
     class={`fixed inset-0 w-full mobile mobile-container ${
-      isOpenAddModal
+      $triggerModalAddAddress
         ? "opacity-100 transform translate-x-[0px]"
         : "opacity-0 transform translate-x-[-100vw]"
     }`}
@@ -1804,7 +1799,7 @@
         <div
           class="-mr-1 text-5xl"
           on:click={() => {
-            isOpenAddModal = false;
+            triggerModalAddAddress.update((n) => (n = false));
           }}
         >
           &times;
@@ -1973,7 +1968,7 @@
                   variant="secondary"
                   on:click={() => {
                     errors = {};
-                    isOpenAddModal = false;
+                    triggerModalAddAddress.update((n) => (n = false));
                   }}
                 >
                   {MultipleLang.content.modal_cancel}

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { nimbus } from "~/lib/network";
-  import { user, isDarkMode } from "~/store";
+  import { user, isDarkMode, triggerConnectWallet } from "~/store";
   import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
   import { googleAuth } from "~/lib/firebase";
   import { useQueryClient } from "@tanstack/svelte-query";
@@ -10,8 +10,6 @@
 
   import User from "~/assets/user.png";
   import Google from "~/assets/google.png";
-
-  export let handleCloseAuthModal = () => {};
 
   const queryClient = useQueryClient();
   const googleProvider = new GoogleAuthProvider();
@@ -59,7 +57,7 @@
         displayName,
       });
       if (res?.data?.result) {
-        handleCloseAuthModal();
+        triggerConnectWallet.update((n) => (n = false));
         localStorage.setItem("auth_token", res?.data?.result);
         localStorage.setItem("socialAuthType", "google");
         user.update(
