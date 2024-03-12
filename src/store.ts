@@ -13,6 +13,7 @@ export const isShowHeaderMobile = writable(false);
 export const selectedBundle = writable({});
 export const isHidePortfolio = writable(false);
 export const triggerConnectWallet = writable(false);
+export const triggerModalAddAddress = writable(false);
 export const triggerSync = writable(false);
 export const userId = writable("");
 export const userPublicAddress = writable("");

@@ -3,7 +3,12 @@
   import { useQueryClient } from "@tanstack/svelte-query";
   import mixpanel from "mixpanel-browser";
   import { SuiConnector, WalletState } from "nimbus-sui-kit";
-  import { isDarkMode, user, suiWalletInstance } from "~/store";
+  import {
+    isDarkMode,
+    user,
+    suiWalletInstance,
+    triggerConnectWallet,
+  } from "~/store";
   import { nimbus } from "~/lib/network";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
@@ -12,8 +17,6 @@
 
   import User from "~/assets/user.png";
   import SUI from "~/assets/chains/sui.png";
-
-  export let handleCloseAuthModal = () => {};
 
   const queryClient = useQueryClient();
   const chains = [
@@ -131,7 +134,7 @@
     try {
       const res = await nimbus.post("/auth/sui", data);
       if (res?.data?.result) {
-        handleCloseAuthModal();
+        triggerConnectWallet.update((n) => (n = false));
         localStorage.removeItem("auth_token");
         localStorage.setItem("sui_token", res?.data?.result);
         user.update(

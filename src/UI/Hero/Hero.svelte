@@ -12,9 +12,11 @@
     typeWallet,
     wallet,
     user,
+    triggerModalAddAddress,
   } from "~/store";
   import { drivePortfolio } from "~/utils";
   import { bigGeneration, otherGeneration } from "~/lib/chains";
+  import { i18n } from "~/lib/i18n";
 
   import Button from "~/components/Button.svelte";
 
@@ -22,8 +24,14 @@
   import checkMark from "~/assets/check.svg";
   import heroImage from "~/assets/recap/hero/heroimage.png";
 
-  export let handleOpenAddModal = () => {};
-  export let btntext;
+  const MultipleLang = {
+    content: {
+      btn_text: i18n(
+        "optionsPage.accounts-page-content.address-btn-text",
+        "Add Wallet"
+      ),
+    },
+  };
 
   let search = "";
   let timerDebounce;
@@ -112,10 +120,15 @@
 
     {#if Object.keys($user).length !== 0}
       <div class="w-max">
-        <Button variant="tertiary" on:click={handleOpenAddModal}>
+        <Button
+          variant="tertiary"
+          on:click={() => {
+            triggerModalAddAddress.update((n) => (n = true));
+          }}
+        >
           <img src={Plus} alt="" class="w-3 h-3" />
           <div class="text-white">
-            {btntext}
+            {MultipleLang.content.btn_text}
           </div>
         </Button>
       </div>
