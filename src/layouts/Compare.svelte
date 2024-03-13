@@ -973,7 +973,7 @@
               <div class="h-full">
                 {#if isEmptyDataPie}
                   <div
-                    class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-7 backdrop-blur-md rounded-[20px] text-lg text-gray-400 ${
+                    class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-7 backdrop-blur-md rounded-[20px] text-base text-gray-400 ${
                       $isDarkMode ? "bg-black/90" : "bg-white/95"
                     }`}
                   >
@@ -1051,7 +1051,7 @@
                     <div class="h-full">
                       {#if compareData && Object.keys(compareData).length === 0}
                         <div
-                          class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-7 backdrop-blur-md text-lg text-gray-400 ${
+                          class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-7 backdrop-blur-md text-base text-gray-400 ${
                             $isDarkMode ? "bg-black/90" : "bg-white/95"
                           }`}
                         >
@@ -1101,7 +1101,7 @@
                         Compare with
                       </div>
                       <div
-                        class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-7 backdrop-blur-md rounded-[20px] text-lg text-gray-400 ${
+                        class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-7 backdrop-blur-md rounded-[20px] text-base text-gray-400 ${
                           $isDarkMode ? "bg-black/90" : "bg-white/95"
                         }`}
                       >
@@ -1303,7 +1303,7 @@
           {#if compareData && Object.keys(compareData).length === 0}
             <div class="h-[433px]">
               <div
-                class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-7 backdrop-blur-md rounded-[20px] text-lg text-gray-400 ${
+                class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-7 backdrop-blur-md rounded-[20px] text-base text-gray-400 ${
                   $isDarkMode ? "bg-black/90" : "bg-white/95"
                 }`}
               >
@@ -1362,7 +1362,7 @@
           {#if compareData && Object.keys(compareData).length === 0}
             <div class="h-[465px]">
               <div
-                class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-7 backdrop-blur-md rounded-[20px] text-lg text-gray-400 ${
+                class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-7 backdrop-blur-md rounded-[20px] text-base text-gray-400 ${
                   $isDarkMode ? "bg-black/90" : "bg-white/95"
                 }`}
               >

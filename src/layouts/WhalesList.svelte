@@ -734,7 +734,7 @@
           <Loading />
         </div>
       {:else}
-        <div>
+        <div class="relative w-full">
           {#if whalesData && whalesData?.length === 0}
             <div
               class="flex justify-center items-center h-full py-3 px-3 text-lg text-gray-400"
@@ -743,7 +743,7 @@
             </div>
           {:else}
             <!-- {#each whalesData as data} -->
-            {#each (filterDuplicates(whalesData) || [])?.slice(0, $selectedPackage === "FREE" ? 5 : undefined) as data, whalePosition}
+            {#each (filterDuplicates(whalesData) || [])?.slice(0, $selectedPackage === "FREE" ? 7 : undefined) as data, whalePosition}
               <PublicPortfolioMobileItem
                 {data}
                 typeData={selectedFilter.label}
@@ -755,7 +755,7 @@
                 <td colspan="8">
                   {#if whalesData.length > 5}
                     <tr
-                      class={`flex justify-center py-10 px-4 backdrop-blur-md bg-gradient-to-t to-transparent ${
+                      class={`absolute left-0 bottom-0-0 z-7 w-full justify-center py-60 px-4 backdrop-blur-md bg-gradient-to-t to-transparent ${
                         $isDarkMode
                           ? "bg-black/90 from-[#000] via-[#222222]"
                           : "bg-white/95 from-white via-white"
