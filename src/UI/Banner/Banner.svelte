@@ -5,10 +5,9 @@
 </script>
 
 <div
-  class={`relative absolute top-0 left-0 gap-x-6 py-2.5 w-full ${
+  class={`relative absolute top-0 left-0 gap-x-6 py-2.5 w-full z-9 ${
     $isDarkMode ? "bg-[#222222]" : "bg-[#F8F9FF]"
   }`}
-  style="z-index: 10;"
 >
   <div class="max-w-[2000px] m-auto w-full isolate">
     <div class="marquee flex flex-wrap items-center gap-x-4 xl:gap-y-2 gap-y-1">
