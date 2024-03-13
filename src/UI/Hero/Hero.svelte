@@ -192,7 +192,7 @@
               navigate(
                 `/?type=EVM&chain=ALL&address=0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0`
               );
-              drivePortfolio.destroy();
+              drivePortfolio?.destroy();
             }}
           >
             or try Demo account
@@ -204,7 +204,7 @@
             <Button
               on:click={() => {
                 triggerConnectWallet.update((n) => (n = true));
-                drivePortfolio.destroy();
+                drivePortfolio?.destroy();
               }}
             >
               Connect Wallet
@@ -215,7 +215,7 @@
             <Button
               on:click={() => {
                 triggerSync.update((n) => (n = true));
-                drivePortfolio.destroy();
+                drivePortfolio?.destroy();
               }}
             >
               Sync from Desktop
