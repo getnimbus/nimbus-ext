@@ -755,7 +755,7 @@
                 <td colspan="8">
                   {#if whalesData.length > 5}
                     <tr
-                      class={`flex justify-center py-10 px-4 backdrop-blur-md bg-gradient-to-t to-transparent ${
+                      class={`flex justify-center py-10 px-4 ${
                         $isDarkMode
                           ? "bg-black/90 from-[#000] via-[#222222]"
                           : "bg-white/95 from-white via-white"
