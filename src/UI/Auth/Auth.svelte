@@ -119,11 +119,6 @@
     }
   });
 
-  const getUserInfo = async () => {
-    const response: any = await nimbus.get("/users/me");
-    return response?.data;
-  };
-
   const handleGetCodeSyncMobile = async () => {
     loading = true;
     try {
