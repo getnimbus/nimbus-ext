@@ -36,7 +36,7 @@
 
 {#if isOpen}
   <div
-    class="w-screen h-screen fixed top-0 left-0 flex overflow-y-auto justify-center items-center z-10"
+    class="w-screen h-screen fixed top-0 left-0 flex overflow-y-auto justify-center items-center z-100"
     style="background-color: rgba(0, 0, 0, 0.55); backdrop-blur: blur(4px);"
     on:click={clickOutSideToClose ? handleClose : null}
   >

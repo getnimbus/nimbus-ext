@@ -665,7 +665,7 @@
     <div class="flex items-center justify-end gap-6 xl:gap-3 md:w-max w-full">
       <!-- Search -->
       <div
-        class={`pl-4 xl:w-[220px] md:w-[400px] w-full flex items-center gap-4 rounded-[1000px] cursor-pointer ${
+        class={`px-4 xl:w-[220px] md:w-[400px] w-full flex items-center gap-4 rounded-[1000px] cursor-pointer ${
           $isDarkMode ? "bg-[#212121]" : "bg-[#525B8C]"
         }`}
       >
