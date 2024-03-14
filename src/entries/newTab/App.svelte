@@ -3,12 +3,13 @@
   import { onMount } from "svelte";
   import { Route, Router } from "svelte-navigator";
   import * as browser from "webextension-polyfill";
-  import { detectParams, isDarkMode } from "~/store";
+  import { detectParams, isDarkMode, tonConnector } from "~/store";
+  import { TonConnectUI } from "@tonconnect/ui";
 
   import "flowbite/dist/flowbite.css";
 
-  import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import Mixpanel from "~/components/Mixpanel.svelte";
+  import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import Loading from "~/components/Loading.svelte";
   import UpdateParams from "~/components/UpdateParams.svelte";
   import MobileIntroModalPWA from "~/UI/MobileIntroModalPWA/MobileIntroModalPWA.svelte";
@@ -65,6 +66,12 @@
     if (introduce === "false" || introduce === null) {
       localStorage.setItem("blockShowMobileIntro", "false");
     }
+
+    const tonInstance = new TonConnectUI({
+      manifestUrl:
+        "https://gist.githubusercontent.com/toannhu96/0f9cdecbfa668157a901c76f41ced0f0/raw/0b8e76d86ca3ce0a14db9315c4e03ba3b9caaa60/tonconnect-manifest.json",
+    });
+    tonConnector.update((n) => (n = tonInstance));
   });
 </script>
 

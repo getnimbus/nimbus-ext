@@ -116,10 +116,11 @@ export const nimbus = createAxiosInterface({
       const authToken = localStorage.getItem("auth_token");
       const solanaToken = localStorage.getItem("solana_token");
       const suiToken = localStorage.getItem("sui_token");
+      const tonToken = localStorage.getItem("ton_token");
       const evmToken = localStorage.getItem("evm_token");
-      if (evmToken || solanaToken || suiToken || authToken) {
+      if (evmToken || solanaToken || suiToken || tonToken || authToken) {
         return {
-          Authorization: `${evmToken || solanaToken || suiToken || authToken}`,
+          Authorization: `${evmToken || solanaToken || suiToken || tonToken || authToken}`,
         };
       }
     }
