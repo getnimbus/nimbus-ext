@@ -22,7 +22,8 @@
     const evmToken = localStorage.getItem("evm_token");
     const solanaToken = localStorage.getItem("solana_token");
     const suiToken = localStorage.getItem("sui_token");
-    if (evmToken || solanaToken || suiToken || authToken) {
+    const tonToken = localStorage.getItem("ton_token");
+    if (evmToken || solanaToken || suiToken || tonToken || authToken) {
       if (evmToken) {
         const { access_token, id_token } = JSON.parse(evmToken);
         fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
@@ -54,6 +55,11 @@
           picture: User,
         };
       }
+      if (tonToken) {
+        userInfo = {
+          picture: User,
+        };
+      }
     } else {
       // Access token not found, prompt user to sign in again
       userInfo = {};
@@ -62,6 +68,7 @@
       localStorage.removeItem("solana_address");
       localStorage.removeItem("solana_token");
       localStorage.removeItem("sui_token");
+      localStorage.removeItem("ton_token");
     }
   });
 

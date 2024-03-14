@@ -145,7 +145,7 @@
             {/each}
           {:else}
             <div>
-              {#if localStorage.getItem("evm_token") || localStorage.getItem("solana_token") || localStorage.getItem("sui_token")}
+              {#if localStorage.getItem("evm_token") || localStorage.getItem("solana_token") || localStorage.getItem("sui_token") || localStorage.getItem("ton_token")}
                 <Google
                   data={{}}
                   reCallAPI={() => {

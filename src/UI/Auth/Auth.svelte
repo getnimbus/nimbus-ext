@@ -18,6 +18,7 @@
     userId,
     userPublicAddress,
     suiWalletInstance,
+    tonConnector,
   } from "~/store";
   import { nimbus } from "~/lib/network";
   import mixpanel from "mixpanel-browser";
@@ -51,6 +52,7 @@
   import Reload from "~/assets/reload-black.svg";
   import ReloadWhite from "~/assets/reload-white.svg";
   import Evm from "~/assets/chains/evm.png";
+  import TonAuth from "./TonAuth.svelte";
 
   export let displayName;
   export let publicAddress;
@@ -108,8 +110,9 @@
     const authToken = localStorage.getItem("auth_token");
     const solanaToken = localStorage.getItem("solana_token");
     const suiToken = localStorage.getItem("sui_token");
+    const tonToken = localStorage.getItem("ton_token");
     const evmToken = localStorage.getItem("evm_token");
-    if (evmToken || solanaToken || suiToken || authToken) {
+    if (evmToken || solanaToken || suiToken || tonToken || authToken) {
       user.update(
         (n) =>
           (n = {
@@ -177,6 +180,11 @@
 
       localStorage.removeItem("solana_token");
       $walletStore.disconnect();
+
+      localStorage.removeItem("ton_token");
+      if ($tonConnector.connected) {
+        $tonConnector.disconnect();
+      }
 
       localStorage.removeItem("sui_token");
       if (
@@ -766,6 +774,7 @@
         <div class="font-semibold text-[15px]">Login with EVM</div>
       </div>
       <SolanaAuth text="Login with Solana" />
+      <TonAuth />
       <SuiAuth />
       <GoogleAuth />
     </div>
