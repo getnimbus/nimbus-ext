@@ -12,12 +12,11 @@
 </script>
 
 <div
-  class={`w-full h-full fixed top-0 left-0 bg-[#000000cc] ${
+  class={`w-full h-full fixed top-0 left-0 bg-[#000000cc] z-50 ${
     isOpen
       ? "opacity-100 transform translate-x-[0px]"
       : "opacity-0 transform translate-x-[100vw]"
   }`}
-  style="z-index: 9;"
 >
   <div
     class={`h-full fixed top-0 right-0 xl:w-[30%] w-[100%] flex flex-col gap-6 p-6 sidebar sidebar-container ${
