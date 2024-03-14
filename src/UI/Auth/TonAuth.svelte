@@ -88,8 +88,28 @@
 
   const handleGetTonToken = async (data, id) => {
     try {
+      const formatData = {
+        account: {
+          address: data?.account?.address,
+          chain: data?.account?.chain,
+        },
+        connectItems: {
+          tonProof: {
+            name: data?.connectItems?.tonProof?.name,
+            proof: {
+              timestamp: data?.connectItems?.tonProof?.proof?.timestamp,
+              domain: {
+                lengthBytes:
+                  data?.connectItems?.tonProof?.proof?.domain?.lengthBytes,
+                value: data?.connectItems?.tonProof?.proof?.domain?.value,
+              },
+              signature: data?.connectItems?.tonProof?.proof?.signature,
+            },
+          },
+        },
+      };
       const res = await nimbus.post(`/auth/ton?loginId=${id}`, {
-        walletInfo: data,
+        walletInfo: formatData,
       });
       if (res?.data?.result) {
         triggerConnectWallet.update((n) => (n = false));
