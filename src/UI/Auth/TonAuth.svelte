@@ -11,8 +11,7 @@
   import { nimbus } from "~/lib/network";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
-  import { toUserFriendlyAddress } from "@tonconnect/sdk";
-  import type { WalletsModalState } from "@tonconnect/ui";
+  import { v4 as uuidv4 } from "uuid";
 
   import User from "~/assets/user.png";
   import Ton from "~/assets/chains/ton.png";
@@ -45,27 +44,18 @@
     if (invitationParams) {
       invitation = invitationParams;
     }
-
-    $tonConnector.onModalStateChange((state: WalletsModalState) => {
-      if (state.status === "closed" && $tonConnector.connected) {
-        const address = toUserFriendlyAddress($tonConnector.account?.address);
-        handleGetNonce(address);
-      }
-    });
   });
 
   const handleTonAuth = async () => {
     mixpanel.track("user_login_ton");
-    if ($tonConnector.connected) {
-      await $tonConnector.disconnect();
-    }
-    $tonConnector.openModal();
+    const uuid = uuidv4();
+    handleGetNonce(uuid);
   };
 
-  const handleGetNonce = async (address: string) => {
+  const handleGetNonce = async (id: string) => {
     try {
       const res = await nimbus.post("/users/nonce", {
-        publicAddress: address,
+        publicAddress: id,
         referrer: invitation.length !== 0 ? invitation : undefined,
       });
       if (res && res.data) {
@@ -76,13 +66,15 @@
           value: { tonProof: msg },
         });
 
+        $tonConnector.openModal();
+
         $tonConnector.onStatusChange((wallet) => {
           if (
             wallet &&
             wallet.connectItems?.tonProof &&
             "proof" in wallet.connectItems.tonProof
           ) {
-            handleGetTonToken(wallet);
+            handleGetTonToken(wallet, id);
           }
         });
       }
@@ -91,10 +83,9 @@
     }
   };
 
-  const handleGetTonToken = async (data) => {
-    console.log("DATA: ", data);
+  const handleGetTonToken = async (data, id) => {
     try {
-      const res = await nimbus.post("/auth/ton", data);
+      const res = await nimbus.post(`/auth/ton?loginId=${id}`, data);
       if (res?.data?.result) {
         triggerConnectWallet.update((n) => (n = false));
         localStorage.removeItem("auth_token");
@@ -177,7 +168,4 @@
 {/if}
 
 <style>
-  #tc-widget-root {
-    z-index: 15;
-  }
 </style>
