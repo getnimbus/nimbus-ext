@@ -49,6 +49,9 @@
   const handleTonAuth = async () => {
     mixpanel.track("user_login_ton");
     const uuid = uuidv4();
+    if ($tonConnector.connected) {
+      $tonConnector.disconnect();
+    }
     handleGetNonce(uuid);
   };
 
@@ -85,7 +88,9 @@
 
   const handleGetTonToken = async (data, id) => {
     try {
-      const res = await nimbus.post(`/auth/ton?loginId=${id}`, data);
+      const res = await nimbus.post(`/auth/ton?loginId=${id}`, {
+        walletInfo: data,
+      });
       if (res?.data?.result) {
         triggerConnectWallet.update((n) => (n = false));
         localStorage.removeItem("auth_token");
