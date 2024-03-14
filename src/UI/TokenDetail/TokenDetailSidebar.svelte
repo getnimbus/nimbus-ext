@@ -365,7 +365,7 @@
   <div class="flex flex-col gap-6">
     {#if $typeWallet !== "CEX"}
       <div
-        class={`rounded-[20px] xl:p-6 flex flex-col gap-4 relative ${
+        class={`rounded-[20px] xl:p-6 p-3 flex flex-col gap-4 relative ${
           $isDarkMode ? "bg-[#222222]" : "bg-[#fff] xl:border border_0000001a"
         }`}
       >
@@ -421,7 +421,7 @@
     {/if}
 
     <div
-      class={`rounded-[20px] xl:p-6 flex flex-col gap-4 ${
+      class={`rounded-[20px] xl:p-6 p-3 flex flex-col gap-4 ${
         $isDarkMode ? "bg-[#222222]" : "bg-[#fff] xl:border border_0000001a"
       }`}
     >

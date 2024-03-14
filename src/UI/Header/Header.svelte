@@ -1419,8 +1419,8 @@
 
       <div class="flex flex-col gap-4">
         <div
-          class={`pl-4 w-full flex items-center gap-1 rounded-[1000px] cursor-pointer ${
-            $isDarkMode ? "bg-[#212121]" : "bg-[#525B8C]"
+          class={`px-4 w-full flex items-center gap-1 rounded-[1000px] cursor-pointer ${
+            $isDarkMode ? "bg-[#343434]" : "bg-[#eff0f4]"
           }`}
         >
           <img
