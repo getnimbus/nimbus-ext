@@ -307,6 +307,10 @@
 </ErrorBoundary>
 
 <style global windi:preflights:global windi:safelist:global>
+  :root {
+    --onboard-modal-z-index: 2147483648;
+  }
+
   :global(body) {
     background: #fff;
     color: black;
