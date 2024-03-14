@@ -738,9 +738,9 @@
     <VirtualList
       scrollDirection="vertical"
       width="100%"
-      height={data.length < 10 ? data.length * 420 : 940}
+      height={data.length < 10 ? data.length * 440 : 940}
       itemCount={data.length}
-      itemSize={420}
+      itemSize={440}
     >
       <div
         class="flex flex-col gap-4 border-b-[1px] border_0000000d last:border-none py-2"
