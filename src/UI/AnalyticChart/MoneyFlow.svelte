@@ -464,7 +464,7 @@
           <LoadingPremium />
         </div>
       {:else}
-        <div class="h-full relative xl:min-h-[465px]">
+        <div class="h-full relative h-[465px]">
           {#if $query.isError || ($query.data && $query.data.length === 0)}
             <div
               class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-7 backdrop-blur-md text-base text-gray-400 ${

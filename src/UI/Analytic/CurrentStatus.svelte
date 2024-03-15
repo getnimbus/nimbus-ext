@@ -752,7 +752,7 @@
   $: theme = $isDarkMode ? "dark" : "white";
 </script>
 
-<div class="flex flex-col justify-between gap-6 xl:flex-row">
+<div class="flex flex-col justify-between xl:gap-6 gap-0 xl:flex-row">
   <!-- Token allocation -->
   <div
     class={`xl:w-1/2 w-full flex flex-col justify-between items-start gap-2 rounded-[20px] xl:p-6 py-4 px-3 ${

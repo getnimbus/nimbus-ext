@@ -106,7 +106,7 @@
             </AnimateSharedLayout>
           </div>
 
-          <div class="flex flex-col gap-7">
+          <div class="flex flex-col xl:gap-7 gap-5">
             <CurrentStatus
               {address}
               {isShowSoon}
