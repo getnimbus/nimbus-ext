@@ -442,9 +442,7 @@
   <span slot="overview">
     <div class="relative">
       {#if !$queryTokenHolding.isFetching && !$queryTokenHolding.isError}
-        <div class="mb-4 text-2xl font-medium xl:text-xl xl:px-6 xl:pt-6">
-          Overview
-        </div>
+        <div class="mb-4 text-2xl font-medium xl:text-xl">Overview</div>
       {/if}
       {#if $queryTokenHolding.isFetching}
         <div class="flex items-center justify-center h-[465px]">
@@ -541,7 +539,7 @@
   <span slot="chart">
     <div class="relative">
       {#if $queryTokenHolding.isFetching}
-        <div class="flex items-center justify-center h-[465px] xl:p-6 py-3">
+        <div class="flex items-center justify-center h-[465px]">
           <LoadingPremium />
         </div>
       {:else}
@@ -560,7 +558,7 @@
               {/if}
             </div>
           {:else}
-            <div class="flex flex-row xl:p-6 py-3">
+            <div class="flex flex-row">
               <AnimateSharedLayout>
                 {#each typeClosedHoldingTokenChart as type}
                   <div

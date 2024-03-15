@@ -391,16 +391,14 @@
   <span slot="overview">
     <div class="relative h-full">
       {#if !$query.isFetching}
-        <div class="mb-4 text-2xl font-medium xl:text-xl xl:px-6 xl:pt-6">
-          Overview
-        </div>
+        <div class="mb-4 text-2xl font-medium xl:text-xl">Overview</div>
       {/if}
       {#if $query.isFetching}
         <div class="flex items-center justify-center h-[465px]">
           <LoadingPremium />
         </div>
       {:else}
-        <div class="flex flex-col gap-4 xl:px-6 xl:pb-6">
+        <div class="flex flex-col gap-4">
           <div class="grid grid-cols-2">
             <div class="col-span-1">
               <div class="flex justify-start text-base">
@@ -462,7 +460,7 @@
   <span slot="chart">
     <div class="relative">
       {#if $query.isFetching}
-        <div class="flex items-center justify-center h-[465px] xl:p-6 py-3">
+        <div class="flex items-center justify-center h-[465px]">
           <LoadingPremium />
         </div>
       {:else}
@@ -476,7 +474,7 @@
               Empty
             </div>
           {:else}
-            <div class="relative xl:p-6 py-3">
+            <div class="relative">
               <EChart
                 id="inflow-outflow"
                 {theme}

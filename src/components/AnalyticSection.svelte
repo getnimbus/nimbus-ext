@@ -9,14 +9,14 @@
   <slot name="title" />
   <div class="grid xl:grid-cols-6 grid-cols-1 gap-6 relative">
     <div
-      class={`xl:col-span-2 col-span-1 rounded-[20px] xl:p-6 py-4 px-3 ${
+      class={`xl:col-span-2 col-span-1 rounded-[20px] py-4 xl:px-3 ${
         $isDarkMode ? "bg-[#222222]" : "bg-[#fff] xl:border border_0000001a"
       }`}
     >
       <slot name="overview" />
     </div>
     <div
-      class={`xl:col-span-4 col-span-1 rounded-[20px] xl:p-6 py-4 px-3 ${
+      class={`xl:col-span-4 col-span-1 rounded-[20px] py-4 xl:px-3 ${
         $isDarkMode ? "bg-[#222222]" : "bg-[#fff] xl:border border_0000001a"
       }`}
     >

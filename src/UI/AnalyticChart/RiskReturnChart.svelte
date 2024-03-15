@@ -469,9 +469,7 @@
 
   <span slot="overview">
     {#if !($query.isFetching || $queryBreakdown.isFetching) && !$query.isError}
-      <div class="xl:px-6 xl:pt-6 mb-4 text-2xl font-medium xl:text-xl">
-        Overview
-      </div>
+      <div class="mb-4 text-2xl font-medium xl:text-xl">Overview</div>
     {/if}
     {#if $query.isFetching || $queryBreakdown.isFetching}
       <div class="flex items-center justify-center h-[465px]">
@@ -493,7 +491,7 @@
             {/if}
           </div>
         {:else}
-          <div class="flex flex-col gap-8 xl:px-6 pb-8">
+          <div class="flex flex-col gap-8">
             <div class="flex flex-col gap-3">
               <div class="flex flex-col gap-4">
                 <div class="grid grid-cols-2">
@@ -662,7 +660,7 @@
 
   <span slot="chart">
     {#if $query.isFetching || $queryBreakdown.isFetching}
-      <div class="flex items-center justify-center h-[465px] xl:p-6 py-3">
+      <div class="flex items-center justify-center h-[465px]">
         <LoadingPremium />
       </div>
     {:else}
@@ -681,7 +679,7 @@
             {/if}
           </div>
         {:else}
-          <div class="flex flex-row xl:p-6 py-3 mb-2">
+          <div class="flex flex-row mb-2">
             <AnimateSharedLayout>
               {#each riskTypeChart as type}
                 <div
