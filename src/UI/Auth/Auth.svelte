@@ -774,7 +774,7 @@
         <div class="font-semibold text-[15px]">Login with EVM</div>
       </div>
       <SolanaAuth text="Login with Solana" />
-      <!-- <TonAuth /> -->
+      <TonAuth />
       <SuiAuth />
       <GoogleAuth />
     </div>
