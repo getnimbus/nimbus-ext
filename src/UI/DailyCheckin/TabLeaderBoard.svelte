@@ -232,14 +232,16 @@
         <thead>
           <tr class="bg-[#FFB800] sticky top-0">
             <th colspan="3" class="pt-2 px-6 rounded-t-xl font-medium">
-              <div class="flex justify-start text-sm">Your current rank</div>
+              <div class="flex justify-start xl:text-lg text-sm">
+                Your current rank
+              </div>
             </th>
           </tr>
 
           <tr class="bg-[#FFB800] sticky top-[29px]">
             <th class="py-2 pl-6 font-medium">
               <div
-                class={`flex justify-start font-normal text-lg w-6 ${
+                class={`flex justify-start font-normal xl:text-2xl text-sm w-6 ${
                   !$isDarkMode && "text-[#27326F]"
                 }`}
               >
@@ -248,7 +250,7 @@
             </th>
 
             <th class="py-2 font-medium">
-              <div class="flex items-end justify-start text-sm">
+              <div class="flex items-end justify-start xl:text-lg text-sm">
                 {formatDataLeaderboard[currentUserRank]?.owner
                   ? shorterAddress(
                       formatDataLeaderboard[currentUserRank]?.owner
@@ -269,7 +271,9 @@
 
           <tr>
             <th colspan="3" class="py-2 px-6 font-medium">
-              <div class="flex justify-start text-sm">Runners up</div>
+              <div class="flex justify-start xl:text-lg text-sm">
+                Runners up
+              </div>
             </th>
           </tr>
         </thead>
@@ -324,7 +328,7 @@
                   }`}
                 >
                   <div
-                    class={`flex justify-start text-lg font-normal w-6 ${
+                    class={`flex justify-start xl:text-2xl text-sm font-normal w-6 ${
                       !$isDarkMode && "text-[#27326F]"
                     }`}
                   >
@@ -343,7 +347,7 @@
                         : "group-hover:bg-gray-100"
                   }`}
                 >
-                  <div class="flex items-end justify-start text-sm">
+                  <div class="flex items-end justify-start xl:text-lg text-sm">
                     {shorterAddress(item?.owner)}
                   </div>
                 </td>

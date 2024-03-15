@@ -410,7 +410,7 @@
   </div>
 
   <div
-    class={`flex flex-col gap-2 rounded-[20px] xl:p-6 py-4 px-3 relative ${
+    class={`flex flex-col gap-2 rounded-[20px] relative xl:p-6 py-4 px-3 ${
       $isDarkMode ? "bg-[#222222]" : "bg-[#fff] xl:border border_0000001a"
     }`}
   >
