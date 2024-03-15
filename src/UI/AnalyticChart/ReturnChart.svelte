@@ -248,9 +248,7 @@
 
   <span slot="overview" class="relative">
     {#if !$query.isFetching && !$query.isError}
-      <div class="mb-4 text-2xl font-medium xl:text-xl xl:px-6 xl:pt-6">
-        Overview
-      </div>
+      <div class="mb-4 text-2xl font-medium xl:text-xl">Overview</div>
     {/if}
     {#if $query.isFetching}
       <div class="flex items-center justify-center h-[465px]">
@@ -272,7 +270,7 @@
             {/if}
           </div>
         {:else}
-          <div class="flex flex-col gap-8 xl:px-6 pb-6">
+          <div class="flex flex-col gap-8">
             <div class="flex flex-col gap-4">
               <div class="grid grid-cols-2">
                 <div class="col-span-1">
@@ -469,7 +467,7 @@
 
   <span slot="chart">
     {#if $query.isFetching}
-      <div class="flex items-center justify-center h-[465px] xl:p-6 py-3">
+      <div class="flex items-center justify-center h-[465px]">
         <LoadingPremium />
       </div>
     {:else}

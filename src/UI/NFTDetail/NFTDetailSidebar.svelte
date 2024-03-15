@@ -271,7 +271,7 @@
   </div>
 
   <div
-    class={`rounded-[20px] flex flex-col gap-4 xl:p-6 py-4 px-3 ${
+    class={`rounded-[20px] flex flex-col gap-4 py-4 px-3 ${
       $isDarkMode ? "bg-[#222222]" : "bg-[#fff] xl:border border_0000001a"
     }`}
   >
