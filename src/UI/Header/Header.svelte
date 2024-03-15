@@ -774,11 +774,11 @@
       </div>
     </div>
 
-    <div class="flex flex-col gap-3 justify-between h-full">
+    <div class="flex flex-col gap-4 justify-between h-full">
       <div class="flex flex-col gap-4">
         {#if $user && Object.keys($user).length !== 0}
           <div class="flex justify-between items-center px-4 text-white">
-            <div class="text-2xl">
+            <div class="text-xl">
               GM 👋, {displayName
                 ? displayName
                 : shorterAddress(
@@ -823,7 +823,7 @@
                         d="M21 24H11a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2a2 2 0 0 0-2-2zm0 4H11v-2h10zm7.707-13.707l-12-12a1 1 0 0 0-1.414 0l-12 12A1 1 0 0 0 4 16h5v4a2.002 2.002 0 0 0 2 2h10a2.003 2.003 0 0 0 2-2v-4h5a1 1 0 0 0 .707-1.707zM21 14v6H11v-6H6.414L16 4.414L25.586 14z"
                       />
                     </svg>
-                    <span class="text-2xl font-medium ml-1">Upgrade</span>
+                    <span class="text-xl font-medium ml-1">Upgrade</span>
                     <svg
                       width="26"
                       height="26"
@@ -877,7 +877,7 @@
                       clip-rule="evenodd"
                     />
                   </svg>
-                  <span class="text-2xl font-medium">My Profile</span>
+                  <span class="text-xl font-medium">My Profile</span>
                 </div>
               </Link>
             </div>
@@ -904,7 +904,7 @@
           `}
               >
                 <img src={WhaleIcon} alt="" width="30" height="30" />
-                <span class="text-2xl font-medium">
+                <span class="text-xl font-medium">
                   {MultipleLang.whales}
                 </span>
               </div>
@@ -932,7 +932,7 @@
           `}
               >
                 <img src={NewsIcon} alt="" width="30" height="30" />
-                <span class="text-2xl font-medium">
+                <span class="text-xl font-medium">
                   {MultipleLang.news}
                 </span>
               </div>
@@ -971,7 +971,7 @@
                       d="M19 17v2H7v-2s0-4 6-4s6 4 6 4m-3-9a3 3 0 1 0-3 3a3 3 0 0 0 3-3m3.2 5.06A5.6 5.6 0 0 1 21 17v2h3v-2s0-3.45-4.8-3.94M18 5a2.91 2.91 0 0 0-.89.14a5 5 0 0 1 0 5.72A2.91 2.91 0 0 0 18 11a3 3 0 0 0 0-6M8 10H5V7H3v3H0v2h3v3h2v-3h3Z"
                     /></svg
                   >
-                  <span class="text-2xl font-medium">Invite</span>
+                  <span class="text-xl font-medium">Invite</span>
                 </div>
               </Link>
             </div>
@@ -988,7 +988,7 @@
               class="flex items-center gap-3 text-white px-5 py-3 opacity-70"
             >
               <img src={Chat} alt="" width="30" height="30" />
-              <span class="text-2xl font-medium">Feedback</span>
+              <span class="text-xl font-medium">Feedback</span>
             </a>
           </div>
 
@@ -1029,7 +1029,7 @@
                       <path d="M10 12L8 9.8l.6-1" />
                     </g>
                   </svg>
-                  <span class="text-2xl font-medium">Daily Checkin</span>
+                  <span class="text-xl font-medium">Daily Checkin</span>
                 </div>
               </Link>
             </div>
@@ -1055,7 +1055,7 @@
           `}
                 >
                   <img src={SettingsIcon} alt="" width="30" height="30" />
-                  <span class="text-2xl font-medium">Settings</span>
+                  <span class="text-xl font-medium">Settings</span>
                 </div>
               </Link>
             </div>
@@ -1063,14 +1063,14 @@
         </div>
       </div>
 
-      <div class="flex flex-col gap-16 w-full pb-14">
-        <div class="flex flex-col gap-4 px-4">
+      <div class="flex flex-col gap-14 w-full pb-12">
+        <div class="flex flex-col gap-4 px-5">
           <DarkModeFooter />
 
           <div class="w-max flex flex-col gap-6">
             {#if Object.keys($user).length === 0}
               <div
-                class="text-2xl font-semibold text-white cursor-pointer xl:text-base"
+                class="text-xl font-semibold text-white cursor-pointer xl:text-base"
                 on:click={() => {
                   isOpenModalSync = true;
                   isShowHeaderMobile.update((n) => (n = false));
@@ -1088,7 +1088,7 @@
           <a
             href="https://github.com/getnimbus"
             target="_blank"
-            class="hover:text-[#3b82f6] transition-all w-12 h-12"
+            class="hover:text-[#3b82f6] transition-all w-10 h-10"
           >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
               <path
@@ -1101,7 +1101,7 @@
           <a
             href="https://twitter.com/get_nimbus"
             target="_blank"
-            class="hover:text-[#3b82f6] transition-all w-11 h-11"
+            class="hover:text-[#3b82f6] transition-all w-9 h-9"
           >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
               <path
@@ -1114,7 +1114,7 @@
           <a
             href="https://discord.gg/u5b9dTrSTr"
             target="_blank"
-            class="hover:text-[#3b82f6] transition-all w-12 h-12"
+            class="hover:text-[#3b82f6] transition-all w-9 h-9"
           >
             <svg viewBox="0 0 24 24">
               <title>media/discord</title><desc>Created with Sketch.</desc>
@@ -1137,7 +1137,7 @@
           <a
             href="https://t.me/getnimbus"
             target="_blank"
-            class="transition-all w-[42px] h-[42px]"
+            class="transition-all w-[32px] h-[32px]"
           >
             <svg
               fill="#fff"

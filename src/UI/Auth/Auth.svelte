@@ -436,7 +436,7 @@
 
     <div class="xl:hidden block">
       <div
-        class="text-2xl font-medium text-white"
+        class="text-xl font-medium text-white"
         on:click={() => {
           handleSignOut();
           isShowHeaderMobile.update((n) => (n = false));

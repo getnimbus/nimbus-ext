@@ -559,7 +559,7 @@
 </script>
 
 <div
-  class={`flex flex-col gap-6 rounded-[20px] p-6 ${
+  class={`flex flex-col gap-6 rounded-[20px] xl:p-6 py-4 px-3 ${
     $isDarkMode ? "bg-[#222222]" : "bg-[#fff] xl:border border_0000001a"
   }`}
 >

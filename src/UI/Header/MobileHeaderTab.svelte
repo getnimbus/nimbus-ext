@@ -76,7 +76,7 @@
           stroke-linejoin="round"
         />
       </svg>
-      <span class="font-medium text-base">
+      <span class="font-medium text-sm">
         {MultipleLang.portfolio}
       </span>
     </div>
@@ -136,7 +136,7 @@
         </defs>
       </svg>
       <span class="flex gap-[1px]">
-        <span class="font-medium text-base">
+        <span class="font-medium text-sm">
           {MultipleLang.analytics}
         </span>
         <span class="flex items-center gap-[1px] -mt-2">
@@ -226,7 +226,7 @@
           </clipPath>
         </defs>
       </svg>
-      <span class="font-medium text-base">
+      <span class="font-medium text-sm">
         {MultipleLang.transactions}
       </span>
     </div>
@@ -266,7 +266,7 @@
       <circle cx="12.0025" cy="12.0025" r="1.40871" fill="currentColor" />
       <circle cx="7.38527" cy="12.0025" r="1.40871" fill="currentColor" />
     </svg>
-    <span class="font-medium text-base -mt-1">More</span>
+    <span class="font-medium text-sm -mt-1">More</span>
   </div>
 </div>
 
