@@ -45,7 +45,7 @@ import Canto from "~/assets/chains/canto.png";
 import Oasis from "~/assets/chains/oasis.png";
 import Blast from "~/assets/chains/blast.png";
 import Shimmer from "~/assets/chains/shimmer.png";
-// import Manta from "~/assets/chains/manta.png";
+// import Manta from "~/assets/chains/manta.png"
 
 export const listProviderCEX = [
   "binance",
