@@ -1,10 +1,16 @@
 <script lang="ts">
   import { QueryClient, QueryClientProvider } from "@tanstack/svelte-query";
-  import { onMount } from "svelte";
+  import { onMount, onDestroy } from "svelte";
   import { Route, Router } from "svelte-navigator";
   import * as browser from "webextension-polyfill";
-  import { detectParams, isDarkMode, tonConnector } from "~/store";
+  import {
+    detectParams,
+    isDarkMode,
+    isAutoDarkMode,
+    tonConnector,
+  } from "~/store";
   import { TonConnectUI } from "@tonconnect/ui";
+  import dayjs from "dayjs";
 
   import "flowbite/dist/flowbite.css";
 
@@ -44,7 +50,33 @@
     });
   }
 
+  const checkTimeZone = () => {
+    const currentHour = dayjs().hour();
+    const isDark = currentHour >= 18 || currentHour < 6; // Assuming 6 PM to 6 AM as night
+    if ($isAutoDarkMode) {
+      if (isDark) {
+        window.document.body.classList.add("dark");
+        isDarkMode.update((n) => (n = true));
+        localStorage.setItem("theme", "dark");
+      } else {
+        window.document.body.classList.remove("dark");
+        isDarkMode.update((n) => (n = false));
+        localStorage.setItem("theme", "light");
+      }
+    }
+  };
+
+  const interval = setInterval(checkTimeZone, 60000);
+
   onMount(() => {
+    checkTimeZone();
+
+    if (localStorage.auto_theme === "true") {
+      isAutoDarkMode.update((n) => (n = true));
+    } else {
+      isAutoDarkMode.update((n) => (n = false));
+    }
+
     if (
       localStorage.theme === "dark" ||
       (!("theme" in localStorage) &&
@@ -72,6 +104,10 @@
         "https://gist.githubusercontent.com/toannhu96/0f9cdecbfa668157a901c76f41ced0f0/raw/0b8e76d86ca3ce0a14db9315c4e03ba3b9caaa60/tonconnect-manifest.json",
     });
     tonConnector.update((n) => (n = tonInstance));
+  });
+
+  onDestroy(() => {
+    clearInterval(interval);
   });
 </script>
 
