@@ -44,7 +44,6 @@ import Moonriver from "~/assets/chains/moonriver.png";
 import Canto from "~/assets/chains/canto.png";
 import Oasis from "~/assets/chains/oasis.png";
 import Blast from "~/assets/chains/blast.png";
-import Shimmer from "~/assets/chains/shimmer.png";
 // import Manta from "~/assets/chains/manta.png";
 
 export const listProviderCEX = [
@@ -120,7 +119,6 @@ export const listNotSupportHistoricalBalances = [
   "METIS",
   "POLYGON_ZKEVM",
   "OPBNB",
-  "SHIMMER"
 ];
 
 export const listSupported = [
@@ -337,11 +335,6 @@ export const chainList = [
     logo: Blast,
     label: "Blast",
     value: "BLAST",
-  },
-  {
-    logo: Shimmer,
-    label: "Shimmer",
-    value: "SHIMMER",
   },
 ];
 
@@ -601,24 +594,18 @@ export const detectedChain = (type) => {
         name: "Blast",
       };
       break;
-    case "SHIMMER":
-      chain = {
-        logo: Shimmer,
-        name: "Shimmer",
-      };
-      break;
     case "ROSE":
       chain = {
         logo: Oasis,
         name: "Oasis",
       };
       break;
-    // case "MANTA":
-    //   chain = {
-    //     logo: Manta,
-    //     name: "Manta"
-    //   };
-    //   break;
+      // case "MANTA":
+      //   chain = {
+      //     logo: Manta,
+      //     name: "Manta"
+      //   };
+      break;
   }
   return chain;
 };
@@ -849,12 +836,6 @@ export const linkExplorer = (chain, hash) => {
       links = {
         trx: `https://blastscan.io/tx/${hash}`,
         address: `https://blastscan.io/address/${hash}`,
-      };
-      break;
-    case "SHIMMER":
-      links = {
-        trx: `https://explorer.evm.shimmer.network/tx/${hash}`,
-        address: `https://explorer.evm.shimmer.network/address/${hash}`,
       };
       break;
     // case "MANTA":
