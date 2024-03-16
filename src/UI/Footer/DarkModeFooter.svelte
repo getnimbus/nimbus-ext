@@ -1,10 +1,16 @@
 <script lang="ts">
   import { Icon } from "flowbite-svelte-icons";
-  import { isDarkMode } from "~/store";
+  import { isDarkMode, isAutoDarkMode } from "~/store";
+  import dayjs from "dayjs";
 
   let darkMode = false;
   isDarkMode.subscribe((value) => {
     darkMode = value;
+  });
+
+  let auto = false;
+  isAutoDarkMode.subscribe((value) => {
+    auto = value;
   });
 
   const handleSwitchDarkMode = () => {
@@ -16,6 +22,31 @@
       : window.document.body.classList.remove("dark");
   };
 
+  const handleToggleAuto = () => {
+    auto = !auto;
+    isAutoDarkMode.update((n) => (n = auto));
+    localStorage.setItem("auto_theme", auto ? "true" : "false");
+    if (auto) {
+      checkTimeZone();
+    }
+  };
+
+  const checkTimeZone = () => {
+    const currentHour = dayjs().hour();
+    const isDark = currentHour >= 18 || currentHour < 6; // Assuming 6 PM to 6 AM as night
+    if (isDark) {
+      window.document.body.classList.add("dark");
+      isDarkMode.update((n) => (n = true));
+      localStorage.setItem("theme", "dark");
+      selectedTypeMode = "dark";
+    } else {
+      window.document.body.classList.remove("dark");
+      isDarkMode.update((n) => (n = false));
+      localStorage.setItem("theme", "light");
+      selectedTypeMode = "light";
+    }
+  };
+
   $: selectedTypeMode = darkMode ? "dark" : "light";
 </script>
 
@@ -23,11 +54,22 @@
   <input
     checked={darkMode}
     on:click={handleSwitchDarkMode}
+    disabled={auto}
     type="checkbox"
     id="theme-toggle"
     class="hidden"
   />
-  <label for="theme-toggle" class="cursor-pointer">
+  <div
+    class={`cursor-pointer font-medium xl:text-lg text-2xl ${auto ? "text-[#3b82f6]" : "text-gray-300"}`}
+    on:click={handleToggleAuto}
+  >
+    Auto
+  </div>
+  <div class="text-gray-500 mb-1 xl:text-lg text-2xl">/</div>
+  <label
+    for="theme-toggle"
+    class={`cursor-pointer ${auto ? "opacity-40" : "opacity-100"}`}
+  >
     <div class="flex items-center justify-between gap-2">
       <div
         class={`${
@@ -51,7 +93,7 @@
           />
         </div>
       </div>
-      <div class="text-gray-500 mb-1 xl:text-base text-2xl">/</div>
+      <div class="text-gray-500 mb-1 xl:text-lg text-2xl">/</div>
       <div
         class={`${
           selectedTypeMode === "dark" ? "text-[#3b82f6]" : "text-gray-300"

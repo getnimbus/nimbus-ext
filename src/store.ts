@@ -9,6 +9,7 @@ export const typeWallet = writable("");
 export const selectedPackage = writable("FREE");
 export const tab = writable("token");
 export const isDarkMode = writable(false);
+export const isAutoDarkMode = writable(false);
 export const isShowHeaderMobile = writable(false);
 export const selectedBundle = writable({});
 export const isHidePortfolio = writable(false);
