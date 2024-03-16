@@ -394,6 +394,13 @@
             `?tab=${$tab}&type=${$typeWallet}&chain=${$chain}&address=${$wallet}`
         );
       }
+    } else {
+      window.history.replaceState(
+        null,
+        "",
+        window.location.pathname +
+          `?tab=${$tab}&type=${$typeWallet}&chain=${$chain}&address=${$wallet}`
+      );
     }
   };
 
