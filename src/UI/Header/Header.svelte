@@ -1063,14 +1063,13 @@
         </div>
       </div>
 
-      <div class="flex flex-col gap-14 w-full pb-12">
-        <div class="flex flex-col gap-4 px-5">
+      <div class="flex flex-col gap-12 w-full pb-12">
+        <div class="flex flex-col gap-6 px-5">
           <DarkModeFooter />
-
-          <div class="w-max flex flex-col gap-6">
+          <div class="w-max">
             {#if Object.keys($user).length === 0}
               <div
-                class="text-xl font-semibold text-white cursor-pointer xl:text-base"
+                class="text-2xl font-semibold text-white cursor-pointer"
                 on:click={() => {
                   isOpenModalSync = true;
                   isShowHeaderMobile.update((n) => (n = false));
