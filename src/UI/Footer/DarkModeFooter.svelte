@@ -65,7 +65,7 @@
   >
     Auto
   </div>
-  <div class="text-gray-500 mb-1 xl:text-lg text-2xl">/</div>
+  <div class="text-gray-300 mb-1 xl:text-lg text-2xl">/</div>
   <label
     for="theme-toggle"
     class={`cursor-pointer ${auto ? "opacity-40" : "opacity-100"}`}
@@ -93,7 +93,7 @@
           />
         </div>
       </div>
-      <div class="text-gray-500 mb-1 xl:text-lg text-2xl">/</div>
+      <div class="text-gray-300 mb-1 xl:text-lg text-2xl">/</div>
       <div
         class={`${
           selectedTypeMode === "dark" ? "text-[#3b82f6]" : "text-gray-300"
