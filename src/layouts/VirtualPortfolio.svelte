@@ -128,7 +128,7 @@
                       }}
                     >
                       <div
-                        class={`relative z-2 ${
+                        class={`relative z-1 ${
                           item === selectedVirtualPortfolio && "text-white"
                         }`}
                       >
@@ -141,7 +141,7 @@
                           transition={{ type: "spring", duration: 0.6 }}
                         >
                           <div
-                            class="absolute inset-0 z-1 rounded-full bg-[#ffffff1c]"
+                            class="absolute inset-0 z-0 rounded-full bg-[#ffffff1c]"
                             use:motion
                           />
                         </Motion>
