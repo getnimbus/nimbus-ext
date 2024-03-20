@@ -1030,7 +1030,7 @@
                       }}
                     >
                       <div
-                        class={`relative z-2 ${
+                        class={`relative z-1 ${
                           selectedBundle === item && "text-white"
                         }`}
                       >
@@ -1043,7 +1043,7 @@
                           transition={{ type: "spring", duration: 0.6 }}
                         >
                           <div
-                            class="absolute inset-0 z-1 rounded-full bg-[#1E96FC]"
+                            class="absolute inset-0 z-0 rounded-full bg-[#1E96FC]"
                             use:motion
                           />
                         </Motion>

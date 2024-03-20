@@ -31,7 +31,7 @@
 
 <!-- Desktop view -->
 <div
-  class={`xl:block hidden rounded-[10px] xl:overflow-hidden overflow-x-auto h-full ${
+  class={`xl:block hidden rounded-[10px] xl:overflow-hidden overflow-x-auto h-full w-full ${
     $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
   }`}
 >
