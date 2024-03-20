@@ -146,7 +146,7 @@
   };
 
   const handleDailyCheckin = async () => {
-    const response = await nimbus.get(`/v2/checkin/${$userPublicAddress}`);
+    const response = await nimbus.get(`/v2/checkin`);
     return response.data;
   };
 
@@ -425,7 +425,7 @@
         window.open(link, "_blank");
         await wait(5000);
         const res = await nimbus.post(
-          `/v2/checkin/${$userPublicAddress}/quest/retweet-on-twitter`,
+          `/v2/checkin/quest/retweet-on-twitter`,
           {}
         );
         if (res && res?.data === null) {
@@ -445,7 +445,7 @@
         window.open(link, "_blank");
         await wait(5000);
         const res = await nimbus.post(
-          `/v2/checkin/${$userPublicAddress}/quest/solana-recap-2023`,
+          `/v2/checkin/quest/solana-recap-2023`,
           {}
         );
         if (res && res?.data === null) {
@@ -463,7 +463,7 @@
       }
       if (type === "new-user-tutorial") {
         const res = await nimbus.post(
-          `/v2/checkin/${$userPublicAddress}/quest/new-user-tutorial`,
+          `/v2/checkin/quest/new-user-tutorial`,
           {}
         );
         if (res && res?.data === null) {
@@ -482,10 +482,7 @@
       if (type === "sync-telegram") {
         window.open(link, "_blank");
         await wait(6000);
-        const res = await nimbus.post(
-          `/v2/checkin/${$userPublicAddress}/quest/sync-telegram`,
-          {}
-        );
+        const res = await nimbus.post(`/v2/checkin/quest/sync-telegram`, {});
         if (res && res?.data === null) {
           toastMsg = "You are not sync Telegram";
           isSuccessToast = false;
@@ -503,7 +500,7 @@
         window.open(link, "_blank");
         await wait(5000);
         const res = await nimbus.post(
-          `/v2/checkin/${$userPublicAddress}/quest/first-share-on-twitter`,
+          `/v2/checkin/quest/first-share-on-twitter`,
           {}
         );
         if (res && res?.data === null) {
