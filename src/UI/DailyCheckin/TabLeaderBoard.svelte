@@ -16,7 +16,7 @@
   let currentUserRank;
 
   const handleDailyCheckin = async () => {
-    const response = await nimbus.get(`/v2/checkin/${$userPublicAddress}`);
+    const response = await nimbus.get(`/v2/checkin`);
     return response.data;
   };
 
