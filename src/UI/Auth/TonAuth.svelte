@@ -92,6 +92,7 @@
         account: {
           address: data?.account?.address,
           chain: data?.account?.chain,
+          walletStateInit: data?.account?.walletStateInit,
         },
         connectItems: {
           tonProof: {
