@@ -361,7 +361,7 @@
               }}
             >
               <div
-                class={`relative z-2 ${selectedFilter === item && "text-white"}`}
+                class={`relative z-1 ${selectedFilter === item && "text-white"}`}
               >
                 {item.value}
               </div>
@@ -372,7 +372,7 @@
                   transition={{ type: "spring", duration: 0.6 }}
                 >
                   <div
-                    class="absolute inset-0 z-1 rounded-full bg-[#1E96FC]"
+                    class="absolute inset-0 z-0 rounded-full bg-[#1E96FC]"
                     use:motion
                   />
                 </Motion>
