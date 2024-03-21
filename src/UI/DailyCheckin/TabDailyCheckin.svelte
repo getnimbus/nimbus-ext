@@ -247,7 +247,9 @@
           .filter(
             (log) =>
               log.type === "QUEST" &&
-              (log.note !== "id-generate" || log.note !== "review-trust-pilot")
+              (log.note !== "id-generate" ||
+                log.note !== "updrage-package" ||
+                log.note !== "review-trust-pilot")
           )
           .find((log) => log.note === item.id);
 
