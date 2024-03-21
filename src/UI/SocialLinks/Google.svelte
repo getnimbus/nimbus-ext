@@ -51,7 +51,7 @@
   };
 
   const handleDailyCheckin = async () => {
-    const response = await nimbus.get(`/v2/checkin/${$userPublicAddress}`);
+    const response = await nimbus.get(`/v2/checkin`);
     return response.data;
   };
 
@@ -151,10 +151,7 @@
 
   const handleAddBonusQuest = async () => {
     try {
-      const res = await nimbus.post(
-        `/v2/checkin/${$userPublicAddress}/quest/link-google`,
-        {}
-      );
+      const res = await nimbus.post(`/v2/checkin/quest/link-google`, {});
       if (res && res?.data === null) {
         toastMsg = "You are already finished this quest";
         isSuccessToast = false;
