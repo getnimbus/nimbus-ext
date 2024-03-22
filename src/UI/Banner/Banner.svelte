@@ -2,6 +2,11 @@
   import { isDarkMode } from "~/store";
 
   import goldImg from "~/assets/Gold4.svg";
+
+  export let isMoveBanner;
+  export let mainTitle;
+  export let subTitle;
+  export let link = "";
 </script>
 
 <div
@@ -9,58 +14,60 @@
     $isDarkMode ? "bg-[#222222]" : "bg-[#F8F9FF]"
   }`}
 >
-  <!-- <div class="max-w-[2000px] m-auto w-full isolate">
-    <div class="marquee flex flex-wrap items-center gap-x-4 xl:gap-y-2 gap-y-1">
+  {#if isMoveBanner}
+    <div class="max-w-[2000px] m-auto w-full isolate">
       <div
-        class="marquee-1 xl:text-sm xl:leading-6 text-base flex xl:gap-0 gap-2"
+        class="marquee flex flex-wrap items-center gap-x-4 xl:gap-y-2 gap-y-1"
       >
-        <div class="flex items-center tracking-widest whitespace-nowrap">
-          <strong class="font-semibold flex items-center gap-1">
-            Join Nimbus Airdrops and collect GM points
-          </strong>
-          <svg
-            viewBox="0 0 2 2"
-            class="mx-2 inline h-0.5 w-0.5 fill-current"
-            aria-hidden="true"
-          >
-            <circle cx="1" cy="1" r="1" />
-          </svg>
-        </div>
-
-        <div class="flex items-center gap-1 tracking-widest whitespace-nowrap">
-          Win $TON, limited-edition GM Zodiac Element Box NFTs - and more!
-        </div>
-      </div>
-    </div>
-  </div> -->
-
-  <div class="max-w-[2000px] m-auto w-full isolate w-[90%]">
-    <div class="flex flex-wrap items-center gap-x-4 xl:gap-y-2 gap-y-1">
-      <div
-        class="xl:text-sm xl:leading-6 text-base flex xl:items-center xl:flex-row flex-col gap-2"
-      >
-        <div>
-          <strong> Join Nimbus Airdrops and collect GM points </strong>
-          <svg
-            viewBox="0 0 2 2"
-            class="mx-2 inline h-0.5 w-0.5 fill-current"
-            aria-hidden="true"
-          >
-            <circle cx="1" cy="1" r="1" />
-          </svg>
-          Win $TON, limited edition GM Zodiac Element Box NFTs and more
-        </div>
-
-        <a href="https://airdrop.getnimbus.io/" target="_blank">
-          <div
-            class="w-max flex-none rounded-full bg-[#ba0d10] xl:px-3.5 xl:py-1 px-4 py-2 xl:text-sm text-base font-semibold text-white shadow-sm"
-          >
-            Join our campaign <span aria-hidden="true">&rarr;</span>
+        <div
+          class="marquee-1 xl:text-sm xl:leading-6 text-base flex xl:gap-0 gap-2"
+        >
+          <div class="flex items-center tracking-widest whitespace-nowrap">
+            <strong class="font-semibold">
+              {mainTitle}
+            </strong>
+            <svg
+              viewBox="0 0 2 2"
+              class="mx-2 inline h-0.5 w-0.5 fill-current"
+              aria-hidden="true"
+            >
+              <circle cx="1" cy="1" r="1" />
+            </svg>
           </div>
-        </a>
+          <div
+            class="flex items-center gap-1 tracking-widest whitespace-nowrap"
+          >
+            {subTitle}
+          </div>
+        </div>
       </div>
     </div>
-  </div>
+  {:else}
+    <div class="max-w-[2000px] m-auto w-full isolate w-[90%]">
+      <div class="flex flex-wrap items-center gap-x-4 xl:gap-y-2 gap-y-1">
+        <div class="flex xl:items-center xl:flex-row flex-col gap-2">
+          <div class="xl:text-sm xl:leading-6 text-base">
+            <strong>{mainTitle}</strong>
+            <svg
+              viewBox="0 0 2 2"
+              class="mx-2 inline h-0.5 w-0.5 fill-current"
+              aria-hidden="true"
+            >
+              <circle cx="1" cy="1" r="1" />
+            </svg>
+            {subTitle}
+          </div>
+          <a href={link} target="_blank">
+            <div
+              class="w-max flex-none rounded-full bg-[#ba0d10] xl:px-3.5 xl:py-1 px-4 py-2 xl:text-sm text-base font-semibold text-white shadow-sm"
+            >
+              Join our campaign <span aria-hidden="true">&rarr;</span>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  {/if}
 </div>
 
 <style>
