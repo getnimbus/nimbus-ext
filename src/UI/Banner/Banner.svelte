@@ -37,7 +37,7 @@
   <div class="max-w-[2000px] m-auto w-full isolate w-[90%]">
     <div class="flex flex-wrap items-center gap-x-4 xl:gap-y-2 gap-y-1">
       <div
-        class="xl:text-sm xl:leading-6 text-base flex items-center xl:flex-row flex-col gap-2"
+        class="xl:text-sm xl:leading-6 text-base flex xl:items-center xl:flex-row flex-col gap-2"
       >
         <div>
           <strong> Join Nimbus Airdrops and collect GM points </strong>
