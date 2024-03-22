@@ -48,6 +48,7 @@
 
   import Reload from "~/assets/reload.svg";
   import defaultToken from "~/assets/defaultToken.png";
+  import DefiPosition from "~/UI/Portfolio/DefiPosition.svelte";
 
   const MultipleLang = {
     portfolio: i18n("newtabPage.portfolio", "Portfolio"),
@@ -989,7 +990,7 @@
                 </AnimateSharedLayout>
               </div>
 
-              {#if $tab !== "summary"}
+              {#if $tab === "token" || $tab === "nft"}
                 <Charts
                   {handleSelectedTableTokenHolding}
                   isLoading={$queryOverview.isFetching}
@@ -1040,6 +1041,10 @@
 
               {#if $tab === "summary"}
                 <PerformanceSummary />
+              {/if}
+
+              {#if $tab === "defi"}
+                <DefiPosition />
               {/if}
 
               <!-- <News isLoading={false} data={newsData} /> -->
