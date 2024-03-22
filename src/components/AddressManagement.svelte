@@ -892,12 +892,19 @@
                           if (a.type === "BUNDLE" && a.label === "Your wallets") return -1;
                           if (b.type === "BUNDLE" && b.label === "Your wallets") return 1;
                           return 0;
-                        }) as item}
+                        }) as item, index}
                           <div
                             id={item.value}
-                            class="relative xl:text-base text-2xl text-white py-1 px-2 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline"
+                            class={`relative xl:text-base text-2xl text-white py-1 px-2 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline ${($selectedPackage === "FREE" ? index > 2 : index > 6) ? "opacity-50" : "opacity-100"}`}
                             class:hover:no-underline={item.value === $wallet}
                             on:click={() => {
+                              if (
+                                $selectedPackage === "FREE"
+                                  ? index > 2
+                                  : index > 6
+                              ) {
+                                return;
+                              }
                               wallet.update((n) => (n = item.value));
                             }}
                           >
@@ -988,7 +995,9 @@
                         >
                           <div
                             class={`cursor-pointer overflow-hidden border border-white rounded-full ${
-                              indexSelectedAddress === 0 ? "opacity-50" : ""
+                              indexSelectedAddress === 0 && !isDisabled
+                                ? "opacity-50"
+                                : ""
                             }`}
                             on:click={() => {
                               if (isDisabled) {
@@ -1015,7 +1024,8 @@
                           </div>
                           <div
                             class={`cursor-pointer overflow-hidden border border-white rounded-full ${
-                              indexSelectedAddress === listAddress.length - 1
+                              indexSelectedAddress === listAddress.length - 1 &&
+                              !isDisabled
                                 ? "opacity-50"
                                 : ""
                             }`}
@@ -1132,10 +1142,15 @@
                     }) as item, index}
                       <div
                         id={item.value}
-                        class={`w-max flex-shrink-0 relative text-xl text-white py-1 px-3 flex items-center gap-2 rounded-[100px] ${isDisabled && index > 4 ? "opacity-50" : "opacity-100"}`}
+                        class={`w-max flex-shrink-0 relative text-xl text-white py-1 px-3 flex items-center gap-2 rounded-[100px] ${isDisabled && ($selectedPackage === "FREE" ? index > 2 : index > 6) ? "opacity-50" : "opacity-100"}`}
                         class:hover:no-underline={item.value === $wallet}
                         on:click={() => {
-                          if (isDisabled && index > 4) {
+                          if (
+                            isDisabled &&
+                            ($selectedPackage === "FREE"
+                              ? index > 2
+                              : index > 6)
+                          ) {
                             return;
                           }
                           wallet.update((n) => (n = item.value));
