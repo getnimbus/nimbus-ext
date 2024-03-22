@@ -145,6 +145,7 @@
   let showFollowTooltip = false;
   let showCommandTooltip = false;
   let showDisableAddWallet = false;
+  let showDisabledSelectWallet = false;
   let listAddress = [];
   let address = "";
   let label = "";
@@ -927,7 +928,25 @@
                         {/each}
                       </AnimateSharedLayout>
                       <div class="relative">
-                        <div class="relative z-2">
+                        <div
+                          class={`relative z-2 ${isDisabled ? "opacity-50" : "opacity-100"}`}
+                          on:mouseenter={() => {
+                            if (
+                              isDisabled ||
+                              ($user && Object.keys($user).length === 0)
+                            ) {
+                              showDisabledSelectWallet = true;
+                            }
+                          }}
+                          on:mouseleave={() => {
+                            if (
+                              isDisabled ||
+                              ($user && Object.keys($user).length === 0)
+                            ) {
+                              showDisabledSelectWallet = false;
+                            }
+                          }}
+                        >
                           <Select
                             type="wallet"
                             positionSelectList="right-0"
@@ -936,6 +955,7 @@
                               listAddress.length
                             )}
                             bind:selected={$wallet}
+                            disabled={isDisabled}
                           />
                         </div>
                         {#if listAddress
@@ -945,14 +965,37 @@
                             class="absolute inset-0 rounded-full bg-[#ffffff1c] z-1"
                           />
                         {/if}
+                        {#if showDisabledSelectWallet}
+                          <div
+                            class={`absolute transform left-1/2 -translate-x-1/2 ${
+                              Object.keys($user).length === 0
+                                ? "-top-8"
+                                : "-top-12"
+                            }`}
+                            style="z-index: 2147483648;"
+                          >
+                            <div
+                              class="max-w-[360px] text-white bg-black py-1 px-2 text-xs rounded relative w-max normal-case"
+                            >
+                              {tooltipDisableAddBtn}
+                            </div>
+                          </div>
+                        {/if}
                       </div>
                       {#if listAddress.length > 10}
-                        <div class="flex items-center gap-3">
+                        <div
+                          class={`flex items-center gap-3 ${isDisabled ? "opacity-50" : "opacity-100"}`}
+                        >
                           <div
                             class={`cursor-pointer overflow-hidden border border-white rounded-full ${
                               indexSelectedAddress === 0 ? "opacity-50" : ""
                             }`}
-                            on:click={handleSelectPrevAddress}
+                            on:click={() => {
+                              if (isDisabled) {
+                                return;
+                              }
+                              handleSelectPrevAddress();
+                            }}
                           >
                             <div class="transform -translate-x-[1px]">
                               <svg
@@ -976,7 +1019,12 @@
                                 ? "opacity-50"
                                 : ""
                             }`}
-                            on:click={handleSelectNextAddress}
+                            on:click={() => {
+                              if (isDisabled) {
+                                return;
+                              }
+                              handleSelectNextAddress();
+                            }}
                           >
                             <div class="transform translate-x-[1px]">
                               <svg
@@ -1081,12 +1129,15 @@
                       if (a.type === "BUNDLE" && a.label === "Your wallets") return -1;
                       if (b.type === "BUNDLE" && b.label === "Your wallets") return 1;
                       return 0;
-                    }) as item}
+                    }) as item, index}
                       <div
                         id={item.value}
-                        class="w-max flex-shrink-0 relative text-xl text-white py-1 px-3 flex items-center gap-2 rounded-[100px]"
+                        class={`w-max flex-shrink-0 relative text-xl text-white py-1 px-3 flex items-center gap-2 rounded-[100px] ${isDisabled && index > 4 ? "opacity-50" : "opacity-100"}`}
                         class:hover:no-underline={item.value === $wallet}
                         on:click={() => {
+                          if (isDisabled && index > 4) {
+                            return;
+                          }
                           wallet.update((n) => (n = item.value));
                         }}
                       >
@@ -1212,9 +1263,9 @@
 
                 {#if showDisableAddWallet}
                   <div
-                    class={`absolute transform ${
+                    class={`xl:block hidden absolute transform left-1/2 -translate-x-1/2 ${
                       Object.keys($user).length === 0 ? "-top-8" : "-top-12"
-                    } right-0`}
+                    }`}
                     style="z-index: 2147483648;"
                   >
                     <div
