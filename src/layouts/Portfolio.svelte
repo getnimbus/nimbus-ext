@@ -48,7 +48,7 @@
 
   import Reload from "~/assets/reload.svg";
   import defaultToken from "~/assets/defaultToken.png";
-  import axios from "axios";
+  import DefiPosition from "~/UI/Portfolio/DefiPosition.svelte";
 
   const MultipleLang = {
     portfolio: i18n("newtabPage.portfolio", "Portfolio"),

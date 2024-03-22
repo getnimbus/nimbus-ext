@@ -154,6 +154,45 @@ export const typeClosedHoldingTokenChart = [
   },
 ];
 
+// | "AMM"
+// | "CLMM"
+// | "Lending"
+// | "Borrow"
+// | "Stake"
+// | "Vest"
+// | "Farm"
+
+export const typeDefiPosition = [
+  {
+    label: "AMM",
+    value: "amm",
+  },
+  {
+    label: "CLMM",
+    value: "clmm",
+  },
+  {
+    label: "Lending",
+    value: "lending",
+  },
+  {
+    label: "Borrow",
+    value: "borrow",
+  },
+  {
+    label: "Stake",
+    value: "stake",
+  },
+  {
+    label: "Vest",
+    value: "vest",
+  },
+  {
+    label: "Farm",
+    value: "farm",
+  },
+];
+
 export const filterAvgCostType = [
   {
     label: "All",
@@ -189,6 +228,11 @@ export const typePortfolioPage = [
     id: "view-the-summary",
     label: "Summary",
     value: "summary",
+  },
+  {
+    id: "view-defi-position",
+    label: "Defi",
+    value: "defi",
   },
 ];
 
