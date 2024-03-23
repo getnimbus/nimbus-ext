@@ -39,6 +39,7 @@ export interface FeeState {
 
 export interface AMM {
   positionId: string;
+  type: "AMM";
   owner: string;
   input: TokenState[];
   current: {
@@ -54,6 +55,7 @@ export interface AMM {
 
 export interface CLMM {
   positionId: string;
+  type: "CLMM";
   owner: string;
   input: TokenState[];
   yieldCollected: TokenWithPrice[];
@@ -73,6 +75,7 @@ export interface CLMM {
 
 export interface Lending {
   positionId: string;
+  type: "Lending";
   owner: string;
   input: TokenState[];
   yieldCollected: TokenState[];
@@ -89,6 +92,7 @@ export interface Lending {
 
 export interface Borrow {
   positionId: string;
+  type: "Borrow";
   owner: string;
   input: Lending[];
   yieldCollected: TokenState[];
@@ -106,6 +110,7 @@ export interface Borrow {
 
 export interface Stake {
   positionId: string;
+  type: "Stake";
   owner: string;
   input: TokenState[];
   yieldCollected: TokenState[];
@@ -122,6 +127,7 @@ export interface Stake {
 
 export interface Vest {
   positionId: string;
+  type: "Vest";
   owner: string;
   input: {
     amount: number;
@@ -148,6 +154,7 @@ export interface Vest {
 
 export interface Farm {
   positionId: string;
+  type: "Farm";
   owner: string;
   input: AMM[] | CLMM[];
   feeCollected: {
@@ -390,8 +397,9 @@ export const clmmData: CLMM[] = [
   },
 ];
 
-export const protocolData: Lending[] = [
+export const protocolData = [
   {
+    type: "Lending",
     positionId:
       "0xefe8b36d5b2e43728cc323298626b83177803521d195cfb11e15b910e892fddf::reserve::MarketCoin<0x2::sui::SUI>",
     owner: "0x692853c81afc8f847147c8a8b4368dc894697fc12b929ef3071482d27339815e",
@@ -511,6 +519,7 @@ export const protocolData: Lending[] = [
     },
   },
   {
+    type: "Stake",
     positionId:
       "0xefe8b36d5b2e43728cc323298626b83177803521d195cfb11e15b910e892fddf::reserve::MarketCoin<0x2::sui::SUI>",
     owner: "0x692853c81afc8f847147c8a8b4368dc894697fc12b929ef3071482d27339815e",
@@ -620,13 +629,243 @@ export const protocolData: Lending[] = [
       },
     },
   },
-];
-
-export const borrowdData: Borrow[] = [
   {
+    type: "Borrow",
     positionId: "string",
     owner: "string",
-    input: protocolData,
+    input: [
+      {
+        positionId:
+          "0xefe8b36d5b2e43728cc323298626b83177803521d195cfb11e15b910e892fddf::reserve::MarketCoin<0x2::sui::SUI>",
+        owner:
+          "0x692853c81afc8f847147c8a8b4368dc894697fc12b929ef3071482d27339815e",
+        input: [
+          {
+            amount: 0,
+            value: 0,
+            token: {
+              logo: logoDefault,
+              name: "",
+              contract_address: "0x2::sui::SUI",
+              symbol: "N/A",
+              price: 1.8,
+              decimals: 18,
+              chain: "SUI",
+            },
+          },
+          {
+            amount: 0,
+            value: 0,
+            token: {
+              logo: logoDefault,
+              name: "",
+              contract_address: "0x2::sui::SUI",
+              symbol: "N/A",
+              price: 192.12,
+              decimals: 18,
+              chain: "FISH",
+            },
+          },
+        ],
+        yieldCollected: [
+          {
+            amount: 0,
+            value: 0,
+            token: {
+              logo: logoDefault,
+              name: "",
+              contract_address: "0x2::sui::SUI",
+              symbol: "N/A",
+              price: 1.8,
+              decimals: 18,
+              chain: "SUI",
+            },
+          },
+        ],
+        current: {
+          tokens: [
+            {
+              amount: 0,
+              value: 0,
+              token: {
+                logo: logoDefault,
+                name: "",
+                contract_address: "0x2::sui::SUI",
+                symbol: "N/A",
+                price: 1.8,
+                decimals: 18,
+                chain: "SUI",
+              },
+            },
+            {
+              amount: 0,
+              value: 0,
+              token: {
+                logo: logoDefault,
+                name: "",
+                contract_address: "0x2::sui::SUI",
+                symbol: "N/A",
+                price: 192.12,
+                decimals: 18,
+                chain: "FISH",
+              },
+            },
+          ],
+          yield: [
+            {
+              amount: 0,
+              value: 0,
+              claimable: true,
+              token: {
+                logo: logoDefault,
+                name: "",
+                contract_address: "0x2::sui::SUI",
+                symbol: "N/A",
+                price: 0,
+                decimals: 18,
+                chain: "SUI",
+              },
+            },
+            {
+              amount: 0,
+              value: 0,
+              token: {
+                logo: logoDefault,
+                name: "",
+                contract_address: "0x2::sui::SUI",
+                symbol: "N/A",
+                price: 192.12,
+                decimals: 18,
+                chain: "FISH",
+              },
+              claimable: true,
+            },
+          ],
+        },
+        fee: {
+          value: 0,
+        },
+        chain: "SUI",
+        meta: {
+          protocol: {
+            name: "Scallop",
+            logo: "",
+            url: "",
+          },
+        },
+      },
+      {
+        positionId:
+          "0xefe8b36d5b2e43728cc323298626b83177803521d195cfb11e15b910e892fddf::reserve::MarketCoin<0x2::sui::SUI>",
+        owner:
+          "0x692853c81afc8f847147c8a8b4368dc894697fc12b929ef3071482d27339815e",
+        input: [
+          {
+            amount: 0,
+            value: 0,
+            token: {
+              logo: logoDefault,
+              name: "",
+              contract_address: "0x2::sui::SUI",
+              symbol: "N/A",
+              price: 1.8,
+
+              decimals: 18,
+
+              chain: "SUI",
+            },
+          },
+          {
+            amount: 0,
+            value: 0,
+            token: {
+              logo: logoDefault,
+              name: "",
+              contract_address: "0x2::sui::SUI",
+              symbol: "N/A",
+              price: 192.12,
+              decimals: 18,
+              chain: "FISH",
+            },
+          },
+        ],
+        yieldCollected: [],
+        current: {
+          tokens: [
+            {
+              amount: 0,
+              value: 0,
+              token: {
+                logo: logoDefault,
+                name: "",
+                contract_address: "0x2::sui::SUI",
+                symbol: "N/A",
+                price: 1.8,
+
+                decimals: 18,
+
+                chain: "SUI",
+              },
+            },
+            {
+              amount: 0,
+              value: 0,
+              token: {
+                logo: logoDefault,
+                name: "",
+                contract_address: "0x2::sui::SUI",
+                symbol: "N/A",
+                price: 192.12,
+                decimals: 18,
+                chain: "FISH",
+              },
+            },
+          ],
+          yield: [
+            {
+              amount: 0,
+              value: 0,
+              token: {
+                logo: logoDefault,
+                name: "",
+                contract_address: "0x2::sui::SUI",
+                symbol: "N/A",
+                price: 0,
+                decimals: 18,
+                chain: "SUI",
+              },
+              claimable: true,
+            },
+            {
+              amount: 0,
+              value: 0,
+              token: {
+                logo: logoDefault,
+                name: "",
+                contract_address: "0x2::sui::SUI",
+                symbol: "N/A",
+                price: 192.12,
+                decimals: 18,
+                chain: "FISH",
+              },
+              claimable: true,
+            },
+          ],
+        },
+        fee: {
+          value: 0,
+        },
+        chain: "SUI",
+        meta: {
+          // txs: [],
+          protocol: {
+            name: "Scallop",
+            logo: "",
+            url: "",
+          },
+        },
+      },
+    ],
     yieldCollected: [],
     current: {
       tokens: [
@@ -639,9 +878,7 @@ export const borrowdData: Borrow[] = [
             contract_address: "0x2::sui::SUI",
             symbol: "N/A",
             price: 1.8,
-
             decimals: 18,
-
             chain: "SUI",
           },
         },
@@ -698,6 +935,7 @@ export const borrowdData: Borrow[] = [
         logo: "",
         name: "Borrowa bsaj",
         url: "",
+        type: "",
       },
     },
   },
@@ -707,6 +945,7 @@ export const stakeData: Stake[] = [
   {
     positionId: "",
     owner: "",
+    type: "Stake",
     input: [
       {
         amount: 0,
