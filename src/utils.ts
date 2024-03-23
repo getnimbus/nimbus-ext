@@ -163,7 +163,7 @@ export const typePortfolioPage = [
   },
   {
     id: "view-defi-position",
-    label: "Defi",
+    label: "DeFi",
     value: "defi",
   },
 ];
