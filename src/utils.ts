@@ -130,45 +130,6 @@ export const typeClosedHoldingTokenChart = [
   },
 ];
 
-// | "AMM"
-// | "CLMM"
-// | "Lending"
-// | "Borrow"
-// | "Stake"
-// | "Vest"
-// | "Farm"
-
-export const typeDefiPosition = [
-  {
-    label: "AMM",
-    value: "amm",
-  },
-  {
-    label: "CLMM",
-    value: "clmm",
-  },
-  {
-    label: "Lending",
-    value: "lending",
-  },
-  {
-    label: "Borrow",
-    value: "borrow",
-  },
-  {
-    label: "Stake",
-    value: "stake",
-  },
-  {
-    label: "Vest",
-    value: "vest",
-  },
-  {
-    label: "Farm",
-    value: "farm",
-  },
-];
-
 export const filterAvgCostType = [
   {
     label: "All",
@@ -331,9 +292,9 @@ export const exponentialToDecimal = (exponential: number) => {
       let i = 0;
       i <
       +exponentialSplitted[1] -
-        (exponentialSplitted[0].includes(".")
-          ? exponentialSplitted[0].split(".")[1].length
-          : 0);
+      (exponentialSplitted[0].includes(".")
+        ? exponentialSplitted[0].split(".")[1].length
+        : 0);
       i++
     ) {
       postfix += "0";
@@ -383,16 +344,16 @@ export const formatValue = (input: number) => {
   return numeral(input).format("0,0.00") === "NaN"
     ? formatNumberSmall(input)
     : input !== 0 && input > 0 && input < 0.01
-    ? "<$0.01"
-    : numeral(input).format("$0,0.00");
+      ? "<$0.01"
+      : numeral(input).format("$0,0.00");
 };
 
 export const formatCurrency = (input: number) => {
   return numeral(input).format("0,0.000000") === "NaN"
     ? formatNumberSmall(input)
     : input !== 0 && input > 0 && input < 0.01
-    ? numeral(input).format("0,0.000000")
-    : numeral(input).format("0,0.0000");
+      ? numeral(input).format("0,0.000000")
+      : numeral(input).format("0,0.0000");
 };
 
 export const formatBalance = (input: number) => {
@@ -728,17 +689,14 @@ export const getTooltipContent = (
   width?: string
 ) => {
   return `
-      <div style="padding: 8px; border-radius: 8px; background: ${
-        darkMode ? "#0f0f0f" : "#000"
-      }; width: ${isMaxWidth ? "100%" : "560px"}; height: auto;">
-        ${
-          text
-            ? `<div style="margin-bottom: 6px; font-size: 14px; line-height: 20px; color: #fff;">${text}</div>`
-            : ""
-        } 
-        <div style="border-radius: 6px; width: ${
-          width ? width : "100%"
-        }; overflow: hidden">
+      <div style="padding: 8px; border-radius: 8px; background: ${darkMode ? "#0f0f0f" : "#000"
+    }; width: ${isMaxWidth ? "100%" : "560px"}; height: auto;">
+        ${text
+      ? `<div style="margin-bottom: 6px; font-size: 14px; line-height: 20px; color: #fff;">${text}</div>`
+      : ""
+    } 
+        <div style="border-radius: 6px; width: ${width ? width : "100%"
+    }; overflow: hidden">
           <video autoplay muted playsinline disablepictureinpicture loop>
             <source type="video/mp4" src="${videoUrl}" />
           </video>

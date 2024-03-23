@@ -1,12 +1,12 @@
 <script lang="ts">
-  import TooltipNumber from "~/components/TooltipNumber.svelte";
-  import { isDarkMode } from "~/store";
-  import { protocolData } from "../hardCodeDefiData";
   import { onMount } from "svelte";
-  import Image from "~/components/Image.svelte";
-  import defaultToken from "~/assets/defaultToken.png";
+  import { isDarkMode } from "~/store";
+  import { protocolData } from "./hardCodeDefiData";
 
-  export let selectedTypeProtocol: "lending" | "stake" = "lending";
+  import TooltipNumber from "~/components/TooltipNumber.svelte";
+  import Image from "~/components/Image.svelte";
+
+  import defaultToken from "~/assets/defaultToken.png";
 
   let isStickyTableToken = false;
   let tableTokenHeader;
@@ -37,7 +37,7 @@
           {data.meta.protocol.name}
         </div>
       </div>
-      <!-- talbe  -->
+
       <div
         class={`rounded-[10px] overflow-hidden w-full ${
           $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
@@ -54,15 +54,11 @@
           </div>
 
           <div class="py-3">
-            <div class="xl:text-xs text-xl uppercase font-medium">
-              Token
-            </div>
+            <div class="xl:text-xs text-xl uppercase font-medium">Token</div>
           </div>
 
           <div class="py-3">
-            <div class="xl:text-xs text-xl uppercase font-medium">
-              Yield
-            </div>
+            <div class="xl:text-xs text-xl uppercase font-medium">Yield</div>
           </div>
 
           <div class="py-3">
@@ -101,45 +97,49 @@
                 <div class="flex -space-x-2">
                   {#each data.input as item, index}
                     <div class={`h-7 w-7 bg-white rounded-full z-[${index}]`}>
-                      <Image defaultLogo={defaultToken} logo={item.token.logo} />
+                      <Image
+                        defaultLogo={defaultToken}
+                        logo={item.token.logo}
+                      />
                     </div>
                   {/each}
                 </div>
-  
+
                 {data.input.map((item) => item.token.chain).join(" - ")}
               </div>
             </div>
 
-          <div class="py-3">
-            <!-- <div class="text-right xl:text-xs text-xl uppercase font-medium">
+            <div class="py-3">
+              <!-- <div class="text-right xl:text-xs text-xl uppercase font-medium">
                <TooltipNumber number={item.token.price} type="value" /> 
             </div> -->
-            <div
-              class="text-left xl:text-xs text-xl uppercase font-medium gap-2 flex items-center gap-4"
-            >
-              <div class="flex flex-col gap-2">
-                {#each data.current.tokens as token}
-                  <div class="flex items-center gap-1">
-                    <div class="h-7 w-7 bg-white rounded-full">
-                      <Image defaultLogo={defaultToken} logo={defaultToken} />
+              <div
+                class="text-left xl:text-xs text-xl uppercase font-medium gap-2 flex items-center gap-4"
+              >
+                <div class="flex flex-col gap-2">
+                  {#each data.current.tokens as token}
+                    <div class="flex items-center gap-1">
+                      <div class="h-7 w-7 bg-white rounded-full">
+                        <Image defaultLogo={defaultToken} logo={defaultToken} />
+                      </div>
+                      <TooltipNumber number={token.amount} type="amount" />
+                      {token.token.chain}
                     </div>
-                    <TooltipNumber number={token.amount} type="amount" />
-                    {token.token.chain}
-                  </div>
-                {/each}
+                  {/each}
+                </div>
               </div>
             </div>
-          </div>
 
-          <div class="py-3">
-            <div class="xl:text-xs text-xl uppercase font-medium">
-              <!-- <TooltipNumber number={item.amount} type="amount" /> -->
+            <div class="py-3">
+              <div class="xl:text-xs text-xl uppercase font-medium">
+                <!-- <TooltipNumber number={item.amount} type="amount" /> -->
+              </div>
             </div>
-          </div>
 
-          <div class="py-3 pr-3 rounded-tr-[10px]">
-            <div class="text-right xl:text-xs text-xl uppercase font-medium">
-              <TooltipNumber number={0} type="value" />
+            <div class="py-3 pr-3 rounded-tr-[10px]">
+              <div class="text-right xl:text-xs text-xl uppercase font-medium">
+                <TooltipNumber number={0} type="value" />
+              </div>
             </div>
           </div>
         </div>
