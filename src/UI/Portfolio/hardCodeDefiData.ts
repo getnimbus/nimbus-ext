@@ -1,3 +1,5 @@
+import logoDefault from "~/assets/defaultToken.png";
+
 export interface Protocol {
   name: string;
   logo: string;
@@ -10,6 +12,7 @@ export interface Token {
   name?: string;
   decimals: number;
   chain: string; // TODO: CHAIN
+  logo: string;
 }
 
 export interface Price {
@@ -201,13 +204,14 @@ export const ammData: AMM[] = [
         amount: 0,
         value: 0,
         token: {
+          logo: logoDefault,
           name: "",
           contract_address: "0x2::sui::SUI",
           symbol: "N/A",
           price: 1.8,
-          timestamp: 1711079358,
+
           decimals: 18,
-          source: "Nimbus",
+
           chain: "SUI",
         },
       },
@@ -218,13 +222,14 @@ export const ammData: AMM[] = [
           amount: 0,
           value: 0,
           token: {
+            logo: logoDefault,
             name: "",
             contract_address: "0x2::sui::SUI",
             symbol: "N/A",
             price: 1.8,
-            timestamp: 1711079358,
+
             decimals: 18,
-            source: "Nimbus",
+
             chain: "SUI",
           },
         },
@@ -232,13 +237,12 @@ export const ammData: AMM[] = [
           amount: 0,
           value: 0,
           token: {
+            logo: logoDefault,
             name: "",
             contract_address: "0x2::sui::SUI",
             symbol: "N/A",
             price: 192.12,
-            timestamp: 1711076258,
             decimals: 18,
-            source: "Nimbus",
             chain: "FISH",
           },
         },
@@ -247,14 +251,14 @@ export const ammData: AMM[] = [
         {
           amount: 0,
           value: 0,
+          claimable: true,
           token: {
+            logo: logoDefault,
             name: "",
             contract_address: "0x2::sui::SUI",
             symbol: "N/A",
             price: 0,
-            timestamp: 1711079358,
             decimals: 18,
-            source: "Nimbus",
             chain: "SUI",
           },
         },
@@ -262,15 +266,15 @@ export const ammData: AMM[] = [
           amount: 0,
           value: 0,
           token: {
+            logo: logoDefault,
             name: "",
             contract_address: "0x2::sui::SUI",
             symbol: "N/A",
             price: 192.12,
-            timestamp: 1711076258,
             decimals: 18,
-            source: "Nimbus",
             chain: "FISH",
           },
+          claimable: true,
         },
       ],
     },
@@ -298,13 +302,12 @@ export const clmmData: CLMM[] = [
         amount: 0,
         value: 0,
         token: {
+          logo: logoDefault,
           name: "",
           contract_address: "0x2::sui::SUI",
           symbol: "N/A",
           price: 1.8,
-          timestamp: 1711079358,
           decimals: 18,
-          source: "Nimbus",
           chain: "SUI",
         },
       },
@@ -316,13 +319,14 @@ export const clmmData: CLMM[] = [
           amount: 0,
           value: 0,
           token: {
+            logo: logoDefault,
             name: "",
             contract_address: "0x2::sui::SUI",
             symbol: "N/A",
             price: 1.8,
-            timestamp: 1711079358,
+
             decimals: 18,
-            source: "Nimbus",
+
             chain: "SUI",
           },
         },
@@ -330,13 +334,12 @@ export const clmmData: CLMM[] = [
           amount: 0,
           value: 0,
           token: {
+            logo: logoDefault,
             name: "",
             contract_address: "0x2::sui::SUI",
             symbol: "N/A",
             price: 192.12,
-            timestamp: 1711076258,
             decimals: 18,
-            source: "Nimbus",
             chain: "FISH",
           },
         },
@@ -345,28 +348,28 @@ export const clmmData: CLMM[] = [
         {
           amount: 0,
           value: 0,
+          claimable: true,
           token: {
+            logo: logoDefault,
             name: "",
             contract_address: "0x2::sui::SUI",
             symbol: "N/A",
             price: 0,
-            timestamp: 1711079358,
             decimals: 18,
-            source: "Nimbus",
             chain: "SUI",
           },
         },
         {
           amount: 0,
           value: 0,
+          claimable: true,
           token: {
+            logo: logoDefault,
             name: "",
             contract_address: "0x2::sui::SUI",
             symbol: "N/A",
             price: 192.12,
-            timestamp: 1711076258,
             decimals: 18,
-            source: "Nimbus",
             chain: "FISH",
           },
         },
@@ -397,13 +400,12 @@ export const protocolData: Lending[] = [
         amount: 0,
         value: 0,
         token: {
+          logo: logoDefault,
           name: "",
           contract_address: "0x2::sui::SUI",
           symbol: "N/A",
           price: 1.8,
-          timestamp: 1711079358,
           decimals: 18,
-          source: "Nimbus",
           chain: "SUI",
         },
       },
@@ -411,13 +413,12 @@ export const protocolData: Lending[] = [
         amount: 0,
         value: 0,
         token: {
+          logo: logoDefault,
           name: "",
           contract_address: "0x2::sui::SUI",
           symbol: "N/A",
           price: 192.12,
-          timestamp: 1711076258,
           decimals: 18,
-          source: "Nimbus",
           chain: "FISH",
         },
       },
@@ -427,6 +428,7 @@ export const protocolData: Lending[] = [
         amount: 0,
         value: 0,
         token: {
+          logo: logoDefault,
           name: "",
           contract_address: "0x2::sui::SUI",
           symbol: "N/A",
@@ -442,13 +444,12 @@ export const protocolData: Lending[] = [
           amount: 0,
           value: 0,
           token: {
+            logo: logoDefault,
             name: "",
             contract_address: "0x2::sui::SUI",
             symbol: "N/A",
             price: 1.8,
-            timestamp: 1711079358,
             decimals: 18,
-            source: "Nimbus",
             chain: "SUI",
           },
         },
@@ -456,13 +457,12 @@ export const protocolData: Lending[] = [
           amount: 0,
           value: 0,
           token: {
+            logo: logoDefault,
             name: "",
             contract_address: "0x2::sui::SUI",
             symbol: "N/A",
             price: 192.12,
-            timestamp: 1711076258,
             decimals: 18,
-            source: "Nimbus",
             chain: "FISH",
           },
         },
@@ -471,14 +471,14 @@ export const protocolData: Lending[] = [
         {
           amount: 0,
           value: 0,
+          claimable: true,
           token: {
+            logo: logoDefault,
             name: "",
             contract_address: "0x2::sui::SUI",
             symbol: "N/A",
             price: 0,
-            timestamp: 1711079358,
             decimals: 18,
-            source: "Nimbus",
             chain: "SUI",
           },
         },
@@ -486,15 +486,15 @@ export const protocolData: Lending[] = [
           amount: 0,
           value: 0,
           token: {
+            logo: logoDefault,
             name: "",
             contract_address: "0x2::sui::SUI",
             symbol: "N/A",
             price: 192.12,
-            timestamp: 1711076258,
             decimals: 18,
-            source: "Nimbus",
             chain: "FISH",
           },
+          claimable: true,
         },
       ],
     },
@@ -519,13 +519,14 @@ export const protocolData: Lending[] = [
         amount: 0,
         value: 0,
         token: {
+          logo: logoDefault,
           name: "",
           contract_address: "0x2::sui::SUI",
           symbol: "N/A",
           price: 1.8,
-          timestamp: 1711079358,
+
           decimals: 18,
-          source: "Nimbus",
+
           chain: "SUI",
         },
       },
@@ -533,13 +534,12 @@ export const protocolData: Lending[] = [
         amount: 0,
         value: 0,
         token: {
+          logo: logoDefault,
           name: "",
           contract_address: "0x2::sui::SUI",
           symbol: "N/A",
           price: 192.12,
-          timestamp: 1711076258,
           decimals: 18,
-          source: "Nimbus",
           chain: "FISH",
         },
       },
@@ -551,13 +551,14 @@ export const protocolData: Lending[] = [
           amount: 0,
           value: 0,
           token: {
+            logo: logoDefault,
             name: "",
             contract_address: "0x2::sui::SUI",
             symbol: "N/A",
             price: 1.8,
-            timestamp: 1711079358,
+
             decimals: 18,
-            source: "Nimbus",
+
             chain: "SUI",
           },
         },
@@ -565,13 +566,12 @@ export const protocolData: Lending[] = [
           amount: 0,
           value: 0,
           token: {
+            logo: logoDefault,
             name: "",
             contract_address: "0x2::sui::SUI",
             symbol: "N/A",
             price: 192.12,
-            timestamp: 1711076258,
             decimals: 18,
-            source: "Nimbus",
             chain: "FISH",
           },
         },
@@ -581,29 +581,29 @@ export const protocolData: Lending[] = [
           amount: 0,
           value: 0,
           token: {
+            logo: logoDefault,
             name: "",
             contract_address: "0x2::sui::SUI",
             symbol: "N/A",
             price: 0,
-            timestamp: 1711079358,
             decimals: 18,
-            source: "Nimbus",
             chain: "SUI",
           },
+          claimable: true,
         },
         {
           amount: 0,
           value: 0,
           token: {
+            logo: logoDefault,
             name: "",
             contract_address: "0x2::sui::SUI",
             symbol: "N/A",
             price: 192.12,
-            timestamp: 1711076258,
             decimals: 18,
-            source: "Nimbus",
             chain: "FISH",
           },
+          claimable: true,
         },
       ],
     },
@@ -612,7 +612,7 @@ export const protocolData: Lending[] = [
     },
     chain: "SUI",
     meta: {
-      txs: [],
+      // txs: [],
       protocol: {
         name: "Scallop",
         logo: "",
@@ -634,13 +634,14 @@ export const borrowdData: Borrow[] = [
           amount: 0,
           value: 0,
           token: {
+            logo: logoDefault,
             name: "",
             contract_address: "0x2::sui::SUI",
             symbol: "N/A",
             price: 1.8,
-            timestamp: 1711079358,
+
             decimals: 18,
-            source: "Nimbus",
+
             chain: "SUI",
           },
         },
@@ -648,13 +649,12 @@ export const borrowdData: Borrow[] = [
           amount: 0,
           value: 0,
           token: {
+            logo: logoDefault,
             name: "",
             contract_address: "0x2::sui::SUI",
             symbol: "N/A",
             price: 192.12,
-            timestamp: 1711076258,
             decimals: 18,
-            source: "Nimbus",
             chain: "FISH",
           },
         },
@@ -664,29 +664,29 @@ export const borrowdData: Borrow[] = [
           amount: 0,
           value: 0,
           token: {
+            logo: logoDefault,
             name: "",
             contract_address: "0x2::sui::SUI",
             symbol: "N/A",
             price: 0,
-            timestamp: 1711079358,
             decimals: 18,
-            source: "Nimbus",
             chain: "SUI",
           },
+          claimable: true,
         },
         {
           amount: 0,
           value: 0,
           token: {
+            logo: logoDefault,
             name: "",
             contract_address: "0x2::sui::SUI",
             symbol: "N/A",
             price: 192.12,
-            timestamp: 1711076258,
             decimals: 18,
-            source: "Nimbus",
             chain: "FISH",
           },
+          claimable: true,
         },
       ],
       healthy: 0,
@@ -712,6 +712,7 @@ export const stakeData: Stake[] = [
         amount: 0,
         value: 0,
         token: {
+          logo: logoDefault,
           chain: "USDHD",
           contract_address: "",
           decimals: 18,
@@ -728,6 +729,7 @@ export const stakeData: Stake[] = [
           amount: 0,
           value: 0,
           token: {
+            logo: logoDefault,
             chain: "USDHD",
             contract_address: "",
             decimals: 18,
@@ -743,6 +745,7 @@ export const stakeData: Stake[] = [
           value: 0,
           claimable: true,
           token: {
+            logo: logoDefault,
             chain: "USDHD",
             contract_address: "",
             decimals: 18,
@@ -769,6 +772,7 @@ export const vestData: Vest[] = [
     input: {
       amount: 0,
       token: {
+        logo: logoDefault,
         chain: "USDHD",
         contract_address: "",
         decimals: 18,
@@ -780,6 +784,7 @@ export const vestData: Vest[] = [
     claimed: {
       amount: 0,
       token: {
+        logo: logoDefault,
         chain: "USDHD",
         contract_address: "",
         decimals: 18,
@@ -789,8 +794,10 @@ export const vestData: Vest[] = [
       },
     },
     current: {
+      endDate: "22-03-2024 15:32:02",
       amount: 0,
       token: {
+        logo: logoDefault,
         chain: "USDHD",
         contract_address: "",
         decimals: 18,
@@ -801,6 +808,7 @@ export const vestData: Vest[] = [
       fee: {
         amount: 0,
         token: {
+          logo: logoDefault,
           chain: "USDHD",
           contract_address: "",
           decimals: 18,
@@ -809,7 +817,6 @@ export const vestData: Vest[] = [
           name: "",
         },
       },
-      endDate: "22-03-2024 15:32:02",
     },
     chain: "",
     meta: {
@@ -827,6 +834,7 @@ export const farmData: Farm[] = [
       {
         amount: 0,
         token: {
+          logo: logoDefault,
           chain: "USDHD",
           contract_address: "",
           decimals: 18,
@@ -839,6 +847,7 @@ export const farmData: Farm[] = [
     current: {
       amount: 0,
       token: {
+        logo: logoDefault,
         chain: "USDHD",
         contract_address: "",
         decimals: 18,
@@ -849,6 +858,7 @@ export const farmData: Farm[] = [
       fee: {
         amount: 0,
         token: {
+          logo: logoDefault,
           chain: "USDHD",
           contract_address: "",
           decimals: 18,

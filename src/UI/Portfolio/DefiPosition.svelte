@@ -8,7 +8,6 @@
   import { isDarkMode, typeWallet } from "~/store";
   import { typeDefiPosition } from "~/utils";
 
-  import defaultToken from "~/assets/defaultToken.png";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { protocolData } from "./hardCodeDefiData";
