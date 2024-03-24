@@ -1,14 +1,14 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { isDarkMode } from "~/store";
-  import { protocolData } from "./hardCodeDefiData";
 
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import Image from "~/components/Image.svelte";
+  import type { Lending, Stake } from "./hardCodeDefiData";
 
   import defaultToken from "~/assets/defaultToken.png";
 
-  export let data;
+  export let data: Lending | Stake;
 
   let isStickyTableToken = false;
   let tableTokenHeader;
@@ -34,8 +34,10 @@
     class={`flex justify-between items-center p-4 rounded-[10px] font-medium  ${$isDarkMode ? "bg-gray-700" : "bg-blue-100"}`}
   >
     <div>
-      {data.meta.protocol.name}
+      <!-- {data.meta.protocol.name} -->
+      {data.type}
     </div>
+    <div></div>
   </div>
 
   <div
