@@ -17,7 +17,6 @@
     typeWallet,
     selectedBundle,
     triggerUpdateBundle,
-    userPublicAddress,
   } from "~/store";
   import mixpanel from "mixpanel-browser";
   import { nimbus } from "~/lib/network";
@@ -40,6 +39,7 @@
   import Charts from "~/UI/Portfolio/Charts.svelte";
   import Holding from "~/UI/Portfolio/Holding.svelte";
   import PerformanceSummary from "~/UI/Portfolio/PerformanceSummary.svelte";
+  import DefiPosition from "~/UI/Portfolio/DefiPosition.svelte";
   import RiskReturn from "~/UI/Portfolio/RiskReturn.svelte";
   import News from "~/UI/Portfolio/News.svelte";
   import Positions from "~/UI/Portfolio/Positions.svelte";
@@ -48,7 +48,6 @@
 
   import Reload from "~/assets/reload.svg";
   import defaultToken from "~/assets/defaultToken.png";
-  import DefiPosition from "~/UI/Portfolio/DefiPosition.svelte";
 
   const MultipleLang = {
     portfolio: i18n("newtabPage.portfolio", "Portfolio"),
@@ -131,6 +130,7 @@
   let selectedDataPieChart = {};
 
   let chainListQueries = [];
+  let portfolioTabList = [];
 
   const handleValidateAddress = async (address: string) => {
     if (address) {
@@ -872,10 +872,17 @@
   $: {
     if ($typeWallet?.length !== 0 && $typeWallet === "EVM") {
       chainListQueries = chainList.slice(1).map((item) => item.value);
+      portfolioTabList = typePortfolioPage.filter(
+        (item) => item.value !== "defi"
+      );
     } else if ($typeWallet?.length !== 0 && $typeWallet === "MOVE") {
       chainListQueries = chainMoveList.slice(1).map((item) => item.value);
+      portfolioTabList = typePortfolioPage;
     } else {
       chainListQueries = [chainMoveList[0]?.value];
+      portfolioTabList = typePortfolioPage.filter(
+        (item) => item.value !== "defi"
+      );
     }
   }
 
@@ -952,7 +959,7 @@
             >
               <div class="flex items-center gap-1">
                 <AnimateSharedLayout>
-                  {#each typePortfolioPage as type}
+                  {#each portfolioTabList as type}
                     <div
                       class="relative cursor-pointer xl:text-base text-lg font-medium py-1 px-3 rounded-[100px] transition-all"
                       id={type.id}
@@ -1044,7 +1051,14 @@
               {/if}
 
               {#if $tab === "defi"}
-                <DefiPosition />
+                <DefiPosition
+                  conditionQuery={Boolean(
+                    enabledFetchAllData &&
+                      $wallet &&
+                      $wallet?.length !== 0 &&
+                      !$queryValidate.isFetching
+                  )}
+                />
               {/if}
 
               <!-- <News isLoading={false} data={newsData} /> -->

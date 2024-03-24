@@ -32,12 +32,9 @@
     $isDarkMode ? "bg-[#222222]" : "bg-[#fff] xl:border border_0000001a"
   }`}
 >
-  <div
-    class={`flex justify-between items-center p-4 rounded-[10px] font-medium  ${$isDarkMode ? "bg-gray-700" : "bg-gray-100"}`}
-  >
+  <div class="flex justify-between items-center">
     <div>
       {data?.meta?.protocol?.name || ""}
-      <!-- {data.type} -->
     </div>
     <div></div>
   </div>
@@ -77,9 +74,9 @@
         <div class="col-spans-2 pl-3 py-3 rounded-tl-[10px]">
           <div class="flex items-center gap-2 m-auto h-full">
             <div class="flex flex-col gap-2">
-              {#each itemInput.input as item, index}
+              {#each itemInput.input as item}
                 <div class="flex items-center gap-3">
-                  <div class={`h-7 w-7 bg-white rounded-full z-[${index}]`}>
+                  <div class="rounded-full w-[30px] h-[30px] overflow-hidden">
                     <Image defaultLogo={defaultToken} logo={item.token.logo} />
                   </div>
                   <div
@@ -100,7 +97,7 @@
             <div class="flex flex-col gap-2">
               {#each itemInput.current.tokens as token}
                 <div class="flex items-center gap-1">
-                  <div class="h-7 w-7 bg-white rounded-full">
+                  <div class="rounded-full w-[30px] h-[30px] overflow-hidden">
                     <Image defaultLogo={defaultToken} logo={defaultToken} />
                   </div>
                   <TooltipNumber number={token.amount} type="amount" />
@@ -118,7 +115,7 @@
             <div class="flex flex-col gap-2">
               {#each itemInput.current.yield as yieldData}
                 <div class="flex items-center gap-1">
-                  <div class="h-7 w-7 bg-white rounded-full">
+                  <div class="rounded-full w-[30px] h-[30px] overflow-hidden">
                     <Image defaultLogo={defaultToken} logo={defaultToken} />
                   </div>
                   <TooltipNumber number={yieldData.amount} type="amount" />
@@ -210,7 +207,7 @@
         >
           <div class="flex flex-col gap-2">
             <div class="flex items-center gap-1">
-              <div class="h-7 w-7 bg-white rounded-full">
+              <div class="rounded-full w-[30px] h-[30px] overflow-hidden">
                 <Image
                   defaultLogo={defaultToken}
                   logo={data?.current?.token?.logo || defaultToken}
@@ -233,7 +230,7 @@
           <div class="flex flex-col gap-2">
             {#each data?.feeCollected || [] as fee}
               <div class="flex items-center gap-1">
-                <div class="h-7 w-7 bg-white rounded-full">
+                <div class="rounded-full w-[30px] h-[30px] overflow-hidden">
                   <Image
                     defaultLogo={defaultToken}
                     logo={fee?.token?.logo || defaultToken}

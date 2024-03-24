@@ -14,12 +14,9 @@
     $isDarkMode ? "bg-[#222222]" : "bg-[#fff] xl:border border_0000001a"
   }`}
 >
-  <div
-    class={`flex justify-between items-center p-4 rounded-[10px] font-medium  ${$isDarkMode ? "bg-gray-700" : "bg-gray-100"}`}
-  >
+  <div class="flex justify-between items-center">
     <div>
       {data?.meta?.protocol?.name || ""}
-      <!-- {data.type} -->
     </div>
     <div></div>
   </div>
@@ -43,10 +40,6 @@
       <div class="py-3">
         <div class="xl:text-xs text-xl uppercase font-medium">Yield</div>
       </div>
-      <!-- 
-      <div class="py-3">
-        <div class="xl:text-xs text-xl uppercase font-medium">Claimed</div>
-      </div> -->
 
       <div class="py-3">
         <div class="xl:text-xs text-xl uppercase font-medium">End Date</div>
@@ -64,7 +57,7 @@
         <div class="flex items-center gap-2 m-auto h-full">
           <div class="flex flex-col gap-2">
             <div class="flex items-center gap-3">
-              <div class={`h-7 w-7 bg-white rounded-full z-[1]`}>
+              <div class="rounded-full w-[30px] h-[30px] overflow-hidden">
                 <Image
                   defaultLogo={defaultToken}
                   logo={data?.input?.token?.logo || defaultToken}
@@ -85,7 +78,7 @@
           <div class="flex flex-col gap-2">
             {#each data?.current.tokens || [] as token}
               <div class="flex items-center gap-1">
-                <div class="h-7 w-7 bg-white rounded-full">
+                <div class="rounded-full w-[30px] h-[30px] overflow-hidden">
                   <Image defaultLogo={defaultToken} logo={token.token.logo} />
                 </div>
                 <TooltipNumber number={token?.amount || 0} type="amount" />
@@ -103,7 +96,7 @@
           <div class="flex flex-col gap-2">
             {#each data?.current?.yield || [] as yieldData}
               <div class="flex items-center gap-1">
-                <div class="h-7 w-7 bg-white rounded-full">
+                <div class="rounded-full w-[30px] h-[30px] overflow-hidden">
                   <Image
                     defaultLogo={defaultToken}
                     logo={yieldData?.token?.logo || defaultToken}
@@ -116,25 +109,6 @@
           </div>
         </div>
       </div>
-
-      <!--  <div class="py-3">
-        <div
-          class="text-left xl:text-xs text-xl uppercase font-medium gap-2 flex items-center gap-4 h-full"
-        >
-          <div class="flex flex-col gap-2">
-             <div class="flex items-center gap-1">
-              <div class="h-7 w-7 bg-white rounded-full">
-                <Image
-                  defaultLogo={defaultToken}
-                  logo={data?.claimed?.token?.logo || defaultToken}
-                />
-              </div>
-              <TooltipNumber number={data?.claimed.amount || 0} type="amount" />
-              {data?.claimed.token.chain || ""}
-            </div> 
-          </div>
-        </div>
-      </div>-->
 
       <div class="py-3">
         <div
