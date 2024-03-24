@@ -138,8 +138,8 @@ export interface Vest {
     token: TokenWithPrice;
   };
   current: {
-    amount: number;
-    token: TokenWithPrice;
+    tokens: TokenState[];
+    yield: TokenStateYield[];
     fee?: {
       amount: number;
       token: TokenWithPrice;
