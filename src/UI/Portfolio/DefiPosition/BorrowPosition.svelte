@@ -31,11 +31,11 @@
   }`}
 >
   <div
-    class={`flex justify-between items-center p-4 rounded-[10px] font-medium  ${$isDarkMode ? "bg-gray-700" : "bg-blue-100"}`}
+    class={`flex justify-between items-center p-4 rounded-[10px] font-medium  ${$isDarkMode ? "bg-gray-700" : "bg-gray-100"}`}
   >
     <div>
-      <!-- {data.meta.protocol.name} -->
-      {data.type}
+      {data?.meta?.protocol?.name || ""}
+      <!-- {data.type} -->
     </div>
     <div></div>
   </div>
@@ -76,15 +76,18 @@
         <div class="flex flex-col gap-2 m-auto h-full">
           {#each data.input as item1}
             <div class="flex flex-col gap-2">
-              {#each item1.input as item, index}
+              {#each item1?.input || [] as item, index}
                 <div class="flex items-center gap-3">
                   <div class={`h-7 w-7 bg-white rounded-full z-[${index}]`}>
-                    <Image defaultLogo={defaultToken} logo={defaultToken} />
+                    <Image
+                      defaultLogo={defaultToken}
+                      logo={item?.token?.logo || defaultToken}
+                    />
                   </div>
                   <div
                     class="text-left xl:text-xs text-xl uppercase font-medium"
                   >
-                    {item.token.chain}
+                    {item?.token?.chain || ""}
                   </div>
                 </div>
               {/each}
@@ -101,10 +104,13 @@
             {#each data.current.tokens as token}
               <div class="flex items-center gap-1">
                 <div class="h-7 w-7 bg-white rounded-full">
-                  <Image defaultLogo={defaultToken} logo={defaultToken} />
+                  <Image
+                    defaultLogo={defaultToken}
+                    logo={token?.token?.logo || defaultToken}
+                  />
                 </div>
-                <TooltipNumber number={token.amount} type="amount" />
-                {token.token.chain}
+                <TooltipNumber number={token?.amount || 0} type="amount" />
+                {token?.token?.chain || ""}
               </div>
             {/each}
           </div>
@@ -116,13 +122,16 @@
           class="text-left xl:text-xs text-xl uppercase font-medium gap-2 flex items-center gap-4 h-full"
         >
           <div class="flex flex-col gap-2">
-            {#each data.current.yield as yieldData}
+            {#each data?.current?.yield || [] as yieldData}
               <div class="flex items-center gap-1">
                 <div class="h-7 w-7 bg-white rounded-full">
-                  <Image defaultLogo={defaultToken} logo={defaultToken} />
+                  <Image
+                    defaultLogo={defaultToken}
+                    logo={yieldData?.token?.logo || defaultToken}
+                  />
                 </div>
-                <TooltipNumber number={yieldData.amount} type="amount" />
-                {yieldData.token.chain}
+                <TooltipNumber number={yieldData?.amount || 0} type="amount" />
+                {yieldData?.token?.chain || ""}
               </div>
             {/each}
           </div>
@@ -134,13 +143,16 @@
           class="text-left xl:text-xs text-xl uppercase font-medium gap-2 flex items-center gap-4 h-full"
         >
           <div class="flex flex-col gap-2">
-            {#each data.yieldCollected as reward}
+            {#each data?.yieldCollected || [] as reward}
               <div class="flex items-center gap-1">
                 <div class="h-7 w-7 bg-white rounded-full">
-                  <Image defaultLogo={defaultToken} logo={defaultToken} />
+                  <Image
+                    defaultLogo={defaultToken}
+                    logo={reward?.token?.logo || defaultToken}
+                  />
                 </div>
-                <TooltipNumber number={reward.amount} type="amount" />
-                {reward.token.chain}
+                <TooltipNumber number={reward?.amount || 0} type="amount" />
+                {reward?.token?.chain || ""}
               </div>
             {/each}
           </div>

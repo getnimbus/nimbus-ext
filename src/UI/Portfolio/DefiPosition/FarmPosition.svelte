@@ -33,11 +33,11 @@
   }`}
 >
   <div
-    class={`flex justify-between items-center p-4 rounded-[10px] font-medium  ${$isDarkMode ? "bg-gray-700" : "bg-blue-100"}`}
+    class={`flex justify-between items-center p-4 rounded-[10px] font-medium  ${$isDarkMode ? "bg-gray-700" : "bg-gray-100"}`}
   >
     <div>
-      <!-- {data.meta.protocol.name} -->
-      {data.type}
+      {data?.meta?.protocol?.name || ""}
+      <!-- {data.type} -->
     </div>
     <div></div>
   </div>
@@ -211,10 +211,16 @@
           <div class="flex flex-col gap-2">
             <div class="flex items-center gap-1">
               <div class="h-7 w-7 bg-white rounded-full">
-                <Image defaultLogo={defaultToken} logo={defaultToken} />
+                <Image
+                  defaultLogo={defaultToken}
+                  logo={data?.current?.token?.logo || defaultToken}
+                />
               </div>
-              <TooltipNumber number={data.current.amount} type="amount" />
-              {data.current.token.chain}
+              <TooltipNumber
+                number={data?.current?.amount || 0}
+                type="amount"
+              />
+              {data?.current?.token?.chain || ""}
             </div>
           </div>
         </div>
@@ -225,13 +231,16 @@
           class="text-left xl:text-xs text-xl uppercase font-medium gap-2 flex items-center gap-4 h-full"
         >
           <div class="flex flex-col gap-2">
-            {#each data.feeCollected as fee}
+            {#each data?.feeCollected || [] as fee}
               <div class="flex items-center gap-1">
                 <div class="h-7 w-7 bg-white rounded-full">
-                  <Image defaultLogo={defaultToken} logo={defaultToken} />
+                  <Image
+                    defaultLogo={defaultToken}
+                    logo={fee?.token?.logo || defaultToken}
+                  />
                 </div>
-                <TooltipNumber number={fee.amount} type="amount" />
-                {fee.token.chain}
+                <TooltipNumber number={fee?.amount || 0} type="amount" />
+                {fee?.token?.chain || ""}
               </div>
             {/each}
           </div>

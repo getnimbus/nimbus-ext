@@ -15,11 +15,11 @@
   }`}
 >
   <div
-    class={`flex justify-between items-center p-4 rounded-[10px] font-medium  ${$isDarkMode ? "bg-gray-700" : "bg-blue-100"}`}
+    class={`flex justify-between items-center p-4 rounded-[10px] font-medium  ${$isDarkMode ? "bg-gray-700" : "bg-gray-100"}`}
   >
     <div>
-      <!-- {data.meta.protocol.name} -->
-      {data.type}
+      {data?.meta?.protocol?.name || ""}
+      <!-- {data.type} -->
     </div>
     <div></div>
   </div>
@@ -41,8 +41,12 @@
       </div>
 
       <div class="py-3">
-        <div class="xl:text-xs text-xl uppercase font-medium">Claimed</div>
+        <div class="xl:text-xs text-xl uppercase font-medium">Yield</div>
       </div>
+      <!-- 
+      <div class="py-3">
+        <div class="xl:text-xs text-xl uppercase font-medium">Claimed</div>
+      </div> -->
 
       <div class="py-3">
         <div class="xl:text-xs text-xl uppercase font-medium">End Date</div>
@@ -61,10 +65,13 @@
           <div class="flex flex-col gap-2">
             <div class="flex items-center gap-3">
               <div class={`h-7 w-7 bg-white rounded-full z-[1]`}>
-                <Image defaultLogo={defaultToken} logo={defaultToken} />
+                <Image
+                  defaultLogo={defaultToken}
+                  logo={data?.input?.token?.logo || defaultToken}
+                />
               </div>
               <div class="text-left xl:text-xs text-xl uppercase font-medium">
-                {data.input.token.chain}
+                {data.chain || ""}
               </div>
             </div>
           </div>
@@ -76,13 +83,15 @@
           class="text-left xl:text-xs text-xl uppercase font-medium gap-2 flex items-center gap-4 h-full"
         >
           <div class="flex flex-col gap-2">
-            <div class="flex items-center gap-1">
-              <div class="h-7 w-7 bg-white rounded-full">
-                <Image defaultLogo={defaultToken} logo={defaultToken} />
+            {#each data?.current.tokens || [] as token}
+              <div class="flex items-center gap-1">
+                <div class="h-7 w-7 bg-white rounded-full">
+                  <Image defaultLogo={defaultToken} logo={token.token.logo} />
+                </div>
+                <TooltipNumber number={token?.amount || 0} type="amount" />
+                {token?.token?.chain || ""}
               </div>
-              <TooltipNumber number={data.current.amount} type="amount" />
-              {data.current.token.chain}
-            </div>
+            {/each}
           </div>
         </div>
       </div>
@@ -92,22 +101,46 @@
           class="text-left xl:text-xs text-xl uppercase font-medium gap-2 flex items-center gap-4 h-full"
         >
           <div class="flex flex-col gap-2">
-            <div class="flex items-center gap-1">
-              <div class="h-7 w-7 bg-white rounded-full">
-                <Image defaultLogo={defaultToken} logo={defaultToken} />
+            {#each data?.current?.yield || [] as yieldData}
+              <div class="flex items-center gap-1">
+                <div class="h-7 w-7 bg-white rounded-full">
+                  <Image
+                    defaultLogo={defaultToken}
+                    logo={yieldData?.token?.logo || defaultToken}
+                  />
+                </div>
+                <TooltipNumber number={yieldData?.amount || 0} type="amount" />
+                {yieldData?.token?.chain || ""}
               </div>
-              <TooltipNumber number={data.claimed.amount} type="amount" />
-              {data.claimed.token.chain}
-            </div>
+            {/each}
           </div>
         </div>
       </div>
+
+      <!--  <div class="py-3">
+        <div
+          class="text-left xl:text-xs text-xl uppercase font-medium gap-2 flex items-center gap-4 h-full"
+        >
+          <div class="flex flex-col gap-2">
+             <div class="flex items-center gap-1">
+              <div class="h-7 w-7 bg-white rounded-full">
+                <Image
+                  defaultLogo={defaultToken}
+                  logo={data?.claimed?.token?.logo || defaultToken}
+                />
+              </div>
+              <TooltipNumber number={data?.claimed.amount || 0} type="amount" />
+              {data?.claimed.token.chain || ""}
+            </div> 
+          </div>
+        </div>
+      </div>-->
 
       <div class="py-3">
         <div
           class="text-left xl:text-xs text-xl uppercase font-medium gap-2 flex items-center gap-4 h-full"
         >
-          {dayjs(data.current.endDate).format("DD/MM/YYYY")}
+          {dayjs(data?.current?.endDate).format("DD/MM/YYYY")}
         </div>
       </div>
 
