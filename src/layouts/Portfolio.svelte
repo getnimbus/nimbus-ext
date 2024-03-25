@@ -149,6 +149,7 @@
     queryFn: () => handleValidateAddress($wallet),
     staleTime: Infinity,
     retry: false,
+    enabled: Boolean($wallet && $wallet?.length !== 0),
   });
 
   const getSync = async () => {
@@ -410,6 +411,7 @@
         !$queryValidate.isFetching &&
         $chain.length !== 0 &&
         $chain !== "ALL" &&
+        $tab.length !== 0 &&
         $tab === "nft"
     ),
   });
@@ -427,6 +429,7 @@
             !$queryValidate.isFetching &&
             $chain.length !== 0 &&
             $chain === "ALL" &&
+            $tab.length !== 0 &&
             $tab === "nft"
         ),
       };
@@ -519,6 +522,7 @@
         !$queryValidate.isFetching &&
         $chain.length !== 0 &&
         $chain !== "ALL" &&
+        $tab.length !== 0 &&
         $tab === "token"
     ),
   });
@@ -536,6 +540,7 @@
             !$queryValidate.isFetching &&
             $chain.length !== 0 &&
             $chain === "ALL" &&
+            $tab.length !== 0 &&
             $tab === "token"
         ),
       };
@@ -869,6 +874,16 @@
       : $queryTokenHolding.isFetched &&
         $queryVaults.isFetched &&
         $queryOverview.isFetched;
+
+  $: {
+    if ($typeWallet?.length !== 0 && $typeWallet === "EVM") {
+      chainListQueries = chainList.slice(1).map((item) => item.value);
+    } else if ($typeWallet?.length !== 0 && $typeWallet === "MOVE") {
+      chainListQueries = chainMoveList.slice(1).map((item) => item.value);
+    } else {
+      chainListQueries = [chainMoveList[0]?.value];
+    }
+  }
 
   $: {
     if ($triggerUpdateBundle && !$queryValidate.isFetching) {

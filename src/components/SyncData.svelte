@@ -37,6 +37,7 @@
     queryFn: () => handleValidateAddress($wallet),
     staleTime: Infinity,
     retry: false,
+    enabled: Boolean($wallet && $wallet?.length !== 0),
   });
 
   const getSync = async () => {
