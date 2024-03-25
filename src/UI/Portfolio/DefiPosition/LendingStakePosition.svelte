@@ -131,16 +131,19 @@
         >
           <div class="flex flex-col gap-2">
             {#each itemRow?.yieldCollected || [] as reward}
-              <div class="flex items-center gap-1">
-                <div class="rounded-full w-6 h-6 overflow-hidden">
-                  <Image
-                    defaultLogo={defaultToken}
-                    logo={reward?.token?.logo || defaultToken}
-                  />
+              {#if reward?.amount !== 0}
+                <div class="flex items-center gap-1">
+                  <div class="rounded-full w-6 h-6 overflow-hidden">
+                    <Image
+                      defaultLogo={defaultToken}
+                      logo={reward?.token?.logo || defaultToken}
+                    />
+                  </div>
+
+                  <TooltipNumber number={reward?.amount} type="amount" />
+                  {reward?.token?.symbol || ""}
                 </div>
-                <TooltipNumber number={reward?.amount || 0} type="amount" />
-                {reward?.token?.symbol || ""}
-              </div>
+              {/if}
             {/each}
           </div>
         </div>
