@@ -16,21 +16,19 @@
 >
   <div class="bg_f4f5f8 grid grid-cols-5">
     <div class="col-spans-2 pl-3 py-3 rounded-tl-[10px]">
-      <div class="text-left xl:text-xs text-xl uppercase font-medium">
-        Liquidity Pool
-      </div>
+      <div class="text-left text-xs uppercase font-medium">Liquidity Pool</div>
     </div>
 
     <div class="py-3">
-      <div class="xl:text-xs text-xl uppercase font-medium">Token</div>
+      <div class="text-xs uppercase font-medium">Token</div>
     </div>
 
     <div class="py-3">
-      <div class="xl:text-xs text-xl uppercase font-medium">Yield</div>
+      <div class="text-xs uppercase font-medium">Yield</div>
     </div>
 
     <div class="py-3 pr-3 rounded-tr-[10px]">
-      <div class="text-right xl:text-xs text-xl uppercase font-medium">PnL</div>
+      <div class="text-right text-xs uppercase font-medium">PnL</div>
     </div>
   </div>
 
@@ -53,7 +51,7 @@
                     logo={item?.token?.logo || defaultToken}
                   />
                 </div>
-                <div class="text-left xl:text-xs text-xl uppercase font-medium">
+                <div class="text-left text-sm font-medium">
                   {item?.token?.chain || ""}
                 </div>
               </div>
@@ -70,7 +68,7 @@
         }`}
       >
         <div
-          class="text-left xl:text-xs text-xl uppercase font-medium gap-2 flex items-center gap-4 h-full"
+          class="text-left text-sm text_00000099 font-medium gap-2 flex items-center gap-4 h-full"
         >
           <div class="flex flex-col gap-2">
             {#each itemRow?.current?.tokens || [] as token}
@@ -97,7 +95,7 @@
         }`}
       >
         <div
-          class="text-left xl:text-xs text-xl font-medium gap-2 flex items-center gap-4 h-full"
+          class="text-left text-sm text_00000099 font-medium gap-2 flex items-center gap-4 h-full"
         >
           <div class="flex flex-col gap-2">
             {#each itemRow?.current?.yield || [] as yieldData}
@@ -145,7 +143,7 @@
         }`}
       >
         <div
-          class="text-right xl:text-xs text-xl uppercase font-medium flex justify-end h-full"
+          class="text-right text-sm text_00000099 font-medium flex justify-end h-full"
         >
           <div class="my-auto">
             <TooltipNumber number={0} type="value" />

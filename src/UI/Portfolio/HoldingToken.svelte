@@ -325,7 +325,6 @@
         trigger();
       },
     };
-
     window.Jupiter.init(config).catch((error) => {
       window.Jupiter.init(config);
     });
