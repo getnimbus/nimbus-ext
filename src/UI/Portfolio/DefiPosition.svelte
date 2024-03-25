@@ -3,15 +3,18 @@
   import axios from "axios";
   import { groupBy } from "lodash";
 
+  import Loading from "~/components/Loading.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import Positions from "./DefiPosition/Positions.svelte";
 
   export let conditionQuery;
 
   let positionsData = [];
+  let isLoading = false;
 
   const getSUIPositions = async (address) => {
     try {
+      isLoading = true;
       const authToken = localStorage.getItem("auth_token");
       const solanaToken = localStorage.getItem("solana_token");
       const suiToken = localStorage.getItem("sui_token");
@@ -30,6 +33,8 @@
       formatDataProtocol(response?.data || []);
     } catch (e) {
       console.log(e);
+    } finally {
+      isLoading = false;
     }
   };
 
@@ -71,11 +76,23 @@
 <ErrorBoundary>
   <div class="flex flex-col gap-4 px-3">
     <div class="xl:text-2xl text-3xl font-medium">Positions</div>
-    <div class="flex flex-col gap-6">
-      {#each positionsData as item}
-        <Positions data={item} />
-      {/each}
-    </div>
+    {#if isLoading}
+      <div class="flex justify-center items-center min-h-[300px]">
+        <Loading />
+      </div>
+    {:else}
+      <div class="min-h-[300px]">
+        {#if positionsData.length === 0}
+          <div class="flex justify-center items-center h-full">Empty</div>
+        {:else}
+          <div class="flex flex-col gap-6">
+            {#each positionsData as item}
+              <Positions data={item} />
+            {/each}
+          </div>
+        {/if}
+      </div>
+    {/if}
   </div>
 </ErrorBoundary>
 
