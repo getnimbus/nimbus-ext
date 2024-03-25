@@ -874,6 +874,16 @@
         $queryOverview.isFetched;
 
   $: {
+    if ($typeWallet?.length !== 0 && $typeWallet === "EVM") {
+      chainListQueries = chainList.slice(1).map((item) => item.value);
+    } else if ($typeWallet?.length !== 0 && $typeWallet === "MOVE") {
+      chainListQueries = chainMoveList.slice(1).map((item) => item.value);
+    } else {
+      chainListQueries = [chainMoveList[0]?.value];
+    }
+  }
+
+  $: {
     if ($triggerUpdateBundle && !$queryValidate.isFetching) {
       handleGetAllData("reload");
       triggerUpdateBundle.update((n) => (n = false));
