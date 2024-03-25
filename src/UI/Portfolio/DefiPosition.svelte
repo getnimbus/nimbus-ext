@@ -1,19 +1,14 @@
 <script lang="ts">
   import { wallet } from "~/store";
   import axios from "axios";
+  import { groupBy } from "lodash";
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
-  import LendingStakePosition from "./DefiPosition/LendingStakePosition.svelte";
-  import BorrowPosition from "./DefiPosition/BorrowPosition.svelte";
-  import VestPosition from "./DefiPosition/VestPosition.svelte";
-  import AmmPosition from "./DefiPosition/AMMPosition.svelte";
-  import ClmmPosition from "./DefiPosition/CLMMPosition.svelte";
-  import FarmPosition from "./DefiPosition/FarmPosition.svelte";
-  import { protocolData } from "./DefiPosition/hardCodeDefiData";
+  import Positions from "./DefiPosition/Positions.svelte";
 
   export let conditionQuery;
 
-  let data = [];
+  let positionsData = [];
 
   const getSUIPositions = async (address) => {
     try {
@@ -23,18 +18,16 @@
       const tonToken = localStorage.getItem("ton_token");
       const evmToken = localStorage.getItem("evm_token");
 
-      const response: any = await axios.get(
-        `https://sui-defi.getnimbus.io/positions/${address}`,
-        {
+      const response: any = await axios
+        .get(`https://sui-defi.getnimbus.io/positions/${address}`, {
           headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
             Authorization: `${evmToken || solanaToken || suiToken || tonToken || authToken}`,
           },
-        }
-      );
-      // TODO: groupBy data by protocol name
-      data = response?.data?.data || [];
+        })
+        .then((res) => res.data);
+      formatDataProtocol(response?.data || []);
     } catch (e) {
       console.log(e);
     }
@@ -45,26 +38,42 @@
       getSUIPositions($wallet);
     }
   }
+
+  const formatDataProtocol = (data) => {
+    const formatData = data.map((item) => {
+      return {
+        ...item,
+        protocol: item?.meta?.protocol?.name || "",
+      };
+    });
+    const groupProtocol = groupBy(formatData, "protocol");
+    const protocolList = Object.getOwnPropertyNames(groupProtocol);
+
+    positionsData = protocolList.map((item) => {
+      const groupType = groupBy(groupProtocol[item], "type");
+      const typeList = Object.getOwnPropertyNames(groupType);
+
+      return {
+        protocol: item,
+        data: typeList.map((type) => {
+          return {
+            type,
+            data: groupType[type],
+          };
+        }),
+      };
+    });
+
+    console.log("HELLO: ", positionsData);
+  };
 </script>
 
 <ErrorBoundary>
   <div class="flex flex-col gap-4 px-3">
     <div class="xl:text-2xl text-3xl font-medium">Positions</div>
     <div class="flex flex-col gap-6">
-      {#each data as item}
-        {#if item.type === "Lending" || item.type === "Stake"}
-          <LendingStakePosition data={item} />
-        {:else if item.type === "Borrow"}
-          <BorrowPosition data={item} />
-        {:else if item.type === "Vest"}
-          <VestPosition data={item} />
-        {:else if item.type === "AMM"}
-          <AmmPosition data={item} />
-        {:else if item.type === "CLMM"}
-          <ClmmPosition data={item} />
-        {:else if item.type === "Farm"}
-          <FarmPosition data={item} />
-        {/if}
+      {#each positionsData as item}
+        <Positions data={item} />
       {/each}
     </div>
   </div>

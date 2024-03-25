@@ -6,72 +6,50 @@
   import type { Borrow } from "./hardCodeDefiData";
 
   import defaultToken from "~/assets/defaultToken.png";
-  import { onMount } from "svelte";
 
-  export let data: Borrow;
-
-  let isStickyTableToken = false;
-  let tableTokenHeader;
-
-  onMount(() => {
-    const handleScroll = () => {
-      const clientRectTokenHeader = tableTokenHeader?.getBoundingClientRect();
-      isStickyTableToken = clientRectTokenHeader?.top <= 0;
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  });
+  export let data;
 </script>
 
 <div
-  class={`flex flex-col gap-4 rounded-[20px] xl:p-6 py-4 px-3 ${
-    $isDarkMode ? "bg-[#222222]" : "bg-[#fff] xl:border border_0000001a"
+  class={`rounded-[10px] overflow-hidden w-full ${
+    $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
   }`}
 >
-  <div class="flex justify-between items-center">
-    <div>
-      {data?.meta?.protocol?.name || ""}
+  <div class="bg_f4f5f8 grid grid-cols-6">
+    <div class="col-spans-2 pl-3 py-3 rounded-tl-[10px]">
+      <div class="text-left xl:text-xs text-xl uppercase font-medium">
+        Invested
+      </div>
     </div>
-    <div></div>
+
+    <div class="py-3">
+      <div class="xl:text-xs text-xl uppercase font-medium">Token</div>
+    </div>
+
+    <div class="py-3">
+      <div class="xl:text-xs text-xl uppercase font-medium">Yield</div>
+    </div>
+
+    <div class="py-3">
+      <div class="xl:text-xs text-xl uppercase font-medium">Reward</div>
+    </div>
+
+    <div class="py-3 pr-3 rounded-tr-[10px]">
+      <div class="text-right xl:text-xs text-xl uppercase font-medium">PnL</div>
+    </div>
   </div>
 
-  <div
-    class={`rounded-[10px] overflow-hidden w-full ${
-      $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
-    }`}
-  >
-    <div class="bg_f4f5f8 grid grid-cols-6">
-      <div class="col-spans-2 pl-3 py-3 rounded-tl-[10px]">
-        <div class="text-left xl:text-xs text-xl uppercase font-medium">
-          Invested
-        </div>
-      </div>
-
-      <div class="py-3">
-        <div class="xl:text-xs text-xl uppercase font-medium">Token</div>
-      </div>
-
-      <div class="py-3">
-        <div class="xl:text-xs text-xl uppercase font-medium">Yield</div>
-      </div>
-
-      <div class="py-3">
-        <div class="xl:text-xs text-xl uppercase font-medium">Reward</div>
-      </div>
-
-      <div class="py-3 pr-3 rounded-tr-[10px]">
-        <div class="text-right xl:text-xs text-xl uppercase font-medium">
-          PnL
-        </div>
-      </div>
-    </div>
-
-    <div class={`grid grid-cols-6 group transition-all`}>
-      <div class="col-spans-2 pl-3 py-3 rounded-tl-[10px]">
+  {#each data as itemRow}
+    <div class="grid grid-cols-6 group transition-all">
+      <div
+        class={`col-spans-2 pl-3 py-3 ${
+          $isDarkMode
+            ? "bg-[#131313] group-hover:bg-[#000]"
+            : "bg-white group-hover:bg-gray-100"
+        }`}
+      >
         <div class="flex flex-col gap-2 m-auto h-full">
-          {#each data.input as item1}
+          {#each itemRow.input as item1}
             <div class="flex flex-col gap-2">
               {#each item1?.input || [] as item}
                 <div class="flex items-center gap-3">
@@ -93,12 +71,18 @@
         </div>
       </div>
 
-      <div class="py-3">
+      <div
+        class={`py-3 ${
+          $isDarkMode
+            ? "bg-[#131313] group-hover:bg-[#000]"
+            : "bg-white group-hover:bg-gray-100"
+        }`}
+      >
         <div
           class="text-left xl:text-xs text-xl uppercase font-medium gap-2 flex items-center gap-4 h-full"
         >
           <div class="flex flex-col gap-2">
-            {#each data.current.tokens as token}
+            {#each itemRow.current.tokens as token}
               <div class="flex items-center gap-1">
                 <div class="rounded-full w-[30px] h-[30px] overflow-hidden">
                   <Image
@@ -114,12 +98,18 @@
         </div>
       </div>
 
-      <div class="py-3">
+      <div
+        class={`py-3 ${
+          $isDarkMode
+            ? "bg-[#131313] group-hover:bg-[#000]"
+            : "bg-white group-hover:bg-gray-100"
+        }`}
+      >
         <div
           class="text-left xl:text-xs text-xl uppercase font-medium gap-2 flex items-center gap-4 h-full"
         >
           <div class="flex flex-col gap-2">
-            {#each data?.current?.yield || [] as yieldData}
+            {#each itemRow?.current?.yield || [] as yieldData}
               <div class="flex items-center gap-1">
                 <div class="rounded-full w-[30px] h-[30px] overflow-hidden">
                   <Image
@@ -135,12 +125,18 @@
         </div>
       </div>
 
-      <div class="py-3">
+      <div
+        class={`py-3 ${
+          $isDarkMode
+            ? "bg-[#131313] group-hover:bg-[#000]"
+            : "bg-white group-hover:bg-gray-100"
+        }`}
+      >
         <div
           class="text-left xl:text-xs text-xl uppercase font-medium gap-2 flex items-center gap-4 h-full"
         >
           <div class="flex flex-col gap-2">
-            {#each data?.yieldCollected || [] as reward}
+            {#each itemRow?.yieldCollected || [] as reward}
               <div class="flex items-center gap-1">
                 <div class="rounded-full w-[30px] h-[30px] overflow-hidden">
                   <Image
@@ -156,7 +152,13 @@
         </div>
       </div>
 
-      <div class="py-3 pr-3 rounded-tr-[10px]">
+      <div
+        class={`py-3 pr-3 ${
+          $isDarkMode
+            ? "bg-[#131313] group-hover:bg-[#000]"
+            : "bg-white group-hover:bg-gray-100"
+        }`}
+      >
         <div
           class="text-right xl:text-xs text-xl uppercase font-medium flex justify-end h-full"
         >
@@ -166,7 +168,7 @@
         </div>
       </div>
     </div>
-  </div>
+  {/each}
 </div>
 
 <style windi:preflights:global windi:safelist:global></style>
