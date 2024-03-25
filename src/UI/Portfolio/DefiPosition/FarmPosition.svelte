@@ -73,7 +73,7 @@
                   <Image defaultLogo={defaultToken} logo={defaultToken} />
                 </div>
                 <TooltipNumber number={token.amount} type="amount" />
-                {token.token.chain}
+                {token.token.symbol}
               </div>
             {/each}
           </div>
@@ -91,7 +91,7 @@
                   <Image defaultLogo={defaultToken} logo={defaultToken} />
                 </div>
                 <TooltipNumber number={yieldData.amount} type="amount" />
-                {yieldData.token.chain}
+                {yieldData.token.symbol}
                 {#if yieldData.claimable}
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -175,7 +175,7 @@
               />
             </div>
             <TooltipNumber number={data?.current?.amount || 0} type="amount" />
-            {data?.current?.token?.chain || ""}
+            {data?.current?.token?.symbol || ""}
           </div>
         </div>
       </div>
@@ -195,7 +195,7 @@
                 />
               </div>
               <TooltipNumber number={fee?.amount || 0} type="amount" />
-              {fee?.token?.chain || ""}
+              {fee?.token?.symbol || ""}
             </div>
           {/each}
         </div>

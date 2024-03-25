@@ -7,7 +7,7 @@
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import Positions from "./DefiPosition/Positions.svelte";
 
-  export let conditionQuery;
+  export let conditionQuery: boolean;
 
   let positionsData = [];
   let isLoading = false;

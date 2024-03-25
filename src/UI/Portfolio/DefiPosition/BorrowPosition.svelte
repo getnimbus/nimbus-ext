@@ -91,7 +91,7 @@
                   />
                 </div>
                 <TooltipNumber number={token?.amount || 0} type="amount" />
-                {token?.token?.chain || ""}
+                {token?.token?.symbol || ""}
               </div>
             {/each}
           </div>
@@ -118,7 +118,7 @@
                   />
                 </div>
                 <TooltipNumber number={yieldData?.amount || 0} type="amount" />
-                {yieldData?.token?.chain || ""}
+                {yieldData?.token?.symbol || ""}
               </div>
             {/each}
           </div>
@@ -145,7 +145,7 @@
                   />
                 </div>
                 <TooltipNumber number={reward?.amount || 0} type="amount" />
-                {reward?.token?.chain || ""}
+                {reward?.token?.symbol || ""}
               </div>
             {/each}
           </div>
