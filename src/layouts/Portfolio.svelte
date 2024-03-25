@@ -17,7 +17,6 @@
     typeWallet,
     selectedBundle,
     triggerUpdateBundle,
-    userPublicAddress,
   } from "~/store";
   import mixpanel from "mixpanel-browser";
   import { nimbus } from "~/lib/network";
@@ -40,6 +39,7 @@
   import Charts from "~/UI/Portfolio/Charts.svelte";
   import Holding from "~/UI/Portfolio/Holding.svelte";
   import PerformanceSummary from "~/UI/Portfolio/PerformanceSummary.svelte";
+  import DefiPosition from "~/UI/Portfolio/DefiPosition.svelte";
   import RiskReturn from "~/UI/Portfolio/RiskReturn.svelte";
   import News from "~/UI/Portfolio/News.svelte";
   import Positions from "~/UI/Portfolio/Positions.svelte";
@@ -871,16 +871,6 @@
         $queryOverview.isFetched;
 
   $: {
-    if ($typeWallet?.length !== 0 && $typeWallet === "EVM") {
-      chainListQueries = chainList.slice(1).map((item) => item.value);
-    } else if ($typeWallet?.length !== 0 && $typeWallet === "MOVE") {
-      chainListQueries = chainMoveList.slice(1).map((item) => item.value);
-    } else {
-      chainListQueries = [chainMoveList[0]?.value];
-    }
-  }
-
-  $: {
     if ($triggerUpdateBundle && !$queryValidate.isFetching) {
       handleGetAllData("reload");
       triggerUpdateBundle.update((n) => (n = false));
@@ -991,7 +981,7 @@
                 </AnimateSharedLayout>
               </div>
 
-              {#if $tab !== "summary"}
+              {#if $tab === "token" || $tab === "nft"}
                 <Charts
                   {handleSelectedTableTokenHolding}
                   isLoading={$queryOverview.isFetching}
@@ -1042,6 +1032,17 @@
 
               {#if $tab === "summary"}
                 <PerformanceSummary />
+              {/if}
+
+              {#if $tab === "defi"}
+                <DefiPosition
+                  conditionQuery={Boolean(
+                    enabledFetchAllData &&
+                      $wallet &&
+                      $wallet?.length !== 0 &&
+                      !$queryValidate.isFetching
+                  )}
+                />
               {/if}
 
               <!-- <News isLoading={false} data={newsData} /> -->
