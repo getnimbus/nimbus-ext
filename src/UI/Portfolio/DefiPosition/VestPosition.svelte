@@ -9,6 +9,26 @@
   import defaultToken from "~/assets/defaultToken.png";
 
   export let data;
+
+  const handleCalculatePnl = (data: any) => {
+    if (data?.yieldCollected?.length === 0 || !data?.yieldCollected) {
+      return 0;
+    }
+
+    const totalInputValue = data?.input?.reduce(
+      (prev, item) => prev + Number(item.value),
+      0
+    );
+
+    const totalYieldCollected = data?.yieldCollected?.reduce(
+      (prev, item) => prev + Number(item.value),
+      0
+    );
+
+    return totalInputValue === 0
+      ? 0
+      : totalYieldCollected / Math.abs(totalInputValue);
+  };
 </script>
 
 <div
@@ -147,7 +167,7 @@
           class="text-right text-sm text_00000099 text-sm font-medium flex justify-end h-full"
         >
           <div class="my-auto">
-            <TooltipNumber number={0} type="value" />
+            <TooltipNumber number={handleCalculatePnl(itemRow)} type="value" />
           </div>
         </div>
       </div>

@@ -68,8 +68,6 @@
         }),
       };
     });
-
-    console.log("HELLO: ", positionsData);
   };
 </script>
 
@@ -82,9 +80,11 @@
           <Loading />
         </div>
       {:else}
-        <div class="min-h-[300px]">
+        <div>
           {#if positionsData.length === 0}
-            <div class="flex justify-center items-center h-full">Empty</div>
+            <div class="flex justify-center items-center min-h-[300px]">
+              Empty
+            </div>
           {:else}
             <div class="flex flex-col gap-6">
               {#each positionsData as item}

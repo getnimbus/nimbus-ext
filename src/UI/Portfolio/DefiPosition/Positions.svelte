@@ -1,5 +1,6 @@
 <script lang="ts">
   import { isDarkMode } from "~/store";
+  import { flatten } from "lodash";
 
   import LendingStakePosition from "./LendingStakePosition.svelte";
   import BorrowPosition from "./BorrowPosition.svelte";
@@ -9,6 +10,37 @@
   import FarmPosition from "./FarmPosition.svelte";
 
   export let data;
+
+  $: {
+    if (data) {
+      handleCalculateTotalProtocol(data);
+    }
+  }
+
+  const handleCalculateTotalProtocol = (data: any) => {
+    const formatData = data?.data.map((item) => {
+      return item.data.map((eachItem) => {
+        return {
+          ...eachItem,
+          totalInputValue: eachItem?.input?.reduce(
+            (prev, item) => prev + Number(item.value),
+            0
+          ),
+          totalYieldCollected: eachItem?.yieldCollected?.reduce(
+            (prev, item) => prev + Number(item.value),
+            0
+          ),
+        };
+      });
+    });
+    const flattenData: any = flatten(formatData);
+    console.log("flattenData: ", flattenData);
+
+    const totalProtocolInput = flattenData.reduce(
+      (prev, item) => prev + Number(item.totalInputValue),
+      0
+    );
+  };
 </script>
 
 <div
