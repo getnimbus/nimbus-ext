@@ -57,16 +57,22 @@
 
   {#each data?.data as item}
     {#if item.type === "Lending" || item.type === "Staking"}
+      <div>{item.type}</div>
       <LendingStakePosition data={item.data} />
     {:else if item.type === "Borrow"}
+      <div>{item.type}</div>
       <BorrowPosition data={item.data} />
     {:else if item.type === "Vest"}
+      <div>{item.type}</div>
       <VestPosition data={item.data} />
     {:else if item.type === "AMM"}
+      <div>{item.type}</div>
       <AmmPosition data={item.data} />
     {:else if item.type === "CLMM"}
+      <div>{item.type}</div>
       <ClmmPosition data={item.data} />
     {:else if item.type === "Farm"}
+      <div>{item.type}</div>
       <FarmPosition data={item.data} />
     {/if}
   {/each}
