@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { wallet } from "~/store";
+  import { typeWallet, wallet } from "~/store";
   import axios from "axios";
   import { groupBy } from "lodash";
 
@@ -76,21 +76,27 @@
 <ErrorBoundary>
   <div class="flex flex-col gap-4 px-3">
     <div class="xl:text-2xl text-3xl font-medium">Positions</div>
-    {#if isLoading}
-      <div class="flex justify-center items-center min-h-[300px]">
-        <Loading />
-      </div>
+    {#if $typeWallet === "MOVE"}
+      {#if isLoading}
+        <div class="flex justify-center items-center min-h-[300px]">
+          <Loading />
+        </div>
+      {:else}
+        <div class="min-h-[300px]">
+          {#if positionsData.length === 0}
+            <div class="flex justify-center items-center h-full">Empty</div>
+          {:else}
+            <div class="flex flex-col gap-6">
+              {#each positionsData as item}
+                <Positions data={item} />
+              {/each}
+            </div>
+          {/if}
+        </div>
+      {/if}
     {:else}
-      <div class="min-h-[300px]">
-        {#if positionsData.length === 0}
-          <div class="flex justify-center items-center h-full">Empty</div>
-        {:else}
-          <div class="flex flex-col gap-6">
-            {#each positionsData as item}
-              <Positions data={item} />
-            {/each}
-          </div>
-        {/if}
+      <div class="text-lg min-h-[300px] flex items-center justify-center">
+        Coming soon 🚀
       </div>
     {/if}
   </div>

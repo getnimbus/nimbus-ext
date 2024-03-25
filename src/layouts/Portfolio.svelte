@@ -130,7 +130,6 @@
   let selectedDataPieChart = {};
 
   let chainListQueries = [];
-  let portfolioTabList = [];
 
   const handleValidateAddress = async (address: string) => {
     if (address) {
@@ -870,23 +869,6 @@
         $queryOverview.isFetched;
 
   $: {
-    if ($typeWallet?.length !== 0 && $typeWallet === "EVM") {
-      chainListQueries = chainList.slice(1).map((item) => item.value);
-      portfolioTabList = typePortfolioPage.filter(
-        (item) => item.value !== "defi"
-      );
-    } else if ($typeWallet?.length !== 0 && $typeWallet === "MOVE") {
-      chainListQueries = chainMoveList.slice(1).map((item) => item.value);
-      portfolioTabList = typePortfolioPage;
-    } else {
-      chainListQueries = [chainMoveList[0]?.value];
-      portfolioTabList = typePortfolioPage.filter(
-        (item) => item.value !== "defi"
-      );
-    }
-  }
-
-  $: {
     if ($triggerUpdateBundle && !$queryValidate.isFetching) {
       handleGetAllData("reload");
       triggerUpdateBundle.update((n) => (n = false));
@@ -959,7 +941,7 @@
             >
               <div class="flex items-center gap-1">
                 <AnimateSharedLayout>
-                  {#each portfolioTabList as type}
+                  {#each typePortfolioPage as type}
                     <div
                       class="relative cursor-pointer xl:text-base text-lg font-medium py-1 px-3 rounded-[100px] transition-all"
                       id={type.id}
