@@ -148,6 +148,7 @@
     queryFn: () => handleValidateAddress($wallet),
     staleTime: Infinity,
     retry: false,
+    enabled: Boolean($wallet && $wallet?.length !== 0),
   });
 
   const getSync = async () => {
@@ -409,6 +410,7 @@
         !$queryValidate.isFetching &&
         $chain.length !== 0 &&
         $chain !== "ALL" &&
+        $tab.length !== 0 &&
         $tab === "nft"
     ),
   });
@@ -426,6 +428,7 @@
             !$queryValidate.isFetching &&
             $chain.length !== 0 &&
             $chain === "ALL" &&
+            $tab.length !== 0 &&
             $tab === "nft"
         ),
       };
@@ -518,6 +521,7 @@
         !$queryValidate.isFetching &&
         $chain.length !== 0 &&
         $chain !== "ALL" &&
+        $tab.length !== 0 &&
         $tab === "token"
     ),
   });
@@ -535,6 +539,7 @@
             !$queryValidate.isFetching &&
             $chain.length !== 0 &&
             $chain === "ALL" &&
+            $tab.length !== 0 &&
             $tab === "token"
         ),
       };
