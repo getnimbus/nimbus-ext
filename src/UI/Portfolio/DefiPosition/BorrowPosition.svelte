@@ -47,21 +47,17 @@
         }`}
       >
         <div class="flex flex-col gap-2 m-auto h-full">
-          {#each itemRow.input as item1}
-            <div class="flex flex-col gap-2">
-              {#each item1?.input || [] as item}
-                <div class="flex items-center gap-3">
-                  <div class="rounded-full w-6 h-6 overflow-hidden">
-                    <Image
-                      defaultLogo={defaultToken}
-                      logo={item?.token?.logo || defaultToken}
-                    />
-                  </div>
-                  <div class="text-left text-sm font-medium">
-                    {item?.token?.chain || ""}
-                  </div>
-                </div>
-              {/each}
+          {#each itemRow.input as item}
+            <div class="flex items-center gap-3">
+              <div class="rounded-full w-6 h-6 overflow-hidden">
+                <Image
+                  defaultLogo={defaultToken}
+                  logo={item?.token?.logo || defaultToken}
+                />
+              </div>
+              <div class="text-left text-sm font-medium">
+                {item?.token?.name || ""}
+              </div>
             </div>
           {/each}
         </div>
