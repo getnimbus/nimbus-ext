@@ -82,7 +82,7 @@
                   />
                 </div>
                 <TooltipNumber number={token?.amount || 0} type="amount" />
-                {token?.token?.chain || ""}
+                {token?.token?.symbol || ""}
               </div>
             {/each}
           </div>
@@ -109,7 +109,7 @@
                   />
                 </div>
                 <TooltipNumber number={yieldData?.amount || 0} type="amount" />
-                {yieldData?.token?.chain || ""}
+                {yieldData?.token?.symbol || ""}
                 {#if yieldData?.claimable || false}
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
