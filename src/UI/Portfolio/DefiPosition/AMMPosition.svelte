@@ -52,7 +52,7 @@
                   />
                 </div>
                 <div class="text-left text-sm font-medium">
-                  {item?.token?.chain || ""}
+                  {item?.token?.name || ""}
                 </div>
               </div>
             {/each}
