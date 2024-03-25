@@ -40,7 +40,6 @@ export const sharpeRatioFilter = [
   },
 ];
 
-
 export const whaleCategories = [
   {
     label: "All",
@@ -228,11 +227,6 @@ export const typePortfolioPage = [
     id: "view-the-summary",
     label: "Summary",
     value: "summary",
-  },
-  {
-    id: "view-defi-position",
-    label: "Defi",
-    value: "defi",
   },
 ];
 

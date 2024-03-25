@@ -39,7 +39,6 @@
   import Charts from "~/UI/Portfolio/Charts.svelte";
   import Holding from "~/UI/Portfolio/Holding.svelte";
   import PerformanceSummary from "~/UI/Portfolio/PerformanceSummary.svelte";
-  import DefiPosition from "~/UI/Portfolio/DefiPosition.svelte";
   import RiskReturn from "~/UI/Portfolio/RiskReturn.svelte";
   import News from "~/UI/Portfolio/News.svelte";
   import Positions from "~/UI/Portfolio/Positions.svelte";
