@@ -52,7 +52,7 @@
         <div class="flex items-center gap-2 m-auto h-full">
           <div class="flex flex-col gap-2">
             <div class="flex items-center gap-3">
-              <div class="rounded-full w-[30px] h-[30px] overflow-hidden">
+              <div class="rounded-full w-6 h-6 overflow-hidden">
                 <Image
                   defaultLogo={defaultToken}
                   logo={itemRow?.input?.token?.logo || defaultToken}
@@ -79,7 +79,7 @@
           <div class="flex flex-col gap-2">
             {#each itemRow?.current.tokens || [] as token}
               <div class="flex items-center gap-1">
-                <div class="rounded-full w-[30px] h-[30px] overflow-hidden">
+                <div class="rounded-full w-6 h-6 overflow-hidden">
                   <Image defaultLogo={defaultToken} logo={token.token.logo} />
                 </div>
                 <TooltipNumber number={token?.amount || 0} type="amount" />
@@ -103,7 +103,7 @@
           <div class="flex flex-col gap-2">
             {#each itemRow?.current?.yield || [] as yieldData}
               <div class="flex items-center gap-1">
-                <div class="rounded-full w-[30px] h-[30px] overflow-hidden">
+                <div class="rounded-full w-6 h-6 overflow-hidden">
                   <Image
                     defaultLogo={defaultToken}
                     logo={yieldData?.token?.logo || defaultToken}

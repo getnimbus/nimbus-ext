@@ -53,7 +53,7 @@
             <div class="flex flex-col gap-2">
               {#each item1?.input || [] as item}
                 <div class="flex items-center gap-3">
-                  <div class="rounded-full w-[30px] h-[30px] overflow-hidden">
+                  <div class="rounded-full w-6 h-6 overflow-hidden">
                     <Image
                       defaultLogo={defaultToken}
                       logo={item?.token?.logo || defaultToken}
@@ -84,7 +84,7 @@
           <div class="flex flex-col gap-2">
             {#each itemRow.current.tokens as token}
               <div class="flex items-center gap-1">
-                <div class="rounded-full w-[30px] h-[30px] overflow-hidden">
+                <div class="rounded-full w-6 h-6 overflow-hidden">
                   <Image
                     defaultLogo={defaultToken}
                     logo={token?.token?.logo || defaultToken}
@@ -111,7 +111,7 @@
           <div class="flex flex-col gap-2">
             {#each itemRow?.current?.yield || [] as yieldData}
               <div class="flex items-center gap-1">
-                <div class="rounded-full w-[30px] h-[30px] overflow-hidden">
+                <div class="rounded-full w-6 h-6 overflow-hidden">
                   <Image
                     defaultLogo={defaultToken}
                     logo={yieldData?.token?.logo || defaultToken}
@@ -138,7 +138,7 @@
           <div class="flex flex-col gap-2">
             {#each itemRow?.yieldCollected || [] as reward}
               <div class="flex items-center gap-1">
-                <div class="rounded-full w-[30px] h-[30px] overflow-hidden">
+                <div class="rounded-full w-6 h-6 overflow-hidden">
                   <Image
                     defaultLogo={defaultToken}
                     logo={reward?.token?.logo || defaultToken}

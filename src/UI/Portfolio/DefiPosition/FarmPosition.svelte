@@ -50,7 +50,7 @@
           <div class="flex flex-col gap-2">
             {#each itemInput.input as item}
               <div class="flex items-center gap-3">
-                <div class="rounded-full w-[30px] h-[30px] overflow-hidden">
+                <div class="rounded-full w-6 h-6 overflow-hidden">
                   <Image defaultLogo={defaultToken} logo={item.token.logo} />
                 </div>
                 <div class="text-left xl:text-xs text-xl uppercase font-medium">
@@ -69,7 +69,7 @@
           <div class="flex flex-col gap-2">
             {#each itemInput.current.tokens as token}
               <div class="flex items-center gap-1">
-                <div class="rounded-full w-[30px] h-[30px] overflow-hidden">
+                <div class="rounded-full w-6 h-6 overflow-hidden">
                   <Image defaultLogo={defaultToken} logo={defaultToken} />
                 </div>
                 <TooltipNumber number={token.amount} type="amount" />
@@ -87,7 +87,7 @@
           <div class="flex flex-col gap-2">
             {#each itemInput.current.yield as yieldData}
               <div class="flex items-center gap-1">
-                <div class="rounded-full w-[30px] h-[30px] overflow-hidden">
+                <div class="rounded-full w-6 h-6 overflow-hidden">
                   <Image defaultLogo={defaultToken} logo={defaultToken} />
                 </div>
                 <TooltipNumber number={yieldData.amount} type="amount" />
@@ -168,7 +168,7 @@
       >
         <div class="flex flex-col gap-2">
           <div class="flex items-center gap-1">
-            <div class="rounded-full w-[30px] h-[30px] overflow-hidden">
+            <div class="rounded-full w-6 h-6 overflow-hidden">
               <Image
                 defaultLogo={defaultToken}
                 logo={data?.current?.token?.logo || defaultToken}
@@ -188,7 +188,7 @@
         <div class="flex flex-col gap-2">
           {#each data?.feeCollected || [] as fee}
             <div class="flex items-center gap-1">
-              <div class="rounded-full w-[30px] h-[30px] overflow-hidden">
+              <div class="rounded-full w-6 h-6 overflow-hidden">
                 <Image
                   defaultLogo={defaultToken}
                   logo={fee?.token?.logo || defaultToken}
