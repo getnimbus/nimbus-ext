@@ -140,8 +140,10 @@
                     logo={reward?.token?.logo || defaultToken}
                   />
                 </div>
-                <TooltipNumber number={reward?.amount || 0} type="amount" />
-                {reward?.token?.symbol || ""}
+                {#if reward?.amount !== 0}
+                  <TooltipNumber number={reward?.amount} type="amount" />
+                  {reward?.token?.symbol || ""}
+                {/if}
               </div>
             {/each}
           </div>
