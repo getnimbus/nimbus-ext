@@ -42,7 +42,6 @@
 
   import Logo from "~/assets/logo-white.svg";
   import LogoBlack from "~/assets/logo-2.png";
-  import LogoWhite from "~/assets/logo-white.svg";
   import PortfolioIcon from "~/assets/portfolio.svg";
   import MarketIcon from "~/assets/market.svg";
   import WhaleIcon from "~/assets/whale.svg";
@@ -1435,7 +1434,7 @@
     >
       <div class="flex items-center justify-between py-3 border-b-[1px]">
         <img
-          src={$isDarkMode ? LogoWhite : LogoBlack}
+          src={$isDarkMode ? Logo : LogoBlack}
           alt=""
           class="-ml-6 w-[170px] h-[80px]"
         />
