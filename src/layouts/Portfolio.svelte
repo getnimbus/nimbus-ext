@@ -47,6 +47,7 @@
 
   import Reload from "~/assets/reload.svg";
   import defaultToken from "~/assets/defaultToken.png";
+  import PointsTracker from "~/UI/Portfolio/PointsTracker.svelte";
   import DefiPosition from "~/UI/Portfolio/DefiPosition.svelte";
 
   const MultipleLang = {
@@ -995,7 +996,7 @@
                 </AnimateSharedLayout>
               </div>
 
-              {#if $tab === "token" || $tab === "nft"}
+              {#if ($tab === "token" || $tab === "nft") && $tab !== "points"}
                 <Charts
                   {handleSelectedTableTokenHolding}
                   isLoading={$queryOverview.isFetching}
@@ -1046,6 +1047,10 @@
 
               {#if $tab === "summary"}
                 <PerformanceSummary />
+              {/if}
+
+              {#if $tab === "points"}
+                <PointsTracker />
               {/if}
 
               {#if $tab === "defi"}
