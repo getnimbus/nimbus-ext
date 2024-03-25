@@ -99,37 +99,42 @@
         >
           <div class="flex flex-col gap-2">
             {#each itemRow?.current?.yield || [] as yieldData}
-              <div class="flex items-center gap-1">
-                <div class="rounded-full w-6 h-6 overflow-hidden">
-                  <Image
-                    defaultLogo={defaultToken}
-                    logo={yieldData?.token?.logo || defaultToken}
+              {#if yieldData?.amount !== 0}
+                <div class="flex items-center gap-1">
+                  <div class="rounded-full w-6 h-6 overflow-hidden">
+                    <Image
+                      defaultLogo={defaultToken}
+                      logo={yieldData?.token?.logo || defaultToken}
+                    />
+                  </div>
+                  <TooltipNumber
+                    number={yieldData?.amount || 0}
+                    type="amount"
                   />
+                  {yieldData?.token?.symbol || ""}
+                  {#if yieldData?.claimable || false}
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="10"
+                      height="10"
+                      viewBox="0 0 36 36"
+                    >
+                      <rect width="36" height="36" fill="none" />
+                      <circle cx="18" cy="18" r="18" fill="#78b159" />
+                    </svg>
+                  {:else}
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="18"
+                      height="18"
+                      viewBox="0 0 36 36"
+                    >
+                      <rect width="10" height="10" fill="none" />
+                      <circle cx="18" cy="18" r="18" fill="#dd2e44" />
+                    </svg>
+                  {/if}
                 </div>
-                <TooltipNumber number={yieldData?.amount || 0} type="amount" />
-                {yieldData?.token?.symbol || ""}
-                {#if yieldData?.claimable || false}
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="10"
-                    height="10"
-                    viewBox="0 0 36 36"
-                  >
-                    <rect width="36" height="36" fill="none" />
-                    <circle cx="18" cy="18" r="18" fill="#78b159" />
-                  </svg>
-                {:else}
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="18"
-                    height="18"
-                    viewBox="0 0 36 36"
-                  >
-                    <rect width="10" height="10" fill="none" />
-                    <circle cx="18" cy="18" r="18" fill="#dd2e44" />
-                  </svg>
-                {/if}
-              </div>
+              {/if}
             {/each}
           </div>
         </div>
