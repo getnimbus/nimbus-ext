@@ -103,16 +103,21 @@
         >
           <div class="flex flex-col gap-2">
             {#each itemRow?.current?.yield || [] as yieldData}
-              <div class="flex items-center gap-1">
-                <div class="rounded-full w-6 h-6 overflow-hidden">
-                  <Image
-                    defaultLogo={defaultToken}
-                    logo={yieldData?.token?.logo || defaultToken}
+              {#if yieldData?.amount !== 0}
+                <div class="flex items-center gap-1">
+                  <div class="rounded-full w-6 h-6 overflow-hidden">
+                    <Image
+                      defaultLogo={defaultToken}
+                      logo={yieldData?.token?.logo || defaultToken}
+                    />
+                  </div>
+                  <TooltipNumber
+                    number={yieldData?.amount || 0}
+                    type="amount"
                   />
+                  {yieldData?.token?.symbol || ""}
                 </div>
-                <TooltipNumber number={yieldData?.amount || 0} type="amount" />
-                {yieldData?.token?.symbol || ""}
-              </div>
+              {/if}
             {/each}
           </div>
         </div>
