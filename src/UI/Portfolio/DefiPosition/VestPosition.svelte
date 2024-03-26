@@ -50,7 +50,7 @@
     </div>
 
     <div class="py-3">
-      <div class="text-xs uppercase font-medium">End Date</div>
+      <div class="text-xs uppercase font-medium">Lock Until</div>
     </div>
 
     <div class="py-3 pr-3 rounded-tr-[10px]">

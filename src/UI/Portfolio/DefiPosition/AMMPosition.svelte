@@ -132,27 +132,6 @@
                     type="amount"
                   />
                   {yieldData?.token?.symbol || ""}
-                  {#if yieldData?.claimable || false}
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="10"
-                      height="10"
-                      viewBox="0 0 36 36"
-                    >
-                      <rect width="36" height="36" fill="none" />
-                      <circle cx="18" cy="18" r="18" fill="#78b159" />
-                    </svg>
-                  {:else}
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="18"
-                      height="18"
-                      viewBox="0 0 36 36"
-                    >
-                      <rect width="10" height="10" fill="none" />
-                      <circle cx="18" cy="18" r="18" fill="#dd2e44" />
-                    </svg>
-                  {/if}
                 </div>
               {/if}
             {/each}

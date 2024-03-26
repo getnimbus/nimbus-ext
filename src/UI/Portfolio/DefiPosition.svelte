@@ -61,6 +61,31 @@
       return {
         protocol: item,
         data: typeList.map((type) => {
+          if (type === "Borrow") {
+            const borrowData = groupType[type].filter((eachData) => {
+              return eachData.input.find((inputItem) => !inputItem.type);
+            });
+
+            const borrowLendingStakingData = groupType[type].filter(
+              (eachData) => {
+                return eachData.input.find((inputItem) => inputItem.type);
+              }
+            );
+
+            return {
+              type,
+              data: [
+                {
+                  type,
+                  data: borrowData,
+                },
+                {
+                  type: "BorrowLendingStaking",
+                  data: borrowLendingStakingData,
+                },
+              ],
+            };
+          }
           return {
             type,
             data: groupType[type],
@@ -72,7 +97,7 @@
 </script>
 
 <ErrorBoundary>
-  <div class="flex flex-col gap-4 px-3">
+  <div class="flex flex-col gap-2 px-3">
     <div class="xl:text-2xl text-3xl font-medium">Positions</div>
     {#if $typeWallet === "MOVE"}
       {#if isLoading}
