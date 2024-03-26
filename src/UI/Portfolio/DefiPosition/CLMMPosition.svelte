@@ -5,6 +5,7 @@
   import Image from "~/components/Image.svelte";
 
   import defaultToken from "~/assets/defaultToken.png";
+  import SliderRangeInput from "~/components/SliderRangeInput.svelte";
 
   export let data;
 
@@ -34,7 +35,7 @@
     $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
   }`}
 >
-  <div class="bg_f4f5f8 grid grid-cols-6">
+  <div class="bg_f4f5f8 grid grid-cols-7">
     <div class="col-spans-2 pl-3 py-3 rounded-tl-[10px]">
       <div class="text-left text-xs uppercase font-medium">Liquidity Pool</div>
     </div>
@@ -51,13 +52,17 @@
       <div class="text-xs uppercase font-medium">Reward</div>
     </div>
 
-    <div class="py-3 pr-3 rounded-tr-[10px]">
+    <div class="py-3">
       <div class="text-right text-xs uppercase font-medium">PnL</div>
+    </div>
+
+    <div class="py-3 pr-3 rounded-tr-[10px]">
+      <div class="text-right text-xs uppercase font-medium">Current Price</div>
     </div>
   </div>
 
   {#each data as itemRow}
-    <div class="grid grid-cols-6 group transition-all">
+    <div class="grid grid-cols-7 group transition-all">
       <div
         class={`col-spans-2 pl-3 py-3 ${
           $isDarkMode
@@ -184,7 +189,7 @@
       </div>
 
       <div
-        class={`py-3 pr-3 ${
+        class={`py-3 ${
           $isDarkMode
             ? "bg-[#131313] group-hover:bg-[#000]"
             : "bg-white group-hover:bg-gray-100"
@@ -196,6 +201,20 @@
           <div class="my-auto">
             <TooltipNumber number={handleCalculatePnl(itemRow)} type="value" />
           </div>
+        </div>
+      </div>
+
+      <div
+        class={`py-3 pr-3 ${
+          $isDarkMode
+            ? "bg-[#131313] group-hover:bg-[#000]"
+            : "bg-white group-hover:bg-gray-100"
+        }`}
+      >
+        <div
+          class="text-right text-sm text_00000099 font-medium flex justify-end items-center h-full"
+        >
+          <SliderRangeInput />
         </div>
       </div>
     </div>

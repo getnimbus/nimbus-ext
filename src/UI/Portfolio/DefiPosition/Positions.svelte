@@ -44,7 +44,7 @@
 </script>
 
 <div
-  class={`flex flex-col gap-4 rounded-[20px] xl:p-6 py-4 px-3 ${
+  class={`flex flex-col gap-4 rounded-[20px] py-4 ${
     $isDarkMode ? "bg-[#222222]" : "bg-[#fff] xl:border border_0000001a"
   }`}
 >
@@ -66,10 +66,10 @@
       <div>{item.type}</div>
       <VestPosition data={item.data} />
     {:else if item.type === "AMM"}
-      <div>{item.type}</div>
+      <div>Liquidity Pool</div>
       <AmmPosition data={item.data} />
     {:else if item.type === "CLMM"}
-      <div>{item.type}</div>
+      <div>Liquidity Pool</div>
       <ClmmPosition data={item.data} />
     {:else if item.type === "Farm"}
       <div>{item.type}</div>
