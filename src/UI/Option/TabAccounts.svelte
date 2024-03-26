@@ -140,6 +140,7 @@
   let isLoadingEditDEX = false;
   let isLoadingConnectCEX = false;
   let showDisableAddWallet = false;
+  let showDisableAddBundle = false;
   let isLoadingDeleteBundles = false;
   let isOpenConfirmDeleteBundles = false;
 
@@ -901,6 +902,9 @@
   };
 
   const handleToggleCheckAll = (e) => {
+    if (isDisabled) {
+      return;
+    }
     if (e.target.checked) {
       selectedAddresses = listAddressWithoutBundle.map((item) => item.address);
       checkAll = true;
@@ -1030,7 +1034,7 @@
                       }}
                     >
                       <div
-                        class={`relative z-2 ${
+                        class={`relative z-1 ${
                           selectedBundle === item && "text-white"
                         }`}
                       >
@@ -1043,7 +1047,7 @@
                           transition={{ type: "spring", duration: 0.6 }}
                         >
                           <div
-                            class="absolute inset-0 z-1 rounded-full bg-[#1E96FC]"
+                            class="absolute inset-0 z-0 rounded-full bg-[#1E96FC]"
                             use:motion
                           />
                         </Motion>
@@ -1095,18 +1099,68 @@
 
             <div class="flex items-center gap-4">
               <!-- add bundle -->
-              <div class="w-max">
-                <Button
-                  variant="tertiary"
-                  on:click={() => {
-                    isAddBundle = true;
-                    handleResetBundleState();
-                    selectedAddresses = [];
-                  }}
-                >
-                  <img src={Plus} alt="" class="w-3 h-3" />
-                  <div class="text-white">Add bundle</div>
-                </Button>
+              <div
+                class="relative w-max"
+                on:mouseenter={() => {
+                  if (
+                    isDisabled ||
+                    ($user && Object.keys($user).length === 0)
+                  ) {
+                    showDisableAddBundle = true;
+                  }
+                }}
+                on:mouseleave={() => {
+                  if (
+                    isDisabled ||
+                    ($user && Object.keys($user).length === 0)
+                  ) {
+                    showDisableAddBundle = false;
+                  }
+                }}
+              >
+                {#if isDisabled || ($user && Object.keys($user).length === 0)}
+                  <Button variant="disabled" disabled>
+                    <img
+                      src={$isDarkMode ? PlusBlack : Plus}
+                      alt=""
+                      class="w-3 h-3"
+                    />
+                    <div
+                      class={`${$isDarkMode ? "text-gray-400" : "text-white"}`}
+                    >
+                      Add bundle
+                    </div>
+                  </Button>
+                {:else}
+                  <Button
+                    variant="tertiary"
+                    on:click={() => {
+                      isAddBundle = true;
+                      handleResetBundleState();
+                      selectedAddresses = [];
+                    }}
+                  >
+                    <img
+                      src={$isDarkMode ? PlusBlack : Plus}
+                      alt=""
+                      class="w-3 h-3"
+                    />
+                    <div
+                      class={`${$isDarkMode ? "text-gray-400" : "text-white"}`}
+                    >
+                      Add bundle
+                    </div>
+                  </Button>
+                {/if}
+
+                {#if showDisableAddBundle}
+                  <div
+                    class="xl:block hidden absolute left-0 -translate-x-1/2 transform -top-12"
+                    style="z-index: 2147483648;"
+                  >
+                    <Tooltip text={tooltipDisableAddBtn} />
+                  </div>
+                {/if}
               </div>
 
               <!-- add account -->
@@ -1178,7 +1232,7 @@
                 {/if}
                 {#if showDisableAddWallet}
                   <div
-                    class="absolute right-0 transform -top-12"
+                    class="xl:block hidden absolute right-0 transform -top-12"
                     style="z-index: 2147483648;"
                   >
                     <Tooltip text={tooltipDisableAddBtn} />
@@ -1193,7 +1247,6 @@
   {/if}
 
   <div class="border-t-[1.5px] border_0000000d pt-4">
-    <!-- render table -->
     {#if isAddBundle || (selectedBundle && selectedBundle !== null && Object.keys(selectedBundle).length !== 0)}
       <form
         on:submit|preventDefault={onSubmitBundle}
@@ -1222,7 +1275,9 @@
                 : "text-[#5E656B] placeholder-[#5E656B]"
             }`}
             required
-            disabled={selectedBundle?.name === "Your wallets" ? true : false}
+            disabled={selectedBundle?.name === "Your wallets" || isDisabled
+              ? true
+              : false}
             bind:value={nameBundle}
           />
         </div>
@@ -1241,7 +1296,8 @@
                     type="checkbox"
                     on:change={handleToggleCheckAll}
                     bind:checked={checkAll}
-                    class="cursor-pointer relative w-5 h-5 appearance-none rounded-[0.25rem] border outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white checked:focus:after:bg-transparent dark:border-neutral-600 dark:checked:border-primary dark:checked:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]"
+                    disabled={isDisabled}
+                    class={`${isDisabled ? "opacity-50" : "opacity-100"} cursor-pointer relative w-5 h-5 appearance-none rounded-[0.25rem] border outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white checked:focus:after:bg-transparent dark:border-neutral-600 dark:checked:border-primary dark:checked:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]`}
                   />
                   <div class="text-xl font-semibold uppercase xl:text-xs">
                     {MultipleLang.content.label_header_table}
@@ -1305,7 +1361,8 @@
                               type="checkbox"
                               value={item.address}
                               bind:group={selectedAddresses}
-                              class="cursor-pointer relative w-5 h-5 appearance-none rounded-[0.25rem] border outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white checked:focus:after:bg-transparent dark:border-neutral-600 dark:checked:border-primary dark:checked:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]"
+                              disabled={isDisabled}
+                              class={`${isDisabled ? "opacity-50" : "opacity-100"} cursor-pointer relative w-5 h-5 appearance-none rounded-[0.25rem] border outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white checked:focus:after:bg-transparent dark:border-neutral-600 dark:checked:border-primary dark:checked:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]`}
                             />
                           </div>
                           <div class="flex items-center gap-2">
@@ -1379,7 +1436,8 @@
               type="checkbox"
               on:change={handleToggleCheckAll}
               bind:checked={checkAll}
-              class="cursor-pointer relative w-5 h-5 appearance-none rounded-[0.25rem] border outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white checked:focus:after:bg-transparent dark:border-neutral-600 dark:checked:border-primary dark:checked:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]"
+              disabled={isDisabled}
+              class={`${isDisabled ? "opacity-50" : "opacity-100"} cursor-pointer relative w-5 h-5 appearance-none rounded-[0.25rem] border outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white checked:focus:after:bg-transparent dark:border-neutral-600 dark:checked:border-primary dark:checked:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]`}
             />
             <div class="uppercase">All</div>
           </div>
@@ -1394,7 +1452,8 @@
                         type="checkbox"
                         value={item.address}
                         bind:group={selectedAddresses}
-                        class="cursor-pointer relative w-5 h-5 appearance-none rounded-[0.25rem] border outline-none"
+                        disabled={isDisabled}
+                        class={`${isDisabled ? "opacity-50" : "opacity-100"} cursor-pointer relative w-5 h-5 appearance-none rounded-[0.25rem] border outline-none`}
                       />
                     </div>
                     <div class="flex items-center gap-2">
@@ -1448,6 +1507,7 @@
                 isAddBundle = false;
                 handleResetBundleState();
               }}
+              disabled={isDisabled}
             >
               {MultipleLang.content.modal_cancel}</Button
             >
@@ -1457,6 +1517,7 @@
               type="submit"
               variant="tertiary"
               isLoading={isLoadingBundle}
+              disabled={isDisabled}
             >
               {#if selectedBundle && Object.keys(selectedBundle).length !== 0}
                 Save
@@ -1523,6 +1584,104 @@
                   </div>
                 </td>
               </tr>
+            </tbody>
+          {:else if isDisabled}
+            <tbody>
+              {#if (listAddressWithoutBundle && listAddressWithoutBundle.length === 0) || $query.isError}
+                <tr>
+                  <td colspan="3">
+                    <div
+                      class="flex items-center justify-center h-full px-3 py-4 text-2xl xl:text-base"
+                    >
+                      No address
+                    </div>
+                  </td>
+                </tr>
+              {:else}
+                {#each listAddressWithoutBundle as item (item.id)}
+                  <tr class="transition-all group">
+                    <td
+                      class={`pl-3 py-3 ${
+                        $isDarkMode
+                          ? "group-hover:bg-[#000]"
+                          : "group-hover:bg-gray-100"
+                      }`}
+                    >
+                      <div
+                        class="flex items-center gap-3 text-2xl text-left xl:text-base"
+                      >
+                        <svg
+                          width="18"
+                          height="18"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="opacity-50"
+                        >
+                          <path
+                            d="M21 7.75H3C2.59 7.75 2.25 7.41 2.25 7C2.25 6.59 2.59 6.25 3 6.25H21C21.41 6.25 21.75 6.59 21.75 7C21.75 7.41 21.41 7.75 21 7.75ZM21 12.75H3C2.59 12.75 2.25 12.41 2.25 12C2.25 11.59 2.59 11.25 3 11.25H21C21.41 11.25 21.75 11.59 21.75 12C21.75 12.41 21.41 12.75 21 12.75ZM21 17.75H3C2.59 17.75 2.25 17.41 2.25 17C2.25 16.59 2.59 16.25 3 16.25H21C21.41 16.25 21.75 16.59 21.75 17C21.75 17.41 21.41 17.75 21 17.75Z"
+                            fill="#9ca3af"
+                          />
+                        </svg>
+                        <div class="flex items-center gap-2">
+                          <img
+                            src={item.logo}
+                            alt=""
+                            class="w-5 h-5 xl:w-4 xl:h-4 rounded-full"
+                          />
+                          {item.label}
+                        </div>
+                      </div>
+                    </td>
+
+                    <td
+                      class={`py-3 ${
+                        $isDarkMode
+                          ? "group-hover:bg-[#000]"
+                          : "group-hover:bg-gray-100"
+                      }`}
+                    >
+                      <div
+                        class="bg-[#6AC7F533] text_27326F w-max px-3 py-1 rounded-[5px] xl:text-base text-2xl"
+                      >
+                        <Copy
+                          address={item.address}
+                          iconColor={`${$isDarkMode ? "#fff" : "#000"}`}
+                          color={`${$isDarkMode ? "#fff" : "#000"}`}
+                        />
+                      </div>
+                    </td>
+
+                    <td
+                      class={`py-3 pr-3 ${
+                        $isDarkMode
+                          ? "group-hover:bg-[#000]"
+                          : "group-hover:bg-gray-100"
+                      }`}
+                    >
+                      <div class="flex justify-end gap-6">
+                        {#if item.label !== "My address" || item.address !== $userPublicAddress}
+                          <div
+                            class="text-2xl font-semibold text-red-600 transition-all cursor-pointer hover:underline xl:text-base"
+                            on:click={() => {
+                              isOpenConfirmDelete = true;
+                              selectedWallet = item;
+                            }}
+                          >
+                            {MultipleLang.content.modal_delete}
+                          </div>
+                        {/if}
+                        <div
+                          class="text-2xl font-semibold text-blue-600 transition-all cursor-pointer hover:underline xl:text-base"
+                          on:click={() => handleSelectedEdit(item)}
+                        >
+                          {MultipleLang.content.modal_edit}
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                {/each}
+              {/if}
             </tbody>
           {:else}
             <tbody

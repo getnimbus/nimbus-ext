@@ -38,6 +38,10 @@
     darkMode
       ? window.document.body.classList.add("dark")
       : window.document.body.classList.remove("dark");
+
+    auto = false;
+    isAutoDarkMode.update((n) => (n = false));
+    localStorage.setItem("auto_theme", "false");
   };
 
   const handleToggleAuto = () => {
@@ -67,70 +71,69 @@
 </script>
 
 <div class="w-max flex items-center gap-2">
-  <div class="text-2xl xl:text-base text_00000066">Auto Theme</div>
-  <label class="switch">
-    <input type="checkbox" checked={auto} on:change={handleToggleAuto} />
-    <span class="slider" />
-  </label>
-</div>
-<div
-  class={`w-max flex items-center gap-2 ${auto ? "opacity-50" : "opacity-100"}`}
->
-  {#if darkMode}
-    <div class="text-2xl xl:text-base text_00000066">Dark</div>
-  {:else}
-    <div class="text-2xl xl:text-base text_00000066">Light</div>
-  {/if}
   <input
     checked={darkMode}
     on:click={handleSwitchDarkMode}
-    disabled={auto}
     type="checkbox"
     id="theme-toggle"
     class="hidden"
   />
-  <label for="theme-toggle" class="cursor-pointer">
-    <div
-      class={`flex flex-row items-center justify-between p-1 gap-3 rounded-3xl ${
-        darkMode ? "bg-[#283149]" : "bg-gray-200"
-      }`}
-    >
-      <AnimateSharedLayout>
-        {#each typeMode as type}
-          <div
-            class="relative rounded-full p-1 transition-all"
-            on:click={() => {
-              if (!auto) {
-                selectedTypeMode = type.value;
-              }
-            }}
-          >
-            <div
-              class={`relative z-20 ${
-                selectedTypeMode === type.value ? "text-white" : "text-gray-400"
-              }`}
-            >
-              <Icon
-                name={type.icon}
-                role="img"
-                class="select-none border-none focus:outline-none focus:ring-0"
-              />
-            </div>
-            {#if type.value === selectedTypeMode}
-              <Motion
-                let:motion
-                layoutId="active-pill"
-                transition={{ type: "spring", duration: 0.6 }}
-              >
-                <div
-                  class="absolute inset-0 rounded-full bg-[#1E96FC] z-10"
-                  use:motion
-                />
-              </Motion>
-            {/if}
-          </div>
-        {/each}
-      </AnimateSharedLayout>
+  <div
+    class={`cursor-pointer font-medium xl:text-lg text-2xl ${auto ? "text-[#3b82f6]" : "text-gray-300"}`}
+    on:click={handleToggleAuto}
+  >
+    Auto
+  </div>
+  <div class="text-gray-300 mb-1 xl:text-lg text-2xl">/</div>
+  <label
+    for="theme-toggle"
+    class={`cursor-pointer ${auto ? "opacity-40" : "opacity-100"}`}
+  >
+    <div class="flex items-center justify-between gap-2">
+      <div
+        class={`${
+          selectedTypeMode === "light" ? "text-[#3b82f6]" : "text-gray-300"
+        }`}
+      >
+        <div class="xl:block hidden">
+          <Icon
+            name="sun-solid"
+            role="img"
+            class="select-none border-none focus:outline-none focus:ring-0"
+            size="lg"
+          />
+        </div>
+        <div class="xl:hidden block">
+          <Icon
+            name="sun-solid"
+            role="img"
+            class="select-none border-none focus:outline-none focus:ring-0"
+            size="xl"
+          />
+        </div>
+      </div>
+      <div class="text-gray-300 mb-1 xl:text-lg text-2xl">/</div>
+      <div
+        class={`${
+          selectedTypeMode === "dark" ? "text-[#3b82f6]" : "text-gray-300"
+        }`}
+      >
+        <div class="xl:block hidden">
+          <Icon
+            name="moon-solid"
+            role="img"
+            class="select-none border-none focus:outline-none focus:ring-0"
+          />
+        </div>
+        <div class="xl:hidden block">
+          <Icon
+            name="moon-solid"
+            role="img"
+            class="select-none border-none focus:outline-none focus:ring-0"
+            size="xl"
+          />
+        </div>
+      </div>
     </div>
   </label>
 </div>

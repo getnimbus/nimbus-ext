@@ -224,7 +224,7 @@
             }}
           >
             <div
-              class={`relative z-2 ${
+              class={`relative z-1 ${
                 type.value === selectedTimeFrame && "text-white"
               }`}
             >
@@ -237,7 +237,7 @@
                 transition={{ type: "spring", duration: 0.6 }}
               >
                 <div
-                  class="absolute inset-0 rounded-full z-1 bg-[#1E96FC]"
+                  class="absolute inset-0 rounded-full z-0 bg-[#1E96FC]"
                   use:motion
                 />
               </Motion>

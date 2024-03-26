@@ -50,10 +50,10 @@
     });
   }
 
-  const checkTimeZone = () => {
+  const checkTimeZone = (condition: boolean) => {
     const currentHour = dayjs().hour();
     const isDark = currentHour >= 18 || currentHour < 6; // Assuming 6 PM to 6 AM as night
-    if ($isAutoDarkMode) {
+    if ($isAutoDarkMode || condition) {
       if (isDark) {
         window.document.body.classList.add("dark");
         isDarkMode.update((n) => (n = true));
@@ -69,12 +69,12 @@
   const interval = setInterval(checkTimeZone, 60000);
 
   onMount(() => {
-    checkTimeZone();
-
     if (localStorage.auto_theme === "true") {
       isAutoDarkMode.update((n) => (n = true));
+      checkTimeZone(true);
     } else {
       isAutoDarkMode.update((n) => (n = false));
+      checkTimeZone(false);
     }
 
     if (

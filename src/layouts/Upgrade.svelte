@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onMount } from "svelte";
   import { nimbus } from "~/lib/network";
   import { isDarkMode } from "~/store";
   import { Toast } from "flowbite-svelte";
@@ -15,7 +16,6 @@
 
   import Ethereum from "~/assets/chains/ethereum.png";
   import Solana from "~/assets/chains/solana.png";
-  import { onMount } from "svelte";
 
   const navigate = useNavigate();
 
@@ -152,6 +152,10 @@
       // }
 
       if (chainValue === "ETH") {
+        await publicClient?.switchChain({
+          id: 1,
+        });
+
         let price =
           selectedPackage.selectedTypePackage === "year"
             ? selectedPackage.price * 12

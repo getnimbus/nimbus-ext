@@ -25,7 +25,7 @@
   const queryClient = useQueryClient();
 
   const handleDailyCheckin = async () => {
-    const response = await nimbus.get(`/v2/checkin/${$userPublicAddress}`);
+    const response = await nimbus.get(`/v2/checkin`);
     return response.data;
   };
 
@@ -125,7 +125,7 @@
                 on:click={() => (selectedType = type.value)}
               >
                 <div
-                  class={`relative z-2 ${
+                  class={`relative z-1 ${
                     selectedType === type.value && "text-white"
                   }`}
                 >
@@ -138,7 +138,7 @@
                     transition={{ type: "spring", duration: 0.6 }}
                   >
                     <div
-                      class="absolute inset-0 rounded-full bg-[#1E96FC] z-1"
+                      class="absolute inset-0 rounded-full bg-[#1E96FC] z-0"
                       use:motion
                     />
                   </Motion>
