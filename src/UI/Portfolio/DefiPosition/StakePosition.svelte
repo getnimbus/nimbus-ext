@@ -3,9 +3,9 @@
 
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import Image from "~/components/Image.svelte";
+  import type { Stake } from "./hardCodeDefiData";
 
   import defaultToken from "~/assets/defaultToken.png";
-  import SliderRangeInput from "~/components/SliderRangeInput.svelte";
 
   export let data;
 
@@ -35,9 +35,9 @@
     $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
   }`}
 >
-  <div class="bg_f4f5f8 grid grid-cols-7">
+  <div class="bg_f4f5f8 grid grid-cols-6">
     <div class="col-spans-2 pl-3 py-3 rounded-tl-[10px]">
-      <div class="text-left text-xs uppercase font-medium">Liquidity Pool</div>
+      <div class="text-left text-xs uppercase font-medium">Invested</div>
     </div>
 
     <div class="py-3">
@@ -52,17 +52,13 @@
       <div class="text-xs uppercase font-medium">Reward</div>
     </div>
 
-    <div class="py-3">
-      <div class="text-right text-xs uppercase font-medium">PnL</div>
-    </div>
-
     <div class="py-3 pr-3 rounded-tr-[10px]">
-      <div class="text-right text-xs uppercase font-medium">Current Price</div>
+      <div class="text-right text-xs uppercase font-medium">PnL</div>
     </div>
   </div>
 
   {#each data as itemRow}
-    <div class="grid grid-cols-7 group transition-all">
+    <div class="grid grid-cols-6 group transition-all">
       <div
         class={`col-spans-2 pl-3 py-3 ${
           $isDarkMode
@@ -161,9 +157,7 @@
           <div class="flex flex-col gap-2">
             {#each itemRow?.yieldCollected || [] as reward}
               {#if reward?.amount !== 0}
-                <div
-                  class={`flex items-center gap-1 p-2 rounded-full ${$isDarkMode ? "bg-gray-700" : "bg-gray-100"}`}
-                >
+                <div class="flex items-center gap-1">
                   <div class="rounded-full w-6 h-6 overflow-hidden">
                     <Image
                       defaultLogo={defaultToken}
@@ -171,35 +165,11 @@
                     />
                   </div>
 
-                  <div
-                    class={`${reward?.amount >= 0 ? "text-green-500" : "text-red-500"}`}
-                  >
-                    {#if reward?.amount < 0}
-                      -<TooltipNumber number={reward?.amount} type="amount" />
-                    {:else}
-                      +<TooltipNumber number={reward?.amount} type="amount" />
-                    {/if}
-                  </div>
+                  <TooltipNumber number={reward?.amount} type="amount" />
                   {reward?.token?.symbol || ""}
                 </div>
               {/if}
             {/each}
-          </div>
-        </div>
-      </div>
-
-      <div
-        class={`py-3 ${
-          $isDarkMode
-            ? "bg-[#131313] group-hover:bg-[#000]"
-            : "bg-white group-hover:bg-gray-100"
-        }`}
-      >
-        <div
-          class="text-right text-sm text_00000099 font-medium flex justify-end h-full"
-        >
-          <div class="my-auto">
-            <TooltipNumber number={handleCalculatePnl(itemRow)} type="value" />
           </div>
         </div>
       </div>
@@ -212,9 +182,11 @@
         }`}
       >
         <div
-          class="text-right text-sm text_00000099 font-medium flex justify-end items-center h-full"
+          class="text-right text-sm text_00000099 font-medium flex justify-end h-full"
         >
-          <SliderRangeInput currentInput={itemRow?.current} />
+          <div class="my-auto">
+            <TooltipNumber number={handleCalculatePnl(itemRow)} type="value" />
+          </div>
         </div>
       </div>
     </div>
