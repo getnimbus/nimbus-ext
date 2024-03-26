@@ -1,7 +1,8 @@
 <script lang="ts">
-  import { typeWallet, wallet } from "~/store";
+  import { totalPositions, typeWallet, wallet } from "~/store";
   import axios from "axios";
   import { groupBy } from "lodash";
+  import { flatten } from "lodash";
 
   import Loading from "~/components/Loading.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
@@ -54,7 +55,7 @@
     const groupProtocol = groupBy(formatData, "protocol");
     const protocolList = Object.getOwnPropertyNames(groupProtocol);
 
-    positionsData = protocolList.map((item) => {
+    const formatPositionsData = protocolList.map((item) => {
       const groupType = groupBy(groupProtocol[item], "type");
       const typeList = Object.getOwnPropertyNames(groupType);
 
@@ -93,6 +94,97 @@
         }),
       };
     });
+
+    positionsData = formatPositionsData.map((item) => {
+      return {
+        ...item,
+        sum: handleCalculateTotalProtocol(item.data),
+      };
+    });
+
+    const sum = positionsData?.reduce((prev, item) => {
+      return prev + Number(item.sum);
+    }, 0);
+
+    totalPositions.update((n) => (n = sum));
+  };
+
+  const handleCalculateTotalProtocol = (data: any) => {
+    const formatData = data.map((item) => {
+      return item.data.map((eachItem) => {
+        if (eachItem.type === "Borrow") {
+          const listInput: any = flatten(
+            eachItem.data.map((item) => {
+              return item.current.tokens;
+            })
+          );
+          const listYieldCollected: any = flatten(
+            eachItem.data.map((item) => {
+              return item.current.yield;
+            })
+          );
+          return {
+            totalInputValue:
+              listInput?.reduce((prev, item) => prev + Number(item.value), 0) ||
+              0,
+            totalYieldCollected:
+              listYieldCollected?.reduce(
+                (prev, item) => prev + Number(item.value),
+                0
+              ) || 0,
+          };
+        }
+
+        if (eachItem.type === "BorrowLendingStaking") {
+          const listInput: any = flatten(
+            eachItem.data.map((item) => {
+              return item.current.tokens;
+            })
+          );
+          const listYieldCollected: any = flatten(
+            eachItem.data.map((item) => {
+              return item.current.yield;
+            })
+          );
+          return {
+            totalInputValue:
+              listInput?.reduce((prev, item) => prev + Number(item.value), 0) ||
+              0,
+            totalYieldCollected:
+              listYieldCollected?.reduce(
+                (prev, item) => prev + Number(item.value),
+                0
+              ) || 0,
+          };
+        }
+
+        return {
+          totalInputValue:
+            eachItem?.current?.tokens?.reduce(
+              (prev, item) => prev + Number(item.value),
+              0
+            ) || 0,
+          totalYieldCollected:
+            eachItem?.current?.yield?.reduce(
+              (prev, item) => prev + Number(item.value),
+              0
+            ) || 0,
+        };
+      });
+    });
+    const flattenData: any = flatten(formatData);
+
+    const totalProtocolInput = flattenData.reduce(
+      (prev, item) => prev + Number(item.totalInputValue),
+      0
+    );
+
+    const totalProtocolYieldCollected = flattenData.reduce(
+      (prev, item) => prev + Number(item.totalYieldCollected),
+      0
+    );
+
+    return totalProtocolInput + totalProtocolYieldCollected;
   };
 </script>
 
