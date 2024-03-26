@@ -1,5 +1,6 @@
 <script lang="ts">
-  import LendingStakePosition from "./LendingStakePosition.svelte";
+  import LendingPosition from "./LendingPosition.svelte";
+  import StakePosition from "./StakePosition.svelte";
   import BorrowPosition from "./BorrowPosition.svelte";
   import VestPosition from "./VestPosition.svelte";
   import AmmPosition from "./AMMPosition.svelte";
@@ -21,10 +22,15 @@
   </div>
 
   {#each data?.data as item}
-    {#if item.type === "Lending" || item.type === "Staking"}
+    {#if item.type === "Lending"}
       <div class="flex flex-col gap-2">
         <div class="text-base font-medium">{item.type}</div>
-        <LendingStakePosition data={item.data} />
+        <LendingPosition data={item.data} />
+      </div>
+    {:else if item.type === "Staking"}
+      <div class="flex flex-col gap-2">
+        <div class="text-base font-medium">{item.type}</div>
+        <StakePosition data={item.data} />
       </div>
     {:else if item.type === "Borrow"}
       <div class="flex flex-col gap-2">

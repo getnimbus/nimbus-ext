@@ -4,7 +4,7 @@
 
   import Image from "~/components/Image.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
-  import LendingStakePosition from "./LendingStakePosition.svelte";
+  import LendingPosition from "./LendingPosition.svelte";
   import type { Borrow } from "./hardCodeDefiData";
 
   import defaultToken from "~/assets/defaultToken.png";
@@ -39,7 +39,7 @@
 </script>
 
 {#if dataBorrowLendingStaking && dataBorrowLendingStaking?.data.length !== 0}
-  <LendingStakePosition
+  <LendingPosition
     data={flatten(
       dataBorrowLendingStaking.data.map((item) => {
         return item.input.map((eachInput) => eachInput);
