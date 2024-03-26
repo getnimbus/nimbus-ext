@@ -214,7 +214,7 @@
         <div
           class="text-right text-sm text_00000099 font-medium flex justify-end items-center h-full"
         >
-          <SliderRangeInput />
+          <SliderRangeInput currentInput={itemRow?.current} />
         </div>
       </div>
     </div>
