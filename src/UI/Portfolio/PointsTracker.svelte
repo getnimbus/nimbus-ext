@@ -42,8 +42,6 @@
     },
   };
 
-  let clickOnX = false;
-
   const getPointsAirdrop = async () => {
     return await nimbus.get(`/airdrop-points/${$wallet}`);
   };
@@ -147,8 +145,6 @@
                           <a
                             href={protocolInfo[item?.protocolLabel].twitter}
                             target="_blank"
-                            on:mouseenter={() => (clickOnX = true)}
-                            on:mouseleave={() => (clickOnX = false)}
                           >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
@@ -160,13 +156,13 @@
                               <g fill="none">
                                 <g clip-path="url(#primeTwitter0)">
                                   <path
-                                    fill="currentColor"
+                                    fill="#606060"
                                     d="M11.025.656h2.147L8.482 6.03L14 13.344H9.68L6.294 8.909l-3.87 4.435H.275l5.016-5.75L0 .657h4.43L7.486 4.71zm-.755 11.4h1.19L3.78 1.877H2.504z"
                                   />
                                 </g>
                                 <defs>
                                   <clipPath id="primeTwitter0">
-                                    <path fill="#fff" d="M0 0h14v14H0z" />
+                                    <path fill="#606060" d="M0 0h14v14H0z" />
                                   </clipPath>
                                 </defs>
                               </g>
@@ -177,8 +173,6 @@
                           <a
                             href={protocolInfo[item?.protocolLabel].website}
                             target="_blank"
-                            on:mouseenter={() => (clickOnX = true)}
-                            on:mouseleave={() => (clickOnX = false)}
                           >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
@@ -186,9 +180,9 @@
                               height="18"
                               viewBox="0 0 256 256"
                             >
-                              <rect width="14" height="14" fill="none" />
+                              <rect width="14" height="14" fill="#606060" />
                               <path
-                                fill="currentColor"
+                                fill="#606060"
                                 d="M137.54 186.36a8 8 0 0 1 0 11.31l-9.94 10a56 56 0 0 1-79.22-79.27l24.12-24.12a56 56 0 0 1 76.81-2.28a8 8 0 1 1-10.64 12a40 40 0 0 0-54.85 1.63L59.7 139.72a40 40 0 0 0 56.58 56.58l9.94-9.94a8 8 0 0 1 11.32 0m70.08-138a56.08 56.08 0 0 0-79.22 0l-9.94 9.95a8 8 0 0 0 11.32 11.31l9.94-9.94a40 40 0 0 1 56.58 56.58l-24.12 24.14a40 40 0 0 1-54.85 1.6a8 8 0 1 0-10.64 12a56 56 0 0 0 76.81-2.26l24.12-24.12a56.08 56.08 0 0 0 0-79.24Z"
                               />
                             </svg>
@@ -246,6 +240,14 @@
         </table>
       {/each}
     {/if}
+
+    <div class="py-3 px-3 text-right text-sm">
+      Data by <a
+        href="https://solana-airdrop-checker.solworks.dev/"
+        class="hover:underline"
+        >https://solana-airdrop-checker.solworks.dev
+      </a>
+    </div>
   </div>
 
   <!-- Mobile  -->
@@ -279,8 +281,6 @@
                   <a
                     href={protocolInfo[item?.protocolLabel].twitter}
                     target="_blank"
-                    on:mouseenter={() => (clickOnX = true)}
-                    on:mouseleave={() => (clickOnX = false)}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -289,10 +289,10 @@
                       viewBox="0 0 14 14"
                     >
                       <rect width="14" height="14" fill="none" />
-                      <g fill="none">
+                      <g fill="#606060">
                         <g clip-path="url(#primeTwitter0)">
                           <path
-                            fill="currentColor"
+                            fill="#606060"
                             d="M11.025.656h2.147L8.482 6.03L14 13.344H9.68L6.294 8.909l-3.87 4.435H.275l5.016-5.75L0 .657h4.43L7.486 4.71zm-.755 11.4h1.19L3.78 1.877H2.504z"
                           />
                         </g>
@@ -309,8 +309,6 @@
                   <a
                     href={protocolInfo[item?.protocolLabel].website}
                     target="_blank"
-                    on:mouseenter={() => (clickOnX = true)}
-                    on:mouseleave={() => (clickOnX = false)}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -318,9 +316,9 @@
                       height="22"
                       viewBox="0 0 256 256"
                     >
-                      <rect width="14" height="14" fill="none" />
+                      <rect width="14" height="14" fill="#606060" />
                       <path
-                        fill="currentColor"
+                        fill="#606060"
                         d="M137.54 186.36a8 8 0 0 1 0 11.31l-9.94 10a56 56 0 0 1-79.22-79.27l24.12-24.12a56 56 0 0 1 76.81-2.28a8 8 0 1 1-10.64 12a40 40 0 0 0-54.85 1.63L59.7 139.72a40 40 0 0 0 56.58 56.58l9.94-9.94a8 8 0 0 1 11.32 0m70.08-138a56.08 56.08 0 0 0-79.22 0l-9.94 9.95a8 8 0 0 0 11.32 11.31l9.94-9.94a40 40 0 0 1 56.58 56.58l-24.12 24.14a40 40 0 0 1-54.85 1.6a8 8 0 1 0-10.64 12a56 56 0 0 0 76.81-2.26l24.12-24.12a56.08 56.08 0 0 0 0-79.24Z"
                       />
                     </svg>
@@ -343,6 +341,12 @@
           </div>
         {/each}{/each}
     {/if}
+
+    <div class="py-3 px-3 text-right text-sm underline">
+      Data by <a href="https://solana-airdrop-checker.solworks.dev/"
+        >https://solana-airdrop-checker.solworks.dev/</a
+      >
+    </div>
   </div>
 </ErrorBoundary>
 
