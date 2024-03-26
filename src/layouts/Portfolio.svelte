@@ -956,7 +956,7 @@
             <div
               class="portfolio_container flex flex-col xl:gap-7 gap-5 rounded-[20px] xl:p-8 p-4"
             >
-              <div class="flex items-center gap-1">
+              <div class="flex items-center flex-wrap gap-1">
                 <AnimateSharedLayout>
                   {#each typePortfolioPage as type}
                     <div
