@@ -235,7 +235,9 @@
                       : "group-hover:bg-gray-100"
                   }`}
                 >
-                  <div class="flex justify-end">
+                  <div
+                    class="flex justify-end text-2xl font-medium xl:text-sm text_00000099"
+                  >
                     {#if item?.price === null}
                       Invalidated
                     {:else}
