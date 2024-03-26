@@ -20,6 +20,10 @@
     darkMode
       ? window.document.body.classList.add("dark")
       : window.document.body.classList.remove("dark");
+
+    auto = false;
+    isAutoDarkMode.update((n) => (n = false));
+    localStorage.setItem("auto_theme", "false");
   };
 
   const handleToggleAuto = () => {
@@ -54,7 +58,6 @@
   <input
     checked={darkMode}
     on:click={handleSwitchDarkMode}
-    disabled={auto}
     type="checkbox"
     id="theme-toggle"
     class="hidden"
