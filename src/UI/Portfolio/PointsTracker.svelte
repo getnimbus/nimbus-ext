@@ -9,11 +9,12 @@
   import { isDarkMode, user, wallet } from "~/store";
 
   import defaultToken from "~/assets/defaultToken.png";
+  import gmPoints from "~/assets/Gold4.svg";
 
   const protocolInfo = {
     GMPoints: {
       name: "GMPoints",
-      logo: "/assets/Gold4.svg",
+      logo: gmPoints,
     },
     Switchboard: {
       name: "Switchboard",
@@ -67,13 +68,43 @@
     };
   });
 
-  $: dataquery = !$pointsQuery.isLoading && $pointsQuery?.data?.data;
+  $: dataquery =
+    !$pointsQuery.isLoading &&
+    $pointsQuery?.data?.data.map((item) => {
+      return {
+        ...item,
+        points: item.points.map((point) => {
+          const data = $pointsQuery?.data?.dataWhalesMarket;
+          const pointIndex = data
+            .map(
+              (datawhale) =>
+                (datawhale.name === "Drift Protocol" && "Drift") ||
+                datawhale.name
+            )
+            .indexOf(point.protocolLabel);
+
+          const price = data[pointIndex]?.last_price || null;
+
+          return {
+            ...point,
+            price: price,
+          };
+        }),
+      };
+    });
 
   $: gmPoint = !$pointsQuery.isLoading && {
     points: $pointsQuery?.data?.totalPoint,
     protocol: "gmpoints",
     protocolLabel: "GMPoints",
+    price: 0,
   };
+
+  $: console.log({
+    data: $pointsQuery.data,
+    dataWhalesMarket: $pointsQuery?.data?.dataWhalesMarket,
+    dataquery,
+  });
 </script>
 
 <ErrorBoundary>
@@ -110,13 +141,13 @@
                   Point
                 </div>
               </th>
-              <!-- <th class="py-3 pr-3 rounded-tr-[10px]">
+              <th class="py-3 pr-3 rounded-tr-[10px]">
                 <div
                   class="text-right xl:text-xs text-xl uppercase font-medium"
                 >
-                  Reliable value
+                  Estimated value
                 </div>
-              </th> -->
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -197,15 +228,24 @@
                   </div>
                 </td>
 
-                <!-- <td
-                    class={`py-3 pr-3 ${
-                      $isDarkMode
-                        ? "group-hover:bg-[#000]"
-                        : "group-hover:bg-gray-100"
-                    }`}
-                  >
-                    <div class="flex justify-end"></div>
-                  </td> -->
+                <td
+                  class={`py-3 pr-3 ${
+                    $isDarkMode
+                      ? "group-hover:bg-[#000]"
+                      : "group-hover:bg-gray-100"
+                  }`}
+                >
+                  <div class="flex justify-end">
+                    {#if item?.price === null}
+                      Invalidated
+                    {:else}
+                      <TooltipNumber
+                        number={item?.price * item?.points || 0}
+                        type="balance"
+                      />
+                    {/if}
+                  </div>
+                </td>
               </tr>
             {/each}
           </tbody>
