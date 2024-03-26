@@ -94,7 +94,7 @@ export interface Borrow {
   positionId: string;
   type: "Borrow";
   owner: string;
-  input: (Lending | Stake)[];
+  input: (Lending | Stake)[] | TokenState[];
   yieldCollected: TokenState[];
   current: {
     tokens: TokenState[];
