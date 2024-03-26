@@ -5,6 +5,7 @@
   import Image from "~/components/Image.svelte";
   import Loading from "~/components/Loading.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
+  import tooltip from "~/entries/contentScript/views/tooltip";
   import { nimbus } from "~/lib/network";
   import { isDarkMode, user, wallet } from "~/store";
 
@@ -113,8 +114,19 @@
                 </div>
               </th>
               <th class="py-3 pr-3 rounded-tr-[10px]">
-                <div class="text-right text-xs uppercase font-medium">
-                  Estimated value
+                <div
+                  class="text-right text-xs uppercase font-medium flex justify-end"
+                >
+                  <div
+                    use:tooltip={{
+                      content: `<tooltip-detail text="Based on pre-market price" />`,
+                      allowHTML: true,
+                      placement: "top",
+                      interactive: true,
+                    }}
+                  >
+                    Estimated value
+                  </div>
                 </div>
               </th>
             </tr>
@@ -240,14 +252,6 @@
         </table>
       {/each}
     {/if}
-
-    <div class="py-3 px-3 text-right text-sm">
-      Data by <a
-        href="https://solana-airdrop-checker.solworks.dev/"
-        class="hover:underline"
-        >https://solana-airdrop-checker.solworks.dev
-      </a>
-    </div>
   </div>
 
   <!-- Mobile  -->
@@ -341,12 +345,13 @@
           </div>
         {/each}{/each}
     {/if}
-
-    <div class="py-3 px-3 text-right text-sm underline">
-      Data by <a href="https://solana-airdrop-checker.solworks.dev/"
-        >https://solana-airdrop-checker.solworks.dev/</a
-      >
-    </div>
+  </div>
+  <div class="py-3 px-3 text-right text-sm">
+    Data by <a
+      href="https://solana-airdrop-checker.solworks.dev/"
+      class="hover:underline max-lg:underline"
+      >https://solana-airdrop-checker.solworks.dev
+    </a>
   </div>
 </ErrorBoundary>
 
