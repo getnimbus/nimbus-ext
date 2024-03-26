@@ -346,7 +346,7 @@
         {/each}{/each}
     {/if}
   </div>
-  <div class="py-3 px-3 text-right text-sm">
+  <div class="py-3 px-3 text-right text-sm text_00000099">
     Data by <a
       href="https://solana-airdrop-checker.solworks.dev/"
       class="hover:underline max-lg:underline"
