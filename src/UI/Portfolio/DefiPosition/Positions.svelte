@@ -21,17 +21,18 @@
   }
 
   const handleCalculateTotalProtocol = (data: any) => {
+    console.log("data: ", data);
     const formatData = data?.data.map((item) => {
       return item.data.map((eachItem) => {
         if (eachItem.type === "Borrow") {
           const listInput: any = flatten(
             eachItem.data.map((item) => {
-              return item.input;
+              return item.current.tokens;
             })
           );
           const listYieldCollected: any = flatten(
             eachItem.data.map((item) => {
-              return item.yieldCollected;
+              return item.current.yield;
             })
           );
           return {
@@ -49,12 +50,12 @@
         if (eachItem.type === "BorrowLendingStaking") {
           const listInput: any = flatten(
             eachItem.data.map((item) => {
-              return item.input;
+              return item.current.tokens;
             })
           );
           const listYieldCollected: any = flatten(
             eachItem.data.map((item) => {
-              return item.yieldCollected;
+              return item.current.yield;
             })
           );
           return {
@@ -71,12 +72,12 @@
 
         return {
           totalInputValue:
-            eachItem?.input?.reduce(
+            eachItem?.current?.tokens?.reduce(
               (prev, item) => prev + Number(item.value),
               0
             ) || 0,
           totalYieldCollected:
-            eachItem?.yieldCollected?.reduce(
+            eachItem?.current?.yield?.reduce(
               (prev, item) => prev + Number(item.value),
               0
             ) || 0,
