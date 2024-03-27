@@ -3,7 +3,7 @@
 
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import Image from "~/components/Image.svelte";
-  import type { Lending, Stake } from "./hardCodeDefiData";
+  import type { Lending } from "./hardCodeDefiData";
 
   import defaultToken from "~/assets/defaultToken.png";
 
