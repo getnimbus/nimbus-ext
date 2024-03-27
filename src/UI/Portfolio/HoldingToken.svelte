@@ -546,18 +546,9 @@
                   >
                     <div class="flex gap-1">
                       Farm up to
-                      <span class="flex">
-                        <TooltipNumber
-                          number={numeral(
-                            handleCheckVault(data[index])?.apy * 100
-                          )}
-                          type={Number(
-                            handleCheckVault(data[index])?.apy * 100
-                          ) > 100
-                            ? "balance"
-                            : "percent"}
-                        />%
-                      </span> APY
+                      {numeral(handleCheckVault(data[index])?.apy * 100).format(
+                        "0,0.0"
+                      )}% APY
                     </div>
                   </div>
                 {/if}
@@ -1999,14 +1990,9 @@
           >
             <div class="flex gap-1">
               Farm up to
-              <span class="flex">
-                <TooltipNumber
-                  number={numeral(handleCheckVault(data[index])?.apy * 100)}
-                  type={Number(handleCheckVault(data[index])?.apy * 100) > 100
-                    ? "balance"
-                    : "percent"}
-                />%
-              </span> APY
+              {numeral(handleCheckVault(data[index])?.apy * 100).format(
+                "0,0.0"
+              )}% APY
             </div>
           </div>
         {/if}
