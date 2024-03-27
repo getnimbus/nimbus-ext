@@ -8,13 +8,29 @@
   export let lowerPrice;
   export let upperPrice;
 
+  let value = 0;
+
   $: sliderValue = Math.max(
     0,
     Math.min(
-      ((currentPrice - lowerPrice) / (upperPrice - lowerPrice)) * 100,
+      ((Number(currentPrice) - Number(lowerPrice)) /
+        (Number(upperPrice) - Number(lowerPrice))) *
+        100,
       100
     )
   );
+
+  $: {
+    if (sliderValue > 0 && sliderValue < 100) {
+      value = sliderValue;
+    }
+    if (sliderValue <= 0 && Number(currentPrice) < Number(lowerPrice)) {
+      value = -20;
+    }
+    if (sliderValue >= 100 && Number(currentPrice) > Number(upperPrice)) {
+      value = 120;
+    }
+  }
 
   let selectedCurrent = 0;
   let isShowTooltip = false;
@@ -53,7 +69,7 @@
 
     <div
       class="absolute top-[50%] -translate-y-1/2 -translate-x-1/2 w-1 h-3 bg-yellow-300"
-      style={`left: ${sliderValue}%;`}
+      style={`left: ${value}%;`}
       on:mouseover={() => {
         selectedCurrent = currentPrice;
         isShowTooltip = true;
