@@ -46,9 +46,7 @@
           class="absolute left-1/2 trasnform -translate-x-1/2 -top-8"
           style="z-index: 2147483648;"
         >
-          <Tooltip
-            text={`Min price: $${numeral(lowerPrice).format("0,0.00")}`}
-          />
+          <Tooltip text={`$${numeral(lowerPrice).format("0,0.0000")}`} />
         </div>
       {/if}
     </div>
@@ -71,7 +69,7 @@
           style="z-index: 2147483648;"
         >
           <Tooltip
-            text={`Current price: $${numeral(currentPrice).format("0,0.00")}`}
+            text={`Current Price: $${numeral(currentPrice).format("0,0.0000")}`}
           />
         </div>
       {/if}
@@ -99,9 +97,7 @@
           class="absolute left-1/2 trasnform -translate-x-1/2 -top-8"
           style="z-index: 2147483648;"
         >
-          <Tooltip
-            text={`Max price: $${numeral(upperPrice).format("0,0.00")}`}
-          />
+          <Tooltip text={`$${numeral(upperPrice).format("0,0.0000")}`} />
         </div>
       {/if}
     </div>

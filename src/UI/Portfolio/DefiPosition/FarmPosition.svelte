@@ -7,14 +7,10 @@
 
   import defaultToken from "~/assets/defaultToken.png";
 
-  // export let data: Farm;
-
-  // $: dataInput = data.input;
-
   export let data;
 </script>
 
-<div>hello</div>
+<div>Farm</div>
 
 <!-- {#each dataInput as itemInput}
   <div
