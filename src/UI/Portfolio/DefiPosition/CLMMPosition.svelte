@@ -31,7 +31,7 @@
 </script>
 
 <div
-  class={`rounded-[10px] overflow-hidden w-full ${
+  class={`rounded-[10px] w-full ${
     $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
   }`}
 >
@@ -61,7 +61,7 @@
     </div>
   </div>
 
-  {#each data as itemRow}
+  {#each data as itemRow, index}
     <div class="grid grid-cols-7 group transition-all">
       <div
         class={`col-spans-2 pl-3 py-3 ${
@@ -69,6 +69,7 @@
             ? "bg-[#131313] group-hover:bg-[#000]"
             : "bg-white group-hover:bg-gray-100"
         }`}
+        style={`${data.length - 1 === index ? "border-bottom-left-radius: 10px;" : ""}`}
       >
         <div class="flex items-center gap-2 m-auto h-full">
           <div class="flex flex-col gap-2">
@@ -210,6 +211,7 @@
             ? "bg-[#131313] group-hover:bg-[#000]"
             : "bg-white group-hover:bg-gray-100"
         }`}
+        style={`${data.length - 1 === index ? "border-bottom-right-radius: 10px;" : ""}`}
       >
         <div
           class="text-right text-sm text_00000099 font-medium flex justify-end items-center h-full"
