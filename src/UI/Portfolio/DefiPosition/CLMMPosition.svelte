@@ -3,9 +3,9 @@
 
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import Image from "~/components/Image.svelte";
+  import SliderRangeInput from "~/components/SliderRangeInput.svelte";
 
   import defaultToken from "~/assets/defaultToken.png";
-  import SliderRangeInput from "~/components/SliderRangeInput.svelte";
 
   export let data;
 
@@ -214,7 +214,11 @@
         <div
           class="text-right text-sm text_00000099 font-medium flex justify-end items-center h-full"
         >
-          <SliderRangeInput currentInput={itemRow?.current} />
+          <SliderRangeInput
+            currentPrice={itemRow?.current?.currentPrice}
+            lowerPrice={itemRow?.current?.lowerPrice}
+            upperPrice={itemRow?.current?.upperPrice}
+          />
         </div>
       </div>
     </div>

@@ -184,7 +184,9 @@
 </script>
 
 <div class="h-[563px] flex flex-col gap-4">
-  <div class="flex justify-between items-center mt-6">
+  <div
+    class="flex md:flex-row flex-col gap-4 justify-between md:items-center items-start mt-6"
+  >
     <div class="font-medium text-2xl">Yield farming opportunities</div>
     <div class="flex items-center">
       <div class="text-sm px-2 font-medium">Single</div>
@@ -200,6 +202,7 @@
       </label>
     </div>
   </div>
+
   <div
     class={`rounded-[10px] overflow-x-auto overflow-y-auto h-[563px] relative ${
       $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
@@ -213,7 +216,7 @@
       <thead>
         <tr class="bg_f4f5f8 sticky left-0 top-0 z-10">
           <th
-            class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 top-0 z-10 bg_f4f5f8 w-[550px]"
+            class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 top-0 z-10 bg_f4f5f8 w-[250px]"
           >
             <div class="font-medium text-left uppercase text-sm">Name</div>
           </th>
@@ -268,7 +271,7 @@
               }}
             >
               <td
-                class={`pl-3 py-3 xl:static xl:bg-transparent sticky left-0 z-9 w-[550px] ${
+                class={`pl-3 py-3 xl:static xl:bg-transparent sticky left-0 z-9 w-[250px] ${
                   $isDarkMode
                     ? "bg-[#131313] group-hover:bg-[#000]"
                     : "bg-white group-hover:bg-gray-100"

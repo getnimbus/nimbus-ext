@@ -1,6 +1,6 @@
 <script lang="ts">
   import { totalPositions, typeWallet, wallet } from "~/store";
-  import axios from "axios";
+  import { nimbusSuiDefi } from "~/lib/network";
   import { groupBy } from "lodash";
   import { flatten } from "lodash";
 
@@ -16,21 +16,7 @@
   const getSUIPositions = async (address) => {
     try {
       isLoading = true;
-      const authToken = localStorage.getItem("auth_token");
-      const solanaToken = localStorage.getItem("solana_token");
-      const suiToken = localStorage.getItem("sui_token");
-      const tonToken = localStorage.getItem("ton_token");
-      const evmToken = localStorage.getItem("evm_token");
-
-      const response: any = await axios
-        .get(`https://sui-defi.getnimbus.io/positions/${address}`, {
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            Authorization: `${evmToken || solanaToken || suiToken || tonToken || authToken}`,
-          },
-        })
-        .then((res) => res.data);
+      const response: any = await nimbusSuiDefi.get(`/positions/${address}`);
       formatDataProtocol(response?.data || []);
     } catch (e) {
       console.log(e);
