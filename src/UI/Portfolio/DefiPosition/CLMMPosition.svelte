@@ -57,7 +57,7 @@
     </div>
 
     <div class="py-3 pr-3 rounded-tr-[10px]">
-      <div class="text-right text-xs uppercase font-medium">Current Price</div>
+      <div class="text-right text-xs uppercase font-medium">Price Range</div>
     </div>
   </div>
 
