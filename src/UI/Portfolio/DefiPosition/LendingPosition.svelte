@@ -28,6 +28,21 @@
       ? 0
       : totalYieldCollected / Math.abs(totalInputValue);
   };
+
+  const handleCalculateValue = (data: any) => {
+    const totalInputValue =
+      data?.current?.tokens?.reduce(
+        (prev, item) => prev + Number(item.value),
+        0
+      ) || 0;
+    const totalYieldCollected =
+      data?.current?.yield?.reduce(
+        (prev, item) => prev + Number(item.value),
+        0
+      ) || 0;
+
+    return totalInputValue + totalYieldCollected;
+  };
 </script>
 
 <div
@@ -35,7 +50,7 @@
     $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
   }`}
 >
-  <div class="bg_f4f5f8 grid grid-cols-6">
+  <div class="bg_f4f5f8 grid grid-cols-5">
     <div class="col-spans-2 pl-3 py-3 rounded-tl-[10px]">
       <div class="text-left text-xs uppercase font-medium">Invested</div>
     </div>
@@ -48,17 +63,21 @@
       <div class="text-xs uppercase font-medium">Yield</div>
     </div>
 
-    <div class="py-3">
+    <!-- <div class="py-3">
       <div class="text-xs uppercase font-medium">Reward</div>
-    </div>
+    </div> -->
+
+    <!-- <div class="py-3 pr-3 rounded-tr-[10px]">
+      <div class="text-right text-xs uppercase font-medium">PnL</div>
+    </div> -->
 
     <div class="py-3 pr-3 rounded-tr-[10px]">
-      <div class="text-right text-xs uppercase font-medium">PnL</div>
+      <div class="text-right text-xs uppercase font-medium">Value</div>
     </div>
   </div>
 
   {#each data as itemRow}
-    <div class="grid grid-cols-6 group transition-all">
+    <div class="grid grid-cols-5 group transition-all">
       <div
         class={`col-spans-2 pl-3 py-3 ${
           $isDarkMode
@@ -82,6 +101,18 @@
               </div>
             {/each}
           </div>
+
+          {#if itemRow.tags && itemRow.tags.length !== 0}
+            <div class="flex items-center gap-1 flex-wrap">
+              {#each itemRow.tags as tag}
+                <div
+                  class="w-max flex items-center justyfy-center px-2 py-1 text_27326F xl:text-[10px] text-base font-medium bg-[#1e96fc33] rounded-[1000px]"
+                >
+                  {tag}
+                </div>
+              {/each}
+            </div>
+          {/if}
         </div>
       </div>
 
@@ -144,7 +175,7 @@
         </div>
       </div>
 
-      <div
+      <!-- <div
         class={`py-3 ${
           $isDarkMode
             ? "bg-[#131313] group-hover:bg-[#000]"
@@ -172,7 +203,23 @@
             {/each}
           </div>
         </div>
-      </div>
+      </div> -->
+
+      <!-- <div
+        class={`py-3 pr-3 ${
+          $isDarkMode
+            ? "bg-[#131313] group-hover:bg-[#000]"
+            : "bg-white group-hover:bg-gray-100"
+        }`}
+      >
+        <div
+          class="text-right text-sm text_00000099 font-medium flex justify-end h-full"
+        >
+          <div class="my-auto">
+            <TooltipNumber number={handleCalculatePnl(itemRow)} type="value" />
+          </div>
+        </div>
+      </div> -->
 
       <div
         class={`py-3 pr-3 ${
@@ -185,7 +232,10 @@
           class="text-right text-sm text_00000099 font-medium flex justify-end h-full"
         >
           <div class="my-auto">
-            <TooltipNumber number={handleCalculatePnl(itemRow)} type="value" />
+            <TooltipNumber
+              number={handleCalculateValue(itemRow)}
+              type="value"
+            />
           </div>
         </div>
       </div>

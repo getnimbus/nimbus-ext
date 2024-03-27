@@ -29,6 +29,21 @@
       ? 0
       : totalYieldCollected / Math.abs(totalInputValue);
   };
+
+  const handleCalculateValue = (data: any) => {
+    const totalInputValue =
+      data?.current?.tokens?.reduce(
+        (prev, item) => prev + Number(item.value),
+        0
+      ) || 0;
+    const totalYieldCollected =
+      data?.current?.yield?.reduce(
+        (prev, item) => prev + Number(item.value),
+        0
+      ) || 0;
+
+    return totalInputValue + totalYieldCollected;
+  };
 </script>
 
 <div
@@ -53,8 +68,12 @@
       <div class="text-xs uppercase font-medium">Lock Until</div>
     </div>
 
-    <div class="py-3 pr-3 rounded-tr-[10px]">
+    <!-- <div class="py-3 pr-3 rounded-tr-[10px]">
       <div class="text-right text-xs uppercase font-medium">PnL</div>
+    </div> -->
+
+    <div class="py-3 pr-3 rounded-tr-[10px]">
+      <div class="text-right text-xs uppercase font-medium">Value</div>
     </div>
   </div>
 
@@ -83,6 +102,18 @@
               </div>
             {/each}
           </div>
+
+          {#if itemRow.tags && itemRow.tags.length !== 0}
+            <div class="flex items-center gap-1 flex-wrap">
+              {#each itemRow.tags as tag}
+                <div
+                  class="w-max flex items-center justyfy-center px-2 py-1 text_27326F xl:text-[10px] text-base font-medium bg-[#1e96fc33] rounded-[1000px]"
+                >
+                  {tag}
+                </div>
+              {/each}
+            </div>
+          {/if}
         </div>
       </div>
 
@@ -156,7 +187,7 @@
         </div>
       </div>
 
-      <div
+      <!-- <div
         class={`py-3 pr-3 ${
           $isDarkMode
             ? "bg-[#131313] group-hover:bg-[#000]"
@@ -168,6 +199,25 @@
         >
           <div class="my-auto">
             <TooltipNumber number={handleCalculatePnl(itemRow)} type="value" />
+          </div>
+        </div>
+      </div> -->
+
+      <div
+        class={`py-3 pr-3 ${
+          $isDarkMode
+            ? "bg-[#131313] group-hover:bg-[#000]"
+            : "bg-white group-hover:bg-gray-100"
+        }`}
+      >
+        <div
+          class="text-right text-sm text_00000099 text-sm font-medium flex justify-end h-full"
+        >
+          <div class="my-auto">
+            <TooltipNumber
+              number={handleCalculateValue(itemRow)}
+              type="value"
+            />
           </div>
         </div>
       </div>

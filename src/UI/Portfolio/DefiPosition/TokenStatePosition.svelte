@@ -25,7 +25,7 @@
     </div>
 
     <div class="py-3 pr-3 rounded-tr-[10px]">
-      <div class="text-right text-xs uppercase font-medium">USD Value</div>
+      <div class="text-right text-xs uppercase font-medium">Value</div>
     </div>
   </div>
 

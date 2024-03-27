@@ -9,6 +9,8 @@
   import TooltipNumber from "~/components/TooltipNumber.svelte";
 
   export let data;
+
+  $: console.log("HELLO: ", data);
 </script>
 
 <div class="flex flex-col gap-4 rounded-[20px] py-4">
