@@ -46,8 +46,9 @@
   };
 </script>
 
+<!-- Desktop view -->
 <div
-  class={`rounded-[10px] overflow-hidden w-full ${
+  class={`xl:block hidden rounded-[10px] overflow-hidden w-full ${
     $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
   }`}
 >
@@ -86,7 +87,18 @@
             : "bg-white group-hover:bg-gray-100"
         }`}
       >
-        <div class="flex items-center gap-2 m-auto h-full">
+        <div class="flex flex-col gap-2 m-auto h-full">
+          {#if itemRow.tags && itemRow.tags.length !== 0}
+            <div class="flex items-center gap-1 flex-wrap">
+              {#each itemRow.tags as tag}
+                <div
+                  class="w-max flex items-center justyfy-center px-2 py-1 text_27326F text-sm font-medium bg-[#1e96fc33] rounded-[1000px]"
+                >
+                  {tag}
+                </div>
+              {/each}
+            </div>
+          {/if}
           <div class="flex flex-col gap-2">
             {#each itemRow?.input || [] as item}
               <div class="flex items-center gap-3">
@@ -102,18 +114,6 @@
               </div>
             {/each}
           </div>
-
-          {#if itemRow.tags && itemRow.tags.length !== 0}
-            <div class="flex items-center gap-1 flex-wrap">
-              {#each itemRow.tags as tag}
-                <div
-                  class="w-max flex items-center justyfy-center px-2 py-1 text_27326F text-sm font-medium bg-[#1e96fc33] rounded-[1000px]"
-                >
-                  {tag}
-                </div>
-              {/each}
-            </div>
-          {/if}
         </div>
       </div>
 
@@ -219,6 +219,128 @@
               type="value"
             />
           </div>
+        </div>
+      </div>
+    </div>
+  {/each}
+</div>
+
+<!-- Mobile view -->
+<div
+  class={`xl:hidden block rounded-[10px] p-2 overflow-hidden w-full ${
+    $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
+  }`}
+>
+  {#each data as itemRow}
+    <div
+      class="flex flex-col gap-4 border-b-[1px] border_0000000d last:border-none py-4"
+    >
+      <div class="flex justify-between items-start">
+        <div class="text-right text-sm uppercase font-medium">Invested</div>
+        <div
+          class="flex items-center justify-end font-medium text-sm text_00000099"
+        >
+          <div class="flex flex-col gap-2 m-auto h-full">
+            {#if itemRow.tags && itemRow.tags.length !== 0}
+              <div class="flex items-center gap-1 flex-wrap">
+                {#each itemRow.tags as tag}
+                  <div
+                    class="w-max flex items-center justyfy-center px-2 py-1 text_27326F text-sm font-medium bg-[#1e96fc33] rounded-[1000px]"
+                  >
+                    {tag}
+                  </div>
+                {/each}
+              </div>
+            {/if}
+            <div class="flex flex-col gap-2">
+              {#each itemRow?.input || [] as item}
+                <div class="flex items-center gap-3">
+                  <div class="rounded-full w-6 h-6 overflow-hidden">
+                    <Image
+                      defaultLogo={defaultToken}
+                      logo={item?.token?.logo || defaultToken}
+                    />
+                  </div>
+                  <div class="text-left text-sm font-medium">
+                    {item?.token?.name || ""}
+                  </div>
+                </div>
+              {/each}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex justify-between items-start">
+        <div class="text-right text-sm uppercase font-medium">Token</div>
+        <div
+          class="flex items-center justify-end font-medium text-sm text_00000099"
+        >
+          <div class="flex flex-col gap-2">
+            {#each itemRow?.current.tokens || [] as token}
+              <div class="flex items-center gap-1">
+                <div class="rounded-full w-6 h-6 overflow-hidden">
+                  <Image defaultLogo={defaultToken} logo={token.token.logo} />
+                </div>
+                <TooltipNumber number={token?.amount || 0} type="amount" />
+                {token?.token?.symbol || ""}
+              </div>
+            {/each}
+          </div>
+        </div>
+      </div>
+
+      <div class="flex justify-between items-start">
+        <div class="text-right text-sm uppercase font-medium">Yield</div>
+        <div
+          class="flex items-center justify-end font-medium text-sm text_00000099"
+        >
+          <div class="flex flex-col gap-2">
+            {#each itemRow?.current?.yield || [] as yieldData}
+              {#if yieldData?.amount !== 0}
+                <div class="flex items-center gap-1">
+                  <div class="rounded-full w-6 h-6 overflow-hidden">
+                    <Image
+                      defaultLogo={defaultToken}
+                      logo={yieldData?.token?.logo || defaultToken}
+                    />
+                  </div>
+                  <TooltipNumber
+                    number={yieldData?.amount || 0}
+                    type="amount"
+                  />
+                  {yieldData?.token?.symbol || ""}
+                </div>
+              {/if}
+            {/each}
+          </div>
+        </div>
+      </div>
+
+      <div class="flex justify-between items-start">
+        <div class="text-right text-sm uppercase font-medium">Lock Until</div>
+        <div
+          class="flex items-center justify-end font-medium text-sm text_00000099"
+        >
+          {dayjs(itemRow?.current?.endDate).format("DD/MM/YYYY")}
+        </div>
+      </div>
+
+      <!-- <div class="flex justify-between items-start">
+        <div class="text-right text-sm uppercase font-medium">PnL</div>
+        <div
+          class="flex items-center justify-end font-medium text-sm text_00000099"
+        >
+          <TooltipNumber number={handleCalculatePnl(itemRow)} type="value" />
+        </div>
+      </div> -->
+
+      <div class="flex justify-between items-start">
+        <div class="text-right text-sm uppercase font-medium">Value</div>
+        <div
+          class="flex items-center justify-end font-medium text-sm text_00000099"
+        >
+          <TooltipNumber number={handleCalculateValue(itemRow)} type="value" />
         </div>
       </div>
     </div>

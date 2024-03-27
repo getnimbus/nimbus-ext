@@ -10,8 +10,9 @@
   export let type;
 </script>
 
+<!-- Desktop view -->
 <div
-  class={`rounded-[10px] overflow-hidden w-full ${
+  class={`xl:block hidden rounded-[10px] overflow-hidden w-full ${
     $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
   }`}
 >
@@ -87,4 +88,59 @@
   {/each}
 </div>
 
-<style></style>
+<!-- Mobile view -->
+<div
+  class={`xl:hidden block rounded-[10px] p-2 overflow-hidden w-full ${
+    $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
+  }`}
+>
+  {#each data as item}
+    <div
+      class="flex flex-col gap-4 border-b-[1px] border_0000000d last:border-none py-4"
+    >
+      <div class="flex justify-between items-start">
+        <div class="text-right text-sm uppercase font-medium">
+          {type}
+        </div>
+        <div
+          class="flex items-center justify-end font-medium text-sm text_00000099"
+        >
+          <div class="flex flex-col gap-2 m-auto h-full">
+            <div class="flex items-center gap-3">
+              <div class="rounded-full w-6 h-6 overflow-hidden">
+                <Image
+                  defaultLogo={defaultToken}
+                  logo={item?.token?.logo || defaultToken}
+                />
+              </div>
+              <div class="text-left text-sm font-medium">
+                {item?.token?.name || ""}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex justify-between items-start">
+        <div class="text-right text-sm uppercase font-medium">Balance</div>
+        <div
+          class="flex items-center justify-end font-medium text-sm text_00000099"
+        >
+          <TooltipNumber number={item?.amount || 0} type="amount" />
+          {item?.token?.symbol}
+        </div>
+      </div>
+
+      <div class="flex justify-between items-start">
+        <div class="text-right text-sm uppercase font-medium">Value</div>
+        <div
+          class="flex items-center justify-end font-medium text-sm text_00000099"
+        >
+          <TooltipNumber number={item?.value || 0} type="value" />
+        </div>
+      </div>
+    </div>
+  {/each}
+</div>
+
+<style windi:preflights:global windi:safelist:global></style>
