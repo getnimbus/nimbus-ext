@@ -113,48 +113,100 @@
     const formatData = data.map((item) => {
       return item.data.map((eachItem) => {
         if (eachItem.type === "Borrow") {
-          const listInput: any = flatten(
+          const listCurrentTokens: any = flatten(
             eachItem.data.map((item) => {
               return item.current.tokens;
             })
           );
-          const listYieldCollected: any = flatten(
+
+          const listCurrentYield: any = flatten(
             eachItem.data.map((item) => {
               return item.current.yield;
             })
           );
+
+          const valueCurrent =
+            (listCurrentTokens?.reduce(
+              (prev, item) => prev + Number(item.value),
+              0
+            ) || 0) +
+            (listCurrentYield?.reduce(
+              (prev, item) => prev + Number(item.value),
+              0
+            ) || 0);
+
+          const listInput: any = flatten(
+            eachItem.data.map((item) => {
+              return item.input;
+            })
+          );
+
+          const valueInput =
+            listInput?.reduce((prev, item) => prev + Number(item.value), 0) ||
+            0;
+
           return {
-            totalInputValue:
-              listInput?.reduce((prev, item) => prev + Number(item.value), 0) ||
-              0,
-            totalYieldCollected:
-              listYieldCollected?.reduce(
-                (prev, item) => prev + Number(item.value),
-                0
-              ) || 0,
+            totalInputValue: valueInput - valueCurrent,
+            totalYieldCollected: 0,
           };
         }
 
         if (eachItem.type === "BorrowLendingStaking") {
-          const listInput: any = flatten(
+          const listCurrentTokens: any = flatten(
             eachItem.data.map((item) => {
               return item.current.tokens;
             })
           );
-          const listYieldCollected: any = flatten(
+
+          const listCurrentYield: any = flatten(
             eachItem.data.map((item) => {
               return item.current.yield;
             })
           );
+
+          const valueCurrent =
+            (listCurrentTokens?.reduce(
+              (prev, item) => prev + Number(item.value),
+              0
+            ) || 0) +
+            (listCurrentYield?.reduce(
+              (prev, item) => prev + Number(item.value),
+              0
+            ) || 0);
+
+          const listInputTokens: any = flatten(
+            flatten(
+              eachItem.data.map((item) => {
+                return item.input.map((eachInput) => {
+                  return eachInput.current.tokens;
+                });
+              })
+            )
+          );
+
+          const listInputYield: any = flatten(
+            flatten(
+              eachItem.data.map((item) => {
+                return item.input.map((eachInput) => {
+                  return eachInput.current.yield;
+                });
+              })
+            )
+          );
+
+          const valueInput =
+            (listInputTokens?.reduce(
+              (prev, item) => prev + Number(item.value),
+              0
+            ) || 0) +
+            (listInputYield?.reduce(
+              (prev, item) => prev + Number(item.value),
+              0
+            ) || 0);
+
           return {
-            totalInputValue:
-              listInput?.reduce((prev, item) => prev + Number(item.value), 0) ||
-              0,
-            totalYieldCollected:
-              listYieldCollected?.reduce(
-                (prev, item) => prev + Number(item.value),
-                0
-              ) || 0,
+            totalInputValue: valueInput - valueCurrent,
+            totalYieldCollected: 0,
           };
         }
 
