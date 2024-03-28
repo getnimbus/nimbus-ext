@@ -17,7 +17,6 @@
     typeWallet,
     selectedBundle,
     triggerUpdateBundle,
-    userPublicAddress,
   } from "~/store";
   import mixpanel from "mixpanel-browser";
   import { nimbus } from "~/lib/network";
@@ -40,6 +39,7 @@
   import Charts from "~/UI/Portfolio/Charts.svelte";
   import Holding from "~/UI/Portfolio/Holding.svelte";
   import PerformanceSummary from "~/UI/Portfolio/PerformanceSummary.svelte";
+  import DefiPosition from "~/UI/Portfolio/DefiPosition.svelte";
   import RiskReturn from "~/UI/Portfolio/RiskReturn.svelte";
   import News from "~/UI/Portfolio/News.svelte";
   import Positions from "~/UI/Portfolio/Positions.svelte";
@@ -149,6 +149,7 @@
     queryFn: () => handleValidateAddress($wallet),
     staleTime: Infinity,
     retry: false,
+    enabled: Boolean($wallet && $wallet?.length !== 0),
   });
 
   const getSync = async () => {
@@ -410,6 +411,7 @@
         !$queryValidate.isFetching &&
         $chain.length !== 0 &&
         $chain !== "ALL" &&
+        $tab.length !== 0 &&
         $tab === "nft"
     ),
   });
@@ -427,6 +429,7 @@
             !$queryValidate.isFetching &&
             $chain.length !== 0 &&
             $chain === "ALL" &&
+            $tab.length !== 0 &&
             $tab === "nft"
         ),
       };
@@ -517,6 +520,7 @@
         !$queryValidate.isFetching &&
         $chain.length !== 0 &&
         $chain !== "ALL" &&
+        $tab.length !== 0 &&
         $tab === "token"
     ),
   });
@@ -534,6 +538,7 @@
             !$queryValidate.isFetching &&
             $chain.length !== 0 &&
             $chain === "ALL" &&
+            $tab.length !== 0 &&
             $tab === "token"
         ),
       };
@@ -945,10 +950,50 @@
               {/if}
             </div>
           {:else}
+            <div class="xl:hidden flex items-center gap-1 mb-4">
+              <AnimateSharedLayout>
+                {#each typePortfolioPage as type}
+                  <div
+                    class="text-white relative cursor-pointer text-base font-medium py-1 px-2 rounded-[100px] transition-all"
+                    id={type.id}
+                    on:click={() => {
+                      tab.update((n) => (n = type.value));
+                      window.history.replaceState(
+                        null,
+                        "",
+                        window.location.pathname +
+                          `?tab=${type.value}&type=${$typeWallet}&chain=${$chain}&address=${$wallet}`
+                      );
+                    }}
+                  >
+                    <div
+                      class={`relative z-1 ${
+                        $tab === type.value && "text-white"
+                      }`}
+                    >
+                      {type.label}
+                    </div>
+                    {#if type.value === $tab}
+                      <Motion
+                        let:motion
+                        layoutId="active-pill"
+                        transition={{ type: "spring", duration: 0.6 }}
+                      >
+                        <div
+                          class="absolute inset-0 rounded-full bg-[#1E96FC] z-0"
+                          use:motion
+                        />
+                      </Motion>
+                    {/if}
+                  </div>
+                {/each}
+              </AnimateSharedLayout>
+            </div>
+
             <div
               class="portfolio_container flex flex-col xl:gap-7 gap-5 rounded-[20px] xl:p-8 p-4"
             >
-              <div class="flex items-center flex-wrap gap-1">
+              <div class="xl:flex hidden items-center gap-1">
                 <AnimateSharedLayout>
                   {#each typePortfolioPage as type}
                     <div
@@ -988,7 +1033,7 @@
                 </AnimateSharedLayout>
               </div>
 
-              {#if $tab !== "summary" && $tab !== "points"}
+              {#if $tab === "token" || $tab === "nft"}
                 <Charts
                   {handleSelectedTableTokenHolding}
                   isLoading={$queryOverview.isFetching}
@@ -1007,14 +1052,6 @@
                   {dataOverviewBundlePieChart}
                   selectedType={$tab}
                 />
-
-                <!-- {#if $typeWallet === "EVM" || $typeWallet === "MOVE" || $typeWallet === "CEX" || $typeWallet === "BUNDLE"}
-                  <RiskReturn
-                    isLoading={$queryCompare.isFetching}
-                    isError={$queryCompare.isError}
-                    data={$queryCompare.data}
-                  />
-                {/if} -->
 
                 <Holding
                   isLoadingNFT={$chain === "ALL"
@@ -1041,11 +1078,30 @@
                 <PerformanceSummary />
               {/if}
 
+              {#if $tab === "defi"}
+                <DefiPosition
+                  conditionQuery={Boolean(
+                    enabledFetchAllData &&
+                      $wallet &&
+                      $wallet?.length !== 0 &&
+                      !$queryValidate.isFetching
+                  )}
+                />
+              {/if}
+
               {#if $tab === "points"}
                 <PointsTracker />
               {/if}
 
               <!-- <News isLoading={false} data={newsData} /> -->
+
+              <!-- {#if $typeWallet === "EVM" || $typeWallet === "MOVE" || $typeWallet === "CEX" || $typeWallet === "BUNDLE"}
+                <RiskReturn
+                  isLoading={$queryCompare.isFetching}
+                  isError={$queryCompare.isError}
+                  data={$queryCompare.data}
+                />
+              {/if} -->
             </div>
           {/if}
         </div>
