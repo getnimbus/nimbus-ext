@@ -282,9 +282,9 @@
     <VirtualList
       scrollDirection="vertical"
       width="100%"
-      height={data.length < 10 ? data.length * 75 : 940}
+      height={data.length < 10 ? data.length * 85 : 851}
       itemCount={data.length}
-      itemSize={75}
+      itemSize={85}
     >
       <div
         class="grid grid-cols-9 group transition-all"
