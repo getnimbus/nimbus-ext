@@ -40,6 +40,29 @@ export const sharpeRatioFilter = [
   },
 ];
 
+export const whaleCategories = [
+  {
+    label: "All",
+    value: "ALL",
+  },
+  {
+    label: "Recommended",
+    value: "RECOMMENDED",
+  },
+  {
+    label: "Ventures Capital",
+    value: "VENTURES_CAPITAL",
+  },
+  // {
+  //   label: "Smart money",
+  //   value: "SMART_MONEY",
+  // },
+  // {
+  //   label: "Hand-picked",
+  //   value: "HAND_PICKED",
+  // },
+];
+
 export const volatilityFilter = [
   {
     label: "0-10%",
@@ -127,6 +150,45 @@ export const typeClosedHoldingTokenChart = [
   {
     label: "Percent",
     value: "percent",
+  },
+];
+
+// | "AMM"
+// | "CLMM"
+// | "Lending"
+// | "Borrow"
+// | "Stake"
+// | "Vest"
+// | "Farm"
+
+export const typeDefiPosition = [
+  {
+    label: "AMM",
+    value: "amm",
+  },
+  {
+    label: "CLMM",
+    value: "clmm",
+  },
+  {
+    label: "Lending",
+    value: "lending",
+  },
+  {
+    label: "Borrow",
+    value: "borrow",
+  },
+  {
+    label: "Stake",
+    value: "stake",
+  },
+  {
+    label: "Vest",
+    value: "vest",
+  },
+  {
+    label: "Farm",
+    value: "farm",
   },
 ];
 

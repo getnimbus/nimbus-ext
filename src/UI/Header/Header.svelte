@@ -213,6 +213,31 @@
         );
       }
       handleSaveSuggest(validateAccount?.address);
+      if (validateAccount?.type === "EVM" || validateAccount?.type === "MOVE") {
+        window.history.replaceState(
+          null,
+          "",
+          window.location.pathname +
+            `?type=${validateAccount?.type}&chain=ALL&address=${validateAccount?.address}`
+        );
+      }
+      if (
+        validateAccount?.type === "BTC" ||
+        validateAccount?.type === "SOL" ||
+        validateAccount?.type === "NEAR" ||
+        validateAccount?.type === "TON" ||
+        validateAccount?.type === "AURA" ||
+        validateAccount?.type === "ALGO" ||
+        validateAccount?.type === "CEX"
+      ) {
+        window.history.replaceState(
+          null,
+          "",
+          window.location.pathname +
+            `?type=${validateAccount?.type}&address=${validateAccount?.address}`
+        );
+      }
+      handleSaveSuggest(validateAccount?.address);
     }
   };
 
@@ -480,6 +505,7 @@
       // fullScreen: false,
     });
   </script>
+
   <script>
     Featurebase("initialize_feedback_widget", {
       organization: "nimbus", // required

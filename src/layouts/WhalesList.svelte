@@ -3,10 +3,10 @@
   import { nimbus } from "~/lib/network";
   import { i18n } from "~/lib/i18n";
   import mixpanel from "mixpanel-browser";
-  import { AnimateSharedLayout, Motion } from "svelte-motion";
-  import { useNavigate } from "svelte-navigator";
-  import { createQuery, useQueryClient } from "@tanstack/svelte-query";
   import { isDarkMode, selectedPackage } from "~/store";
+  import { AnimateSharedLayout, Motion } from "svelte-motion";
+  import { createQuery, useQueryClient } from "@tanstack/svelte-query";
+  import { useNavigate } from "svelte-navigator";
   import { filterDuplicates } from "~/utils";
 
   import Loading from "~/components/Loading.svelte";
@@ -15,6 +15,9 @@
   import PublicPortfolioMobileItem from "~/UI/WhalesList/PublicPortfolioMobileItem.svelte";
   import Button from "~/components/Button.svelte";
   import Tooltip from "~/components/Tooltip.svelte";
+
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const MultipleLang = {
     whale: i18n("newtabPage.whale", "Whale 🐳"),
@@ -31,9 +34,6 @@
       "Enter a USD amount higher than 10000"
     ),
   };
-
-  const navigate = useNavigate();
-  const queryClient = useQueryClient();
 
   const whalesFilter: {
     value: string;
@@ -336,7 +336,7 @@
 
 <ErrorBoundary>
   <div
-    class="max-w-[2000px] m-auto xl:w-[90%] w-[90%] py-8 flex flex-col xl:gap-10 gap-6"
+    class="max-w-[2000px] m-auto xl:w-[90%] w-[90%] py-8 flex flex-col gap-6"
   >
     <div
       class="flex xl:flex-row flex-col justify-between xl:items-end xl:gap-0 gap-4"
