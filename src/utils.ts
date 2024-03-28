@@ -157,6 +157,16 @@ export const typePortfolioPage = [
     value: "nft",
   },
   {
+    id: "view-defi-position",
+    label: "DeFi",
+    value: "defi",
+  },
+  {
+    id: "view-the-points-airdrop",
+    label: "Points",
+    value: "points",
+  },
+  {
     id: "view-the-summary",
     label: "Summary",
     value: "summary",
