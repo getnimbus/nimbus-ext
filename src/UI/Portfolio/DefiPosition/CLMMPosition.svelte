@@ -47,7 +47,7 @@
 
 <!-- Desktop view -->
 <div
-  class={`xl:block hidden rounded-[10px] w-full ${
+  class={`xl:block hidden rounded-[10px] w-full overflow-hidden ${
     $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
   }`}
 >
@@ -73,15 +73,15 @@
     </div> -->
 
     <div class="py-3">
-      <div class="text-right text-xs uppercase font-medium">Value</div>
+      <div class="text-right text-xs uppercase font-medium">Price Range</div>
     </div>
 
     <div class="py-3 pr-3 rounded-tr-[10px]">
-      <div class="text-right text-xs uppercase font-medium">Price Range</div>
+      <div class="text-right text-xs uppercase font-medium">Value</div>
     </div>
   </div>
 
-  {#each data as itemRow, index}
+  {#each data as itemRow}
     <div class="grid grid-cols-6 group transition-all">
       <div
         class={`col-spans-2 pl-3 py-3 ${
@@ -89,7 +89,6 @@
             ? "bg-[#131313] group-hover:bg-[#000]"
             : "bg-white group-hover:bg-gray-100"
         }`}
-        style={`${data.length - 1 === index ? "border-bottom-left-radius: 10px;" : ""}`}
       >
         <div class="flex flex-col gap-2 m-auto h-full">
           {#if itemRow.tags && itemRow.tags.length !== 0}
@@ -244,14 +243,13 @@
         }`}
       >
         <div
-          class="text-right text-sm text_00000099 font-medium flex justify-end h-full"
+          class="text-right text-sm text_00000099 font-medium flex justify-end items-center h-full"
         >
-          <div class="my-auto">
-            <TooltipNumber
-              number={handleCalculateValue(itemRow)}
-              type="value"
-            />
-          </div>
+          <SliderRangeInput
+            currentPrice={itemRow?.current?.currentPrice}
+            lowerPrice={itemRow?.current?.lowerPrice}
+            upperPrice={itemRow?.current?.upperPrice}
+          />
         </div>
       </div>
 
@@ -261,16 +259,16 @@
             ? "bg-[#131313] group-hover:bg-[#000]"
             : "bg-white group-hover:bg-gray-100"
         }`}
-        style={`${data.length - 1 === index ? "border-bottom-right-radius: 10px;" : ""}`}
       >
         <div
-          class="text-right text-sm text_00000099 font-medium flex justify-end items-center h-full"
+          class="text-right text-sm text_00000099 font-medium flex justify-end h-full"
         >
-          <SliderRangeInput
-            currentPrice={itemRow?.current?.currentPrice}
-            lowerPrice={itemRow?.current?.lowerPrice}
-            upperPrice={itemRow?.current?.upperPrice}
-          />
+          <div class="my-auto">
+            <TooltipNumber
+              number={handleCalculateValue(itemRow)}
+              type="value"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -418,15 +416,6 @@
         </div>
       </div> -->
 
-      <div class="flex justify-between items-start">
-        <div class="text-right text-sm uppercase font-medium">Value</div>
-        <div
-          class="flex items-center justify-end font-medium text-sm text_00000099"
-        >
-          <TooltipNumber number={handleCalculateValue(itemRow)} type="value" />
-        </div>
-      </div>
-
       <div class="flex justify-between items-center">
         <div class="text-right text-sm uppercase font-medium">Price Range</div>
         <div
@@ -437,6 +426,15 @@
             lowerPrice={itemRow?.current?.lowerPrice}
             upperPrice={itemRow?.current?.upperPrice}
           />
+        </div>
+      </div>
+
+      <div class="flex justify-between items-start">
+        <div class="text-right text-sm uppercase font-medium">Value</div>
+        <div
+          class="flex items-center justify-end font-medium text-sm text_00000099"
+        >
+          <TooltipNumber number={handleCalculateValue(itemRow)} type="value" />
         </div>
       </div>
     </div>

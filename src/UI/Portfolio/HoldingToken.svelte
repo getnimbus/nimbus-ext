@@ -425,7 +425,7 @@
     <VirtualList
       scrollDirection="vertical"
       width="100%"
-      height={data.length < 10 ? data.length * 75 : 940}
+      height={data.length < 10 ? data.length * 80 : 940}
       bind:this={virtualList}
       itemCount={data.length}
       itemSize={(index) => {
@@ -435,8 +435,8 @@
         return listSelectedIndex.includes(index)
           ? formatDataBreakdown.length > 12
             ? 500 + 135
-            : formatDataBreakdown.length * 75 + 135
-          : 75;
+            : formatDataBreakdown.length * 80 + 135
+          : 80;
       }}
     >
       <div
