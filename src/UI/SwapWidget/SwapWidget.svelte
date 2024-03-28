@@ -98,7 +98,7 @@
   const queryClient = useQueryClient();
 
   $: widgetConfig = {
-    integrator: "Nimbus",
+    // integrator: "nimbus", // NOTICE: Temp disable swap fee
     variant: "default",
     gmPointCoefficient: "5",
     userNimbusOwner: $userPublicAddress,
