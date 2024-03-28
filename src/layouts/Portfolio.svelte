@@ -1053,14 +1053,6 @@
                   selectedType={$tab}
                 />
 
-                <!-- {#if $typeWallet === "EVM" || $typeWallet === "MOVE" || $typeWallet === "CEX" || $typeWallet === "BUNDLE"}
-                  <RiskReturn
-                    isLoading={$queryCompare.isFetching}
-                    isError={$queryCompare.isError}
-                    data={$queryCompare.data}
-                  />
-                {/if} -->
-
                 <Holding
                   isLoadingNFT={$chain === "ALL"
                     ? $queryAllNftHolding.some(
@@ -1102,6 +1094,14 @@
               {/if}
 
               <!-- <News isLoading={false} data={newsData} /> -->
+
+              <!-- {#if $typeWallet === "EVM" || $typeWallet === "MOVE" || $typeWallet === "CEX" || $typeWallet === "BUNDLE"}
+                <RiskReturn
+                  isLoading={$queryCompare.isFetching}
+                  isError={$queryCompare.isError}
+                  data={$queryCompare.data}
+                />
+              {/if} -->
             </div>
           {/if}
         </div>
