@@ -1033,7 +1033,7 @@
                 </AnimateSharedLayout>
               </div>
 
-              {#if $tab !== "summary" && $tab !== "points"}
+              {#if $tab === "token" || $tab === "nft"}
                 <Charts
                   {handleSelectedTableTokenHolding}
                   isLoading={$queryOverview.isFetching}
