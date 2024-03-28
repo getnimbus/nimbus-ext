@@ -454,7 +454,9 @@
 
                   <div class="flex justify-between items-start">
                     <div class="text-right text-sm uppercase font-medium">
-                      Estimated value
+                      <TooltipTitle tooltipText="Based on pre-market price">
+                        Estimated value
+                      </TooltipTitle>
                     </div>
 
                     <div
