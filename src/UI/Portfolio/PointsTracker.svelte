@@ -301,9 +301,13 @@
         {:else}
           {#each formatData || [] as data}
             {#each [gmPoint].concat(data.points) || [] as item}
-              <div class="flex flex-col gap-2 px-2 py-4">
-                <div class="flex justify-between">
-                  <div class="flex gap-2 items-center font-medium">
+              <div
+                class="flex flex-col gap-4 border-b-[1px] border_0000000d last:border-none py-4"
+              >
+                <div class="flex justify-between items-start">
+                  <div
+                    class="flex gap-2 items-center text-right text-sm uppercase font-medium"
+                  >
                     <div class="w-[30px] h-[30px] overflow-hidden rounded-full">
                       <Image
                         logo={protocolInfo[item?.protocolLabel].logo}
@@ -312,7 +316,10 @@
                     </div>
                     {protocolInfo[item?.protocolLabel].name}
                   </div>
-                  <div class="flex items-center gap-1">
+
+                  <div
+                    class="flex items-center justify-end font-medium text-sm text_00000099"
+                  >
                     {#if protocolInfo[item?.protocolLabel].twitter}
                       <a
                         href={protocolInfo[item?.protocolLabel].twitter}
@@ -363,16 +370,26 @@
                   </div>
                 </div>
 
-                <div class="flex justify-between">
-                  <div class="text-sm font-medium">Points</div>
-                  <div class="text-right font-medium text_00000099">
+                <div class="flex justify-between items-start">
+                  <div class="text-right text-sm uppercase font-medium">
+                    Points
+                  </div>
+
+                  <div
+                    class="flex items-center justify-end font-medium text-sm text_00000099"
+                  >
                     {item.points}
                   </div>
                 </div>
 
-                <div class="flex justify-between">
-                  <div class="text-sm font-medium">Estimated value</div>
-                  <div class="text-right font-medium text_00000099">
+                <div class="flex justify-between items-start">
+                  <div class="text-right text-sm uppercase font-medium">
+                    Estimated value
+                  </div>
+
+                  <div
+                    class="flex items-center justify-end font-medium text-sm text_00000099"
+                  >
                     <TooltipNumber
                       number={item.price * item.points}
                       type="value"
