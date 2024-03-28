@@ -16,27 +16,45 @@
   let currentUserRank;
 
   const handleDailyCheckin = async () => {
-    const response = await nimbus.get(`/v2/checkin`);
+    const response = await nimbus.get("/v2/checkin");
     return response.data;
   };
+
+  const handleGetListLeaderboard = async () => {
+    const response = await nimbus.get("/v2/checkin/leaderboard");
+    return response.data;
+  };
+
+  $: queryListLeaderboard = createQuery({
+    queryKey: ["list-leaderboard"],
+    queryFn: () => handleGetListLeaderboard(),
+    staleTime: Infinity,
+    enabled: $user && Object.keys($user).length === 0,
+  });
 
   $: queryDailyCheckin = createQuery({
     queryKey: [$userPublicAddress, "daily-checkin"],
     queryFn: () => handleDailyCheckin(),
     staleTime: Infinity,
-    enabled:
-      $user &&
-      Object.keys($user).length !== 0 &&
-      $userPublicAddress.length !== 0,
-    onError(err) {
-      localStorage.removeItem("auth_token");
-      localStorage.removeItem("solana_token");
-      localStorage.removeItem("sui_token");
-      localStorage.removeItem("ton_token");
-      localStorage.removeItem("evm_token");
-      user.update((n) => (n = {}));
-    },
+    enabled: $userPublicAddress.length !== 0,
   });
+
+  $: {
+    if (
+      !$queryListLeaderboard.isError &&
+      $queryListLeaderboard.data !== undefined
+    ) {
+      formatDataLeaderboard = ($queryListLeaderboard?.data || []).map(
+        (item: any, index: number) => {
+          return {
+            rank: index + 1,
+            owner: item?.owner?.toLowerCase(),
+            point: item?.["_sum"]?.point,
+          };
+        }
+      );
+    }
+  }
 
   $: {
     if (!$queryDailyCheckin.isError && $queryDailyCheckin.data !== undefined) {
@@ -278,102 +296,86 @@
           </tr>
         </thead>
 
-        {#if $queryDailyCheckin?.data === undefined}
-          <tbody>
+        <tbody>
+          {#if formatDataLeaderboard?.length === 0}
             <tr>
               <td colspan="3">
                 <div class="flex items-center justify-center h-full px-3 py-4">
-                  Please connect wallet
+                  There is no one checkin yet
                 </div>
               </td>
             </tr>
-          </tbody>
-        {:else}
-          <tbody>
-            {#if formatDataLeaderboard?.length === 0}
-              <tr>
-                <td colspan="3">
-                  <div
-                    class="flex items-center justify-center h-full px-3 py-4"
-                  >
-                    There is no one checkin yet
-                  </div>
-                </td>
-              </tr>
-            {/if}
+          {/if}
 
-            {#if formatDataLeaderboard?.length < 4}
-              <tr>
-                <td colspan="3">
-                  <div
-                    class="flex items-center justify-center h-full px-3 py-4"
-                  >
-                    Currently, no one has left the top 3 yet.
-                  </div>
-                </td>
-              </tr>
-            {/if}
+          {#if formatDataLeaderboard?.length < 4}
+            <tr>
+              <td colspan="3">
+                <div class="flex items-center justify-center h-full px-3 py-4">
+                  Currently, no one has left the top 3 yet.
+                </div>
+              </td>
+            </tr>
+          {/if}
 
-            {#each formatDataLeaderboard.slice(3, 20) as item}
-              <tr class="group transition-all">
-                <td
-                  class={`py-2 pl-6 ${
-                    item?.rank === formatDataLeaderboard[currentUserRank]?.rank
-                      ? $isDarkMode
-                        ? "bg-[#000]"
-                        : "bg-gray-100"
-                      : $isDarkMode
-                        ? "group-hover:bg-[#000]"
-                        : "group-hover:bg-gray-100"
+          {#each formatDataLeaderboard.slice(3, 20) as item}
+            <tr class="group transition-all">
+              <td
+                class={`py-2 pl-6 ${
+                  item?.rank === formatDataLeaderboard[currentUserRank]?.rank
+                    ? $isDarkMode
+                      ? "bg-[#000]"
+                      : "bg-gray-100"
+                    : $isDarkMode
+                      ? "group-hover:bg-[#000]"
+                      : "group-hover:bg-gray-100"
+                }`}
+              >
+                <div
+                  class={`flex justify-start xl:text-2xl text-sm font-normal w-6 ${
+                    !$isDarkMode && "text-[#27326F]"
                   }`}
                 >
-                  <div
-                    class={`flex justify-start xl:text-2xl text-sm font-normal w-6 ${
-                      !$isDarkMode && "text-[#27326F]"
-                    }`}
-                  >
-                    {item?.rank || "N/A"}
-                  </div>
-                </td>
+                  {item?.rank || "N/A"}
+                </div>
+              </td>
 
-                <td
-                  class={`py-2 ${
-                    item?.rank === formatDataLeaderboard[currentUserRank]?.rank
-                      ? $isDarkMode
-                        ? "bg-[#000]"
-                        : "bg-gray-100"
-                      : $isDarkMode
-                        ? "group-hover:bg-[#000]"
-                        : "group-hover:bg-gray-100"
-                  }`}
-                >
-                  <div class="flex items-end justify-start xl:text-lg text-sm">
-                    {shorterAddress(item?.owner)}
-                  </div>
-                </td>
+              <td
+                class={`py-2 ${
+                  item?.rank === formatDataLeaderboard[currentUserRank]?.rank
+                    ? $isDarkMode
+                      ? "bg-[#000]"
+                      : "bg-gray-100"
+                    : $isDarkMode
+                      ? "group-hover:bg-[#000]"
+                      : "group-hover:bg-gray-100"
+                }`}
+              >
+                <div class="flex items-end justify-start xl:text-lg text-sm">
+                  {shorterAddress(item?.owner)}
+                </div>
+              </td>
 
-                <td
-                  class={`py-2 pr-6 ${
-                    item?.rank === formatDataLeaderboard[currentUserRank]?.rank
-                      ? $isDarkMode
-                        ? "bg-[#000]"
-                        : "bg-gray-100"
-                      : $isDarkMode
-                        ? "group-hover:bg-[#000]"
-                        : "group-hover:bg-gray-100"
-                  }`}
-                >
-                  <div class="flex items-center text-right justify-end gap-1">
-                    <div class="text-yellow-400 xl:text-xl text-lg">
-                      {item?.point || 0}
-                    </div>
-                    <div>GM point</div>
+              <td
+                class={`py-2 pr-6 ${
+                  item?.rank === formatDataLeaderboard[currentUserRank]?.rank
+                    ? $isDarkMode
+                      ? "bg-[#000]"
+                      : "bg-gray-100"
+                    : $isDarkMode
+                      ? "group-hover:bg-[#000]"
+                      : "group-hover:bg-gray-100"
+                }`}
+              >
+                <div class="flex items-center text-right justify-end gap-1">
+                  <div class="text-yellow-400 xl:text-xl text-lg">
+                    {item?.point || 0}
                   </div>
-                </td>
-              </tr>
-            {/each}
-          </tbody>
-        {/if}
+                  <div>GM point</div>
+                </div>
+              </td>
+            </tr>
+          {/each}
+        </tbody>
       </table>
     </div>
   </div>
