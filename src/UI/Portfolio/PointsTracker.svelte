@@ -1,13 +1,13 @@
 <script lang="ts">
   import { createQuery } from "@tanstack/svelte-query";
-  import { onMount } from "svelte";
+  import { nimbus } from "~/lib/network";
+  import { isDarkMode, user, wallet } from "~/store";
+
+  import tooltip from "~/entries/contentScript/views/tooltip";
+  import TooltipNumber from "~/components/TooltipNumber.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import Image from "~/components/Image.svelte";
   import Loading from "~/components/Loading.svelte";
-  import TooltipNumber from "~/components/TooltipNumber.svelte";
-  import tooltip from "~/entries/contentScript/views/tooltip";
-  import { nimbus } from "~/lib/network";
-  import { isDarkMode, user, wallet } from "~/store";
 
   import defaultToken from "~/assets/defaultToken.png";
   import gmPoints from "~/assets/Gold4.svg";
@@ -47,44 +47,54 @@
     return await nimbus.get(`/airdrop-points/${$wallet}`);
   };
 
-  $: pointsQuery = createQuery({
+  $: query = createQuery({
     queryKey: ["points-airdrop", $wallet],
     queryFn: () => getPointsAirdrop(),
     staleTime: Infinity,
     enabled: $user && Object.keys($user).length !== 0,
   });
 
-  $: dataquery =
-    !$pointsQuery.isLoading &&
-    $pointsQuery?.data?.data.map((item) => {
-      return {
-        ...item,
-        points: item.points.map((point) => {
-          const data = $pointsQuery?.data?.dataWhalesMarket;
-          const pointIndex = data
-            .map(
-              (datawhale) =>
-                (datawhale.name === "Drift Protocol" && "Drift") ||
-                datawhale.name
-            )
-            .indexOf(point.protocolLabel);
+  let formatData = [];
+  let gmPoint = {};
 
-          const price = data[pointIndex]?.last_price || null;
+  $: {
+    if (
+      !$query.isError &&
+      $query.data !== undefined &&
+      $query.data?.data.length !== 0 &&
+      $query.data?.dataWhalesMarket.length !== 0
+    ) {
+      formatData = $query?.data?.data.map((item) => {
+        return {
+          ...item,
+          points: item.points.map((point) => {
+            const data = $query?.data?.dataWhalesMarket;
+            const pointIndex = data
+              .map(
+                (datawhale) =>
+                  (datawhale.name === "Drift Protocol" && "Drift") ||
+                  datawhale.name
+              )
+              .indexOf(point.protocolLabel);
 
-          return {
-            ...point,
-            price: price,
-          };
-        }),
+            const price = data[pointIndex]?.last_price || null;
+
+            return {
+              ...point,
+              price: price,
+            };
+          }),
+        };
+      });
+
+      gmPoint = {
+        points: $query?.data?.totalPoint,
+        protocol: "gmpoints",
+        protocolLabel: "GMPoints",
+        price: null,
       };
-    });
-
-  $: gmPoint = !$pointsQuery.isLoading && {
-    points: $pointsQuery?.data?.totalPoint,
-    protocol: "gmpoints",
-    protocolLabel: "GMPoints",
-    price: null,
-  };
+    }
+  }
 </script>
 
 <ErrorBoundary>
@@ -94,25 +104,25 @@
       $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
     }`}
   >
-    {#if $pointsQuery.isLoading}
-      <div>
-        <div class="flex justify-center items-center h-full py-3 px-3">
-          <Loading />
-        </div>
+    {#if $query.isFetching}
+      <div class="flex justify-center items-center h-full py-3 px-3">
+        <Loading />
       </div>
     {:else}
-      {#each dataquery || [] as data}
+      {#each formatData || [] as data}
         <table class="table-auto w-full h-full">
           <thead>
             <tr class="bg_f4f5f8">
               <th class="pl-3 py-3 rounded-tl-[10px] bg-transparent bg_f4f5f8">
                 <div class="text-left text-xs uppercase font-medium">Name</div>
               </th>
-              <th class="py-3 pr-3">
+
+              <th class="py-3">
                 <div class="text-right text-xs uppercase font-medium">
                   Points
                 </div>
               </th>
+
               <th class="py-3 pr-3 rounded-tr-[10px]">
                 <div
                   class="text-right text-xs uppercase font-medium flex justify-end"
@@ -131,6 +141,7 @@
               </th>
             </tr>
           </thead>
+
           <tbody>
             {#each [gmPoint].concat(data.points) as item}
               <tr class="group transition-all relative">
@@ -206,7 +217,7 @@
                 </td>
 
                 <td
-                  class={`py-3 pr-3 ${
+                  class={`py-3 ${
                     $isDarkMode
                       ? "group-hover:bg-[#000]"
                       : "group-hover:bg-gray-100"
@@ -260,16 +271,14 @@
       $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
     }`}
   >
-    {#if $pointsQuery.isLoading}
-      <div>
-        <div class="flex justify-center items-center h-full py-3 px-3">
-          <Loading />
-        </div>
+    {#if $query.isFetching}
+      <div class="flex justify-center items-center h-full py-3 px-3">
+        <Loading />
       </div>
     {:else}
-      {#each dataquery || [] as data}
+      {#each formatData || [] as data}
         {#each [gmPoint].concat(data.points) || [] as item}
-          <div class="relative flex flex-col gap-2 px-2 py-4">
+          <div class="flex flex-col gap-2 px-2 py-4">
             <div class="flex justify-between">
               <div class="flex gap-2 items-center font-medium">
                 <div class="w-[30px] h-[30px] overflow-hidden rounded-full">
@@ -330,12 +339,14 @@
                 {/if}
               </div>
             </div>
+
             <div class="flex justify-between">
               <div class="text-sm font-medium">Points</div>
               <div class="text-right font-medium text_00000099">
                 {item.points}
               </div>
             </div>
+
             <div class="flex justify-between">
               <div class="text-sm font-medium">Estimated value</div>
               <div class="text-right font-medium text_00000099">
@@ -343,9 +354,11 @@
               </div>
             </div>
           </div>
-        {/each}{/each}
+        {/each}
+      {/each}
     {/if}
   </div>
+
   <div class="py-3 px-3 text-right text-sm text_00000099">
     Data by <a
       href="https://solana-airdrop-checker.solworks.dev/"
