@@ -48,10 +48,10 @@
 <!-- Desktop view -->
 <div
   class={`xl:block hidden rounded-[10px] overflow-hidden w-full ${
-    $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
+    $isDarkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000000d"
   }`}
 >
-  <div class="bg_f4f5f8 grid grid-cols-5">
+  <div class="grid grid-cols-5">
     <div class="col-spans-2 pl-3 py-3 rounded-tl-[10px]">
       <div class="text-left text-xs uppercase font-medium">Invested</div>
     </div>
@@ -82,7 +82,7 @@
       <div
         class={`col-spans-2 pl-3 py-3 ${
           $isDarkMode
-            ? "bg-[#131313] group-hover:bg-[#000]"
+            ? "bg-[#222222] group-hover:bg-[#000]"
             : "bg-white group-hover:bg-gray-100"
         }`}
       >
@@ -120,7 +120,7 @@
       <div
         class={`py-3 ${
           $isDarkMode
-            ? "bg-[#131313] group-hover:bg-[#000]"
+            ? "bg-[#222222] group-hover:bg-[#000]"
             : "bg-white group-hover:bg-gray-100"
         }`}
       >
@@ -147,7 +147,7 @@
       <div
         class={`py-3 ${
           $isDarkMode
-            ? "bg-[#131313] group-hover:bg-[#000]"
+            ? "bg-[#222222] group-hover:bg-[#000]"
             : "bg-white group-hover:bg-gray-100"
         }`}
       >
@@ -179,7 +179,7 @@
       <!-- <div
         class={`py-3 ${
           $isDarkMode
-            ? "bg-[#131313] group-hover:bg-[#000]"
+            ? "bg-[#222222] group-hover:bg-[#000]"
             : "bg-white group-hover:bg-gray-100"
         }`}
       >
@@ -209,7 +209,7 @@
       <!-- <div
         class={`py-3 pr-3 ${
           $isDarkMode
-            ? "bg-[#131313] group-hover:bg-[#000]"
+            ? "bg-[#222222] group-hover:bg-[#000]"
             : "bg-white group-hover:bg-gray-100"
         }`}
       >
@@ -225,7 +225,7 @@
       <div
         class={`py-3 pr-3 ${
           $isDarkMode
-            ? "bg-[#131313] group-hover:bg-[#000]"
+            ? "bg-[#222222] group-hover:bg-[#000]"
             : "bg-white group-hover:bg-gray-100"
         }`}
       >
@@ -247,7 +247,7 @@
 <!-- Mobile view -->
 <div
   class={`xl:hidden block rounded-[10px] p-2 overflow-hidden w-full ${
-    $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
+    $isDarkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000000d"
   }`}
 >
   {#each data as itemRow}
