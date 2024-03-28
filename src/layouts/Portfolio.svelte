@@ -48,6 +48,7 @@
 
   import Reload from "~/assets/reload.svg";
   import defaultToken from "~/assets/defaultToken.png";
+  import PointsTracker from "~/UI/Portfolio/PointsTracker.svelte";
 
   const MultipleLang = {
     portfolio: i18n("newtabPage.portfolio", "Portfolio"),
@@ -1032,7 +1033,7 @@
                 </AnimateSharedLayout>
               </div>
 
-              {#if $tab === "token" || $tab === "nft"}
+              {#if $tab !== "summary" && $tab !== "points"}
                 <Charts
                   {handleSelectedTableTokenHolding}
                   isLoading={$queryOverview.isFetching}
@@ -1094,6 +1095,10 @@
                       !$queryValidate.isFetching
                   )}
                 />
+              {/if}
+
+              {#if $tab === "points"}
+                <PointsTracker />
               {/if}
 
               <!-- <News isLoading={false} data={newsData} /> -->

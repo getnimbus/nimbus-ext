@@ -162,6 +162,11 @@ export const typePortfolioPage = [
     value: "defi",
   },
   {
+    id: "view-the-points-airdrop",
+    label: "Points",
+    value: "points",
+  },
+  {
     id: "view-the-summary",
     label: "Summary",
     value: "summary",
