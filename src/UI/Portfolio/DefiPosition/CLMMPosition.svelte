@@ -47,11 +47,11 @@
 
 <!-- Desktop view -->
 <div
-  class={`xl:block hidden rounded-[10px] w-full ${
-    $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
+  class={`xl:block hidden rounded-[10px] w-full overflow-hidden ${
+    $isDarkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000000d"
   }`}
 >
-  <div class="bg_f4f5f8 grid grid-cols-6">
+  <div class="grid grid-cols-6">
     <div class="col-spans-2 pl-3 py-3 rounded-tl-[10px]">
       <div class="text-left text-xs uppercase font-medium">Liquidity Pool</div>
     </div>
@@ -73,23 +73,22 @@
     </div> -->
 
     <div class="py-3">
-      <div class="text-right text-xs uppercase font-medium">Value</div>
+      <div class="text-right text-xs uppercase font-medium">Price Range</div>
     </div>
 
     <div class="py-3 pr-3 rounded-tr-[10px]">
-      <div class="text-right text-xs uppercase font-medium">Price Range</div>
+      <div class="text-right text-xs uppercase font-medium">Value</div>
     </div>
   </div>
 
-  {#each data as itemRow, index}
+  {#each data as itemRow}
     <div class="grid grid-cols-6 group transition-all">
       <div
         class={`col-spans-2 pl-3 py-3 ${
           $isDarkMode
-            ? "bg-[#131313] group-hover:bg-[#000]"
+            ? "bg-[#222222] group-hover:bg-[#000]"
             : "bg-white group-hover:bg-gray-100"
         }`}
-        style={`${data.length - 1 === index ? "border-bottom-left-radius: 10px;" : ""}`}
       >
         <div class="flex flex-col gap-2 m-auto h-full">
           {#if itemRow.tags && itemRow.tags.length !== 0}
@@ -124,7 +123,7 @@
       <div
         class={`py-3 ${
           $isDarkMode
-            ? "bg-[#131313] group-hover:bg-[#000]"
+            ? "bg-[#222222] group-hover:bg-[#000]"
             : "bg-white group-hover:bg-gray-100"
         }`}
       >
@@ -151,7 +150,7 @@
       <div
         class={`py-3 ${
           $isDarkMode
-            ? "bg-[#131313] group-hover:bg-[#000]"
+            ? "bg-[#222222] group-hover:bg-[#000]"
             : "bg-white group-hover:bg-gray-100"
         }`}
       >
@@ -183,7 +182,7 @@
       <!-- <div
         class={`py-3 ${
           $isDarkMode
-            ? "bg-[#131313] group-hover:bg-[#000]"
+            ? "bg-[#222222] group-hover:bg-[#000]"
             : "bg-white group-hover:bg-gray-100"
         }`}
       >
@@ -223,7 +222,7 @@
       <!-- <div
         class={`py-3 ${
           $isDarkMode
-            ? "bg-[#131313] group-hover:bg-[#000]"
+            ? "bg-[#222222] group-hover:bg-[#000]"
             : "bg-white group-hover:bg-gray-100"
         }`}
       >
@@ -239,7 +238,25 @@
       <div
         class={`py-3 ${
           $isDarkMode
-            ? "bg-[#131313] group-hover:bg-[#000]"
+            ? "bg-[#222222] group-hover:bg-[#000]"
+            : "bg-white group-hover:bg-gray-100"
+        }`}
+      >
+        <div
+          class="text-right text-sm text_00000099 font-medium flex justify-end items-center h-full"
+        >
+          <SliderRangeInput
+            currentPrice={itemRow?.current?.currentPrice}
+            lowerPrice={itemRow?.current?.lowerPrice}
+            upperPrice={itemRow?.current?.upperPrice}
+          />
+        </div>
+      </div>
+
+      <div
+        class={`py-3 pr-3 ${
+          $isDarkMode
+            ? "bg-[#222222] group-hover:bg-[#000]"
             : "bg-white group-hover:bg-gray-100"
         }`}
       >
@@ -254,25 +271,6 @@
           </div>
         </div>
       </div>
-
-      <div
-        class={`py-3 pr-3 ${
-          $isDarkMode
-            ? "bg-[#131313] group-hover:bg-[#000]"
-            : "bg-white group-hover:bg-gray-100"
-        }`}
-        style={`${data.length - 1 === index ? "border-bottom-right-radius: 10px;" : ""}`}
-      >
-        <div
-          class="text-right text-sm text_00000099 font-medium flex justify-end items-center h-full"
-        >
-          <SliderRangeInput
-            currentPrice={itemRow?.current?.currentPrice}
-            lowerPrice={itemRow?.current?.lowerPrice}
-            upperPrice={itemRow?.current?.upperPrice}
-          />
-        </div>
-      </div>
     </div>
   {/each}
 </div>
@@ -280,7 +278,7 @@
 <!-- Mobile view -->
 <div
   class={`xl:hidden block rounded-[10px] p-2 overflow-hidden w-full ${
-    $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
+    $isDarkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000000d"
   }`}
 >
   {#each data as itemRow}
@@ -418,15 +416,6 @@
         </div>
       </div> -->
 
-      <div class="flex justify-between items-start">
-        <div class="text-right text-sm uppercase font-medium">Value</div>
-        <div
-          class="flex items-center justify-end font-medium text-sm text_00000099"
-        >
-          <TooltipNumber number={handleCalculateValue(itemRow)} type="value" />
-        </div>
-      </div>
-
       <div class="flex justify-between items-center">
         <div class="text-right text-sm uppercase font-medium">Price Range</div>
         <div
@@ -437,6 +426,15 @@
             lowerPrice={itemRow?.current?.lowerPrice}
             upperPrice={itemRow?.current?.upperPrice}
           />
+        </div>
+      </div>
+
+      <div class="flex justify-between items-start">
+        <div class="text-right text-sm uppercase font-medium">Value</div>
+        <div
+          class="flex items-center justify-end font-medium text-sm text_00000099"
+        >
+          <TooltipNumber number={handleCalculateValue(itemRow)} type="value" />
         </div>
       </div>
     </div>
