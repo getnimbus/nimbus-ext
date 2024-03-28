@@ -950,11 +950,11 @@
               {/if}
             </div>
           {:else}
-            <div class="xl:hidden flex items-center mb-4">
+            <div class="xl:hidden flex items-center gap-1 mb-4">
               <AnimateSharedLayout>
                 {#each typePortfolioPage as type}
                   <div
-                    class="text-white relative cursor-pointer text-base font-medium py-1 px-3 rounded-[100px] transition-all"
+                    class="text-white relative cursor-pointer text-base font-medium py-1 px-2 rounded-[100px] transition-all"
                     id={type.id}
                     on:click={() => {
                       tab.update((n) => (n = type.value));
