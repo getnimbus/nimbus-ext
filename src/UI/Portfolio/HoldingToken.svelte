@@ -354,10 +354,10 @@
   }`}
 >
   <div
-    class={`bg_f4f5f8 grid ${listSupported.includes($typeWallet) ? "grid-cols-9" : "grid-cols-8"} ${isStickyTableToken ? "sticky top-0 z-9" : ""}`}
+    class={`bg_f4f5f8 grid ${listSupported.includes($typeWallet) ? "grid-cols-10" : "grid-cols-9"} ${isStickyTableToken ? "sticky top-0 z-9" : ""}`}
     bind:this={tableTokenHeader}
   >
-    <div class="col-spans-2 pl-3 py-3 rounded-tl-[10px]">
+    <div class="col-spans-3 pl-3 py-3 rounded-tl-[10px]">
       <div class="text-left xl:text-xs text-xl uppercase font-medium">
         {MultipleLang.assets}
       </div>
@@ -410,7 +410,7 @@
 
   {#if data && data.length === 0 && !isLoading}
     <div
-      class={`grid ${listSupported.includes($typeWallet) ? "grid-cols-9" : "grid-cols-8"}`}
+      class={`grid ${listSupported.includes($typeWallet) ? "grid-cols-10" : "grid-cols-9"}`}
     >
       <div
         class="col-span-full flex justify-center items-center h-[465px] py-3 px-3 text-base text-gray-400"
@@ -441,7 +441,7 @@
       }}
     >
       <div
-        class={`grid ${listSupported.includes($typeWallet) ? "grid-cols-9" : "grid-cols-8"} group transition-all`}
+        class={`grid ${listSupported.includes($typeWallet) ? "grid-cols-10" : "grid-cols-9"} group transition-all`}
         slot="item"
         let:index
         let:style
@@ -476,7 +476,7 @@
         }}
       >
         <div
-          class={`col-spans-2 pl-3 py-3 ${
+          class={`col-spans-3 pl-3 py-3 ${
             listSelectedIndex.includes(index)
               ? $isDarkMode
                 ? "bg-[#000]"
@@ -505,7 +505,7 @@
               {/if}
             </div>
 
-            <div class="flex flex-col gap-1">
+            <div class="flex flex-col gap-1 flex-1">
               <div class="flex items-start gap-2">
                 <div
                   class="relative text-2xl font-medium xl:text-sm"
@@ -521,11 +521,11 @@
                   {#if data[index].name === undefined}
                     N/A
                   {:else}
-                    {data[index]?.name?.length > 20
-                      ? shorterName(data[index].name, 20)
+                    {data[index]?.name?.length > 15
+                      ? shorterName(data[index].name, 15)
                       : data[index].name}
                   {/if}
-                  {#if isShowTooltipName && selectedItemIndex === index && data[index]?.name?.length > 20}
+                  {#if isShowTooltipName && selectedItemIndex === index && data[index]?.name?.length > 15}
                     <div
                       class="absolute left-0 -top-8"
                       style="z-index: 2147483648;"
@@ -537,19 +537,19 @@
 
                 {#if handleCheckVault(data[index]) !== undefined}
                   <div
-                    class="flex items-center justyfy-center px-2 py-1 text_27326F xl:text-[10px] text-base font-medium bg-[#1e96fc33] rounded-[1000px] cursor-pointer"
+                    class="w-max flex items-center justyfy-center px-2 py-1 text_27326F xl:text-[10px] text-base font-medium bg-[#1e96fc33] rounded-[1000px] cursor-pointer"
                     on:click={() => {
                       showTableVaults = true;
                       selectedVaults = data[index].vaults;
                       selectedVaultsSymbol = data[index].symbol;
                     }}
                   >
-                    <div class="hidden xl:block">
-                      {`Farm up to ${numeral(
-                        handleCheckVault(data[index])?.apy * 100
-                      ).format("0,0.00")}% APY`}
+                    <div class="flex gap-1">
+                      Farm up to
+                      {numeral(handleCheckVault(data[index])?.apy * 100).format(
+                        "0,0.0"
+                      )}% APY
                     </div>
-                    <div class="block xl:hidden">Farm</div>
                   </div>
                 {/if}
               </div>
@@ -1566,12 +1566,12 @@
     <VirtualList
       scrollDirection="vertical"
       width="100%"
-      height={data.length < 10 ? data.length * 420 : 940}
+      height={data.length < 10 ? data.length * 470 : 940}
       itemCount={data.length}
-      itemSize={420}
+      itemSize={470}
     >
       <div
-        class="flex flex-col gap-4 border-b-[1px] border_0000000d last:border-none py-2"
+        class="flex flex-col gap-4 border-b-[1px] border_0000000d last:border-none py-4"
         slot="item"
         let:index
         let:style
@@ -1624,53 +1624,34 @@
           </div>
 
           <div class="flex flex-col">
-            <div class="flex items-start gap-2">
-              <div
-                class="relative font-medium text-base"
-                on:mouseover={() => {
-                  selectedItemIndex = index;
-                  isShowTooltipName = true;
-                }}
-                on:mouseleave={() => {
-                  selectedItemIndex = -1;
-                  isShowTooltipName = false;
-                }}
-              >
-                {#if data[index].name === undefined}
-                  N/A
-                {:else}
-                  {data[index]?.name?.length > 20
-                    ? shorterName(data[index].name, 20)
-                    : data[index].name}
-                {/if}
-                {#if isShowTooltipName && selectedItemIndex === index && data[index]?.name?.length > 20}
-                  <div
-                    class="absolute left-0 -top-8"
-                    style="z-index: 2147483648;"
-                  >
-                    <Tooltip text={data[index].name} />
-                  </div>
-                {/if}
-              </div>
-
-              {#if handleCheckVault(data[index]) !== undefined}
+            <div
+              class="relative font-medium text-base"
+              on:mouseover={() => {
+                selectedItemIndex = index;
+                isShowTooltipName = true;
+              }}
+              on:mouseleave={() => {
+                selectedItemIndex = -1;
+                isShowTooltipName = false;
+              }}
+            >
+              {#if data[index].name === undefined}
+                N/A
+              {:else}
+                {data[index]?.name?.length > 20
+                  ? shorterName(data[index].name, 20)
+                  : data[index].name}
+              {/if}
+              {#if isShowTooltipName && selectedItemIndex === index && data[index]?.name?.length > 20}
                 <div
-                  class="flex items-center justyfy-center px-2 py-1 text_27326F text-[10px] font-medium bg-[#1e96fc33] rounded-[1000px] cursor-pointer"
-                  on:click={() => {
-                    showTableVaults = true;
-                    selectedVaults = data[index].vaults;
-                    selectedVaultsSymbol = data[index].symbol;
-                  }}
+                  class="absolute left-0 -top-8"
+                  style="z-index: 2147483648;"
                 >
-                  <div class="hidden xl:block">
-                    {`Farm up to ${numeral(
-                      handleCheckVault(data[index])?.apy * 100
-                    ).format("0,0.00")}% APY`}
-                  </div>
-                  <div class="block xl:hidden">Farm</div>
+                  <Tooltip text={data[index].name} />
                 </div>
               {/if}
             </div>
+
             <div class="flex items-center gap-3 min-h-[26px]">
               <div
                 class="relative font-medium text_00000080 text-xs"
@@ -1997,6 +1978,24 @@
             </div>
           </div>
         </div>
+
+        {#if handleCheckVault(data[index]) !== undefined}
+          <div
+            class="-mt-1 w-max flex items-center justyfy-center px-2 py-1 text_27326F text-xs font-medium bg-[#1e96fc33] rounded-[1000px] cursor-pointer"
+            on:click={() => {
+              showTableVaults = true;
+              selectedVaults = data[index].vaults;
+              selectedVaultsSymbol = data[index].symbol;
+            }}
+          >
+            <div class="flex gap-1">
+              Farm up to
+              {numeral(handleCheckVault(data[index])?.apy * 100).format(
+                "0,0.0"
+              )}% APY
+            </div>
+          </div>
+        {/if}
 
         <div class="flex justify-between items-start">
           <div class="text-right text-sm uppercase font-medium">
