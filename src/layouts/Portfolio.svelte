@@ -48,6 +48,7 @@
 
   import Reload from "~/assets/reload.svg";
   import defaultToken from "~/assets/defaultToken.png";
+  import PointsTracker from "~/UI/Portfolio/PointsTracker.svelte";
 
   const MultipleLang = {
     portfolio: i18n("newtabPage.portfolio", "Portfolio"),
@@ -947,7 +948,7 @@
             <div
               class="portfolio_container flex flex-col xl:gap-7 gap-5 rounded-[20px] xl:p-8 p-4"
             >
-              <div class="flex items-center gap-1">
+              <div class="flex items-center flex-wrap gap-1">
                 <AnimateSharedLayout>
                   {#each typePortfolioPage as type}
                     <div
@@ -987,7 +988,7 @@
                 </AnimateSharedLayout>
               </div>
 
-              {#if $tab !== "summary"}
+              {#if $tab !== "summary" && $tab !== "points"}
                 <Charts
                   {handleSelectedTableTokenHolding}
                   isLoading={$queryOverview.isFetching}
@@ -1038,6 +1039,10 @@
 
               {#if $tab === "summary"}
                 <PerformanceSummary />
+              {/if}
+
+              {#if $tab === "points"}
+                <PointsTracker />
               {/if}
 
               <!-- <News isLoading={false} data={newsData} /> -->
