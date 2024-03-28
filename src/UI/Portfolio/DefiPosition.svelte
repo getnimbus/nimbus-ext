@@ -1,6 +1,7 @@
 <script lang="ts">
-  import { totalPositions, typeWallet, wallet } from "~/store";
-  import { nimbusSuiDefi } from "~/lib/network";
+  import { createQuery } from "@tanstack/svelte-query";
+  import { nimbus } from "~/lib/network";
+  import { totalPositions, typeWallet, wallet, chain } from "~/store";
   import { groupBy } from "lodash";
   import { flatten } from "lodash";
 
@@ -11,23 +12,32 @@
   export let conditionQuery: boolean;
 
   let positionsData = [];
-  let isLoading = false;
 
-  const getSUIPositions = async (address) => {
-    try {
-      isLoading = true;
-      const response: any = await nimbusSuiDefi.get(`/positions/${address}`);
-      formatDataProtocol(response?.data || []);
-    } catch (e) {
-      console.log(e);
-    } finally {
-      isLoading = false;
-    }
+  const getMovePositions = async (address, chain) => {
+    const response: any = await nimbus.get(
+      `/v2/address/${address}/positions?chain=${chain}`
+    );
+    return response?.data?.data;
   };
 
+  $: queryMovePositions = createQuery({
+    queryKey: ["move-positions", $wallet, $chain],
+    queryFn: () => getMovePositions($wallet, $chain),
+    staleTime: Infinity,
+    enabled: Boolean(
+      conditionQuery &&
+        $wallet &&
+        $wallet?.length !== 0 &&
+        $typeWallet === "MOVE"
+    ),
+  });
+
   $: {
-    if (conditionQuery) {
-      getSUIPositions($wallet);
+    if (
+      !$queryMovePositions.isError &&
+      $queryMovePositions.data !== undefined
+    ) {
+      formatDataProtocol($queryMovePositions.data);
     }
   }
 
@@ -230,7 +240,7 @@
   <div class="flex flex-col gap-2 px-3">
     <div class="xl:text-2xl text-3xl font-medium">Positions</div>
     {#if $typeWallet === "MOVE"}
-      {#if isLoading}
+      {#if $queryMovePositions.isFetching}
         <div class="flex justify-center items-center min-h-[300px]">
           <Loading />
         </div>
