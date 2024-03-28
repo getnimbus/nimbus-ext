@@ -308,9 +308,9 @@
       <VirtualList
         scrollDirection="vertical"
         width="100%"
-        height={formatData.length < 10 ? formatData.length * 80 : 405}
+        height={formatData.length < 10 ? formatData.length * 70 : 405}
         itemCount={formatData.length}
-        itemSize={80}
+        itemSize={70}
       >
         <div
           class="grid grid-cols-5 group transition-all cursor-pointer"
