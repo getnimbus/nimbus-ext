@@ -132,14 +132,14 @@
           <div class="h-full flex flex-col">
             {#if topProfitToken.length === 0}
               <div
-                class="h-full flex items-center justify-center text-center py-4 xl:px-6"
+                class="h-full flex items-center justify-center text-center py-4 xl:px-3"
               >
                 There are no closed holding position in the last 30 day
               </div>
             {:else}
               {#each topProfitToken as item}
                 <div
-                  class={`flex items-center justify-between gap-2 py-2 xl:px-6 cursor-pointer ${
+                  class={`flex items-center justify-between gap-2 py-2 xl:px-3 cursor-pointer ${
                     $isDarkMode
                       ? "bg-[#131313] hover:bg-[#000]"
                       : "bg-white hover:bg-gray-100"
@@ -193,14 +193,14 @@
           <div class="h-full flex flex-col">
             {#if topLossToken.length === 0}
               <div
-                class="h-full flex items-center justify-center text-center py-4 xl:px-6"
+                class="h-full flex items-center justify-center text-center py-4 xl:px-3"
               >
                 There are no closed holding position in the last 30 day
               </div>
             {:else}
               {#each topLossToken as item}
                 <div
-                  class={`flex items-center justify-between gap-2 py-2 xl:px-6 cursor-pointer ${
+                  class={`flex items-center justify-between gap-2 py-2 xl:px-3 cursor-pointer ${
                     $isDarkMode
                       ? "bg-[#131313] hover:bg-[#000]"
                       : "bg-white hover:bg-gray-100"
