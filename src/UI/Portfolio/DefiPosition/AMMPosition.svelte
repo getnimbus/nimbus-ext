@@ -86,7 +86,7 @@
             <div class="flex items-center gap-1 flex-wrap">
               {#each itemRow.tags as tag}
                 <div
-                  class="w-max flex items-center justyfy-center px-2 py-1 text_27326F text-sm font-medium bg-[#1e96fc33] rounded-[1000px]"
+                  class="w-max flex items-center justyfy-center px-2 py-1 text_27326F text-xs font-medium bg-[#1e96fc33] rounded-[1000px]"
                 >
                   {tag}
                 </div>
@@ -230,7 +230,7 @@
               <div class="flex items-center gap-1 flex-wrap">
                 {#each itemRow.tags as tag}
                   <div
-                    class="w-max flex items-center justyfy-center px-2 py-1 text_27326F text-sm font-medium bg-[#1e96fc33] rounded-[1000px]"
+                    class="w-max flex items-center justyfy-center px-2 py-1 text_27326F text-xs font-medium bg-[#1e96fc33] rounded-[1000px]"
                   >
                     {tag}
                   </div>
