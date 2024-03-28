@@ -103,6 +103,7 @@
   let listCheckinContainer;
   let waitCheckinSuccess: boolean = false;
   let quests = [];
+  let listQuest = [];
   let dataCheckinHistory = [];
   let sortTypeHistory = "default";
   let sortPointHistory = "default";
@@ -145,8 +146,13 @@
     }
   };
 
+  const handleGetListQuest = async () => {
+    const response = await nimbus.get("/v2/checkin/quest");
+    return response.data;
+  };
+
   const handleDailyCheckin = async () => {
-    const response = await nimbus.get(`/v2/checkin`);
+    const response = await nimbus.get("/v2/checkin");
     return response.data;
   };
 
@@ -201,48 +207,39 @@
     }
   }
 
+  $: queryListQuest = createQuery({
+    queryKey: ["list-quest"],
+    queryFn: () => handleGetListQuest(),
+    staleTime: Infinity,
+    enabled: $user && Object.keys($user).length === 0,
+  });
+
   $: queryReward = createQuery({
     queryKey: [$userPublicAddress, "rewards"],
     queryFn: () => handleRewards(),
     staleTime: Infinity,
-    enabled:
-      $user &&
-      Object.keys($user).length !== 0 &&
-      $userPublicAddress.length !== 0,
-    onError(err) {
-      localStorage.removeItem("auth_token");
-      localStorage.removeItem("solana_token");
-      localStorage.removeItem("sui_token");
-      localStorage.removeItem("ton_token");
-      localStorage.removeItem("evm_token");
-      user.update((n) => (n = {}));
-    },
+    enabled: $userPublicAddress.length !== 0,
   });
 
   $: queryDailyCheckin = createQuery({
     queryKey: [$userPublicAddress, "daily-checkin"],
     queryFn: () => handleDailyCheckin(),
     staleTime: Infinity,
-    enabled:
-      $user &&
-      Object.keys($user).length !== 0 &&
-      $userPublicAddress.length !== 0,
-    onError(err) {
-      localStorage.removeItem("auth_token");
-      localStorage.removeItem("solana_token");
-      localStorage.removeItem("sui_token");
-      localStorage.removeItem("ton_token");
-      localStorage.removeItem("evm_token");
-      user.update((n) => (n = {}));
-    },
+    enabled: $userPublicAddress.length !== 0,
   });
+
+  $: {
+    if (!$queryListQuest.isError && $queryListQuest.data !== undefined) {
+      listQuest = $queryListQuest?.data;
+    }
+  }
 
   $: {
     if (!$queryDailyCheckin.isError && $queryDailyCheckin.data !== undefined) {
       selectedCheckinIndex = $queryDailyCheckin?.data?.steak;
       isDisabledCheckin = $queryDailyCheckin?.data?.checkinable;
       dataCheckinHistory = $queryDailyCheckin?.data?.checkinLogs;
-      quests = $queryDailyCheckin?.data?.quests.map((item, index) => {
+      quests = $queryDailyCheckin?.data?.quests.map((item) => {
         const selectedLogs = dataCheckinHistory
           .filter(
             (log) =>
@@ -608,31 +605,57 @@
                   Check in 7 days in a row, your rewards will grow
                 </div>
               </div>
-              <div class="w-[200px] view-checkin-btn">
-                {#if isDisabledCheckin}
-                  <Button
-                    variant="primary"
-                    on:click={() => {
-                      selectedIndexRewards = $queryDailyCheckin?.data?.steak;
-                      handleCheckin();
-                    }}
-                    isLoading={isLoadingCheckin}
-                  >
+
+              {#if $user && Object.keys($user).length === 0}
+                <div class="w-[200px] view-checkin-btn">
+                  <Button variant="primary" disabled>
                     <div class="py-1 text-white">👋 GM</div>
                   </Button>
-                {:else}
-                  <Button disabled>
-                    <div class="py-1 text-white">Checked</div>
-                  </Button>
-                {/if}
-              </div>
+                </div>
+              {:else}
+                <div class="w-[200px] view-checkin-btn">
+                  {#if isDisabledCheckin}
+                    <Button
+                      variant="primary"
+                      on:click={() => {
+                        selectedIndexRewards = $queryDailyCheckin?.data?.steak;
+                        handleCheckin();
+                      }}
+                      isLoading={isLoadingCheckin}
+                    >
+                      <div class="py-1 text-white">👋 GM</div>
+                    </Button>
+                  {:else}
+                    <Button disabled>
+                      <div class="py-1 text-white">Checked</div>
+                    </Button>
+                  {/if}
+                </div>
+              {/if}
             </div>
 
             {#if $queryDailyCheckin?.data === undefined}
-              <div
-                class="flex justify-center items-center h-[152px] text-base text-gray-400"
-              >
-                Empty
+              <div class="overflow-x-auto py-5">
+                <div
+                  class="grid grid-cols-7 gap-4 w-[1350px]"
+                  bind:this={listCheckinContainer}
+                >
+                  {#each [10, 10, 10, 20, 20, 30, 50] as item, index}
+                    <div
+                      class={`flex flex-col gap-2 items-center filter rounded-lg py-8 transform scale-95 transition-all ${
+                        $isDarkMode ? "bg-gray-700" : "bg-gray-100"
+                      }`}
+                    >
+                      <div class="text-lg font-medium">
+                        Day {index + 1}
+                      </div>
+                      <img src={goldImg} alt="" class="w-13" />
+                      <div class="text-2xl font-medium">
+                        + {item}
+                      </div>
+                    </div>
+                  {/each}
+                </div>
               </div>
             {:else}
               <div class="overflow-x-auto py-5">
@@ -670,10 +693,34 @@
             <div class="flex flex-col gap-4">
               <div class="text-lg font-medium">This month reward</div>
               {#if $queryReward.data === undefined}
-                <div
-                  class="flex justify-center items-center h-[152px] text-base text-gray-400"
-                >
-                  Empty
+                <div class="overflow-x-auto py-4">
+                  <div class="flex gap-6 w-[650px]">
+                    {#each [{ amount: 50 }, { amount: 20 }, { amount: 10 }] as item, index}
+                      <div>
+                        <div
+                          class="relative h-[250px] w-[185px] flex flex-col items-center justify-center gap-3 text-white"
+                        >
+                          <img
+                            src={rankBackground[index]}
+                            alt=""
+                            class="absolute top-0 left-0 -z-99"
+                          />
+                          <img src={rank[index]} alt="" class="h-[70px] mb-2" />
+                          <div class="text-4xl font-medium text-center">
+                            ${item.amount}
+                          </div>
+                          <div class="text-base text-center">
+                            {index + 1}{index === 0
+                              ? "st"
+                              : index == 1
+                                ? "nd"
+                                : "rd"}
+                            Rank
+                          </div>
+                        </div>
+                      </div>
+                    {/each}
+                  </div>
                 </div>
               {:else}
                 <div class="overflow-x-auto py-4">
@@ -801,14 +848,64 @@
                   {/each}
                 </div>
               {:else}
-                <div
-                  class="flex justify-center items-center h-[152px] text-base text-gray-400"
-                >
-                  Empty
+                <div class="border-y-1 border_0000000d">
+                  {#each listQuest as quest}
+                    <div
+                      class="flex sm:flex-row flex-col justify-between md:items-center items-start gap-5 py-4 border-b-1 last:border-none border_0000000d"
+                    >
+                      <div
+                        class="flex-1 flex md:flex-row flex-col items-start gap-2"
+                      >
+                        <img
+                          src={quest?.img ||
+                            "https://s2.coinmarketcap.com/static/cloud/img/loyalty-program/Flags_3D_1.svg"}
+                          alt=""
+                          class="bg-yellow-200 rounded-lg mt-1 md:w-[32px] md:h-[32px] w-[52px] h-[52px]"
+                        />
+                        <div class="flex-1 flex items-center gap-4">
+                          <div class="flex-1 flex flex-col">
+                            <div class="text-base font-medium">
+                              {quest?.title}
+                            </div>
+                            <div class="text-sm text-gray-500">
+                              {quest?.description}
+                            </div>
+                          </div>
+                          <div
+                            class="md:flex hidden justify-center items-center gap-1"
+                          >
+                            <img src={goldImg} alt="" />
+                            <div class="text-base font-medium">
+                              {quest?.point}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="flex items-center gap-4">
+                        <div class="sm:w-[170px] w-[120px]">
+                          <div class="py-1">
+                            <Button disabled>Collect!</Button>
+                          </div>
+                        </div>
+
+                        <div
+                          class="md:hidden flex justify-center items-center gap-1"
+                        >
+                          <img src={goldImg} alt="" />
+                          <div class="text-base font-medium">
+                            {quest?.point}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  {/each}
                 </div>
               {/if}
             </div>
-          {:else}
+          {/if}
+
+          {#if selectedType === "history"}
             <div class="text-lg font-medium">Checkin History</div>
             <div
               class={`border border_0000000d rounded-[10px] w-full max-h-[600px] overflow-y-auto ${
