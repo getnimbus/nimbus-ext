@@ -51,7 +51,7 @@
   };
 
   const handleDailyCheckin = async () => {
-    const response = await nimbus.get(`/v2/checkin`);
+    const response = await nimbus.get("/v2/checkin");
     return response.data;
   };
 
