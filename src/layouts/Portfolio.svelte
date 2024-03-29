@@ -1079,10 +1079,6 @@
                 <PerformanceSummary />
               {/if}
 
-              {#if $tab === "airdropsAndPoints"}
-                <AirdropsAndPointsTracker />
-              {/if}
-
               {#if $tab === "defi"}
                 <DefiPosition
                   conditionQuery={Boolean(
@@ -1092,6 +1088,10 @@
                       !$queryValidate.isFetching
                   )}
                 />
+              {/if}
+
+              {#if $tab === "airdropsAndPoints"}
+                <AirdropsAndPointsTracker />
               {/if}
 
               <!-- <News isLoading={false} data={newsData} /> -->
