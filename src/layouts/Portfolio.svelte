@@ -950,7 +950,7 @@
               {/if}
             </div>
           {:else}
-            <div class="xl:hidden flex items-center gap-1 mb-4">
+            <div class="xl:hidden flex flex-wrap items-center gap-2 mb-4">
               <AnimateSharedLayout>
                 {#each typePortfolioPage as type}
                   <div
