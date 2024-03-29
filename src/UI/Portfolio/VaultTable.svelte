@@ -267,7 +267,7 @@
             <tr
               class="transition-all cursor-pointer group"
               on:click={() => {
-                window.open(item.link, "_blank");
+                window.open(item.farmLink, "_blank");
               }}
             >
               <td
