@@ -109,11 +109,11 @@
 <ErrorBoundary>
   <div class="flex flex-col">
     <!-- Desktop view -->
-    <div class="flex flex-col gap-6">
+    <div class="xl:flex hidden flex-col gap-6">
       <div class="flex flex-col gap-3">
         <div class="xl:text-2xl text-3xl font-medium">Airdrops</div>
         <div
-          class={`xl:hidden block rounded-[10px] overflow-hidden h-full ${
+          class={`rounded-[10px] overflow-hidden h-full ${
             $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
           }`}
         >
@@ -254,7 +254,7 @@
       <div class="flex flex-col gap-3">
         <div class="xl:text-2xl text-3xl font-medium">Points</div>
         <div
-          class={`xl:block hidden rounded-[10px] overflow-hidden h-full ${
+          class={`rounded-[10px] overflow-hidden h-full ${
             $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
           }`}
         >
@@ -484,11 +484,11 @@
     </div>
 
     <!-- Mobile view -->
-    <div class="flex flex-col gap-6">
+    <div class="xl:hidden flex flex-col gap-6">
       <div class="flex flex-col gap-3">
         <div class="xl:text-2xl text-3xl font-medium">Airdrops</div>
         <div
-          class={`xl:hidden rounded-[10px] overflow-visible h-full ${
+          class={`rounded-[10px] overflow-visible h-full ${
             $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
           }`}
         >
@@ -575,7 +575,7 @@
       <div class="flex flex-col gap-3">
         <div class="xl:text-2xl text-3xl font-medium">Points</div>
         <div
-          class={`xl:hidden rounded-[10px] overflow-visible h-full ${
+          class={`rounded-[10px] overflow-visible h-full ${
             $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
           }`}
         >
