@@ -166,7 +166,7 @@
       <div class="flex flex-col mb-5 gap-14">
         <div class="flex items-center justify-between">
           <div
-            class="flex items-center gap-1 text-white cusor-pointer"
+            class="flex items-center gap-1 text-white cursor-pointer"
             on:click={() => {
               navigateTo("/");
             }}
