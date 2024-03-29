@@ -498,7 +498,7 @@
     <img
       src={Logo}
       alt="logo"
-      class="-ml-6 xl:w-[177px] w-[200px] xl:h-[60px] h-[80px]"
+      class="-ml-6 xl:w-[177px] w-[200px] xl:h-[60px] h-[80px] cursor-pointer"
       on:click={() => {
         if ($user && Object.keys($user)?.length === 0) {
           user.update((n) => (n = {}));
@@ -506,8 +506,16 @@
           chain.update((n) => (n = ""));
           typeWallet.update((n) => (n = ""));
           queryClient.invalidateQueries(["list-address"]);
+        } else {
+          handleUpdateNavActive("/portfolio");
+          if ($wallet) {
+            navigateTo(
+              `/?tab=${$tab}&type=${$typeWallet}&chain=${$chain}&address=${$wallet}`
+            );
+          } else {
+            navigateTo("/");
+          }
         }
-        navigateTo("/");
       }}
     />
 
