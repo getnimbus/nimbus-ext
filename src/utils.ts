@@ -225,8 +225,8 @@ export const typePortfolioPage = [
   },
   {
     id: "view-the-points-airdrop",
-    label: "Points",
-    value: "points",
+    label: "Airdrops and Points",
+    value: "airdropsAndPoints",
   },
   {
     id: "view-the-summary",
