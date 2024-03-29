@@ -216,7 +216,7 @@
       addressChain = validateAccount?.type;
     }
 
-    const response: HoldingTokenRes = await nimbus
+    const response: any = await nimbus
       .get(
         `/v2/address/${$wallet}/holding?chain=${
           addressChain === "BUNDLE" ? "" : addressChain
@@ -430,7 +430,7 @@
       formatData = holdingTokenData.map((item) => {
         return {
           ...item,
-          market_price: item?.rate || 0,
+          market_price: item?.price?.price || 0,
         };
       });
       sumTokens = holdingTokenData.reduce(
