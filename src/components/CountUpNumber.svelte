@@ -18,17 +18,19 @@
   export let personalValue: boolean = false;
 
   let myNumber = tweened(0, { duration: 1200, easing: quintOut });
-  let numberFormat = 0;
-  let numberSize = "";
+  let formatted;
   let showTooltip = false;
 
   $: {
-    if (number) {
+    if (number !== 0) {
       myNumber.set(number);
+      formatted = derived(myNumber, (myNumber) => myNumber);
+    } else {
+      // reset number when change wallet
+      myNumber.set(0);
+      formatted = derived(myNumber, (myNumber) => myNumber);
     }
   }
-
-  $: formatted = derived(myNumber, ($myNumber) => $myNumber);
 
   $: numberSize = formatBigBalance($formatted).number_size;
   $: numberFormat = formatBigBalance($formatted).number_format;
