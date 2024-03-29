@@ -6,7 +6,7 @@
     formatCurrency,
     formatValue,
   } from "~/utils";
-  import { isHidePortfolio, wallet, chain } from "~/store";
+  import { isHidePortfolio } from "~/store";
   import { tweened } from "svelte/motion";
   import { quintOut } from "svelte/easing";
   import { derived } from "svelte/store";

@@ -26,6 +26,8 @@
     realizedProfit: i18n("newtabPage.realizedProfit", "Realized PnL"),
     unrealizedProfit: i18n("newtabPage.unrealizedProfit", "Unrealized PnL"),
   };
+
+  $: console.log("HELLO WORLD: ", $totalAssets + $totalPositions);
 </script>
 
 <ErrorBoundary>
@@ -33,9 +35,13 @@
     <div class="flex flex-col justify-between flex-1 gap-6 md:flex-row">
       <OverviewCard title={MultipleLang.networth}>
         <div class="flex text-4xl xl:text-3xl">
-          <CountUpNumber
+          <!-- <CountUpNumber
             number={$totalAssets + $totalPositions}
             type="value"
+            personalValue
+          /> -->
+          <TooltipNumber
+            number={$totalAssets + $totalPositions}
             personalValue
           />
         </div>
@@ -56,7 +62,11 @@
             {:else}
               ↑
             {/if}
-            <CountUpNumber
+            <!-- <CountUpNumber
+              number={Math.abs(data?.overview?.networthChange || 0)}
+              type="percent"
+            />% -->
+            <TooltipNumber
               number={Math.abs(data?.overview?.networthChange || 0)}
               type="percent"
             />%
@@ -75,11 +85,12 @@
                 -
               {/if}
             </span>
-            <CountUpNumber
+            <!-- <CountUpNumber
               number={Math.abs($pastProfit)}
               type="value"
               personalValue
-            />
+            /> -->
+            <TooltipNumber number={Math.abs($pastProfit)} personalValue />
           {/if}
         </div>
       </OverviewCard>
@@ -93,9 +104,13 @@
               -
             {/if}
           </span>
-          <CountUpNumber
+          <!-- <CountUpNumber
             number={Math.abs($realizedProfit || 0)}
             type="value"
+            personalValue
+          /> -->
+          <TooltipNumber
+            number={Math.abs($realizedProfit || 0)}
             personalValue
           />
         </div>
@@ -140,9 +155,13 @@
               -
             {/if}
           </span>
-          <CountUpNumber
+          <!-- <CountUpNumber
             number={Math.abs($unrealizedProfit || 0)}
             type="value"
+            personalValue
+          /> -->
+          <TooltipNumber
+            number={Math.abs($unrealizedProfit || 0)}
             personalValue
           />
         </div>
