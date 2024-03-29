@@ -7,7 +7,7 @@
   import { wagmiAbi } from "~/lib/viem-evm-abi";
   import publicClient from "~/lib/viem-client";
   import { mainnet } from "viem/chains";
-  import { useNavigate } from "svelte-navigator";
+  import { navigateTo } from "svelte-router-spa";
   import mixpanel from "mixpanel-browser";
 
   import PricePackage from "~/UI/PricePackage/PricePackage.svelte";
@@ -16,8 +16,6 @@
 
   import Ethereum from "~/assets/chains/ethereum.png";
   import Solana from "~/assets/chains/solana.png";
-
-  const navigate = useNavigate();
 
   const usdcAddress = "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48";
   const receiveAddress = "0x6AedbE81435BBD67e2223eadd256992DC64fc90B";
@@ -122,7 +120,7 @@
         code,
         plan: selectedPackage.plan,
       });
-      navigate(`/payments/success?isTrial=${true}`);
+      navigateTo(`/payments/success?isTrial=${true}`);
     } catch (e) {
       console.error(e);
     }
@@ -181,7 +179,7 @@
               txHash: res,
             });
             if (response && response?.data) {
-              navigate(
+              navigateTo(
                 `/payments/success?paymentId=${response?.data?.paymentLinkId}`
               );
             }

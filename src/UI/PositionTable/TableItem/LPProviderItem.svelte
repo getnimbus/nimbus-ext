@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { useNavigate } from "svelte-navigator";
+  import { navigateTo } from "svelte-router-spa";
   import { isDarkMode } from "~/store";
 
   import "~/components/Tooltip.custom.svelte";
@@ -11,8 +11,6 @@
   import Chart from "~/assets/chart.svg";
 
   export let data;
-
-  const navigate = useNavigate();
 
   $: balance0 = Number(data.amount0out) * data.market_price0;
   $: balance1 = Number(data.amount1out) * data.market_price1;
@@ -31,7 +29,7 @@
 <tr
   class="group transition-all cursor-pointer"
   on:click={() => {
-    navigate(`/test-detail`);
+    navigateTo(`/test-detail`);
   }}
 >
   <td

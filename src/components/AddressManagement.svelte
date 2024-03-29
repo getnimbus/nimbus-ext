@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
+  import { navigateTo } from "svelte-router-spa";
   import * as browser from "webextension-polyfill";
   import {
     tab,
@@ -37,7 +38,6 @@
   import { Toast, Avatar } from "flowbite-svelte";
   import { blur } from "svelte/transition";
   import Vezgo from "vezgo-sdk-js/dist/vezgo.es5.js";
-  import { useNavigate } from "svelte-navigator";
   import tooltip from "~/entries/contentScript/views/tooltip";
   import { wait } from "~/entries/background/utils";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
@@ -115,7 +115,6 @@
     },
   };
 
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   let toastMsg = "";
@@ -1467,7 +1466,7 @@
                             <Button
                               variant="premium"
                               on:click={() => {
-                                navigate(
+                                navigateTo(
                                   `/compare?address=${encodeURIComponent(
                                     $wallet
                                   )}`
@@ -1549,7 +1548,7 @@
                           <Button
                             variant="premium"
                             on:click={() => {
-                              navigate(
+                              navigateTo(
                                 `/compare?address=${encodeURIComponent($wallet)}`
                               );
                               mixpanel.track("user_compare");
@@ -1605,7 +1604,7 @@
                       <Button
                         variant="premium"
                         on:click={() => {
-                          navigate(
+                          navigateTo(
                             `/compare?address=${encodeURIComponent($wallet)}`
                           );
                           mixpanel.track("user_compare");

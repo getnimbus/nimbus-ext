@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
+  import { navigateTo } from "svelte-router-spa";
   import {
     wallet,
     selectedPackage,
@@ -19,8 +20,7 @@
   } from "~/utils";
   import { groupBy } from "lodash";
   import { getChangePercent } from "~/chart-utils";
-  import { useNavigate } from "svelte-navigator";
-  import { createQuery, useQueryClient } from "@tanstack/svelte-query";
+  import { createQuery } from "@tanstack/svelte-query";
   import mixpanel from "mixpanel-browser";
   import { Avatar } from "flowbite-svelte";
 
@@ -48,8 +48,6 @@
   const MultipleLang = {
     token_allocation: i18n("newtabPage.token-allocation", "Token Allocation"),
   };
-
-  const navigate = useNavigate();
 
   onMount(() => {
     mixpanel.track("compare_page");
@@ -266,15 +264,15 @@
   };
 
   const getPersonalizeTag = async (address) => {
-    const response = await nimbus.get(`/address/${address}/personalize/tag`);
+    const response: any = await nimbus.get(
+      `/address/${address}/personalize/tag`
+    );
     return response.data;
   };
 
   const getSimilarAddress = async (address: string) => {
-    const response = await nimbus
-      .get(`/v2/analysis/${address}/similar`)
-      .then((res) => res.data);
-    return response;
+    const response: any = await nimbus.get(`/v2/analysis/${address}/similar`);
+    return response.data;
   };
 
   $: query = createQuery({
@@ -1279,7 +1277,7 @@
             </div>
           </div>
           <div class="mt-2 w-max">
-            <Button variant="premium" on:click={() => navigate("/upgrade")}>
+            <Button variant="premium" on:click={() => navigateTo("/upgrade")}>
               Upgrade Plan
             </Button>
           </div>

@@ -1,12 +1,11 @@
 <script lang="ts">
   import { onDestroy, onMount } from "svelte";
   import { nimbus } from "~/lib/network";
-  import { Link } from "svelte-navigator";
+  import { navigateTo } from "svelte-router-spa";
   import "flowbite/dist/flowbite.css";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
-  import { useNavigate } from "svelte-navigator";
-  import { selectedPackage, user, wallet, chain, typeWallet } from "~/store";
+  import { selectedPackage } from "~/store";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
 
   import Button from "~/components/Button.svelte";
@@ -20,7 +19,6 @@
   let counter = 3;
   let showToast = false;
 
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   const trigger = () => {
@@ -61,7 +59,7 @@
       ) {
         status = true;
         clearInterval(intervalId);
-        navigate("/payments/fail");
+        navigateTo("/payments/fail");
       }
 
       if (
@@ -75,7 +73,7 @@
       console.error("error: ", e);
       status = true;
       clearInterval(intervalId);
-      navigate("/payments/fail");
+      navigateTo("/payments/fail");
     }
   };
 
@@ -147,16 +145,15 @@
       </div>
       <div class="w-[120px]">
         {#if status}
-          <Link to="/">
-            <Button
-              variant="primary"
-              on:click={() => {
-                queryClient.invalidateQueries(["users-me"]);
-              }}
-            >
-              Continue
-            </Button>
-          </Link>
+          <Button
+            variant="primary"
+            on:click={() => {
+              navigateTo("/");
+              queryClient.invalidateQueries(["users-me"]);
+            }}
+          >
+            Continue
+          </Button>
         {:else}
           <Button isLoading={!status} variant="primary">Continue</Button>
         {/if}

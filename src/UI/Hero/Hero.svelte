@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { navigate } from "svelte-navigator";
+  import { navigateTo } from "svelte-router-spa";
   import mixpanel from "mixpanel-browser";
   import * as browser from "webextension-polyfill";
   import { nimbus } from "~/lib/network";
@@ -189,7 +189,7 @@
                 (n) => (n = "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0")
               );
               typeWallet.update((n) => (n = "EVM"));
-              navigate(
+              navigateTo(
                 `/?type=EVM&chain=ALL&address=0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0`
               );
               drivePortfolio?.destroy();

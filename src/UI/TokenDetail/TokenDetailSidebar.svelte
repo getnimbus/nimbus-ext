@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { navigateTo } from "svelte-router-spa";
   import { nimbus } from "~/lib/network";
   import { createQuery } from "@tanstack/svelte-query";
   import {
@@ -6,12 +7,10 @@
     isDarkMode,
     isHidePortfolio,
     wallet,
-    user,
     selectedPackage,
   } from "~/store";
   import { linkExplorer, listSupported } from "~/lib/chains";
   import { filterAvgCostType, shorterAddress } from "~/utils";
-  import { useNavigate } from "svelte-navigator";
   import dayjs from "dayjs";
 
   import TooltipTitle from "~/components/TooltipTitle.svelte";
@@ -31,8 +30,6 @@
 
   export let data;
   export let showSideTokenDetail;
-
-  const navigate = useNavigate();
 
   $: realizedProfit = data?.profit?.realizedProfit
     ? Number(data?.profit?.realizedProfit)
@@ -411,7 +408,7 @@
               </div>
             </div>
             <div class="mt-2 w-max">
-              <Button variant="premium" on:click={() => navigate("/upgrade")}
+              <Button variant="premium" on:click={() => navigateTo("/upgrade")}
                 >Upgrade Plan</Button
               >
             </div>
