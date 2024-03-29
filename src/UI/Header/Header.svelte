@@ -750,12 +750,7 @@
   </div>
 </div>
 
-<Banner
-  isMoveBanner={false}
-  mainTitle="Join Nimbus Airdrops and collect GM points"
-  subTitle="Win $TON, limited edition GM Zodiac Element Box NFTs and more"
-  link="https://airdrop.getnimbus.io/"
-/>
+<Banner isMoveBanner={true} mainTitle="Swap And Get" subTitle="Click" />
 
 <!-- Mobile header -->
 <div
