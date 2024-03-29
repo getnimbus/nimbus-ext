@@ -519,7 +519,7 @@
   class="mobile-header-container md:py-1 pt-1 pb-5 border-b-[1px] border-[#ffffff1a] relative"
 >
   <div
-    class="flex md:flex-row flex-col md:items-center items-start justify-between max-w-[2000px] m-auto w-[90%]"
+    class="flex md:flex-row flex-col md:items-center items-start justify-between max-w-[2000px] m-auto w-[90%] cursor-pointer"
   >
     <img
       src={Logo}
@@ -818,7 +818,7 @@
         <div class="flex flex-col gap-3">
           {#if $user && Object.keys($user).length !== 0}
             <div
-              class={`flex items-center gap-3 text-white px-5 py-3
+              class={`flex items-center gap-3 text-white px-5 py-3 cursor-pointer
             ${
               $isDarkMode
                 ? navActive === "/upgrade"
@@ -867,7 +867,7 @@
             </div>
 
             <div
-              class={`flex items-center gap-3 text-white px-5 py-3 
+              class={`flex items-center gap-3 text-white px-5 py-3 cursor-pointer
             ${
               $isDarkMode
                 ? navActive === "/profile"
@@ -903,7 +903,7 @@
           {/if}
 
           <div
-            class={`flex items-center gap-3 text-white px-5 py-3
+            class={`flex items-center gap-3 text-white px-5 py-3 cursor-pointer
             ${
               $isDarkMode
                 ? navActive === "/whales"
@@ -927,7 +927,7 @@
           </div>
 
           <!-- <div
-            class={`flex items-center gap-3 text-white px-5 py-3 
+            class={`flex items-center gap-3 text-white px-5 py-3 cursor-pointer
             ${
               $isDarkMode
                 ? navActive === "/news"
@@ -952,7 +952,7 @@
 
           {#if $user && Object.keys($user).length !== 0}
             <div
-              class={`flex items-center gap-3 text-white px-5 py-3 
+              class={`flex items-center gap-3 text-white px-5 py-3 cursor-pointer
             ${
               $isDarkMode
                 ? navActive === "/invitation"
@@ -1001,7 +1001,7 @@
 
           {#if $user && Object.keys($user).length !== 0}
             <div
-              class={`flex items-center gap-3 text-white px-5 py-3 
+              class={`flex items-center gap-3 text-white px-5 py-3 cursor-pointer
               ${
                 $isDarkMode
                   ? navActive === "/daily-checkin"
@@ -1038,7 +1038,7 @@
             </div>
 
             <div
-              class={`flex items-center gap-3 text-white px-5 py-3 
+              class={`flex items-center gap-3 text-white px-5 py-3 cursor-pointer
             ${
               $isDarkMode
                 ? navActive === "/settings"
