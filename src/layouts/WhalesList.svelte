@@ -3,10 +3,10 @@
   import { nimbus } from "~/lib/network";
   import { i18n } from "~/lib/i18n";
   import mixpanel from "mixpanel-browser";
+  import { navigateTo } from "svelte-router-spa";
+  import { createQuery, useQueryClient } from "@tanstack/svelte-query";
   import { isDarkMode, selectedPackage } from "~/store";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
-  import { createQuery, useQueryClient } from "@tanstack/svelte-query";
-  import { useNavigate } from "svelte-navigator";
   import { filterDuplicates } from "~/utils";
 
   import Loading from "~/components/Loading.svelte";
@@ -15,9 +15,6 @@
   import PublicPortfolioMobileItem from "~/UI/WhalesList/PublicPortfolioMobileItem.svelte";
   import Button from "~/components/Button.svelte";
   import Tooltip from "~/components/Tooltip.svelte";
-
-  const navigate = useNavigate();
-  const queryClient = useQueryClient();
 
   const MultipleLang = {
     whale: i18n("newtabPage.whale", "Whale 🐳"),
@@ -34,6 +31,8 @@
       "Enter a USD amount higher than 10000"
     ),
   };
+
+  const queryClient = useQueryClient();
 
   const whalesFilter: {
     value: string;
@@ -673,7 +672,7 @@
                           <div class="mt-2 w-max">
                             <Button
                               variant="premium"
-                              on:click={() => navigate("/upgrade")}
+                              on:click={() => navigateTo("/upgrade")}
                             >
                               Upgrade Plan
                             </Button>
@@ -706,7 +705,7 @@
                           <div class="mt-2 w-max">
                             <Button
                               variant="premium"
-                              on:click={() => navigate("/upgrade")}
+                              on:click={() => navigateTo("/upgrade")}
                             >
                               Upgrade Plan
                             </Button>
@@ -776,7 +775,7 @@
                         <div class="mt-2 w-max">
                           <Button
                             variant="premium"
-                            on:click={() => navigate("/upgrade")}
+                            on:click={() => navigateTo("/upgrade")}
                           >
                             Upgrade Plan
                           </Button>
@@ -806,7 +805,7 @@
                         <div class="mt-2 w-max">
                           <Button
                             variant="premium"
-                            on:click={() => navigate("/upgrade")}
+                            on:click={() => navigateTo("/upgrade")}
                           >
                             Upgrade Plan
                           </Button>

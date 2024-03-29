@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { useLocation } from "svelte-navigator";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { nimbus } from "~/lib/network";
@@ -41,7 +40,7 @@
 
   const rank = [rank1, rank2, rank3];
 
-  const location = useLocation();
+  export let currentRoute;
 
   const driveCheckin = () =>
     driver({
@@ -525,7 +524,8 @@
   $: {
     if (
       !$queryDailyCheckin.isLoading &&
-      $location.pathname === "/daily-checkin" &&
+      currentRoute &&
+      currentRoute.name === "/daily-checkin" &&
       !localStorage.getItem("view-checkin-tour")
     ) {
       driveCheckin().drive();

@@ -8,7 +8,7 @@
     typeWallet,
     triggerUpdateBundle,
   } from "~/store";
-  import { useNavigate } from "svelte-navigator";
+  import { navigateTo } from "svelte-router-spa";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import mixpanel from "mixpanel-browser";
   import { useQueryClient } from "@tanstack/svelte-query";
@@ -25,7 +25,6 @@
   import CorrelationsMatrix from "./CorrelationsMatrix.svelte";
   import ClosedHoldingToken from "./ClosedHoldingToken.svelte";
 
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   let isShowSoon = false;
@@ -133,7 +132,7 @@
                   {:else}
                     <Button
                       on:click={() => {
-                        navigate(
+                        navigateTo(
                           `/compare?address=${encodeURIComponent(address)}`
                         );
                         mixpanel.track("user_compare");

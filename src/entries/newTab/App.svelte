@@ -1,7 +1,7 @@
 <script lang="ts">
   import { QueryClient, QueryClientProvider } from "@tanstack/svelte-query";
   import { onMount, onDestroy } from "svelte";
-  import { Route, Router } from "svelte-navigator";
+  import { Router } from "svelte-router-spa";
   import * as browser from "webextension-polyfill";
   import {
     detectParams,
@@ -15,13 +15,31 @@
   import "flowbite/dist/flowbite.css";
 
   import Mixpanel from "~/components/Mixpanel.svelte";
-  import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import Loading from "~/components/Loading.svelte";
+  import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import UpdateParams from "~/components/UpdateParams.svelte";
   import MobileIntroModalPWA from "~/UI/MobileIntroModalPWA/MobileIntroModalPWA.svelte";
   import Header from "~/UI/Header/Header.svelte";
   import MobileHeaderTab from "~/UI/Header/MobileHeaderTab.svelte";
   import Footer from "~/UI/Footer/Footer.svelte";
+
+  import Portfolio from "~/layouts/Portfolio.svelte";
+  import Analytic from "~/layouts/Analytic.svelte";
+  import Recap from "~/layouts/Recap.svelte";
+  import Transactions from "~/layouts/Transactions.svelte";
+  import WhalesList from "~/layouts/WhalesList.svelte";
+  import News from "~/layouts/News.svelte";
+  import Settings from "~/layouts/Settings.svelte";
+  import Invitation from "~/layouts/Invitation.svelte";
+  import Upgrade from "~/layouts/Upgrade.svelte";
+  import PaymentSuccess from "~/layouts/PaymentSuccess.svelte";
+  import PaymentFail from "~/layouts/PaymentFail.svelte";
+  import PersonalTokenBreakdown from "~/layouts/PersonalTokenBreakdown.svelte";
+  import CustomVirtualPortfolio from "~/layouts/CustomVirtualPortfolio.svelte";
+  import VirtualPortfolio from "~/layouts/VirtualPortfolio.svelte";
+  import Compare from "~/layouts/Compare.svelte";
+  import Profile from "~/layouts/Profile.svelte";
+  import DailyCheckin from "~/layouts/DailyCheckin.svelte";
 
   const queryClient = new QueryClient({
     defaultOptions: {
@@ -109,236 +127,112 @@
   onDestroy(() => {
     clearInterval(interval);
   });
+
+  const routes = [
+    {
+      name: "/",
+      layout: Portfolio,
+    },
+    {
+      name: "/analytic",
+      layout: Analytic,
+    },
+    {
+      name: "/transactions",
+      layout: Transactions,
+    },
+    {
+      name: "/whales",
+      layout: WhalesList,
+    },
+    {
+      name: "/news",
+      layout: News,
+    },
+    {
+      name: "/settings",
+      layout: Settings,
+    },
+    {
+      name: "/invitation",
+      layout: Invitation,
+    },
+    {
+      name: "/upgrade",
+      layout: Upgrade,
+    },
+    {
+      name: "/payments/success",
+      layout: PaymentSuccess,
+    },
+    {
+      name: "/payments/fail",
+      layout: PaymentFail,
+    },
+    {
+      name: "/personal-token-breakdown",
+      layout: PersonalTokenBreakdown,
+    },
+    {
+      name: "/custom-virtual-portfolio",
+      layout: CustomVirtualPortfolio,
+    },
+    {
+      name: "/virtual-portfolio",
+      layout: VirtualPortfolio,
+    },
+    {
+      name: "/compare",
+      layout: Compare,
+    },
+    {
+      name: "/profile",
+      layout: Profile,
+    },
+    {
+      name: "/daily-checkin",
+      layout: DailyCheckin,
+    },
+  ];
+
+  const recapRoutes = [
+    {
+      name: "/",
+      layout: Recap,
+    },
+  ];
+
+  $: navActive = $detectParams !== "/" ? $detectParams : "/portfolio";
+
+  const handleUpdateNavActive = (value: string) => {
+    navActive = value;
+  };
 </script>
 
 <ErrorBoundary>
   <QueryClientProvider client={queryClient}>
-    <Router history={undefined}>
-      <Route path="recap">
-        {#await import("~/layouts/Recap.svelte")}
-          <div class="flex items-center justify-center h-screen">
-            <Loading />
-          </div>
-        {:then { default: component }}
-          <svelte:component this={component} />
-        {:catch error}
-          {@html Error(error)}
-        {/await}
-      </Route>
+    {#if $detectParams !== "/recap"}
+      <div class="flex flex-col pb-40 xl:pb-14">
+        <Header {navActive} {handleUpdateNavActive} />
+        <Router {routes} options={{ gaPageviews: true }} />
+      </div>
 
-      {#if $detectParams !== "/recap"}
-        <div class="flex flex-col pb-40 xl:pb-14">
-          <Header />
-
-          <!-- Main page -->
-          <Route path="*">
-            {#await import("~/layouts/Portfolio.svelte")}
-              <div class="flex items-center justify-center h-screen">
-                <Loading />
-              </div>
-            {:then { default: component }}
-              <svelte:component this={component} />
-            {:catch error}
-              {@html Error(error)}
-            {/await}
-          </Route>
-
-          <Route path="analytic">
-            {#await import("~/layouts/Analytic.svelte")}
-              <div class="flex items-center justify-center h-screen">
-                <Loading />
-              </div>
-            {:then { default: component }}
-              <svelte:component this={component} />
-            {:catch error}
-              {@html Error(error)}
-            {/await}
-          </Route>
-
-          <Route path="transactions">
-            {#await import("~/layouts/Transactions.svelte")}
-              <div class="flex items-center justify-center h-screen">
-                <Loading />
-              </div>
-            {:then { default: component }}
-              <svelte:component this={component} />
-            {:catch error}
-              {@html Error(error)}
-            {/await}
-          </Route>
-
-          <Route path="whales">
-            {#await import("~/layouts/WhalesList.svelte")}
-              <div class="flex items-center justify-center h-screen">
-                <Loading />
-              </div>
-            {:then { default: component }}
-              <svelte:component this={component} />
-            {:catch error}
-              {@html Error(error)}
-            {/await}
-          </Route>
-
-          <Route path="news">
-            {#await import("~/layouts/News.svelte")}
-              <div class="flex items-center justify-center h-screen">
-                <Loading />
-              </div>
-            {:then { default: component }}
-              <svelte:component this={component} />
-            {:catch error}
-              {@html Error(error)}
-            {/await}
-          </Route>
-
-          <!-- Other page -->
-          <Route path="settings">
-            {#await import("~/layouts/Settings.svelte")}
-              <div class="flex items-center justify-center h-screen">
-                <Loading />
-              </div>
-            {:then { default: component }}
-              <svelte:component this={component} />
-            {:catch error}
-              {@html Error(error)}
-            {/await}
-          </Route>
-
-          <Route path="invitation">
-            {#await import("~/layouts/Invitation.svelte")}
-              <div class="flex items-center justify-center h-screen">
-                <Loading />
-              </div>
-            {:then { default: component }}
-              <svelte:component this={component} />
-            {:catch error}
-              {@html Error(error)}
-            {/await}
-          </Route>
-
-          <Route path="upgrade">
-            {#await import("~/layouts/Upgrade.svelte")}
-              <div class="flex items-center justify-center h-screen">
-                <Loading />
-              </div>
-            {:then { default: component }}
-              <svelte:component this={component} />
-            {:catch error}
-              {@html Error(error)}
-            {/await}
-          </Route>
-
-          <Route path="payments/success">
-            {#await import("~/layouts/PaymentSuccess.svelte")}
-              <div class="flex items-center justify-center h-screen">
-                <Loading />
-              </div>
-            {:then { default: component }}
-              <svelte:component this={component} />
-            {:catch error}
-              {@html Error(error)}
-            {/await}
-          </Route>
-
-          <Route path="payments/fail">
-            {#await import("~/layouts/PaymentFail.svelte")}
-              <div class="flex items-center justify-center h-screen">
-                <Loading />
-              </div>
-            {:then { default: component }}
-              <svelte:component this={component} />
-            {:catch error}
-              {@html Error(error)}
-            {/await}
-          </Route>
-
-          <Route path="personal-token-breakdown">
-            {#await import("~/layouts/PersonalTokenBreakdown.svelte")}
-              <div class="flex items-center justify-center h-screen">
-                <Loading />
-              </div>
-            {:then { default: component }}
-              <svelte:component this={component} />
-            {:catch error}
-              {@html Error(error)}
-            {/await}
-          </Route>
-
-          <Route path="custom-virtual-portfolio">
-            {#await import("~/layouts/CustomVirtualPortfolio.svelte")}
-              <div class="flex items-center justify-center h-screen">
-                <Loading />
-              </div>
-            {:then { default: component }}
-              <svelte:component this={component} />
-            {:catch error}
-              {@html Error(error)}
-            {/await}
-          </Route>
-
-          <Route path="virtual-portfolio">
-            {#await import("~/layouts/VirtualPortfolio.svelte")}
-              <div class="flex items-center justify-center h-screen">
-                <Loading />
-              </div>
-            {:then { default: component }}
-              <svelte:component this={component} />
-            {:catch error}
-              {@html Error(error)}
-            {/await}
-          </Route>
-
-          <Route path="compare">
-            {#await import("~/layouts/Compare.svelte")}
-              <div class="flex items-center justify-center h-screen">
-                <Loading />
-              </div>
-            {:then { default: component }}
-              <svelte:component this={component} />
-            {:catch error}
-              {@html Error(error)}
-            {/await}
-          </Route>
-
-          <Route path="profile">
-            {#await import("~/layouts/Profile.svelte")}
-              <div class="flex items-center justify-center h-screen">
-                <Loading />
-              </div>
-            {:then { default: component }}
-              <svelte:component this={component} />
-            {:catch error}
-              {@html Error(error)}
-            {/await}
-          </Route>
-
-          <Route path="daily-checkin">
-            {#await import("~/layouts/DailyCheckin.svelte")}
-              <div class="flex items-center justify-center h-screen">
-                <Loading />
-              </div>
-            {:then { default: component }}
-              <svelte:component this={component} />
-            {:catch error}
-              {@html Error(error)}
-            {/await}
-          </Route>
+      <div class="fixed bottom-0 left-0 z-7 w-full footer xl:relative">
+        <div class="hidden xl:block">
+          <Footer />
         </div>
-        <div class="fixed bottom-0 left-0 z-7 w-full footer xl:relative">
-          <div class="hidden xl:block">
-            <Footer />
-          </div>
-          <div class="block xl:hidden">
-            <MobileHeaderTab />
-          </div>
+        <div class="block xl:hidden">
+          <MobileHeaderTab {navActive} {handleUpdateNavActive} />
         </div>
-        {#if isTouchDevice}
-          <MobileIntroModalPWA />
-        {/if}
+      </div>
+      {#if isTouchDevice}
+        <MobileIntroModalPWA />
       {/if}
+    {:else}
+      <Router routes={recapRoutes} options={{ gaPageviews: true }} />
+    {/if}
 
-      <UpdateParams />
-    </Router>
+    <UpdateParams />
   </QueryClientProvider>
 </ErrorBoundary>
 

@@ -9,8 +9,9 @@
   import TabReward from "~/UI/DailyCheckin/TabReward.svelte";
   import SidebarTabs from "~/UI/Option/SidebarTabs.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
-  import Mixpanel from "~/components/Mixpanel.svelte";
   import mixpanel from "mixpanel-browser";
+
+  export let currentRoute;
 
   const listSideBar = [
     {
@@ -74,7 +75,7 @@
     </div>
     <div class="xl:col-span-5 col-span-1">
       {#if activeTabValue === "checkin"}
-        <TabDailyCheckin />
+        <TabDailyCheckin {currentRoute} />
       {:else if activeTabValue === "leaderboard"}
         <TabLeaderBoard />
       {:else if activeTabValue === "rewards"}

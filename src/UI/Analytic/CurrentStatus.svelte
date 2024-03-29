@@ -13,7 +13,7 @@
   } from "~/utils";
   import { listSupported } from "~/lib/chains";
   import { i18n } from "~/lib/i18n";
-  import { useNavigate } from "svelte-navigator";
+  import { navigateTo } from "svelte-router-spa";
   import { nimbus } from "~/lib/network";
   import dayjs from "dayjs";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
@@ -47,8 +47,6 @@
     Ratio: i18n("newtabPage.Ratio", "Ratio"),
     Value: i18n("newtabPage.Value", "Value"),
   };
-
-  const navigate = useNavigate();
 
   let selectedType: "category" | "sector" | "rank" = "category";
   let isEmptyDataPie = false;
@@ -856,7 +854,7 @@
         {#if $user && Object.keys($user).length !== 0}
           <div
             on:click={() => {
-              navigate(
+              navigateTo(
                 `/personal-token-breakdown?chain=${encodeURIComponent(
                   $chain
                 )}&address=${encodeURIComponent($wallet)}`
