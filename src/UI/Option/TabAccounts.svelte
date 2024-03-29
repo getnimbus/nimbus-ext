@@ -1140,16 +1140,8 @@
                       selectedAddresses = [];
                     }}
                   >
-                    <img
-                      src={$isDarkMode ? PlusBlack : Plus}
-                      alt=""
-                      class="w-3 h-3"
-                    />
-                    <div
-                      class={`${$isDarkMode ? "text-gray-400" : "text-white"}`}
-                    >
-                      Add bundle
-                    </div>
+                    <img src={Plus} alt="" class="w-3 h-3" />
+                    <div class="text-white">Add bundle</div>
                   </Button>
                 {/if}
 

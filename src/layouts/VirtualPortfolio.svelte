@@ -1,6 +1,6 @@
 <script lang="ts">
   import { i18n } from "~/lib/i18n";
-  import { Link, useNavigate } from "svelte-navigator";
+  import { navigateTo } from "svelte-router-spa";
   import { nimbus } from "~/lib/network";
   import { wallet, chain } from "~/store";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
@@ -20,8 +20,6 @@
     total_assets: i18n("newtabPage.total-assets", "Total Assets"),
     total_positions: i18n("newtabPage.total-positions", "Total Positions"),
   };
-
-  const navigate = useNavigate();
 
   let listVirtualPortfolio = [];
   let selectedVirtualPortfolio = {};
@@ -75,12 +73,15 @@
     <div class="flex flex-col max-w-[2000px] m-auto xl:w-[82%] w-[90%]">
       <div class="flex flex-col mb-5 gap-14">
         <div class="flex items-center justify-between">
-          <Link to="/analytic" class="cursor-pointer">
-            <div class="flex items-center gap-1 text-white">
-              <img src={LeftArrow} alt="" class="xl:w-5 xl:h-5 w-7 h-7" />
-              <div class="xl:text-sm text-2xl font-medium">Analytics</div>
-            </div>
-          </Link>
+          <div
+            class="flex items-center gap-1 text-white cursor-pointer"
+            on:click={() => {
+              navigateTo("/analytic");
+            }}
+          >
+            <img src={LeftArrow} alt="" class="xl:w-5 xl:h-5 w-7 h-7" />
+            <div class="xl:text-sm text-2xl font-medium">Analytics</div>
+          </div>
         </div>
         <div class="flex justify-between items-center w-full -mt-10">
           {#if listVirtualPortfolio && listVirtualPortfolio.length !== 0}
@@ -183,7 +184,7 @@
             <Button
               variant="tertiary"
               on:click={() => {
-                navigate(
+                navigateTo(
                   `/custom-virtual-portfolio?chain=${encodeURIComponent(
                     $chain
                   )}&address=${encodeURIComponent($chain)}`

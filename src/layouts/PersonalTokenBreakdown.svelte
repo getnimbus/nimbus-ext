@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { Link } from "svelte-navigator";
+  import { navigateTo } from "svelte-router-spa";
   import { i18n } from "~/lib/i18n";
   import { shorterName, chunkArray } from "~/utils";
   import { detectedChain } from "~/lib/chains";
@@ -689,12 +689,15 @@
     <div class="flex flex-col max-w-[2000px] m-auto xl:w-[82%] w-[90%]">
       <div class="flex flex-col mb-5 gap-14">
         <div class="flex items-center justify-between">
-          <Link to="/analytic" class="cusor-pointer">
-            <div class="flex items-center gap-1 text-white">
-              <img src={LeftArrow} alt="" class="xl:w-5 xl:h-5 w-7 h-7" />
-              <div class="xl:text-sm text-xl font-medium">Analytics</div>
-            </div>
-          </Link>
+          <div
+            class="cusor-pointer flex items-center gap-1 text-white"
+            on:click={() => {
+              navigateTo("/analytic");
+            }}
+          >
+            <img src={LeftArrow} alt="" class="xl:w-5 xl:h-5 w-7 h-7" />
+            <div class="xl:text-sm text-xl font-medium">Analytics</div>
+          </div>
         </div>
         <div class="flex items-center justify-between">
           <div class="flex flex-col gap-3">

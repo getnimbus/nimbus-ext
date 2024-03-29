@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
-  import { Link, useMatch, useNavigate } from "svelte-navigator";
+  import { navigateTo } from "svelte-router-spa";
   import { i18n } from "~/lib/i18n";
   import {
     tab,
@@ -59,6 +59,9 @@
   import User from "~/assets/user.png";
   import goldImg from "~/assets/Gold4.svg";
 
+  export let navActive;
+  export let handleUpdateNavActive = (value) => {};
+
   const MultipleLang = {
     portfolio: i18n("newtabPage.portfolio", "Portfolio"),
     analytics: i18n("newtabPage.analytics", "Analytics"),
@@ -68,8 +71,6 @@
     search_placeholder: i18n("newtabPage.search-placeholder", "Search address"),
   };
 
-  const navigate = useNavigate();
-  const absoluteMatch = useMatch("/:page");
   const queryClient = useQueryClient();
 
   let userID = "";
@@ -149,7 +150,7 @@
 
   const handleValidateAddress = async (address: string) => {
     try {
-      const response = await nimbus.get(`/v2/address/${address}/validate`);
+      const response: any = await nimbus.get(`/v2/address/${address}/validate`);
       return response?.data;
     } catch (e) {
       console.error(e);
@@ -229,7 +230,7 @@
   const handleMobileSignIn = async (code) => {
     isLoadingSyncMobile = true;
     try {
-      const res = await nimbus.post("/auth/access-code", {
+      const res: any = await nimbus.post("/auth/access-code", {
         code: code,
       });
       if (res?.data?.result) {
@@ -397,8 +398,6 @@
     mixpanel.identify(data.publicAddress);
   };
 
-  $: navActive = $absoluteMatch ? $absoluteMatch.params.page : "portfolio";
-
   // Prevent layout flick
   $: if ($isShowHeaderMobile) {
     document.body.style.overflow = "hidden";
@@ -496,171 +495,164 @@
   <div
     class="flex md:flex-row flex-col md:items-center items-start justify-between max-w-[2000px] m-auto w-[90%]"
   >
-    <Link to="/">
-      <img
-        src={Logo}
-        alt="logo"
-        class="-ml-6 xl:w-[177px] w-[200px] xl:h-[60px] h-[80px]"
-        on:click={() => {
-          if ($user && Object.keys($user)?.length === 0) {
-            user.update((n) => (n = {}));
-            wallet.update((n) => (n = ""));
-            chain.update((n) => (n = ""));
-            typeWallet.update((n) => (n = ""));
-            queryClient.invalidateQueries(["list-address"]);
-          }
-        }}
-      />
-    </Link>
+    <img
+      src={Logo}
+      alt="logo"
+      class="-ml-6 xl:w-[177px] w-[200px] xl:h-[60px] h-[80px]"
+      on:click={() => {
+        if ($user && Object.keys($user)?.length === 0) {
+          user.update((n) => (n = {}));
+          wallet.update((n) => (n = ""));
+          chain.update((n) => (n = ""));
+          typeWallet.update((n) => (n = ""));
+          queryClient.invalidateQueries(["list-address"]);
+        }
+        navigateTo("/");
+      }}
+    />
 
     <div
       class="items-center justify-between hidden gap-1 xl:flex 2xl:absolute 2xl:top-[34px] 2xl:ml-0 xl:ml-40 absolute-center"
     >
-      <Link
-        to={`${
-          $wallet
-            ? `/?tab=${$tab}&type=${$typeWallet}&chain=${$chain}&address=${$wallet}`
-            : "/"
+      <div
+        class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:opacity-100 transition-all ${
+          $isDarkMode
+            ? navActive === "/portfolio"
+              ? "bg-[#212121] opacity-100"
+              : "opacity-70 hover:bg-[#212121]"
+            : navActive === "/portfolio"
+              ? "bg-[#525B8C] opacity-100"
+              : "opacity-70 hover:bg-[#525B8C]"
         }`}
+        on:click={() => {
+          handleUpdateNavActive("/portfolio");
+          queryClient?.invalidateQueries(["users-me"]);
+          if ($wallet) {
+            navigateTo(
+              `/?tab=${$tab}&type=${$typeWallet}&chain=${$chain}&address=${$wallet}`
+            );
+          } else {
+            navigateTo("/");
+          }
+        }}
       >
-        <div
-          class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:opacity-100 transition-all ${
+        <img src={PortfolioIcon} alt="" width="20" height="20" />
+        <span class="text-sm font-medium text-white xl:text-base">
+          {MultipleLang.portfolio}
+        </span>
+      </div>
+
+      <div
+        class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:opacity-100 transition-all
+          ${
             $isDarkMode
-              ? navActive === "portfolio"
+              ? navActive === "/analytic"
                 ? "bg-[#212121] opacity-100"
                 : "opacity-70 hover:bg-[#212121]"
-              : navActive === "portfolio"
+              : navActive === "/analytic"
                 ? "bg-[#525B8C] opacity-100"
                 : "opacity-70 hover:bg-[#525B8C]"
-          }`}
-          on:click={() => {
-            navActive = "portfolio";
-            queryClient?.invalidateQueries(["users-me"]);
-          }}
-        >
-          <img src={PortfolioIcon} alt="" width="20" height="20" />
-          <span class="text-sm font-medium text-white xl:text-base">
-            {MultipleLang.portfolio}
-          </span>
-        </div>
-      </Link>
-
-      <Link
-        to={`${
-          $wallet
-            ? `/analytic?type=${$typeWallet}&chain=${$chain}&address=${$wallet}`
-            : "/"
-        }`}
+          }
+          `}
+        on:click={() => {
+          handleUpdateNavActive("/analytic");
+          queryClient?.invalidateQueries(["users-me"]);
+          if ($wallet) {
+            navigateTo(
+              `/analytic?type=${$typeWallet}&chain=${$chain}&address=${$wallet}`
+            );
+          } else {
+            navigateTo("/");
+          }
+        }}
       >
-        <div
-          class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:opacity-100 transition-all
+        <img src={AnalyticIcon} alt="" width="20" height="20" />
+        <span class="flex gap-[1px]">
+          <span class="text-sm font-medium text-white xl:text-base">
+            {MultipleLang.analytics}
+          </span>
+          <span class="flex items-center gap-[1px] -mt-2">
+            <img src={Crown} alt="" width="13" height="12" />
+            <span class="text-xs font-medium text-[#FFB800] -mt-[1px]">Pro</span
+            >
+          </span>
+        </span>
+      </div>
+
+      <div
+        class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:opacity-100 transition-all
           ${
             $isDarkMode
-              ? navActive === "analytic"
+              ? navActive === "/transactions"
                 ? "bg-[#212121] opacity-100"
                 : "opacity-70 hover:bg-[#212121]"
-              : navActive === "analytic"
+              : navActive === "/transactions"
                 ? "bg-[#525B8C] opacity-100"
                 : "opacity-70 hover:bg-[#525B8C]"
           }
           `}
-          on:click={() => {
-            navActive = "analytic";
-            queryClient?.invalidateQueries(["users-me"]);
-          }}
-        >
-          <img src={AnalyticIcon} alt="" width="20" height="20" />
-          <span class="flex gap-[1px]">
-            <span class="text-sm font-medium text-white xl:text-base">
-              {MultipleLang.analytics}
-            </span>
-            <span class="flex items-center gap-[1px] -mt-2">
-              <img src={Crown} alt="" width="13" height="12" />
-              <span class="text-xs font-medium text-[#FFB800] -mt-[1px]"
-                >Pro</span
-              >
-            </span>
-          </span>
-        </div>
-      </Link>
-
-      <Link
-        to={`${
-          $wallet
-            ? `/transactions?type=${$typeWallet}&chain=${$chain}&address=${$wallet}`
-            : "/"
-        }`}
+        on:click={() => {
+          handleUpdateNavActive("/transactions");
+          if ($wallet) {
+            navigateTo(
+              `/transactions?type=${$typeWallet}&chain=${$chain}&address=${$wallet}`
+            );
+          } else {
+            navigateTo("/");
+          }
+        }}
       >
-        <div
-          class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:opacity-100 transition-all
-          ${
-            $isDarkMode
-              ? navActive === "transactions"
-                ? "bg-[#212121] opacity-100"
-                : "opacity-70 hover:bg-[#212121]"
-              : navActive === "transactions"
-                ? "bg-[#525B8C] opacity-100"
-                : "opacity-70 hover:bg-[#525B8C]"
-          }
-          `}
-          on:click={() => {
-            navActive = "transactions";
-          }}
-        >
-          <img src={TransactionsIcon} alt="" width="20" height="20" />
-          <span class="text-sm font-medium text-white xl:text-base">
-            {MultipleLang.transactions}
-          </span>
-        </div>
-      </Link>
+        <img src={TransactionsIcon} alt="" width="20" height="20" />
+        <span class="text-sm font-medium text-white xl:text-base">
+          {MultipleLang.transactions}
+        </span>
+      </div>
 
-      <Link to="whales">
-        <div
-          class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:opacity-100 transition-all
+      <div
+        class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:opacity-100 transition-all
           ${
             $isDarkMode
-              ? navActive === "whales"
+              ? navActive === "/whales"
                 ? "bg-[#212121] opacity-100"
                 : "opacity-70 hover:bg-[#212121]"
-              : navActive === "whales"
+              : navActive === "/whales"
                 ? "bg-[#525B8C] opacity-100"
                 : "opacity-70 hover:bg-[#525B8C]"
           }
           `}
-          on:click={() => {
-            navActive = "whales";
-          }}
-        >
-          <img src={WhaleIcon} alt="" width="20" height="20" />
-          <span class="text-sm font-medium text-white xl:text-base">
-            {MultipleLang.whales}
-          </span>
-        </div>
-      </Link>
+        on:click={() => {
+          handleUpdateNavActive("/whales");
+          navigateTo("/whales");
+        }}
+      >
+        <img src={WhaleIcon} alt="" width="20" height="20" />
+        <span class="text-sm font-medium text-white xl:text-base">
+          {MultipleLang.whales}
+        </span>
+      </div>
 
-      <!-- <Link to="news">
-        <div
-          class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:opacity-100 transition-all
+      <!-- <div
+        class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:opacity-100 transition-all
           ${
             $isDarkMode
-              ? navActive === "news"
+              ? navActive === "/news"
                 ? "bg-[#212121] opacity-100"
                 : "opacity-70 hover:bg-[#212121]"
-              : navActive === "news"
+              : navActive === "/news"
                 ? "bg-[#525B8C] opacity-100"
                 : "opacity-70 hover:bg-[#525B8C]"
           }
           `}
-          on:click={() => {
-            navActive = "news";
-          }}
-        >
-          <img src={NewsIcon} alt="" width="20" height="20" />
-          <span class="text-sm font-medium text-white xl:text-base">
-            {MultipleLang.news}
-          </span>
-        </div>
-      </Link> -->
+        on:click={() => {
+          handleUpdateNavActive("/news");
+          navigateTo("/news");
+        }}
+      >
+        <img src={NewsIcon} alt="" width="20" height="20" />
+        <span class="text-sm font-medium text-white xl:text-base">
+          {MultipleLang.news}
+        </span>
+      </div> -->
     </div>
 
     <div class="flex items-center justify-end gap-6 xl:gap-3 md:w-max w-full">
@@ -713,25 +705,27 @@
       <!-- Daily Checkin -->
       {#if $user && Object.keys($user).length !== 0}
         <div
-          class="xl:block hidden"
+          class="xl:block hidden cursor-pointer"
           use:tooltip={{
             content: `<tooltip-detail text="Check in daily, do quest, earn reward!" />`,
             allowHTML: true,
             placement: "bottom",
           }}
         >
-          <Link to="daily-checkin">
-            <div
-              class={`rounded-full flex justify-center items-center gap-1 px-2 py-1 ${
-                $isDarkMode ? "bg-[#212121]" : "bg-[#525B8C]"
-              }`}
-            >
-              <img src={goldImg} alt="" class="w-[28px] h-[28px]" />
-              <span class="text-yellow-400 font-medium">
-                {$queryUserInfo?.data?.totalPoint || 0}
-              </span>
-            </div>
-          </Link>
+          <div
+            class={`rounded-full flex justify-center items-center gap-1 px-2 py-1 ${
+              $isDarkMode ? "bg-[#212121]" : "bg-[#525B8C]"
+            }`}
+            on:click={() => {
+              handleUpdateNavActive("/daily-checkin");
+              navigateTo("/daily-checkin");
+            }}
+          >
+            <img src={goldImg} alt="" class="w-[28px] h-[28px]" />
+            <span class="text-yellow-400 font-medium">
+              {$queryUserInfo?.data?.totalPoint || 0}
+            </span>
+          </div>
         </div>
       {/if}
 
@@ -790,189 +784,169 @@
         <div class="flex flex-col gap-3">
           {#if $user && Object.keys($user).length !== 0}
             <div
-              on:click={() => {
-                navActive = "upgrade";
-                queryClient?.invalidateQueries(["users-me"]);
-                isShowHeaderMobile.update((n) => (n = false));
-              }}
-            >
-              <Link to="upgrade">
-                <div
-                  class={`flex items-center gap-3 text-white px-5 py-3
+              class={`flex items-center gap-3 text-white px-5 py-3
             ${
               $isDarkMode
-                ? navActive === "upgrade"
+                ? navActive === "/upgrade"
                   ? "bg-[#212121] rounded-[1000px] opacity-100"
                   : "opacity-70"
-                : navActive === "upgrade"
+                : navActive === "/upgrade"
                   ? "bg-[#525B8C] rounded-[1000px] opacity-100"
                   : "opacity-70"
             }
           `}
+              on:click={() => {
+                handleUpdateNavActive("/upgrade");
+                queryClient?.invalidateQueries(["users-me"]);
+                isShowHeaderMobile.update((n) => (n = false));
+                navigateTo("/upgrade");
+              }}
+            >
+              <div class="flex items-center gap-2">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="25"
+                  height="25"
+                  viewBox="0 0 32 32"
                 >
-                  <div class="flex items-center gap-2">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="25"
-                      height="25"
-                      viewBox="0 0 32 32"
-                    >
-                      <path
-                        fill="currentColor"
-                        d="M21 24H11a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2a2 2 0 0 0-2-2zm0 4H11v-2h10zm7.707-13.707l-12-12a1 1 0 0 0-1.414 0l-12 12A1 1 0 0 0 4 16h5v4a2.002 2.002 0 0 0 2 2h10a2.003 2.003 0 0 0 2-2v-4h5a1 1 0 0 0 .707-1.707zM21 14v6H11v-6H6.414L16 4.414L25.586 14z"
-                      />
-                    </svg>
-                    <span class="text-xl font-medium ml-1">Upgrade</span>
-                    <svg
-                      width="26"
-                      height="26"
-                      viewBox="0 0 16 16"
-                      fill="#ffb800"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        fill-rule="evenodd"
-                        clip-rule="evenodd"
-                        d="M14.6629 3.5843C14.7217 3.57771 14.7811 3.58901 14.8339 3.61685C14.8867 3.64495 14.9305 3.68852 14.9599 3.74223C14.9893 3.79594 15.0031 3.85745 14.9994 3.91919L14.4836 12.7921H1.51642L1.00059 3.91919C0.996892 3.85745 1.01055 3.79592 1.0399 3.74216C1.06924 3.68841 1.11299 3.64476 1.16578 3.6166C1.21856 3.58843 1.27808 3.57697 1.33702 3.58362C1.39596 3.59026 1.45175 3.61473 1.49755 3.65401L4.60499 6.30708L7.76082 2.11502C7.79036 2.07895 7.82704 2.04999 7.86833 2.03014C7.90962 2.01028 7.95455 2 8.00001 2C8.04548 2 8.0904 2.01028 8.1317 2.03014C8.17299 2.04999 8.20967 2.07895 8.23921 2.11502L11.395 6.30708L14.5025 3.65401C14.5484 3.61511 14.6041 3.5909 14.6629 3.5843ZM1.55334 13.4273L1.55781 13.5041C1.577 13.827 1.71333 14.1301 1.93906 14.3518C2.1648 14.5735 2.46298 14.6971 2.77297 14.6976H13.2271C13.537 14.6971 13.8352 14.5735 14.061 14.3518C14.2867 14.1301 14.423 13.827 14.4422 13.5041L14.4467 13.4273H1.55334Z"
-                        fill="#ffb800"
-                      />
-                    </svg>
-                  </div>
-                </div>
-              </Link>
+                  <path
+                    fill="currentColor"
+                    d="M21 24H11a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2a2 2 0 0 0-2-2zm0 4H11v-2h10zm7.707-13.707l-12-12a1 1 0 0 0-1.414 0l-12 12A1 1 0 0 0 4 16h5v4a2.002 2.002 0 0 0 2 2h10a2.003 2.003 0 0 0 2-2v-4h5a1 1 0 0 0 .707-1.707zM21 14v6H11v-6H6.414L16 4.414L25.586 14z"
+                  />
+                </svg>
+                <span class="text-xl font-medium ml-1">Upgrade</span>
+                <svg
+                  width="26"
+                  height="26"
+                  viewBox="0 0 16 16"
+                  fill="#ffb800"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M14.6629 3.5843C14.7217 3.57771 14.7811 3.58901 14.8339 3.61685C14.8867 3.64495 14.9305 3.68852 14.9599 3.74223C14.9893 3.79594 15.0031 3.85745 14.9994 3.91919L14.4836 12.7921H1.51642L1.00059 3.91919C0.996892 3.85745 1.01055 3.79592 1.0399 3.74216C1.06924 3.68841 1.11299 3.64476 1.16578 3.6166C1.21856 3.58843 1.27808 3.57697 1.33702 3.58362C1.39596 3.59026 1.45175 3.61473 1.49755 3.65401L4.60499 6.30708L7.76082 2.11502C7.79036 2.07895 7.82704 2.04999 7.86833 2.03014C7.90962 2.01028 7.95455 2 8.00001 2C8.04548 2 8.0904 2.01028 8.1317 2.03014C8.17299 2.04999 8.20967 2.07895 8.23921 2.11502L11.395 6.30708L14.5025 3.65401C14.5484 3.61511 14.6041 3.5909 14.6629 3.5843ZM1.55334 13.4273L1.55781 13.5041C1.577 13.827 1.71333 14.1301 1.93906 14.3518C2.1648 14.5735 2.46298 14.6971 2.77297 14.6976H13.2271C13.537 14.6971 13.8352 14.5735 14.061 14.3518C14.2867 14.1301 14.423 13.827 14.4422 13.5041L14.4467 13.4273H1.55334Z"
+                    fill="#ffb800"
+                  />
+                </svg>
+              </div>
             </div>
 
             <div
-              on:click={() => {
-                navActive = "profile";
-                queryClient?.invalidateQueries(["users-me"]);
-                isShowHeaderMobile.update((n) => (n = false));
-              }}
-            >
-              <Link to={`profile?id=${userID}`}>
-                <div
-                  class={`flex items-center gap-3 text-white px-5 py-3 
+              class={`flex items-center gap-3 text-white px-5 py-3 
             ${
               $isDarkMode
-                ? navActive === "profile"
+                ? navActive === "/profile"
                   ? "bg-[#212121] rounded-[1000px] opacity-100"
                   : "opacity-70"
-                : navActive === "profile"
+                : navActive === "/profile"
                   ? "bg-[#525B8C] rounded-[1000px] opacity-100"
                   : "opacity-70"
             }
           `}
-                >
-                  <svg
-                    width="30"
-                    height="30"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      fill="currentColor"
-                      fill-rule="evenodd"
-                      d="M7.5 6a4.5 4.5 0 1 1 9 0a4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0a.75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 0 1-.437-.695Z"
-                      clip-rule="evenodd"
-                    />
-                  </svg>
-                  <span class="text-xl font-medium">My Profile</span>
-                </div>
-              </Link>
+              on:click={() => {
+                handleUpdateNavActive("/profile");
+                queryClient?.invalidateQueries(["users-me"]);
+                isShowHeaderMobile.update((n) => (n = false));
+                navigateTo(`profile?id=${userID}`);
+              }}
+            >
+              <svg
+                width="30"
+                height="30"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fill="currentColor"
+                  fill-rule="evenodd"
+                  d="M7.5 6a4.5 4.5 0 1 1 9 0a4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0a.75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 0 1-.437-.695Z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+              <span class="text-xl font-medium">My Profile</span>
             </div>
           {/if}
 
           <div
-            on:click={() => {
-              navActive = "whales";
-              isShowHeaderMobile.update((n) => (n = false));
-            }}
-          >
-            <Link to="whales">
-              <div
-                class={`flex items-center gap-3 text-white px-5 py-3
+            class={`flex items-center gap-3 text-white px-5 py-3
             ${
               $isDarkMode
-                ? navActive === "whales"
+                ? navActive === "/whales"
                   ? "bg-[#212121] rounded-[1000px] opacity-100"
                   : "opacity-70"
-                : navActive === "whales"
+                : navActive === "/whales"
                   ? "bg-[#525B8C] rounded-[1000px] opacity-100"
                   : "opacity-70"
             }
           `}
-              >
-                <img src={WhaleIcon} alt="" width="30" height="30" />
-                <span class="text-xl font-medium">
-                  {MultipleLang.whales}
-                </span>
-              </div>
-            </Link>
+            on:click={() => {
+              handleUpdateNavActive("/whales");
+              isShowHeaderMobile.update((n) => (n = false));
+              navigateTo("/whales");
+            }}
+          >
+            <img src={WhaleIcon} alt="" width="30" height="30" />
+            <span class="text-xl font-medium">
+              {MultipleLang.whales}
+            </span>
           </div>
 
           <!-- <div
-            on:click={() => {
-              navActive = "news";
-              isShowHeaderMobile.update((n) => (n = false));
-            }}
-          >
-            <Link to="news">
-              <div
-                class={`flex items-center gap-3 text-white px-5 py-3 
+            class={`flex items-center gap-3 text-white px-5 py-3 
             ${
               $isDarkMode
-                ? navActive === "news"
+                ? navActive === "/news"
                   ? "bg-[#212121] rounded-[1000px] opacity-100"
                   : "opacity-70"
-                : navActive === "news"
+                : navActive === "/news"
                   ? "bg-[#525B8C] rounded-[1000px] opacity-100"
                   : "opacity-70"
             }
           `}
-              >
-                <img src={NewsIcon} alt="" width="30" height="30" />
-                <span class="text-xl font-medium">
-                  {MultipleLang.news}
-                </span>
-              </div>
-            </Link>
+            on:click={() => {
+              handleUpdateNavActive("/news");
+              isShowHeaderMobile.update((n) => (n = false));
+              navigateTo("/news");
+            }}
+          >
+            <img src={NewsIcon} alt="" width="30" height="30" />
+            <span class="text-xl font-medium">
+              {MultipleLang.news}
+            </span>
           </div> -->
 
           {#if $user && Object.keys($user).length !== 0}
             <div
-              on:click={() => {
-                navActive = "invitation";
-                queryClient?.invalidateQueries(["users-me"]);
-                isShowHeaderMobile.update((n) => (n = false));
-              }}
-            >
-              <Link to="invitation">
-                <div
-                  class={`flex items-center gap-3 text-white px-5 py-3 
+              class={`flex items-center gap-3 text-white px-5 py-3 
             ${
               $isDarkMode
-                ? navActive === "invitation"
+                ? navActive === "/invitation"
                   ? "bg-[#212121] rounded-[1000px] opacity-100"
                   : "opacity-70"
-                : navActive === "invitation"
+                : navActive === "/invitation"
                   ? "bg-[#525B8C] rounded-[1000px] opacity-100"
                   : "opacity-70"
             }
           `}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="30"
-                    height="30"
-                    viewBox="0 0 24 24"
-                    ><path
-                      fill="currentColor"
-                      d="M19 17v2H7v-2s0-4 6-4s6 4 6 4m-3-9a3 3 0 1 0-3 3a3 3 0 0 0 3-3m3.2 5.06A5.6 5.6 0 0 1 21 17v2h3v-2s0-3.45-4.8-3.94M18 5a2.91 2.91 0 0 0-.89.14a5 5 0 0 1 0 5.72A2.91 2.91 0 0 0 18 11a3 3 0 0 0 0-6M8 10H5V7H3v3H0v2h3v3h2v-3h3Z"
-                    /></svg
-                  >
-                  <span class="text-xl font-medium">Invite</span>
-                </div>
-              </Link>
+              on:click={() => {
+                handleUpdateNavActive("/invitation");
+                queryClient?.invalidateQueries(["users-me"]);
+                isShowHeaderMobile.update((n) => (n = false));
+                navigateTo("/invitation");
+              }}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="30"
+                height="30"
+                viewBox="0 0 24 24"
+                ><path
+                  fill="currentColor"
+                  d="M19 17v2H7v-2s0-4 6-4s6 4 6 4m-3-9a3 3 0 1 0-3 3a3 3 0 0 0 3-3m3.2 5.06A5.6 5.6 0 0 1 21 17v2h3v-2s0-3.45-4.8-3.94M18 5a2.91 2.91 0 0 0-.89.14a5 5 0 0 1 0 5.72A2.91 2.91 0 0 0 18 11a3 3 0 0 0 0-6M8 10H5V7H3v3H0v2h3v3h2v-3h3Z"
+                /></svg
+              >
+              <span class="text-xl font-medium">Invite</span>
             </div>
           {/if}
 
@@ -993,70 +967,62 @@
 
           {#if $user && Object.keys($user).length !== 0}
             <div
-              on:click={() => {
-                navActive = "daily-checkin";
-                isShowHeaderMobile.update((n) => (n = false));
-              }}
-            >
-              <Link to="daily-checkin">
-                <div
-                  class={`flex items-center gap-3 text-white px-5 py-3 
+              class={`flex items-center gap-3 text-white px-5 py-3 
               ${
                 $isDarkMode
-                  ? navActive === "daily-checkin"
+                  ? navActive === "/daily-checkin"
                     ? "bg-[#212121] rounded-[1000px] opacity-100"
                     : "opacity-70"
-                  : navActive === "daily-checkin"
+                  : navActive === "/daily-checkin"
                     ? "bg-[#525B8C] rounded-[1000px] opacity-100"
                     : "opacity-70"
               }`}
+              on:click={() => {
+                handleUpdateNavActive("/daily-checkin");
+                isShowHeaderMobile.update((n) => (n = false));
+                navigateTo("/daily-checkin");
+              }}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="30"
+                height="30"
+                viewBox="0 0 24 24"
+              >
+                <g
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="30"
-                    height="30"
-                    viewBox="0 0 24 24"
-                  >
-                    <g
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                    >
-                      <path d="M6 5h12l3 5l-8.5 9.5a.7.7 0 0 1-1 0L3 10l3-5" />
-                      <path d="M10 12L8 9.8l.6-1" />
-                    </g>
-                  </svg>
-                  <span class="text-xl font-medium">Daily Checkin</span>
-                </div>
-              </Link>
+                  <path d="M6 5h12l3 5l-8.5 9.5a.7.7 0 0 1-1 0L3 10l3-5" />
+                  <path d="M10 12L8 9.8l.6-1" />
+                </g>
+              </svg>
+              <span class="text-xl font-medium">Daily Checkin</span>
             </div>
 
             <div
-              on:click={() => {
-                navActive = "settings";
-                isShowHeaderMobile.update((n) => (n = false));
-              }}
-            >
-              <Link to="settings/?tab=accounts">
-                <div
-                  class={`flex items-center gap-3 text-white px-5 py-3 
+              class={`flex items-center gap-3 text-white px-5 py-3 
             ${
               $isDarkMode
-                ? navActive === "settings"
+                ? navActive === "/settings"
                   ? "bg-[#212121] rounded-[1000px] opacity-100"
                   : "opacity-70"
-                : navActive === "settings"
+                : navActive === "/settings"
                   ? "bg-[#525B8C] rounded-[1000px] opacity-100"
                   : "opacity-70"
             }
           `}
-                >
-                  <img src={SettingsIcon} alt="" width="30" height="30" />
-                  <span class="text-xl font-medium">Settings</span>
-                </div>
-              </Link>
+              on:click={() => {
+                handleUpdateNavActive("/settings");
+                isShowHeaderMobile.update((n) => (n = false));
+                navigateTo("/settings/?tab=accounts");
+              }}
+            >
+              <img src={SettingsIcon} alt="" width="30" height="30" />
+              <span class="text-xl font-medium">Settings</span>
             </div>
           {/if}
         </div>

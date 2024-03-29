@@ -105,6 +105,7 @@
     "svelte-loading-spinners": "^0.3.4",
     "svelte-motion": "^0.11.5",
     "svelte-navigator": "^3.2.2",
+    "svelte-router-spa": "^7.0.1",
     "svelte-spark": "^1.0.4",
     "svelte-system-info": "^1.0.0",
     "svelte-tiny-virtual-list": "^2.0.5",

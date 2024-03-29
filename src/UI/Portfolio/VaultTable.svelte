@@ -1,7 +1,7 @@
 <script lang="ts">
+  import { navigateTo } from "svelte-router-spa";
   import { selectedPackage, isDarkMode } from "~/store";
   import { shorterName } from "~/utils";
-  import { useNavigate } from "svelte-navigator";
 
   import Tooltip from "~/components/Tooltip.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
@@ -10,8 +10,6 @@
 
   export let data;
   export let symbol;
-
-  const navigate = useNavigate();
 
   let isShowTooltipProtocol = false;
   let isSingle = false;
@@ -382,7 +380,7 @@
                 <div class="mt-2 w-max">
                   <Button
                     variant="premium"
-                    on:click={() => navigate("/upgrade")}>Upgrade Plan</Button
+                    on:click={() => navigateTo("/upgrade")}>Upgrade Plan</Button
                   >
                 </div>
               </td>

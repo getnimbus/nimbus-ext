@@ -1,7 +1,5 @@
 <script lang="ts">
-  import { onMount } from "svelte";
-  import { nimbus } from "~/lib/network";
-  import { Link } from "svelte-navigator";
+  import { navigateTo } from "svelte-router-spa";
   import { autoFontSize } from "~/utils";
 
   import tooltip from "~/entries/contentScript/views/tooltip";
@@ -89,12 +87,15 @@
     <div class="flex flex-col max-w-[2000px] m-auto xl:w-[82%] w-[90%]">
       <div class="flex flex-col mb-5 gap-14">
         <div class="flex items-center justify-between">
-          <Link to="/" class="cusor-pointer">
-            <div class="flex items-center gap-1 text-white">
-              <img src={LeftArrow} alt="" class="xl:w-5 xl:h-5 w-7 h-7" />
-              <div class="text-xl font-medium xl:text-sm">Portfolio</div>
-            </div>
-          </Link>
+          <div
+            class="flex items-center gap-1 text-white cusor-pointer"
+            on:click={() => {
+              navigateTo("/");
+            }}
+          >
+            <img src={LeftArrow} alt="" class="xl:w-5 xl:h-5 w-7 h-7" />
+            <div class="text-xl font-medium xl:text-sm">Portfolio</div>
+          </div>
         </div>
         <div class="flex items-center justify-between">
           <div class="flex flex-col gap-3">
