@@ -40,6 +40,7 @@
   import Holding from "~/UI/Portfolio/Holding.svelte";
   import PerformanceSummary from "~/UI/Portfolio/PerformanceSummary.svelte";
   import DefiPosition from "~/UI/Portfolio/DefiPosition.svelte";
+  import AirdropsAndPointsTracker from "~/UI/Portfolio/AirdropsAndPointsTracker.svelte";
   import RiskReturn from "~/UI/Portfolio/RiskReturn.svelte";
   import News from "~/UI/Portfolio/News.svelte";
   import Positions from "~/UI/Portfolio/Positions.svelte";
@@ -48,7 +49,6 @@
 
   import Reload from "~/assets/reload.svg";
   import defaultToken from "~/assets/defaultToken.png";
-  import PointsTracker from "~/UI/Portfolio/PointsTracker.svelte";
 
   const MultipleLang = {
     portfolio: i18n("newtabPage.portfolio", "Portfolio"),
@@ -1089,8 +1089,8 @@
                 />
               {/if}
 
-              {#if $tab === "points"}
-                <PointsTracker />
+              {#if $tab === "airdropsAndPoints"}
+                <AirdropsAndPointsTracker />
               {/if}
 
               <!-- <News isLoading={false} data={newsData} /> -->
