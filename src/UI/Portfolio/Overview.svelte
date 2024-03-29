@@ -26,8 +26,6 @@
     realizedProfit: i18n("newtabPage.realizedProfit", "Realized PnL"),
     unrealizedProfit: i18n("newtabPage.unrealizedProfit", "Unrealized PnL"),
   };
-
-  $: console.log("HELLO WORLD: ", $totalAssets + $totalPositions);
 </script>
 
 <ErrorBoundary>
