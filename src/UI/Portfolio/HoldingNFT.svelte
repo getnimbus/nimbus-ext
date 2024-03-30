@@ -180,10 +180,7 @@
   };
 
   const handleCalculateProfitAndLoss = (data) => {
-    const totalNativeTokenPrice = data?.tokens?.reduce(
-      (prev, item) => prev + Number(item.price),
-      0
-    );
+    const totalNativeTokenPrice = handleCalculateTotalNativeTokenPrice(data);
     return totalNativeTokenPrice === 0
       ? 0
       : data?.current_native_token - (totalNativeTokenPrice || 0);
@@ -191,8 +188,10 @@
 
   const handleCalculatePnlPercent = (data) => {
     const pnl = handleCalculateProfitAndLoss(data);
-    const totalCost = handleCalculateTotalCost(data);
-    return pnl === 0 ? 0 : (pnl * data?.marketPrice) / Math.abs(totalCost);
+    const totalCostNativeToken = handleCalculateTotalNativeTokenPrice(data);
+    return totalCostNativeToken === 0
+      ? 0
+      : pnl / Math.abs(totalCostNativeToken);
   };
 
   $: {
