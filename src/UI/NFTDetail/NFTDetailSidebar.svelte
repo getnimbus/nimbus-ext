@@ -162,7 +162,7 @@
   $: profitAndLossPercent =
     totalNativeTokenPrice === 0
       ? 0
-      : (profitAndLoss * data?.marketPrice) / Math.abs(Number(totalCost));
+      : profitAndLoss / Math.abs(Number(totalNativeTokenPrice));
 </script>
 
 <ErrorBoundary>

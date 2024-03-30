@@ -24,7 +24,7 @@
   $: profitAndLossPercent =
     Number(data?.price || 0) === 0
       ? 0
-      : (profitAndLoss * marketPrice) / Math.abs(Number(data?.cost));
+      : profitAndLoss / Math.abs(Number(data?.price));
 </script>
 
 <div

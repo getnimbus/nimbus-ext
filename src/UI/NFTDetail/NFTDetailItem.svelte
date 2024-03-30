@@ -20,7 +20,7 @@
   $: profitAndLossPercent =
     Math.abs(Number(item?.price || 0)) === 0
       ? 0
-      : (profitAndLoss * marketPrice) / Math.abs(Number(item?.cost));
+      : profitAndLoss / Math.abs(Number(item?.price));
 </script>
 
 <tr class="group transition-all">
