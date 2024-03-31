@@ -348,7 +348,7 @@
                           <div class="flex flex-col gap-1">
                             {protocolInfo[item?.protocolLabel]?.name || ""}
 
-                            <div class="flex items-center gap-1 w-max">
+                            <div class="flex items-center gap-2 w-max">
                               {#if protocolInfo[item?.protocolLabel]?.twitter}
                                 <a
                                   href={protocolInfo[item?.protocolLabel]
@@ -357,8 +357,8 @@
                                 >
                                   <svg
                                     xmlns="http://www.w3.org/2000/svg"
-                                    width="14"
-                                    height="14"
+                                    width="13"
+                                    height="13"
                                     viewBox="0 0 14 14"
                                   >
                                     <rect width="14" height="14" fill="none" />
@@ -623,7 +623,7 @@
                         </div>
 
                         <div
-                          class="flex items-center justify-end font-medium text-sm text_00000099"
+                          class="flex items-center justify-end gap-3 font-medium text-sm text_00000099"
                         >
                           {#if protocolInfo[item?.protocolLabel]?.twitter}
                             <a
@@ -632,8 +632,8 @@
                             >
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
-                                width="18"
-                                height="18"
+                                width="17"
+                                height="17"
                                 viewBox="0 0 14 14"
                               >
                                 <rect width="14" height="14" fill="none" />
@@ -681,8 +681,8 @@
                             >
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
-                                width="18"
-                                height="18"
+                                width="22"
+                                height="22"
                                 viewBox="0 0 256 256"
                               >
                                 <rect width="14" height="14" fill="#606060" />
