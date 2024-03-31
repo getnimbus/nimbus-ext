@@ -367,7 +367,7 @@
     });
 
     if (selected && Object.keys(selected).length !== 0) {
-      if (otherGeneration.concat(["CEX", "BUNDLE"]).includes(selected.type)) {
+      if (otherGeneration?.concat(["CEX", "BUNDLE"])?.includes(selected.type)) {
         typeWallet.update((n) => (n = selected.type));
         browser.storage.sync.set({ typeWalletAddress: selected.type });
         chain.update((n) => (n = "ALL"));
@@ -529,7 +529,7 @@
             `/address/personalize/bundle?name=${"Your wallets"}`,
             {
               name: "Your wallets",
-              addresses: selectYourWalletsBundle.concat([
+              addresses: selectYourWalletsBundle?.concat([
                 validateAccount?.address,
               ]),
             }
@@ -644,7 +644,7 @@
                 `/address/personalize/bundle?name=${"Your wallets"}`,
                 {
                   name: "Your wallets",
-                  addresses: selectYourWalletsBundle.concat([
+                  addresses: selectYourWalletsBundle?.concat([
                     listAddress[listAddress.length - 1]?.id,
                   ]),
                 }

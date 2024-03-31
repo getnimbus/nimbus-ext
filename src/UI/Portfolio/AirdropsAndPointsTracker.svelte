@@ -324,7 +324,7 @@
             {:else}
               {#each formatData || [] as data}
                 <tbody>
-                  {#each [gmPoint].concat(data.points) as item}
+                  {#each [gmPoint]?.concat(data.points) as item}
                     <tr class="group transition-all relative">
                       <td
                         class={`pl-3 py-3 ${
@@ -607,7 +607,7 @@
                 </div>
               {:else}
                 {#each formatData || [] as data}
-                  {#each [gmPoint].concat(data.points) || [] as item}
+                  {#each [gmPoint]?.concat(data.points) || [] as item}
                     <div
                       class="flex flex-col gap-4 border-b-[1px] border_0000000d last:border-none py-4 px-2"
                     >

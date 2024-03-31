@@ -226,7 +226,7 @@
               cmcId: item.nativeToken.cmcId,
             };
           });
-        dataSubWS = dataSubWS.concat(formatHoldingNFTData);
+        dataSubWS = dataSubWS?.concat(formatHoldingNFTData);
       }
     }
   }

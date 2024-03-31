@@ -229,7 +229,7 @@
     const tokenDataHolding = {
       dataPie:
         dataPieChartToken.sumOrderBreakdownToken > 0
-          ? dataPieChartToken.formatDataPieChartTopFiveToken.concat(
+          ? dataPieChartToken.formatDataPieChartTopFiveToken?.concat(
               dataPieChartToken.dataPieChartOrderBreakdownToken
             )
           : dataPieChartToken.formatDataPieChartTopFiveToken,
