@@ -696,7 +696,7 @@
             past_price: item.from_price,
           };
         });
-        const dataHistory = formatDataBuyHistory.concat(formatDataSellHistory);
+        const dataHistory = formatDataBuyHistory?.concat(formatDataSellHistory);
 
         // logic data trade
         const tradeHistoryData = filterAndCollectDuplicates(

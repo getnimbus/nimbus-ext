@@ -367,7 +367,7 @@
             `/address/personalize/bundle?name=${"Your wallets"}`,
             {
               name: "Your wallets",
-              addresses: selectYourWalletsBundle.concat([
+              addresses: selectYourWalletsBundle?.concat([
                 validateAccount?.address,
               ]),
             }
