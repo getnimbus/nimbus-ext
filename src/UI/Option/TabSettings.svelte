@@ -25,7 +25,10 @@
   let selectedLang;
 
   onMount(() => {
-    selectedLang = langs.filter((item) => item.value === currentLang)[0];
+    const selectedLangValue = langs.filter(
+      (item) => item.value === currentLang
+    );
+    selectedLang = selectedLangValue ? selectedLangValue[0] : langs[0];
   });
 
   $: {
