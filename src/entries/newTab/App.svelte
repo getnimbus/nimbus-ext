@@ -225,9 +225,9 @@
           <MobileHeaderTab {navActive} {handleUpdateNavActive} />
         </div>
       </div>
-      {#if isTouchDevice}
+      <!-- {#if isTouchDevice}
         <MobileIntroModalPWA />
-      {/if}
+      {/if} -->
     {:else}
       <Router routes={recapRoutes} options={{ gaPageviews: true }} />
     {/if}
