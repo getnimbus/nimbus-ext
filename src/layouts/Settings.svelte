@@ -68,11 +68,11 @@
         window.location.pathname + `?tab=${tabParams}`
       );
     } else {
-      activeTabValue = "settings";
+      activeTabValue = "accounts";
       window.history.replaceState(
         null,
         "",
-        window.location.pathname + `?tab=settings`
+        window.location.pathname + `?tab=accounts`
       );
     }
   });
