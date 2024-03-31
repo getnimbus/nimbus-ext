@@ -42,6 +42,18 @@
       twitter: "https://x.com/kaminofinance",
       logo: "https://pbs.twimg.com/profile_images/1739993119150505984/tP0Lcgwp_400x400.jpg",
     },
+    Parcl: {
+      name: "Parcl",
+      website: "https://www.parcl.co/",
+      twitter: "https://twitter.com/Parcl",
+      logo: "https://airdrops.io/wp-content/uploads/2024/01/Parcl-logo.jpg",
+    },
+    "Sharky.fi": {
+      name: "Sharky.fi",
+      website: "https://sharky.fi/",
+      twitter: "https://twitter.com/SharkyFi",
+      logo: "https://sharky.fi/sharky.svg",
+    },
   };
 
   const getPointsAirdrop = async () => {
@@ -74,8 +86,8 @@
             const pointIndex = data
               .map(
                 (datawhale) =>
-                  (datawhale.name === "Drift Protocol" && "Drift") ||
-                  datawhale.name
+                  (datawhale?.name === "Drift Protocol" && "Drift") ||
+                  datawhale?.name
               )
               .indexOf(point.protocolLabel);
 
@@ -328,19 +340,19 @@
                             class="rounded-full w-[30px] h-[30px] overflow-hidden"
                           >
                             <Image
-                              logo={protocolInfo[item?.protocolLabel].logo}
+                              logo={protocolInfo[item?.protocolLabel]?.logo}
                               defaultLogo={defaultToken}
                             />
                           </div>
 
                           <div class="flex flex-col gap-1">
-                            {protocolInfo[item?.protocolLabel].name}
+                            {protocolInfo[item?.protocolLabel]?.name || ""}
 
                             <div class="flex items-center gap-1">
-                              {#if protocolInfo[item?.protocolLabel].twitter}
+                              {#if protocolInfo[item?.protocolLabel]?.twitter}
                                 <a
                                   href={protocolInfo[item?.protocolLabel]
-                                    .twitter}
+                                    ?.twitter}
                                   target="_blank"
                                 >
                                   <svg
@@ -370,10 +382,10 @@
                                 </a>
                               {/if}
 
-                              {#if protocolInfo[item?.protocolLabel].website}
+                              {#if protocolInfo[item?.protocolLabel]?.website}
                                 <a
                                   href={protocolInfo[item?.protocolLabel]
-                                    .website}
+                                    ?.website}
                                   target="_blank"
                                 >
                                   <svg
@@ -607,19 +619,19 @@
                             class="w-[30px] h-[30px] overflow-hidden rounded-full"
                           >
                             <Image
-                              logo={protocolInfo[item?.protocolLabel].logo}
+                              logo={protocolInfo[item?.protocolLabel]?.logo}
                               defaultLogo={defaultToken}
                             />
                           </div>
-                          {protocolInfo[item?.protocolLabel].name}
+                          {protocolInfo[item?.protocolLabel]?.name}
                         </div>
 
                         <div
                           class="flex items-center justify-end font-medium text-sm text_00000099"
                         >
-                          {#if protocolInfo[item?.protocolLabel].twitter}
+                          {#if protocolInfo[item?.protocolLabel]?.twitter}
                             <a
-                              href={protocolInfo[item?.protocolLabel].twitter}
+                              href={protocolInfo[item?.protocolLabel]?.twitter}
                               target="_blank"
                             >
                               <svg
@@ -646,9 +658,9 @@
                             </a>
                           {/if}
 
-                          {#if protocolInfo[item?.protocolLabel].website}
+                          {#if protocolInfo[item?.protocolLabel]?.website}
                             <a
-                              href={protocolInfo[item?.protocolLabel].website}
+                              href={protocolInfo[item?.protocolLabel]?.website}
                               target="_blank"
                             >
                               <svg
