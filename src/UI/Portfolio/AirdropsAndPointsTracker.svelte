@@ -348,7 +348,7 @@
                           <div class="flex flex-col gap-1">
                             {protocolInfo[item?.protocolLabel]?.name || ""}
 
-                            <div class="flex items-center gap-1">
+                            <div class="flex items-center gap-1 w-max">
                               {#if protocolInfo[item?.protocolLabel]?.twitter}
                                 <a
                                   href={protocolInfo[item?.protocolLabel]
@@ -445,14 +445,10 @@
                         <div
                           class="flex justify-end text-sm font-medium text_00000099"
                         >
-                          {#if item.protocolLabel === "GMPoints"}
-                            0
-                          {:else}
-                            <TooltipNumber
-                              number={item?.points || 0}
-                              type="balance"
-                            />
-                          {/if}
+                          <TooltipNumber
+                            number={item?.points || 0}
+                            type="balance"
+                          />
                         </div>
                       </td>
 
@@ -708,14 +704,10 @@
                         <div
                           class="flex items-center justify-end font-medium text-sm text_00000099"
                         >
-                          {#if item?.protocolLabel === "GMPoints"}
-                            0
-                          {:else}
-                            <TooltipNumber
-                              number={item?.points || 0}
-                              type="balance"
-                            />
-                          {/if}
+                          <TooltipNumber
+                            number={item?.points || 0}
+                            type="balance"
+                          />
                         </div>
                       </div>
 
