@@ -140,7 +140,7 @@
           };
         });
 
-      tokenHoldingDataFormat = filterHoldingTokenDataCompare.concat(
+      tokenHoldingDataFormat = filterHoldingTokenDataCompare?.concat(
         filterHoldingTokenData,
         holdingTokenDataInclude
       );

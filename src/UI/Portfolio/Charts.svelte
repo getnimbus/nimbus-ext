@@ -646,7 +646,7 @@
                 ...optionPie.series[0],
                 data:
                   dataPieChartNft.sumOrderBreakdownNft > 0
-                    ? dataPieChartNft.formatDataPieChartTopFiveNft.concat(
+                    ? dataPieChartNft.formatDataPieChartTopFiveNft?.concat(
                         dataPieChartNft.dataPieChartOrderBreakdownNft
                       )
                     : dataPieChartNft.formatDataPieChartTopFiveNft,

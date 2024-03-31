@@ -271,7 +271,7 @@ export const chunkArray = (array, chunkSize) => {
 
 export const flattenArray = (arr) => {
   return arr.reduce(function (flat, toFlatten) {
-    return flat.concat(
+    return flat?.concat(
       Array.isArray(toFlatten) ? flattenArray(toFlatten) : toFlatten
     );
   }, []);

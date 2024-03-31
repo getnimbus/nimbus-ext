@@ -289,7 +289,7 @@
                 ...option.series[0],
                 data:
                   sumOrderBreakdown > 0
-                    ? formatDataPieChartTopFour.concat(
+                    ? formatDataPieChartTopFour?.concat(
                         dataPieChartOrderBreakdown
                       )
                     : formatDataPieChartTopFour,
