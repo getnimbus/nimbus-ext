@@ -46,6 +46,8 @@
   let formatDataNFT = [];
   let sumTokens = 0;
   let sumNFT = 0;
+  let sumRealizedProfit = 0;
+  let sumUnrealizedProfit = 0;
 
   let selectedTypeTable = {
     label: "",
@@ -67,7 +69,7 @@
   };
 
   $: {
-    if (formatHoldingTokenData) {
+    if (formatHoldingTokenData && $tab === "token") {
       const closedHoldingToken = formatHoldingTokenData
         ?.filter(
           (item) =>
@@ -116,44 +118,33 @@
         });
         filteredHoldingDataToken = formatData.filter((item) => item.value > 1);
         sumTokens = data.reduce((prev, item) => prev + item.value, 0);
-        realizedProfit.update(
-          (n) =>
-            (n = (formatData || [])
-              .map((item) => {
-                return {
-                  realized_profit: item?.profit?.realizedProfit || 0,
-                };
-              })
-              .reduce((prev, item) => prev + Number(item.realized_profit), 0))
-        );
-        unrealizedProfit.update(
-          (n) =>
-            (n = (formatData || [])
-              ?.filter(
-                (item) =>
-                  Number(item?.amount) > 0 && Number(item?.avgCost) !== 0
-              )
-              ?.map((item) => {
-                const price = Number(
-                  item?.market_price || item?.price?.price || 0
-                );
-                const pnl =
-                  Number(item?.balance || 0) * price +
-                  Number(item?.profit?.totalGain || 0) -
-                  Number(item?.profit?.cost || 0);
-                const realizedProfit = item?.profit?.realizedProfit
-                  ? Number(item?.profit?.realizedProfit)
-                  : 0;
+        sumRealizedProfit = (formatData || [])
+          .map((item) => {
+            return {
+              realized_profit: item?.profit?.realizedProfit || 0,
+            };
+          })
+          .reduce((prev, item) => prev + Number(item.realized_profit), 0);
+        sumUnrealizedProfit = (formatData || [])
+          ?.filter(
+            (item) => Number(item?.amount) > 0 && Number(item?.avgCost) !== 0
+          )
+          ?.map((item) => {
+            const price = Number(item?.market_price || item?.price?.price || 0);
+            const pnl =
+              Number(item?.balance || 0) * price +
+              Number(item?.profit?.totalGain || 0) -
+              Number(item?.profit?.cost || 0);
+            const realizedProfit = item?.profit?.realizedProfit
+              ? Number(item?.profit?.realizedProfit)
+              : 0;
 
-                return {
-                  unrealized_profit:
-                    Number(item?.avgCost) === 0
-                      ? 0
-                      : Number(pnl) - realizedProfit,
-                };
-              })
-              .reduce((prev, item) => prev + Number(item.unrealized_profit), 0))
-        );
+            return {
+              unrealized_profit:
+                Number(item?.avgCost) === 0 ? 0 : Number(pnl) - realizedProfit,
+            };
+          })
+          .reduce((prev, item) => prev + Number(item.unrealized_profit), 0);
       }
     }
 
@@ -364,43 +355,33 @@
         (prev, item) => prev + item.value,
         0
       );
-      realizedProfit.update(
-        (n) =>
-          (n = (formatData || [])
-            .map((item) => {
-              return {
-                realized_profit: item?.profit?.realizedProfit || 0,
-              };
-            })
-            .reduce((prev, item) => prev + Number(item.realized_profit), 0))
-      );
-      unrealizedProfit.update(
-        (n) =>
-          (n = (formatData || [])
-            ?.filter(
-              (item) => Number(item?.amount) > 0 && Number(item?.avgCost) !== 0
-            )
-            ?.map((item) => {
-              const price = Number(
-                item?.market_price || item?.price?.price || 0
-              );
-              const pnl =
-                Number(item?.balance || 0) * price +
-                Number(item?.profit?.totalGain || 0) -
-                Number(item?.profit?.cost || 0);
-              const realizedProfit = item?.profit?.realizedProfit
-                ? Number(item?.profit?.realizedProfit)
-                : 0;
+      sumRealizedProfit = (formatData || [])
+        .map((item) => {
+          return {
+            realized_profit: item?.profit?.realizedProfit || 0,
+          };
+        })
+        .reduce((prev, item) => prev + Number(item.realized_profit), 0);
+      sumUnrealizedProfit = (formatData || [])
+        ?.filter(
+          (item) => Number(item?.amount) > 0 && Number(item?.avgCost) !== 0
+        )
+        ?.map((item) => {
+          const price = Number(item?.market_price || item?.price?.price || 0);
+          const pnl =
+            Number(item?.balance || 0) * price +
+            Number(item?.profit?.totalGain || 0) -
+            Number(item?.profit?.cost || 0);
+          const realizedProfit = item?.profit?.realizedProfit
+            ? Number(item?.profit?.realizedProfit)
+            : 0;
 
-              return {
-                unrealized_profit:
-                  Number(item?.avgCost) === 0
-                    ? 0
-                    : Number(pnl) - realizedProfit,
-              };
-            })
-            .reduce((prev, item) => prev + Number(item.unrealized_profit), 0))
-      );
+          return {
+            unrealized_profit:
+              Number(item?.avgCost) === 0 ? 0 : Number(pnl) - realizedProfit,
+          };
+        })
+        .reduce((prev, item) => prev + Number(item.unrealized_profit), 0);
 
       // update data nft holding
       const formatDataNFTWithMarketPrice = formatDataNFT.map((item) => {
@@ -485,6 +466,8 @@
       $tab === "token"
     ) {
       totalTokens.update((n) => (n = sumTokens));
+      realizedProfit.update((n) => (n = sumRealizedProfit));
+      unrealizedProfit.update((n) => (n = sumUnrealizedProfit));
     }
   }
 
@@ -523,6 +506,8 @@
       selectedTokenHolding?.data?.data?.length === 0
     ) {
       sumTokens = 0;
+      sumRealizedProfit = 0;
+      sumUnrealizedProfit = 0;
       sumNFT = 0;
       dataSubWS = [];
       formatData = [];
