@@ -25,6 +25,7 @@ export const realtimePrice = writable({});
 export const totalPositions = writable(0);
 export const totalTokens = writable(0);
 export const totalNfts = writable(0);
+export const totalAirdrops = writable(0);
 export const unrealizedProfit = writable(0);
 export const realizedProfit = writable(0);
 export const pastProfit = writable(0);

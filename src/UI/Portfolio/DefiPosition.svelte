@@ -19,7 +19,7 @@
   }
 
   const formatDataProtocol = (data) => {
-    const formatData = data.map((item) => {
+    const formatData = data?.map((item) => {
       return {
         ...item,
         protocol: item?.meta?.protocol?.name || "",

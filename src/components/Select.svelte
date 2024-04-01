@@ -1,5 +1,15 @@
 <script lang="ts">
-  import { wallet, chain } from "~/store";
+  import {
+    wallet,
+    chain,
+    totalTokens,
+    totalNfts,
+    totalAirdrops,
+    totalPositions,
+    unrealizedProfit,
+    realizedProfit,
+    pastProfit,
+  } from "~/store";
   import { clickOutside } from "~/utils";
 
   import UpArrow from "~/assets/up-arrow.svg";
@@ -89,6 +99,13 @@
               chain.update((n) => (n = "ALL"));
               selected = item.value;
               open = false;
+              totalTokens.update((n) => (n = 0));
+              totalAirdrops.update((n) => (n = 0));
+              totalNfts.update((n) => (n = 0));
+              totalPositions.update((n) => (n = 0));
+              unrealizedProfit.update((n) => (n = 0));
+              realizedProfit.update((n) => (n = 0));
+              pastProfit.update((n) => (n = 0));
             }
             if (type === "chain") {
               chain.update((n) => (n = item.value));
