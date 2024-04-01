@@ -11,6 +11,7 @@
     realizedProfit,
     pastProfit,
     totalNfts,
+    tab,
   } from "~/store";
   import { filterTokenValueType, chunkArray, triggerFirework } from "~/utils";
   import { groupBy } from "lodash";
@@ -480,9 +481,15 @@
       selectedTokenHolding &&
       Object.keys(selectedTokenHolding).length !== 0 &&
       selectedTokenHolding?.select.length === 0 &&
-      (sumTokens || sumNFT)
+      sumTokens &&
+      $tab === "token"
     ) {
       totalTokens.update((n) => (n = sumTokens));
+    }
+  }
+
+  $: {
+    if (sumNFT && $tab === "nft") {
       totalNfts.update((n) => (n = sumNFT));
     }
   }
