@@ -1001,6 +1001,9 @@
                       class="relative cursor-pointer xl:text-base text-lg font-medium py-1 px-3 rounded-[100px] transition-all"
                       id={type.id}
                       on:click={() => {
+                        if ($tab === type.value) {
+                          return;
+                        }
                         tab.update((n) => (n = type.value));
                         window.history.replaceState(
                           null,
