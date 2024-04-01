@@ -19,12 +19,14 @@
   }
 
   const formatDataProtocol = (data) => {
-    const formatData = data?.map((item) => {
-      return {
-        ...item,
-        protocol: item?.meta?.protocol?.name || "",
-      };
-    });
+    const formatData = (Array.isArray(data) ? data : data?.data || [])?.map(
+      (item) => {
+        return {
+          ...item,
+          protocol: item?.meta?.protocol?.name || "",
+        };
+      }
+    );
     const groupProtocol = groupBy(formatData, "protocol");
     const protocolList = Object.getOwnPropertyNames(groupProtocol);
 
