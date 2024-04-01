@@ -752,10 +752,10 @@
 
     <div class="py-3 px-3 text-right text-sm text_00000099">
       Data by <a
-        href="https://solana-airdrop-checker.solworks.dev/"
-        class="hover:underline max-lg:underline"
+        href="https://www.airdropped.link/"
+        class="hover:underline max-lg:underline text-[#1E96FC]"
         target="_blank"
-        >https://solana-airdrop-checker.solworks.dev
+        >https://www.airdropped.link
       </a>
     </div>
   </div>
