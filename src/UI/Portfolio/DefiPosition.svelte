@@ -1,7 +1,5 @@
 <script lang="ts">
-  import { createQuery } from "@tanstack/svelte-query";
-  import { nimbus } from "~/lib/network";
-  import { totalPositions, typeWallet, wallet, chain } from "~/store";
+  import { totalPositions, typeWallet, chain } from "~/store";
   import { groupBy } from "lodash";
   import { flatten } from "lodash";
 
@@ -9,35 +7,14 @@
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import Positions from "./DefiPosition/Positions.svelte";
 
-  export let conditionQuery: boolean;
+  export let data;
+  export let isLoading;
 
   let positionsData = [];
 
-  const getMovePositions = async (address, chain) => {
-    const response: any = await nimbus.get(
-      `/v2/address/${address}/positions?chain=${chain}`
-    );
-    return response?.data?.data;
-  };
-
-  $: queryMovePositions = createQuery({
-    queryKey: ["move-positions", $wallet, $chain],
-    queryFn: () => getMovePositions($wallet, $chain),
-    staleTime: Infinity,
-    enabled: Boolean(
-      conditionQuery &&
-        $wallet &&
-        $wallet?.length !== 0 &&
-        $typeWallet === "MOVE"
-    ),
-  });
-
   $: {
-    if (
-      !$queryMovePositions.isError &&
-      $queryMovePositions.data !== undefined
-    ) {
-      formatDataProtocol($queryMovePositions.data);
+    if (data) {
+      formatDataProtocol(data);
     }
   }
 
@@ -239,8 +216,8 @@
 <ErrorBoundary>
   <div class="flex flex-col gap-2 px-3">
     <div class="xl:text-2xl text-3xl font-medium">Positions</div>
-    {#if $typeWallet === "MOVE"}
-      {#if $queryMovePositions.isFetching}
+    {#if $typeWallet === "MOVE" || ($typeWallet === "EVM" && $chain === "SHIMMER")}
+      {#if isLoading}
         <div class="flex justify-center items-center min-h-[300px]">
           <Loading />
         </div>

@@ -4,7 +4,7 @@
   import "dayjs/locale/vi";
   import relativeTime from "dayjs/plugin/relativeTime";
   dayjs.extend(relativeTime);
-  import { groupBy, flatten } from "lodash";
+  import { flatten } from "lodash";
   import { onMount } from "svelte";
   import { i18n } from "~/lib/i18n";
   import { drivePortfolio, typePortfolioPage } from "~/utils";
@@ -17,6 +17,12 @@
     typeWallet,
     selectedBundle,
     triggerUpdateBundle,
+    totalTokens,
+    totalPositions,
+    unrealizedProfit,
+    realizedProfit,
+    pastProfit,
+    totalNfts,
   } from "~/store";
   import mixpanel from "mixpanel-browser";
   import { nimbus } from "~/lib/network";
@@ -192,6 +198,7 @@
     queryClient.invalidateQueries(["token-holding"]);
     queryClient.invalidateQueries(["nft-holding"]);
     queryClient.invalidateQueries(["compare"]);
+    queryClient.invalidateQueries(["positions"]);
   };
 
   const handleGetAllData = async (type: string) => {
@@ -215,7 +222,8 @@
           !$queryTokenHolding.isError &&
           !$queryVaults.isError &&
           !$queryNftHolding.isError &&
-          !$queryCompare.isError
+          !$queryCompare.isError &&
+          !$queryPositions.isError
         ) {
           syncMsg = "";
           isLoadingSync = false;
@@ -240,7 +248,8 @@
                 !$queryTokenHolding.isError &&
                 !$queryVaults.isError &&
                 !$queryNftHolding.isError &&
-                !$queryCompare.isError
+                !$queryCompare.isError &&
+                !$queryPositions.isError
               ) {
                 syncMsg = "";
                 isLoadingSync = false;
@@ -272,23 +281,50 @@
   };
 
   //// POSITIONS
+  // const getPositions = async (address, chain) => {
+  //   const response: any = await nimbus
+  //     .get(`/address/${address}/positions?chain=${chain}`)
+  //     .then((response) => response?.data?.positions);
+  //   return response;
+  // };
+
+  // const formatDataPositions = (data) => {
+  //   const formatData = data.map((item) => {
+  //     const groupPosition = groupBy(item.positions, "type");
+  //     return {
+  //       ...item,
+  //       positions: groupPosition,
+  //     };
+  //   });
+  //   positionsData = formatData;
+  // };
+
   const getPositions = async (address, chain) => {
-    const response: any = await nimbus
-      .get(`/address/${address}/positions?chain=${chain}`)
-      .then((response) => response?.data?.positions);
-    return response;
+    const response: any = await nimbus.get(
+      `/v2/address/${address}/positions?chain=${chain}`
+    );
+    return response?.data;
   };
 
-  const formatDataPositions = (data) => {
-    const formatData = data.map((item) => {
-      const groupPosition = groupBy(item.positions, "type");
-      return {
-        ...item,
-        positions: groupPosition,
-      };
-    });
-    positionsData = formatData;
-  };
+  $: queryPositions = createQuery({
+    queryKey: ["positions", $wallet, $chain],
+    queryFn: () => getPositions($wallet, $chain),
+    staleTime: Infinity,
+    enabled: Boolean(
+      (enabledFetchAllData &&
+        $wallet &&
+        $wallet?.length !== 0 &&
+        !$queryValidate.isFetching &&
+        $typeWallet === "MOVE") ||
+        ($typeWallet === "EVM" && $chain === "SHIMMER")
+    ),
+  });
+
+  $: {
+    if (!$queryPositions.isError && $queryPositions.data !== undefined) {
+      positionsData = $queryPositions.data;
+    }
+  }
 
   //// OVERVIEW
   const getOverview = async (chain) => {
@@ -856,21 +892,25 @@
         $queryAllNftHolding &&
         $queryAllNftHolding.some((item) => item.isFetching === true) &&
         $queryVaults.isFetching &&
-        $queryOverview.isFetching
+        $queryOverview.isFetching &&
+        $queryPositions.isFetching
       : !isErrorAllData &&
         $queryTokenHolding.isFetching &&
         $queryNftHolding.isFetching &&
         $queryVaults.isFetching &&
-        $queryOverview.isFetching;
+        $queryOverview.isFetching &&
+        $queryPositions.isFetching;
 
   $: isPortfolioReady =
     $chain === "ALL"
       ? $queryAllTokenHolding.every((item) => item.isFetched) &&
         $queryVaults.isFetched &&
-        $queryOverview.isFetched
+        $queryOverview.isFetched &&
+        $queryPositions.isFetched
       : $queryTokenHolding.isFetched &&
         $queryVaults.isFetched &&
-        $queryOverview.isFetched;
+        $queryOverview.isFetched &&
+        $queryPositions.isFetched;
 
   $: {
     if ($typeWallet?.length !== 0 && $typeWallet === "EVM") {
@@ -967,6 +1007,12 @@
                           window.location.pathname +
                             `?tab=${type.value}&type=${$typeWallet}&chain=${$chain}&address=${$wallet}`
                         );
+                        totalTokens.update((n) => (n = 0));
+                        totalNfts.update((n) => (n = 0));
+                        totalPositions.update((n) => (n = 0));
+                        unrealizedProfit.update((n) => (n = 0));
+                        realizedProfit.update((n) => (n = 0));
+                        pastProfit.update((n) => (n = 0));
                       }}
                     >
                       <div
@@ -1040,12 +1086,8 @@
 
               {#if $tab === "defi"}
                 <DefiPosition
-                  conditionQuery={Boolean(
-                    enabledFetchAllData &&
-                      $wallet &&
-                      $wallet?.length !== 0 &&
-                      !$queryValidate.isFetching
-                  )}
+                  data={positionsData}
+                  isLoading={$queryPositions.isFetching}
                 />
               {/if}
 

@@ -86,6 +86,7 @@
           on:click={() => {
             if (type === "wallet") {
               wallet.update((n) => (n = item.value));
+              chain.update((n) => (n = "ALL"));
               selected = item.value;
               open = false;
             }
