@@ -3,7 +3,8 @@
   import {
     typeWallet,
     isHidePortfolio,
-    totalAssets,
+    totalTokens,
+    totalNfts,
     totalPositions,
     unrealizedProfit,
     realizedProfit,
@@ -34,7 +35,7 @@
       <OverviewCard title={MultipleLang.networth}>
         <div class="flex text-4xl xl:text-3xl">
           <CountUpNumber
-            number={$totalAssets + $totalPositions}
+            number={$totalTokens + $totalNfts + $totalPositions}
             type="value"
             personalValue
           />

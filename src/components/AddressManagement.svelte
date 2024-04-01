@@ -905,6 +905,7 @@
                                 return;
                               }
                               wallet.update((n) => (n = item.value));
+                              chain.update((n) => (n = "ALL"));
                             }}
                           >
                             <img
@@ -1062,6 +1063,7 @@
                             class:hover:no-underline={item.value === $wallet}
                             on:click={() => {
                               wallet.update((n) => (n = item.value));
+                              chain.update((n) => (n = "ALL"));
                             }}
                           >
                             <img

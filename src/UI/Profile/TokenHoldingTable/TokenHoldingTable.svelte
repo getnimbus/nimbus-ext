@@ -1,6 +1,6 @@
 <script lang="ts">
   import {
-    totalAssets,
+    totalTokens,
     unrealizedProfit,
     realizedProfit,
     pastProfit,
@@ -224,7 +224,7 @@
         : !$queryTokenHolding.isFetching) &&
       sumTokens
     ) {
-      totalAssets.update((n) => (n = sumTokens));
+      totalTokens.update((n) => (n = sumTokens));
     }
   }
 </script>

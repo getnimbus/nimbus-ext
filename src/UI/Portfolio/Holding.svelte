@@ -6,10 +6,11 @@
     typeWallet,
     isDarkMode,
     realtimePrice,
-    totalAssets,
+    totalTokens,
     unrealizedProfit,
     realizedProfit,
     pastProfit,
+    totalNfts,
   } from "~/store";
   import { filterTokenValueType, chunkArray, triggerFirework } from "~/utils";
   import { groupBy } from "lodash";
@@ -481,7 +482,8 @@
       selectedTokenHolding?.select.length === 0 &&
       (sumTokens || sumNFT)
     ) {
-      totalAssets.update((n) => (n = sumNFT + sumTokens));
+      totalTokens.update((n) => (n = sumTokens));
+      totalNfts.update((n) => (n = sumNFT));
     }
   }
 
@@ -497,7 +499,8 @@
         filteredHoldingDataNFT = [];
         filteredUndefinedCmcHoldingTokenData = [];
         filteredNullCmcHoldingTokenData = [];
-        totalAssets.update((n) => (n = 0));
+        totalTokens.update((n) => (n = 0));
+        totalNfts.update((n) => (n = 0));
         unrealizedProfit.update((n) => (n = 0));
         realizedProfit.update((n) => (n = 0));
         pastProfit.update((n) => (n = 0));
@@ -521,7 +524,8 @@
       filteredHoldingDataNFT = [];
       filteredUndefinedCmcHoldingTokenData = [];
       filteredNullCmcHoldingTokenData = [];
-      totalAssets.update((n) => (n = 0));
+      totalTokens.update((n) => (n = 0));
+      totalNfts.update((n) => (n = 0));
       unrealizedProfit.update((n) => (n = 0));
       realizedProfit.update((n) => (n = 0));
       pastProfit.update((n) => (n = 0));
