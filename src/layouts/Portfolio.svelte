@@ -18,11 +18,12 @@
     selectedBundle,
     triggerUpdateBundle,
     totalTokens,
+    totalNfts,
+    totalAirdrops,
     totalPositions,
     unrealizedProfit,
     realizedProfit,
     pastProfit,
-    totalNfts,
   } from "~/store";
   import mixpanel from "mixpanel-browser";
   import { nimbus } from "~/lib/network";
@@ -1008,6 +1009,7 @@
                             `?tab=${type.value}&type=${$typeWallet}&chain=${$chain}&address=${$wallet}`
                         );
                         totalTokens.update((n) => (n = 0));
+                        totalAirdrops.update((n) => (n = 0));
                         totalNfts.update((n) => (n = 0));
                         totalPositions.update((n) => (n = 0));
                         unrealizedProfit.update((n) => (n = 0));

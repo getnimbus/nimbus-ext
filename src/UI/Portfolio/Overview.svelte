@@ -5,6 +5,7 @@
     isHidePortfolio,
     totalTokens,
     totalNfts,
+    totalAirdrops,
     totalPositions,
     unrealizedProfit,
     realizedProfit,
@@ -35,7 +36,10 @@
       <OverviewCard title={MultipleLang.networth}>
         <div class="flex text-4xl xl:text-3xl">
           <CountUpNumber
-            number={$totalTokens + $totalNfts + $totalPositions}
+            number={$totalTokens +
+              $totalNfts +
+              $totalPositions +
+              $totalAirdrops}
             type="value"
             personalValue
           />

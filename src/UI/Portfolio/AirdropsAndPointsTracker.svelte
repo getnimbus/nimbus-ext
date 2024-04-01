@@ -1,7 +1,8 @@
 <script lang="ts">
+  import { flatten } from "lodash";
   import { createQuery } from "@tanstack/svelte-query";
   import { nimbus } from "~/lib/network";
-  import { isDarkMode, user, wallet } from "~/store";
+  import { isDarkMode, user, wallet, totalAirdrops } from "~/store";
 
   import TooltipTitle from "~/components/TooltipTitle.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
@@ -11,7 +12,6 @@
 
   import defaultToken from "~/assets/defaultToken.png";
   import gmPoints from "~/assets/Gold4.svg";
-  import { flatten } from "lodash";
 
   const protocolInfo = {
     GMPoints: {
@@ -107,6 +107,13 @@
         })
       );
       eligibilityData = formatEligibilityData.filter((item) => item?.eligible);
+
+      const totalEstimateValues = eligibilityData.reduce(
+        (prev, item) =>
+          prev + Number(item?.amount) * (Number(item?.tokenPrice) || 0),
+        0
+      );
+      totalAirdrops.update((n) => (n = totalEstimateValues));
 
       gmPoint = {
         points: $query?.data?.totalPoint,

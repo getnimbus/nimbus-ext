@@ -13,6 +13,13 @@
     selectedBundle,
     userPublicAddress,
     triggerModalAddAddress,
+    totalTokens,
+    totalNfts,
+    totalAirdrops,
+    totalPositions,
+    unrealizedProfit,
+    realizedProfit,
+    pastProfit,
   } from "~/store";
   import { i18n } from "~/lib/i18n";
   import dayjs from "dayjs";
@@ -906,6 +913,13 @@
                               }
                               wallet.update((n) => (n = item.value));
                               chain.update((n) => (n = "ALL"));
+                              totalTokens.update((n) => (n = 0));
+                              totalAirdrops.update((n) => (n = 0));
+                              totalNfts.update((n) => (n = 0));
+                              totalPositions.update((n) => (n = 0));
+                              unrealizedProfit.update((n) => (n = 0));
+                              realizedProfit.update((n) => (n = 0));
+                              pastProfit.update((n) => (n = 0));
                             }}
                           >
                             <img
@@ -1064,6 +1078,13 @@
                             on:click={() => {
                               wallet.update((n) => (n = item.value));
                               chain.update((n) => (n = "ALL"));
+                              totalTokens.update((n) => (n = 0));
+                              totalAirdrops.update((n) => (n = 0));
+                              totalNfts.update((n) => (n = 0));
+                              totalPositions.update((n) => (n = 0));
+                              unrealizedProfit.update((n) => (n = 0));
+                              realizedProfit.update((n) => (n = 0));
+                              pastProfit.update((n) => (n = 0));
                             }}
                           >
                             <img
