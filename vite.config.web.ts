@@ -47,54 +47,54 @@ export default defineConfig(({ mode }) => {
           },
         ],
       }),
-      VitePWA({
-        workbox: {
-          globPatterns: ["**/*.{css,html,svelte,ts,gif,svg,png,woff2}"],
-        },
-        devOptions: {
-          enabled: true,
-        },
-        registerType: "autoUpdate",
-        manifest: {
-          name: "Nimbus",
-          short_name: "Nimbus",
-          start_url: "/",
-          display: "standalone",
-          description: "https://getnimbus.io",
-          icons: [
-            {
-              src: "assets/logo/512.png",
-              type: "image/png",
-              sizes: "512x512",
-              purpose: "any",
-            },
-            {
-              src: "assets/logo/256.png",
-              type: "image/png",
-              sizes: "256x256",
-              purpose: "any",
-            },
-            {
-              src: "assets/logo/144.png",
-              type: "image/png",
-              sizes: "144x144",
-              purpose: "any",
-            },
-            {
-              src: "assets/logo/128.png",
-              type: "image/png",
-              sizes: "128x128",
-              purpose: "any",
-            },
-            {
-              src: "assets/logo/48.png",
-              type: "image/png",
-              sizes: "48x48",
-              purpose: "any",
-            },
-          ],
-        },
-      }),
+      // VitePWA({
+      //   workbox: {
+      //     globPatterns: ["**/*.{css,html,svelte,ts,gif,svg,png,woff2}"],
+      //   },
+      //   devOptions: {
+      //     enabled: true,
+      //   },
+      //   registerType: "autoUpdate",
+      //   manifest: {
+      //     name: "Nimbus",
+      //     short_name: "Nimbus",
+      //     start_url: "/",
+      //     display: "standalone",
+      //     description: "https://getnimbus.io",
+      //     icons: [
+      //       {
+      //         src: "assets/logo/512.png",
+      //         type: "image/png",
+      //         sizes: "512x512",
+      //         purpose: "any",
+      //       },
+      //       {
+      //         src: "assets/logo/256.png",
+      //         type: "image/png",
+      //         sizes: "256x256",
+      //         purpose: "any",
+      //       },
+      //       {
+      //         src: "assets/logo/144.png",
+      //         type: "image/png",
+      //         sizes: "144x144",
+      //         purpose: "any",
+      //       },
+      //       {
+      //         src: "assets/logo/128.png",
+      //         type: "image/png",
+      //         sizes: "128x128",
+      //         purpose: "any",
+      //       },
+      //       {
+      //         src: "assets/logo/48.png",
+      //         type: "image/png",
+      //         sizes: "48x48",
+      //         purpose: "any",
+      //       },
+      //     ],
+      //   },
+      // }),
     ],
     resolve: {
       alias: {
