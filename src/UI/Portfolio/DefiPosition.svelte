@@ -2,6 +2,7 @@
   import { totalPositions, typeWallet, chain } from "~/store";
   import { groupBy } from "lodash";
   import { flatten } from "lodash";
+  import { filterDuplicates } from "~/utils";
 
   import Loading from "~/components/Loading.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
@@ -71,8 +72,33 @@
     });
 
     positionsData = formatPositionsData.map((item) => {
+      const protocolMeta = item.data.map((eachItem) => {
+        return eachItem.data.map((eachProtocolData) => {
+          if (eachProtocolData.data) {
+            return eachProtocolData.data.map((data) => {
+              return (
+                data?.meta?.protocol || {
+                  logo: "",
+                  name: "",
+                  url: "",
+                }
+              );
+            });
+          }
+
+          return (
+            eachProtocolData?.meta?.protocol || {
+              logo: "",
+              name: "",
+              url: "",
+            }
+          );
+        });
+      });
+
       return {
         ...item,
+        meta: filterDuplicates(flatten(flatten(protocolMeta)))[0],
         sum: handleCalculateTotalProtocol(item.data),
       };
     });
