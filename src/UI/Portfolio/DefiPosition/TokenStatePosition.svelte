@@ -62,8 +62,14 @@
         }`}
       >
         <div
-          class="text-left text-sm text_00000099 font-medium gap-2 flex items-center gap-1"
+          class="text-left text-sm text_00000099 font-medium flex items-center gap-1"
         >
+          <div class="rounded-full w-6 h-6 overflow-hidden">
+            <Image
+              defaultLogo={defaultToken}
+              logo={item?.token?.logo || defaultToken}
+            />
+          </div>
           <TooltipNumber number={item?.amount || 0} type="amount" />
           {item?.token?.symbol}
         </div>
@@ -124,8 +130,14 @@
       <div class="flex justify-between items-start">
         <div class="text-right text-sm uppercase font-medium">Balance</div>
         <div
-          class="flex items-center justify-end font-medium text-sm text_00000099"
+          class="flex items-center justify-end gap-1 font-medium text-sm text_00000099"
         >
+          <div class="rounded-full w-6 h-6 overflow-hidden">
+            <Image
+              defaultLogo={defaultToken}
+              logo={item?.token?.logo || defaultToken}
+            />
+          </div>
           <TooltipNumber number={item?.amount || 0} type="amount" />
           {item?.token?.symbol}
         </div>
