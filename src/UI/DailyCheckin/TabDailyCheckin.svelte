@@ -798,7 +798,7 @@
                             <div>
                               {#if quest.isDone}
                                 <div class="py-1">
-                                  <Button disabled>Collect!</Button>
+                                  <Button disabled>Done!</Button>
                                 </div>
                               {:else}
                                 <a href={quest?.url} class="py-1">
@@ -810,9 +810,7 @@
                             <div>
                               {#if quest?.isInternalLink}
                                 {#if quest.isDone && quest.id !== "id-generate"}
-                                  <Button disabled={quest.isDone}>
-                                    Collect!
-                                  </Button>
+                                  <Button disabled={quest.isDone}>Done!</Button>
                                 {:else}
                                   <a href={quest?.url} class="py-1">
                                     <Button>Collect!</Button>
@@ -831,7 +829,11 @@
                                     disabled={isDisabledReceiveQuest ||
                                       quest.isDone}
                                   >
-                                    Collect!
+                                    {#if quest.isDone}
+                                      Done!
+                                    {:else}
+                                      Collect!
+                                    {/if}
                                   </Button>
                                 </div>
                               {/if}
