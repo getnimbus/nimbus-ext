@@ -316,6 +316,7 @@
         $wallet &&
         $wallet?.length !== 0 &&
         !$queryValidate.isFetching &&
+        $tab === "defi" &&
         $typeWallet === "MOVE") ||
         ($typeWallet === "EVM" && $chain === "SHIMMER")
     ),
