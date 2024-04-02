@@ -16,7 +16,7 @@
     $isDarkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000000d"
   }`}
 >
-  <div class="grid grid-cols-4">
+  <div class="bg_f4f5f8 grid grid-cols-4">
     <div class="col-spans-2 pl-3 py-3 rounded-tl-[10px]">
       <div class="text-left text-xs uppercase font-medium">{type}</div>
     </div>
