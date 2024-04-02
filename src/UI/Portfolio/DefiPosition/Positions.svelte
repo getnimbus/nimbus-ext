@@ -26,21 +26,23 @@
       <div class="text-xl font-medium">
         {data?.protocol || ""}
       </div>
-      <a href={data?.meta?.url} target="_blank">
-        <svg
-          width="18"
-          height="18"
-          viewBox="0 0 16 16"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          ><path
-            d="M6.66667 2H6.33333V2C5.40365 2 4.93881 2 4.55518 2.0921C3.33635 2.38472 2.38472 3.33635 2.0921 4.55518C2 4.93881 2 5.40365 2 6.33333V8.66667C2 10.5335 2 11.4669 2.36331 12.18C2.68289 12.8072 3.19282 13.3171 3.82003 13.6367C4.53307 14 5.46649 14 7.33333 14H9.66667C10.5964 14 11.0612 14 11.4448 13.9079C12.6636 13.6153 13.6153 12.6636 13.9079 11.4448C14 11.0612 14 10.5964 14 9.66667V9.66667V9.33333M8 8L14 2M14 2H10M14 2V6"
-            stroke="currentColor"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          ></path></svg
-        >
-      </a>
+      {#if data?.meta?.url}
+        <a href={data?.meta?.url} target="_blank">
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 16 16"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            ><path
+              d="M6.66667 2H6.33333V2C5.40365 2 4.93881 2 4.55518 2.0921C3.33635 2.38472 2.38472 3.33635 2.0921 4.55518C2 4.93881 2 5.40365 2 6.33333V8.66667C2 10.5335 2 11.4669 2.36331 12.18C2.68289 12.8072 3.19282 13.3171 3.82003 13.6367C4.53307 14 5.46649 14 7.33333 14H9.66667C10.5964 14 11.0612 14 11.4448 13.9079C12.6636 13.6153 13.6153 12.6636 13.9079 11.4448C14 11.0612 14 10.5964 14 9.66667V9.66667V9.33333M8 8L14 2M14 2H10M14 2V6"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            ></path></svg
+          >
+        </a>
+      {/if}
     </div>
     <div class="text-xl font-medium">
       <TooltipNumber number={data?.sum} type="value" />
