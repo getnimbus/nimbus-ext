@@ -1719,21 +1719,24 @@
             <img src={Success} alt="" />
             Bank-level security/encryption.
             <a
-              href="https://vezgo.com/security"
-              class="text-blue-500 cursor-pointer"
-              target="_blank">Learn more</a
+              href="https://vezgo.com/security/"
+              target="_blank"
+              class="text-blue-500 hover:underline cursor-pointer"
             >
+              Learn more
+            </a>
           </div>
           <div class="flex items-center justify-center gap-6 my-3">
             {#each listLogoCEX as logo}
               <img src={logo} alt="" class="w-8 h-8 rounded-full" />
             {/each}
             <a
-              href="https://getnimbus.io/chains-support"
+              href="https://getnimbus.io/chains-support/"
               target="_blank"
               class="text-blue-500 hover:underline cursor-pointer"
-              >More exchanges</a
             >
+              More exchanges
+            </a>
           </div>
         </div>
         <div class="border-t-[1px] relative">
@@ -1925,21 +1928,24 @@
               <img src={Success} alt="" />
               Bank-level security/encryption.
               <a
-                href="https://vezgo.com/security"
-                class="text-blue-500 cursor-pointer"
-                target="_blank">Learn more</a
+                href="https://vezgo.com/security/"
+                target="_blank"
+                class="text-blue-500 hover:underline cursor-pointer"
               >
+                Learn more
+              </a>
             </div>
             <div class="flex items-center justify-center gap-6 my-2">
               {#each listLogoCEX.slice(0, 3) as logo}
                 <img src={logo} alt="" class="w-8 h-8 rounded-full" />
               {/each}
               <a
-                href="https://getnimbus.io/chains-support"
+                href="https://getnimbus.io/chains-support/"
                 target="_blank"
                 class="text-blue-500 hover:underline cursor-pointer text-sm"
-                >More exchanges</a
               >
+                More exchanges
+              </a>
             </div>
           </div>
           <div class="border-t-[1px] relative">

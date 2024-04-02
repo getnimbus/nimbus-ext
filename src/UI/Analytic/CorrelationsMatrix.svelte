@@ -436,9 +436,9 @@
       </div>
       <div>
         Learn more <a
-          class="text-blue-500 hover:underline"
+          class="text-blue-500 hover:underline cursor-pointer"
           href="https://docs.getnimbus.io/metrics/correlation-matrix/"
-          target="blank">How to use correlation to reduce risk?</a
+          target="_blank">How to use correlation to reduce risk?</a
         >
       </div>
     </div>
