@@ -34,6 +34,14 @@
     isSuccessToast = false;
   };
 
+  const handleUpgradePackageQuest = async () => {
+    try {
+      await nimbus.post(`/v2/checkin/quest/upgrade-package`, {});
+    } catch (e) {
+      console.log("e: ", e);
+    }
+  };
+
   const getStatusPayment = async () => {
     try {
       const urlParams = new URLSearchParams(window.location.search);
@@ -50,6 +58,7 @@
       ) {
         status = true;
         clearInterval(intervalId);
+        handleUpgradePackageQuest();
       }
 
       if (

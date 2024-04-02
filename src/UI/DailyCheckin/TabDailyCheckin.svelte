@@ -240,11 +240,7 @@
       dataCheckinHistory = $queryDailyCheckin?.data?.checkinLogs;
       quests = $queryDailyCheckin?.data?.quests.map((item) => {
         const selectedLogs = dataCheckinHistory
-          .filter(
-            (log) =>
-              log.type === "QUEST" &&
-              (log.note !== "id-generate" || log.note !== "updrage-package")
-          )
+          .filter((log) => log.type === "QUEST" && log.note !== "id-generate")
           .find((log) => log.note === item.id);
 
         return {
