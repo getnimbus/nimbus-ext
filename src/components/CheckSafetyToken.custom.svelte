@@ -166,8 +166,8 @@
       isAudited
         ? "bg-green-100"
         : !isWarning
-        ? "bg-orange-100"
-        : "bg-[#f25f5c4d]"
+          ? "bg-orange-100"
+          : "bg-[#f25f5c4d]"
     }`}
   >
     <collapsible-custom content={true}>
@@ -177,13 +177,18 @@
             isAudited
               ? "text-green-700"
               : !isWarning
-              ? "text-orange-700"
-              : "text-[#F25F5C]"
+                ? "text-orange-700"
+                : "text-[#F25F5C]"
           }`}
         >
           <div class="flex items-center gap-1">
             {#if isAudited}
-              <img src={getLocalImg(Success)} alt="" />
+              <img
+                src={getLocalImg(Success)}
+                alt="success-icon"
+                width="22"
+                height="22"
+              />
               <div class="text-sm">
                 <div>{MultipleLang.audited_address}</div>
               </div>
@@ -208,7 +213,12 @@
                 <div>{MultipleLang.warning_audited_address}</div>
               </div>
             {:else}
-              <img src={getLocalImg(Fail)} alt="" />
+              <img
+                src={getLocalImg(Fail)}
+                alt="fail-icon"
+                width="22"
+                height="22"
+              />
               <div class="text-sm">
                 <div>{MultipleLang.not_audited_address}</div>
               </div>
@@ -237,9 +247,19 @@
               <div slot="title">
                 <div class="flex items-center gap-1">
                   {#if info.value === "0"}
-                    <img src={getLocalImg(Success)} alt="" class="w-6 h-6" />
+                    <img
+                      src={getLocalImg(Success)}
+                      alt="success-icon"
+                      width="22"
+                      height="22"
+                    />
                   {:else}
-                    <img src={getLocalImg(Fail)} alt="" class="w-6 h-6" />
+                    <img
+                      src={getLocalImg(Fail)}
+                      alt="fail-icon"
+                      width="22"
+                      height="22"
+                    />
                   {/if}
                   <div
                     class={`font-medium ${
@@ -261,7 +281,12 @@
               <div slot="title">
                 <div class="flex items-center gap-1">
                   {#if info.value === "0"}
-                    <img src={getLocalImg(Success)} alt="" class="w-6 h-6" />
+                    <img
+                      src={getLocalImg(Success)}
+                      alt="success-icon"
+                      width="22"
+                      height="22"
+                    />
                   {:else}
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
