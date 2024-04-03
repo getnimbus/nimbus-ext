@@ -255,8 +255,12 @@
               </div>
               {#if info?.logs && info?.logs.length !== 0}
                 <div class="flex items-center gap-2">
-                  <label class="switch">
-                    <input type="checkbox" bind:checked={enabledFilter} />
+                  <label class="switch" for="switch">
+                    <input
+                      type="checkbox"
+                      id="switch"
+                      bind:checked={enabledFilter}
+                    />
                     <span class="slider" />
                   </label>
                   <div class="text-xs text-black font-normal">
