@@ -25,6 +25,7 @@
         <a
           href="https://twitter.com/get_nimbus"
           target="_blank"
+          aria-label="Learn more about GetNimbus"
           class="text-blue-500">@Nimbus</a
         >
       </div>

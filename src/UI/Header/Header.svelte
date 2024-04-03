@@ -1115,6 +1115,7 @@
           <a
             href="https://github.com/getnimbus"
             target="_blank"
+            aria-label="Learn more about GetNimbus"
             class="hover:text-[#3b82f6] transition-all w-10 h-10"
           >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -1128,6 +1129,7 @@
           <a
             href="https://twitter.com/get_nimbus"
             target="_blank"
+            aria-label="Learn more about GetNimbus"
             class="hover:text-[#3b82f6] transition-all w-9 h-9"
           >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
@@ -1141,6 +1143,7 @@
           <a
             href="https://discord.gg/u5b9dTrSTr"
             target="_blank"
+            aria-label="Learn more about GetNimbus"
             class="hover:text-[#3b82f6] transition-all w-9 h-9"
           >
             <svg viewBox="0 0 24 24">
@@ -1164,6 +1167,7 @@
           <a
             href="https://t.me/getnimbus"
             target="_blank"
+            aria-label="Learn more about GetNimbus"
             class="transition-all w-[32px] h-[32px]"
           >
             <svg
