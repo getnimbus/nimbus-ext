@@ -354,7 +354,7 @@
   }`}
 >
   <div
-    class={`bg_f4f5f8 grid ${listSupported.includes($typeWallet) ? "grid-cols-10" : "grid-cols-9"} ${isStickyTableToken ? "sticky top-0 z-9" : ""}`}
+    class={`bg_f4f5f8 grid ${listSupported.includes($typeWallet) && $typeWallet === "BUNDLE" ? "grid-cols-10" : "grid-cols-9"} ${isStickyTableToken ? "sticky top-0 z-9" : ""}`}
     bind:this={tableTokenHeader}
   >
     <div class="col-spans-3 pl-3 py-3 rounded-tl-[10px]">
@@ -395,7 +395,9 @@
 
     <div
       class={`py-3 ${
-        listSupported.includes($typeWallet) ? "" : "rounded-tr-[10px]"
+        listSupported.includes($typeWallet) && $typeWallet === "BUNDLE"
+          ? ""
+          : "rounded-tr-[10px] pr-3"
       }`}
     >
       <div class="text-right xl:text-xs text-xl uppercase font-medium">
@@ -403,14 +405,14 @@
       </div>
     </div>
 
-    {#if listSupported.includes($typeWallet)}
+    {#if listSupported.includes($typeWallet) && $typeWallet === "BUNDLE"}
       <div class="py-3 rounded-tr-[10px]" />
     {/if}
   </div>
 
   {#if data && data.length === 0 && !isLoading}
     <div
-      class={`grid ${listSupported.includes($typeWallet) ? "grid-cols-10" : "grid-cols-9"}`}
+      class={`grid ${listSupported.includes($typeWallet) && $typeWallet === "BUNDLE" ? "grid-cols-10" : "grid-cols-9"}`}
     >
       <div
         class="col-span-full flex justify-center items-center h-[465px] py-3 px-3 text-base text-gray-400"
@@ -441,7 +443,7 @@
       }}
     >
       <div
-        class={`grid ${listSupported.includes($typeWallet) ? "grid-cols-10" : "grid-cols-9"} group transition-all`}
+        class={`grid group transition-all cursor-pointer ${listSupported.includes($typeWallet) && $typeWallet === "BUNDLE" ? "grid-cols-10" : "grid-cols-9"}`}
         slot="item"
         let:index
         let:style
@@ -474,6 +476,12 @@
             isShowCoingecko = false;
           }
         }}
+        on:click={() => {
+          if (listSupported.includes($typeWallet)) {
+            showSideTokenDetail = true;
+            selectedTokenDetail = data[index];
+          }
+        }}
       >
         <div
           class={`col-spans-3 pl-3 py-3 ${
@@ -487,7 +495,7 @@
           }`}
           style={`${data.length - 1 === index ? "border-bottom-left-radius: 10px;" : ""}`}
         >
-          <div class="relative flex items-center gap-3 text-left">
+          <div class="relative flex items-center justify-start gap-3">
             <div class="relative">
               <div class="rounded-full w-[30px] h-[30px] overflow-hidden">
                 <Image logo={data[index].logo} defaultLogo={defaultToken} />
@@ -505,7 +513,7 @@
               {/if}
             </div>
 
-            <div class="flex flex-col gap-1 flex-1">
+            <div class="flex flex-col gap-1">
               <div class="flex items-start gap-2">
                 <div
                   class="relative text-2xl font-medium xl:text-sm"
@@ -521,11 +529,11 @@
                   {#if data[index].name === undefined}
                     N/A
                   {:else}
-                    {data[index]?.name?.length > 15
-                      ? shorterName(data[index].name, 15)
+                    {data[index]?.name?.length > 12
+                      ? shorterName(data[index].name, 12)
                       : data[index].name}
                   {/if}
-                  {#if isShowTooltipName && selectedItemIndex === index && data[index]?.name?.length > 15}
+                  {#if isShowTooltipName && selectedItemIndex === index && data[index]?.name?.length > 12}
                     <div
                       class="absolute left-0 -top-8"
                       style="z-index: 2147483648;"
@@ -538,7 +546,8 @@
                 {#if handleCheckVault(data[index]) !== undefined}
                   <div
                     class="w-max flex items-center justyfy-center px-2 py-1 text_27326F xl:text-[10px] text-base font-medium bg-[#1e96fc33] rounded-[1000px] cursor-pointer"
-                    on:click={() => {
+                    on:click={(e) => {
+                      e.stopPropagation();
                       showTableVaults = true;
                       selectedVaults = data[index].vaults;
                       selectedVaultsSymbol = data[index].symbol;
@@ -569,9 +578,9 @@
                   {#if data[index].symbol === undefined}
                     N/A
                   {:else}
-                    {shorterName(data[index].symbol, 20)}
+                    {shorterName(data[index].symbol, 12)}
                   {/if}
-                  {#if isShowTooltipSymbol && selectedItemIndex === index && data[index].symbol.length > 20}
+                  {#if isShowTooltipSymbol && selectedItemIndex === index && data[index].symbol.length > 12}
                     <div
                       class="absolute left-0 -top-8"
                       style="z-index: 2147483648;"
@@ -584,7 +593,8 @@
                 {#if isShowReport && selectedItemIndex === index}
                   <div
                     class="relative w-5 cursor-pointer"
-                    on:click={() => {
+                    on:click={(e) => {
+                      e.stopPropagation();
                       isShowReportTable = true;
                       selectedTokenDetail = data[index];
                     }}
@@ -630,6 +640,9 @@
                 {#if isShowCMC && selectedItemIndex === index}
                   <a
                     href={`https://coinmarketcap.com/currencies/${data[index]?.cmc_slug}`}
+                    on:click={(e) => {
+                      e.stopPropagation();
+                    }}
                     target="_blank"
                     class="w-[20px] h-[20px] cursor-pointer"
                   >
@@ -649,6 +662,9 @@
                 {#if isShowCoingecko && selectedItemIndex === index}
                   <a
                     href={`https://www.coingecko.com/en/coins/${data[index]?.cg_id}`}
+                    on:click={(e) => {
+                      e.stopPropagation();
+                    }}
                     target="_blank"
                     class="w-[20px] h-[20px] cursor-pointer"
                   >
@@ -882,6 +898,27 @@
                 {/if}
               </div>
             </div>
+
+            {#if isShowReport && selectedItemIndex === index}
+              <div class="w-max">
+                <Button
+                  variant="tertiary"
+                  on:click={(e) => {
+                    e.stopPropagation();
+                    showSideTokenSwap = true;
+                    selectedTokenDetail = data[index];
+                    if (
+                      $typeWallet === "SOL" ||
+                      ($typeWallet === "BUNDLE" && data[index]?.chain === "SOL")
+                    ) {
+                      handleSwapToken(data[index], data[index].contractAddress);
+                    }
+                  }}
+                >
+                  <div class="text-white text-[11px]">Swap</div>
+                </Button>
+              </div>
+            {/if}
           </div>
         </div>
 
@@ -1147,6 +1184,10 @@
 
         <div
           class={`py-3 ${
+            listSupported.includes($typeWallet) && $typeWallet === "BUNDLE"
+              ? ""
+              : "pr-3"
+          } ${
             listSelectedIndex.includes(index)
               ? $isDarkMode
                 ? "bg-[#000]"
@@ -1220,7 +1261,7 @@
           </div>
         </div>
 
-        {#if listSupported.includes($typeWallet)}
+        {#if listSupported.includes($typeWallet) && $typeWallet === "BUNDLE"}
           <div
             class={`py-3 w-full ${
               listSelectedIndex.includes(index)
@@ -1234,165 +1275,48 @@
             style={`${data.length - 1 === index ? "border-bottom-right-radius: 10px;" : ""}`}
           >
             <div
-              class={`2xl:pl-14 pl-4 w-full h-[50px] flex items-center 2xl:gap-7 gap-6 ${
-                $typeWallet === "BUNDLE" ? "justify-start" : "justify-center"
-              }`}
+              class="2xl:pl-14 pl-4 w-full h-[50px] flex items-center justify-center 2xl:gap-7 gap-6"
             >
-              {#if $typeWallet === "BUNDLE"}
+              <div
+                class="flex justify-center view-icon-detail"
+                use:tooltip={{
+                  content: `<tooltip-detail text="Show bundles detail" />`,
+                  allowHTML: true,
+                  placement: "top",
+                }}
+              >
                 <div
-                  class="flex justify-center view-icon-detail"
-                  use:tooltip={{
-                    content: `<tooltip-detail text="Show bundles detail" />`,
-                    allowHTML: true,
-                    placement: "top",
+                  class="cursor-pointer transform rotate-180 xl:w-3 xl:h-3 w-5 h-5"
+                  class:rotate-0={listSelectedIndex.includes(index)}
+                  on:click={(e) => {
+                    e.stopPropagation();
+                    listSelectedIndex.includes(index)
+                      ? (listSelectedIndex = listSelectedIndex.filter(
+                          (item) => item !== index
+                        ))
+                      : (listSelectedIndex = [...listSelectedIndex, index]);
+
+                    selectedItemIndex = index;
+                    handleRecomputeHeight(index);
                   }}
                 >
-                  <div
-                    class="cursor-pointer transform rotate-180 xl:w-3 xl:h-3 w-5 h-5"
-                    class:rotate-0={listSelectedIndex.includes(index)}
-                    on:click={() => {
-                      listSelectedIndex.includes(index)
-                        ? (listSelectedIndex = listSelectedIndex.filter(
-                            (item) => item !== index
-                          ))
-                        : (listSelectedIndex = [...listSelectedIndex, index]);
-
-                      selectedItemIndex = index;
-                      handleRecomputeHeight(index);
-                    }}
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 12 12"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
                   >
-                    <svg
-                      width="12"
-                      height="12"
-                      viewBox="0 0 12 12"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M10 8.36365L6 4.00001L2 8.36365"
-                        stroke={$isDarkMode ? "white" : "#00000080"}
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      />
-                    </svg>
-                  </div>
+                    <path
+                      d="M10 8.36365L6 4.00001L2 8.36365"
+                      stroke={$isDarkMode ? "white" : "#00000080"}
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
                 </div>
-              {/if}
-
-              {#if listSupported.includes($typeWallet)}
-                <div
-                  class="flex justify-center cursor-pointer view-icon-detail"
-                  on:click={() => {
-                    showSideTokenDetail = true;
-                    selectedTokenDetail = data[index];
-                  }}
-                >
-                  <div
-                    use:tooltip={{
-                      content: `<tooltip-detail text="Show token detail" />`,
-                      allowHTML: true,
-                      placement: "top",
-                    }}
-                    class="xl:w-[14px] xl:h-[14px] w-[26px] h-[26px]"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      xmlns:xlink="http://www.w3.org/1999/xlink"
-                      version="1.1"
-                      viewBox="0 0 256 256"
-                      xml:space="preserve"
-                    >
-                      <defs />
-                      <g
-                        style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill-rule: nonzero; opacity: 1;"
-                        fill={$isDarkMode ? "white" : "#00000080"}
-                        transform="translate(1.4065934065934016 1.4065934065934016) scale(2.81 2.81)"
-                      >
-                        <path
-                          d="M 87.994 0 H 69.342 c -1.787 0 -2.682 2.16 -1.418 3.424 l 5.795 5.795 l -33.82 33.82 L 28.056 31.196 l -3.174 -3.174 c -1.074 -1.074 -2.815 -1.074 -3.889 0 L 0.805 48.209 c -1.074 1.074 -1.074 2.815 0 3.889 l 3.174 3.174 c 1.074 1.074 2.815 1.074 3.889 0 l 15.069 -15.069 l 14.994 14.994 c 1.074 1.074 2.815 1.074 3.889 0 l 1.614 -1.614 c 0.083 -0.066 0.17 -0.125 0.247 -0.202 l 37.1 -37.1 l 5.795 5.795 C 87.84 23.34 90 22.445 90 20.658 V 2.006 C 90 0.898 89.102 0 87.994 0 z"
-                          style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill-rule: nonzero; opacity: 1;"
-                          transform=" matrix(1 0 0 1 0 0) "
-                          fill={$isDarkMode ? "white" : "#00000080"}
-                          stroke-linecap="round"
-                        />
-                        <path
-                          d="M 65.626 37.8 v 49.45 c 0 1.519 1.231 2.75 2.75 2.75 h 8.782 c 1.519 0 2.75 -1.231 2.75 -2.75 V 23.518 L 65.626 37.8 z"
-                          style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill-rule: nonzero; opacity: 1;"
-                          fill={$isDarkMode ? "white" : "#00000080"}
-                          transform=" matrix(1 0 0 1 0 0) "
-                          stroke-linecap="round"
-                        />
-                        <path
-                          d="M 47.115 56.312 V 87.25 c 0 1.519 1.231 2.75 2.75 2.75 h 8.782 c 1.519 0 2.75 -1.231 2.75 -2.75 V 42.03 L 47.115 56.312 z"
-                          style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill-rule: nonzero; opacity: 1;"
-                          fill={$isDarkMode ? "white" : "#00000080"}
-                          transform=" matrix(1 0 0 1 0 0) "
-                          stroke-linecap="round"
-                        />
-                        <path
-                          d="M 39.876 60.503 c -1.937 0 -3.757 -0.754 -5.127 -2.124 l -6.146 -6.145 V 87.25 c 0 1.519 1.231 2.75 2.75 2.75 h 8.782 c 1.519 0 2.75 -1.231 2.75 -2.75 V 59.844 C 41.952 60.271 40.933 60.503 39.876 60.503 z"
-                          style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill-rule: nonzero; opacity: 1;"
-                          fill={$isDarkMode ? "white" : "#00000080"}
-                          transform=" matrix(1 0 0 1 0 0) "
-                          stroke-linecap="round"
-                        />
-                        <path
-                          d="M 22.937 46.567 L 11.051 58.453 c -0.298 0.298 -0.621 0.562 -0.959 0.8 V 87.25 c 0 1.519 1.231 2.75 2.75 2.75 h 8.782 c 1.519 0 2.75 -1.231 2.75 -2.75 V 48.004 L 22.937 46.567 z"
-                          style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill-rule: nonzero; opacity: 1;"
-                          fill={$isDarkMode ? "white" : "#00000080"}
-                          transform=" matrix(1 0 0 1 0 0) "
-                          stroke-linecap="round"
-                        />
-                      </g>
-                    </svg>
-                  </div>
-                </div>
-              {/if}
-
-              {#if $user && Object.keys($user).length !== 0 && ($typeWallet === "SOL" || $typeWallet === "EVM" || ($typeWallet === "BUNDLE" && data[index]?.chain !== "CEX"))}
-                <div
-                  class="flex justify-center view-icon-detail"
-                  use:tooltip={{
-                    content: `<tooltip-detail text="Swap token" />`,
-                    allowHTML: true,
-                    placement: "top",
-                  }}
-                >
-                  <div
-                    class="cursor-pointer transform rotate-90"
-                    on:click={() => {
-                      showSideTokenSwap = true;
-                      selectedTokenDetail = data[index];
-                      if (
-                        $typeWallet === "SOL" ||
-                        ($typeWallet === "BUNDLE" &&
-                          data[index]?.chain === "SOL")
-                      ) {
-                        handleSwapToken(
-                          data[index],
-                          data[index].contractAddress
-                        );
-                      }
-                    }}
-                  >
-                    <svg
-                      width="24"
-                      height="24"
-                      viewBox="0 0 21 22"
-                      fill={$isDarkMode ? "white" : "#00000080"}
-                      xmlns="http://www.w3.org/2000/svg"
-                      ><path
-                        d="M6.51043 7.47998V14.99H7.77043V7.47998L9.66043 9.36998L10.5505 8.47994L7.5859 5.51453C7.3398 5.26925 6.94114 5.26925 6.69504 5.51453L3.73047 8.47994L4.62051 9.36998L6.51043 7.47998Z"
-                        fill={$isDarkMode ? "white" : "#00000080"}
-                      ></path><path
-                        d="M14.4902 14.52V7.01001H13.2302V14.52L11.3402 12.63L10.4502 13.5201L13.4148 16.4855C13.6609 16.7308 14.0595 16.7308 14.3056 16.4855L17.2702 13.5201L16.3802 12.63L14.4902 14.52Z"
-                        fill={$isDarkMode ? "white" : "#00000080"}
-                      ></path></svg
-                    >
-                  </div>
-                </div>
-              {/if}
+              </div>
             </div>
           </div>
         {/if}
@@ -1535,7 +1459,7 @@
 
   {#if isLoading}
     <div
-      class={`w-full h-full grid ${listSupported.includes($typeWallet) ? "grid-cols-9" : "grid-cols-8"}`}
+      class={`w-full h-full grid ${listSupported.includes($typeWallet) && $typeWallet === "BUNDLE" ? "grid-cols-10" : "grid-cols-9"}`}
     >
       <div
         class="col-span-full flex justify-center items-center h-full py-3 px-3"
