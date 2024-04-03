@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onMount } from "svelte";
   import { nimbus } from "~/lib/network";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
@@ -18,7 +19,6 @@
   import Copy from "~/components/Copy.svelte";
 
   import FollowWhale from "~/assets/whale-tracking.gif";
-  import { onMount } from "svelte";
 
   const MultipleLang = {
     content: {
@@ -865,7 +865,13 @@
       <div class="xl:text-base text-2xl">Use the command as follow video</div>
     </div>
     <div class="xl:h-[350px] h-[650px]">
-      <img src={FollowWhale} alt="" class="w-full h-full object-contain" />
+      <img
+        src={FollowWhale}
+        alt=""
+        loading="lazy"
+        decoding="async"
+        class="w-full h-full object-contain"
+      />
     </div>
     <div class="flex flex-col items-center gap-2">
       <div class="w-[57%]">

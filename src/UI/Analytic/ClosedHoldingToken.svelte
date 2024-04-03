@@ -611,7 +611,9 @@
                 >
                   <img
                     src={$isDarkMode ? LogoWhite : Logo}
-                    alt=""
+                    alt="logo"
+                    loading="lazy"
+                    decoding="async"
                     width="140"
                     height="140"
                   />

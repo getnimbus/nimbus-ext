@@ -10,7 +10,7 @@
 
   import Icon from "~/UI/Option/Icon.svelte";
 
-  import Logo from "../../assets/logo-1.svg";
+  import Logo from "~/assets/logo-1.svg";
   import LogoWhite from "~/assets/logo-white.svg";
 
   export let activeTabValue;
@@ -33,7 +33,9 @@
     {#if APP_TYPE.TYPE === "EXT"}
       <img
         src={darkMode ? LogoWhite : Logo}
-        alt=""
+        alt="logo"
+        loading="lazy"
+        decoding="async"
         class="mb-4 mx-auto"
         width={150}
       />
@@ -48,8 +50,8 @@
             activeTabValue === item.value
               ? "text-blue-500"
               : darkMode
-              ? "text-white"
-              : "text-gray-500"
+                ? "text-white"
+                : "text-gray-500"
           }`}
           class="mb-4"
         >

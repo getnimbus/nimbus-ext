@@ -10,9 +10,9 @@
   import type { AnalyticSectorGrowthRes } from "~/types/AnalyticSectorGrowthData";
 
   import EChart from "~/components/EChart.svelte";
+  import LoadingPremium from "~/components/LoadingPremium.svelte";
 
   import Logo from "~/assets/logo-1.svg";
-  import LoadingPremium from "~/components/LoadingPremium.svelte";
 
   let selectedType: "category" | "sector" | "rank" = "category";
   let isLoadingSectorGrowth = false;
@@ -530,7 +530,14 @@
             <div
               class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 top-1/2 left-1/2"
             >
-              <img src={Logo} alt="" width="140" height="140" />
+              <img
+                src={Logo}
+                alt="logo"
+                loading="lazy"
+                decoding="async"
+                width="140"
+                height="140"
+              />
             </div>
           </div>
         {/if}

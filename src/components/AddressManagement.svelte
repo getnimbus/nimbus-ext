@@ -1728,7 +1728,13 @@
           </div>
           <div class="flex items-center justify-center gap-6 my-3">
             {#each listLogoCEX as logo}
-              <img src={logo} alt="" class="w-8 h-8 rounded-full" />
+              <img
+                src={logo}
+                alt="logo"
+                loading="lazy"
+                decoding="async"
+                class="w-8 h-8 rounded-full"
+              />
             {/each}
             <a
               href="https://getnimbus.io/chains-support/"
@@ -1839,7 +1845,9 @@
             {#each generationLogo as item}
               <img
                 src={item.logo}
-                alt=""
+                loading="lazy"
+                decoding="async"
+                alt="logo"
                 class="w-8 h-8 overflow-hidden rounded-full"
               />
             {/each}
@@ -1895,6 +1903,8 @@
         <img
           src={$isDarkMode ? LogoWhite : Logo}
           alt=""
+          loading="lazy"
+          decoding="async"
           class="-ml-6 w-[170px] h-[80px]"
         />
         <div
@@ -1937,7 +1947,13 @@
             </div>
             <div class="flex items-center justify-center gap-6 my-2">
               {#each listLogoCEX.slice(0, 3) as logo}
-                <img src={logo} alt="" class="w-8 h-8 rounded-full" />
+                <img
+                  src={logo}
+                  alt="logo"
+                  loading="lazy"
+                  decoding="async"
+                  class="w-8 h-8 rounded-full"
+                />
               {/each}
               <a
                 href="https://getnimbus.io/chains-support/"
@@ -2054,7 +2070,9 @@
               {#each generationLogo.slice(0, 4) as item}
                 <img
                   src={item.logo}
-                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                  alt="logo"
                   class="w-8 h-8 overflow-hidden rounded-full"
                 />
               {/each}
@@ -2182,7 +2200,7 @@
       <div class="text-base">Use the command as follow video</div>
     </div>
     <div class="xl:h-[350px] h-[650px]">
-      <img src={FollowWhale} alt="" class="object-contain w-full h-full" />
+      <img src={FollowWhale} alt="" loading="lazy" decoding="async" class="object-contain w-full h-full" />
     </div>
     <div class="flex justify-end w-full">
       <CopyToClipboard
