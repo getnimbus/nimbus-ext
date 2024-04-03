@@ -498,6 +498,8 @@
     <img
       src={Logo}
       alt="logo"
+      loading="lazy"
+      decoding="async"
       class="-ml-6 xl:w-[177px] w-[200px] xl:h-[60px] h-[80px] cursor-pointer"
       on:click={() => {
         if ($user && Object.keys($user)?.length === 0) {
@@ -633,7 +635,14 @@
           navigateTo("/whales");
         }}
       >
-        <img src={WhaleIcon} alt="" width="20" height="20" />
+        <img
+          src={WhaleIcon}
+          alt=""
+          loading="lazy"
+          decoding="async"
+          width="20"
+          height="20"
+        />
         <span class="text-sm font-medium text-white xl:text-base">
           {MultipleLang.whales}
         </span>
@@ -764,7 +773,13 @@
 >
   <div class="max-w-[100vw] m-auto w-[90%] h-full flex flex-col gap-8 relative">
     <div class="flex items-center justify-between py-3 border-b-[1px]">
-      <img src={Logo} alt="" class="-ml-6 w-[200px] h-[80px]" />
+      <img
+        src={Logo}
+        alt=""
+        loading="lazy"
+        decoding="async"
+        class="-ml-6 w-[200px] h-[80px]"
+      />
       <div
         class="-mr-1 text-5xl text-white"
         on:click={() => {
@@ -894,7 +909,14 @@
               navigateTo("/whales");
             }}
           >
-            <img src={WhaleIcon} alt="" width="30" height="30" />
+            <img
+              src={WhaleIcon}
+              alt=""
+              loading="lazy"
+              decoding="async"
+              width="30"
+              height="30"
+            />
             <span class="text-xl font-medium">
               {MultipleLang.whales}
             </span>
@@ -968,7 +990,14 @@
               target="_blank"
               class="flex items-center gap-3 text-white px-5 py-3 opacity-70"
             >
-              <img src={Chat} alt="" width="30" height="30" />
+              <img
+                src={Chat}
+                loading="lazy"
+                decoding="async"
+                alt=""
+                width="30"
+                height="30"
+              />
               <span class="text-xl font-medium">Feedback</span>
             </a>
           </div>
@@ -1378,6 +1407,8 @@
       <div class="flex items-center justify-between py-3 border-b-[1px]">
         <img
           src={$isDarkMode ? Logo : LogoBlack}
+          loading="lazy"
+          decoding="async"
           alt=""
           class="-ml-6 w-[170px] h-[80px]"
         />

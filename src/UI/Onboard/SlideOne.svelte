@@ -10,6 +10,8 @@
       <img
         src={getLocalImg(Logo)}
         alt="logo"
+        loading="lazy"
+        decoding="async"
         width="180"
         height="100"
         class="mr-[10px]"

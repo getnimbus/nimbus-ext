@@ -50,7 +50,9 @@
         >
           <img
             src={$isDarkMode ? LogoWhite : Logo}
-            alt=""
+            loading="lazy"
+            decoding="async"
+            alt="logo"
             width="140"
             height="140"
           />
@@ -97,7 +99,9 @@
         >
           <img
             src={$isDarkMode ? LogoWhite : Logo}
-            alt=""
+            loading="lazy"
+            decoding="async"
+            alt="logo"
             width="140"
             height="140"
           />
