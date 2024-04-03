@@ -67,7 +67,16 @@
         </div>
       </div>
       <div class="flex-1 relative z-20">
-        <img src={heroImage} alt="" class="object-cover w-full h-full" />
+        <img
+          src={heroImage}
+          alt=""
+          loading="lazy"
+          decoding="async"
+          sizes="(max-width: 320px) 280px, 
+                (max-width: 640px) 640px, 
+                960px"
+          class="object-cover w-full h-full"
+        />
       </div>
     </div>
 
