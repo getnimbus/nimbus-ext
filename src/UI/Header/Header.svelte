@@ -691,7 +691,8 @@
         >
           {MultipleLang.search_placeholder}
         </div>
-        <div
+
+        <span
           class="xl:flex hidden rounded-md w-[24px] h-[24px] p-2 justify-center items-center bg-[#a6b0c3] text-white text-sm"
           role="generic"
           use:tooltip={{
@@ -702,7 +703,7 @@
           }}
         >
           /
-        </div>
+        </span>
       </div>
 
       <!-- Change log -->
