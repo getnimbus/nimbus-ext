@@ -29,6 +29,7 @@
     <a
       href="https://getnimbus.io/"
       target="_blank"
+      aria-label="Learn more about GetNimbus"
       class="xl:text-sm text-2xl hover:text-[#3b82f6] transition-all"
     >
       GetNimbus.io
@@ -37,6 +38,7 @@
     <a
       href="https://nimbus.featurebase.app/"
       target="_blank"
+      aria-label="Learn more about GetNimbus"
       class="xl:text-sm text-2xl hover:text-[#3b82f6] transition-all"
     >
       Feedback
@@ -45,6 +47,7 @@
     <a
       href="https://nimbus.featurebase.app/changelog"
       target="_blank"
+      aria-label="Learn more about GetNimbus"
       class="xl:text-sm text-2xl hover:text-[#3b82f6] transition-all"
     >
       Changelog
@@ -53,6 +56,7 @@
     <a
       href="https://nimbus.featurebase.app/roadmap"
       target="_blank"
+      aria-label="Learn more about GetNimbus"
       class="xl:text-sm text-2xl hover:text-[#3b82f6] transition-all"
     >
       Roadmap
@@ -64,6 +68,7 @@
         <a
           href="https://github.com/getnimbus"
           target="_blank"
+          aria-label="Learn more about GetNimbus"
           class="hover:text-[#3b82f6] transition-all xl:w-6 xl:h-6 w-12 h-12"
         >
           <svg
@@ -83,6 +88,7 @@
         <a
           href="https://twitter.com/get_nimbus"
           target="_blank"
+          aria-label="Learn more about GetNimbus"
           class="hover:text-[#3b82f6] transition-all xl:w-6 xl:h-6 w-12 h-12"
         >
           <svg
@@ -100,6 +106,7 @@
         <a
           href="https://discord.gg/u5b9dTrSTr"
           target="_blank"
+          aria-label="Learn more about GetNimbus"
           class="hover:text-[#3b82f6] transition-all xl:w-6 xl:h-6 w-12 h-12"
         >
           <svg viewBox="0 0 24 24"
@@ -122,6 +129,7 @@
         <a
           href="https://t.me/getnimbus"
           target="_blank"
+          aria-label="Learn more about GetNimbus"
           class="transition-all hover:text-[#3b82f6] xl:w-6 xl:h-6 w-12 h-12"
         >
           <svg

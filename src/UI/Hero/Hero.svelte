@@ -225,7 +225,11 @@
 
     <div class="flex items-center gap-3">
       <div class="text-base">Community</div>
-      <a target="_blank" href="https://discord.gg/u5b9dTrSTr">
+      <a
+        target="_blank"
+        href="https://discord.gg/u5b9dTrSTr"
+        aria-label="Learn more about GetNimbus"
+      >
         <img
           alt="link Discord"
           loading="lazy"
@@ -236,7 +240,11 @@
           class="w-[30px] h-[30px]"
         />
       </a>
-      <a target="_blank" href="https://t.me/getnimbus">
+      <a
+        target="_blank"
+        href="https://t.me/getnimbus"
+        aria-label="Learn more about GetNimbus"
+      >
         <img
           alt="link Telegram"
           loading="lazy"
@@ -247,7 +255,11 @@
           class="w-[30px] h-[30px]"
         />
       </a>
-      <a target="_blank" href="https://twitter.com/get_nimbus">
+      <a
+        target="_blank"
+        href="https://twitter.com/get_nimbus"
+        aria-label="Learn more about GetNimbus"
+      >
         <img
           alt="link Twitter"
           loading="lazy"
