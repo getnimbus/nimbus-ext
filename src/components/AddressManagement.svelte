@@ -1719,11 +1719,11 @@
             <img src={Success} alt="" />
             Bank-level security/encryption.
             <a
-              href="https://vezgo.com/security/"
+              href="https://vezgo.com/security"
               target="_blank"
               class="text-blue-500 hover:underline cursor-pointer"
             >
-              Learn more
+              More detail
             </a>
           </div>
           <div class="flex items-center justify-center gap-6 my-3">
@@ -1928,11 +1928,11 @@
               <img src={Success} alt="" />
               Bank-level security/encryption.
               <a
-                href="https://vezgo.com/security/"
+                href="https://vezgo.com/security"
                 target="_blank"
                 class="text-blue-500 hover:underline cursor-pointer"
               >
-                Learn more
+                More detail
               </a>
             </div>
             <div class="flex items-center justify-center gap-6 my-2">
