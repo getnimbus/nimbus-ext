@@ -71,37 +71,47 @@
       };
     });
 
-    positionsData = formatPositionsData.map((item) => {
-      const protocolMeta = item.data.map((eachItem) => {
-        return eachItem.data.map((eachProtocolData) => {
-          if (eachProtocolData.data) {
-            return eachProtocolData.data.map((data) => {
-              return (
-                data?.meta?.protocol || {
-                  logo: "",
-                  name: "",
-                  url: "",
-                }
-              );
-            });
-          }
-
-          return (
-            eachProtocolData?.meta?.protocol || {
-              logo: "",
-              name: "",
-              url: "",
+    positionsData = formatPositionsData
+      .map((item) => {
+        const protocolMeta = item.data.map((eachItem) => {
+          return eachItem.data.map((eachProtocolData) => {
+            if (eachProtocolData.data) {
+              return eachProtocolData.data.map((data) => {
+                return (
+                  data?.meta?.protocol || {
+                    logo: "",
+                    name: "",
+                    url: "",
+                  }
+                );
+              });
             }
-          );
-        });
-      });
 
-      return {
-        ...item,
-        meta: filterDuplicates(flatten(flatten(protocolMeta)))[0],
-        sum: handleCalculateTotalProtocol(item.data),
-      };
-    });
+            return (
+              eachProtocolData?.meta?.protocol || {
+                logo: "",
+                name: "",
+                url: "",
+              }
+            );
+          });
+        });
+
+        return {
+          ...item,
+          meta: filterDuplicates(flatten(flatten(protocolMeta)))[0],
+          sum: handleCalculateTotalProtocol(item.data),
+        };
+      })
+      .sort((a, b) => {
+        if (a.sum < b.sum) {
+          return 1;
+        }
+        if (a.sum > b.sum) {
+          return -1;
+        }
+        return 0;
+      });
 
     const sum = positionsData?.reduce((prev, item) => {
       return prev + Number(item.sum);
