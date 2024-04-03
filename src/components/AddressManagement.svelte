@@ -1716,14 +1716,14 @@
             </div>
           </div>
           <div class="flex items-center justify-center gap-1 text-base">
-            <img src={Success} alt="" />
+            <img src={Success} alt="success-icon" width="22" height="22" />
             Bank-level security/encryption.
             <a
-              href="https://vezgo.com/security/"
+              href="https://vezgo.com/security"
               target="_blank"
               class="text-blue-500 hover:underline cursor-pointer"
             >
-              Learn more
+              More detail
             </a>
           </div>
           <div class="flex items-center justify-center gap-6 my-3">
@@ -1925,14 +1925,14 @@
               </div>
             </div>
             <div class="flex flex-wrap items-center justify-center gap-1">
-              <img src={Success} alt="" />
+              <img src={Success} alt="success-icon" width="22" height="22" />
               Bank-level security/encryption.
               <a
-                href="https://vezgo.com/security/"
+                href="https://vezgo.com/security"
                 target="_blank"
                 class="text-blue-500 hover:underline cursor-pointer"
               >
-                Learn more
+                More detail
               </a>
             </div>
             <div class="flex items-center justify-center gap-6 my-2">

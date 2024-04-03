@@ -51,7 +51,12 @@
     <div class="flex justify-between items-center">
       <div class="flex items-center gap-2">
         {#if !isEmpty(data) && data.is_audit === 1}
-          <img src={getLocalImg(Success)} alt="Success" />
+          <img
+            src={getLocalImg(Success)}
+            alt="success-icon"
+            width="22"
+            height="22"
+          />
           <div class="text-xs">
             <div>{MultipleLang.audited}</div>
             <a
@@ -63,7 +68,7 @@
             </a>
           </div>
         {:else if data.is_audit !== 1}
-          <img src={getLocalImg(Fail)} alt="fail" />
+          <img src={getLocalImg(Fail)} alt="fail-icon" width="22" height="22" />
           <div class="text-xs">{MultipleLang.not_audited}</div>
         {/if}
       </div>
