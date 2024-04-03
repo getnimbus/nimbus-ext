@@ -45,13 +45,13 @@
   import GoogleAuth from "./GoogleAuth.svelte";
   import SuiAuth from "./SUIAuth.svelte";
   import SolanaAuth from "./SolanaAuth.svelte";
+  import TonAuth from "./TonAuth.svelte";
 
   import User from "~/assets/user.png";
   import Logo from "~/assets/logo-1.svg";
   import Reload from "~/assets/reload-black.svg";
   import ReloadWhite from "~/assets/reload-white.svg";
   import Evm from "~/assets/chains/evm.png";
-  import TonAuth from "./TonAuth.svelte";
 
   export let displayName;
   export let publicAddress;
@@ -620,7 +620,13 @@
     <div class="flex justify-center items-center -mt-2">
       <div class="border rounded-xl overflow-hidden bg-white w-[57%]">
         <div class="bg-[#f3f4f6] py-2 px-4">
-          <img src={Logo} alt="Logo" class="h-12 w-auto -ml-3" />
+          <img
+            src={Logo}
+            alt="Logo"
+            loading="lazy"
+            decoding="async"
+            class="h-12 w-auto -ml-3"
+          />
         </div>
         {#if loading}
           <div class="flex justify-center items-center h-60">

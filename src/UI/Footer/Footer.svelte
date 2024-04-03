@@ -14,6 +14,8 @@
     <img
       src={$isDarkMode ? LogoWhite : Logo}
       alt="logo"
+      loading="lazy"
+      decoding="async"
       class="xl:w-[167px] w-[197px] xl:h-[50px] h-[80px]"
     />
     <div class="xl:hidden block">

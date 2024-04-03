@@ -86,6 +86,8 @@
     <img
       src={Logo}
       alt="logo"
+      loading="lazy"
+      decoding="async"
       class="xl:w-[177px] w-[220px] xl:h-[75px] h-[100px] transform translate-x-2"
     />
     <div

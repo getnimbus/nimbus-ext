@@ -166,7 +166,7 @@
 
         <div id="target-element" class="card">
           <div class="title_container">
-            <img src={Logo} alt="" />
+            <img src={Logo} alt="logo" loading="lazy" decoding="async" />
           </div>
           <div class="body_container">
             <div class="title_wrapper">
