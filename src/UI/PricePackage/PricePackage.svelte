@@ -166,8 +166,12 @@
             <td class="py-3 pl-3 w-[420px]">
               <div class="flex flex-col gap-4">
                 <div class="flex items-center gap-3">
-                  <label class="switch">
-                    <input type="checkbox" bind:checked={checkedTypePackage} />
+                  <label class="switch" for="switch">
+                    <input
+                      type="checkbox"
+                      id="switch"
+                      bind:checked={checkedTypePackage}
+                    />
                     <span class="slider" />
                   </label>
                   <div class="text-base font-medium">
@@ -472,8 +476,12 @@
         </div>
 
         <div class="flex items-center justify-center gap-3">
-          <label class="switch">
-            <input type="checkbox" bind:checked={checkedTypePackage} />
+          <label class="switch" for="switch">
+            <input
+              type="checkbox"
+              id="switch"
+              bind:checked={checkedTypePackage}
+            />
             <span class="slider" />
           </label>
           <div class="text-xl font-medium">

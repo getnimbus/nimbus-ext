@@ -138,8 +138,6 @@
           <div class="relative flex-1 w-full">
             <input
               type="text"
-              id="address"
-              name="address"
               placeholder="Type your wallet to see demo"
               on:keyup={({ target: { value } }) => debounceSearch(value)}
               on:keydown={(event) => {

@@ -1836,8 +1836,12 @@
           </div>
           <div class="flex items-center justify-end gap-2 text-[#666666]">
             <div class="text-sm">Is it your wallet?</div>
-            <label class="switch">
-              <input type="checkbox" bind:checked={groupedToBundles} />
+            <label class="switch" for="switch">
+              <input
+                type="checkbox"
+                id="switch"
+                bind:checked={groupedToBundles}
+              />
               <span class="slider" />
             </label>
           </div>
@@ -2061,8 +2065,12 @@
               class="flex items-center justify-end gap-2 text-[#666666] mt-2"
             >
               <div class="text-base">Is it your wallet?</div>
-              <label class="switch">
-                <input type="checkbox" bind:checked={groupedToBundles} />
+              <label class="switch" for="switch">
+                <input
+                  type="checkbox"
+                  id="switch"
+                  bind:checked={groupedToBundles}
+                />
                 <span class="slider" />
               </label>
             </div>
