@@ -293,13 +293,12 @@
     queryFn: () => getPositions($wallet, $chain),
     staleTime: Infinity,
     enabled: Boolean(
-      (enabledFetchAllData &&
+      enabledFetchAllData &&
         $wallet &&
         $wallet?.length !== 0 &&
         !$queryValidate.isFetching &&
         $tab === "defi" &&
-        $typeWallet === "MOVE") ||
-        ($typeWallet === "EVM" && $chain === "SHIMMER")
+        ($typeWallet === "MOVE" || $typeWallet === "EVM")
     ),
   });
 
