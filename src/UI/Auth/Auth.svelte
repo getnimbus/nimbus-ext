@@ -99,6 +99,45 @@
   let loading = false;
   let isShowTooltipCopy = false;
 
+  const getUserInfo = async () => {
+    const response: any = await nimbus.get("/users/me");
+    return response?.data;
+  };
+
+  $: queryUserInfo = createQuery({
+    queryKey: ["users-me"],
+    queryFn: () => getUserInfo(),
+    staleTime: Infinity,
+    retry: false,
+    onError(err) {
+      localStorage.removeItem("auth_token");
+      localStorage.removeItem("solana_token");
+      localStorage.removeItem("sui_token");
+      localStorage.removeItem("ton_token");
+      localStorage.removeItem("evm_token");
+    },
+  });
+
+  $: {
+    if (
+      !$queryUserInfo.isError &&
+      $queryUserInfo &&
+      $queryUserInfo?.data !== undefined
+    ) {
+      handleSetUserData($queryUserInfo?.data);
+    }
+  }
+
+  const handleSetUserData = (data) => {
+    localStorage.setItem("public_address", data?.publicAddress);
+    userPublicAddress.update((n) => (n = data?.publicAddress));
+    userId.update((n) => (n = data?.id));
+    if (data?.plan?.tier && data?.plan?.tier.length !== 0) {
+      selectedPackage.update((n) => (n = data?.plan?.tier.toUpperCase()));
+    }
+    mixpanel.identify(data.publicAddress);
+  };
+
   onMount(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const invitationParams = urlParams.get("invitation");

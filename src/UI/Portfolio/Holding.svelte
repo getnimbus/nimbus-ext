@@ -117,15 +117,18 @@
           };
         });
         filteredHoldingDataToken = formatData.filter((item) => item.value > 1);
-        sumTokens = data.reduce((prev, item) => prev + item.value, 0);
-        sumRealizedProfit = (formatData || [])
+        sumTokens = (filteredHoldingDataToken || []).reduce(
+          (prev, item) => prev + item.value,
+          0
+        );
+        sumRealizedProfit = (filteredHoldingDataToken || [])
           .map((item) => {
             return {
               realized_profit: item?.profit?.realizedProfit || 0,
             };
           })
           .reduce((prev, item) => prev + Number(item.realized_profit), 0);
-        sumUnrealizedProfit = (formatData || [])
+        sumUnrealizedProfit = (filteredHoldingDataToken || [])
           ?.filter(
             (item) => Number(item?.amount) > 0 && Number(item?.avgCost) !== 0
           )
@@ -351,18 +354,18 @@
         return 0;
       });
       filteredHoldingDataToken = formatData.filter((item) => item.value > 1);
-      sumTokens = formatDataWithMarketPrice.reduce(
+      sumTokens = (filteredHoldingDataToken || []).reduce(
         (prev, item) => prev + item.value,
         0
       );
-      sumRealizedProfit = (formatData || [])
+      sumRealizedProfit = (filteredHoldingDataToken || [])
         .map((item) => {
           return {
             realized_profit: item?.profit?.realizedProfit || 0,
           };
         })
         .reduce((prev, item) => prev + Number(item.realized_profit), 0);
-      sumUnrealizedProfit = (formatData || [])
+      sumUnrealizedProfit = (filteredHoldingDataToken || [])
         ?.filter(
           (item) => Number(item?.amount) > 0 && Number(item?.avgCost) !== 0
         )
