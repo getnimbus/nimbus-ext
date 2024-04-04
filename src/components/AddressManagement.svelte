@@ -474,7 +474,12 @@
     if (selectedWalletRes?.selectedWallet !== null) {
       wallet.update((n) => (n = selectedWalletRes.selectedWallet));
     } else {
-      wallet.update((n) => (n = listAddress[0]?.value));
+      wallet.update(
+        (n) =>
+          (n =
+            listAddress.find((item) => item.label === "Your wallets")?.value ||
+            listAddress[0]?.value)
+      );
     }
 
     initialUpdateStateFromParams();
