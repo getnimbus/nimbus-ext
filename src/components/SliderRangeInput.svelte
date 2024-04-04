@@ -40,7 +40,7 @@
     <div
       class="absolute top-[50%] left-[0%] -translate-y-1/2 w-2 h-2 rounded-full bg-[#1e96fc] z-1"
       use:tooltip={{
-        content: `<tooltip-detail text="${lowerPrice.toString().includes("e-") ? lowerPrice : numeral(lowerPrice).format("0,0.0000")}" />`,
+        content: `<tooltip-detail text="$${lowerPrice.toString().includes("e-") ? lowerPrice : numeral(lowerPrice).format("0,0.0000")}" />`,
         allowHTML: true,
         placement: "top",
         interactive: true,
@@ -57,7 +57,7 @@
       class="absolute top-[50%] -translate-y-1/2 -translate-x-1/2 w-1 h-3 bg-yellow-300 z-1"
       style={`left: ${value}%;`}
       use:tooltip={{
-        content: `<tooltip-detail text="Current Price: ${currentPrice.toString().includes("e-") ? currentPrice : numeral(currentPrice).format("0,0.0000")}" />`,
+        content: `<tooltip-detail text="Current Price: $${currentPrice.toString().includes("e-") ? currentPrice : numeral(currentPrice).format("0,0.0000")}" />`,
         allowHTML: true,
         placement: "top",
         interactive: true,
@@ -67,7 +67,7 @@
     <div
       class="absolute top-[50%] right-[0%] -translate-y-1/2 w-2 h-2 rounded-full bg-[#1e96fc] z-1"
       use:tooltip={{
-        content: `<tooltip-detail text="${upperPrice.toString().includes("e-") ? upperPrice : numeral(upperPrice).format("0,0.0000")}" />`,
+        content: `<tooltip-detail text="$${upperPrice.toString().includes("e-") ? upperPrice : numeral(upperPrice).format("0,0.0000")}" />`,
         allowHTML: true,
         placement: "top",
         interactive: true,
