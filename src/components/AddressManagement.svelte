@@ -911,15 +911,17 @@
                               ) {
                                 return;
                               }
-                              wallet.update((n) => (n = item.value));
-                              chain.update((n) => (n = "ALL"));
-                              totalTokens.update((n) => (n = 0));
-                              totalAirdrops.update((n) => (n = 0));
-                              totalNfts.update((n) => (n = 0));
-                              totalPositions.update((n) => (n = 0));
-                              unrealizedProfit.update((n) => (n = 0));
-                              realizedProfit.update((n) => (n = 0));
-                              pastProfit.update((n) => (n = 0));
+                              if ($wallet !== item.value) {
+                                wallet.update((n) => (n = item.value));
+                                chain.update((n) => (n = "ALL"));
+                                totalTokens.update((n) => (n = 0));
+                                totalAirdrops.update((n) => (n = 0));
+                                totalNfts.update((n) => (n = 0));
+                                totalPositions.update((n) => (n = 0));
+                                unrealizedProfit.update((n) => (n = 0));
+                                realizedProfit.update((n) => (n = 0));
+                                pastProfit.update((n) => (n = 0));
+                              }
                             }}
                           >
                             <img
@@ -1076,15 +1078,17 @@
                             class="relative xl:text-base text-2xl text-white py-1 xl:pl-2 xl:pr-3 px-3 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline"
                             class:hover:no-underline={item.value === $wallet}
                             on:click={() => {
-                              wallet.update((n) => (n = item.value));
-                              chain.update((n) => (n = "ALL"));
-                              totalTokens.update((n) => (n = 0));
-                              totalAirdrops.update((n) => (n = 0));
-                              totalNfts.update((n) => (n = 0));
-                              totalPositions.update((n) => (n = 0));
-                              unrealizedProfit.update((n) => (n = 0));
-                              realizedProfit.update((n) => (n = 0));
-                              pastProfit.update((n) => (n = 0));
+                              if ($wallet !== item.value) {
+                                wallet.update((n) => (n = item.value));
+                                chain.update((n) => (n = "ALL"));
+                                totalTokens.update((n) => (n = 0));
+                                totalAirdrops.update((n) => (n = 0));
+                                totalNfts.update((n) => (n = 0));
+                                totalPositions.update((n) => (n = 0));
+                                unrealizedProfit.update((n) => (n = 0));
+                                realizedProfit.update((n) => (n = 0));
+                                pastProfit.update((n) => (n = 0));
+                              }
                             }}
                           >
                             <img
@@ -1175,7 +1179,9 @@
                           ) {
                             return;
                           }
-                          wallet.update((n) => (n = item.value));
+                          if ($wallet !== item.value) {
+                            wallet.update((n) => (n = item.value));
+                          }
                         }}
                       >
                         <img src={item.logo} alt="" class="w-5 h-5" />
