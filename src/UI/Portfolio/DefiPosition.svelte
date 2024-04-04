@@ -20,14 +20,12 @@
   }
 
   const formatDataProtocol = (data) => {
-    const formatData = (Array.isArray(data) ? data : data?.data || [])?.map(
-      (item) => {
-        return {
-          ...item,
-          protocol: item?.meta?.protocol?.name || "",
-        };
-      }
-    );
+    const formatData = data?.map((item) => {
+      return {
+        ...item,
+        protocol: item?.meta?.protocol?.name || "",
+      };
+    });
     const groupProtocol = groupBy(formatData, "protocol");
     const protocolList = Object.getOwnPropertyNames(groupProtocol);
 
@@ -254,7 +252,7 @@
 <ErrorBoundary>
   <div class="flex flex-col gap-2 px-3">
     <div class="xl:text-2xl text-3xl font-medium">Positions</div>
-    {#if $typeWallet === "MOVE" || ($typeWallet === "EVM" && $chain === "SHIMMER")}
+    {#if $typeWallet === "MOVE" || $typeWallet === "EVM"}
       {#if isLoading}
         <div class="flex justify-center items-center min-h-[300px]">
           <Loading />
