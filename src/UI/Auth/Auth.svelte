@@ -541,7 +541,7 @@
               $isDarkMode ? "hover:bg-[#222222]" : "hover:bg-[#eff0f4]"
             }`}
             on:click={() => {
-              navigateTo("/settings/?tab=accounts");
+              navigateTo("/settings");
             }}
           >
             Settings

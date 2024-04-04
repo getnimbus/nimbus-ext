@@ -1055,7 +1055,7 @@
               on:click={() => {
                 handleUpdateNavActive("/settings");
                 isShowHeaderMobile.update((n) => (n = false));
-                navigateTo("/settings/?tab=accounts");
+                navigateTo("/settings");
               }}
             >
               <img src={SettingsIcon} alt="" width="30" height="30" />

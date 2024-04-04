@@ -1,9 +1,10 @@
 <script>
+  import { isDarkMode } from "~/store";
+
   export let type;
   export let active;
-  export let darkMode;
 
-  $: color = active ? "#3f83f8" : darkMode ? "#d1d5db" : "#9ca3af";
+  $: color = active ? "#3f83f8" : $isDarkMode ? "#d1d5db" : "#9ca3af";
 </script>
 
 {#if type === "Accounts"}
