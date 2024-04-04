@@ -94,7 +94,7 @@
             : item.value === selected?.value}
           id={item.value}
           on:click={() => {
-            if (type === "wallet") {
+            if (type === "wallet" && $wallet !== item.value) {
               wallet.update((n) => (n = item.value));
               chain.update((n) => (n = "ALL"));
               selected = item.value;
@@ -107,7 +107,7 @@
               realizedProfit.update((n) => (n = 0));
               pastProfit.update((n) => (n = 0));
             }
-            if (type === "chain") {
+            if (type === "chain" && $chain !== item.value) {
               chain.update((n) => (n = item.value));
               selected = item.value;
               open = false;
