@@ -13,6 +13,7 @@
   import Portfolio from "./TokenHoldingCharts/Portfolio.svelte";
   import Price from "./TokenHoldingCharts/Price.svelte";
   import TopChanges from "./TokenHoldingCharts/TopChanges.svelte";
+  import { drivePortfolio } from "~/utils";
 
   export let data;
   export let loading;
