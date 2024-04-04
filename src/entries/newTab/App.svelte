@@ -15,10 +15,9 @@
   import "flowbite/dist/flowbite.css";
 
   import Mixpanel from "~/components/Mixpanel.svelte";
-  import Loading from "~/components/Loading.svelte";
+  import MobileIntroModalPWA from "~/UI/MobileIntroModalPWA/MobileIntroModalPWA.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import UpdateParams from "~/components/UpdateParams.svelte";
-  import MobileIntroModalPWA from "~/UI/MobileIntroModalPWA/MobileIntroModalPWA.svelte";
   import Header from "~/UI/Header/Header.svelte";
   import MobileHeaderTab from "~/UI/Header/MobileHeaderTab.svelte";
   import Footer from "~/UI/Footer/Footer.svelte";
@@ -49,14 +48,6 @@
       },
     },
   });
-
-  const Error = (error) => {
-    console.log("Render error");
-    console.log(error);
-    return `<div class="flex items-center justify-center h-screen">
-        Something when wrong! Please reload your browser to try again
-      </div>`;
-  };
 
   let isTouchDevice = false;
 
@@ -197,7 +188,7 @@
 
   const recapRoutes = [
     {
-      name: "/",
+      name: "/recap",
       layout: Recap,
     },
   ];
@@ -211,7 +202,10 @@
 
 <ErrorBoundary>
   <QueryClientProvider client={queryClient}>
-    {#if $detectParams !== "/recap"}
+    <UpdateParams />
+    {#if $detectParams && $detectParams === "/recap"}
+      <Router routes={recapRoutes} options={{ gaPageviews: true }} />
+    {:else}
       <div class="flex flex-col pb-40 xl:pb-14">
         <Header {navActive} {handleUpdateNavActive} />
         <Router {routes} options={{ gaPageviews: true }} />
@@ -228,11 +222,7 @@
       <!-- {#if isTouchDevice}
         <MobileIntroModalPWA />
       {/if} -->
-    {:else}
-      <Router routes={recapRoutes} options={{ gaPageviews: true }} />
     {/if}
-
-    <UpdateParams />
   </QueryClientProvider>
 </ErrorBoundary>
 

@@ -1,18 +1,20 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import * as browser from "webextension-polyfill";
-  import { isDarkMode } from "~/store";
   import { i18n } from "~/lib/i18n";
+  import { isDarkMode } from "~/store";
 
+  import Icon from "~/UI/Option/Icon.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
-  import Mixpanel from "~/components/Mixpanel.svelte";
-  import SidebarTabs from "~/UI/Option/SidebarTabs.svelte";
   import TabAccounts from "~/UI/Option/TabAccounts.svelte";
   import TabReports from "~/UI/Option/TabReports.svelte";
   import TabAlerts from "~/UI/Option/TabAlerts.svelte";
   import TabLinks from "~/UI/Option/TabLinks.svelte";
   import TabSettings from "~/UI/Option/TabSettings.svelte";
   import TabNft from "~/UI/Option/TabNFT.svelte";
+
+  import Logo from "~/assets/logo-1.svg";
+  import LogoWhite from "~/assets/logo-white.svg";
 
   const listSideBar = [
     {
@@ -72,10 +74,20 @@
       window.history.replaceState(
         null,
         "",
-        window.location.pathname + `?tab=accounts`
+        window.location.pathname + "?tab=accounts"
       );
     }
   });
+
+  const handleClick = (e, tabValue) => {
+    e.preventDefault();
+    activeTabValue = tabValue;
+    window.history.replaceState(
+      null,
+      "",
+      window.location.pathname + `?tab=${tabValue}`
+    );
+  };
 </script>
 
 <ErrorBoundary>
@@ -83,7 +95,26 @@
     class="max-w-[2000px] xl:min-h-screen m-auto xl:w-[90%] w-[90%] py-8 grid xl:grid-cols-6 grid-cols-1 gap-6"
   >
     <div class="col-span-1">
-      <SidebarTabs bind:activeTabValue darkMode={$isDarkMode} {listSideBar} />
+      <div class="w-full flex flex-col gap-4">
+        {#each listSideBar as item}
+          <div
+            on:click={(e) => handleClick(e, item.value)}
+            class={`flex items-center gap-2 rounded-[10px] py-2 px-3 cursor-pointer transition-all ${
+              activeTabValue === item.value
+                ? "text-blue-500 bg-gray-200"
+                : $isDarkMode
+                  ? "text-white hover:bg-gray-100"
+                  : "text-gray-500 hover:bg-gray-100"
+            }`}
+          >
+            <Icon
+              type={item.type}
+              active={activeTabValue === item.value ? true : false}
+            />
+            <div class="xl:text-base text-lg">{item.label}</div>
+          </div>
+        {/each}
+      </div>
     </div>
     <div class="xl:col-span-5 col-span-1">
       {#if activeTabValue === "accounts"}
