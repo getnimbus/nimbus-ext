@@ -332,7 +332,7 @@
           No report tokens
         </div>
       {:else}
-        {#each $query.data as item}
+        {#each $query.data as item, index}
           <div
             class="flex flex-col gap-4 py-2 border-b-[1px] border_0000000d last:border-none"
           >
