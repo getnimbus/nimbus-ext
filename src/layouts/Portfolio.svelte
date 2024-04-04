@@ -282,24 +282,6 @@
   };
 
   //// POSITIONS
-  // const getPositions = async (address, chain) => {
-  //   const response: any = await nimbus
-  //     .get(`/address/${address}/positions?chain=${chain}`)
-  //     .then((response) => response?.data?.positions);
-  //   return response;
-  // };
-
-  // const formatDataPositions = (data) => {
-  //   const formatData = data.map((item) => {
-  //     const groupPosition = groupBy(item.positions, "type");
-  //     return {
-  //       ...item,
-  //       positions: groupPosition,
-  //     };
-  //   });
-  //   positionsData = formatData;
-  // };
-
   const getPositions = async (address, chain) => {
     const response: any = await nimbus.get(
       `/v2/address/${address}/positions?chain=${chain}`
