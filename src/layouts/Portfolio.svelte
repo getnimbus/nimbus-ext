@@ -50,7 +50,6 @@
   import AirdropsAndPointsTracker from "~/UI/Portfolio/AirdropsAndPointsTracker.svelte";
   import RiskReturn from "~/UI/Portfolio/RiskReturn.svelte";
   import News from "~/UI/Portfolio/News.svelte";
-  import Positions from "~/UI/Portfolio/Positions.svelte";
   import Button from "~/components/Button.svelte";
   import "~/components/Tooltip.custom.svelte";
 
