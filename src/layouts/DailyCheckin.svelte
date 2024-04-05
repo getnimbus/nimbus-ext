@@ -86,7 +86,7 @@
               activeTabValue === item.value
                 ? "text-blue-500 bg-gray-200"
                 : $isDarkMode
-                  ? "text-white hover:bg-gray-100"
+                  ? "text-white hover:bg-gray-100 hover:text-gray-400"
                   : "text-gray-500 hover:bg-gray-100"
             }`}
           >
