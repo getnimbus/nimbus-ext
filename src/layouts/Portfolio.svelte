@@ -285,6 +285,7 @@
     const response: any = await nimbus.get(
       `/v2/address/${address}/positions?chain=${chain}`
     );
+    console.log("ontrigger position");
     return response?.data;
   };
 
@@ -884,15 +885,23 @@
         $queryPositions.isFetching;
 
   $: isPortfolioReady =
-    $chain === "ALL"
-      ? $queryAllTokenHolding.every((item) => item.isFetched) &&
-        $queryVaults.isFetched &&
-        $queryOverview.isFetched &&
-        $queryPositions.isFetched
-      : $queryTokenHolding.isFetched &&
-        $queryVaults.isFetched &&
-        $queryOverview.isFetched &&
-        $queryPositions.isFetched;
+    $tab === "defi" && ($typeWallet === "MOVE" || $typeWallet === "EVM")
+      ? $chain === "ALL"
+        ? $queryAllTokenHolding.every((item) => item.isFetched) &&
+          $queryVaults.isFetched &&
+          $queryOverview.isFetched &&
+          $queryPositions.isFetched
+        : $queryTokenHolding.isFetched &&
+          $queryVaults.isFetched &&
+          $queryOverview.isFetched &&
+          $queryPositions.isFetched
+      : $chain === "ALL"
+        ? $queryAllTokenHolding.every((item) => item.isFetched) &&
+          $queryVaults.isFetched &&
+          $queryOverview.isFetched
+        : $queryTokenHolding.isFetched &&
+          $queryVaults.isFetched &&
+          $queryOverview.isFetched;
 
   $: {
     if ($typeWallet?.length !== 0 && $typeWallet === "EVM") {
