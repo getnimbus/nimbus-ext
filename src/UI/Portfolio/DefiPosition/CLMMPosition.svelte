@@ -43,6 +43,10 @@
 
     return totalInputValue + totalYieldCollected;
   };
+
+  $: formatData = data.sort(
+    (a, b) => handleCalculateValue(b) - handleCalculateValue(a)
+  );
 </script>
 
 <!-- Desktop view -->
@@ -81,7 +85,7 @@
     </div>
   </div>
 
-  {#each data as itemRow}
+  {#each formatData as itemRow}
     <div class="grid grid-cols-6 group transition-all">
       <div
         class={`col-spans-2 pl-3 py-3 ${
