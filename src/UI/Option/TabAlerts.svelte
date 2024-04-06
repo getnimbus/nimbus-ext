@@ -693,7 +693,7 @@
 
           <!-- Mobile view -->
           <div class="xl:hidden block">
-            <div class="flex items-center justify-start gap-4">
+            <div class="flex items-center justify-start gap-4 md:mb-0 mb-8">
               <input
                 type="checkbox"
                 on:change={handleToggleCheckAll}
@@ -702,10 +702,10 @@
               />
               <div class="uppercase">All</div>
             </div>
-            <div class="flex flex-col gap-4 mt-4">
+            <div class="flex flex-col gap-6 mt-4">
               {#each listAddress as item, index}
                 <div
-                  class="flex justify-between gap-2"
+                  class="flex flex-col md:flex-row md:justify-between justify-start gap-2"
                   style={`${
                     listAddress.length - 1 === index ? "border: none;" : ""
                   }`}
@@ -730,7 +730,7 @@
                   </div>
 
                   <div
-                    class="bg-[#6AC7F533] text_27326F w-max px-3 py-1 rounded-[5px] text-base"
+                    class="bg-[#6AC7F533] text_27326F w-max px-3 py-1 rounded-[5px] text-base md:ml-0 ml-9"
                   >
                     <Copy
                       address={item.address}
