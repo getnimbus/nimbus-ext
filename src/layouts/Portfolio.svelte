@@ -84,8 +84,6 @@
   let isLoadingSync = false;
 
   let overviewData: any = {
-    breakdownToken: [],
-    breakdownNft: [],
     overview: {
       assets: 0,
       assetsChange: 0,
@@ -835,8 +833,6 @@
           dataPieChartOrderBreakdownNft: [],
         };
         overviewData = {
-          breakdownToken: [],
-          breakdownNft: [],
           overview: {
             assets: 0,
             assetsChange: 0,
