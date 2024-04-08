@@ -12,6 +12,7 @@
 
   import defaultToken from "~/assets/defaultToken.png";
   import gmPoints from "~/assets/Gold4.svg";
+  import axios from "axios";
 
   const protocolInfo = {
     GMPoints: {
@@ -49,7 +50,7 @@
       logo: "https://airdrops.io/wp-content/uploads/2024/01/Parcl-logo.jpg",
     },
     "Sharky.fi": {
-      name: "Sharky.fi",
+      name: "Sharky",
       website: "https://sharky.fi/",
       twitter: "https://twitter.com/SharkyFi",
       logo: "https://sharky.fi/sharky.svg",
@@ -57,7 +58,12 @@
   };
 
   const getPointsAirdrop = async () => {
-    return await nimbus.get(`/airdrop-points/${$wallet}`);
+    // return await nimbus.get(`/airdrop-points/${$wallet}`);
+
+    const res = await axios
+      .get(`http://localhost:3000/airdrop-points/${$wallet}`)
+      .then((res) => res.data);
+    return res;
   };
 
   $: query = createQuery({
@@ -84,10 +90,11 @@
           points: item.points.map((point) => {
             const data = $query?.data?.dataWhalesMarket;
             const pointIndex = data
-              .map(
-                (datawhale) =>
-                  (datawhale?.name === "Drift Protocol" && "Drift") ||
-                  datawhale?.name
+              .map((datawhale) =>
+                datawhale?.name === "Sharky"
+                  ? "Sharky.fi"
+                  : (datawhale?.name === "Drift Protocol" && "Drift") ||
+                    datawhale?.name
               )
               .indexOf(point.protocolLabel);
 
