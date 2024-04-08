@@ -100,10 +100,12 @@
           <div
             on:click={(e) => handleClick(e, item.value)}
             class={`flex items-center gap-2 rounded-[10px] py-2 px-3 cursor-pointer transition-all ${
-              activeTabValue === item.value
-                ? "text-blue-500 bg-gray-200"
-                : $isDarkMode
-                  ? "text-white hover:bg-gray-100"
+              $isDarkMode
+                ? activeTabValue === item.value
+                  ? "text-blue-500 bg-[#ffffff1c]"
+                  : "text-white hover:bg-[#222222]"
+                : activeTabValue === item.value
+                  ? "text-blue-500 bg-gray-200"
                   : "text-gray-500 hover:bg-gray-100"
             }`}
           >
