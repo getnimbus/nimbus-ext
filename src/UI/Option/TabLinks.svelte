@@ -5,6 +5,7 @@
   import { i18n } from "~/lib/i18n";
   import { shorterAddress } from "~/utils";
   import mixpanel from "mixpanel-browser";
+  import { createQuery } from "@tanstack/svelte-query";
 
   import Google from "../SocialLinks/Google.svelte";
   import Twitter from "../SocialLinks/Twitter.svelte";
@@ -23,43 +24,36 @@
   let socialData = [];
   let chain = "";
 
-  const handleValidateAddress = async (address: string) => {
-    try {
-      const response = await nimbus.get(`/v2/address/${address}/validate`);
-      chain = response?.data?.type;
-    } catch (e) {
-      console.log("e: ", e);
-    }
-  };
-
   onMount(() => {
     uid = localStorage.getItem("public_address");
   });
 
-  $: {
-    if (uid) {
-      getLinkData();
-    }
-  }
+  $: queryLinkSocial = createQuery({
+    queryKey: ["link-socials", uid],
+    queryFn: () => getLinkData(),
+    staleTime: Infinity,
+  });
 
   const getLinkData = async () => {
-    try {
-      const response: any = await nimbus.get("/accounts/link");
-      socialData = response?.data;
+    const response: any = await nimbus.get("/accounts/link");
+    return response;
+  };
+
+  $: {
+    if (!$queryLinkSocial.isError && $queryLinkSocial.data !== undefined) {
+      socialData = $queryLinkSocial?.data?.data;
       if (
-        response?.data &&
-        response?.data[0] &&
-        response?.data[0]?.publicAddress
+        $queryLinkSocial?.data?.data &&
+        $queryLinkSocial?.data?.data[0] &&
+        $queryLinkSocial?.data?.data[0]?.publicAddress
       ) {
-        dataUserSocialLogin = response?.data[0] || {};
+        dataUserSocialLogin = $queryLinkSocial?.data?.data[0] || {};
         userSocialPublicAddress.update(
           (n) => (n = dataUserSocialLogin?.publicAddress)
         );
       }
-    } catch (e) {
-      console.log("e: ", e);
     }
-  };
+  }
 
   onMount(() => {
     mixpanel.track("accounts_page");
@@ -87,13 +81,7 @@
         <div class="flex flex-col gap-3">
           {#each socialData as item}
             {#if localStorage.getItem("socialAuthType") === "google"}
-              <Google
-                data={item}
-                isDisabledRemove
-                reCallAPI={() => {
-                  getLinkData();
-                }}
-              />
+              <Google data={item} isDisabledRemove />
             {/if}
             {#if localStorage.getItem("socialAuthType") === "twitter"}
               <Twitter
@@ -113,41 +101,26 @@
         <div class="flex flex-col gap-3">
           {#each socialData as item}
             {#if item.type === "google"}
-              <Google
-                data={item}
-                reCallAPI={() => {
-                  getLinkData();
-                }}
-              />
+              <Google data={item} />
             {/if}
             {#if item.type === "twitter"}
-              <Twitter
-                data={item}
-                reCallAPI={() => {
-                  getLinkData();
-                }}
-              />
+              <Twitter data={item} />
             {/if}
           {/each}
         </div>
 
         <div class="flex flex-col gap-3">
           {#if socialData && socialData.length === 1 && socialData.find((item) => item.type === "google")}
-            <Twitter
-              data={{}}
-              reCallAPI={() => {
-                getLinkData();
-              }}
-            />
+            <Twitter data={{}} />
           {/if}
 
           {#if socialData && socialData.length === 1 && socialData.find((item) => item.type === "twitter")}
-            <Google
-              data={{}}
-              reCallAPI={() => {
-                getLinkData();
-              }}
-            />
+            <Google data={{}} />
+          {/if}
+
+          {#if socialData && socialData.length === 0}
+            <Google data={{}} />
+            <Twitter data={{}} />
           {/if}
         </div>
       {/if}
@@ -163,14 +136,12 @@
             data={dataUserSocialLogin}
             reCallAPI={() => {
               dataUserSocialLogin = {};
-              getLinkData();
             }}
           />
           <Solana
             data={dataUserSocialLogin}
             reCallAPI={() => {
               dataUserSocialLogin = {};
-              getLinkData();
             }}
           />
         </div>
