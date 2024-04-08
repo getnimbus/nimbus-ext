@@ -58,12 +58,7 @@
   };
 
   const getPointsAirdrop = async () => {
-    // return await nimbus.get(`/airdrop-points/${$wallet}`);
-
-    const res = await axios
-      .get(`http://localhost:3000/airdrop-points/${$wallet}`)
-      .then((res) => res.data);
-    return res;
+    return await nimbus.get(`/airdrop-points/${$wallet}`);
   };
 
   $: query = createQuery({
