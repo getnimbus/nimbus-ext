@@ -1,7 +1,7 @@
 <script lang="ts">
   import { nimbus } from "~/lib/network";
   import { userPublicAddress, user } from "~/store";
-  import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+  import { TwitterAuthProvider, signInWithPopup } from "firebase/auth";
   import { auth } from "~/lib/firebase";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
@@ -11,14 +11,13 @@
 
   import Button from "~/components/Button.svelte";
 
-  import Google from "~/assets/google.png";
   import goldImg from "~/assets/Gold4.svg";
 
   export let data: any;
   export let isDisabledRemove: any = false;
 
   const queryClient = useQueryClient();
-  const googleProvider = new GoogleAuthProvider();
+  const twitterProvider = new TwitterAuthProvider();
 
   let toastMsg = "";
   let isSuccessToast = false;
@@ -94,25 +93,27 @@
     }
   }
 
-  const handleGoogleAuth = async () => {
+  const handleTwitterAuth = async () => {
     try {
-      const res = await signInWithPopup(auth, googleProvider).then((result) => {
-        return result.user;
-      });
+      const res = await signInWithPopup(auth, twitterProvider).then(
+        (result) => {
+          return result.user;
+        }
+      );
       if (res) {
-        handleAddGoogle(res.uid, res.email, res.displayName);
+        handleAddTwitter(res.uid, res.providerData[0].email, res.displayName);
       }
     } catch (e) {
       console.log(e);
     }
   };
 
-  const handleAddGoogle = async (id, info, displayName) => {
+  const handleAddTwitter = async (id, info, displayName) => {
     try {
       let params: any = {
         kind: "social",
         id,
-        type: "google",
+        type: "twitter",
         info,
         displayName,
       };
@@ -137,17 +138,17 @@
           handleAddBonusQuest();
         }
 
-        localStorage.setItem("socialAuthType", "google");
-        queryClient.invalidateQueries(["link-socials"]);
+        localStorage.setItem("socialAuthType", "twitter");
+        queryClient?.invalidateQueries(["link-socials"]);
 
-        toastMsg = "Successfully link Google account!";
+        toastMsg = "Successfully link Twitter account!";
         isSuccessToast = true;
         trigger();
       }
     } catch (e) {
       console.log(e);
       toastMsg =
-        "There are some problem when link Google account. Please try again!";
+        "There are some problem when link Twitter account. Please try again!";
       isSuccessToast = false;
       trigger();
     }
@@ -171,13 +172,13 @@
     }
   };
 
-  const handleRemoveGoogle = async () => {
+  const handleRemoveTwitter = async () => {
     try {
       await nimbus.put(`/users/displayName?name=${""}`, {});
       await nimbus.delete(`/accounts/link/${data?.uid}`, {});
       localStorage.removeItem("socialAuthType");
       queryClient?.invalidateQueries(["users-me"]);
-      queryClient.invalidateQueries(["link-socials"]);
+      queryClient?.invalidateQueries(["link-socials"]);
       toastMsg = "Successfully remove link Google account!";
       isSuccessToast = true;
       trigger();
@@ -219,15 +220,23 @@
   <div class="flex justify-between items-start">
     <div class="flex flex-col gap-3">
       <div class="p-4 rounded-[10px] shadow-sm bg-white">
-        <img src={Google} alt="" width="26" height="26" />
+        <img
+          alt="link Twitter"
+          loading="lazy"
+          decoding="async"
+          data-nimg="1"
+          style="color:transparent"
+          src="https://getnimbus.io/logoSocialMedia/twitterX1.svg"
+          class="w-[26px] h-[26px]"
+        />
       </div>
-      <div class="xl:text-lg text-xl">Google</div>
+      <div class="xl:text-lg text-xl">X</div>
     </div>
 
     {#if data && Object.keys(data).length !== 0 && !isDisabledRemove}
       <div
         class="cursor-pointer text-red-600 font-medium text-xl xl:text-base"
-        on:click={handleRemoveGoogle}
+        on:click={handleRemoveTwitter}
       >
         Remove
       </div>
@@ -236,7 +245,7 @@
 
   <div class="flex flex-col gap-3">
     {#if data && Object.keys(data).length !== 0}
-      <div class="xl:text-base text-lg text-gray-400">{data?.info}</div>
+      <div class="xl:text-base text-lg">{data?.info}</div>
       <div class="flex items-center justify-start gap-2">
         <input
           type="checkbox"
@@ -252,7 +261,7 @@
       <div class="xl:text-base text-lg text-gray-400">@username</div>
       <Button
         variant="tertiary"
-        on:click={handleGoogleAuth}
+        on:click={handleTwitterAuth}
         className="py-3 px-6"
       >
         <div class="font-semibold text-[15px]">Connect</div>

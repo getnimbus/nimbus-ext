@@ -82,6 +82,7 @@
         queryClient?.invalidateQueries(["users-me"]);
         queryClient.invalidateQueries(["list-address"]);
         queryClient.invalidateQueries(["list-bundle"]);
+        queryClient.invalidateQueries(["link-socials"]);
         reCallAPI();
       }
     } catch (e) {
@@ -94,7 +95,7 @@
       let params: any = {
         kind: "wallet",
         id: data?.uid,
-        type: "google",
+        type: null,
         info: data?.info,
         userPublicAddress: payload.publicAddress,
         displayName: data?.name,
