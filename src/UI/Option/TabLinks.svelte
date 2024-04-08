@@ -7,6 +7,7 @@
   import mixpanel from "mixpanel-browser";
 
   import Google from "../SocialLinks/Google.svelte";
+  import Twitter from "../SocialLinks/Twitter.svelte";
   import Solana from "../MainWalletLinks/Solana.svelte";
   import Evm from "../MainWalletLinks/Evm.svelte";
 
@@ -37,36 +38,35 @@
 
   $: {
     if (uid) {
-      getLinkViaUid(uid);
-      getLinkViaAddress(uid);
+      // getLinkViaUid(uid);
+      getLinkData();
     }
   }
 
-  const getLinkViaAddress = async (address: string) => {
+  const getLinkData = async () => {
     try {
-      const response: any = await nimbus.get(
-        `/accounts/link?address=${address}`
-      );
+      const response: any = await nimbus.get("/accounts/link");
+      console.log("HELLO WORLD: ", response);
       socialData = response?.data;
     } catch (e) {
       console.log("e: ", e);
     }
   };
 
-  const getLinkViaUid = async (id: string) => {
-    try {
-      const response: any = await nimbus.get(`/accounts/link?id=${id}`);
-      dataUserSocialLogin = response?.data[0] || {};
-      if (dataUserSocialLogin?.publicAddress) {
-        getLinkViaAddress(dataUserSocialLogin?.publicAddress);
-        userSocialPublicAddress.update(
-          (n) => (n = dataUserSocialLogin?.publicAddress)
-        );
-      }
-    } catch (e) {
-      console.log("e: ", e);
-    }
-  };
+  // const getLinkViaUid = async (id: string) => {
+  //   try {
+  //     const response: any = await nimbus.get(`/accounts/link?id=${id}`);
+  //     dataUserSocialLogin = response?.data[0] || {};
+  //     if (dataUserSocialLogin?.publicAddress) {
+  //       getLinkViaAddress(dataUserSocialLogin?.publicAddress);
+  //       userSocialPublicAddress.update(
+  //         (n) => (n = dataUserSocialLogin?.publicAddress)
+  //       );
+  //     }
+  //   } catch (e) {
+  //     console.log("e: ", e);
+  //   }
+  // };
 
   onMount(() => {
     mixpanel.track("accounts_page");
@@ -105,12 +105,18 @@
               data={dataUserSocialLogin}
               isDisabledRemove
               reCallAPI={() => {
-                getLinkViaAddress($userPublicAddress);
+                getLinkData();
               }}
             />
           {/if}
           {#if dataUserSocialLogin?.type === "twitter"}
-            <div>Twitter</div>
+            <Twitter
+              data={dataUserSocialLogin}
+              isDisabledRemove
+              reCallAPI={() => {
+                getLinkData();
+              }}
+            />
           {/if}
         {:else}
           <div class="flex flex-col gap-3">
@@ -120,7 +126,16 @@
                   data={item}
                   isDisabledRemove
                   reCallAPI={() => {
-                    getLinkViaAddress($userPublicAddress);
+                    getLinkData();
+                  }}
+                />
+              {/if}
+              {#if localStorage.getItem("socialAuthType") === "twitter"}
+                <Twitter
+                  data={item}
+                  isDisabledRemove
+                  reCallAPI={() => {
+                    getLinkData();
                   }}
                 />
               {/if}
@@ -138,7 +153,15 @@
                 <Google
                   data={item}
                   reCallAPI={() => {
-                    getLinkViaAddress($userPublicAddress);
+                    getLinkData();
+                  }}
+                />
+              {/if}
+              {#if item.type === "twitter"}
+                <Twitter
+                  data={item}
+                  reCallAPI={() => {
+                    getLinkData();
                   }}
                 />
               {/if}
@@ -149,7 +172,13 @@
                 <Google
                   data={{}}
                   reCallAPI={() => {
-                    getLinkViaAddress($userPublicAddress);
+                    getLinkData();
+                  }}
+                />
+                <Twitter
+                  data={{}}
+                  reCallAPI={() => {
+                    getLinkData();
                   }}
                 />
               {/if}
@@ -170,16 +199,16 @@
               data={dataUserSocialLogin}
               reCallAPI={() => {
                 dataUserSocialLogin = {};
-                getLinkViaUid(uid);
-                getLinkViaAddress($userPublicAddress);
+                // getLinkViaUid(uid);
+                getLinkData();
               }}
             />
             <Solana
               data={dataUserSocialLogin}
               reCallAPI={() => {
                 dataUserSocialLogin = {};
-                getLinkViaUid(uid);
-                getLinkViaAddress($userPublicAddress);
+                // getLinkViaUid(uid);
+                getLinkData();
               }}
             />
           </div>

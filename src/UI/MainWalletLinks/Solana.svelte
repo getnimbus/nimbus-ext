@@ -60,7 +60,7 @@
       let params: any = {
         kind: "wallet",
         id: data?.uid,
-        type: "google",
+        type: null,
         info: data?.info,
         userPublicAddress: address,
         displayName: data?.name,
