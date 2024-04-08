@@ -12,7 +12,6 @@
 
   import defaultToken from "~/assets/defaultToken.png";
   import gmPoints from "~/assets/Gold4.svg";
-  import axios from "axios";
 
   const protocolInfo = {
     GMPoints: {
@@ -76,8 +75,8 @@
     if (
       !$query.isError &&
       $query.data !== undefined &&
-      $query.data?.data.length !== 0 &&
-      $query.data?.dataWhalesMarket.length !== 0
+      $query.data?.data?.length !== 0 &&
+      $query.data?.dataWhalesMarket?.length !== 0
     ) {
       formatData = $query?.data?.data.map((item) => {
         return {
