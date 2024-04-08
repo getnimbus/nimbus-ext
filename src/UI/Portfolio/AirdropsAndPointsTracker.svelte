@@ -107,7 +107,23 @@
           return item?.eligibility;
         })
       );
-      eligibilityData = formatEligibilityData.filter((item) => item?.eligible);
+      eligibilityData = formatEligibilityData
+        .filter((item: any) => item?.eligible)
+        .map((item: any) => {
+          return {
+            ...item,
+            value: Number(item?.amount) * Number(item?.tokenPrice) || 0,
+          };
+        })
+        .sort((a, b) => {
+          if (a.value < b.value) {
+            return 1;
+          }
+          if (a.value > b.value) {
+            return -1;
+          }
+          return 0;
+        });
 
       const totalEstimateValues = eligibilityData.reduce(
         (prev, item) =>
@@ -257,8 +273,7 @@
                         class="flex justify-end text-sm font-medium text_00000099"
                       >
                         <TooltipNumber
-                          number={Number(item?.amount) *
-                            Number(item?.tokenPrice) || 0}
+                          number={Number(item.value || 0)}
                           type="value"
                         />
                       </div>
