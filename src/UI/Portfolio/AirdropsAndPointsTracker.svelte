@@ -49,7 +49,7 @@
       logo: "https://airdrops.io/wp-content/uploads/2024/01/Parcl-logo.jpg",
     },
     "Sharky.fi": {
-      name: "Sharky.fi",
+      name: "Sharky",
       website: "https://sharky.fi/",
       twitter: "https://twitter.com/SharkyFi",
       logo: "https://sharky.fi/sharky.svg",
@@ -75,8 +75,8 @@
     if (
       !$query.isError &&
       $query.data !== undefined &&
-      $query.data?.data.length !== 0 &&
-      $query.data?.dataWhalesMarket.length !== 0
+      $query.data?.data?.length !== 0 &&
+      $query.data?.dataWhalesMarket?.length !== 0
     ) {
       formatData = $query?.data?.data.map((item) => {
         return {
@@ -84,10 +84,11 @@
           points: item.points.map((point) => {
             const data = $query?.data?.dataWhalesMarket;
             const pointIndex = data
-              .map(
-                (datawhale) =>
-                  (datawhale?.name === "Drift Protocol" && "Drift") ||
-                  datawhale?.name
+              .map((datawhale) =>
+                datawhale?.name === "Sharky"
+                  ? "Sharky.fi"
+                  : (datawhale?.name === "Drift Protocol" && "Drift") ||
+                    datawhale?.name
               )
               .indexOf(point.protocolLabel);
 
