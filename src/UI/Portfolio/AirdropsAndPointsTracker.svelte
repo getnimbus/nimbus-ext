@@ -12,6 +12,7 @@
 
   import defaultToken from "~/assets/defaultToken.png";
   import gmPoints from "~/assets/Gold4.svg";
+  import axios from "axios";
 
   const protocolInfo = {
     GMPoints: {
@@ -92,7 +93,7 @@
               )
               .indexOf(point.protocolLabel);
 
-            const price = data[pointIndex]?.last_price || null;
+            const price = data[pointIndex]?.average_bids || null;
 
             return {
               ...point,
