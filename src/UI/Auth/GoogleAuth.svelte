@@ -52,7 +52,7 @@
         uid,
         type,
         info,
-        displayName,
+        displayName: displayName ? displayName : info,
       });
       if (res?.data?.result) {
         triggerConnectWallet.update((n) => (n = false));
