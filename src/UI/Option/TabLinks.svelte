@@ -19,17 +19,12 @@
     title: i18n("optionsPage.links-page-title", "Link Settings"),
   };
 
-  let uid = "";
   let dataUserSocialLogin: any = {};
   let socialData = [];
   let chain = "";
 
-  onMount(() => {
-    uid = localStorage.getItem("public_address");
-  });
-
   $: queryLinkSocial = createQuery({
-    queryKey: ["link-socials", uid],
+    queryKey: ["link-socials"],
     queryFn: () => getLinkData(),
     staleTime: Infinity,
   });
@@ -71,62 +66,24 @@
   </div>
 
   <div class="flex flex-col gap-6">
-    <div class="flex flex-col gap-2">
-      <div class="xl:text-base text-xl font-medium">
-        Link your social accounts
-      </div>
-
-      <!-- user social login -->
-      {#if localStorage.getItem("auth_token")}
+    <!-- user social login -->
+    {#if localStorage.getItem("auth_token")}
+      <div class="flex flex-col gap-2">
+        <div class="xl:text-base text-xl font-medium">
+          Link your social accounts
+        </div>
         <div class="flex flex-col gap-3">
           {#each socialData as item}
             {#if localStorage.getItem("socialAuthType") === "google"}
               <Google data={item} isDisabledRemove />
             {/if}
             {#if localStorage.getItem("socialAuthType") === "twitter"}
-              <Twitter
-                data={item}
-                isDisabledRemove
-                reCallAPI={() => {
-                  getLinkData();
-                }}
-              />
+              <Twitter data={item} isDisabledRemove />
             {/if}
           {/each}
         </div>
-      {/if}
+      </div>
 
-      <!-- user connect wallet -->
-      {#if !localStorage.getItem("auth_token")}
-        <div class="flex flex-col gap-3">
-          {#each socialData as item}
-            {#if item.type === "google"}
-              <Google data={item} />
-            {/if}
-            {#if item.type === "twitter"}
-              <Twitter data={item} />
-            {/if}
-          {/each}
-        </div>
-
-        <div class="flex flex-col gap-3">
-          {#if socialData && socialData.length === 1 && socialData.find((item) => item.type === "google")}
-            <Twitter data={{}} />
-          {/if}
-
-          {#if socialData && socialData.length === 1 && socialData.find((item) => item.type === "twitter")}
-            <Google data={{}} />
-          {/if}
-
-          {#if socialData && socialData.length === 0}
-            <Google data={{}} />
-            <Twitter data={{}} />
-          {/if}
-        </div>
-      {/if}
-    </div>
-
-    {#if socialData && socialData.length !== 0 && socialData[0].publicAddress === null && localStorage.getItem("auth_token")}
       <div class="flex flex-col gap-2">
         <div class="xl:text-base text-xl font-medium">
           Connect your main wallet
@@ -146,7 +103,39 @@
           />
         </div>
       </div>
-    {:else}
+    {/if}
+
+    <!-- user connect wallet -->
+    {#if !localStorage.getItem("auth_token")}
+      <div class="flex flex-col gap-2">
+        <div class="xl:text-base text-xl font-medium">
+          Link your social accounts
+        </div>
+        <div class="flex items-center gap-6">
+          {#each socialData as item}
+            {#if item.type === "google"}
+              <Google data={item} />
+            {/if}
+            {#if item.type === "twitter"}
+              <Twitter data={item} />
+            {/if}
+          {/each}
+
+          {#if socialData && socialData.length === 1 && socialData.find((item) => item.type === "google")}
+            <Twitter data={{}} />
+          {/if}
+
+          {#if socialData && socialData.length === 1 && socialData.find((item) => item.type === "twitter")}
+            <Google data={{}} />
+          {/if}
+
+          {#if socialData && socialData.length === 0}
+            <Google data={{}} />
+            <Twitter data={{}} />
+          {/if}
+        </div>
+      </div>
+
       <div class="flex flex-col gap-2">
         <div class="xl:text-base text-xl font-medium">
           Your main wallet address

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { nimbus } from "~/lib/network";
-  import { isDarkMode, userPublicAddress, user } from "~/store";
+  import { userPublicAddress, user } from "~/store";
   import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
   import { auth } from "~/lib/firebase";
   import { Toast } from "flowbite-svelte";
@@ -8,6 +8,8 @@
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
   import { triggerFirework } from "~/utils";
   import { wait } from "~/entries/background/utils";
+
+  import Button from "~/components/Button.svelte";
 
   import Google from "~/assets/google.png";
   import goldImg from "~/assets/Gold4.svg";
@@ -122,26 +124,31 @@
         };
       }
 
-      await nimbus.post("/accounts/link", params);
+      const response = await nimbus.post("/accounts/link", params);
+      if (response && response?.error) {
+        toastMsg = response?.error;
+        isSuccessToast = false;
+        trigger();
+      } else {
+        const quest = dataCheckinHistory.find(
+          (item) => item.type === "QUEST" && item.note === "link-google"
+        );
+        if (!quest) {
+          handleAddBonusQuest();
+        }
 
-      const quest = dataCheckinHistory.find(
-        (item) => item.type === "QUEST" && item.note === "link-google"
-      );
-      if (!quest) {
-        handleAddBonusQuest();
+        localStorage.setItem("socialAuthType", "google");
+        queryClient.invalidateQueries(["link-socials"]);
+
+        toastMsg = "Successfully link Google account!";
+        isSuccessToast = true;
+        trigger();
       }
-
-      localStorage.setItem("socialAuthType", "google");
-      queryClient.invalidateQueries(["link-socials"]);
-
-      toastMsg = "Successfully link Google account!";
-      isSuccessToast = true;
-      trigger();
     } catch (e) {
       console.log(e);
       toastMsg =
         "There are some problem when link Google account. Please try again!";
-      isSuccessToast = true;
+      isSuccessToast = false;
       trigger();
     }
   };
@@ -206,9 +213,17 @@
   };
 </script>
 
-<div class="bg_f4f5f8 rounded-[10px] px-4 py-3 flex flex-col gap-2">
-  <div class="flex justify-between items-center gap-4">
-    <div class="font-medium xl:text-lg text-xl">Google</div>
+<div
+  class="max-w-[350px] w-[350px] bg_f4f5f8 rounded-[10px] px-4 py-5 flex flex-col"
+>
+  <div class="flex justify-between items-start">
+    <div class="flex flex-col gap-3">
+      <div class="p-4 rounded-[10px] shadow-sm bg-white">
+        <img src={Google} alt="" width="26" height="26" />
+      </div>
+      <div class="xl:text-lg text-xl">Google</div>
+    </div>
+
     {#if data && Object.keys(data).length !== 0 && !isDisabledRemove}
       <div
         class="cursor-pointer text-red-600 font-medium text-xl xl:text-base"
@@ -219,35 +234,31 @@
     {/if}
   </div>
 
-  {#if data && Object.keys(data).length !== 0}
-    <div class="flex items-center gap-2">
-      <img src={Google} alt="" width="22" height="22" />
-      <div class="xl:text-base text-lg">{data?.info}</div>
-    </div>
-    <div class="mt-2 flex items-center justify-start gap-2">
-      <input
-        type="checkbox"
-        {checked}
-        on:click={() => {
-          handleDisplayName();
-        }}
-        class="cursor-pointer relative w-5 h-5 appearance-none rounded-[0.25rem] border outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white checked:focus:after:bg-transparent dark:border-neutral-600 dark:checked:border-primary dark:checked:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]"
-      />
-      <div class="text-lg xl:text-sm">Display Google on Nimbus</div>
-    </div>
-  {:else}
-    <div
-      class={`flex items-center justify-center gap-2 text-white border cursor-pointer py-3 px-6 rounded-[12px] w-[250px] ${
-        $isDarkMode
-          ? "border-white text-white"
-          : "border-[#27326f] text-[#27326f]"
-      }`}
-      on:click={handleGoogleAuth}
-    >
-      <img src={Google} alt="" width="22" height="22" />
-      <div class="font-semibold text-[15px]">Connect with Google</div>
-    </div>
-  {/if}
+  <div class="flex flex-col gap-3">
+    {#if data && Object.keys(data).length !== 0}
+      <div class="xl:text-base text-lg text-gray-400">{data?.info}</div>
+      <div class="flex items-center justify-start gap-2">
+        <input
+          type="checkbox"
+          {checked}
+          on:click={() => {
+            handleDisplayName();
+          }}
+          class="cursor-pointer relative w-5 h-5 appearance-none rounded-[0.25rem] border outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white checked:focus:after:bg-transparent dark:border-neutral-600 dark:checked:border-primary dark:checked:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]"
+        />
+        <div class="text-lg xl:text-sm">Display on Nimbus</div>
+      </div>
+    {:else}
+      <div class="xl:text-base text-lg text-gray-400">@username</div>
+      <Button
+        variant="tertiary"
+        on:click={handleGoogleAuth}
+        className="py-3 px-6"
+      >
+        <div class="font-semibold text-[15px]">Connect</div>
+      </Button>
+    {/if}
+  </div>
 </div>
 
 {#if openScreenBonusScore}
