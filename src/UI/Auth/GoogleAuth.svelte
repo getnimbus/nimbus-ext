@@ -39,7 +39,13 @@
         return result.user;
       });
       if (res) {
-        handleGetGoogleToken(res.uid, "google", res.email, res.displayName);
+        console.log("HELLO WORLD: ", res);
+        handleGetGoogleToken(
+          res.uid,
+          "google",
+          res?.reloadUserInfo?.email || res.email,
+          res?.reloadUserInfo?.displayName || res.displayName
+        );
       }
     } catch (e) {
       console.log("error: ", e);
