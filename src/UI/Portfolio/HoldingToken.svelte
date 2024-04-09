@@ -526,7 +526,7 @@
                     isShowTooltipName = false;
                   }}
                 >
-                  {#if !data[index]?.name}
+                  {#if !data[index]?.name || data[index]?.name === "N/A"}
                     {shorterAddress(data[index]?.contractAddress)}
                   {/if}
 
@@ -1564,7 +1564,7 @@
                 isShowTooltipName = false;
               }}
             >
-              {#if !data[index]?.name}
+              {#if !data[index]?.name || data[index]?.name === "N/A"}
                 {shorterAddress(data[index]?.contractAddress)}
               {/if}
 
