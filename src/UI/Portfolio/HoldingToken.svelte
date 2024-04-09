@@ -526,13 +526,18 @@
                     isShowTooltipName = false;
                   }}
                 >
-                  {#if data[index].name === undefined}
-                    N/A
-                  {:else}
-                    {data[index]?.name?.length > 12
-                      ? shorterName(data[index].name, 12)
-                      : data[index].name}
+                  {#if !data[index]?.name}
+                    {shorterAddress(data[index]?.contractAddress)}
                   {/if}
+
+                  {#if data[index]?.name}
+                    {#if data[index]?.name?.length > 12}
+                      {shorterName(data[index]?.name, 12)}
+                    {:else}
+                      {data[index]?.name}
+                    {/if}
+                  {/if}
+
                   {#if isShowTooltipName && selectedItemIndex === index && data[index]?.name?.length > 12}
                     <div
                       class="absolute left-0 -top-8"
@@ -1559,13 +1564,18 @@
                 isShowTooltipName = false;
               }}
             >
-              {#if data[index].name === undefined}
-                N/A
-              {:else}
-                {data[index]?.name?.length > 20
-                  ? shorterName(data[index].name, 20)
-                  : data[index].name}
+              {#if !data[index]?.name}
+                {shorterAddress(data[index]?.contractAddress)}
               {/if}
+
+              {#if data[index]?.name}
+                {#if data[index]?.name?.length > 12}
+                  {shorterName(data[index]?.name, 12)}
+                {:else}
+                  {data[index]?.name}
+                {/if}
+              {/if}
+
               {#if isShowTooltipName && selectedItemIndex === index && data[index]?.name?.length > 20}
                 <div
                   class="absolute left-0 -top-8"
