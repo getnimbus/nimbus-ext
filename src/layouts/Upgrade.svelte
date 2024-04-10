@@ -14,6 +14,7 @@
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import Button from "~/components/Button.svelte";
 
+  import Coinbase from "~/assets/coinbase.png";
   import Ethereum from "~/assets/chains/ethereum.png";
   import Solana from "~/assets/chains/solana.png";
 
@@ -199,6 +200,32 @@
       isLoadingBuy = false;
     }
   };
+
+  const handleBuyCoinbase = async () => {
+    const payload = {
+      value: selectedPackage.selectedTypePackage === "year" ? 12 : 1,
+      code: coupleCode,
+      plan: selectedPackage.plan,
+    };
+    isLoadingBuy = true;
+    try {
+      const response = await nimbus.post(
+        "/v3/payments/create-session",
+        payload
+      );
+      if (response && response?.data) {
+        window.open(response?.data?.hosted_url, "_blank");
+        navigateTo(
+          `/payments/success?paymentId=${response?.data?.paymentLinkId}`
+        );
+      }
+    } catch (e) {
+      console.error(e);
+      isLoadingBuy = false;
+    } finally {
+      isLoadingBuy = false;
+    }
+  };
 </script>
 
 <ErrorBoundary>
@@ -297,7 +324,7 @@
 
         <div class="flex flex-col gap-3 items-center mt-5">
           <div class="my-3 text-base">Choose your prefer payment method</div>
-          {#each listChain as chain}
+          <!-- {#each listChain as chain}
             <div class="w-62 text-base">
               <Button
                 variant="secondary"
@@ -306,11 +333,25 @@
                   handleBuy(chain.value);
                 }}
               >
-                <img src={chain.logo} class="w-5 h-5 rounded-full" />
+                <img
+                  src={chain.logo}
+                  alt={chain.label}
+                  class="w-5 h-5 rounded-full"
+                />
                 {chain.label}</Button
               >
             </div>
-          {/each}
+          {/each} -->
+          <div class="w-62 text-base">
+            <Button
+              variant="secondary"
+              isLoading={isLoadingBuy}
+              on:click={handleBuyCoinbase}
+            >
+              <img src={Coinbase} alt="coinbase" class="w-5 h-5 rounded-full" />
+              Coinbase</Button
+            >
+          </div>
           <div
             class="text-[#1E96FC] cursor-pointer flex items-center gap-2 mt-2 text-base"
             on:click={() => {

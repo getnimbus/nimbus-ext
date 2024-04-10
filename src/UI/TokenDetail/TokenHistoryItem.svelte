@@ -18,17 +18,7 @@
   $: isBuy =
     data?.to_token_address?.toLowerCase() === contractAddress?.toLowerCase();
 
-  $: amount =
-    data?.to_symbol || data?.from_symbol // Syve data
-      ? isBuy
-        ? Number(data?.quantity_in)
-        : Number(data?.quantity_out)
-      : Number(
-          contractAddress?.toLowerCase() ===
-            data.from_token_address.toLowerCase()
-            ? data?.quantity_in
-            : data?.quantity_out
-        );
+  $: amount = isBuy ? Number(data?.quantity_out) : Number(data?.quantity_in);
 
   $: withinLast24Hours = dayjs().diff(dayjs(data?.created_at * 1000), "hour");
 </script>
