@@ -210,11 +210,14 @@
     isLoadingBuy = true;
     try {
       const response = await nimbus.post(
-        "/v3/payments/coinbase/create-session",
+        "/v3/payments/create-session",
         payload
       );
       if (response && response?.data) {
         window.open(response?.data?.hosted_url, "_blank");
+        navigateTo(
+          `/payments/success?paymentId=${response?.data?.paymentLinkId}`
+        );
       }
     } catch (e) {
       console.error(e);
