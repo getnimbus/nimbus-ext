@@ -93,12 +93,14 @@
             data={dataUserSocialLogin}
             reCallAPI={() => {
               dataUserSocialLogin = {};
+              location.reload();
             }}
           />
           <Solana
             data={dataUserSocialLogin}
             reCallAPI={() => {
               dataUserSocialLogin = {};
+              location.reload();
             }}
           />
         </div>

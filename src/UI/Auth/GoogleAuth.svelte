@@ -36,6 +36,7 @@
     mixpanel.track("user_login_google");
     try {
       googleProvider.addScope("email");
+      googleProvider.addScope("profile");
       const res = await signInWithPopup(auth, googleProvider).then(
         (result) => result.user
       );

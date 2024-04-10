@@ -79,10 +79,11 @@
               picture: User,
             })
         );
-        queryClient?.invalidateQueries(["users-me"]);
-        queryClient.invalidateQueries(["list-address"]);
-        queryClient.invalidateQueries(["list-bundle"]);
-        queryClient.invalidateQueries(["link-socials"]);
+        // queryClient?.invalidateQueries(["users-me"]);
+        // queryClient.invalidateQueries(["list-address"]);
+        // queryClient.invalidateQueries(["list-bundle"]);
+        // queryClient.invalidateQueries(["link-socials"]);
+
         reCallAPI();
       }
     } catch (e) {
