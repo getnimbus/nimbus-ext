@@ -4,9 +4,6 @@
   import { isDarkMode } from "~/store";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
-  import { wagmiAbi } from "~/lib/viem-evm-abi";
-  import publicClient from "~/lib/viem-client";
-  import { mainnet } from "viem/chains";
   import { navigateTo } from "svelte-router-spa";
   import mixpanel from "mixpanel-browser";
 
@@ -15,24 +12,6 @@
   import Button from "~/components/Button.svelte";
 
   import Coinbase from "~/assets/coinbase.png";
-  import Ethereum from "~/assets/chains/ethereum.png";
-  import Solana from "~/assets/chains/solana.png";
-
-  const usdcAddress = "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48";
-  const receiveAddress = "0x6AedbE81435BBD67e2223eadd256992DC64fc90B";
-
-  const listChain = [
-    {
-      logo: Ethereum,
-      label: "Ethereum",
-      value: "ETH",
-    },
-    // {
-    //   logo: Solana,
-    //   label: "Solana",
-    //   value: "SOL",
-    // },
-  ];
 
   let toastMsg = "";
   let isSuccessToast = false;
@@ -127,81 +106,7 @@
     }
   };
 
-  const handleBuy = async (chainValue: string) => {
-    const account = await publicClient.requestAddresses();
-
-    const payload = {
-      value: selectedPackage.selectedTypePackage === "year" ? 12 : 1,
-      code: coupleCode,
-      plan: selectedPackage.plan,
-      chain: chainValue,
-      txHash: "",
-    };
-
-    isLoadingBuy = true;
-    try {
-      // if (chainValue === "SOL") {
-      //   const response = await nimbus.post(
-      //     "/v2/payments/create-session",
-      //     payload
-      //   );
-      //   if (response && response?.data) {
-      //     window.location.replace(response?.data?.url);
-      //   }
-      // }
-
-      if (chainValue === "ETH") {
-        await publicClient?.switchChain({
-          id: 1,
-        });
-
-        let price =
-          selectedPackage.selectedTypePackage === "year"
-            ? selectedPackage.price * 12
-            : selectedPackage.price;
-
-        if (discountPercent !== 0) {
-          const newPrice = price - price * (discountPercent / 100);
-          price = Math.round(newPrice * 100) / 100;
-        }
-
-        publicClient
-          .writeContract({
-            address: usdcAddress,
-            account: account[0],
-            chain: mainnet,
-            abi: wagmiAbi,
-            functionName: "transfer",
-            args: [receiveAddress, price * 10 ** 6],
-          })
-          .then(async (res) => {
-            const response = await nimbus.post("/v3/payments/create-session", {
-              ...payload,
-              txHash: res,
-            });
-            if (response && response?.data) {
-              navigateTo(
-                `/payments/success?paymentId=${response?.data?.paymentLinkId}`
-              );
-            }
-          })
-          .catch((e) => {
-            console.error("error", e);
-            toastMsg =
-              "Transfer amount exceeds balance in your wallet. Please try again!";
-            isSuccessToast = false;
-            trigger();
-          });
-      }
-    } catch (e) {
-      console.error(e);
-      isLoadingBuy = false;
-    } finally {
-      isLoadingBuy = false;
-    }
-  };
-
-  const handleBuyCoinbase = async () => {
+  const handleBuy = async () => {
     const payload = {
       value: selectedPackage.selectedTypePackage === "year" ? 12 : 1,
       code: coupleCode,
@@ -324,29 +229,11 @@
 
         <div class="flex flex-col gap-3 items-center mt-5">
           <div class="my-3 text-base">Choose your prefer payment method</div>
-          <!-- {#each listChain as chain}
-            <div class="w-62 text-base">
-              <Button
-                variant="secondary"
-                isLoading={isLoadingBuy}
-                on:click={() => {
-                  handleBuy(chain.value);
-                }}
-              >
-                <img
-                  src={chain.logo}
-                  alt={chain.label}
-                  class="w-5 h-5 rounded-full"
-                />
-                {chain.label}</Button
-              >
-            </div>
-          {/each} -->
           <div class="w-62 text-base">
             <Button
               variant="secondary"
               isLoading={isLoadingBuy}
-              on:click={handleBuyCoinbase}
+              on:click={handleBuy}
             >
               <img src={Coinbase} alt="coinbase" class="w-5 h-5 rounded-full" />
               Coinbase</Button
