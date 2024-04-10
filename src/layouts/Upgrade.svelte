@@ -324,7 +324,7 @@
 
         <div class="flex flex-col gap-3 items-center mt-5">
           <div class="my-3 text-base">Choose your prefer payment method</div>
-          {#each listChain as chain}
+          <!-- {#each listChain as chain}
             <div class="w-62 text-base">
               <Button
                 variant="secondary"
@@ -341,7 +341,7 @@
                 {chain.label}</Button
               >
             </div>
-          {/each}
+          {/each} -->
           <div class="w-62 text-base">
             <Button
               variant="secondary"
