@@ -1,6 +1,6 @@
 <script lang="ts">
   import { isDarkMode } from "~/store";
-  import { walletStore } from "@svelte-on-solana/wallet-adapter-core";
+  import { walletStore } from "@aztemi/svelte-on-solana-wallet-adapter-core";
   import mixpanel from "mixpanel-browser";
 
   import WalletButton from "~/UI/SolanaCustomWalletBtn/WalletButton.svelte";
