@@ -40,6 +40,9 @@
     "web-ext": "^6.6.0"
   },
   "dependencies": {
+    "@aztemi/svelte-on-solana-wallet-adapter-anchor": "^1.1.4",
+    "@aztemi/svelte-on-solana-wallet-adapter-core": "^1.1.4",
+    "@aztemi/svelte-on-solana-wallet-adapter-ui": "^1.1.4",
     "@crownframework/svelte-error-boundary": "^1.0.3",
     "@popperjs/core": "^2.11.6",
     "@project-serum/anchor": "^0.26.0",
