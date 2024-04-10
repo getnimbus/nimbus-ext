@@ -12,6 +12,7 @@
   export let number;
   export let type: "amount" | "balance" | "percent" | "value" = "value";
   export let personalValue: boolean = false;
+  export let isTooltip = true;
 
   let numberFormat = 0;
   let numberSize = "";
@@ -53,41 +54,62 @@
 {:else}
   <span class="w-max">
     {#if (numberSize && numberSize !== "K") || formatPercent(number) === "NaN"}
-      <span
-        use:tooltip={{
-          content: `<tooltip-detail text="${formatCurrency(number)}" />`,
-          allowHTML: true,
-          placement: "top",
-        }}
-        class="flex items-center"
-      >
-        <span>
-          {#if type === "value"}${/if}{#if numeral(numberFormat).format("0,0.00") === "NaN"}
-            {@html convertMiniumNumber(numberFormat)}
-          {:else}
-            {numeral(numberFormat).format("0,0.00")}
-          {/if}
+      {#if isTooltip}
+        <span
+          use:tooltip={{
+            content: `<tooltip-detail text="${formatCurrency(number)}" />`,
+            allowHTML: true,
+            placement: "top",
+          }}
+          class="flex items-center"
+        >
+          <span>
+            {#if type === "value"}${/if}{#if numeral(numberFormat).format("0,0.00") === "NaN"}
+              {@html convertMiniumNumber(numberFormat)}
+            {:else}
+              {numeral(numberFormat).format("0,0.00")}
+            {/if}
+          </span>
+          <span>
+            {numberSize}
+          </span>
         </span>
-        <span>
-          {numberSize}
+      {:else}
+        <span class="flex items-center">
+          <span>
+            {#if type === "value"}${/if}{#if numeral(numberFormat).format("0,0.00") === "NaN"}
+              {@html convertMiniumNumber(numberFormat)}
+            {:else}
+              {numeral(numberFormat).format("0,0.00")}
+            {/if}
+          </span>
+          <span>
+            {numberSize}
+          </span>
         </span>
-      </span>
+      {/if}
     {:else}
       <span>
         {#if type === "value"}
           <span>
             {#if number !== 0 && number > 0 && number < 0.01}
-              <span
-                use:tooltip={{
-                  content: `<tooltip-detail text="${formatCurrency(
-                    number
-                  )}" />`,
-                  allowHTML: true,
-                  placement: "top",
-                }}
-              >
-                {formatValue(number)}
-              </span>
+              {#if isTooltip}
+                <span
+                  use:tooltip={{
+                    content: `<tooltip-detail text="${formatCurrency(
+                      number
+                    )}" />`,
+                    allowHTML: true,
+                    placement: "top",
+                  }}
+                >
+                  {formatValue(number)}
+                </span>
+              {:else}
+                <span>
+                  {formatValue(number)}
+                </span>
+              {/if}
             {:else}
               {formatValue(number)}
             {/if}
