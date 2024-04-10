@@ -4,7 +4,7 @@
   import { nimbus } from "~/lib/network";
   import { triggerFirework } from "~/utils";
   import { wait } from "~/entries/background/utils";
-  import { walletStore } from "@svelte-on-solana/wallet-adapter-core";
+  import { walletStore } from "@aztemi/svelte-on-solana-wallet-adapter-core";
   import { Buffer as BufferPolyfill } from "buffer";
   import mixpanel from "mixpanel-browser";
   import { Connection, Transaction } from "@solana/web3.js";

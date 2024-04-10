@@ -27,14 +27,13 @@
   import QRCode from "qrcode-generator";
   import CopyToClipboard from "svelte-copy-to-clipboard";
   import { wait } from "~/entries/background/utils";
-  import { WalletProvider } from "@svelte-on-solana/wallet-adapter-ui";
+  import { WalletProvider } from "@aztemi/svelte-on-solana-wallet-adapter-ui";
   import {
-    // BackpackWalletAdapter,
     PhantomWalletAdapter,
     SolflareWalletAdapter,
   } from "@solana/wallet-adapter-wallets";
   import bs58 from "bs58";
-  import { walletStore } from "@svelte-on-solana/wallet-adapter-core";
+  import { walletStore } from "@aztemi/svelte-on-solana-wallet-adapter-core";
   import type { WalletState } from "nimbus-sui-kit";
 
   import Tooltip from "~/components/Tooltip.svelte";
@@ -58,11 +57,7 @@
   export let publicAddress;
   export let buyPackage = "Free";
 
-  const wallets = [
-    new PhantomWalletAdapter(),
-    new SolflareWalletAdapter(),
-    // new BackpackWalletAdapter(),
-  ];
+  const wallets = [new PhantomWalletAdapter(), new SolflareWalletAdapter()];
 
   const wallets$ = onboard.state.select("wallets");
 

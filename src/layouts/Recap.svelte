@@ -1,11 +1,10 @@
 <script lang="ts">
   import {
-    // BackpackWalletAdapter,
     PhantomWalletAdapter,
     SolflareWalletAdapter,
   } from "@solana/wallet-adapter-wallets";
-  import { walletStore } from "@svelte-on-solana/wallet-adapter-core";
-  import { WalletProvider } from "@svelte-on-solana/wallet-adapter-ui";
+  import { walletStore } from "@aztemi/svelte-on-solana-wallet-adapter-core";
+  import { WalletProvider } from "@aztemi/svelte-on-solana-wallet-adapter-ui";
   import { createQuery } from "@tanstack/svelte-query";
   import mixpanel from "mixpanel-browser";
   import { onMount } from "svelte";
@@ -52,11 +51,7 @@
     }
   };
 
-  const wallets = [
-    new PhantomWalletAdapter(),
-    new SolflareWalletAdapter(),
-    // new BackpackWalletAdapter(),
-  ];
+  const wallets = [new PhantomWalletAdapter(), new SolflareWalletAdapter()];
 
   let userPublicAddressChain = "EVM";
   let userAddress = $userPublicAddress;

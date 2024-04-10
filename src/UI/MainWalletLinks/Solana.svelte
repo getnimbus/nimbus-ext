@@ -4,8 +4,8 @@
     SolflareWalletAdapter,
     // BackpackWalletAdapter,
   } from "@solana/wallet-adapter-wallets";
-  import { walletStore } from "@svelte-on-solana/wallet-adapter-core";
-  import { WalletProvider } from "@svelte-on-solana/wallet-adapter-ui";
+  import { walletStore } from "@aztemi/svelte-on-solana-wallet-adapter-core";
+  import { WalletProvider } from "@aztemi/svelte-on-solana-wallet-adapter-ui";
   import { useQueryClient } from "@tanstack/svelte-query";
   import { nimbus } from "~/lib/network";
   import { isDarkMode, user } from "~/store";
@@ -21,11 +21,7 @@
 
   const queryClient = useQueryClient();
 
-  const wallets = [
-    new PhantomWalletAdapter(),
-    new SolflareWalletAdapter(),
-    // new BackpackWalletAdapter(),
-  ];
+  const wallets = [new PhantomWalletAdapter(), new SolflareWalletAdapter()];
 
   let modalVisible = false;
   const maxNumberOfWallets = 5;
