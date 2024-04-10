@@ -35,14 +35,10 @@
   const handleGoogleAuth = async () => {
     mixpanel.track("user_login_google");
     try {
-      googleProvider.addScope("profile");
       googleProvider.addScope("email");
-      const res = await signInWithPopup(auth, googleProvider).then((result) => {
-        const credential = GoogleAuthProvider.credentialFromResult(result);
-        const token = credential.accessToken;
-        const user = result.user;
-        return user;
-      });
+      const res = await signInWithPopup(auth, googleProvider).then(
+        (result) => result.user
+      );
       if (res) {
         console.log("HELLO WORLD: ", {
           res,
