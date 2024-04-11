@@ -1,7 +1,6 @@
 <script lang="ts">
-  import { totalPositions, typeWallet, chain } from "~/store";
-  import { groupBy } from "lodash";
-  import { flatten } from "lodash";
+  import { totalPositions, typeWallet } from "~/store";
+  import { groupBy, flatten } from "lodash";
   import { filterDuplicates } from "~/utils";
 
   import Loading from "~/components/Loading.svelte";
