@@ -73,7 +73,8 @@
       } else {
         if (
           contractAddress &&
-          contractAddress !== "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+          (contractAddress !== "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" ||
+            contractAddress !== "11111111111111111111111111111111")
         ) {
           if (nativeTokenList.includes(id)) {
             handleGetPairData(id === "ETH" ? "ethereum" : id);
