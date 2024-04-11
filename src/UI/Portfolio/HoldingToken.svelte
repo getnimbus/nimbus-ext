@@ -428,7 +428,7 @@
     <VirtualList
       scrollDirection="vertical"
       width="100%"
-      height={data.length < 10 ? data.length * 75 : 750}
+      height={data.length < 30 ? data.length * 75 : 2250}
       bind:this={virtualList}
       itemCount={data.length}
       itemSize={(index) => {
@@ -527,15 +527,17 @@
                   }}
                 >
                   {#if !data[index]?.name || data[index]?.name === "N/A"}
-                    {shorterAddress(data[index]?.contractAddress)}
-                  {/if}
-
-                  {#if data[index]?.name}
-                    {#if data[index]?.name?.length > 12}
-                      {shorterName(data[index]?.name, 12)}
-                    {:else}
-                      {data[index]?.name}
-                    {/if}
+                    <span>
+                      {shorterAddress(data[index]?.contractAddress)}
+                    </span>
+                  {:else}
+                    <span>
+                      {#if data[index]?.name?.length > 12}
+                        {shorterName(data[index]?.name, 12)}
+                      {:else}
+                        {data[index]?.name}
+                      {/if}
+                    </span>
                   {/if}
 
                   {#if isShowTooltipName && selectedItemIndex === index && data[index]?.name?.length > 12}
@@ -1565,15 +1567,17 @@
               }}
             >
               {#if !data[index]?.name || data[index]?.name === "N/A"}
-                {shorterAddress(data[index]?.contractAddress)}
-              {/if}
-
-              {#if data[index]?.name}
-                {#if data[index]?.name?.length > 12}
-                  {shorterName(data[index]?.name, 12)}
-                {:else}
-                  {data[index]?.name}
-                {/if}
+                <span>
+                  {shorterAddress(data[index]?.contractAddress)}
+                </span>
+              {:else}
+                <span>
+                  {#if data[index]?.name?.length > 12}
+                    {shorterName(data[index]?.name, 12)}
+                  {:else}
+                    {data[index]?.name}
+                  {/if}
+                </span>
               {/if}
 
               {#if isShowTooltipName && selectedItemIndex === index && data[index]?.name?.length > 20}
