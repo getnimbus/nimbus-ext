@@ -35,16 +35,18 @@
   const handleGoogleAuth = async () => {
     mixpanel.track("user_login_google");
     try {
-      const res = await signInWithPopup(auth, googleProvider).then((result) => {
-        return result.user;
-      });
+      googleProvider.addScope("email");
+      googleProvider.addScope("profile");
+      const res = await signInWithPopup(auth, googleProvider).then(
+        (result) => result.user
+      );
       if (res) {
-        console.log("HELLO WORLD: ", res);
         handleGetGoogleToken(
           res.uid,
           "google",
-          res?.reloadUserInfo?.email || res.email,
-          res?.reloadUserInfo?.displayName || res.displayName
+          res?.reloadUserInfo?.providerUserInfo[0]?.email || res.email,
+          res?.reloadUserInfo?.providerUserInfo[0]?.displayName ||
+            res.displayName
         );
       }
     } catch (e) {
