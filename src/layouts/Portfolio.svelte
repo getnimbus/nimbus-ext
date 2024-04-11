@@ -135,6 +135,7 @@
   let selectedDataPieChart = {};
 
   let chainListQueries = [];
+  let positionListQueries = [];
 
   const handleValidateAddress = async (address: string) => {
     if (address) {
@@ -196,7 +197,7 @@
     queryClient.invalidateQueries(["token-holding"]);
     queryClient.invalidateQueries(["nft-holding"]);
     queryClient.invalidateQueries(["compare"]);
-    queryClient.invalidateQueries(["positions"]);
+    queryClient.invalidateQueries(["position-list"]);
   };
 
   const handleGetAllData = async (type: string) => {
@@ -221,7 +222,8 @@
           !$queryVaults.isError &&
           !$queryNftHolding.isError &&
           !$queryCompare.isError &&
-          !$queryPositions.isError
+          !$queryPositionList.isError &&
+          !$queryAllPositions.some((item) => item.isError === true)
         ) {
           syncMsg = "";
           isLoadingSync = false;
@@ -247,7 +249,8 @@
                 !$queryVaults.isError &&
                 !$queryNftHolding.isError &&
                 !$queryCompare.isError &&
-                !$queryPositions.isError
+                !$queryPositionList.isError &&
+                !$queryAllPositions.some((item) => item.isError === true)
               ) {
                 syncMsg = "";
                 isLoadingSync = false;
@@ -279,17 +282,16 @@
   };
 
   //// POSITIONS
-  const getPositions = async (address, chain) => {
+  const getPositionList = async (address) => {
     const response: any = await nimbus.get(
-      `/v2/address/${address}/positions?chain=${chain}`
+      `/v2/address/${address}/positions-prepare`
     );
-    console.log("ontrigger position");
     return response?.data;
   };
 
-  $: queryPositions = createQuery({
-    queryKey: ["positions", $wallet, $chain],
-    queryFn: () => getPositions($wallet, $chain),
+  $: queryPositionList = createQuery({
+    queryKey: ["position-list", $wallet],
+    queryFn: () => getPositionList($wallet),
     staleTime: Infinity,
     enabled: Boolean(
       enabledFetchAllData &&
@@ -302,10 +304,77 @@
   });
 
   $: {
-    if (!$queryPositions.isError && $queryPositions.data !== undefined) {
-      positionsData = $queryPositions.data;
+    if (!$queryPositionList.isError && $queryPositionList.data !== undefined) {
+      positionListQueries = $queryPositionList.data;
     }
   }
+
+  const getPositions = async (address, protocol) => {
+    const response: any = await nimbus.get(
+      `/v2/address/${address}/positions?protocol=${protocol}`
+    );
+    return response?.data;
+  };
+
+  $: queryAllPositions = createQueries(
+    positionListQueries.map((item) => {
+      return {
+        queryKey: ["positions", $wallet, $chain, item],
+        queryFn: () => getPositions($wallet, item),
+        staleTime: Infinity,
+        enabled: Boolean(
+          enabledFetchAllData &&
+            positionListQueries &&
+            positionListQueries.length !== 0 &&
+            $wallet &&
+            $wallet?.length !== 0 &&
+            !$queryValidate.isFetching &&
+            $tab === "defi" &&
+            ($typeWallet === "MOVE" || $typeWallet === "EVM")
+        ),
+      };
+    })
+  );
+
+  $: {
+    if ($queryAllPositions.length !== 0) {
+      const allPositions = flatten(
+        $queryAllPositions
+          ?.filter((item) => Array.isArray(item.data))
+          ?.map((item) => item.data)
+      );
+      if (allPositions && allPositions.length !== 0) {
+        positionsData = allPositions;
+      }
+    }
+  }
+
+  // const getPositions = async (address, chain) => {
+  //   const response: any = await nimbus.get(
+  //     `/v2/address/${address}/positions?chain=${chain}`
+  //   );
+  //   return response?.data;
+  // };
+
+  // $: queryPositions = createQuery({
+  //   queryKey: ["positions", $wallet, $chain],
+  //   queryFn: () => getPositions($wallet, $chain),
+  //   staleTime: Infinity,
+  //   enabled: Boolean(
+  //     enabledFetchAllData &&
+  //       $wallet &&
+  //       $wallet?.length !== 0 &&
+  //       !$queryValidate.isFetching &&
+  //       $tab === "defi" &&
+  //       ($typeWallet === "MOVE" || $typeWallet === "EVM")
+  //   ),
+  // });
+
+  // $: {
+  //   if (!$queryPositions.isError && $queryPositions.data !== undefined) {
+  //     positionsData = $queryPositions.data;
+  //   }
+  // }
 
   //// OVERVIEW
   const getOverview = async (chain) => {
@@ -873,13 +942,17 @@
         $queryAllNftHolding.some((item) => item.isFetching === true) &&
         $queryVaults.isFetching &&
         $queryOverview.isFetching &&
-        $queryPositions.isFetching
+        $queryPositionList.isFetching &&
+        $queryAllPositions &&
+        $queryAllPositions.some((item) => item.isFetching === true)
       : !isErrorAllData &&
         $queryTokenHolding.isFetching &&
         $queryNftHolding.isFetching &&
         $queryVaults.isFetching &&
         $queryOverview.isFetching &&
-        $queryPositions.isFetching;
+        $queryPositionList.isFetching &&
+        $queryAllPositions &&
+        $queryAllPositions.some((item) => item.isFetching === true);
 
   $: isPortfolioReady =
     $tab === "defi" && ($typeWallet === "MOVE" || $typeWallet === "EVM")
@@ -887,11 +960,13 @@
         ? $queryAllTokenHolding.every((item) => item.isFetched) &&
           $queryVaults.isFetched &&
           $queryOverview.isFetched &&
-          $queryPositions.isFetched
+          $queryPositionList.isFetched
         : $queryTokenHolding.isFetched &&
           $queryVaults.isFetched &&
           $queryOverview.isFetched &&
-          $queryPositions.isFetched
+          $queryPositionList.isFetched &&
+          $queryAllPositions &&
+          $queryAllPositions.some((item) => item.isFetched === true)
       : $chain === "ALL"
         ? $queryAllTokenHolding.every((item) => item.isFetched) &&
           $queryVaults.isFetched &&
@@ -1079,7 +1154,9 @@
               {#if $tab === "defi"}
                 <DefiPosition
                   data={positionsData}
-                  isLoading={$queryPositions.isFetching}
+                  isLoading={$queryAllPositions.some(
+                    (item) => item.isFetching === true
+                  )}
                 />
               {/if}
 

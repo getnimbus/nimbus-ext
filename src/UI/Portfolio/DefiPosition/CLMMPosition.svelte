@@ -47,8 +47,6 @@
   $: formatData = data.sort(
     (a, b) => handleCalculateValue(b) - handleCalculateValue(a)
   );
-
-  $: console.log("HELLO WORLD: ", formatData);
 </script>
 
 <!-- Desktop view -->
