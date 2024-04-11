@@ -13,9 +13,14 @@
   $: {
     if (Number(currentPrice) > Number(upperPrice)) {
       sliderValue = 120;
-    } else if (Number(currentPrice) < Number(lowerPrice)) {
+    }
+    if (Number(currentPrice) < Number(lowerPrice)) {
       sliderValue = -20;
-    } else {
+    }
+    if (
+      Number(currentPrice) >= Number(lowerPrice) &&
+      Number(currentPrice) <= Number(upperPrice)
+    ) {
       const range = Number(upperPrice) - Number(lowerPrice);
       const normalizedCurrentPrice =
         (Number(currentPrice) - Number(lowerPrice)) / range;
@@ -40,7 +45,13 @@
       <div
         class="absolute bottom-3 left-1/2 transform -translate-x-1/2 text-xs z-1"
       >
-        <TooltipNumber number={lowerPrice} isTooltip={false} />
+        {#if lowerPrice.toString().includes("e-") || lowerPrice
+            .toString()
+            .includes("e+")}
+          <TooltipNumber number={lowerPrice} isTooltip={false} />
+        {:else}
+          ${numeral(lowerPrice).format("0,0.0000")}
+        {/if}
       </div>
     </div>
 
@@ -67,7 +78,13 @@
       <div
         class="absolute bottom-3 left-1/2 transform -translate-x-1/2 text-xs z-1"
       >
-        <TooltipNumber number={upperPrice} isTooltip={false} />
+        {#if upperPrice.toString().includes("e-") || upperPrice
+            .toString()
+            .includes("e+")}
+          <TooltipNumber number={upperPrice} isTooltip={false} />
+        {:else}
+          ${numeral(upperPrice).format("0,0.0000")}
+        {/if}
       </div>
     </div>
   </div>
