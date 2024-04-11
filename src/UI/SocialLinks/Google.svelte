@@ -126,7 +126,8 @@
 
       const response = await nimbus.post("/accounts/link", params);
       if (response && response?.error) {
-        toastMsg = response?.error;
+        toastMsg =
+          "Social account already Nimbus user. Please try again with another Google account!";
         isSuccessToast = false;
         trigger();
       } else {
@@ -181,6 +182,7 @@
       toastMsg = "Successfully remove link Google account!";
       isSuccessToast = true;
       trigger();
+      location.reload();
     } catch (e) {
       console.log(e);
       toastMsg =
@@ -203,6 +205,7 @@
       } display Google account!`;
       isSuccessToast = true;
       trigger();
+      location.reload();
     } catch (e) {
       console.log(e);
       toastMsg =

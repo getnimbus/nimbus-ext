@@ -41,10 +41,6 @@
         (result) => result.user
       );
       if (res) {
-        console.log("HELLO WORLD: ", {
-          res,
-          email: res?.reloadUserInfo?.providerUserInfo[0]?.email,
-        });
         handleGetGoogleToken(
           res.uid,
           "google",

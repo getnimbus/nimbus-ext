@@ -127,7 +127,8 @@
 
       const response = await nimbus.post("/accounts/link", params);
       if (response && response?.error) {
-        toastMsg = response?.error;
+        toastMsg =
+          "Social account already Nimbus user. Please try again with another X account!";
         isSuccessToast = false;
         trigger();
       } else {
@@ -141,14 +142,14 @@
         localStorage.setItem("socialAuthType", "twitter");
         queryClient?.invalidateQueries(["link-socials"]);
 
-        toastMsg = "Successfully link Twitter account!";
+        toastMsg = "Successfully link X account!";
         isSuccessToast = true;
         trigger();
       }
     } catch (e) {
       console.log(e);
       toastMsg =
-        "There are some problem when link Twitter account. Please try again!";
+        "There are some problem when link X account. Please try again!";
       isSuccessToast = false;
       trigger();
     }
@@ -182,6 +183,7 @@
       toastMsg = "Successfully remove link Google account!";
       isSuccessToast = true;
       trigger();
+      location.reload();
     } catch (e) {
       console.log(e);
       toastMsg =
@@ -204,6 +206,7 @@
       } display Google account!`;
       isSuccessToast = true;
       trigger();
+      location.reload();
     } catch (e) {
       console.log(e);
       toastMsg =
@@ -221,7 +224,7 @@
     <div class="flex flex-col gap-3">
       <div class="p-4 rounded-[10px] shadow-sm bg-white">
         <img
-          alt="link Twitter"
+          alt="link X"
           loading="lazy"
           decoding="async"
           data-nimg="1"
