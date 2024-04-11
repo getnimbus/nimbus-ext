@@ -252,7 +252,7 @@
   <div class="flex flex-col gap-2 px-3">
     <div class="xl:text-2xl text-3xl font-medium">Positions</div>
     {#if $typeWallet === "MOVE" || $typeWallet === "EVM"}
-      {#if positionsData.length === 0}
+      {#if data.length === 0}
         <div class="flex justify-center items-center min-h-[300px]">Empty</div>
       {:else}
         <div class="flex flex-col gap-6">
