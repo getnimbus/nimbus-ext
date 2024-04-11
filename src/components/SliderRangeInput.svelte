@@ -22,8 +22,27 @@
       Number(currentPrice) <= Number(upperPrice)
     ) {
       const range = Number(upperPrice) - Number(lowerPrice);
+
       const normalizedCurrentPrice =
         (Number(currentPrice) - Number(lowerPrice)) / range;
+
+      if (
+        (upperPrice.toString().includes("e-") ||
+          upperPrice.toString().includes("e+")) &&
+        (lowerPrice.toString().includes("e-") ||
+          lowerPrice.toString().includes("e+"))
+      ) {
+        const formatPercentValue = normalizedCurrentPrice
+          .toString()
+          .slice(0, normalizedCurrentPrice.toString().indexOf("e"));
+
+        sliderValue = Number(formatPercentValue) * 10;
+      }
+
+      if (Math.round((Number(currentPrice) / Number(upperPrice)) * 100) < 97) {
+        sliderValue = normalizedCurrentPrice * 100 + 3;
+      }
+
       sliderValue = normalizedCurrentPrice * 100;
     }
   }
