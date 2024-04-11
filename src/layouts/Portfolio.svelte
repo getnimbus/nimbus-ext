@@ -920,6 +920,7 @@
           portfolioChart: [],
           updatedAt: "",
         };
+        positionListQueries = [];
         positionsData = [];
         newsData = [];
         holdingNFTData = [];
