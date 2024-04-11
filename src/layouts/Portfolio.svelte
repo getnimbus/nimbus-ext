@@ -336,45 +336,14 @@
     })
   );
 
-  $: {
-    if ($queryAllPositions.length !== 0) {
-      const allPositions = flatten(
-        $queryAllPositions
-          ?.filter((item) => Array.isArray(item.data))
-          ?.map((item) => item.data)
-      );
-      if (allPositions && allPositions.length !== 0) {
-        positionsData = allPositions;
-      }
-    }
-  }
-
-  // const getPositions = async (address, chain) => {
-  //   const response: any = await nimbus.get(
-  //     `/v2/address/${address}/positions?chain=${chain}`
-  //   );
-  //   return response?.data;
-  // };
-
-  // $: queryPositions = createQuery({
-  //   queryKey: ["positions", $wallet, $chain],
-  //   queryFn: () => getPositions($wallet, $chain),
-  //   staleTime: Infinity,
-  //   enabled: Boolean(
-  //     enabledFetchAllData &&
-  //       $wallet &&
-  //       $wallet?.length !== 0 &&
-  //       !$queryValidate.isFetching &&
-  //       $tab === "defi" &&
-  //       ($typeWallet === "MOVE" || $typeWallet === "EVM")
-  //   ),
-  // });
-
-  // $: {
-  //   if (!$queryPositions.isError && $queryPositions.data !== undefined) {
-  //     positionsData = $queryPositions.data;
-  //   }
-  // }
+  $: positionsData =
+    $queryAllPositions.length !== 0
+      ? flatten(
+          $queryAllPositions
+            ?.filter((item) => Array.isArray(item.data))
+            ?.map((item) => item.data)
+        )
+      : [];
 
   //// OVERVIEW
   const getOverview = async (chain) => {
