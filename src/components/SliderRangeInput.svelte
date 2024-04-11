@@ -37,13 +37,16 @@
           .slice(0, normalizedCurrentPrice.toString().indexOf("e"));
 
         sliderValue = Number(formatPercentValue) * 10;
+      } else {
+        const condition = Math.round(
+          (Number(currentPrice) / Number(upperPrice)) * 100
+        );
+        if (condition > 0 && condition < 97) {
+          sliderValue = normalizedCurrentPrice * 100 + 3;
+        } else {
+          sliderValue = normalizedCurrentPrice * 100;
+        }
       }
-
-      if (Math.round((Number(currentPrice) / Number(upperPrice)) * 100) < 97) {
-        sliderValue = normalizedCurrentPrice * 100 + 3;
-      }
-
-      sliderValue = normalizedCurrentPrice * 100;
     }
   }
 </script>
