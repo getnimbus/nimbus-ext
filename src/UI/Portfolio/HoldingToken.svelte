@@ -1169,7 +1169,14 @@
                         handleCalculateRealizedProfit(data[index])
                           ?.percentRealizedProfit
                       ) * 100}
-                      type="percent"
+                      type={Math.abs(
+                        handleCalculateRealizedProfit(data[index])
+                          ?.percentRealizedProfit
+                      ) *
+                        100 >
+                      999999
+                        ? "balance"
+                        : "percent"}
                     />
                     <span>%</span>
                   </div>
@@ -1248,7 +1255,14 @@
                         handleCalculateUnrealizedProfit(data[index])
                           ?.percentUnrealizedProfit
                       ) * 100}
-                      type="percent"
+                      type={Math.abs(
+                        handleCalculateUnrealizedProfit(data[index])
+                          ?.percentUnrealizedProfit
+                      ) *
+                        100 >
+                      999999
+                        ? "balance"
+                        : "percent"}
                     />
                     <span>%</span>
                   </div>
@@ -1414,7 +1428,11 @@
                         <TooltipNumber
                           number={Math.abs(item.amount / data[index].amount) *
                             100}
-                          type="percent"
+                          type={Math.abs(item.amount / data[index].amount) *
+                            100 >
+                          999999
+                            ? "balance"
+                            : "percent"}
                         />%
                       </div>
                       <div class="w-3/4 max-w-20">
@@ -2136,7 +2154,14 @@
                         handleCalculateRealizedProfit(data[index])
                           ?.percentRealizedProfit
                       ) * 100}
-                      type="percent"
+                      type={Math.abs(
+                        handleCalculateRealizedProfit(data[index])
+                          ?.percentRealizedProfit
+                      ) *
+                        100 >
+                      999999
+                        ? "balance"
+                        : "percent"}
                     />
                     <span>%</span>
                   </div>
@@ -2204,7 +2229,14 @@
                         handleCalculateUnrealizedProfit(data[index])
                           ?.percentUnrealizedProfit
                       ) * 100}
-                      type="percent"
+                      type={Math.abs(
+                        handleCalculateUnrealizedProfit(data[index])
+                          ?.percentUnrealizedProfit
+                      ) *
+                        100 >
+                      999999
+                        ? "balance"
+                        : "percent"}
                     />
                     <span>%</span>
                   </div>
@@ -2478,7 +2510,13 @@
                           number={Math.abs(
                             item.amount / selectedTokenDetail.amount
                           ) * 100}
-                          type="percent"
+                          type={Math.abs(
+                            item.amount / selectedTokenDetail.amount
+                          ) *
+                            100 >
+                          999999
+                            ? "balance"
+                            : "percent"}
                         />%
                       </div>
                       <div class="w-3/4 max-w-30">

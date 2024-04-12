@@ -91,7 +91,7 @@
     }
   }
 
-  // format initial data
+  // format initial data token holding
   $: {
     if (
       selectedTokenHolding &&
@@ -150,8 +150,11 @@
           .reduce((prev, item) => prev + Number(item.unrealized_profit), 0);
       }
     }
+  }
 
-    if (holdingNFTData) {
+  // format initial data nft holding
+  $: {
+    if (holdingNFTData && holdingNFTData.length !== 0) {
       formatDataNFT = holdingNFTData
         .map((item) => {
           return {
@@ -387,7 +390,7 @@
         .reduce((prev, item) => prev + Number(item.unrealized_profit), 0);
 
       // update data nft holding
-      const formatDataNFTWithMarketPrice = formatDataNFT.map((item) => {
+      const formatDataNFTWithMarketPrice = holdingNFTData.map((item) => {
         return {
           ...item,
           marketPrice: $realtimePrice[item?.nativeToken?.cmcId]
@@ -514,9 +517,7 @@
       sumNFT = 0;
       dataSubWS = [];
       formatData = [];
-      formatDataNFT = [];
       filteredHoldingDataToken = [];
-      filteredHoldingDataNFT = [];
       filteredUndefinedCmcHoldingTokenData = [];
       filteredNullCmcHoldingTokenData = [];
       totalTokens.update((n) => (n = 0));
