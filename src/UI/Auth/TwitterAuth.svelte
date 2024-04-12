@@ -1,7 +1,7 @@
 <script lang="ts">
   import { nimbus } from "~/lib/network";
   import { user, isDarkMode, triggerConnectWallet } from "~/store";
-  import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+  import { TwitterAuthProvider, signInWithPopup } from "firebase/auth";
   import { auth } from "~/lib/firebase";
   import { useQueryClient } from "@tanstack/svelte-query";
   import mixpanel from "mixpanel-browser";
@@ -9,10 +9,9 @@
   import { blur } from "svelte/transition";
 
   import User from "~/assets/user.png";
-  import Google from "~/assets/google.png";
 
   const queryClient = useQueryClient();
-  const googleProvider = new GoogleAuthProvider();
+  const twitterProvider = new TwitterAuthProvider();
 
   let toastMsg = "";
   let isSuccessToast = false;
@@ -32,21 +31,20 @@
     isSuccessToast = false;
   };
 
-  const handleGoogleAuth = async () => {
-    mixpanel.track("user_login_google");
+  const handleTwitterAuth = async () => {
+    mixpanel.track("user_login_twitter");
     try {
-      googleProvider.addScope("email");
-      googleProvider.addScope("profile");
-      const res = await signInWithPopup(auth, googleProvider).then(
-        (result) => result.user
+      const res = await signInWithPopup(auth, twitterProvider).then(
+        (result) => {
+          return result.user;
+        }
       );
       if (res) {
-        handleGetGoogleToken(
+        handleGetTwitterToken(
           res.uid,
-          "google",
-          res?.reloadUserInfo?.providerUserInfo[0]?.email || res.email,
-          res?.reloadUserInfo?.providerUserInfo[0]?.displayName ||
-            res.displayName
+          "twitter",
+          res.providerData[0].email,
+          res.displayName
         );
       }
     } catch (e) {
@@ -54,7 +52,7 @@
     }
   };
 
-  const handleGetGoogleToken = async (uid, type, info, displayName) => {
+  const handleGetTwitterToken = async (uid, type, info, displayName) => {
     try {
       const res = await nimbus.post("/auth", {
         uid,
@@ -65,14 +63,14 @@
       if (res?.data?.result) {
         triggerConnectWallet.update((n) => (n = false));
         localStorage.setItem("auth_token", res?.data?.result);
-        localStorage.setItem("socialAuthType", "google");
+        localStorage.setItem("socialAuthType", "twitter");
         user.update(
           (n) =>
             (n = {
               picture: User,
             })
         );
-        toastMsg = "Login with Google successfully!";
+        toastMsg = "Login with Twitter successfully!";
         isSuccessToast = true;
         trigger();
         queryClient?.invalidateQueries(["users-me"]);
@@ -92,10 +90,18 @@
   class={`flex items-center justify-center gap-2 text-white border cursor-pointer py-3 px-6 rounded-[12px] min-w-[250px] ${
     $isDarkMode ? "border-white text-white" : "border-[#27326f] text-[#27326f]"
   }`}
-  on:click={handleGoogleAuth}
+  on:click={handleTwitterAuth}
 >
-  <img src={Google} class="h-[24px]" />
-  <div class="font-semibold text-[15px]">Login with Google</div>
+  <img
+    alt="link Twitter"
+    loading="lazy"
+    decoding="async"
+    data-nimg="1"
+    style="color:transparent"
+    src="https://getnimbus.io/logoSocialMedia/twitterX1.svg"
+    class="w-[24px] h-[24px]"
+  />
+  <div class="font-semibold text-[15px]">Login with X</div>
 </div>
 
 {#if showToast}
@@ -142,6 +148,3 @@
     </Toast>
   </div>
 {/if}
-
-<style>
-</style>

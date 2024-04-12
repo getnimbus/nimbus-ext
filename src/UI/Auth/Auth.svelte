@@ -42,6 +42,7 @@
   import Loading from "~/components/Loading.svelte";
   import Button from "~/components/Button.svelte";
   import GoogleAuth from "./GoogleAuth.svelte";
+  import TwitterAuth from "./TwitterAuth.svelte";
   import SuiAuth from "./SUIAuth.svelte";
   import SolanaAuth from "./SolanaAuth.svelte";
   import TonAuth from "./TonAuth.svelte";
@@ -820,6 +821,7 @@
       <TonAuth />
       <SuiAuth />
       <GoogleAuth />
+      <TwitterAuth />
     </div>
   </div>
 </AppOverlay>
