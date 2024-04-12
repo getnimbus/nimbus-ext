@@ -5,8 +5,10 @@
   import { i18n } from "~/lib/i18n";
   import { shorterAddress } from "~/utils";
   import mixpanel from "mixpanel-browser";
+  import { createQuery } from "@tanstack/svelte-query";
 
   import Google from "../SocialLinks/Google.svelte";
+  import Twitter from "../SocialLinks/Twitter.svelte";
   import Solana from "../MainWalletLinks/Solana.svelte";
   import Evm from "../MainWalletLinks/Evm.svelte";
 
@@ -17,68 +19,40 @@
     title: i18n("optionsPage.links-page-title", "Link Settings"),
   };
 
-  let uid = "";
   let dataUserSocialLogin: any = {};
   let socialData = [];
   let chain = "";
 
-  const handleValidateAddress = async (address: string) => {
-    try {
-      const response = await nimbus.get(`/v2/address/${address}/validate`);
-      chain = response?.data?.type;
-    } catch (e) {
-      console.log("e: ", e);
-    }
-  };
-
-  onMount(() => {
-    uid = localStorage.getItem("public_address");
+  $: queryLinkSocial = createQuery({
+    queryKey: ["link-socials"],
+    queryFn: () => getLinkData(),
+    staleTime: Infinity,
   });
 
-  $: {
-    if (uid) {
-      getLinkViaUid(uid);
-      getLinkViaAddress(uid);
-    }
-  }
-
-  const getLinkViaAddress = async (address: string) => {
-    try {
-      const response: any = await nimbus.get(
-        `/accounts/link?address=${address}`
-      );
-      socialData = response?.data;
-    } catch (e) {
-      console.log("e: ", e);
-    }
+  const getLinkData = async () => {
+    const response: any = await nimbus.get("/accounts/link");
+    return response;
   };
 
-  const getLinkViaUid = async (id: string) => {
-    try {
-      const response: any = await nimbus.get(`/accounts/link?id=${id}`);
-      dataUserSocialLogin = response?.data[0] || {};
-      if (dataUserSocialLogin?.publicAddress) {
-        getLinkViaAddress(dataUserSocialLogin?.publicAddress);
+  $: {
+    if (!$queryLinkSocial.isError && $queryLinkSocial.data !== undefined) {
+      socialData = $queryLinkSocial?.data?.data;
+      if (
+        $queryLinkSocial?.data?.data &&
+        $queryLinkSocial?.data?.data[0] &&
+        $queryLinkSocial?.data?.data[0]?.publicAddress
+      ) {
+        dataUserSocialLogin = $queryLinkSocial?.data?.data[0] || {};
         userSocialPublicAddress.update(
           (n) => (n = dataUserSocialLogin?.publicAddress)
         );
       }
-    } catch (e) {
-      console.log("e: ", e);
     }
-  };
+  }
 
   onMount(() => {
     mixpanel.track("accounts_page");
   });
-
-  $: {
-    if (dataUserSocialLogin && dataUserSocialLogin?.publicAddress) {
-      handleValidateAddress(dataUserSocialLogin?.publicAddress);
-    } else {
-      handleValidateAddress($userPublicAddress);
-    }
-  }
 </script>
 
 <div class="flex flex-col gap-4">
@@ -92,125 +66,78 @@
   </div>
 
   <div class="flex flex-col gap-6">
-    <div class="flex flex-col gap-2">
-      <div class="xl:text-base text-xl font-medium">
-        Link your social accounts
+    <!-- user social login -->
+    {#if localStorage.getItem("auth_token")}
+      <div class="flex flex-col gap-2">
+        <div class="xl:text-base text-xl font-medium">
+          Link your social accounts
+        </div>
+        <div class="flex flex-col gap-3">
+          {#each socialData as item}
+            {#if localStorage.getItem("socialAuthType") === "google"}
+              <Google data={item} isDisabledRemove />
+            {/if}
+            {#if localStorage.getItem("socialAuthType") === "twitter"}
+              <Twitter data={item} isDisabledRemove />
+            {/if}
+          {/each}
+        </div>
       </div>
 
-      <!-- user social login -->
-      {#if localStorage.getItem("auth_token")}
-        {#if dataUserSocialLogin && Object.keys(dataUserSocialLogin).length !== 0}
-          {#if dataUserSocialLogin?.type === "google"}
-            <Google
-              data={dataUserSocialLogin}
-              isDisabledRemove
-              reCallAPI={() => {
-                getLinkViaAddress($userPublicAddress);
-              }}
-            />
-          {/if}
-          {#if dataUserSocialLogin?.type === "twitter"}
-            <div>Twitter</div>
-          {/if}
-        {:else}
-          <div class="flex flex-col gap-3">
-            {#each socialData as item}
-              {#if localStorage.getItem("socialAuthType") === "google"}
-                <Google
-                  data={item}
-                  isDisabledRemove
-                  reCallAPI={() => {
-                    getLinkViaAddress($userPublicAddress);
-                  }}
-                />
-              {/if}
-            {/each}
-          </div>
-        {/if}
-      {/if}
-
-      <!-- user connect wallet -->
-      {#if !localStorage.getItem("auth_token")}
+      <div class="flex flex-col gap-2">
+        <div class="xl:text-base text-xl font-medium">
+          Connect your main wallet
+        </div>
         <div class="flex flex-col gap-3">
-          {#if socialData && socialData.length !== 0}
-            {#each socialData as item}
-              {#if item.type === "google"}
-                <Google
-                  data={item}
-                  reCallAPI={() => {
-                    getLinkViaAddress($userPublicAddress);
-                  }}
-                />
-              {/if}
-            {/each}
-          {:else}
-            <div>
-              {#if localStorage.getItem("evm_token") || localStorage.getItem("solana_token") || localStorage.getItem("sui_token") || localStorage.getItem("ton_token")}
-                <Google
-                  data={{}}
-                  reCallAPI={() => {
-                    getLinkViaAddress($userPublicAddress);
-                  }}
-                />
-              {/if}
-            </div>
+          <Evm
+            data={dataUserSocialLogin}
+            reCallAPI={() => {
+              dataUserSocialLogin = {};
+              location.reload();
+            }}
+          />
+          <Solana
+            data={dataUserSocialLogin}
+            reCallAPI={() => {
+              dataUserSocialLogin = {};
+              location.reload();
+            }}
+          />
+        </div>
+      </div>
+    {/if}
+
+    <!-- user connect wallet -->
+    {#if !localStorage.getItem("auth_token")}
+      <div class="flex flex-col gap-2">
+        <div class="xl:text-base text-xl font-medium">
+          Link your social accounts
+        </div>
+        <div class="flex items-center gap-6">
+          {#each socialData as item}
+            {#if item.type === "google"}
+              <Google data={item} />
+            {/if}
+            {#if item.type === "twitter"}
+              <Twitter data={item} />
+            {/if}
+          {/each}
+
+          {#if socialData && socialData.length === 1 && socialData.find((item) => item.type === "google")}
+            <Twitter data={{}} />
+          {/if}
+
+          {#if socialData && socialData.length === 1 && socialData.find((item) => item.type === "twitter")}
+            <Google data={{}} />
+          {/if}
+
+          {#if socialData && socialData.length === 0}
+            <Google data={{}} />
+            <Twitter data={{}} />
           {/if}
         </div>
-      {/if}
-    </div>
-
-    {#if dataUserSocialLogin && Object.keys(dataUserSocialLogin).length !== 0 && localStorage.getItem("auth_token")}
-      <div class="flex flex-col gap-2">
-        {#if !dataUserSocialLogin?.publicAddress}
-          <div class="xl:text-base text-xl font-medium">
-            Connect your main wallet
-          </div>
-          <div class="flex flex-col gap-3">
-            <Evm
-              data={dataUserSocialLogin}
-              reCallAPI={() => {
-                dataUserSocialLogin = {};
-                getLinkViaUid(uid);
-                getLinkViaAddress($userPublicAddress);
-              }}
-            />
-            <Solana
-              data={dataUserSocialLogin}
-              reCallAPI={() => {
-                dataUserSocialLogin = {};
-                getLinkViaUid(uid);
-                getLinkViaAddress($userPublicAddress);
-              }}
-            />
-          </div>
-        {:else}
-          <div class="xl:text-base text-xl font-medium">
-            Your main wallet address
-          </div>
-          <div class="text-lg flex items-center gap-3">
-            {#if chain === "EVM"}
-              <img
-                src={EvmLogo}
-                alt=""
-                width="28"
-                height="28"
-                class="rounded-full"
-              />
-            {/if}
-            {#if chain === "SOL"}
-              <img
-                src={SolanaLogo}
-                alt=""
-                width="28"
-                height="28"
-                class="rounded-full"
-              />
-            {/if}
-            {dataUserSocialLogin?.publicAddress}
-          </div>
-        {/if}
       </div>
-    {:else}
+
       <div class="flex flex-col gap-2">
         <div class="xl:text-base text-xl font-medium">
           Your main wallet address

@@ -70,6 +70,14 @@
         } else {
           handleGetPairData(contractAddress);
         }
+      } else if ($typeWallet === "SOL") {
+        baseAsset = {
+          name: id,
+          address: contractAddress,
+          price,
+          token0: id,
+          token1: "USD",
+        };
       } else {
         if (
           contractAddress &&
@@ -142,7 +150,7 @@
     }
 
     const options: any = {
-      datafeed: Datafeed(baseAsset),
+      datafeed: Datafeed(baseAsset, $typeWallet),
       symbol:
         baseAsset?.token0 === id
           ? baseAsset?.token0 + "/" + "USD"
@@ -154,6 +162,7 @@
         .then(({ widget: Widget }) => {
           const tvWidget = new Widget({
             ...options,
+            ...widgetOptionsDefault,
             container: chartContainer,
             container_id: CONTAINER_ID,
             library_path: "/static/charting_library/",
@@ -178,7 +187,7 @@
               "volume.volume.color.0": "#ea3943",
               "volume.volume.color.1": "#0ECB81",
             },
-            ...widgetOptionsDefault,
+            interval: "24h",
           });
 
           (window as any).tvWidget = tvWidget;
