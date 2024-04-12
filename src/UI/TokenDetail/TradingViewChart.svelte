@@ -70,11 +70,18 @@
         } else {
           handleGetPairData(contractAddress);
         }
+      } else if ($typeWallet === "SOL") {
+        baseAsset = {
+          name: id,
+          address: contractAddress,
+          price,
+          token0: id,
+          token1: "USD",
+        };
       } else {
         if (
           contractAddress &&
-          (contractAddress !== "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" ||
-            contractAddress !== "11111111111111111111111111111111")
+          contractAddress !== "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
         ) {
           if (nativeTokenList.includes(id)) {
             handleGetPairData(id === "ETH" ? "ethereum" : id);
@@ -143,7 +150,7 @@
     }
 
     const options: any = {
-      datafeed: Datafeed(baseAsset),
+      datafeed: Datafeed(baseAsset, $typeWallet),
       symbol:
         baseAsset?.token0 === id
           ? baseAsset?.token0 + "/" + "USD"
