@@ -62,14 +62,14 @@ const authKey =
 
 export const handleFormatBlockChainId = (chain: string) => {
   switch (chain) {
+    case "ETH": // Ethereum
+      return "1";
     case "XDAI": // XDAI
       return "100";
     case "AVAX": // Avalanche C-Chain
       return "43114";
     case "CRONOS": // Cronos
       return "25";
-    case "ETH": // Ethereum
-      return "1";
     case "MATIC": // Polygon
       return "137";
     case "BNB": // BNB Smart Chain (BEP20)
@@ -84,8 +84,6 @@ export const handleFormatBlockChainId = (chain: string) => {
       return "10";
     case "BASE": // Base
       return "8453";
-    case "SUI": // SUI
-      return "sui";
     case "MANTLE": // Mantle
       return "5000";
     case "MOVR": // Moonriver
@@ -100,6 +98,10 @@ export const handleFormatBlockChainId = (chain: string) => {
       return "250";
     case "ROSE": // Oasis
       return "42262";
+    case "SUI": // SUI
+      return "sui";
+    case "SOL": // Solana
+      return "solana";
     case "TON":
       return "TON";
     case "NEAR":
