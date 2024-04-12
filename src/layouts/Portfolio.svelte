@@ -1050,6 +1050,7 @@
                         unrealizedProfit.update((n) => (n = 0));
                         realizedProfit.update((n) => (n = 0));
                         pastProfit.update((n) => (n = 0));
+                        mixpanel.track(`user_select_tab_${type.value}`);
                       }}
                     >
                       <div
