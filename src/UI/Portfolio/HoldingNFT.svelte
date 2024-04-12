@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { onMount } from "svelte";
   import VirtualList from "svelte-tiny-virtual-list";
   import { shorterName } from "~/utils";
   import { detectedChain } from "~/lib/chains";
@@ -29,20 +28,6 @@
   export let data;
   export let defaultData;
   export let isLoading;
-
-  let tableNFTHeader;
-  let isStickyTableNFT = false;
-
-  onMount(() => {
-    const handleScroll = () => {
-      const clientRectNFTHeader = tableNFTHeader?.getBoundingClientRect();
-      isStickyTableNFT = clientRectNFTHeader?.top <= 0;
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  });
 
   const MultipleLang = {
     content: {
@@ -211,59 +196,55 @@
     $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
   }`}
 >
-  <div
-    class={`bg_f4f5f8 grid grid-cols-8 ${isStickyTableNFT ? "sticky top-0 z-9" : ""}`}
-    bind:this={tableNFTHeader}
-  >
-    <div class="col-spans-2 pl-3 py-3 rounded-tl-[10px]">
-      <div class="text-left xl:text-xs text-xl uppercase font-medium">
-        {MultipleLang.collection}
-      </div>
-    </div>
-
-    <div class="col-spans-2 py-3">
-      <div class="text-left xl:text-xs text-xl uppercase font-medium">
-        {MultipleLang.Balance}
-      </div>
-    </div>
-
-    <div class="py-3">
-      <div class="text-right xl:text-xs text-xl uppercase font-medium">
-        <TooltipTitle
-          tooltipText={false
-            ? "The Floor price from Magic Eden marketplace. "
-            : "The Floor price of last 24h, if there is no volume, the floor price is 0"}
-          link={false ? "https://magiceden.io/ordinals" : ""}
-        >
-          {MultipleLang.floor_price}
-        </TooltipTitle>
-      </div>
-    </div>
-
-    <div class="py-3">
-      <div class="text-right xl:text-xs text-xl uppercase font-medium">
-        Cost
-      </div>
-    </div>
-
-    <div class="py-3">
-      <div class="text-right xl:text-xs text-xl uppercase font-medium">
-        {MultipleLang.current_value}
-      </div>
-    </div>
-
-    <div class="py-3 pr-3 rounded-tr-[10px]">
-      <div class="text-right xl:text-xs text-xl uppercase font-medium">
-        <TooltipTitle
-          tooltipText="Price NFTs now - Price NFTs at time you spent"
-        >
-          {MultipleLang.profit}
-        </TooltipTitle>
-      </div>
-    </div>
-  </div>
-
   {#if data && data.length === 0 && !isLoading}
+    <div class="bg_f4f5f8 grid grid-cols-8">
+      <div class="col-spans-2 pl-3 py-3 rounded-tl-[10px]">
+        <div class="text-left xl:text-xs text-xl uppercase font-medium">
+          {MultipleLang.collection}
+        </div>
+      </div>
+
+      <div class="col-spans-2 py-3">
+        <div class="text-left xl:text-xs text-xl uppercase font-medium">
+          {MultipleLang.Balance}
+        </div>
+      </div>
+
+      <div class="py-3">
+        <div class="text-right xl:text-xs text-xl uppercase font-medium">
+          <TooltipTitle
+            tooltipText={false
+              ? "The Floor price from Magic Eden marketplace. "
+              : "The Floor price of last 24h, if there is no volume, the floor price is 0"}
+            link={false ? "https://magiceden.io/ordinals" : ""}
+          >
+            {MultipleLang.floor_price}
+          </TooltipTitle>
+        </div>
+      </div>
+
+      <div class="py-3">
+        <div class="text-right xl:text-xs text-xl uppercase font-medium">
+          Cost
+        </div>
+      </div>
+
+      <div class="py-3">
+        <div class="text-right xl:text-xs text-xl uppercase font-medium">
+          {MultipleLang.current_value}
+        </div>
+      </div>
+
+      <div class="py-3 pr-3 rounded-tr-[10px]">
+        <div class="text-right xl:text-xs text-xl uppercase font-medium">
+          <TooltipTitle
+            tooltipText="Price NFTs now - Price NFTs at time you spent"
+          >
+            {MultipleLang.profit}
+          </TooltipTitle>
+        </div>
+      </div>
+    </div>
     <div class="grid grid-cols-8">
       <div
         class="col-span-full flex justify-center items-center h-[465px] py-3 px-3 text-base text-gray-400"
@@ -279,357 +260,435 @@
     <VirtualList
       scrollDirection="vertical"
       width="100%"
-      height={data.length < 10 ? data.length * 85 + 1 : 851}
-      itemCount={data.length}
-      itemSize={85}
+      height={data.length < 10 ? data.length * 85 + 1 + 40 : 851}
+      itemCount={data.length + 1}
+      itemSize={(index) => {
+        return index > 0 ? 85 : 40;
+      }}
+      stickyIndices={[0]}
     >
       <div
-        class="grid grid-cols-8 group transition-all cursor-pointer"
+        class={`grid grid-cols-8 group transition-all ${index > 0 ? "cursor-pointer" : ""}`}
         slot="item"
         let:index
         let:style
         {style}
         on:mouseover={() => {
-          if ($user && Object.keys($user).length !== 0) {
-            selectedItemIndex = index;
-            isShowReport = true;
+          if (index > 0) {
+            if ($user && Object.keys($user).length !== 0) {
+              selectedItemIndex = index - 1;
+              isShowReport = true;
+            }
           }
         }}
         on:mouseleave={() => {
-          if ($user && Object.keys($user).length !== 0) {
-            selectedItemIndex = -1;
-            isShowReport = false;
+          if (index > 0) {
+            if ($user && Object.keys($user).length !== 0) {
+              selectedItemIndex = -1;
+              isShowReport = false;
+            }
           }
         }}
         on:click={() => {
-          showSideNftDetail = true;
-          selectedNft = data[index];
-          selectedNftCollectionId = data[index]?.collectionId;
-          selectedNftCollectionChain = data[index]?.nativeToken?.symbol;
-          mixpanel.track("nft_detail_page", {
-            address: $wallet,
-            collection_type: data[index].collectionId,
-          });
+          if (index > 0) {
+            showSideNftDetail = true;
+            selectedNft = data[index - 1];
+            selectedNftCollectionId = data[index - 1]?.collectionId;
+            selectedNftCollectionChain = data[index - 1]?.nativeToken?.symbol;
+            mixpanel.track("nft_detail_page", {
+              address: $wallet,
+              collection_type: data[index - 1].collectionId,
+            });
+          }
         }}
       >
-        <div
-          class={`col-spans-2 pl-3 py-3 ${
-            $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
-          }`}
-          style={`${data.length - 1 === index ? "border-bottom-left-radius: 10px;" : ""}`}
-        >
-          <div class="flex flex-col gap-1">
-            <div class="flex items-center gap-2">
-              <div
-                class="xl:text-sm text-2xl font-medium flex justify-start relative"
-                on:mouseover={() => {
-                  selectedItemIndex = index;
-                  isShowTooltipName = true;
-                }}
-                on:mouseleave={() => {
-                  selectedItemIndex = -1;
-                  isShowTooltipName = false;
-                }}
+        {#if index === 0}
+          <div class="bg_f4f5f8 col-spans-2 pl-3 py-3 rounded-tl-[10px]">
+            <div class="text-left xl:text-xs text-xl uppercase font-medium">
+              {MultipleLang.collection}
+            </div>
+          </div>
+
+          <div class="bg_f4f5f8 col-spans-2 py-3">
+            <div class="text-left xl:text-xs text-xl uppercase font-medium">
+              {MultipleLang.Balance}
+            </div>
+          </div>
+
+          <div class="bg_f4f5f8 py-3">
+            <div class="text-right xl:text-xs text-xl uppercase font-medium">
+              <TooltipTitle
+                tooltipText={false
+                  ? "The Floor price from Magic Eden marketplace. "
+                  : "The Floor price of last 24h, if there is no volume, the floor price is 0"}
+                link={false ? "https://magiceden.io/ordinals" : ""}
               >
-                {data[index]?.collection?.name
-                  ? data[index]?.collection?.name.length > 24
-                    ? shorterName(data[index]?.collection?.name, 20)
-                    : data[index]?.collection?.name
-                  : "N/A"}
+                {MultipleLang.floor_price}
+              </TooltipTitle>
+            </div>
+          </div>
 
-                {#if isShowTooltipName && selectedItemIndex === index && data[index]?.collection?.name?.length > 24}
-                  <div
-                    class="absolute -top-8 left-0"
-                    style="z-index: 2147483648;"
-                  >
-                    <Tooltip text={data[index]?.collection?.name} />
-                  </div>
-                {/if}
-              </div>
+          <div class="bg_f4f5f8 py-3">
+            <div class="text-right xl:text-xs text-xl uppercase font-medium">
+              Cost
+            </div>
+          </div>
 
-              {#if isShowReport && selectedItemIndex === index}
+          <div class="bg_f4f5f8 py-3">
+            <div class="text-right xl:text-xs text-xl uppercase font-medium">
+              {MultipleLang.current_value}
+            </div>
+          </div>
+
+          <div class="bg_f4f5f8 py-3 pr-3 rounded-tr-[10px]">
+            <div class="text-right xl:text-xs text-xl uppercase font-medium">
+              <TooltipTitle
+                tooltipText="Price NFTs now - Price NFTs at time you spent"
+              >
+                {MultipleLang.profit}
+              </TooltipTitle>
+            </div>
+          </div>
+        {:else}
+          <div
+            class={`col-spans-2 pl-3 py-3 ${
+              $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
+            }`}
+            style={`${data.length - 1 === index - 1 ? "border-bottom-left-radius: 10px;" : ""}`}
+          >
+            <div class="flex flex-col gap-1">
+              <div class="flex items-center gap-2">
                 <div
-                  class="relative w-5 cursor-pointer"
-                  on:click={(e) => {
-                    e.stopPropagation();
-                    isShowReportTable = true;
-                    selectedNft = data[index];
-                  }}
+                  class="xl:text-sm text-2xl font-medium flex justify-start relative"
                   on:mouseover={() => {
-                    selectedItemIndex = index;
-                    isShowTooltipReport = true;
+                    if (index > 0) {
+                      selectedItemIndex = index - 1;
+                      isShowTooltipName = true;
+                    }
                   }}
                   on:mouseleave={() => {
-                    selectedItemIndex = -1;
-                    isShowTooltipReport = false;
+                    if (index > 0) {
+                      selectedItemIndex = -1;
+                      isShowTooltipName = false;
+                    }
                   }}
                 >
-                  <div class="xl:w-[16px] xl:h-[16px] w-[26px] h-[26px]">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                      <g
-                        fill="none"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                      >
-                        <path d="M0 0h24v24H0z" />
-                        <path
-                          fill="currentColor"
-                          d="M19 4c.852 0 1.297.986.783 1.623l-.076.084L15.915 9.5l3.792 3.793c.603.602.22 1.614-.593 1.701L19 15H6v6a1 1 0 0 1-.883.993L5 22a1 1 0 0 1-.993-.883L4 21V5a1 1 0 0 1 .883-.993L5 4h14z"
-                        />
-                      </g>
-                    </svg>
-                    {#if isShowTooltipReport && selectedItemIndex === index}
-                      <div
-                        class="absolute -top-8 left-1/2 transform -translate-x-1/2"
-                        style="z-index: 2147483648;"
-                      >
-                        <Tooltip text="Report" />
-                      </div>
-                    {/if}
-                  </div>
-                </div>
-              {/if}
-            </div>
+                  {data[index - 1]?.collection?.name
+                    ? data[index - 1]?.collection?.name.length > 24
+                      ? shorterName(data[index - 1]?.collection?.name, 20)
+                      : data[index - 1]?.collection?.name
+                    : "N/A"}
 
-            {#if ($typeWallet === "EVM" || $typeWallet === "BUNDLE") && data[index]?.nativeToken?.symbol !== "CEX"}
-              <img
-                src={detectedChain(data[index]?.nativeToken?.symbol)?.logo}
-                alt=""
-                width="20"
-                height="20"
-                class="rounded-full"
-              />
-            {/if}
-          </div>
-        </div>
-
-        <div
-          class={`col-spans-2 py-3 ${
-            $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
-          }`}
-        >
-          <div class="relative">
-            <div
-              class="flex justify-start w-max"
-              on:mouseenter={() => {
-                selectedItemIndex = index;
-                showTooltipListNFT = true;
-              }}
-              on:mouseleave={() => {
-                selectedItemIndex = -1;
-                showTooltipListNFT = false;
-              }}
-            >
-              {#if data[index]?.tokens?.length > 5}
-                {#each data[index]?.tokens.slice(0, 4) as token, index}
-                  <div
-                    class={`xl:w-9 xl:h-9 w-12 h-12 rounded-md border-2 border-white overflow-hidden ${
-                      index > 0 && "-ml-2"
-                    }`}
-                  >
-                    <Image
-                      logo={token?.imageUrl}
-                      defaultLogo="https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"
-                    />
-                  </div>
-                {/each}
-                <div class="relative xl:w-9 xl:h-9 w-12 h-12">
-                  <div
-                    class="xl:w-9 xl:h-9 w-12 h-12 rounded-md border-2 border-white overflow-hidden -ml-2"
-                  >
-                    <Image
-                      logo={data[index]?.tokens[4].imageUrl}
-                      defaultLogo="https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"
-                    />
-                  </div>
-                  <div
-                    class="absolute top-0 -left-2 w-full h-full bg-[#00000066] text-white text-center flex justify-center items-center pb-2 rounded-md"
-                  >
-                    ...
-                  </div>
+                  {#if isShowTooltipName && selectedItemIndex === index - 1 && data[index - 1]?.collection?.name?.length > 24}
+                    <div
+                      class="absolute -top-8 left-0"
+                      style="z-index: 2147483648;"
+                    >
+                      <Tooltip text={data[index - 1]?.collection?.name} />
+                    </div>
+                  {/if}
                 </div>
-                {#if showTooltipListNFT && selectedItemIndex === index && data[index]?.tokens?.length > 5}
+
+                {#if isShowReport && selectedItemIndex === index - 1}
                   <div
-                    class="absolute -top-7 left-0"
-                    style="z-index: 2147483648;"
+                    class="relative w-5 cursor-pointer"
+                    on:click={(e) => {
+                      e.stopPropagation();
+                      isShowReportTable = true;
+                      selectedNft = data[index - 1];
+                    }}
+                    on:mouseover={() => {
+                      if (index > 0) {
+                        selectedItemIndex = index - 1;
+                        isShowTooltipReport = true;
+                      }
+                    }}
+                    on:mouseleave={() => {
+                      if (index > 0) {
+                        selectedItemIndex = -1;
+                        isShowTooltipReport = false;
+                      }
+                    }}
                   >
-                    <Tooltip
-                      text={`${data[index]?.tokens?.length} NFTs on collection ${data[index]?.collection?.name}`}
-                    />
+                    <div class="xl:w-[16px] xl:h-[16px] w-[26px] h-[26px]">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                      >
+                        <g
+                          fill="none"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                        >
+                          <path d="M0 0h24v24H0z" />
+                          <path
+                            fill="currentColor"
+                            d="M19 4c.852 0 1.297.986.783 1.623l-.076.084L15.915 9.5l3.792 3.793c.603.602.22 1.614-.593 1.701L19 15H6v6a1 1 0 0 1-.883.993L5 22a1 1 0 0 1-.993-.883L4 21V5a1 1 0 0 1 .883-.993L5 4h14z"
+                          />
+                        </g>
+                      </svg>
+                      {#if isShowTooltipReport && selectedItemIndex === index - 1}
+                        <div
+                          class="absolute -top-8 left-1/2 transform -translate-x-1/2"
+                          style="z-index: 2147483648;"
+                        >
+                          <Tooltip text="Report" />
+                        </div>
+                      {/if}
+                    </div>
                   </div>
                 {/if}
-              {:else}
-                {#each data[index]?.tokens as token, index}
-                  <div
-                    class={`xl:w-9 xl:h-9 w-12 h-12 rounded-md border-2 border-white overflow-hidden ${
-                      index > 0 && "-ml-2"
-                    }`}
-                  >
-                    <Image
-                      logo={token?.imageUrl}
-                      defaultLogo="https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"
-                    />
-                  </div>
-                {/each}
+              </div>
+
+              {#if ($typeWallet === "EVM" || $typeWallet === "BUNDLE") && data[index - 1]?.nativeToken?.symbol !== "CEX"}
+                <img
+                  src={detectedChain(data[index - 1]?.nativeToken?.symbol)
+                    ?.logo}
+                  alt=""
+                  width="20"
+                  height="20"
+                  class="rounded-full"
+                />
               {/if}
             </div>
           </div>
-        </div>
 
-        <div
-          class={`py-3 ${
-            $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
-          }`}
-        >
           <div
-            class="xl:text-sm text-2xl text_00000099 font-medium flex flex-col items-end gap-1"
+            class={`col-spans-2 py-3 ${
+              $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
+            }`}
           >
-            <div class="w-max flex items-center gap-1">
-              <TooltipNumber
-                number={Number(data[index]?.floorPrice)}
-                type="balance"
-              />
-              <div>{data[index]?.nativeToken?.symbol || ""}</div>
-            </div>
-            <div class="w-max">
-              <TooltipNumber
-                number={Number(data[index]?.floorPrice) *
-                  data[index]?.marketPrice}
-                type="value"
-              />
-            </div>
-          </div>
-        </div>
-
-        <div
-          class={`py-3 ${
-            $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
-          }`}
-        >
-          <div
-            class="xl:text-sm text-2xl text_00000099 font-medium flex flex-col items-end gap-1"
-          >
-            <div class="w-max flex items-center gap-1">
-              <TooltipNumber
-                number={handleCalculateTotalNativeTokenPrice(data[index])}
-                type="balance"
-              />
-              <div>
-                {data[index]?.nativeToken?.symbol || ""}
-              </div>
-            </div>
-            <div class="w-max">
-              <TooltipNumber
-                number={handleCalculateTotalCost(data[index])}
-                type="value"
-              />
-            </div>
-          </div>
-        </div>
-
-        <div
-          class={`py-3 ${
-            $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
-          }`}
-        >
-          <div
-            class="xl:text-sm text-2xl text_00000099 font-medium flex flex-col items-end gap-1"
-          >
-            <div class="w-max flex items-center gap-1">
-              <TooltipNumber
-                number={Number(data[index]?.current_native_token)}
-                type="balance"
-              />
-              <div>
-                {data[index]?.nativeToken?.symbol || ""}
-              </div>
-            </div>
-            <TooltipNumber
-              number={Number(data[index]?.current_native_token) *
-                data[index]?.marketPrice}
-              type="value"
-            />
-          </div>
-        </div>
-
-        <div
-          class={`py-3 pr-3 ${
-            $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
-          }`}
-        >
-          <div
-            class="flex items-center justify-end gap-1 xl:text-sm text-2xl font-medium"
-          >
-            <div class="flex flex-col">
+            <div class="relative">
               <div
-                class={`flex justify-end gap-1 ${
-                  handleCalculateProfitAndLoss(data[index]) !== 0
-                    ? handleCalculateProfitAndLoss(data[index]) >= 0
-                      ? "text-[#00A878]"
-                      : "text-red-500"
-                    : "text_00000099"
-                }`}
+                class="flex justify-start w-max"
+                on:mouseenter={() => {
+                  if (index > 0) {
+                    selectedItemIndex = index - 1;
+                    showTooltipListNFT = true;
+                  }
+                }}
+                on:mouseleave={() => {
+                  if (index > 0) {
+                    selectedItemIndex = -1;
+                    showTooltipListNFT = false;
+                  }
+                }}
               >
+                {#if data[index - 1]?.tokens?.length > 5}
+                  {#each data[index - 1]?.tokens.slice(0, 4) as token, index}
+                    <div
+                      class={`xl:w-9 xl:h-9 w-12 h-12 rounded-md border-2 border-white overflow-hidden ${
+                        index > 0 && "-ml-2"
+                      }`}
+                    >
+                      <Image
+                        logo={token?.imageUrl}
+                        defaultLogo="https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"
+                      />
+                    </div>
+                  {/each}
+                  <div class="relative xl:w-9 xl:h-9 w-12 h-12">
+                    <div
+                      class="xl:w-9 xl:h-9 w-12 h-12 rounded-md border-2 border-white overflow-hidden -ml-2"
+                    >
+                      <Image
+                        logo={data[index - 1]?.tokens[4].imageUrl}
+                        defaultLogo="https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"
+                      />
+                    </div>
+                    <div
+                      class="absolute top-0 -left-2 w-full h-full bg-[#00000066] text-white text-center flex justify-center items-center pb-2 rounded-md"
+                    >
+                      ...
+                    </div>
+                  </div>
+                  {#if showTooltipListNFT && selectedItemIndex === index - 1 && data[index - 1]?.tokens?.length > 5}
+                    <div
+                      class="absolute -top-7 left-0"
+                      style="z-index: 2147483648;"
+                    >
+                      <Tooltip
+                        text={`${data[index - 1]?.tokens?.length} NFTs on collection ${data[index - 1]?.collection?.name}`}
+                      />
+                    </div>
+                  {/if}
+                {:else}
+                  {#each data[index - 1]?.tokens as token, index}
+                    <div
+                      class={`xl:w-9 xl:h-9 w-12 h-12 rounded-md border-2 border-white overflow-hidden ${
+                        index > 0 && "-ml-2"
+                      }`}
+                    >
+                      <Image
+                        logo={token?.imageUrl}
+                        defaultLogo="https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"
+                      />
+                    </div>
+                  {/each}
+                {/if}
+              </div>
+            </div>
+          </div>
+
+          <div
+            class={`py-3 ${
+              $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
+            }`}
+          >
+            <div
+              class="xl:text-sm text-2xl text_00000099 font-medium flex flex-col items-end gap-1"
+            >
+              <div class="w-max flex items-center gap-1">
                 <TooltipNumber
-                  number={Math.abs(handleCalculateProfitAndLoss(data[index]))}
+                  number={Number(data[index - 1]?.floorPrice)}
                   type="balance"
                 />
-                <div>
-                  {data[index]?.nativeToken?.symbol || ""}
-                </div>
+                <div>{data[index - 1]?.nativeToken?.symbol || ""}</div>
               </div>
-
-              <div
-                class={`flex justify-end ${
-                  handleCalculateProfitAndLoss(data[index]) !== 0
-                    ? handleCalculateProfitAndLoss(data[index]) >= 0
-                      ? "text-[#00A878]"
-                      : "text-red-500"
-                    : "text_00000099"
-                }`}
-              >
+              <div class="w-max">
                 <TooltipNumber
-                  number={Math.abs(handleCalculateProfitAndLoss(data[index])) *
-                    data[index]?.marketPrice}
+                  number={Number(data[index - 1]?.floorPrice) *
+                    data[index - 1]?.marketPrice}
                   type="value"
                 />
               </div>
+            </div>
+          </div>
 
-              <div class="flex items-center justify-end gap-1">
+          <div
+            class={`py-3 ${
+              $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
+            }`}
+          >
+            <div
+              class="xl:text-sm text-2xl text_00000099 font-medium flex flex-col items-end gap-1"
+            >
+              <div class="w-max flex items-center gap-1">
+                <TooltipNumber
+                  number={handleCalculateTotalNativeTokenPrice(data[index - 1])}
+                  type="balance"
+                />
+                <div>
+                  {data[index - 1]?.nativeToken?.symbol || ""}
+                </div>
+              </div>
+              <div class="w-max">
+                <TooltipNumber
+                  number={handleCalculateTotalCost(data[index - 1])}
+                  type="value"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div
+            class={`py-3 ${
+              $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
+            }`}
+          >
+            <div
+              class="xl:text-sm text-2xl text_00000099 font-medium flex flex-col items-end gap-1"
+            >
+              <div class="w-max flex items-center gap-1">
+                <TooltipNumber
+                  number={Number(data[index - 1]?.current_native_token)}
+                  type="balance"
+                />
+                <div>
+                  {data[index - 1]?.nativeToken?.symbol || ""}
+                </div>
+              </div>
+              <TooltipNumber
+                number={Number(data[index - 1]?.current_native_token) *
+                  data[index - 1]?.marketPrice}
+                type="value"
+              />
+            </div>
+          </div>
+
+          <div
+            class={`py-3 pr-3 ${
+              $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
+            }`}
+          >
+            <div
+              class="flex items-center justify-end gap-1 xl:text-sm text-2xl font-medium"
+            >
+              <div class="flex flex-col">
                 <div
-                  class={`flex items-center ${
-                    handleCalculatePnlPercent(data[index]) !== 0
-                      ? handleCalculatePnlPercent(data[index]) >= 0
+                  class={`flex justify-end gap-1 ${
+                    handleCalculateProfitAndLoss(data[index - 1]) !== 0
+                      ? handleCalculateProfitAndLoss(data[index - 1]) >= 0
                         ? "text-[#00A878]"
                         : "text-red-500"
                       : "text_00000099"
                   }`}
                 >
                   <TooltipNumber
-                    number={Math.abs(handleCalculatePnlPercent(data[index])) *
-                      100}
-                    type={Math.abs(
-                      Number(handleCalculatePnlPercent(data[index]))
-                    ) > 100
-                      ? "balance"
-                      : "percent"}
+                    number={Math.abs(
+                      handleCalculateProfitAndLoss(data[index - 1])
+                    )}
+                    type="balance"
                   />
-                  <span>%</span>
+                  <div>
+                    {data[index - 1]?.nativeToken?.symbol || ""}
+                  </div>
                 </div>
-                {#if handleCalculatePnlPercent(data[index]) !== 0}
-                  <img
-                    src={handleCalculatePnlPercent(data[index]) >= 0
-                      ? TrendUp
-                      : TrendDown}
-                    alt="trend"
-                    class="mb-1"
+
+                <div
+                  class={`flex justify-end ${
+                    handleCalculateProfitAndLoss(data[index - 1]) !== 0
+                      ? handleCalculateProfitAndLoss(data[index - 1]) >= 0
+                        ? "text-[#00A878]"
+                        : "text-red-500"
+                      : "text_00000099"
+                  }`}
+                >
+                  <TooltipNumber
+                    number={Math.abs(
+                      handleCalculateProfitAndLoss(data[index - 1])
+                    ) * data[index - 1]?.marketPrice}
+                    type="value"
                   />
-                {/if}
+                </div>
+
+                <div class="flex items-center justify-end gap-1">
+                  <div
+                    class={`flex items-center ${
+                      handleCalculatePnlPercent(data[index - 1]) !== 0
+                        ? handleCalculatePnlPercent(data[index - 1]) >= 0
+                          ? "text-[#00A878]"
+                          : "text-red-500"
+                        : "text_00000099"
+                    }`}
+                  >
+                    <TooltipNumber
+                      number={Math.abs(
+                        handleCalculatePnlPercent(data[index - 1])
+                      ) * 100}
+                      type={Math.abs(
+                        Number(handleCalculatePnlPercent(data[index - 1]))
+                      ) > 100
+                        ? "balance"
+                        : "percent"}
+                    />
+                    <span>%</span>
+                  </div>
+                  {#if handleCalculatePnlPercent(data[index - 1]) !== 0}
+                    <img
+                      src={handleCalculatePnlPercent(data[index - 1]) >= 0
+                        ? TrendUp
+                        : TrendDown}
+                      alt="trend"
+                      class="mb-1"
+                    />
+                  {/if}
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        {/if}
       </div>
     </VirtualList>
   {/if}

@@ -254,49 +254,48 @@
       $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
     }`}
   >
-    <div class="bg_f4f5f8 grid grid-cols-5 sticky top-0 z-9">
-      <div class="col-spans-2 pl-3 py-3 rounded-tl-[10px]">
-        <div class="text-left xl:text-xs text-xl uppercase font-medium">
-          Assets
-        </div>
-      </div>
-
-      <div class="py-3">
-        <div class="text-right xl:text-xs text-xl uppercase font-medium">
-          Avg Cost
-        </div>
-      </div>
-
-      <div class="py-3">
-        <div
-          class="flex items-center justify-end gap-2 cursor-pointer"
-          on:click={toggleSortROI}
-        >
-          <div class="text-right xl:text-xs text-xl uppercase font-medium">
-            ROI
-          </div>
-          <div>
-            {@html sortIcon(sortTypeROI)}
-          </div>
-        </div>
-      </div>
-
-      <div class="py-3 pr-3 rounded-tr-[10px]">
-        <div
-          class="flex items-center justify-end gap-2 cursor-pointer"
-          on:click={toggleSortLastActivity}
-        >
-          <div class="text-right xl:text-xs text-xl uppercase font-medium">
-            Last activity
-          </div>
-          <div>
-            {@html sortIcon(sortTypeLastActivity)}
-          </div>
-        </div>
-      </div>
-    </div>
-
     {#if ((holdingTokenData && holdingTokenData.length === 0) || (formatData && formatData.length === 0)) && !isLoading}
+      <div class="bg_f4f5f8 grid grid-cols-5 sticky top-0 z-9">
+        <div class="col-spans-2 pl-3 py-3 rounded-tl-[10px]">
+          <div class="text-left xl:text-xs text-xl uppercase font-medium">
+            Assets
+          </div>
+        </div>
+
+        <div class="py-3">
+          <div class="text-right xl:text-xs text-xl uppercase font-medium">
+            Avg Cost
+          </div>
+        </div>
+
+        <div class="py-3 flex items-center justify-end">
+          <div
+            class="flex items-center gap-2 cursor-pointer w-max"
+            on:click={toggleSortROI}
+          >
+            <div class="text-right xl:text-xs text-xl uppercase font-medium">
+              ROI
+            </div>
+            <div>
+              {@html sortIcon(sortTypeROI)}
+            </div>
+          </div>
+        </div>
+
+        <div class="py-3 pr-3 rounded-tr-[10px] flex items-center justify-end">
+          <div
+            class="flex items-center gap-2 cursor-pointer w-max"
+            on:click={toggleSortLastActivity}
+          >
+            <div class="text-right xl:text-xs text-xl uppercase font-medium">
+              Last activity
+            </div>
+            <div>
+              {@html sortIcon(sortTypeLastActivity)}
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="grid grid-cols-5">
         <div
           class="col-span-full flex justify-center items-center h-full py-3 px-3 text-base text-gray-400"
@@ -308,203 +307,262 @@
       <VirtualList
         scrollDirection="vertical"
         width="100%"
-        height={formatData.length < 10 ? formatData.length * 70 : 405}
-        itemCount={formatData.length}
-        itemSize={70}
+        height={formatData.length < 10 ? formatData.length * 70 + 1 + 40 : 405}
+        itemCount={formatData.length + 1}
+        itemSize={(index) => {
+          return index > 0 ? 70 : 40;
+        }}
+        stickyIndices={[0]}
       >
         <div
-          class="grid grid-cols-5 group transition-all cursor-pointer"
+          class={`grid grid-cols-5 group transition-all ${index > 0 ? "cursor-pointer" : ""}`}
           slot="item"
           let:index
           let:style
           {style}
           on:click={() => {
-            showSideTokenDetail = true;
-            selectedTokenDetail = formatData[index];
+            if (index > 0) {
+              showSideTokenDetail = true;
+              selectedTokenDetail = formatData[index - 1];
+            }
           }}
         >
-          <div
-            class={`col-spans-2 pl-3 py-3 ${
-              $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
-            }`}
-          >
-            <div class="relative flex items-center gap-3 text-left">
-              <div class="relative">
-                <div class="rounded-full w-[30px] h-[30px] overflow-hidden">
-                  <Image
-                    logo={formatData[index].logo}
-                    defaultLogo={defaultToken}
-                  />
+          {#if index === 0}
+            <div class="bg_f4f5f8 col-spans-2 pl-3 py-3 rounded-tl-[10px]">
+              <div class="text-left xl:text-xs text-xl uppercase font-medium">
+                Assets
+              </div>
+            </div>
+
+            <div class="bg_f4f5f8 py-3">
+              <div class="text-right xl:text-xs text-xl uppercase font-medium">
+                Avg Cost
+              </div>
+            </div>
+
+            <div class="bg_f4f5f8 py-3 flex items-center justify-end">
+              <div
+                class="flex items-center gap-2 cursor-pointer w-max"
+                on:click={toggleSortROI}
+              >
+                <div
+                  class="text-right xl:text-xs text-xl uppercase font-medium"
+                >
+                  ROI
                 </div>
-                {#if ($typeWallet === "EVM" || $typeWallet === "MOVE" || $typeWallet === "BUNDLE") && formatData[index]?.chain !== "CEX"}
-                  <div class="absolute -top-2 -right-1">
-                    <img
-                      src={detectedChain(formatData[index]?.chain)?.logo}
-                      alt=""
-                      width="15"
-                      height="15"
-                      class="rounded-full"
+                <div>
+                  {@html sortIcon(sortTypeROI)}
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="bg_f4f5f8 py-3 pr-3 rounded-tr-[10px] flex items-center justify-end"
+            >
+              <div
+                class="flex items-center gap-2 cursor-pointer w-max"
+                on:click={toggleSortLastActivity}
+              >
+                <div
+                  class="text-right xl:text-xs text-xl uppercase font-medium"
+                >
+                  Last activity
+                </div>
+                <div>
+                  {@html sortIcon(sortTypeLastActivity)}
+                </div>
+              </div>
+            </div>
+          {:else}
+            <div
+              class={`col-spans-2 pl-3 py-3 ${
+                $isDarkMode
+                  ? "group-hover:bg-[#000]"
+                  : "group-hover:bg-gray-100"
+              }`}
+            >
+              <div class="relative flex items-center gap-3 text-left">
+                <div class="relative">
+                  <div class="rounded-full w-[30px] h-[30px] overflow-hidden">
+                    <Image
+                      logo={formatData[index - 1].logo}
+                      defaultLogo={defaultToken}
                     />
                   </div>
-                {/if}
-              </div>
-              <div class="flex flex-col gap-1">
-                <div class="flex items-start gap-2">
-                  <div
-                    class="relative text-2xl font-medium xl:text-sm"
-                    on:mouseover={() => {
-                      isShowTooltipName = true;
-                    }}
-                    on:mouseleave={() => (isShowTooltipName = false)}
-                  >
-                    {#if formatData[index].name === undefined}
-                      N/A
-                    {:else}
-                      <div class="flex">
-                        {formatData[index]?.name?.length > 20
-                          ? shorterName(formatData[index].name, 20)
-                          : formatData[index].name}
-                      </div>
-                    {/if}
-                    {#if isShowTooltipName && formatData[index]?.name?.length > 20}
-                      <div
-                        class="absolute left-0 -top-8"
-                        style="z-index: 2147483648;"
-                      >
-                        <Tooltip text={formatData[index].name} />
-                      </div>
-                    {/if}
-                  </div>
-                </div>
-
-                <div class="flex items-center gap-2">
-                  <div
-                    class="relative text-lg font-medium text_00000080 xl:text-xs"
-                    on:mouseover={() => {
-                      isShowTooltipSymbol = true;
-                    }}
-                    on:mouseleave={() => (isShowTooltipSymbol = false)}
-                  >
-                    {#if formatData[index].symbol === undefined}
-                      N/A
-                    {:else}
-                      {shorterName(formatData[index].symbol, 20)}
-                    {/if}
-                    {#if isShowTooltipSymbol && formatData[index].symbol.length > 20}
-                      <div
-                        class="absolute left-0 -top-8"
-                        style="z-index: 2147483648;"
-                      >
-                        <Tooltip text={formatData[index].symbol} />
-                      </div>
-                    {/if}
-                  </div>
-
-                  {#if formatData[index]?.positionType === "ERC_404"}
-                    <span
-                      class="inline-flex items-center gap-x-1.5 rounded-full bg-yellow-100 px-1 py-0.5 text-[10px] font-medium text-yellow-800"
-                    >
-                      <svg
-                        class="h-1.5 w-1.5 fill-yellow-500"
-                        viewBox="0 0 6 6"
-                        aria-hidden="true"
-                      >
-                        <circle cx={3} cy={3} r={3} />
-                      </svg>
-                      ERC 404
-                    </span>
+                  {#if ($typeWallet === "EVM" || $typeWallet === "MOVE" || $typeWallet === "BUNDLE") && formatData[index - 1]?.chain !== "CEX"}
+                    <div class="absolute -top-2 -right-1">
+                      <img
+                        src={detectedChain(formatData[index - 1]?.chain)?.logo}
+                        alt=""
+                        width="15"
+                        height="15"
+                        class="rounded-full"
+                      />
+                    </div>
                   {/if}
                 </div>
+                <div class="flex flex-col gap-1">
+                  <div class="flex items-start gap-2">
+                    <div
+                      class="relative text-2xl font-medium xl:text-sm"
+                      on:mouseover={() => {
+                        isShowTooltipName = true;
+                      }}
+                      on:mouseleave={() => (isShowTooltipName = false)}
+                    >
+                      {#if formatData[index - 1].name === undefined}
+                        N/A
+                      {:else}
+                        <div class="flex">
+                          {formatData[index - 1]?.name?.length > 20
+                            ? shorterName(formatData[index - 1].name, 20)
+                            : formatData[index - 1].name}
+                        </div>
+                      {/if}
+                      {#if isShowTooltipName && formatData[index - 1]?.name?.length > 20}
+                        <div
+                          class="absolute left-0 -top-8"
+                          style="z-index: 2147483648;"
+                        >
+                          <Tooltip text={formatData[index - 1].name} />
+                        </div>
+                      {/if}
+                    </div>
+                  </div>
+
+                  <div class="flex items-center gap-2">
+                    <div
+                      class="relative text-lg font-medium text_00000080 xl:text-xs"
+                      on:mouseover={() => {
+                        isShowTooltipSymbol = true;
+                      }}
+                      on:mouseleave={() => (isShowTooltipSymbol = false)}
+                    >
+                      {#if formatData[index - 1].symbol === undefined}
+                        N/A
+                      {:else}
+                        {shorterName(formatData[index - 1].symbol, 20)}
+                      {/if}
+                      {#if isShowTooltipSymbol && formatData[index - 1].symbol.length > 20}
+                        <div
+                          class="absolute left-0 -top-8"
+                          style="z-index: 2147483648;"
+                        >
+                          <Tooltip text={formatData[index - 1].symbol} />
+                        </div>
+                      {/if}
+                    </div>
+
+                    {#if formatData[index - 1]?.positionType === "ERC_404"}
+                      <span
+                        class="inline-flex items-center gap-x-1.5 rounded-full bg-yellow-100 px-1 py-0.5 text-[10px] font-medium text-yellow-800"
+                      >
+                        <svg
+                          class="h-1.5 w-1.5 fill-yellow-500"
+                          viewBox="0 0 6 6"
+                          aria-hidden="true"
+                        >
+                          <circle cx={3} cy={3} r={3} />
+                        </svg>
+                        ERC 404
+                      </span>
+                    {/if}
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div
-            class={`py-3 ${
-              $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
-            }`}
-          >
             <div
-              class="h-full flex items-center justify-end text-2xl font-medium xl:text-sm text_00000099"
+              class={`py-3 ${
+                $isDarkMode
+                  ? "group-hover:bg-[#000]"
+                  : "group-hover:bg-gray-100"
+              }`}
             >
-              $<TooltipNumber
-                number={formatData[index].profit.averageCost}
-                type="balance"
-              />
+              <div
+                class="h-full flex items-center justify-end text-2xl font-medium xl:text-sm text_00000099"
+              >
+                $<TooltipNumber
+                  number={formatData[index - 1].profit.averageCost}
+                  type="balance"
+                />
+              </div>
             </div>
-          </div>
 
-          <div
-            class={`py-3 ${
-              $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
-            }`}
-          >
             <div
-              class="flex items-center justify-end gap-1 text-2xl font-medium xl:text-sm view-token-detail1"
+              class={`py-3 ${
+                $isDarkMode
+                  ? "group-hover:bg-[#000]"
+                  : "group-hover:bg-gray-100"
+              }`}
             >
-              {#if ["BTC"].includes($typeWallet)}
-                N/A
-              {:else}
-                <div class="flex flex-col">
-                  <div
-                    class={`flex justify-end ${
-                      formatData[index].realizedProfit !== 0
-                        ? formatData[index].realizedProfit >= 0
-                          ? "text-[#00A878]"
-                          : "text-red-500"
-                        : "text_00000099"
-                    }`}
-                  >
-                    <TooltipNumber
-                      number={Math.abs(formatData[index].realizedProfit)}
-                      type="value"
-                      personalValue
-                    />
-                  </div>
-                  <div class="flex items-center justify-end gap-1">
+              <div
+                class="flex items-center justify-end gap-1 text-2xl font-medium xl:text-sm view-token-detail1"
+              >
+                {#if ["BTC"].includes($typeWallet)}
+                  N/A
+                {:else}
+                  <div class="flex flex-col">
                     <div
-                      class={`flex items-center ${
-                        formatData[index].realizedProfit !== 0
-                          ? formatData[index].realizedProfit >= 0
+                      class={`flex justify-end ${
+                        formatData[index - 1].realizedProfit !== 0
+                          ? formatData[index - 1].realizedProfit >= 0
                             ? "text-[#00A878]"
                             : "text-red-500"
                           : "text_00000099"
                       }`}
                     >
                       <TooltipNumber
-                        number={Math.abs(
-                          handlePercentRealizedProfit(formatData[index])
-                        ) * 100}
-                        type="percent"
+                        number={Math.abs(formatData[index - 1].realizedProfit)}
+                        type="value"
+                        personalValue
                       />
-                      <span>%</span>
                     </div>
-                    {#if formatData[index].realizedProfit !== 0}
-                      <img
-                        src={formatData[index].realizedProfit >= 0
-                          ? TrendUp
-                          : TrendDown}
-                        alt="trend"
-                        class="mb-1"
-                      />
-                    {/if}
+                    <div class="flex items-center justify-end gap-1">
+                      <div
+                        class={`flex items-center ${
+                          formatData[index - 1].realizedProfit !== 0
+                            ? formatData[index - 1].realizedProfit >= 0
+                              ? "text-[#00A878]"
+                              : "text-red-500"
+                            : "text_00000099"
+                        }`}
+                      >
+                        <TooltipNumber
+                          number={Math.abs(
+                            handlePercentRealizedProfit(formatData[index - 1])
+                          ) * 100}
+                          type="percent"
+                        />
+                        <span>%</span>
+                      </div>
+                      {#if formatData[index - 1].realizedProfit !== 0}
+                        <img
+                          src={formatData[index - 1].realizedProfit >= 0
+                            ? TrendUp
+                            : TrendDown}
+                          alt="trend"
+                          class="mb-1"
+                        />
+                      {/if}
+                    </div>
                   </div>
-                </div>
-              {/if}
+                {/if}
+              </div>
             </div>
-          </div>
 
-          <div
-            class={`py-3 pr-3 ${$isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"}`}
-          >
             <div
-              class="h-full flex items-center justify-end text-2xl font-medium xl:text-sm text_00000099"
+              class={`py-3 pr-3 ${$isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"}`}
             >
-              {#if formatData[index]?.profit?.latestTrade}
-                {formatTime(formatData[index]?.profit?.latestTrade)}
-              {/if}
+              <div
+                class="h-full flex items-center justify-end text-2xl font-medium xl:text-sm text_00000099"
+              >
+                {#if formatData[index - 1]?.profit?.latestTrade}
+                  {formatTime(formatData[index - 1]?.profit?.latestTrade)}
+                {/if}
+              </div>
             </div>
-          </div>
+          {/if}
         </div>
       </VirtualList>
     {/if}
@@ -728,6 +786,12 @@
           </div>
         </div>
       </VirtualList>
+    {/if}
+
+    {#if isLoading}
+      <div class="flex justify-center items-center h-full py-3 px-3">
+        <Loading />
+      </div>
     {/if}
   </div>
 </div>
