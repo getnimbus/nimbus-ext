@@ -148,6 +148,12 @@
         (prev, item) => prev + Number(item.quantity_in),
         0
       );
+    } else {
+      dataHistoryTokenDetail = [];
+      sellHistoryTradeList = [];
+      buyHistoryTradeList = [];
+      buyAmounts = 0;
+      sellAmounts = 0;
     }
   }
 
