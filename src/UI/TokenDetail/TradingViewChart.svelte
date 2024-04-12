@@ -162,6 +162,7 @@
         .then(({ widget: Widget }) => {
           const tvWidget = new Widget({
             ...options,
+            ...widgetOptionsDefault,
             container: chartContainer,
             container_id: CONTAINER_ID,
             library_path: "/static/charting_library/",
@@ -186,7 +187,7 @@
               "volume.volume.color.0": "#ea3943",
               "volume.volume.color.1": "#0ECB81",
             },
-            ...widgetOptionsDefault,
+            interval: "24h",
           });
 
           (window as any).tvWidget = tvWidget;
