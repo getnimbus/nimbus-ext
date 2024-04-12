@@ -47,6 +47,8 @@
       $queryHistoryNftDetail.data.length !== 0
     ) {
       dataHistoryNftDetail = $queryHistoryNftDetail.data;
+    } else {
+      dataHistoryNftDetail = [];
     }
   }
 </script>
