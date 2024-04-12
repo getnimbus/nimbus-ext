@@ -1,3 +1,4 @@
+import { nimbus } from "~/lib/network";
 import { getNextBarTime } from "./stream";
 import axios from "axios";
 
@@ -18,6 +19,7 @@ const sockets = new Map();
 
 export const Datafeed = (
   baseAsset: any,
+  typeWallet: any
 ) => ({
   onReady: (callback: Function) => {
     callback({ supported_resolutions: supportedResolutions, supports_marks: true });
@@ -50,28 +52,39 @@ export const Datafeed = (
     periodParams,
     onResult: Function
   ) => {
-    const params = {
-      from: periodParams.from * 1000,
-      to: periodParams.to * 1000,
-      amount: periodParams.countBack,
-      period: resolution,
-      address: baseAsset?.address,
-      usd: true
-    };
+    if (typeWallet === "SOL") {
+      const data: any = await nimbus.get(`/token/market/chart-history?chain=SOL&address=${baseAsset.address === "11111111111111111111111111111111" ? "So11111111111111111111111111111111111111112" : baseAsset.address}&resolution=${resolution}&from=${periodParams.from}&to=${periodParams.to}`).then((res: any) => res.data);
+      onResult(data, {
+        noData: data.length !== periodParams.countBack,
+      });
 
-    const data: any = await axios.get("https://api.mobula.io/api/1/market/history/pair", {
-      params: {
-        ...params
-      },
-      headers: { Authorization: "eb66b1f3-c24b-4f43-9892-dbc5f37d5a6d" },
-    }).then((res) => res.data);
+      if (periodParams.firstDataRequest) {
+        lastBarsCache.set(baseAsset?.name, data[data.length - 1]);
+      }
+    } else {
+      const params = {
+        from: periodParams.from * 1000,
+        to: periodParams.to * 1000,
+        amount: periodParams.countBack,
+        period: resolution,
+        address: baseAsset?.address,
+        usd: true
+      };
 
-    onResult(data.data, {
-      noData: data.data.length !== periodParams.countBack,
-    });
+      const data: any = await axios.get("https://api.mobula.io/api/1/market/history/pair", {
+        params: {
+          ...params
+        },
+        headers: { Authorization: "eb66b1f3-c24b-4f43-9892-dbc5f37d5a6d" },
+      }).then((res) => res.data);
 
-    if (periodParams.firstDataRequest) {
-      lastBarsCache.set(baseAsset?.name, data.data[data.data.length - 1]);
+      onResult(data.data, {
+        noData: data.data.length !== periodParams.countBack,
+      });
+
+      if (periodParams.firstDataRequest) {
+        lastBarsCache.set(baseAsset?.name, data.data[data.data.length - 1]);
+      }
     }
   },
   searchSymbols: () => { },
