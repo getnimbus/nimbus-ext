@@ -234,8 +234,8 @@
         value: "Account",
         dataPie: dataOverviewBundlePieChart,
         dataTable: handleFormatDataTableBundle(
-          holdingTokenData,
-          $selectedBundle?.accounts
+          holdingTokenData || [],
+          $selectedBundle?.accounts || []
         ),
       };
     }

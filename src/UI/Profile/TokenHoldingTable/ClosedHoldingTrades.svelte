@@ -254,49 +254,48 @@
       $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
     }`}
   >
-    <!-- <div class="bg_f4f5f8 grid grid-cols-5 sticky top-0 z-9">
-      <div class="col-spans-2 pl-3 py-3 rounded-tl-[10px]">
-        <div class="text-left xl:text-xs text-xl uppercase font-medium">
-          Assets
-        </div>
-      </div>
-
-      <div class="py-3">
-        <div class="text-right xl:text-xs text-xl uppercase font-medium">
-          Avg Cost
-        </div>
-      </div>
-
-      <div class="py-3">
-        <div
-          class="flex items-center justify-end gap-2 cursor-pointer"
-          on:click={toggleSortROI}
-        >
-          <div class="text-right xl:text-xs text-xl uppercase font-medium">
-            ROI
-          </div>
-          <div>
-            {@html sortIcon(sortTypeROI)}
-          </div>
-        </div>
-      </div>
-
-      <div class="py-3 pr-3 rounded-tr-[10px]">
-        <div
-          class="flex items-center justify-end gap-2 cursor-pointer"
-          on:click={toggleSortLastActivity}
-        >
-          <div class="text-right xl:text-xs text-xl uppercase font-medium">
-            Last activity
-          </div>
-          <div>
-            {@html sortIcon(sortTypeLastActivity)}
-          </div>
-        </div>
-      </div>
-    </div> -->
-
     {#if ((holdingTokenData && holdingTokenData.length === 0) || (formatData && formatData.length === 0)) && !isLoading}
+      <div class="bg_f4f5f8 grid grid-cols-5 sticky top-0 z-9">
+        <div class="col-spans-2 pl-3 py-3 rounded-tl-[10px]">
+          <div class="text-left xl:text-xs text-xl uppercase font-medium">
+            Assets
+          </div>
+        </div>
+
+        <div class="py-3">
+          <div class="text-right xl:text-xs text-xl uppercase font-medium">
+            Avg Cost
+          </div>
+        </div>
+
+        <div class="py-3 flex items-center justify-end">
+          <div
+            class="flex items-center gap-2 cursor-pointer w-max"
+            on:click={toggleSortROI}
+          >
+            <div class="text-right xl:text-xs text-xl uppercase font-medium">
+              ROI
+            </div>
+            <div>
+              {@html sortIcon(sortTypeROI)}
+            </div>
+          </div>
+        </div>
+
+        <div class="py-3 pr-3 rounded-tr-[10px] flex items-center justify-end">
+          <div
+            class="flex items-center gap-2 cursor-pointer w-max"
+            on:click={toggleSortLastActivity}
+          >
+            <div class="text-right xl:text-xs text-xl uppercase font-medium">
+              Last activity
+            </div>
+            <div>
+              {@html sortIcon(sortTypeLastActivity)}
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="grid grid-cols-5">
         <div
           class="col-span-full flex justify-center items-center h-full py-3 px-3 text-base text-gray-400"
@@ -308,13 +307,15 @@
       <VirtualList
         scrollDirection="vertical"
         width="100%"
-        height={formatData.length < 10 ? formatData.length * 70 : 405}
+        height={formatData.length < 10 ? formatData.length * 70 + 1 + 40 : 405}
         itemCount={formatData.length + 1}
-        itemSize={(index) => (index > 0 ? 70 : 40)}
+        itemSize={(index) => {
+          return index > 0 ? 70 : 40;
+        }}
         stickyIndices={[0]}
       >
         <div
-          class="grid grid-cols-5 group transition-all cursor-pointer"
+          class={`grid grid-cols-5 group transition-all ${index > 0 ? "cursor-pointer" : ""}`}
           slot="item"
           let:index
           let:style
@@ -322,7 +323,7 @@
           on:click={() => {
             if (index > 0) {
               showSideTokenDetail = true;
-              selectedTokenDetail = formatData[index];
+              selectedTokenDetail = formatData[index - 1];
             }
           }}
         >
@@ -339,9 +340,9 @@
               </div>
             </div>
 
-            <div class="bg_f4f5f8 py-3">
+            <div class="bg_f4f5f8 py-3 flex items-center justify-end">
               <div
-                class="flex items-center justify-end gap-2 cursor-pointer"
+                class="flex items-center gap-2 cursor-pointer w-max"
                 on:click={toggleSortROI}
               >
                 <div
@@ -355,9 +356,11 @@
               </div>
             </div>
 
-            <div class="bg_f4f5f8 py-3 pr-3 rounded-tr-[10px]">
+            <div
+              class="bg_f4f5f8 py-3 pr-3 rounded-tr-[10px] flex items-center justify-end"
+            >
               <div
-                class="flex items-center justify-end gap-2 cursor-pointer"
+                class="flex items-center gap-2 cursor-pointer w-max"
                 on:click={toggleSortLastActivity}
               >
                 <div
@@ -783,6 +786,12 @@
           </div>
         </div>
       </VirtualList>
+    {/if}
+
+    {#if isLoading}
+      <div class="flex justify-center items-center h-full py-3 px-3">
+        <Loading />
+      </div>
     {/if}
   </div>
 </div>
