@@ -428,7 +428,7 @@
     <VirtualList
       scrollDirection="vertical"
       width="100%"
-      height={data.length < 30 ? data.length * 75 : 2250}
+      height={data.length < 30 ? data.length * 75 + 1 : 2250}
       bind:this={virtualList}
       itemCount={data.length}
       itemSize={(index) => {
