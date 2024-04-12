@@ -197,22 +197,36 @@
         typeWalletAddress: validateAccount?.type,
       });
 
-      if (bigGeneration.includes(validateAccount?.type)) {
-        window.history.replaceState(
-          null,
-          "",
-          window.location.pathname +
-            `?tab=${$tab}&type=${validateAccount?.type}&chain=ALL&address=${validateAccount?.address}`
-        );
+      if (window.location.pathname === "/whales") {
+        if (bigGeneration.includes(validateAccount?.type)) {
+          navigateTo(
+            `/?tab=${$tab}&type=${validateAccount?.type}&chain=ALL&address=${validateAccount?.address}`
+          );
+        }
+        if (otherGeneration.includes(validateAccount?.type)) {
+          navigateTo(
+            `/?tab=${$tab}&type=${validateAccount?.type}&address=${validateAccount?.address}`
+          );
+        }
+      } else {
+        if (bigGeneration.includes(validateAccount?.type)) {
+          window.history.replaceState(
+            null,
+            "",
+            window.location.pathname +
+              `?tab=${$tab}&type=${validateAccount?.type}&chain=ALL&address=${validateAccount?.address}`
+          );
+        }
+        if (otherGeneration.includes(validateAccount?.type)) {
+          window.history.replaceState(
+            null,
+            "",
+            window.location.pathname +
+              `?tab=${$tab}&type=${validateAccount?.type}&address=${validateAccount?.address}`
+          );
+        }
       }
-      if (otherGeneration.includes(validateAccount?.type)) {
-        window.history.replaceState(
-          null,
-          "",
-          window.location.pathname +
-            `?tab=${$tab}&type=${validateAccount?.type}&address=${validateAccount?.address}`
-        );
-      }
+
       handleSaveSuggest(validateAccount?.address);
       if (validateAccount?.type === "EVM" || validateAccount?.type === "MOVE") {
         window.history.replaceState(
