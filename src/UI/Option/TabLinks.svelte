@@ -27,6 +27,7 @@
     queryKey: ["link-socials"],
     queryFn: () => getLinkData(),
     staleTime: Infinity,
+    retry: false,
   });
 
   const getLinkData = async () => {

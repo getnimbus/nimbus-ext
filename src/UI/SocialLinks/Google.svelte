@@ -86,7 +86,10 @@
 
   $: {
     if (!$queryUserInfo.isError && $queryUserInfo.data !== undefined) {
-      if ($queryUserInfo.data.displayName) {
+      if (
+        $queryUserInfo.data.displayName &&
+        $queryUserInfo.data.displayName === data.name
+      ) {
         checked = true;
       } else {
         checked = false;
