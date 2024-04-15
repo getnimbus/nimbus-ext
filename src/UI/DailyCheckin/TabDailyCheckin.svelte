@@ -2,7 +2,12 @@
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { nimbus } from "~/lib/network";
-  import { isDarkMode, user, userPublicAddress } from "~/store";
+  import {
+    checkinPlusPoint,
+    isDarkMode,
+    user,
+    userPublicAddress,
+  } from "~/store";
   import { triggerFirework } from "~/utils";
   import dayjs from "dayjs";
   import { wait } from "~/entries/background/utils";
@@ -182,16 +187,24 @@
   const handleCheckin = async () => {
     mixpanel.track("user_checkin");
     isLoadingCheckin = true;
+
     try {
       const response = await nimbus.post(`/v2/checkin`, {});
       if (response?.data !== undefined) {
         isDisabledCheckin = true;
         triggerCheckinSuccess();
+        checkinPlusPoint.update(
+          (data) =>
+            (data +=
+              $queryDailyCheckin?.data?.pointStreak[selectedIndexRewards])
+        );
         if (response?.data?.bonus !== undefined) {
+          checkinPlusPoint.update((data) => (data += response?.data?.bonus));
           bonusScore = response?.data?.bonus;
           isTriggerBonusScore = true;
         }
         queryClient.invalidateQueries([$userPublicAddress, "daily-checkin"]);
+        queryClient.invalidateQueries(["users-me"]);
       }
     } catch (error) {
       console.error("this err : ", error);
