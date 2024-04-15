@@ -246,7 +246,7 @@
 
   <div class="flex flex-col gap-3">
     {#if data && Object.keys(data).length !== 0}
-      <div class="xl:text-base text-lg text-gray-400">{data?.info}</div>
+      <div class="xl:text-base text-lg text-gray-400">@{data?.name}</div>
       <div class="flex items-center justify-start gap-2">
         <input
           type="checkbox"
