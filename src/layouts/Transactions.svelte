@@ -51,9 +51,9 @@
     },
   ];
 
-  let isLoading = false;
   let data = [];
   let pageToken = "";
+  let paginate = "";
 
   let option = {
     tooltip: {
@@ -136,10 +136,6 @@
     symbol: "all",
   };
 
-  onMount(() => {
-    mixpanel.track("transaction_page");
-  });
-
   $: selectedTypeValue = selectedType?.value;
   $: selectedCoinValue = selectedCoin?.symbol;
 
@@ -217,17 +213,15 @@
     }
   };
 
-  $: enabledQuery = Boolean(
-    ($typeWallet === "EVM" ||
-      $typeWallet === "CEX" ||
-      $typeWallet === "BUNDLE") &&
-      $wallet &&
-      $wallet?.length !== 0
-  );
-
   $: query = createQuery({
     queryKey: ["historical", $wallet, $chain],
-    enabled: enabledQuery,
+    enabled: Boolean(
+      ($typeWallet === "EVM" ||
+        $typeWallet === "CEX" ||
+        $typeWallet === "BUNDLE") &&
+        $wallet &&
+        $wallet?.length !== 0
+    ),
     queryFn: () => getAnalyticHistorical($wallet, $chain),
     staleTime: Infinity,
   });
@@ -238,47 +232,56 @@
     }
   }
 
-  const getListTransactions = async (
-    page: string,
-    type: string,
-    coin: string
-  ) => {
-    isLoading = true;
-    try {
-      const response: TrxHistoryDataRes = await nimbus.get(
-        `/v2/address/${$wallet}/history?chain=${$chain}&pageToken=${page}${
-          type !== "all" ? `&type=${type}` : ""
-        }${coin !== "all" ? `&coin=${coin}` : ""}`
-      );
-      if (response && response?.data) {
-        data = [...data, ...response?.data?.data];
-        pageToken = response.data.pageToken;
-      }
-    } catch (e) {
-      console.error("error: ", e);
-    } finally {
-      isLoading = false;
-    }
+  const getListTransactions = async (type: string, coin: string) => {
+    const response: TrxHistoryDataRes = await nimbus.get(
+      `/v2/address/${$wallet}/history?chain=${$chain}&pageToken=${paginate}${
+        type !== "all" ? `&type=${type}` : ""
+      }${coin !== "all" ? `&coin=${coin}` : ""}`
+    );
+    return response.data;
   };
 
-  const handleLoadMore = (paginate: string) => {
-    getListTransactions(paginate, selectedTypeValue, selectedCoinValue);
+  const handleLoadMore = (page: string) => {
+    paginate = page;
   };
 
-  $: {
-    if ($wallet) {
-      data = [];
-      pageToken = "";
-      isLoading = false;
-      if (
-        $wallet?.length !== 0 &&
+  $: queryHistory = createQuery({
+    queryKey: [
+      "history",
+      $wallet,
+      $chain,
+      paginate,
+      selectedTypeValue,
+      selectedCoinValue,
+    ],
+    enabled: Boolean(
+      $wallet &&
+        $wallet.length !== 0 &&
+        $chain &&
         $chain?.length !== 0 &&
         !otherGeneration.includes($typeWallet)
-      ) {
-        getListTransactions("", selectedTypeValue, selectedCoinValue);
-      }
+    ),
+    queryFn: () => getListTransactions(selectedTypeValue, selectedCoinValue),
+    staleTime: Infinity,
+  });
+
+  $: {
+    if (!$queryHistory.isError && $queryHistory.data !== undefined) {
+      data = [...data, ...$queryHistory?.data?.data];
+      pageToken = $queryHistory?.data.pageToken;
     }
   }
+
+  $: {
+    if ($wallet || $chain) {
+      data = [];
+      pageToken = "";
+    }
+  }
+
+  onMount(() => {
+    mixpanel.track("transaction_page");
+  });
 </script>
 
 <ErrorBoundary>
@@ -363,7 +366,7 @@
               {/if}
             </div>
             <HistoricalTransactions
-              {isLoading}
+              isLoading={$queryHistory.isFetching}
               {pageToken}
               {data}
               loadMore={handleLoadMore}
