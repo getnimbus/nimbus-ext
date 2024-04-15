@@ -96,9 +96,7 @@
   const handleTwitterAuth = async () => {
     try {
       const res = await signInWithPopup(auth, twitterProvider).then(
-        (result) => {
-          return result.user;
-        }
+        (result) => result.user
       );
       if (res) {
         handleAddTwitter(res.uid, res.providerData[0].email, res.displayName);

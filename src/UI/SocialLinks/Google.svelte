@@ -96,11 +96,18 @@
 
   const handleGoogleAuth = async () => {
     try {
-      const res = await signInWithPopup(auth, googleProvider).then((result) => {
-        return result.user;
-      });
+      googleProvider.addScope("email");
+      googleProvider.addScope("profile");
+      const res = await signInWithPopup(auth, googleProvider).then(
+        (result) => result.user
+      );
       if (res) {
-        handleAddGoogle(res.uid, res.email, res.displayName);
+        handleAddGoogle(
+          res.uid,
+          res?.reloadUserInfo?.providerUserInfo[0]?.email || res.email,
+          res?.reloadUserInfo?.providerUserInfo[0]?.displayName ||
+            res.displayName
+        );
       }
     } catch (e) {
       console.log(e);
