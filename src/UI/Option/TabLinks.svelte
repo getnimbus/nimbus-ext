@@ -113,10 +113,10 @@
         <div class="flex items-center gap-6">
           {#each socialData as item}
             {#if item.type === "google"}
-              <Google data={item} />
+              <Google data={item} isDisabledRemove={item.isPrimaryLogin} />
             {/if}
             {#if item.type === "twitter"}
-              <Twitter data={item} />
+              <Twitter data={item} isDisabledRemove={item.isPrimaryLogin} />
             {/if}
           {/each}
 
