@@ -104,9 +104,8 @@
       if (res) {
         handleAddGoogle(
           res.uid,
-          res?.reloadUserInfo?.providerUserInfo[0]?.email || res.email,
-          res?.reloadUserInfo?.providerUserInfo[0]?.displayName ||
-            res.displayName
+          res?.reloadUserInfo?.providerUserInfo[0]?.email,
+          res?.reloadUserInfo?.screenName
         );
       }
     } catch (e) {

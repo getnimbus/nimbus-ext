@@ -99,7 +99,11 @@
         (result) => result.user
       );
       if (res) {
-        handleAddTwitter(res.uid, res.providerData[0].email, res.displayName);
+        handleAddTwitter(
+          res.uid,
+          res?.reloadUserInfo?.providerUserInfo[0]?.email,
+          res?.reloadUserInfo?.screenName
+        );
       }
     } catch (e) {
       console.log(e);
