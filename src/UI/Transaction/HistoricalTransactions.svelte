@@ -481,16 +481,20 @@
   {/if}
 </div>
 
-{#if pageToken && pageToken.length !== 0}
+{#if pageToken && pageToken.length !== 0 && data && data.length !== 0}
   <div class="mx-auto">
     <div class="w-[140px]">
-      <Button
-        variant="secondary"
-        on:click={() => loadMore(pageToken)}
-        disabled={isLoading}
-        {isLoading}
-        >Load more
-      </Button>
+      {#if data && data.length < 50}
+        <Button variant="secondary" disabled={true}>Load more</Button>
+      {:else}
+        <Button
+          variant="secondary"
+          on:click={() => loadMore(pageToken)}
+          disabled={true}
+          {isLoading}
+          >Load more
+        </Button>
+      {/if}
     </div>
   </div>
 {/if}
