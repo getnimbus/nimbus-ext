@@ -18,7 +18,6 @@ export const triggerModalAddAddress = writable(false);
 export const triggerSync = writable(false);
 export const userId = writable("");
 export const userPublicAddress = writable("");
-export const userSocialPublicAddress = writable("");
 export const triggerUpdateBundle = writable(false);
 export const detectParams = writable(window.location.pathname);
 export const realtimePrice = writable({});

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { userPublicAddress, userSocialPublicAddress } from "~/store";
+  import { userPublicAddress } from "~/store";
   import { nimbus } from "~/lib/network";
   import { i18n } from "~/lib/i18n";
   import { shorterAddress } from "~/utils";
@@ -40,12 +40,9 @@
       if (
         $queryLinkSocial?.data?.data &&
         $queryLinkSocial?.data?.data[0] &&
-        $queryLinkSocial?.data?.data[0]?.publicAddress
+        $queryLinkSocial?.data?.data[0]?.uid
       ) {
         dataUserSocialLogin = $queryLinkSocial?.data?.data[0] || {};
-        userSocialPublicAddress.update(
-          (n) => (n = dataUserSocialLogin?.publicAddress)
-        );
       }
     }
   }
