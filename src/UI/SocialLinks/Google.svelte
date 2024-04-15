@@ -189,7 +189,6 @@
       toastMsg = "Successfully remove link Google account!";
       isSuccessToast = true;
       trigger();
-      location.reload();
     } catch (e) {
       console.log(e);
       toastMsg =
@@ -212,7 +211,6 @@
       } display Google account!`;
       isSuccessToast = true;
       trigger();
-      location.reload();
     } catch (e) {
       console.log(e);
       toastMsg =

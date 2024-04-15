@@ -181,7 +181,6 @@
       toastMsg = "Successfully remove link Google account!";
       isSuccessToast = true;
       trigger();
-      location.reload();
     } catch (e) {
       console.log(e);
       toastMsg =
@@ -199,16 +198,13 @@
         {}
       );
       queryClient.invalidateQueries(["users-me"]);
-      toastMsg = `Successfully ${
-        checked ? "set" : "unset"
-      } display Google account!`;
+      toastMsg = `Successfully ${checked ? "set" : "unset"} display X account!`;
       isSuccessToast = true;
       trigger();
-      location.reload();
     } catch (e) {
       console.log(e);
       toastMsg =
-        "There are some problem when set display Google account. Please try again!";
+        "There are some problem when set display X account. Please try again!";
       isSuccessToast = true;
       trigger();
     }
@@ -246,7 +242,7 @@
 
   <div class="flex flex-col gap-3">
     {#if data && Object.keys(data).length !== 0}
-      <div class="xl:text-base text-lg">{data?.info}</div>
+      <div class="xl:text-base text-lg text-gray-400">{data?.info}</div>
       <div class="flex items-center justify-start gap-2">
         <input
           type="checkbox"
