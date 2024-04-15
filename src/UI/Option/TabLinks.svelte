@@ -11,9 +11,13 @@
   import Twitter from "../SocialLinks/Twitter.svelte";
   import Solana from "../MainWalletLinks/Solana.svelte";
   import Evm from "../MainWalletLinks/Evm.svelte";
+  import Ton from "../MainWalletLinks/Ton.svelte";
+  import Sui from "../MainWalletLinks/Sui.svelte";
 
   import EvmLogo from "~/assets/chains/evm.png";
   import SolanaLogo from "~/assets/chains/solana.png";
+  import SUILogo from "~/assets/chains/sui.png";
+  import TonLogo from "~/assets/chains/ton.png";
 
   const MultipleLang = {
     title: i18n("optionsPage.links-page-title", "Link Settings"),
@@ -27,7 +31,18 @@
     queryKey: ["link-socials"],
     queryFn: () => getLinkData(),
     staleTime: Infinity,
+    retry: false,
   });
+
+  const handleValidateAddress = async (address: string) => {
+    try {
+      const response = await nimbus.get(`/v2/address/${address}/validate`);
+      return response?.data;
+    } catch (e) {
+      console.error(e);
+      return undefined;
+    }
+  };
 
   const getLinkData = async () => {
     const response: any = await nimbus.get("/accounts/link");
@@ -43,7 +58,24 @@
         $queryLinkSocial?.data?.data[0]?.uid
       ) {
         dataUserSocialLogin = $queryLinkSocial?.data?.data[0] || {};
+        handleCheckChain(dataUserSocialLogin?.publicAddress);
       }
+    }
+  }
+
+  const handleCheckChain = async (address) => {
+    try {
+      const response = await handleValidateAddress(address);
+      chain = response?.type;
+    } catch (e) {
+      console.log("e");
+      chain = "";
+    }
+  };
+
+  $: {
+    if ($userPublicAddress && Object.keys(userPublicAddress).length === 0) {
+      handleCheckChain($userPublicAddress);
     }
   }
 
@@ -105,6 +137,24 @@
                 class="rounded-full"
               />
             {/if}
+            {#if chain === "MOVE"}
+              <img
+                src={SUILogo}
+                alt=""
+                width="28"
+                height="28"
+                class="rounded-full"
+              />
+            {/if}
+            {#if chain === "TON"}
+              <img
+                src={TonLogo}
+                alt=""
+                width="28"
+                height="28"
+                class="rounded-full"
+              />
+            {/if}
             {shorterAddress(dataUserSocialLogin?.publicAddress)}
           </div>
         {:else}
@@ -113,14 +163,24 @@
               data={dataUserSocialLogin}
               reCallAPI={() => {
                 dataUserSocialLogin = {};
-                location.reload();
               }}
             />
             <Solana
               data={dataUserSocialLogin}
               reCallAPI={() => {
                 dataUserSocialLogin = {};
-                location.reload();
+              }}
+            />
+            <Ton
+              data={dataUserSocialLogin}
+              reCallAPI={() => {
+                dataUserSocialLogin = {};
+              }}
+            />
+            <Sui
+              data={dataUserSocialLogin}
+              reCallAPI={() => {
+                dataUserSocialLogin = {};
               }}
             />
           </div>
@@ -176,6 +236,24 @@
           {#if chain === "SOL"}
             <img
               src={SolanaLogo}
+              alt=""
+              width="28"
+              height="28"
+              class="rounded-full"
+            />
+          {/if}
+          {#if chain === "MOVE"}
+            <img
+              src={SUILogo}
+              alt=""
+              width="28"
+              height="28"
+              class="rounded-full"
+            />
+          {/if}
+          {#if chain === "TON"}
+            <img
+              src={TonLogo}
               alt=""
               width="28"
               height="28"
