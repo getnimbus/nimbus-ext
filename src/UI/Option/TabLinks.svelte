@@ -11,6 +11,7 @@
   import Twitter from "../SocialLinks/Twitter.svelte";
   import Solana from "../MainWalletLinks/Solana.svelte";
   import Evm from "../MainWalletLinks/Evm.svelte";
+  import Ton from "../MainWalletLinks/Ton.svelte";
 
   import EvmLogo from "~/assets/chains/evm.png";
   import SolanaLogo from "~/assets/chains/solana.png";
@@ -114,14 +115,18 @@
               data={dataUserSocialLogin}
               reCallAPI={() => {
                 dataUserSocialLogin = {};
-                location.reload();
               }}
             />
             <Solana
               data={dataUserSocialLogin}
               reCallAPI={() => {
                 dataUserSocialLogin = {};
-                location.reload();
+              }}
+            />
+            <Ton
+              data={dataUserSocialLogin}
+              reCallAPI={() => {
+                dataUserSocialLogin = {};
               }}
             />
           </div>
