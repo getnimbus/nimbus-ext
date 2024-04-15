@@ -144,10 +144,10 @@
     try {
       let params: any = {
         kind: "wallet",
-        id: data?.uid,
         type: null,
-        info: data?.info,
         userPublicAddress: payload.publicAddress,
+        id: data?.uid,
+        info: data?.info,
         displayName: data?.name,
       };
       const res = await nimbus.post("/accounts/link", params);
