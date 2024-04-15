@@ -16,6 +16,7 @@
     triggerSync,
     triggerModalAddAddress,
     triggerConnectWallet,
+    checkinPlusPoint,
   } from "~/store";
   import { shorterAddress } from "~/utils";
   import mixpanel from "mixpanel-browser";
@@ -740,7 +741,7 @@
           >
             <img src={goldImg} alt="" class="w-[28px] h-[28px]" />
             <span class="text-yellow-400 font-medium">
-              {$queryUserInfo?.data?.totalPoint || 0}
+              {$queryUserInfo?.data?.totalPoint + $checkinPlusPoint || 0}
             </span>
           </div>
         </div>
