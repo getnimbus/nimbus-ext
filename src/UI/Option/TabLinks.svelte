@@ -85,22 +85,46 @@
         <div class="xl:text-base text-xl font-medium">
           Connect your main wallet
         </div>
-        <div class="flex flex-col gap-3">
-          <Evm
-            data={dataUserSocialLogin}
-            reCallAPI={() => {
-              dataUserSocialLogin = {};
-              location.reload();
-            }}
-          />
-          <Solana
-            data={dataUserSocialLogin}
-            reCallAPI={() => {
-              dataUserSocialLogin = {};
-              location.reload();
-            }}
-          />
-        </div>
+        {#if dataUserSocialLogin && dataUserSocialLogin.publicAddress}
+          <div class="xl:text-lg text-2xl flex items-center gap-3">
+            {#if chain === "EVM"}
+              <img
+                src={EvmLogo}
+                alt=""
+                width="28"
+                height="28"
+                class="rounded-full"
+              />
+            {/if}
+            {#if chain === "SOL"}
+              <img
+                src={SolanaLogo}
+                alt=""
+                width="28"
+                height="28"
+                class="rounded-full"
+              />
+            {/if}
+            {shorterAddress(dataUserSocialLogin?.publicAddress)}
+          </div>
+        {:else}
+          <div class="flex flex-col gap-3">
+            <Evm
+              data={dataUserSocialLogin}
+              reCallAPI={() => {
+                dataUserSocialLogin = {};
+                location.reload();
+              }}
+            />
+            <Solana
+              data={dataUserSocialLogin}
+              reCallAPI={() => {
+                dataUserSocialLogin = {};
+                location.reload();
+              }}
+            />
+          </div>
+        {/if}
       </div>
     {/if}
 
