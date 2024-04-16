@@ -976,7 +976,7 @@
                 </div>
               </div>
 
-              {#if isShowReport && selectedItemIndex === index - 1 && data[index - 1]?.chain !== "CEX"}
+              {#if isShowReport && selectedItemIndex === index - 1 && !["CEX", "SUI", "TON", "NEAR", "ALGO", "AURA"].includes(data[index - 1]?.chain)}
                 <div class="w-max">
                   <Button
                     variant="tertiary"
