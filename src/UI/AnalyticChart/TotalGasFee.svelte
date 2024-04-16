@@ -264,7 +264,7 @@
         isLoadingChart={$query.isFetching}
         isTrxPage={false}
         id="total-gasfee-paid"
-        type="primary"
+        type="normal"
       />
     </div>
   </div>
