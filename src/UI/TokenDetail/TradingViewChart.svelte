@@ -195,7 +195,7 @@
           tvWidget.onChartReady(() => {
             tvWidget.applyOverrides(overrides(!$isDarkMode) || {});
 
-            if (avgCost !== 0) {
+            if (Number(avgCost) > 0) {
               tvWidget.activeChart().createShape(
                 {
                   time: 0,
