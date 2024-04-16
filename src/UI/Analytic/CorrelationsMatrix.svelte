@@ -443,7 +443,7 @@
       </div>
     </div>
 
-    {#if $queryHoldingToken.isFetching && listTokenHolding && listTokenHolding.length === 0}
+    {#if $queryHoldingToken.isFetching && $queryListToken.isFetching}
       <div class="flex items-center justify-center h-[465px]">
         <LoadingPremium />
       </div>
