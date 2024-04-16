@@ -44,9 +44,8 @@
         handleGetGoogleToken(
           res.uid,
           "google",
-          res?.reloadUserInfo?.providerUserInfo[0]?.email || res.email,
-          res?.reloadUserInfo?.providerUserInfo[0]?.displayName ||
-            res.displayName
+          res?.reloadUserInfo?.providerUserInfo[0]?.email,
+          res?.reloadUserInfo?.displayName
         );
       }
     } catch (e) {

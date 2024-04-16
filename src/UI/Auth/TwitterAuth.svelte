@@ -43,8 +43,8 @@
         handleGetTwitterToken(
           res.uid,
           "twitter",
-          res.providerData[0].email,
-          res.displayName
+          res?.reloadUserInfo?.providerUserInfo[0]?.email,
+          res?.reloadUserInfo?.screenName
         );
       }
     } catch (e) {
