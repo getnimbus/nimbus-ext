@@ -976,7 +976,7 @@
                 </div>
               </div>
 
-              {#if isShowReport && selectedItemIndex === index - 1}
+              {#if isShowReport && selectedItemIndex === index - 1 && data[index - 1]?.chain !== "CEX"}
                 <div class="w-max">
                   <Button
                     variant="tertiary"
