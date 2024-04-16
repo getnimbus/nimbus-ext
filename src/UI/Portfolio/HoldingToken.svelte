@@ -976,7 +976,7 @@
                 </div>
               </div>
 
-              {#if isShowReport && selectedItemIndex === index - 1 && !["CEX", "SUI", "TON", "NEAR", "ALGO", "AURA", "BTC"].includes(data[index - 1]?.chain)}
+              {#if isShowReport && selectedItemIndex === index - 1 && !["CEX", "SUI", "TON", "NEAR", "ALGO", "AURA", "BTC", "INJ"].includes(data[index - 1]?.chain)}
                 <div class="w-max">
                   <Button
                     variant="tertiary"
@@ -2441,7 +2441,7 @@
                 </div>
               </div>
             {/if}
-            {#if $user && Object.keys($user).length !== 0 && !["CEX", "SUI", "TON", "NEAR", "ALGO", "AURA", "BTC"].includes(data[index]?.chain)}
+            {#if $user && Object.keys($user).length !== 0 && !["CEX", "SUI", "TON", "NEAR", "ALGO", "AURA", "BTC", "INJ"].includes(data[index]?.chain)}
               <div
                 class="flex justify-center view-icon-detail"
                 use:tooltip={{
