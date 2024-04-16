@@ -303,7 +303,7 @@
         };
       });
 
-      if (avgCost !== undefined) {
+      if (avgCost !== undefined && Number(avgCost) > 0) {
         dataAvgCost = $queryTokenPrice.data?.map((item) => {
           return {
             value: [item[0], avgCost],
@@ -875,6 +875,14 @@
               data: dataAvgCost || [],
             },
           ],
+        };
+        // Set up the second tooltip
+        optionLine.tooltip[1] = {
+          trigger: "item", // Different trigger for the scatter tooltip
+          formatter: function (params) {
+            console.log("HELLO WORLD: ", params);
+            return "HELLO WORLD";
+          },
         };
       } else {
         optionLine = {
