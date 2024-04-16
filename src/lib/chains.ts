@@ -46,6 +46,7 @@ import Canto from "~/assets/chains/canto.png";
 import Oasis from "~/assets/chains/oasis.png";
 import Blast from "~/assets/chains/blast.png";
 import Shimmer from "~/assets/chains/shimmer.png";
+import inEVM from "~/assets/chains/injective.png";
 import Manta from "~/assets/chains/manta.png";
 
 export const listProviderCEX = [
@@ -121,7 +122,8 @@ export const listNotSupportHistoricalBalances = [
   "METIS",
   "POLYGON_ZKEVM",
   "OPBNB",
-  "SHIMMER"
+  "SHIMMER",
+  "inEVM",
 ];
 
 export const listSupported = [
@@ -212,6 +214,11 @@ export const chainList = [
     logo: zkEVM,
     label: "Polygon zkEVM",
     value: "POLYGON_ZKEVM",
+  },
+  {
+    logo: inEVM,
+    label: "inEVM",
+    value: "inEVM",
   },
   {
     logo: Optimism,
@@ -627,6 +634,12 @@ export const detectedChain = (type) => {
         name: "Shimmer",
       };
       break;
+    case "inEVM":
+      chain = {
+        logo: inEVM,
+        name: "inEVM",
+      };
+      break;
       // case "MANTA":
       //   chain = {
       //     logo: Manta,
@@ -875,6 +888,12 @@ export const linkExplorer = (chain, hash) => {
       links = {
         trx: `https://explorer.evm.shimmer.network/tx/${hash}`,
         address: `https://explorer.evm.shimmer.network/address/${hash}`
+      };
+      break;
+    case "inEVM":
+      links = {
+        trx: `https://explorer.inevm.com/tx/${hash}`,
+        address: `https://explorer.inevm.com/address/${hash}`,
       };
       break;
     // case "MANTA":
