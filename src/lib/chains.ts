@@ -7,6 +7,7 @@ import Aura from "~/assets/chains/aura.png";
 import Algorand from "~/assets/chains/algorand.png";
 import Near from "~/assets/chains/near.png";
 import Ton from "~/assets/chains/ton.png";
+import Injective from "~/assets/chains/injective.png";
 
 // MOVE
 import Move from "~/assets/chains/move.png";
@@ -133,10 +134,11 @@ export const listSupported = [
   "TON",
   "ALGO",
   "AURA",
+  "INJ",
 ];
 
 export const bigGeneration = ["EVM", "MOVE"];
-export const otherGeneration = ["BTC", "SOL", "NEAR", "ALGO", "AURA", "TON"];
+export const otherGeneration = ["BTC", "SOL", "NEAR", "ALGO", "AURA", "TON", "INJ"];
 export const generationLogo = [
   {
     logo: EVM,
@@ -161,6 +163,9 @@ export const generationLogo = [
   },
   {
     logo: Ton,
+  },
+  {
+    logo: Injective,
   },
 ];
 
@@ -375,6 +380,9 @@ export const detectedGeneration = (type) => {
     case "ALGO":
       logo = Algorand;
       break;
+    case "INJ":
+      logo = Injective;
+      break;
   }
   return logo;
 };
@@ -425,6 +433,12 @@ export const detectedChain = (type) => {
       chain = {
         logo: Algorand,
         name: "Algorand",
+      };
+      break;
+    case "INJ":
+      chain = {
+        logo: Injective,
+        name: "Injective",
       };
       break;
     case "ETH":
@@ -669,6 +683,12 @@ export const linkExplorer = (chain, hash) => {
       links = {
         trx: `https://algoexplorer.io/tx/${hash}`,
         address: `https://algoexplorer.io/address/${hash}`,
+      };
+      break;
+    case "INJ":
+      links = {
+        trx: `https://explorer.injective.network/transaction/${hash}`,
+        address: `https://explorer.injective.network/account/${hash}`,
       };
       break;
     case "ETH":
