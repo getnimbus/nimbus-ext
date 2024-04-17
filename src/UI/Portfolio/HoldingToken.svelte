@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { useQueryClient } from "@tanstack/svelte-query";
   import VirtualList from "svelte-tiny-virtual-list";
   import {
     wallet,
@@ -7,8 +8,13 @@
     realtimePrice,
     isDarkMode,
     typeWallet,
+    userPublicAddress,
   } from "~/store";
-  import { shorterName, shorterAddress } from "~/utils";
+  import {
+    shorterName,
+    shorterAddress,
+    handleFormatIdBlockChain,
+  } from "~/utils";
   import { listSupported, detectedChain } from "~/lib/chains";
   import numeral from "numeral";
   import { Progressbar, Toast } from "flowbite-svelte";
@@ -133,6 +139,8 @@
       content: "I hate this token 😠",
     },
   ];
+
+  const queryClient = useQueryClient();
 
   const closeSideBar = (event) => {
     if (event.key === "Escape") {
@@ -287,7 +295,7 @@
     const config = {
       displayMode: "integrated",
       integratedTargetId: `swap-${address}`,
-      endpoint: "https://rpc.shyft.to?api_key=Gny0V25q6Y2kMjze",
+      endpoint: "https://rpc.shyft.to/?api_key=gsusEvomKHQwwltu",
       strictTokenList: false,
       defaultExplorer: "Solscan",
       formProps: {
@@ -299,6 +307,19 @@
           "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v", // USDC
       },
       onSuccess: ({ txid }) => {
+        // handleSwapBonus({
+        //   point:
+        //     Number(
+        //       Math.round(
+        //         Number(route.fromAmountUSD) * 5
+        //       ) || 0
+        //     ) || 0,
+        //   txHash: txid,
+        //   from_token_ca: fromToken,
+        //   from_token_chain: fromChain,
+        //   to_token_ca: toToken.address,
+        //   to_token_chain: toToken.chainId,
+        // });
         toastMsg = `Swap token successful. Tx id is ${shorterAddress(txid)}`;
         isSuccessToast = true;
         trigger();
@@ -314,6 +335,54 @@
     window.Jupiter.init(config).catch((error) => {
       window.Jupiter.init(config);
     });
+  };
+
+  const getHoldingToken = async (address, chain) => {
+    try {
+      await nimbus.get(
+        `/v2/address/${address}/holding?chain=${chain}&force_refresh=${true}`
+      );
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const updateBalanceToken = async (data) => {
+    try {
+      const payload = [
+        {
+          chain: handleFormatIdBlockChain(data.from_token_chain),
+          owner: $userPublicAddress,
+          contract_address: data.from_token_ca,
+        },
+        {
+          chain: handleFormatIdBlockChain(data.to_token_chain),
+          owner: $userPublicAddress,
+          contract_address: data.to_token_ca,
+        },
+      ];
+      await nimbus.post("/v2/holding-realtime", payload);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const handleSwapBonus = async (data) => {
+    try {
+      const response = await nimbus.post(`/swap/${$userPublicAddress}/bonus`, {
+        point: data?.point,
+        txHash: data?.txHash,
+      });
+      if (response && response?.data) {
+        mixpanel.track("user_swap_completed");
+        getHoldingToken($wallet, selectedTokenDetail?.chain);
+        updateBalanceToken(data);
+        queryClient.invalidateQueries(["token-holding"]);
+        triggerFireworkBonus(response?.data?.point);
+      }
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   const handleRecomputeHeight = (index) => {
@@ -3161,7 +3230,6 @@
       </div>
     {/if}
   </div>
-
   {#if $typeWallet === "SOL" || ($typeWallet === "BUNDLE" && selectedTokenDetail?.chain === "SOL")}
     {#if showSideTokenSwap}
       <div id={`swap-${selectedTokenDetail?.contractAddress}`}></div>
