@@ -1445,7 +1445,7 @@
                 class="2xl:pl-14 pl-4 w-full h-[50px] flex items-center justify-center 2xl:gap-7 gap-6"
               >
                 <div
-                  class="flex justify-center view-icon-detail"
+                  class="flex justify-center"
                   use:tooltip={{
                     content: `<tooltip-detail text="Show bundles detail" />`,
                     allowHTML: true,
@@ -2443,7 +2443,7 @@
             {/if}
             {#if listSupported.includes($typeWallet)}
               <div
-                class="flex justify-center cursor-pointer view-icon-detail"
+                class="flex justify-center cursor-pointer"
                 on:click={() => {
                   showSideTokenDetail = true;
                   selectedTokenDetail = data[index];
@@ -2512,7 +2512,7 @@
             {/if}
             {#if $user && Object.keys($user).length !== 0 && !["CEX", "SUI", "TON", "NEAR", "ALGO", "AURA", "BTC", "INJ"].includes(data[index]?.chain) && ["SOL", "ETH", "ARB", "OP", "MATIC", "BNB", "POLYGON_ZKEVM", "BASE", "AVAX", "LINEA", "XDAI", "FANTOM", "AURORA", "METIS", "SCROLL", "MOVR"].includes(data[index]?.chain)}
               <div
-                class="flex justify-center view-icon-detail"
+                class="flex justify-center"
                 use:tooltip={{
                   content: `<tooltip-detail text="Swap token" />`,
                   allowHTML: true,
