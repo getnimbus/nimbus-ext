@@ -1058,7 +1058,7 @@
         <div class="flex justify-between items-start">
           <div class="text-right text-sm uppercase font-medium">Action</div>
           <div
-            class="cursor-pointer view-icon-detail"
+            class="cursor-pointer"
             on:click={() => {
               showSideNftDetail = true;
               selectedNft = data[index];
