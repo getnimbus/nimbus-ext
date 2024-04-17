@@ -117,6 +117,7 @@
         <div class="xl:text-base text-xl font-medium">
           Connect your main wallet
         </div>
+
         {#if dataUserSocialLogin && dataUserSocialLogin.publicAddress}
           <div class="xl:text-lg text-2xl flex items-center gap-3">
             {#if chain === "EVM"}
@@ -185,10 +186,11 @@
             />
           </div>
         {/if}
-        {#if socialData.length > 0 && socialData[0].isPrimaryLogin}
+
+        {#if dataUserSocialLogin && dataUserSocialLogin.isPrimaryLogin}
           <div class="text-yellow-300">
-            ⚠️ For connecting with an empty Gmail account without prior linking,
-            we will permanently lock this wallet.
+            ⚠️ For connecting with an empty Gmail or X account without prior
+            linking, we will permanently lock this wallet.
           </div>
         {/if}
       </div>
