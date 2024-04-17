@@ -311,6 +311,8 @@
       },
     };
 
+    console.log("window.Jupiter: ", window.Jupiter);
+
     window.Jupiter.init(config).catch((error) => {
       window.Jupiter.init(config);
     });
