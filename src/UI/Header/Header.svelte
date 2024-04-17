@@ -462,7 +462,8 @@
 </script>
 
 <svelte:head>
-  <script src="/main-2.0.4.js" data-preload></script>
+  <!-- import Jupiter Swap -->
+  <script src="/main-2.2.1.js" data-preload></script>
   <script>
     !(function (e, t) {
       const a = "featurebase-sdk";
