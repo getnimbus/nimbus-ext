@@ -586,8 +586,8 @@
                       </span>
                     {:else}
                       <span>
-                        {#if data[index - 1]?.name?.length > 12}
-                          {shorterName(data[index - 1]?.name, 12)}
+                        {#if data[index - 1]?.name?.length > 10}
+                          {shorterName(data[index - 1]?.name, 10)}
                         {:else}
                           {data[index - 1]?.name}
                         {/if}
@@ -2441,7 +2441,7 @@
                 </div>
               </div>
             {/if}
-            {#if $user && Object.keys($user).length !== 0 && !["CEX", "SUI", "TON", "NEAR", "ALGO", "AURA", "BTC", "INJ"].includes(data[index]?.chain) && ["SOL", "ETH", "ARB", "OP", "MATIC", "BNB", "POLYGON_ZKEVM", "BASE", "AVAX", "LINEA", "XDAI", "FANTOM", "AURORA", "METIS", "SCROLL", "MOVR"].includes(data[index - 1]?.chain)}
+            {#if $user && Object.keys($user).length !== 0 && !["CEX", "SUI", "TON", "NEAR", "ALGO", "AURA", "BTC", "INJ"].includes(data[index]?.chain) && ["SOL", "ETH", "ARB", "OP", "MATIC", "BNB", "POLYGON_ZKEVM", "BASE", "AVAX", "LINEA", "XDAI", "FANTOM", "AURORA", "METIS", "SCROLL", "MOVR"].includes(data[index]?.chain)}
               <div
                 class="flex justify-center view-icon-detail"
                 use:tooltip={{
