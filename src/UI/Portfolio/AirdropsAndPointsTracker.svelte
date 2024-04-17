@@ -172,7 +172,7 @@
 </script>
 
 <ErrorBoundary>
-  <div class="flex flex-col">
+  <div class="flex flex-col xl:px-3">
     <!-- Desktop view -->
     <div class="xl:flex hidden flex-col gap-6">
       <div class="flex flex-col gap-3">

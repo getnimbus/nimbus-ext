@@ -77,7 +77,7 @@
   });
 </script>
 
-<div class="xl:-mt-15" id="target-performance-summary">
+<div class="xl:-mt-15 xl:mx-3" id="target-performance-summary">
   <SyncData let:address let:enabledFetchAllData>
     <div class="flex flex-col gap-6">
       <div class="xl:flex hidden items-center justify-end">
@@ -104,7 +104,7 @@
       </div>
 
       <div
-        class="w-full xl:grid grid-cols-4 flex flex-col rounded-xl xl:py-10 py-4 md:px-10 px-4 gap-9 xl:border-2 border_0000001a"
+        class="w-full xl:grid grid-cols-4 flex flex-col rounded-xl xl:py-10 py-4 xl:px-6 px-0 gap-9 xl:border-2 border_0000001a"
       >
         <div class="w-full flex flex-col gap-5 justify-between col-span-1">
           <div>
@@ -153,6 +153,7 @@
             />
           </div>
         </div>
+
         <div class="col-span-4 flex flex-col gap-9">
           <ClosedPositionChart
             selectedAddress={address}
