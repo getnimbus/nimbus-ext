@@ -66,22 +66,16 @@
 
   const handleGetNonce = async (provider, address) => {
     try {
-      const res = await nimbus.post("/users/nonce", {
-        publicAddress: address,
-        referrer: undefined,
-      });
-      if (res && res.data) {
-        const signatureString = await handleSignAddressMessage(
-          provider,
-          res.data.nonce
-        );
-        if (signatureString) {
-          const payload = {
-            signature: signatureString,
-            publicAddress: address?.toLowerCase(),
-          };
-          handleUpdatePublicAddress(payload);
-        }
+      const signatureString = await handleSignAddressMessage(
+        provider,
+        `${Math.floor(Math.random() * 10000)}`
+      );
+      if (signatureString) {
+        const payload = {
+          signature: signatureString,
+          publicAddress: address?.toLowerCase(),
+        };
+        handleUpdatePublicAddress(payload);
       }
     } catch (e) {
       console.error("error: ", e);
