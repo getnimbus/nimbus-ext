@@ -349,7 +349,7 @@ export const formatValue = (input: number) => {
   return numeral(input).format("0,0.00") === "NaN"
     ? formatNumberSmall(input)
     : input !== 0 && input > 0 && input < 0.01
-      ? "<$0.01"
+      ? numeral(input).format("$0,0.000000")
       : numeral(input).format("$0,0.00");
 };
 

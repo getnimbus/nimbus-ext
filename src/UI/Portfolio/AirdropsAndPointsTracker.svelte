@@ -70,6 +70,8 @@
   let formatData = [];
   let eligibilityData = [];
   let pointsData = [];
+  let totalEstimateValueEligibilities = 0;
+  let totalEstimateValuePoints = 0;
 
   $: {
     if (
@@ -126,7 +128,7 @@
           return 0;
         });
 
-      const totalEstimateValueEligibilities = eligibilityData.reduce(
+      totalEstimateValueEligibilities = eligibilityData.reduce(
         (prev, item) => prev + Number(item?.value),
         0
       );
@@ -157,7 +159,7 @@
           return 0;
         });
 
-      const totalEstimateValuePoints = pointsData.reduce(
+      totalEstimateValuePoints = pointsData.reduce(
         (prev, item) => prev + Number(item?.value),
         0
       );
@@ -170,11 +172,19 @@
 </script>
 
 <ErrorBoundary>
-  <div class="flex flex-col">
+  <div class="flex flex-col xl:px-3">
     <!-- Desktop view -->
     <div class="xl:flex hidden flex-col gap-6">
       <div class="flex flex-col gap-3">
-        <div class="xl:text-2xl text-3xl font-medium">Airdrops</div>
+        <div class="flex items-center gap-2 justify-between">
+          <div class="xl:text-2xl text-3xl font-medium">Airdrops</div>
+          <div class="text-3xl font-medium">
+            <TooltipNumber
+              number={totalEstimateValueEligibilities}
+              type="value"
+            />
+          </div>
+        </div>
         <div
           class={`rounded-[10px] overflow-hidden h-full ${
             $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
@@ -331,7 +341,12 @@
       </div>
 
       <div class="flex flex-col gap-3">
-        <div class="xl:text-2xl text-3xl font-medium">Points</div>
+        <div class="flex items-center gap-2 justify-between">
+          <div class="xl:text-2xl text-3xl font-medium">Points</div>
+          <div class="text-3xl font-medium">
+            <TooltipNumber number={totalEstimateValuePoints} type="value" />
+          </div>
+        </div>
         <div
           class={`rounded-[10px] overflow-hidden h-full ${
             $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
@@ -544,7 +559,15 @@
     <!-- Mobile view -->
     <div class="xl:hidden flex flex-col gap-6">
       <div class="flex flex-col gap-3">
-        <div class="xl:text-2xl text-3xl font-medium">Airdrops</div>
+        <div class="flex flex-col gap-2">
+          <div class="xl:text-2xl text-3xl font-medium">Airdrops</div>
+          <div class="text-3xl font-medium">
+            <TooltipNumber
+              number={totalEstimateValueEligibilities}
+              type="value"
+            />
+          </div>
+        </div>
         <div
           class={`rounded-[10px] overflow-visible h-full ${
             $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
@@ -631,7 +654,12 @@
       </div>
 
       <div class="flex flex-col gap-3">
-        <div class="xl:text-2xl text-3xl font-medium">Points</div>
+        <div class="flex flex-col gap-2">
+          <div class="xl:text-2xl text-3xl font-medium">Points</div>
+          <div class="text-3xl font-medium">
+            <TooltipNumber number={totalEstimateValuePoints} type="value" />
+          </div>
+        </div>
         <div
           class={`rounded-[10px] overflow-visible h-full ${
             $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
