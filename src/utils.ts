@@ -802,75 +802,75 @@ export const drivePortfolio = () =>
         element: ".wellcome-portfolio",
         popover: {
           title: "Welcome to our portfolio tools 🤩",
-          description: "Allow me to guide you through our application",
+          description: "Allow me to guide you to easily access our application with the following main functions",
         },
       },
       {
         element: "#view-the-holding-token",
         popover: {
-          title: "Show you the Token you holding 🟡",
-          description: "You can see all your Tokens right here",
+          title: "Show all Tokens you have 🟡",
+          description: "Tracking all your Tokens right here",
         },
       },
       {
         element: "#view-the-nft",
         popover: {
-          title: "Show you the NFTs you holding 🖼️",
-          description: "You can see your NFTs holding right here",
+          title: "Show all NFTs you you have 🖼️",
+          description: "Tracking all your NFTs right here",
         },
       },
       {
         element: "#view-the-defi",
         popover: {
-          title: "Show you the Sui DeFi you holding 💵",
-          description: "You can see your Sui💧 DeFi holding right here",
+          title: "Show all DeFi Positions you have 💵",
+          description: "Tracking all your DeFi Positions right here",
         },
       },
       {
         element: "#view-the-points-airdrop",
         popover: {
-          title: "Show your GM Points and Airdrops 📦",
+          title: "Show all Airdrops and Points you have 📦",
           description:
-            "Track all your GM Points and your Airdrops from your portfolio",
+            "Tracking all your Airdrops and Points you got right here",
         },
       },
       {
         element: "#view-the-summary",
         popover: {
-          title: "See our summary about your portfolio 📊",
-          description: "We give you some overview data about your portfolio",
+          title: "See our Summary about your portfolio 📊",
+          description: "We give you the overview about your portfolio",
         },
       },
       {
         element: ".view-the-pnl",
         popover: {
-          title: "Track your token performance 📊",
+          title: "Track your portfolio Performance and Allocation 📊",
           description:
-            "View your Portfolio diversify, compare your invesment with Bitcoin or Ethereum",
+            "View your Portfolio diversify, compare your investment with Bitcoin or Ethereum",
         },
       },
       {
         element: ".view-token-detail1",
         popover: {
-          title: "Your profit and loss, in every token 💰",
+          title: "Your profit and loss, in every assets 💰",
           description:
-            "We have the most important metrics for Investors - Profit and loss",
+            "We have the most important metrics for Investors - Profit and Loss",
         },
       },
       {
         element: ".view-token-detail2",
         popover: {
-          title: "Your profit and loss, in every token 💰",
+          title: "Your profit and loss, in every assets 💰",
           description:
-            "We have the most important metrics for Investors - Profit and loss",
+            "We have the most important metrics for Investors - Profit and Loss",
         },
       },
       {
         element: ".view-icon-detail",
         popover: {
-          title: "Get your trading detail 🧐",
+          title: "Get your assets detail 🧐",
           description:
-            "View your trading activities on the Price chart, get market bought distribution to make wise more",
+            "View more detail of your assets, get market bought distribution to make wise more",
         },
       },
     ],
