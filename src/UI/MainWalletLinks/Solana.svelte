@@ -94,21 +94,15 @@
 
   const handleGetSolanaNonce = async (address) => {
     try {
-      const res: any = await nimbus.post("/users/nonce", {
-        publicAddress: address,
-        referrer: undefined,
-      });
-      if (res && res.data) {
-        const signatureString = await handleSignSolanaAddressMessage(
-          res?.data?.nonce
-        );
-        if (signatureString) {
-          const payload = {
-            signature: signatureString,
-            publicAddress: address,
-          };
-          handleUpdatePublicAddress(payload);
-        }
+      const signatureString = await handleSignSolanaAddressMessage(
+        `${Math.floor(Math.random() * 10000)}`
+      );
+      if (signatureString) {
+        const payload = {
+          signature: signatureString,
+          publicAddress: address,
+        };
+        handleUpdatePublicAddress(payload);
       }
     } catch (e) {
       console.error("error: ", e);
