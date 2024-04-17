@@ -1466,7 +1466,7 @@
                     {/if}
                   </div> -->
 
-                  <div class="hidden xl:block">
+                  <!-- <div class="hidden xl:block">
                     {#if $typeWallet === "BTC"}
                       <div
                         use:tooltip={{
@@ -1522,7 +1522,7 @@
                         {/if}
                       </div>
                     {/if}
-                  </div>
+                  </div> -->
                 </div>
               </div>
 
@@ -1550,7 +1550,7 @@
                   {/if}
                 {/if}
 
-                <div class="xl:hidden block">
+                <!-- <div class="xl:hidden block">
                   {#if $typeWallet === "BTC"}
                     <div
                       use:tooltip={{
@@ -1602,12 +1602,12 @@
                       {/if}
                     </div>
                   {/if}
-                </div>
+                </div> -->
               </div>
             </div>
 
             <div class="flex flex-col gap-6 md:hidden w-max -mt-2">
-              {#if $typeWallet === "BTC"}
+              <!-- {#if $typeWallet === "BTC"}
                 <div
                   use:tooltip={{
                     content: `<tooltip-detail text="Coming soon!" />`,
@@ -1657,7 +1657,7 @@
                     </Button>
                   {/if}
                 </div>
-              {/if}
+              {/if} -->
 
               {#if $typeWallet === "EVM" || $typeWallet === "MOVE"}
                 {#if $typeWallet === "EVM"}
