@@ -12,7 +12,6 @@
 
   import defaultToken from "~/assets/defaultToken.png";
   import gmPoints from "~/assets/Gold4.svg";
-  import axios from "axios";
 
   const protocolInfo = {
     GMPoints: {
