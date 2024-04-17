@@ -348,7 +348,7 @@
           {MultipleLang.whales_page_title}
         </div>
       </div>
-      <div class="flex items-center gap-1">
+      <div class="flex flex-wrap items-center xl:gap-1">
         <AnimateSharedLayout>
           {#each whalesFilter as item}
             <div
