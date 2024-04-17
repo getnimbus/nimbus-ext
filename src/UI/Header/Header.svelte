@@ -17,6 +17,13 @@
     triggerModalAddAddress,
     triggerConnectWallet,
     checkinPlusPoint,
+    totalTokens,
+    totalAirdrops,
+    totalNfts,
+    totalPositions,
+    unrealizedProfit,
+    realizedProfit,
+    pastProfit,
   } from "~/store";
   import { shorterAddress } from "~/utils";
   import mixpanel from "mixpanel-browser";
@@ -184,6 +191,14 @@
 
   const handleSearchAddress = async (value: string) => {
     if (value) {
+      totalTokens.update((n) => (n = 0));
+      totalAirdrops.update((n) => (n = 0));
+      totalNfts.update((n) => (n = 0));
+      totalPositions.update((n) => (n = 0));
+      unrealizedProfit.update((n) => (n = 0));
+      realizedProfit.update((n) => (n = 0));
+      pastProfit.update((n) => (n = 0));
+
       mixpanel.track("user_search");
       const validateAccount = await handleValidateAddress(value);
       chain.update((n) => (n = "ALL"));
