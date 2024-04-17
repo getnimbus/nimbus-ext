@@ -187,7 +187,7 @@
                   class="pl-3 py-3 rounded-tl-[10px] bg-transparent bg_f4f5f8"
                 >
                   <div class="text-left text-xs uppercase font-medium">
-                    Name
+                    Assets
                   </div>
                 </th>
 
@@ -251,7 +251,24 @@
                       <div
                         class="flex justify-start items-center gap-3 text-sm font-medium"
                       >
-                        {item?.protocolLabel}
+                        <div
+                          class="rounded-full w-[30px] h-[30px] overflow-hidden"
+                        >
+                          <Image
+                            logo={item.logoUrl}
+                            defaultLogo={defaultToken}
+                          />
+                        </div>
+                        <div class="flex flex-col gap-1">
+                          <div class="text-2xl font-medium xl:text-sm">
+                            {item?.protocolLabel}
+                          </div>
+                          <div
+                            class="text-lg font-medium text_00000080 xl:text-xs"
+                          >
+                            {item?.ticker}
+                          </div>
+                        </div>
                       </div>
                     </td>
 
@@ -327,7 +344,7 @@
                   class="pl-3 py-3 rounded-tl-[10px] bg-transparent bg_f4f5f8"
                 >
                   <div class="text-left text-xs uppercase font-medium">
-                    Name
+                    Assets
                   </div>
                 </th>
 
