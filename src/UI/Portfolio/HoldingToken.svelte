@@ -295,7 +295,7 @@
     const config = {
       displayMode: "integrated",
       integratedTargetId: `swap-${address}`,
-      endpoint: "https://rpc.shyft.to?api_key=Gny0V25q6Y2kMjze",
+      endpoint: "https://rpc.shyft.to/?api_key=gsusEvomKHQwwltu",
       strictTokenList: false,
       defaultExplorer: "Solscan",
       formProps: {
@@ -307,19 +307,19 @@
           "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v", // USDC
       },
       onSuccess: ({ txid }) => {
-        handleSwapBonus({
-          // point:
-          //   Number(
-          //     Math.round(
-          //       Number(route.fromAmountUSD) * 5
-          //     ) || 0
-          //   ) || 0,
-          // txHash: txid,
-          // from_token_ca: fromToken,
-          // from_token_chain: fromChain,
-          // to_token_ca: toToken.address,
-          // to_token_chain: toToken.chainId,
-        });
+        // handleSwapBonus({
+        //   point:
+        //     Number(
+        //       Math.round(
+        //         Number(route.fromAmountUSD) * 5
+        //       ) || 0
+        //     ) || 0,
+        //   txHash: txid,
+        //   from_token_ca: fromToken,
+        //   from_token_chain: fromChain,
+        //   to_token_ca: toToken.address,
+        //   to_token_chain: toToken.chainId,
+        // });
         toastMsg = `Swap token successful. Tx id is ${shorterAddress(txid)}`;
         isSuccessToast = true;
         trigger();
