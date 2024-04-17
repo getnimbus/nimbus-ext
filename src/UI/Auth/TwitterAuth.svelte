@@ -75,6 +75,7 @@
         trigger();
         queryClient?.invalidateQueries(["users-me"]);
         queryClient.invalidateQueries(["list-address"]);
+        queryClient?.invalidateQueries(["link-socials"]);
       } else {
         toastMsg = res?.error;
         isSuccessToast = false;
