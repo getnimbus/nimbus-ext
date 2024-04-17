@@ -870,14 +870,14 @@ export const drivePortfolio = () =>
       {
         element: "#view-the-holding-token",
         popover: {
-          title: "Show all Tokens you have 🟡",
+          title: "Show all Tokens you are holding 🟡",
           description: "Tracking all your Tokens right here",
         },
       },
       {
         element: "#view-the-nft",
         popover: {
-          title: "Show all NFTs you you have 🖼️",
+          title: "Show all NFTs you are holding 🖼️",
           description: "Tracking all your NFTs right here",
         },
       },
@@ -914,25 +914,17 @@ export const drivePortfolio = () =>
       {
         element: ".view-token-detail1",
         popover: {
-          title: "Your profit and loss, in every assets 💰",
+          title: "Your realized profit and loss, in every asset 💰",
           description:
-            "We have the most important metrics for Investors - Profit and Loss",
+            "With Realized Profit and Loss Calculation, you have the power to make smarter investment choices",
         },
       },
       {
         element: ".view-token-detail2",
         popover: {
-          title: "Your profit and loss, in every assets 💰",
+          title: "Your unrealized profit and loss, in every asset 💰",
           description:
-            "We have the most important metrics for Investors - Profit and Loss",
-        },
-      },
-      {
-        element: ".view-icon-detail",
-        popover: {
-          title: "Get your assets detail 🧐",
-          description:
-            "View more detail of your assets, get market bought distribution to make wise more",
+            "With Unrealized Profit and Loss every asset, you have the tools to take your investment journey to new heights",
         },
       },
     ],
