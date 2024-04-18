@@ -1040,7 +1040,7 @@
                 </div>
               </div>
 
-              {#if isShowReport && selectedItemIndex === index - 1 && !["CEX", "SUI", "TON", "NEAR", "ALGO", "AURA", "BTC", "INJ", "SOL"].includes(data[index - 1]?.chain) && ["SOL", "ETH", "ARB", "OP", "MATIC", "BNB", "POLYGON_ZKEVM", "BASE", "AVAX", "LINEA", "XDAI", "FANTOM", "AURORA", "METIS", "SCROLL", "MOVR"].includes(data[index - 1]?.chain)}
+              {#if isShowReport && selectedItemIndex === index - 1 && !["CEX", "SUI", "TON", "NEAR", "ALGO", "AURA", "BTC", "INJ"].includes(data[index - 1]?.chain) && ["SOL", "ETH", "ARB", "OP", "MATIC", "BNB", "POLYGON_ZKEVM", "BASE", "AVAX", "LINEA", "XDAI", "FANTOM", "AURORA", "METIS", "SCROLL", "MOVR"].includes(data[index - 1]?.chain)}
                 <div class="w-max">
                   <Button
                     variant="tertiary"
@@ -1054,10 +1054,10 @@
                           ($typeWallet === "BUNDLE" &&
                             data[index - 1]?.chain === "SOL")
                         ) {
-                          // handleSwapToken(
-                          //   data[index - 1],
-                          //   data[index - 1].contractAddress
-                          // );
+                          handleSwapToken(
+                            data[index - 1],
+                            data[index - 1].contractAddress
+                          );
                         }
                       }
                     }}
@@ -2505,7 +2505,7 @@
                 </div>
               </div>
             {/if}
-            {#if $user && Object.keys($user).length !== 0 && !["CEX", "SUI", "TON", "NEAR", "ALGO", "AURA", "BTC", "INJ", "SOL"].includes(data[index]?.chain) && ["SOL", "ETH", "ARB", "OP", "MATIC", "BNB", "POLYGON_ZKEVM", "BASE", "AVAX", "LINEA", "XDAI", "FANTOM", "AURORA", "METIS", "SCROLL", "MOVR"].includes(data[index]?.chain)}
+            {#if $user && Object.keys($user).length !== 0 && !["CEX", "SUI", "TON", "NEAR", "ALGO", "AURA", "BTC", "INJ"].includes(data[index]?.chain) && ["SOL", "ETH", "ARB", "OP", "MATIC", "BNB", "POLYGON_ZKEVM", "BASE", "AVAX", "LINEA", "XDAI", "FANTOM", "AURORA", "METIS", "SCROLL", "MOVR"].includes(data[index]?.chain)}
               <div
                 class="flex justify-center"
                 use:tooltip={{
@@ -2523,7 +2523,7 @@
                       $typeWallet === "SOL" ||
                       ($typeWallet === "BUNDLE" && data[index]?.chain === "SOL")
                     ) {
-                      // handleSwapToken(data[index], data[index].contractAddress);
+                      handleSwapToken(data[index], data[index].contractAddress);
                     }
                   }}
                 >
