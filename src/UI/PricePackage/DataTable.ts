@@ -106,11 +106,11 @@ export const priceTable: ComparePricing[] = [
     content: {
       free: {
         state: "notify",
-        description: "$2 000 total net worth",
+        description: "$20 000 total net worth",
       },
       explorer: {
         state: "notify",
-        description: "$50 000 total net worth",
+        description: "$100 000 total net worth",
       },
       alpha: {
         state: "available",
@@ -510,7 +510,7 @@ export const priceTable: ComparePricing[] = [
     },
   },
   {
-    title: "Smart token allocation",
+    title: "AI token allocation",
     featureStatus: "part",
     tippy: {
       used: true,
