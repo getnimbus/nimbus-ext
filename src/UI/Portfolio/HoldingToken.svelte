@@ -369,9 +369,10 @@
       });
       if (response && response?.data) {
         mixpanel.track("user_swap_completed");
-        getHoldingToken($wallet, selectedTokenDetail?.chain);
         updateBalanceToken(data);
+        getHoldingToken($wallet, selectedTokenDetail?.chain);
         queryClient.invalidateQueries(["token-holding"]);
+        queryClient.invalidateQueries(["daily-checkin"]);
         triggerFireworkBonus(response?.data?.point);
       }
     } catch (e) {
