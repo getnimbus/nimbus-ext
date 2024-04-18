@@ -295,7 +295,9 @@
     const config = {
       displayMode: "integrated",
       integratedTargetId: `swap-${address}`,
-      endpoint: "https://rpc.shyft.to/?api_key=gsusEvomKHQwwltu",
+      endpoint:
+        import.meta.env.VITE_JUPSWAP_RPC_URL ||
+        "https://rpc.shyft.to/?api_key=gsusEvomKHQwwltu",
       strictTokenList: false,
       defaultExplorer: "Solscan",
       formProps: {
