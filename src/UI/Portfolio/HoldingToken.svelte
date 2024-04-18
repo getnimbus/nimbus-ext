@@ -300,26 +300,18 @@
       defaultExplorer: "Solscan",
       formProps: {
         darkMode: $isDarkMode,
+        gmPointCoefficient: 5,
         fixedOutputMint: false,
         initialAmount: data?.amountRaw,
         initialInputMint:
           data?.contractAddress ||
           "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v", // USDC
       },
-      onSuccess: ({ txid }) => {
-        // handleSwapBonus({
-        //   point:
-        //     Number(
-        //       Math.round(
-        //         Number(route.fromAmountUSD) * 5
-        //       ) || 0
-        //     ) || 0,
-        //   txHash: txid,
-        //   from_token_ca: fromToken,
-        //   from_token_chain: fromChain,
-        //   to_token_ca: toToken.address,
-        //   to_token_chain: toToken.chainId,
-        // });
+      onSuccess: ({ txid, result }) => {
+        handleSwapBonus({
+          ...result,
+          txHash: txid,
+        });
         toastMsg = `Swap token successful. Tx id is ${shorterAddress(txid)}`;
         isSuccessToast = true;
         trigger();
