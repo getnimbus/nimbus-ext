@@ -296,7 +296,7 @@
       displayMode: "integrated",
       integratedTargetId: `swap-${address}`,
       endpoint:
-        import.meta.env.VITE_JUPSWAP_RPC_URL ||
+        import.meta.env.VITE_PUBLIC_JUPSWAP_RPC_URL ||
         "https://rpc.shyft.to/?api_key=gsusEvomKHQwwltu",
       strictTokenList: false,
       defaultExplorer: "Solscan",
