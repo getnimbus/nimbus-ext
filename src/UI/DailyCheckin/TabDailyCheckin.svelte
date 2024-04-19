@@ -112,6 +112,7 @@
   let sortTypeHistory = "default";
   let sortPointHistory = "default";
   let isDisabledReceiveQuest = false;
+  let selectedQuestId = "";
 
   let toastMsg = "";
   let isSuccessToast = false;
@@ -439,11 +440,7 @@
           trigger();
         }
         if (res?.data?.bonus !== undefined) {
-          triggerBonusScore();
-          bonusScore = res?.data?.bonus;
-          isTriggerBonusScore = true;
-          queryClient.invalidateQueries([$userPublicAddress, "daily-checkin"]);
-          queryClient.invalidateQueries(["users-me"]);
+          handleTrigger(res?.data?.bonus);
         }
       }
       if (type.includes("retweet-founder")) {
@@ -456,11 +453,7 @@
           trigger();
         }
         if (res?.data?.bonus !== undefined) {
-          triggerBonusScore();
-          bonusScore = res?.data?.bonus;
-          isTriggerBonusScore = true;
-          queryClient.invalidateQueries([$userPublicAddress, "daily-checkin"]);
-          queryClient.invalidateQueries(["users-me"]);
+          handleTrigger(res?.data?.bonus);
         }
       }
       if (type === "solana-recap-2023") {
@@ -476,11 +469,7 @@
           trigger();
         }
         if (res?.data?.bonus !== undefined) {
-          triggerBonusScore();
-          bonusScore = res?.data?.bonus;
-          isTriggerBonusScore = true;
-          queryClient.invalidateQueries([$userPublicAddress, "daily-checkin"]);
-          queryClient.invalidateQueries(["users-me"]);
+          handleTrigger(res?.data?.bonus);
         }
       }
       if (type === "new-user-tutorial") {
@@ -494,11 +483,7 @@
           trigger();
         }
         if (res?.data?.bonus !== undefined) {
-          triggerBonusScore();
-          bonusScore = res?.data?.bonus;
-          isTriggerBonusScore = true;
-          queryClient.invalidateQueries([$userPublicAddress, "daily-checkin"]);
-          queryClient.invalidateQueries(["users-me"]);
+          handleTrigger(res?.data?.bonus);
         }
       }
       if (type === "sync-telegram") {
@@ -511,11 +496,7 @@
           trigger();
         }
         if (res?.data?.bonus !== undefined) {
-          triggerBonusScore();
-          bonusScore = res?.data?.bonus;
-          isTriggerBonusScore = true;
-          queryClient.invalidateQueries([$userPublicAddress, "daily-checkin"]);
-          queryClient.invalidateQueries(["users-me"]);
+          handleTrigger(res?.data?.bonus);
         }
       }
       if (type === "first-share-on-twitter") {
@@ -531,18 +512,25 @@
           trigger();
         }
         if (res?.data?.bonus !== undefined) {
-          triggerBonusScore();
-          bonusScore = res?.data?.bonus;
-          isTriggerBonusScore = true;
-          queryClient.invalidateQueries([$userPublicAddress, "daily-checkin"]);
-          queryClient.invalidateQueries(["users-me"]);
+          handleTrigger(res?.data?.bonus);
         }
       }
+      selectedQuestId = type;
       isDisabledReceiveQuest = true;
     } catch (e) {
       console.error(e);
       isDisabledReceiveQuest = false;
     }
+  };
+
+  const handleTrigger = (bonus: any) => {
+    triggerBonusScore();
+    bonusScore = bonus;
+    isTriggerBonusScore = true;
+    queryClient.invalidateQueries(["daily-checkin"]);
+    queryClient.invalidateQueries(["rewards"]);
+    queryClient.invalidateQueries(["list-quest"]);
+    queryClient.invalidateQueries(["users-me"]);
   };
 
   $: {
@@ -843,24 +831,25 @@
                                   </a>
                                 {/if}
                               {:else}
-                                <div
-                                  on:click={() => {
-                                    if (!quest.isDone) {
-                                      handleReceiveQuest(quest?.url, quest?.id);
-                                    }
-                                  }}
-                                  class="py-1"
-                                >
-                                  <Button
-                                    disabled={isDisabledReceiveQuest ||
-                                      quest.isDone}
-                                  >
-                                    {#if quest.isDone}
-                                      Done!
-                                    {:else}
-                                      Collect!
-                                    {/if}
-                                  </Button>
+                                <div class="py-1">
+                                  {#if (selectedQuestId && isDisabledReceiveQuest) || quest.isDone}
+                                    <Button disabled>Done!</Button>
+                                  {:else}
+                                    <div
+                                      on:click={() => {
+                                        if (!quest.isDone) {
+                                          selectedQuestId = "";
+                                          isDisabledReceiveQuest = false;
+                                          handleReceiveQuest(
+                                            quest?.url,
+                                            quest?.id
+                                          );
+                                        }
+                                      }}
+                                    >
+                                      <Button>Collect!</Button>
+                                    </div>
+                                  {/if}
                                 </div>
                               {/if}
                             </div>
@@ -938,7 +927,6 @@
           {/if}
 
           {#if selectedType === "history"}
-            <div class="text-lg font-medium">Checkin History</div>
             <div
               class={`border border_0000000d rounded-[10px] w-full max-h-[600px] overflow-y-auto ${
                 $isDarkMode ? "bg-[#131313]" : "bg-[#fff]"
@@ -994,21 +982,47 @@
                       </tr>
                     {/if}
                     {#each defaultDataCheckinHistory as { point, type, createdAt }}
-                      <tr>
-                        <td class="py-2 pl-3 text-left text-sm">
-                          {dayjs(createdAt).format("YYYY-MM-DD")}
-                        </td>
-                        <td class="py-2 text-sm">{type}</td>
+                      <tr class="group transition-all">
                         <td
-                          class={`py-2 pr-3 text-right text-sm ${
-                            point > 0
-                              ? "text-green-500"
-                              : point < 0
-                                ? "text-red-500"
-                                : ""
+                          class={`py-2 pl-3 text-left ${
+                            $isDarkMode
+                              ? "group-hover:bg-[#000]"
+                              : "group-hover:bg-gray-100"
                           }`}
                         >
-                          {point}
+                          <div class="text-sm text_00000099 font-medium">
+                            {dayjs(createdAt).format("YYYY-MM-DD")}
+                          </div>
+                        </td>
+                        <td
+                          class={`py-2 ${
+                            $isDarkMode
+                              ? "group-hover:bg-[#000]"
+                              : "group-hover:bg-gray-100"
+                          }`}
+                        >
+                          <div class="text-sm text_00000099 font-medium">
+                            {type}
+                          </div>
+                        </td>
+                        <td
+                          class={`py-2 pr-3 text-right ${
+                            $isDarkMode
+                              ? "group-hover:bg-[#000]"
+                              : "group-hover:bg-gray-100"
+                          }`}
+                        >
+                          <div
+                            class={`text-sm font-medium ${
+                              point > 0
+                                ? "text-green-500"
+                                : point < 0
+                                  ? "text-red-500"
+                                  : ""
+                            }`}
+                          >
+                            {point}
+                          </div>
                         </td>
                       </tr>
                     {/each}
