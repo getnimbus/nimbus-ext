@@ -517,19 +517,21 @@
 
   //// VAULTS
   const getVaults = async (chain) => {
-    let addressChain = chain;
+    // let addressChain = chain;
 
-    if (addressChain === "ALL") {
-      const validateAccount = $queryValidate.data;
-      addressChain = validateAccount?.type;
-    }
+    // if (addressChain === "ALL") {
+    //   const validateAccount = $queryValidate.data;
+    //   addressChain = validateAccount?.type;
+    // }
 
-    const response: any = await nimbus.get(
-      `/v2/investment/${$wallet}/vaults?chain=${
-        addressChain === "BUNDLE" ? "" : addressChain
-      }`
-    );
-    return response?.data;
+    // const response: any = await nimbus.get(
+    //   `/v2/investment/${$wallet}/vaults?chain=${
+    //     addressChain === "BUNDLE" ? "" : addressChain
+    //   }`
+    // );
+    // return response?.data;
+
+    return [];
   };
 
   $: queryVaults = createQuery({
