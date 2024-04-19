@@ -1038,7 +1038,7 @@
     <div class="h-full">
       {#if !symbol?.includes("USD") && symbol !== "DAI" && $typeWallet !== "MOVE"}
         {#if selectedTypeChart === "candles"}
-          <div class="relative h-[485px]">
+          <div class="relative h-[485px] mb-9">
             <TradingViewChart
               id={symbol}
               mobile={false}

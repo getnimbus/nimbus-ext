@@ -29,6 +29,8 @@
   let baseAsset;
   let isEmpty = false;
   let isLoading = false;
+  let tvWidget;
+  let checked = true;
 
   const nativeTokenList = [
     "ETH",
@@ -143,7 +145,7 @@
     }
   }
 
-  const chartInit = () => {
+  const chartInit = (isRenderTradeData) => {
     if (!baseAsset) return () => {};
 
     if (!chartContainer) {
@@ -161,7 +163,7 @@
     try {
       import("../../../public/static/charting_library")
         .then(({ widget: Widget }) => {
-          const tvWidget = new Widget({
+          tvWidget = new Widget({
             ...options,
             ...widgetOptionsDefault,
             container: chartContainer,
@@ -217,88 +219,9 @@
               );
             }
 
-            const buyHistoryTradeCreatedList = groupBy(
-              buyHistoryTradeList,
-              "created_at"
-            );
-            const buyCreatedList = Object.getOwnPropertyNames(
-              buyHistoryTradeCreatedList
-            );
-
-            const formatBuyTradeList = buyCreatedList.map((item) => {
-              if (buyHistoryTradeCreatedList[item].length > 1) {
-                return {
-                  created_at: item,
-                  quantity_out: buyHistoryTradeCreatedList[item].reduce(
-                    (prev, item) => prev + Number(item?.quantity_out),
-                    0
-                  ),
-                };
-              }
-              return {
-                created_at: item,
-                quantity_out: Number(
-                  buyHistoryTradeCreatedList[item][0].quantity_out
-                ),
-              };
-            });
-
-            formatBuyTradeList
-              .filter((item) => Number(item?.quantity_out) > 0)
-              .forEach((item) => {
-                tvWidget
-                  .activeChart()
-                  .createExecutionShape()
-                  .setText(`B ${formatBalance(Number(item?.quantity_out))}`)
-                  .setFont("14pt Arial")
-                  .setArrowHeight(14)
-                  .setTextColor("#00b580")
-                  .setArrowColor("#00b580")
-                  .setDirection("buy")
-                  .setTime(Number(item.created_at));
-              });
-
-            const sellHistoryTradeCreatedList = groupBy(
-              sellHistoryTradeList,
-              "created_at"
-            );
-
-            const sellCreatedList = Object.getOwnPropertyNames(
-              sellHistoryTradeCreatedList
-            );
-
-            const formatSellTradeList = sellCreatedList.map((item) => {
-              if (sellHistoryTradeCreatedList[item].length > 1) {
-                return {
-                  created_at: item,
-                  quantity_in: sellHistoryTradeCreatedList[item].reduce(
-                    (prev, item) => prev + Number(item?.quantity_in),
-                    0
-                  ),
-                };
-              }
-              return {
-                created_at: item,
-                quantity_in: Number(
-                  sellHistoryTradeCreatedList[item][0].quantity_in
-                ),
-              };
-            });
-
-            formatSellTradeList
-              .filter((item) => Number(item?.quantity_in) > 0)
-              .forEach((item) => {
-                tvWidget
-                  .activeChart()
-                  .createExecutionShape()
-                  .setText(`S ${formatBalance(Number(item?.quantity_in))}`)
-                  .setFont("14pt Arial")
-                  .setArrowHeight(14)
-                  .setTextColor("#ef4444")
-                  .setArrowColor("#ef4444")
-                  .setDirection("sell")
-                  .setTime(Number(item?.created_at));
-              });
+            if (isRenderTradeData) {
+              handleRenderTradeData();
+            }
           });
         })
         .catch((error) => {
@@ -317,14 +240,106 @@
           (window as any).tvWidget = null;
         }
 
-        chartInit();
+        chartInit(true);
       }
     }
   }
 
-  let checked;
+  const handleRenderTradeData = () => {
+    const buyHistoryTradeCreatedList = groupBy(
+      buyHistoryTradeList,
+      "created_at"
+    );
+    const buyCreatedList = Object.getOwnPropertyNames(
+      buyHistoryTradeCreatedList
+    );
 
-  $: console.log("HELLO WORLD: ", checked);
+    const formatBuyTradeList = buyCreatedList.map((item) => {
+      if (buyHistoryTradeCreatedList[item].length > 1) {
+        return {
+          created_at: item,
+          quantity_out: buyHistoryTradeCreatedList[item].reduce(
+            (prev, item) => prev + Number(item?.quantity_out),
+            0
+          ),
+        };
+      }
+      return {
+        created_at: item,
+        quantity_out: Number(buyHistoryTradeCreatedList[item][0].quantity_out),
+      };
+    });
+
+    formatBuyTradeList
+      .filter((item) => Number(item?.quantity_out) > 0)
+      .forEach((item) => {
+        tvWidget
+          .activeChart()
+          .createExecutionShape()
+          .setText(`B ${formatBalance(Number(item?.quantity_out))}`)
+          .setFont("14pt Arial")
+          .setArrowHeight(14)
+          .setTextColor("#00b580")
+          .setArrowColor("#00b580")
+          .setDirection("buy")
+          .setTime(Number(item.created_at));
+      });
+
+    const sellHistoryTradeCreatedList = groupBy(
+      sellHistoryTradeList,
+      "created_at"
+    );
+
+    const sellCreatedList = Object.getOwnPropertyNames(
+      sellHistoryTradeCreatedList
+    );
+
+    const formatSellTradeList = sellCreatedList.map((item) => {
+      if (sellHistoryTradeCreatedList[item].length > 1) {
+        return {
+          created_at: item,
+          quantity_in: sellHistoryTradeCreatedList[item].reduce(
+            (prev, item) => prev + Number(item?.quantity_in),
+            0
+          ),
+        };
+      }
+      return {
+        created_at: item,
+        quantity_in: Number(sellHistoryTradeCreatedList[item][0].quantity_in),
+      };
+    });
+
+    formatSellTradeList
+      .filter((item) => Number(item?.quantity_in) > 0)
+      .forEach((item) => {
+        tvWidget
+          .activeChart()
+          .createExecutionShape()
+          .setText(`S ${formatBalance(Number(item?.quantity_in))}`)
+          .setFont("14pt Arial")
+          .setArrowHeight(14)
+          .setTextColor("#ef4444")
+          .setArrowColor("#ef4444")
+          .setDirection("sell")
+          .setTime(Number(item?.created_at));
+      });
+  };
+
+  const toggleMarkTradeData = (e) => {
+    checked = !checked;
+    if (checked) {
+      tvWidget &&
+        tvWidget.onChartReady(() => {
+          handleRenderTradeData();
+        });
+    } else {
+      tvWidget &&
+        tvWidget.onChartReady(() => {
+          chartInit(false);
+        });
+    }
+  };
 </script>
 
 {#if isLoading}
@@ -340,15 +355,16 @@
         Empty
       </div>
     {:else}
-      <div class="flex flex-col gap-4 justify-end items-end -mt-12">
-        <div class="border border-red-500 flex justify-end items-center mr-2">
+      <div class="flex flex-col gap-4 justify-end items-end -mt-10">
+        <div class="flex justify-end items-center mr-2">
           <div class="flex items-center justify-start gap-2">
             <input
               type="checkbox"
-              bind:this={checked}
+              {checked}
+              on:change={toggleMarkTradeData}
               class="cursor-pointer relative w-5 h-5 appearance-none rounded-[0.25rem] border outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white checked:focus:after:bg-transparent dark:border-neutral-600 dark:checked:border-primary dark:checked:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]"
             />
-            <div class="text-lg xl:text-sm">Display on Trade History</div>
+            <div class="text-lg xl:text-sm">Display Trade History</div>
           </div>
         </div>
         <div
