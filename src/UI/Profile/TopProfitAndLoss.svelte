@@ -134,7 +134,7 @@
               <div
                 class="h-full flex items-center justify-center text-center py-4 xl:px-3"
               >
-                There are no closed holding position in the last 30 day
+                There have been no closed holding positions in the last 30 day
               </div>
             {:else}
               {#each topProfitToken as item}
@@ -195,7 +195,7 @@
               <div
                 class="h-full flex items-center justify-center text-center py-4 xl:px-3"
               >
-                There are no closed holding position in the last 30 day
+                There have been no closed holding positions in the last 30 day
               </div>
             {:else}
               {#each topLossToken as item}
