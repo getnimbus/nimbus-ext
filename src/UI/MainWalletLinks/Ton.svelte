@@ -125,14 +125,25 @@
       };
       const res = await nimbus.post("/accounts/link", params);
       if (res && res?.error) {
-        toastMsg =
-          "Your wallet already Nimbus user. Please try again with another wallet!";
+        toastMsg = res?.error;
         isSuccessToast = false;
         trigger();
         return;
+      } else {
+        toastMsg = "Your are successfully connect your Ton wallet!";
+        isSuccessToast = false;
+        trigger();
       }
-      localStorage.removeItem("auth_token");
-      handleGetTonToken(payload, id);
+      // localStorage.removeItem("auth_token");
+      // handleGetTonToken(payload, id);
+      queryClient?.invalidateQueries(["users-me"]);
+      queryClient.invalidateQueries(["list-address"]);
+      queryClient.invalidateQueries(["list-bundle"]);
+      queryClient.invalidateQueries(["link-socials"]);
+      reCallAPI();
+      toastMsg = "Link your wallet successfully!";
+      isSuccessToast = false;
+      trigger();
     } catch (e) {
       console.log(e);
     }

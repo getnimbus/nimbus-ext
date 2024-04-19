@@ -82,30 +82,30 @@
     }
   };
 
-  const handleGetEVMToken = async (data) => {
-    try {
-      const res = await nimbus.post("/auth/evm", data);
-      if (res?.data?.result) {
-        localStorage.setItem("evm_token", res?.data?.result);
-        user.update(
-          (n) =>
-            (n = {
-              picture: User,
-            })
-        );
-        queryClient?.invalidateQueries(["users-me"]);
-        queryClient.invalidateQueries(["list-address"]);
-        queryClient.invalidateQueries(["list-bundle"]);
-        queryClient.invalidateQueries(["link-socials"]);
-        reCallAPI();
-        toastMsg = "Link your wallet successfully!";
-        isSuccessToast = false;
-        trigger();
-      }
-    } catch (e) {
-      console.error("error: ", e);
-    }
-  };
+  // const handleGetEVMToken = async (data) => {
+  //   try {
+  //     const res = await nimbus.post("/auth/evm", data);
+  //     if (res?.data?.result) {
+  //       localStorage.setItem("evm_token", res?.data?.result);
+  //       user.update(
+  //         (n) =>
+  //           (n = {
+  //             picture: User,
+  //           })
+  //       );
+  //     queryClient?.invalidateQueries(["users-me"]);
+  //     queryClient.invalidateQueries(["list-address"]);
+  //     queryClient.invalidateQueries(["list-bundle"]);
+  //     queryClient.invalidateQueries(["link-socials"]);
+  //     reCallAPI();
+  //     toastMsg = "Link your wallet successfully!";
+  //     isSuccessToast = false;
+  //     trigger();
+  //     // }
+  //   } catch (e) {
+  //     console.error("error: ", e);
+  //   }
+  // };
 
   const handleUpdatePublicAddress = async (payload) => {
     try {
@@ -119,14 +119,25 @@
       };
       const res = await nimbus.post("/accounts/link", params);
       if (res && res?.error) {
-        toastMsg =
-          "Your wallet already Nimbus user. Please try again with another wallet!";
+        toastMsg = res?.error;
         isSuccessToast = false;
         trigger();
         return;
+      } else {
+        toastMsg = "Your are successfully connect your wallet!";
+        isSuccessToast = false;
+        trigger();
       }
-      localStorage.removeItem("auth_token");
-      handleGetEVMToken(payload);
+      // localStorage.removeItem("auth_token");
+      // handleGetEVMToken(payload);
+      queryClient?.invalidateQueries(["users-me"]);
+      queryClient.invalidateQueries(["list-address"]);
+      queryClient.invalidateQueries(["list-bundle"]);
+      queryClient.invalidateQueries(["link-socials"]);
+      reCallAPI();
+      toastMsg = "Link your wallet successfully!";
+      isSuccessToast = false;
+      trigger();
     } catch (e) {
       console.log(e);
     }
@@ -160,12 +171,13 @@
             fill="currentColor"
             viewBox="0 0 20 20"
             xmlns="http://www.w3.org/2000/svg"
-            ><path
+          >
+            <path
               fill-rule="evenodd"
               d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
               clip-rule="evenodd"
-            /></svg
-          >
+            />
+          </svg>
           <span class="sr-only">Check icon</span>
         {:else}
           <svg
@@ -174,12 +186,13 @@
             fill="currentColor"
             viewBox="0 0 20 20"
             xmlns="http://www.w3.org/2000/svg"
-            ><path
+          >
+            <path
               fill-rule="evenodd"
               d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
               clip-rule="evenodd"
-            /></svg
-          >
+            />
+          </svg>
           <span class="sr-only">Error icon</span>
         {/if}
       </svelte:fragment>
