@@ -31,13 +31,12 @@
     isAutoDarkMode.update((n) => (n = auto));
     localStorage.setItem("auto_theme", auto ? "true" : "false");
     if (auto) {
-      checkTimeZone();
+      checkSystemTheme();
     }
   };
 
-  const checkTimeZone = () => {
-    const currentHour = dayjs().hour();
-    const isDark = currentHour >= 18 || currentHour < 6; // Assuming 6 PM to 6 AM as night
+  const checkSystemTheme = () => {
+    const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
     if (isDark) {
       window.document.body.classList.add("dark");
       isDarkMode.update((n) => (n = true));

@@ -59,9 +59,8 @@
     });
   }
 
-  const checkTimeZone = (condition: boolean) => {
-    const currentHour = dayjs().hour();
-    const isDark = currentHour >= 18 || currentHour < 6; // Assuming 6 PM to 6 AM as night
+  const checkSystemTheme = (condition: boolean) => {
+    const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
     if ($isAutoDarkMode || condition) {
       if (isDark) {
         window.document.body.classList.add("dark");
@@ -75,15 +74,15 @@
     }
   };
 
-  const interval = setInterval(checkTimeZone, 60000);
+  const interval = setInterval(checkSystemTheme, 60000);
 
   onMount(() => {
     if (localStorage.auto_theme === "true") {
       isAutoDarkMode.update((n) => (n = true));
-      checkTimeZone(true);
+      checkSystemTheme(true);
     } else {
       isAutoDarkMode.update((n) => (n = false));
-      checkTimeZone(false);
+      checkSystemTheme(false);
     }
 
     if (
