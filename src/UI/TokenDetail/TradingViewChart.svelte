@@ -10,6 +10,7 @@
   import { handleFormatBlockChainId } from "~/lib/price-mobulaWs";
   import { nimbus } from "~/lib/network";
   import { formatBalance } from "~/utils";
+  import { groupBy } from "lodash";
 
   import Loading from "~/components/Loading.svelte";
 
@@ -216,31 +217,88 @@
               );
             }
 
-            buyHistoryTradeList.forEach((item) => {
-              tvWidget
-                .activeChart()
-                .createExecutionShape()
-                .setText(`Buy ${formatBalance(Number(item?.quantity_out))}`)
-                .setFont("16pt Arial")
-                .setArrowHeight(14)
-                .setTextColor("#00b580")
-                .setArrowColor("#00b580")
-                .setDirection("buy")
-                .setTime(Number(item.created_at));
+            const buyHistoryTradeCreatedList = groupBy(
+              buyHistoryTradeList,
+              "created_at"
+            );
+            const buyCreatedList = Object.getOwnPropertyNames(
+              buyHistoryTradeCreatedList
+            );
+
+            const formatBuyTradeList = buyCreatedList.map((item) => {
+              if (buyHistoryTradeCreatedList[item].length > 1) {
+                return {
+                  created_at: item,
+                  quantity_out: buyHistoryTradeCreatedList[item].reduce(
+                    (prev, item) => prev + Number(item?.quantity_out),
+                    0
+                  ),
+                };
+              }
+              return {
+                created_at: item,
+                quantity_out: Number(
+                  buyHistoryTradeCreatedList[item][0].quantity_out
+                ),
+              };
             });
 
-            sellHistoryTradeList.forEach((item) => {
-              tvWidget
-                .activeChart()
-                .createExecutionShape()
-                .setText(`Sell ${formatBalance(Number(item?.quantity_in))}`)
-                .setFont("16pt Arial")
-                .setArrowHeight(14)
-                .setTextColor("#ef4444")
-                .setArrowColor("#ef4444")
-                .setDirection("sell")
-                .setTime(Number(item.created_at));
+            formatBuyTradeList
+              .filter((item) => Number(item?.quantity_out) > 0)
+              .forEach((item) => {
+                tvWidget
+                  .activeChart()
+                  .createExecutionShape()
+                  .setText(`B ${formatBalance(Number(item?.quantity_out))}`)
+                  .setFont("14pt Arial")
+                  .setArrowHeight(14)
+                  .setTextColor("#00b580")
+                  .setArrowColor("#00b580")
+                  .setDirection("buy")
+                  .setTime(Number(item.created_at));
+              });
+
+            const sellHistoryTradeCreatedList = groupBy(
+              sellHistoryTradeList,
+              "created_at"
+            );
+
+            const sellCreatedList = Object.getOwnPropertyNames(
+              sellHistoryTradeCreatedList
+            );
+
+            const formatSellTradeList = sellCreatedList.map((item) => {
+              if (sellHistoryTradeCreatedList[item].length > 1) {
+                return {
+                  created_at: item,
+                  quantity_in: sellHistoryTradeCreatedList[item].reduce(
+                    (prev, item) => prev + Number(item?.quantity_in),
+                    0
+                  ),
+                };
+              }
+              return {
+                created_at: item,
+                quantity_in: Number(
+                  sellHistoryTradeCreatedList[item][0].quantity_in
+                ),
+              };
             });
+
+            formatSellTradeList
+              .filter((item) => Number(item?.quantity_in) > 0)
+              .forEach((item) => {
+                tvWidget
+                  .activeChart()
+                  .createExecutionShape()
+                  .setText(`S ${formatBalance(Number(item?.quantity_in))}`)
+                  .setFont("14pt Arial")
+                  .setArrowHeight(14)
+                  .setTextColor("#ef4444")
+                  .setArrowColor("#ef4444")
+                  .setDirection("sell")
+                  .setTime(Number(item?.created_at));
+              });
           });
         })
         .catch((error) => {
