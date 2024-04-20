@@ -135,8 +135,7 @@
 
       const response = await nimbus.post("/accounts/link", params);
       if (response && response?.error) {
-        toastMsg =
-          "Social account already Nimbus user. Please try again with another Google account!";
+        toastMsg = response?.error;
         isSuccessToast = false;
         trigger();
       } else {
