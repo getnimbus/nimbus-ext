@@ -3227,7 +3227,12 @@
   </div>
   {#if $typeWallet === "SOL" || ($typeWallet === "BUNDLE" && selectedTokenDetail?.chain === "SOL")}
     {#if showSideTokenSwap}
-      <div id={`swap-${selectedTokenDetail?.contractAddress}`}></div>
+      <div class="flex justify-center items-center">
+        <div
+          id={`swap-${selectedTokenDetail?.contractAddress}`}
+          class="w-[362px]"
+        ></div>
+      </div>
     {/if}
   {:else}
     <SwapWidget
