@@ -109,31 +109,6 @@
     }
   };
 
-  // const handleGetSolanaToken = async (data) => {
-  //   try {
-  //     const res: any = await nimbus.post("/auth/solana", data);
-  //     if (res?.data?.result) {
-  //       localStorage.setItem("solana_token", res?.data?.result);
-  //       user.update(
-  //         (n) =>
-  //           (n = {
-  //             picture: User,
-  //           })
-  //       );
-  //       queryClient?.invalidateQueries(["users-me"]);
-  //       queryClient?.invalidateQueries(["list-address"]);
-  //       queryClient.invalidateQueries(["list-bundle"]);
-  //       queryClient.invalidateQueries(["link-socials"]);
-  //       reCallAPI();
-  //       toastMsg = "Link your wallet successfully!";
-  //       isSuccessToast = false;
-  //       trigger();
-  //     }
-  //   } catch (e) {
-  //     console.error("error: ", e);
-  //   }
-  // };
-
   const handleUpdatePublicAddress = async (payload) => {
     try {
       let params: any = {
@@ -150,19 +125,13 @@
         isSuccessToast = false;
         trigger();
         return;
-      } else {
-        toastMsg = "Your are successfully connect your Solana wallet!";
-        isSuccessToast = false;
-        trigger();
       }
-      // localStorage.removeItem("auth_token");
-      // handleGetSolanaToken(payload);
       queryClient?.invalidateQueries(["users-me"]);
       queryClient?.invalidateQueries(["list-address"]);
       queryClient.invalidateQueries(["list-bundle"]);
       queryClient.invalidateQueries(["link-socials"]);
       reCallAPI();
-      toastMsg = "Link your wallet successfully!";
+      toastMsg = "Your are successfully connect your Solana wallet!";
       isSuccessToast = false;
       trigger();
     } catch (e) {

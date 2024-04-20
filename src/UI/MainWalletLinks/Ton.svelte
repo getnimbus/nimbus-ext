@@ -65,54 +65,6 @@
     }
   };
 
-  const handleGetTonToken = async (data, id) => {
-    try {
-      const formatData = {
-        account: {
-          address: data?.account?.address,
-          chain: data?.account?.chain,
-          walletStateInit: data?.account?.walletStateInit,
-        },
-        connectItems: {
-          tonProof: {
-            name: data?.connectItems?.tonProof?.name,
-            proof: {
-              timestamp: data?.connectItems?.tonProof?.proof?.timestamp,
-              domain: {
-                lengthBytes:
-                  data?.connectItems?.tonProof?.proof?.domain?.lengthBytes,
-                value: data?.connectItems?.tonProof?.proof?.domain?.value,
-              },
-              signature: data?.connectItems?.tonProof?.proof?.signature,
-            },
-          },
-        },
-      };
-      const res = await nimbus.post(`/auth/ton?loginId=${id}`, {
-        walletInfo: formatData,
-      });
-      if (res?.data?.result) {
-        localStorage.setItem("ton_token", res?.data?.result);
-        user.update(
-          (n) =>
-            (n = {
-              picture: User,
-            })
-        );
-        queryClient?.invalidateQueries(["users-me"]);
-        queryClient.invalidateQueries(["list-address"]);
-        queryClient.invalidateQueries(["list-bundle"]);
-        queryClient.invalidateQueries(["link-socials"]);
-        reCallAPI();
-        toastMsg = "Link your wallet successfully!";
-        isSuccessToast = false;
-        trigger();
-      }
-    } catch (e) {
-      console.error("error: ", e);
-    }
-  };
-
   const handleUpdatePublicAddress = async (payload, id) => {
     try {
       let params: any = {
@@ -129,19 +81,13 @@
         isSuccessToast = false;
         trigger();
         return;
-      } else {
-        toastMsg = "Your are successfully connect your Ton wallet!";
-        isSuccessToast = false;
-        trigger();
       }
-      // localStorage.removeItem("auth_token");
-      // handleGetTonToken(payload, id);
       queryClient?.invalidateQueries(["users-me"]);
       queryClient.invalidateQueries(["list-address"]);
       queryClient.invalidateQueries(["list-bundle"]);
       queryClient.invalidateQueries(["link-socials"]);
       reCallAPI();
-      toastMsg = "Link your wallet successfully!";
+      toastMsg = "Your are successfully connect your Ton wallet!";
       isSuccessToast = false;
       trigger();
     } catch (e) {
