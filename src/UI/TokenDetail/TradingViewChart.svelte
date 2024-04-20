@@ -68,10 +68,20 @@
   $: {
     if (selectedTypeChart === "candles") {
       if ($typeWallet === "CEX") {
-        if (nativeTokenList.includes(id)) {
-          handleGetPairData(id === "ETH" ? "ethereum" : id);
+        if (chain === "SOL") {
+          baseAsset = {
+            name: id,
+            address: contractAddress,
+            price,
+            token0: id,
+            token1: "USD",
+          };
         } else {
-          handleGetPairData(contractAddress);
+          if (nativeTokenList.includes(id)) {
+            handleGetPairData(id === "ETH" ? "ethereum" : id);
+          } else {
+            handleGetPairData(contractAddress);
+          }
         }
       } else if ($typeWallet === "SOL") {
         baseAsset = {
@@ -82,17 +92,31 @@
           token1: "USD",
         };
       } else {
-        if (
-          contractAddress &&
-          contractAddress !== "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
-        ) {
-          if (nativeTokenList.includes(id)) {
-            handleGetPairData(id === "ETH" ? "ethereum" : id);
-          } else {
-            handleGetPairData(contractAddress);
-          }
+        if (chain === "SOL") {
+          baseAsset = {
+            name: id,
+            address: contractAddress,
+            price,
+            token0: id,
+            token1: "USD",
+          };
         } else {
-          handleGetPairData(id);
+          if (contractAddress.includes("CEX-")) {
+            baseAsset = {};
+          } else {
+            if (
+              contractAddress &&
+              contractAddress !== "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+            ) {
+              if (nativeTokenList.includes(id)) {
+                handleGetPairData(id === "ETH" ? "ethereum" : id);
+              } else {
+                handleGetPairData(contractAddress);
+              }
+            } else {
+              handleGetPairData(id);
+            }
+          }
         }
       }
     }
@@ -348,12 +372,22 @@
   </div>
 {:else}
   <div>
-    {#if isEmpty}
-      <div
-        class="flex justify-center items-center h-[485px] text-base text-gray-400"
-      >
-        Empty
-      </div>
+    {#if isEmpty || contractAddress.includes("CEX-")}
+      {#if contractAddress.includes("CEX-")}
+        <div
+          class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center gap-3 pt-62 z-7 backdrop-blur-md ${
+            $isDarkMode ? "bg-black/90" : "bg-white/95"
+          }`}
+        >
+          <div class="text-lg">Coming soon 🚀</div>
+        </div>
+      {:else}
+        <div
+          class="flex justify-center items-center h-[485px] text-base text-gray-400"
+        >
+          Empty
+        </div>
+      {/if}
     {:else}
       <div class="flex flex-col gap-4 justify-end items-end -mt-10">
         <div class="flex justify-end items-center mr-2">
