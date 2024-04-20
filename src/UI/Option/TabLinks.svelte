@@ -101,7 +101,7 @@
         <div class="xl:text-base text-xl font-medium">
           Link your social accounts
         </div>
-        <div class="flex flex-col gap-3">
+        <div class="flex md:flex-row flex-col items-center gap-6">
           {#each socialData as item}
             {#if localStorage.getItem("socialAuthType") === "google"}
               <Google data={item} isDisabledRemove />
@@ -202,7 +202,7 @@
         <div class="xl:text-base text-xl font-medium">
           Link your social accounts
         </div>
-        <div class="flex items-center gap-6">
+        <div class="flex md:flex-row flex-col items-center gap-6">
           {#each socialData as item}
             {#if item.type === "google"}
               <Google data={item} isDisabledRemove={item.isPrimaryLogin} />

@@ -223,7 +223,7 @@
 </script>
 
 <div
-  class="max-w-[350px] w-[350px] bg_f4f5f8 rounded-[10px] px-4 py-5 flex flex-col"
+  class="max-w-[350px] md:w-[350px] w-full bg_f4f5f8 rounded-[10px] px-4 py-5 flex flex-col"
 >
   <div class="flex justify-between items-start">
     <div class="flex flex-col gap-3">
