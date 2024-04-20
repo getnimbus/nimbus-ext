@@ -101,7 +101,15 @@
             token1: "USD",
           };
         } else {
-          if (contractAddress.includes("CEX-")) {
+          if (
+            contractAddress.includes("CEX-") ||
+            $typeWallet === "ALGO" ||
+            $typeWallet === "NEAR" ||
+            $typeWallet === "TON" ||
+            $typeWallet === "INJ" ||
+            $typeWallet === "MOVE" ||
+            $typeWallet === "BTC"
+          ) {
             baseAsset = {};
           } else {
             if (
@@ -372,8 +380,8 @@
   </div>
 {:else}
   <div>
-    {#if isEmpty || contractAddress.includes("CEX-")}
-      {#if contractAddress.includes("CEX-")}
+    {#if isEmpty || contractAddress.includes("CEX-") || $typeWallet === "ALGO" || $typeWallet === "NEAR" || $typeWallet === "TON" || $typeWallet === "INJ" || $typeWallet === "MOVE" || $typeWallet === "BTC"}
+      {#if contractAddress.includes("CEX-") || $typeWallet === "ALGO" || $typeWallet === "NEAR" || $typeWallet === "TON" || $typeWallet === "INJ" || $typeWallet === "MOVE" || $typeWallet === "BTC"}
         <div
           class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center gap-3 pt-62 z-7 backdrop-blur-md ${
             $isDarkMode ? "bg-black/90" : "bg-white/95"
