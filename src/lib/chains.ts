@@ -29,7 +29,6 @@ import Linea from "~/assets/chains/linea.png";
 import Cronos from "~/assets/chains/cronos.png";
 import Mantle from "~/assets/chains/mantle.png";
 import Exzo from "~/assets/chains/exzo.png";
-import Klaytn from "~/assets/chains/klaytn.png";
 import Viction from "~/assets/chains/viction.png";
 import Moonbeam from "~/assets/chains/moonbeam.png";
 import Aurora from "~/assets/chains/aurora.png";
@@ -48,6 +47,7 @@ import Blast from "~/assets/chains/blast.png";
 import Shimmer from "~/assets/chains/shimmer.png";
 import inEVM from "~/assets/chains/injective.png";
 import Manta from "~/assets/chains/manta.png";
+import Klaytn from "~/assets/chains/klaytn.png";
 
 export const listProviderCEX = [
   "binance",
@@ -110,7 +110,7 @@ export const listNotSupportHistoricalBalances = [
   "OP",
   "BASE",
   "SCROLL",
-  "KLAY",
+  // "KLAY",
   "XZO",
   "ZETA",
   "RON",
@@ -275,11 +275,11 @@ export const chainList = [
   //   label: "Exzo",
   //   value: "XZO",
   // },
-  {
-    logo: Klaytn,
-    label: "Klaytn",
-    value: "KLAY",
-  },
+  // {
+  //   logo: Klaytn,
+  //   label: "Klaytn",
+  //   value: "KLAY",
+  // },
   {
     logo: Viction,
     label: "Viction",
@@ -532,12 +532,12 @@ export const detectedChain = (type) => {
         name: "Exzo",
       };
       break;
-    case "KLAY":
-      chain = {
-        logo: Klaytn,
-        name: "Klaytn",
-      };
-      break;
+    // case "KLAY":
+    //   chain = {
+    //     logo: Klaytn,
+    //     name: "Klaytn",
+    //   };
+    //   break;
     case "VIC":
       chain = {
         logo: Viction,
@@ -788,12 +788,12 @@ export const linkExplorer = (chain, hash) => {
         address: `https://evm.exzoscan.io/address/${hash}`,
       };
       break;
-    case "KLAY":
-      links = {
-        trx: `https://klaytnscope.com/tx/${hash}`,
-        address: `https://klaytnscope.com/account/${hash}`,
-      };
-      break;
+    // case "KLAY":
+    //   links = {
+    //     trx: `https://klaytnscope.com/tx/${hash}`,
+    //     address: `https://klaytnscope.com/account/${hash}`,
+    //   };
+    //   break;
     case "VIC":
       links = {
         trx: `https://tomoscan.io/tx/${hash}`,
