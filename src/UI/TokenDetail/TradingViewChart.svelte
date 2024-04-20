@@ -66,10 +66,20 @@
   $: {
     if (selectedTypeChart === "candles") {
       if ($typeWallet === "CEX") {
-        if (nativeTokenList.includes(id)) {
-          handleGetPairData(id === "ETH" ? "ethereum" : id);
+        if (chain === "SOL") {
+          baseAsset = {
+            name: id,
+            address: contractAddress,
+            price,
+            token0: id,
+            token1: "USD",
+          };
         } else {
-          handleGetPairData(contractAddress);
+          if (nativeTokenList.includes(id)) {
+            handleGetPairData(id === "ETH" ? "ethereum" : id);
+          } else {
+            handleGetPairData(contractAddress);
+          }
         }
       } else if ($typeWallet === "SOL") {
         baseAsset = {
@@ -80,17 +90,27 @@
           token1: "USD",
         };
       } else {
-        if (
-          contractAddress &&
-          contractAddress !== "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
-        ) {
-          if (nativeTokenList.includes(id)) {
-            handleGetPairData(id === "ETH" ? "ethereum" : id);
-          } else {
-            handleGetPairData(contractAddress);
-          }
+        if (chain === "SOL") {
+          baseAsset = {
+            name: id,
+            address: contractAddress,
+            price,
+            token0: id,
+            token1: "USD",
+          };
         } else {
-          handleGetPairData(id);
+          if (
+            contractAddress &&
+            contractAddress !== "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+          ) {
+            if (nativeTokenList.includes(id)) {
+              handleGetPairData(id === "ETH" ? "ethereum" : id);
+            } else {
+              handleGetPairData(contractAddress);
+            }
+          } else {
+            handleGetPairData(id);
+          }
         }
       }
     }
