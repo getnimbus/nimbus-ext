@@ -109,31 +109,6 @@
     }
   };
 
-  const handleGetSolanaToken = async (data) => {
-    try {
-      const res: any = await nimbus.post("/auth/solana", data);
-      if (res?.data?.result) {
-        localStorage.setItem("solana_token", res?.data?.result);
-        user.update(
-          (n) =>
-            (n = {
-              picture: User,
-            })
-        );
-        queryClient?.invalidateQueries(["users-me"]);
-        queryClient?.invalidateQueries(["list-address"]);
-        queryClient.invalidateQueries(["list-bundle"]);
-        queryClient.invalidateQueries(["link-socials"]);
-        reCallAPI();
-        toastMsg = "Link your wallet successfully!";
-        isSuccessToast = false;
-        trigger();
-      }
-    } catch (e) {
-      console.error("error: ", e);
-    }
-  };
-
   const handleUpdatePublicAddress = async (payload) => {
     try {
       let params: any = {
@@ -146,14 +121,19 @@
       };
       const res = await nimbus.post("/accounts/link", params);
       if (res && res?.error) {
-        toastMsg =
-          "Your wallet already Nimbus user. Please try again with another wallet!";
+        toastMsg = res?.error;
         isSuccessToast = false;
         trigger();
         return;
       }
-      localStorage.removeItem("auth_token");
-      handleGetSolanaToken(payload);
+      queryClient?.invalidateQueries(["users-me"]);
+      queryClient?.invalidateQueries(["list-address"]);
+      queryClient.invalidateQueries(["list-bundle"]);
+      queryClient.invalidateQueries(["link-socials"]);
+      reCallAPI();
+      toastMsg = "Your are successfully connect your Solana wallet!";
+      isSuccessToast = false;
+      trigger();
     } catch (e) {
       console.log(e);
     }
