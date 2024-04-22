@@ -218,6 +218,7 @@
 
   const formatDataHoldingToken = (dataTokenHolding) => {
     const formatData = dataTokenHolding.metadata
+      .filter((item) => item.holding)
       .filter(
         (item) => dayjs().subtract(30, "day").valueOf() < item.lastTrade * 1000
       )

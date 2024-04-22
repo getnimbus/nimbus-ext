@@ -105,6 +105,7 @@
 
   const formatDataTradingStats = (data) => {
     const formatData = data?.metadata
+      .filter((item) => item.holding)
       .filter(
         (item) => dayjs().subtract(30, "day").valueOf() < item.lastTrade * 1000
       )
