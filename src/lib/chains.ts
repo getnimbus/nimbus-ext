@@ -140,13 +140,22 @@ export const listSupported = [
 ];
 
 export const bigGeneration = ["EVM", "MOVE"];
-export const otherGeneration = ["BTC", "SOL", "NEAR", "ALGO", "AURA", "TON", "INJ"];
+export const otherGeneration = [
+  "BTC",
+  "SOL",
+  "NEAR",
+  "ALGO",
+  "AURA",
+  "TON",
+  "INJ",
+];
 export const generationLogo = [
   {
     logo: EVM,
   },
   {
-    logo: Move,
+    // logo: Move,
+    logo: Sui,
   },
   {
     logo: Bitcoin,
@@ -367,7 +376,8 @@ export const detectedGeneration = (type) => {
       logo = EVM;
       break;
     case "MOVE":
-      logo = Move;
+      // logo = Move;
+      logo = Sui;
       break;
     case "BTC":
       logo = Bitcoin;
@@ -887,7 +897,7 @@ export const linkExplorer = (chain, hash) => {
     case "SHIMMER":
       links = {
         trx: `https://explorer.evm.shimmer.network/tx/${hash}`,
-        address: `https://explorer.evm.shimmer.network/address/${hash}`
+        address: `https://explorer.evm.shimmer.network/address/${hash}`,
       };
       break;
     case "inEVM":
