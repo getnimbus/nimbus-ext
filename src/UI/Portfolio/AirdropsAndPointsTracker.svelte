@@ -177,7 +177,7 @@
     <div class="xl:flex hidden flex-col gap-6">
       <div class="flex flex-col gap-3">
         <div class="flex items-center gap-2 justify-between">
-          <div class="xl:text-2xl text-3xl font-medium">Airdrops</div>
+          <div class="text-2xl font-medium">Airdrops</div>
           <div class="text-3xl font-medium">
             <TooltipNumber
               number={totalEstimateValueEligibilities}
@@ -342,7 +342,7 @@
 
       <div class="flex flex-col gap-3">
         <div class="flex items-center gap-2 justify-between">
-          <div class="xl:text-2xl text-3xl font-medium">Points</div>
+          <div class="text-2xl font-medium">Points</div>
           <div class="text-3xl font-medium">
             <TooltipNumber number={totalEstimateValuePoints} type="value" />
           </div>
@@ -560,7 +560,7 @@
     <div class="xl:hidden flex flex-col gap-6">
       <div class="flex flex-col gap-3">
         <div class="flex flex-col gap-2">
-          <div class="xl:text-2xl text-3xl font-medium">Airdrops</div>
+          <div class="text-2xl font-medium">Airdrops</div>
           <div class="text-3xl font-medium">
             <TooltipNumber
               number={totalEstimateValueEligibilities}
@@ -655,7 +655,7 @@
 
       <div class="flex flex-col gap-3">
         <div class="flex flex-col gap-2">
-          <div class="xl:text-2xl text-3xl font-medium">Points</div>
+          <div class="text-2xl font-medium">Points</div>
           <div class="text-3xl font-medium">
             <TooltipNumber number={totalEstimateValuePoints} type="value" />
           </div>

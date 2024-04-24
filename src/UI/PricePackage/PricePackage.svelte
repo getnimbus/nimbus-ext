@@ -68,12 +68,12 @@
 
     return `
       <div class="sm:text-xl flex justify-end gap-2">
-        <span class="text-right">
+        <div class="text-right">
           ${contentData.description}
-        </span>
-        <span class="w-4 h-4 ml-1">
+        </div>
+        <div class="w-4 h-4">
           ${compareResult(contentData)}
-        </span>
+        </div>
       </div>
     `;
   };
@@ -83,7 +83,7 @@
 
 <div class="flex flex-col xl:gap-4 gap-8">
   <div
-    class="p-4 text-xl text-green-600 rounded-lg xl:text-base bg-green-50"
+    class="p-4 text-lg text-green-600 rounded-lg xl:text-base bg-green-50"
     role="alert"
   >
     <span class="mr-2 xl:mr-1">⭐️</span> We're giving 1000 coupon codes
@@ -543,7 +543,9 @@
               <div class="flex flex-col gap-2 justify-center items-center">
                 <div class="text-lg font-medium uppercase">Free</div>
                 <span class="text-2xl font-semibold">0 USDC</span>
-                <div class="text-lg">For those who starting to invest</div>
+                <div class="text-lg text-center">
+                  For those who starting to invest
+                </div>
               </div>
               <div class=" min-h-[30px]"></div>
             </div>
@@ -570,7 +572,7 @@
                     /month
                   </span>
                 </div>
-                <div class="text-lg">
+                <div class="text-lg text-center">
                   Boost your return and reduce your risk
                 </div>
               </div>
@@ -660,7 +662,7 @@
                     /month
                   </span>
                 </div>
-                <div class="text-lg">
+                <div class="text-lg text-center">
                   Enjoy all the features without any limited
                 </div>
               </div>
@@ -753,7 +755,7 @@
                         : "group-hover:bg-gray-100"
                     }`}
                   >
-                    <div class="w-max w-[200px]">
+                    <div class="w-max w-[180px]">
                       {#if item.tippy.used}
                         <div
                           use:tooltip={{
@@ -778,7 +780,7 @@
                   </td>
 
                   <td
-                    class={`py-4 pr-6 flex justify-end ${
+                    class={`py-4 pr-3 flex justify-end items-center h-full min-h-[80px] ${
                       $isDarkMode
                         ? "group-hover:bg-[#000]"
                         : "group-hover:bg-gray-100"

@@ -5,18 +5,19 @@
   export let isShowSoon = false;
 </script>
 
-<div class="flex flex-col xl:gap-5 gap-0">
+<div class="flex flex-col xl:gap-5 gap-3">
   <slot name="title" />
-  <div class="grid xl:grid-cols-6 grid-cols-1 xl:gap-6 gap-0 relative">
+  <div class="grid xl:grid-cols-6 grid-cols-1 xl:gap-6 gap-5 relative">
     <div
-      class={`xl:col-span-2 col-span-1 rounded-[20px] py-4 xl:px-3 ${
+      class={`xl:col-span-2 col-span-1 rounded-[20px] py-4 px-3 ${
         $isDarkMode ? "bg-[#222222]" : "bg-[#fff] xl:border border_0000001a"
       }`}
     >
       <slot name="overview" />
     </div>
+
     <div
-      class={`xl:col-span-4 col-span-1 rounded-[20px] py-4 xl:px-3 ${
+      class={`xl:col-span-4 col-span-1 rounded-[20px] py-4 px-3 ${
         $isDarkMode ? "bg-[#222222]" : "bg-[#fff] xl:border border_0000001a"
       }`}
     >

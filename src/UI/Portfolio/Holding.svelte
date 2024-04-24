@@ -561,7 +561,7 @@
 </script>
 
 <div
-  class={`flex flex-col gap-6 rounded-[20px] xl:p-6 py-4 ${
+  class={`flex flex-col gap-6 rounded-[20px] xl:p-6 py-4 px-3 ${
     $isDarkMode ? "bg-[#222222]" : "bg-[#fff] xl:border border_0000001a"
   }`}
 >
@@ -569,7 +569,7 @@
     <div class="flex flex-col gap-2">
       <div class="flex xl:flex-row flex-col gap-2 justify-between">
         <div class="flex items-end gap-3">
-          <div class="xl:text-2xl text-3xl font-medium">
+          <div class="text-2xl font-medium">
             {MultipleLang.holding}
           </div>
           <!-- <a

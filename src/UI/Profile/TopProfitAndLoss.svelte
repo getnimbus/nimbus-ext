@@ -427,7 +427,7 @@
             </div>
           </div>
         </div>
-        <div class="flex items-center font-medium xl:text-2xl text-3xl">
+        <div class="flex items-center font-medium text-2xl">
           $<TooltipNumber
             number={Number(selectedTokenDetail?.price.price)}
             type="balance"

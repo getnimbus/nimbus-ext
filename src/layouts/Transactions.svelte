@@ -289,7 +289,7 @@
             >
               <div class="flex flex-col gap-1 xl:pl-6">
                 <div
-                  class="font-medium flex justify-start z-10 w-max xl:text-2xl text-3xl"
+                  class="font-medium flex justify-start z-10 w-max text-2xl"
                 >
                   <TooltipTitle
                     tooltipText="The chart shows only activities made by this wallet"
@@ -322,9 +322,7 @@
             }`}
           >
             <div class="flex flex-col justify-between gap-4 xl:flex-row">
-              <div class="xl:text-2xl text-3xl font-medium">
-                Historical Transactions
-              </div>
+              <div class="text-2xl font-medium">Historical Transactions</div>
               {#if $typeWallet === "EVM"}
                 <div class="xl:flex hidden items-center gap-4">
                   <CoinSelector

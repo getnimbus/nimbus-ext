@@ -371,7 +371,7 @@
 </script>
 
 <div class="flex flex-col gap-5">
-  <div class="xl:text-2xl text-3xl font-medium">
+  <div class="text-2xl font-medium">
     <TooltipTitle
       tooltipText={"Positively correlated variables tend to move together, negatively correlated variables move inversely to each other, and uncorrelated variables move independently of each other."}
       isBigIcon

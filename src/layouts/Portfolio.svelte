@@ -938,11 +938,11 @@
             <div
               class="portfolio_container flex flex-col xl:gap-7 gap-5 rounded-[20px] xl:p-8 p-4"
             >
-              <div class="flex flex-wrap items-center gap-2">
+              <div class="flex flex-wrap items-center xl:gap-2 gap-4">
                 <AnimateSharedLayout>
                   {#each typePortfolioPage as type}
                     <div
-                      class="relative cursor-pointer xl:text-base text-lg font-medium py-1 px-3 rounded-[100px] transition-all"
+                      class="relative cursor-pointer xl:text-base text-xl font-medium py-1 px-3 rounded-[100px] transition-all"
                       id={type.id}
                       on:click={() => {
                         if ($tab === type.value) {

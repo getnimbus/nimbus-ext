@@ -19,7 +19,7 @@
     <div class="xl:title-3 title-1">
       {MultipleLang.title}
     </div>
-    <div class="xl:text-base text-xl text-gray-500">
+    <div class="xl:text-base text-lg text-gray-500">
       Management your report spam or trash tokens/nfts
     </div>
   </div>

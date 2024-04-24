@@ -250,7 +250,7 @@
 
 <ErrorBoundary>
   <div class="flex flex-col gap-2 xl:px-3">
-    <div class="xl:text-2xl text-3xl font-medium">Positions</div>
+    <div class="text-2xl font-medium">Positions</div>
     {#if $typeWallet === "MOVE" || $typeWallet === "EVM"}
       {#if data.length === 0 && !isLoading}
         <div class="flex justify-center items-center min-h-[300px]">Empty</div>
