@@ -3,6 +3,7 @@
   import tooltip from "~/entries/contentScript/views/tooltip";
   import dayjs from "dayjs";
   import { nimbus } from "~/lib/network";
+  import { getTradingStats, handleValidateAddress } from "~/lib/queryAPI";
 
   import Loading from "~/components/Loading.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
@@ -26,26 +27,6 @@
   let goodPerf = {};
 
   $: isFetch = isSync ? enabledFetchAllData : true;
-
-  const getTradingStats = async (address) => {
-    const response: any = await nimbus.get(
-      `/v2/analysis/${address}/trading-stats`
-    );
-    return response?.data;
-  };
-
-  const handleValidateAddress = async (address: string) => {
-    try {
-      const response = await nimbus.get(`/v2/address/${address}/validate`);
-      return response?.data;
-    } catch (e) {
-      console.error(e);
-      return {
-        address: "",
-        type: "",
-      };
-    }
-  };
 
   const getHoldingToken = async (address) => {
     const validateAccount = await handleValidateAddress(address);
@@ -103,8 +84,23 @@
     totalToken = format30D.length;
   };
 
-  const formatDataTradingStats = (data) => {
-    const formatData = data?.metadata
+  const formatDataTradingStats = (dataTokenHolding, data) => {
+    const formatMetaData = data.map((item) => {
+      const selectedHolding = dataTokenHolding.find(
+        (dataToken) =>
+          dataToken.contractAddress.toString().toLowerCase() ===
+          item.address.toString().toLowerCase()
+      );
+      if (selectedHolding) {
+        return {
+          ...item,
+          holding: selectedHolding,
+        };
+      }
+      return item;
+    });
+
+    const formatData = formatMetaData
       .filter((item) => item.holding)
       .filter(
         (item) => dayjs().subtract(30, "day").valueOf() < item.lastTrade * 1000
@@ -218,9 +214,12 @@
     if (
       !$queryTradingStats.isError &&
       $queryTradingStats.data &&
-      $queryTradingStats?.data !== undefined
+      $queryTradingStats?.data !== undefined &&
+      !$queryTokenHolding.isError &&
+      $queryTokenHolding.data &&
+      $queryTokenHolding?.data !== undefined
     ) {
-      formatDataTradingStats($queryTradingStats.data);
+      formatDataTradingStats($queryTokenHolding?.data, $queryTradingStats.data);
     }
   }
 </script>

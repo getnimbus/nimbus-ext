@@ -33,6 +33,7 @@
     useQueryClient,
   } from "@tanstack/svelte-query";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
+  import { handleValidateAddress } from "~/lib/queryAPI";
 
   import type { NewData, NewDataRes } from "~/types/NewData";
   import type { OverviewData, OverviewDataRes } from "~/types/OverviewData";
@@ -136,18 +137,6 @@
 
   let chainListQueries = [];
   let positionListQueries = [];
-
-  const handleValidateAddress = async (address: string) => {
-    if (address) {
-      const response = await nimbus.get(`/v2/address/${address}/validate`);
-      return (
-        response?.data || {
-          address: "",
-          type: "",
-        }
-      );
-    }
-  };
 
   $: queryValidate = createQuery({
     queryKey: ["validate", $wallet],

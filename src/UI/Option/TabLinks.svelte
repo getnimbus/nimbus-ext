@@ -6,6 +6,7 @@
   import { shorterAddress } from "~/utils";
   import mixpanel from "mixpanel-browser";
   import { createQuery } from "@tanstack/svelte-query";
+  import { handleValidateAddress } from "~/lib/queryAPI";
 
   import Google from "../SocialLinks/Google.svelte";
   import Twitter from "../SocialLinks/Twitter.svelte";
@@ -33,16 +34,6 @@
     staleTime: Infinity,
     retry: false,
   });
-
-  const handleValidateAddress = async (address: string) => {
-    try {
-      const response = await nimbus.get(`/v2/address/${address}/validate`);
-      return response?.data;
-    } catch (e) {
-      console.error(e);
-      return undefined;
-    }
-  };
 
   const getLinkData = async () => {
     const response: any = await nimbus.get("/accounts/link");

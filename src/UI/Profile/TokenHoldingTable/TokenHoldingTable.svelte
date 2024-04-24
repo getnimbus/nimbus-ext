@@ -11,6 +11,7 @@
   import { nimbus } from "~/lib/network";
   import { chainList, chainMoveList } from "~/lib/chains";
   import { flatten } from "lodash";
+  import { handleValidateAddress } from "~/lib/queryAPI";
 
   import TokenHoldingTrades from "./TokenHoldingTrades.svelte";
   import ClosedHoldingTrades from "./ClosedHoldingTrades.svelte";
@@ -28,19 +29,6 @@
   let sumTokens = 0;
 
   $: isFetch = isSync ? enabledFetchAllData : true;
-
-  const handleValidateAddress = async (address: string) => {
-    try {
-      const response: any = await nimbus.get(`/v2/address/${address}/validate`);
-      return response?.data;
-    } catch (e) {
-      console.error(e);
-      return {
-        address: "",
-        type: "",
-      };
-    }
-  };
 
   const getHoldingToken = async (address, chain) => {
     let addressChain = chain;

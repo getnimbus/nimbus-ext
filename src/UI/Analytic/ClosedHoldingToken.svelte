@@ -18,6 +18,7 @@
     typeClosedHoldingTokenChart,
   } from "~/utils";
   import { listSupported } from "~/lib/chains";
+  import { handleValidateAddress } from "~/lib/queryAPI";
 
   import type { HoldingTokenRes } from "~/types/HoldingTokenData";
 
@@ -224,18 +225,6 @@
   let biggestWin = {};
   let worseLose = {};
   let sumRealizedProfit = 0;
-
-  const handleValidateAddress = async (address: string) => {
-    if (address) {
-      const response = await nimbus.get(`/v2/address/${address}/validate`);
-      return (
-        response?.data || {
-          address: "",
-          type: "",
-        }
-      );
-    }
-  };
 
   $: queryValidate = createQuery({
     queryKey: ["validate", $wallet],

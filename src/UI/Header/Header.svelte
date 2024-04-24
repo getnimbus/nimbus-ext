@@ -45,6 +45,7 @@
   import onboard from "~/lib/web3-onboard";
   import { walletStore } from "@aztemi/svelte-on-solana-wallet-adapter-core";
   import type { WalletState } from "nimbus-sui-kit";
+  import { handleValidateAddress } from "~/lib/queryAPI";
 
   import tooltip from "~/entries/contentScript/views/tooltip";
   import Auth from "~/UI/Auth/Auth.svelte";
@@ -159,16 +160,6 @@
       };
     });
     listAddress = structWalletData;
-  };
-
-  const handleValidateAddress = async (address: string) => {
-    try {
-      const response: any = await nimbus.get(`/v2/address/${address}/validate`);
-      return response?.data;
-    } catch (e) {
-      console.error(e);
-      return undefined;
-    }
   };
 
   const getSuggestList = async () => {

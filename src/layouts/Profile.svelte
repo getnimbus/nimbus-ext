@@ -14,6 +14,7 @@
   import { blur } from "svelte/transition";
   import { flatMap } from "lodash";
   import { detectedGeneration } from "~/lib/chains";
+  import { handleValidateAddress } from "~/lib/queryAPI";
 
   import ProfitData from "~/UI/Profile/ProfitData.svelte";
   import InviterQr from "~/UI/Profile/InviterQR.svelte";
@@ -165,19 +166,6 @@
       };
     } catch (e) {
       console.error(e);
-    }
-  };
-
-  const handleValidateAddress = async (address: string) => {
-    try {
-      const response = await nimbus.get(`/v2/address/${address}/validate`);
-      return response?.data;
-    } catch (e) {
-      console.error(e);
-      return {
-        address: "",
-        type: "",
-      };
     }
   };
 

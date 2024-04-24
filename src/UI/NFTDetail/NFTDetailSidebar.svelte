@@ -4,6 +4,7 @@
   import { wallet, chain, isDarkMode, realtimePrice } from "~/store";
   import { createQuery } from "@tanstack/svelte-query";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
+  import { handleValidateAddress } from "~/lib/queryAPI";
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
@@ -24,18 +25,6 @@
   let marketPriceNFT = 0;
 
   let selectedTypeDisplay: "grid" | "table" = "grid";
-
-  const handleValidateAddress = async (address: string) => {
-    if (address) {
-      const response = await nimbus.get(`/v2/address/${address}/validate`);
-      return (
-        response?.data || {
-          address: "",
-          type: "",
-        }
-      );
-    }
-  };
 
   $: queryValidate = createQuery({
     queryKey: ["validate", $wallet],
