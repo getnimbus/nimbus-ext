@@ -48,7 +48,7 @@
   import tooltip from "~/entries/contentScript/views/tooltip";
   import { wait } from "~/entries/background/utils";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
-  import { handleValidateAddress } from "~/lib/queryAPI";
+  import { getListAddress, handleValidateAddress } from "~/lib/queryAPI";
 
   export let type: "portfolio" | "order" = "portfolio";
   export let title;
@@ -222,11 +222,6 @@
     } else {
       errors["label"] = { ...errors["label"], required: false };
     }
-  };
-
-  const getListAddress = async () => {
-    const response: any = await nimbus.get("/accounts/list");
-    return response?.data;
   };
 
   $: query = createQuery({
