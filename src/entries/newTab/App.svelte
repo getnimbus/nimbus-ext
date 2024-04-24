@@ -8,9 +8,9 @@
     isDarkMode,
     isAutoDarkMode,
     tonConnector,
+    user,
   } from "~/store";
   import { TonConnectUI } from "@tonconnect/ui";
-  import dayjs from "dayjs";
 
   import "flowbite/dist/flowbite.css";
 
@@ -205,7 +205,9 @@
     {#if $detectParams && $detectParams === "/recap"}
       <Router routes={recapRoutes} options={{ gaPageviews: true }} />
     {:else}
-      <div class="flex flex-col pb-64 xl:pb-14">
+      <div
+        class={`flex flex-col xl:pb-14 ${$user && Object.keys($user).length !== 0 ? "pb-34" : "pb-64"}`}
+      >
         <Header {navActive} {handleUpdateNavActive} />
         <Router {routes} options={{ gaPageviews: true }} />
       </div>
