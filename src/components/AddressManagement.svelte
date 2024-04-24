@@ -881,7 +881,7 @@
             </div>
           </div>
         {:else}
-          <div class="max-w-[2000px] m-auto w-[90%]">
+          <div class="max-w-[2000px] m-auto w-[90%] xl:py-0 py-12">
             <Hero />
           </div>
         {/if}
@@ -1328,8 +1328,8 @@
 
             <div class="flex items-end justify-between">
               <div class="flex flex-col gap-3">
-                <div class="flex items-end gap-6">
-                  <div class="font-medium text-white text-5xl">
+                <div class="flex items-end gap-4">
+                  <div class="font-medium text-white text-4xl">
                     {title}
                   </div>
                   {#if type === "portfolio"}

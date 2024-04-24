@@ -140,7 +140,7 @@
     class="max-w-[2000px] m-auto xl:w-[90%] w-[90%] py-8 flex flex-col gap-10"
   >
     <div class="flex flex-col gap-2 justify-center">
-      <div class="text-5xl font-semibold">Invite Friends</div>
+      <div class="text-4xl font-semibold">Invite Friends</div>
       <div class="text-xl">
         Tell your friends it’s fun and effective for portfolio management. <br
         /> Easy way to minimize risk while maximazing return.

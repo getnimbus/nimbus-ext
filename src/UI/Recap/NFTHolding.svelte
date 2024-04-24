@@ -90,7 +90,7 @@
     >
       <div class="xl:flex-[0.3] flex-1 flex flex-col gap-7">
         <div class="flex flex-col gap-4">
-          <div class="font-bold text-5xl">Your top collection</div>
+          <div class="font-bold text-4xl">Your top collection</div>
           <div class="flex">
             {#each data?.top_collection || [] as item, index}
               <div

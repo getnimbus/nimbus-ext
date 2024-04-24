@@ -1,7 +1,6 @@
 <script lang="ts">
   import { Icon } from "flowbite-svelte-icons";
   import { isDarkMode, isAutoDarkMode } from "~/store";
-  import dayjs from "dayjs";
 
   let darkMode = false;
   isDarkMode.subscribe((value) => {
@@ -62,12 +61,12 @@
     class="hidden"
   />
   <div
-    class={`cursor-pointer font-medium xl:text-lg text-2xl ${auto ? "text-[#3b82f6]" : "text-gray-300"}`}
+    class={`cursor-pointer font-medium xl:text-lg text-xl ${auto ? "text-[#3b82f6]" : "text-gray-300"}`}
     on:click={handleToggleAuto}
   >
     Auto
   </div>
-  <div class="text-gray-300 mb-1 xl:text-lg text-2xl">/</div>
+  <div class="text-gray-300 mb-1 xl:text-lg text-xl">/</div>
   <label
     for="theme-toggle"
     class={`cursor-pointer ${auto ? "opacity-40" : "opacity-100"}`}
@@ -91,11 +90,11 @@
             name="sun-solid"
             role="img"
             class="select-none border-none focus:outline-none focus:ring-0"
-            size="xl"
+            size="lg"
           />
         </div>
       </div>
-      <div class="text-gray-300 mb-1 xl:text-lg text-2xl">/</div>
+      <div class="text-gray-300 mb-1 xl:text-lg text-xl">/</div>
       <div
         class={`${
           selectedTypeMode === "dark" ? "text-[#3b82f6]" : "text-gray-300"
@@ -106,6 +105,7 @@
             name="moon-solid"
             role="img"
             class="select-none border-none focus:outline-none focus:ring-0"
+            size="lg"
           />
         </div>
         <div class="xl:hidden block">
@@ -113,7 +113,7 @@
             name="moon-solid"
             role="img"
             class="select-none border-none focus:outline-none focus:ring-0"
-            size="xl"
+            size="lg"
           />
         </div>
       </div>

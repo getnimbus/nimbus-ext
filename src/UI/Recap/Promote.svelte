@@ -12,7 +12,7 @@
   >
     <div class="flex items-start xl:flex-row flex-col gap-8">
       <div class="flex flex-col items-start gap-6 xl:flex-[0.5] flex-1 w-full">
-        <div class="font-bold text-5xl">
+        <div class="font-bold text-4xl">
           A Personalized portfolio for Crypto investors
         </div>
         <div
@@ -94,7 +94,7 @@
 
     <div>
       <div class="mx-auto text-center w-full mb-6">
-        <div class="font-bold text-5xl mx-auto mb-3">Client's Testimonials</div>
+        <div class="font-bold text-4xl mx-auto mb-3">Client's Testimonials</div>
         <div class="text-2xl mx-auto">
           Words from who has used Nimbus and enjoy getting more profit
         </div>
