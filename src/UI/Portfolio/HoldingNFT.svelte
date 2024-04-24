@@ -981,7 +981,7 @@
             <TooltipTitle
               tooltipText="Price NFTs now - Price NFTs at time you spent"
             >
-              {MultipleLang.profit}
+              PnL
             </TooltipTitle>
           </div>
           <div class="flex items-center justify-end gap-1 text-sm font-medium">
