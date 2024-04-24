@@ -2,12 +2,15 @@
   import { createQuery } from "@tanstack/svelte-query";
   import CopyToClipboard from "svelte-copy-to-clipboard";
   import dayjs from "dayjs";
-  import { nimbus } from "~/lib/network";
-  import { isDarkMode, typeWallet } from "~/store";
+  import { isDarkMode, typeWallet, chain } from "~/store";
   import { shorterAddress, shorterName } from "~/utils";
   import { detectedChain } from "~/lib/chains";
   import { wait } from "~/entries/background/utils";
-  import { getTradingStats, handleValidateAddress } from "~/lib/queryAPI";
+  import {
+    getTradingStats,
+    getHoldingToken,
+    handleValidateAddress,
+  } from "~/lib/queryAPI";
 
   import Image from "~/components/Image.svelte";
   import Loading from "~/components/Loading.svelte";
@@ -34,24 +37,21 @@
 
   $: isFetch = isSync ? enabledFetchAllData : true;
 
-  const getHoldingToken = async (address) => {
-    const validateAccount = await handleValidateAddress(address);
-
-    const response = await nimbus
-      .get(
-        `/v2/address/${address}/holding?chain=${
-          validateAccount?.type === "BUNDLE" ? "" : validateAccount?.type
-        }`
-      )
-      .then((response) => response.data);
-    return response;
-  };
+  $: queryValidate = createQuery({
+    queryKey: ["validate", selectedAddress],
+    queryFn: () => handleValidateAddress(selectedAddress),
+    staleTime: Infinity,
+    retry: false,
+    enabled: Boolean(selectedAddress && selectedAddress?.length !== 0),
+  });
 
   $: queryTokenHolding = createQuery({
     queryKey: ["token-holding", selectedAddress],
-    queryFn: () => getHoldingToken(selectedAddress),
+    queryFn: () =>
+      getHoldingToken(selectedAddress, $chain, $queryValidate.data),
     staleTime: Infinity,
-    enabled: selectedAddress?.length !== 0 && isFetch,
+    enabled:
+      selectedAddress?.length !== 0 && isFetch && !$queryValidate.isFetching,
   });
 
   $: queryTradingStats = createQuery({
@@ -63,7 +63,7 @@
   });
 
   const formatDataTradingStats = (dataTokenHolding, data) => {
-    const formatMetaData = data.map((item) => {
+    const formatMetaData = data.metadata.map((item) => {
       const selectedHolding = dataTokenHolding.find(
         (dataToken) =>
           dataToken.contractAddress.toString().toLowerCase() ===

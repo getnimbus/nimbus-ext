@@ -17,3 +17,19 @@ export const getTradingStats = async (address) => {
   return response?.data;
 };
 
+export const getHoldingToken = async (wallet, chain, validatedAccount) => {
+  let addressChain = chain;
+
+  if (addressChain === "ALL") {
+    addressChain = validatedAccount?.type;
+  }
+
+  const response: any = await nimbus
+    .get(
+      `/v2/address/${wallet}/holding?chain=${addressChain === "BUNDLE" ? "" : addressChain
+      }`
+    )
+    .then((response) => response?.data);
+  return response;
+};
+
