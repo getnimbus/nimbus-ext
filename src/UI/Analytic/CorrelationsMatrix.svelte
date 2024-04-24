@@ -16,6 +16,11 @@
   import { listSupported } from "~/lib/chains";
   import { defillama, nimbus } from "~/lib/network";
   import dayjs from "dayjs";
+  import {
+    handleValidateAddress,
+    getHoldingToken,
+    handleMarketTokens,
+  } from "~/lib/queryAPI";
 
   import type { HoldingTokenRes } from "~/types/HoldingTokenData";
 
@@ -90,18 +95,6 @@
     }, 300);
   };
 
-  const handleValidateAddress = async (address: string) => {
-    if (address) {
-      const response = await nimbus.get(`/v2/address/${address}/validate`);
-      return (
-        response?.data || {
-          address: "",
-          type: "",
-        }
-      );
-    }
-  };
-
   $: queryValidate = createQuery({
     queryKey: ["validate", $wallet],
     queryFn: () => handleValidateAddress($wallet),
@@ -124,27 +117,9 @@
   };
 
   // query token holding
-  const getHoldingToken = async (chain) => {
-    let addressChain = chain;
-
-    if (addressChain === "ALL") {
-      const validateAccount = $queryValidate.data;
-      addressChain = validateAccount?.type;
-    }
-
-    const response: HoldingTokenRes = await nimbus
-      .get(
-        `/v2/address/${$wallet}/holding?chain=${
-          addressChain === "BUNDLE" ? "" : addressChain
-        }`
-      )
-      .then((response) => response.data);
-    return response;
-  };
-
   $: queryHoldingToken = createQuery({
     queryKey: ["token-holding", $wallet, $chain],
-    queryFn: () => getHoldingToken($chain),
+    queryFn: () => getHoldingToken($wallet, $chain, $queryValidate.data),
     staleTime: Infinity,
     enabled: enabledQuery && isFetch && !$queryValidate.isFetching,
   });
@@ -170,15 +145,10 @@
   };
 
   // get list all token
-  const getListAllToken = async () => {
-    const res = await nimbus.get("/tokens/coingecko").then((res) => res?.data);
-    return res || [];
-  };
-
   $: queryListToken = createQuery({
     queryKey: ["list-all-token"],
     enabled: enabledQuery && isFetch,
-    queryFn: () => getListAllToken(),
+    queryFn: () => handleMarketTokens(),
     staleTime: Infinity,
   });
 

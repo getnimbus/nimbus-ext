@@ -19,6 +19,7 @@
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
   import { priceMobulaSubscribe } from "~/lib/price-mobulaWs";
   import { priceSubscribe } from "~/lib/price-ws";
+  import { handleValidateAddress, getHoldingToken } from "~/lib/queryAPI";
 
   import type { TokenData, HoldingTokenRes } from "~/types/HoldingTokenData";
 
@@ -135,18 +136,6 @@
     };
   });
 
-  const handleValidateAddress = async (address: string) => {
-    if (address) {
-      const response = await nimbus.get(`/v2/address/${address}/validate`);
-      return (
-        response?.data || {
-          address: "",
-          type: "",
-        }
-      );
-    }
-  };
-
   $: queryValidate = createQuery({
     queryKey: ["validate", $wallet],
     queryFn: () => handleValidateAddress($wallet),
@@ -206,24 +195,6 @@
         }
       }
     }
-  };
-
-  const getHoldingToken = async (chain) => {
-    let addressChain = chain;
-
-    if (addressChain === "ALL") {
-      const validateAccount = $queryValidate.data;
-      addressChain = validateAccount?.type;
-    }
-
-    const response: any = await nimbus
-      .get(
-        `/v2/address/${$wallet}/holding?chain=${
-          addressChain === "BUNDLE" ? "" : addressChain
-        }`
-      )
-      .then((response) => response.data);
-    return response;
   };
 
   const formatDataHoldingToken = (data) => {
@@ -400,7 +371,7 @@
   $: queryTokenHolding = createQuery({
     queryKey: ["holding-token", $wallet, $chain],
     enabled: !!$wallet && !$queryValidate.isFetching,
-    queryFn: () => getHoldingToken($chain),
+    queryFn: () => getHoldingToken($wallet, $chain, $queryValidate.data),
     staleTime: Infinity,
   });
 

@@ -2,11 +2,15 @@
   import { createQuery } from "@tanstack/svelte-query";
   import CopyToClipboard from "svelte-copy-to-clipboard";
   import dayjs from "dayjs";
-  import { nimbus } from "~/lib/network";
-  import { isDarkMode, typeWallet } from "~/store";
+  import { isDarkMode, typeWallet, chain } from "~/store";
   import { shorterAddress, shorterName } from "~/utils";
   import { detectedChain } from "~/lib/chains";
   import { wait } from "~/entries/background/utils";
+  import {
+    getTradingStats,
+    getHoldingToken,
+    handleValidateAddress,
+  } from "~/lib/queryAPI";
 
   import Image from "~/components/Image.svelte";
   import Loading from "~/components/Loading.svelte";
@@ -33,15 +37,49 @@
 
   $: isFetch = isSync ? enabledFetchAllData : true;
 
-  const getTradingStats = async (address) => {
-    const response: any = await nimbus.get(
-      `/v2/analysis/${address}/trading-stats`
-    );
-    return response?.data;
-  };
+  $: queryValidate = createQuery({
+    queryKey: ["validate", selectedAddress],
+    queryFn: () => handleValidateAddress(selectedAddress),
+    staleTime: Infinity,
+    retry: false,
+    enabled: Boolean(selectedAddress && selectedAddress?.length !== 0),
+  });
 
-  const formatDataTradingStats = (data) => {
-    const formatData = data?.metadata
+  $: queryTokenHolding = createQuery({
+    queryKey: ["token-holding", selectedAddress],
+    queryFn: () =>
+      getHoldingToken(selectedAddress, $chain, $queryValidate.data),
+    staleTime: Infinity,
+    enabled:
+      selectedAddress?.length !== 0 && isFetch && !$queryValidate.isFetching,
+  });
+
+  $: queryTradingStats = createQuery({
+    queryKey: ["trading-stats", selectedAddress],
+    queryFn: () => getTradingStats(selectedAddress),
+    staleTime: Infinity,
+    retry: false,
+    enabled: selectedAddress?.length !== 0 && isFetch,
+  });
+
+  const formatDataTradingStats = (dataTokenHolding, data) => {
+    const formatMetaData = data.metadata.map((item) => {
+      const selectedHolding = dataTokenHolding.find(
+        (dataToken) =>
+          dataToken.contractAddress.toString().toLowerCase() ===
+          item.address.toString().toLowerCase()
+      );
+      if (selectedHolding) {
+        return {
+          ...item,
+          holding: selectedHolding,
+        };
+      }
+      return item;
+    });
+
+    const formatData = formatMetaData
+      .filter((item) => item.holding)
       .filter(
         (item) => dayjs().subtract(30, "day").valueOf() < item.lastTrade * 1000
       )
@@ -97,21 +135,16 @@
     );
   };
 
-  $: queryTradingStats = createQuery({
-    queryKey: ["trading-stats", selectedAddress],
-    queryFn: () => getTradingStats(selectedAddress),
-    staleTime: Infinity,
-    retry: false,
-    enabled: selectedAddress?.length !== 0 && isFetch,
-  });
-
   $: {
     if (
       !$queryTradingStats.isError &&
       $queryTradingStats.data &&
-      $queryTradingStats.data !== undefined
+      $queryTradingStats.data !== undefined &&
+      !$queryTokenHolding.isError &&
+      $queryTokenHolding.data &&
+      $queryTokenHolding?.data !== undefined
     ) {
-      formatDataTradingStats($queryTradingStats.data);
+      formatDataTradingStats($queryTokenHolding?.data, $queryTradingStats.data);
     }
   }
 </script>

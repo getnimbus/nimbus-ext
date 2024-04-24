@@ -45,6 +45,11 @@
   import onboard from "~/lib/web3-onboard";
   import { walletStore } from "@aztemi/svelte-on-solana-wallet-adapter-core";
   import type { WalletState } from "nimbus-sui-kit";
+  import {
+    getListAddress,
+    getUserInfo,
+    handleValidateAddress,
+  } from "~/lib/queryAPI";
 
   import tooltip from "~/entries/contentScript/views/tooltip";
   import Auth from "~/UI/Auth/Auth.svelte";
@@ -104,11 +109,6 @@
     }, 300);
   };
 
-  const getListAddress = async () => {
-    const response: any = await nimbus.get("/accounts/list");
-    return response?.data;
-  };
-
   // query list address
   $: query = createQuery({
     queryKey: ["list-address"],
@@ -159,16 +159,6 @@
       };
     });
     listAddress = structWalletData;
-  };
-
-  const handleValidateAddress = async (address: string) => {
-    try {
-      const response: any = await nimbus.get(`/v2/address/${address}/validate`);
-      return response?.data;
-    } catch (e) {
-      console.error(e);
-      return undefined;
-    }
   };
 
   const getSuggestList = async () => {
@@ -439,11 +429,6 @@
   onDestroy(() => {
     Mousetrap.reset();
   });
-
-  const getUserInfo = async () => {
-    const response: any = await nimbus.get("/users/me");
-    return response?.data;
-  };
 
   $: queryUserInfo = createQuery({
     queryKey: ["users-me"],

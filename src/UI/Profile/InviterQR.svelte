@@ -1,19 +1,13 @@
 <script lang="ts">
-  import { createQuery, useQueryClient } from "@tanstack/svelte-query";
+  import { createQuery } from "@tanstack/svelte-query";
   import QRCode from "qrcode-generator";
-  import { nimbus } from "~/lib/network";
+  import { getUserInfo } from "~/lib/queryAPI";
 
   let qrImageDataUrl = undefined;
   let userAddress = "";
   let link = "";
 
-  const queryClient = useQueryClient();
   const qrcode = QRCode(0, "L");
-
-  const getUserInfo = async () => {
-    const response: any = await nimbus.get("/users/me");
-    return response?.data;
-  };
 
   $: queryUserInfo = createQuery({
     queryKey: ["users-me"],

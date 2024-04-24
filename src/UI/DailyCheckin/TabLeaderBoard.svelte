@@ -1,8 +1,11 @@
 <script lang="ts">
   import { createQuery } from "@tanstack/svelte-query";
-  import { nimbus } from "~/lib/network";
   import { isDarkMode, user, userPublicAddress } from "~/store";
   import { shorterAddress } from "~/utils";
+  import {
+    handleGetDataDailyCheckin,
+    handleGetDataLeaderboard,
+  } from "~/lib/queryAPI";
 
   import Loading from "~/components/Loading.svelte";
 
@@ -15,26 +18,16 @@
   let formatDataLeaderboard = [];
   let currentUserRank;
 
-  const handleDailyCheckin = async () => {
-    const response = await nimbus.get("/v2/checkin");
-    return response.data;
-  };
-
-  const handleGetListLeaderboard = async () => {
-    const response = await nimbus.get("/v2/checkin/leaderboard");
-    return response.data;
-  };
-
   $: queryListLeaderboard = createQuery({
     queryKey: ["list-leaderboard"],
-    queryFn: () => handleGetListLeaderboard(),
+    queryFn: () => handleGetDataLeaderboard(),
     staleTime: Infinity,
     enabled: $user && Object.keys($user).length === 0,
   });
 
   $: queryDailyCheckin = createQuery({
     queryKey: [$userPublicAddress, "daily-checkin"],
-    queryFn: () => handleDailyCheckin(),
+    queryFn: () => handleGetDataDailyCheckin(),
     staleTime: Infinity,
     enabled: $userPublicAddress.length !== 0,
   });

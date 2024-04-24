@@ -8,9 +8,9 @@
     typeWallet,
   } from "~/store";
   import { createQueries, createQuery } from "@tanstack/svelte-query";
-  import { nimbus } from "~/lib/network";
   import { chainList, chainMoveList } from "~/lib/chains";
   import { flatten } from "lodash";
+  import { handleValidateAddress, getHoldingToken } from "~/lib/queryAPI";
 
   import TokenHoldingTrades from "./TokenHoldingTrades.svelte";
   import ClosedHoldingTrades from "./ClosedHoldingTrades.svelte";
@@ -29,40 +29,18 @@
 
   $: isFetch = isSync ? enabledFetchAllData : true;
 
-  const handleValidateAddress = async (address: string) => {
-    try {
-      const response: any = await nimbus.get(`/v2/address/${address}/validate`);
-      return response?.data;
-    } catch (e) {
-      console.error(e);
-      return {
-        address: "",
-        type: "",
-      };
-    }
-  };
-
-  const getHoldingToken = async (address, chain) => {
-    let addressChain = chain;
-
-    if (addressChain === "ALL") {
-      const validateAccount = await handleValidateAddress(address);
-      addressChain = validateAccount?.type;
-    }
-
-    const response: any = await nimbus
-      .get(
-        `/v2/address/${address}/holding?chain=${
-          addressChain === "BUNDLE" ? "" : addressChain
-        }`
-      )
-      .then((response: any) => response?.data);
-    return response;
-  };
+  $: queryValidate = createQuery({
+    queryKey: ["validate", selectedAddress],
+    queryFn: () => handleValidateAddress(selectedAddress),
+    staleTime: Infinity,
+    retry: false,
+    enabled: Boolean(selectedAddress && selectedAddress?.length !== 0),
+  });
 
   $: queryTokenHolding = createQuery({
     queryKey: ["token-holding", selectedAddress, $chain],
-    queryFn: () => getHoldingToken(selectedAddress, $chain),
+    queryFn: () =>
+      getHoldingToken(selectedAddress, $chain, $queryValidate.data),
     staleTime: Infinity,
     enabled: Boolean(
       enabledFetchAllData &&
@@ -70,7 +48,8 @@
         selectedAddress?.length !== 0 &&
         $chain.length !== 0 &&
         $chain !== "ALL" &&
-        isFetch
+        isFetch &&
+        !$queryValidate.isFetching
     ),
   });
 
@@ -78,7 +57,8 @@
     chainListQueries.map((item) => {
       return {
         queryKey: ["token-holding", selectedAddress, $chain, item],
-        queryFn: () => getHoldingToken(selectedAddress, item),
+        queryFn: () =>
+          getHoldingToken(selectedAddress, item, $queryValidate.data),
         staleTime: Infinity,
         enabled: Boolean(
           enabledFetchAllData &&
@@ -86,7 +66,8 @@
             selectedAddress?.length !== 0 &&
             $chain.length !== 0 &&
             $chain === "ALL" &&
-            isFetch
+            isFetch &&
+            !$queryValidate.isFetching
         ),
       };
     })

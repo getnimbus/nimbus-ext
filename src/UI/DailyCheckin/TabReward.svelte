@@ -3,6 +3,10 @@
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { nimbus } from "~/lib/network";
   import { user, userPublicAddress } from "~/store";
+  import {
+    handleGetDataDailyCheckin,
+    handleGetDataRewards,
+  } from "~/lib/queryAPI";
 
   import Loading from "~/components/Loading.svelte";
   import RedeemCard from "~/components/RedeemCard.svelte";
@@ -20,21 +24,9 @@
     },
   ];
 
-  let selectedType: "redeemGift" | "yourGift" = "redeemGift";
-
   const queryClient = useQueryClient();
 
-  const handleDailyCheckin = async () => {
-    const response = await nimbus.get("/v2/checkin");
-    return response.data;
-  };
-
-  const handleRewards = async () => {
-    const response = await nimbus.post(`/v2/reward`, {
-      address: $userPublicAddress,
-    });
-    return response.data;
-  };
+  let selectedType: "redeemGift" | "yourGift" = "redeemGift";
 
   const handleRedeem = async (data) => {
     try {
@@ -55,7 +47,7 @@
 
   $: queryDailyCheckin = createQuery({
     queryKey: [$userPublicAddress, "daily-checkin"],
-    queryFn: () => handleDailyCheckin(),
+    queryFn: () => handleGetDataDailyCheckin(),
     staleTime: Infinity,
     enabled:
       $user &&
@@ -73,7 +65,7 @@
 
   $: queryReward = createQuery({
     queryKey: [$userPublicAddress, "rewards"],
-    queryFn: () => handleRewards(),
+    queryFn: () => handleGetDataRewards($userPublicAddress),
     staleTime: Infinity,
     enabled:
       $user &&

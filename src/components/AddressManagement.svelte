@@ -48,6 +48,7 @@
   import tooltip from "~/entries/contentScript/views/tooltip";
   import { wait } from "~/entries/background/utils";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
+  import { getListAddress, handleValidateAddress } from "~/lib/queryAPI";
 
   export let type: "portfolio" | "order" = "portfolio";
   export let title;
@@ -180,16 +181,6 @@
     return value != null && value !== "";
   };
 
-  const handleValidateAddress = async (address: string) => {
-    try {
-      const response = await nimbus.get(`/v2/address/${address}/validate`);
-      return response?.data;
-    } catch (e) {
-      console.error(e);
-      return undefined;
-    }
-  };
-
   const validateForm = async (data) => {
     const isDuplicatedAddress = listAddress.some((item) => {
       return item.value.toLowerCase() === data.address.toLowerCase();
@@ -203,7 +194,7 @@
         msg: MultipleLang.content.address_required,
       };
     } else {
-      if (data.address && addressValidate === undefined) {
+      if (data.address && addressValidate.address === "") {
         errors["address"] = {
           ...errors["address"],
           required: true,
@@ -231,11 +222,6 @@
     } else {
       errors["label"] = { ...errors["label"], required: false };
     }
-  };
-
-  const getListAddress = async () => {
-    const response: any = await nimbus.get("/accounts/list");
-    return response?.data;
   };
 
   $: query = createQuery({

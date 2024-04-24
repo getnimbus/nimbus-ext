@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { nimbus } from "~/lib/network";
   import { priceSubscribe } from "~/lib/price-ws";
   import { wallet, chain, isDarkMode, realtimePrice } from "~/store";
   import { createQuery } from "@tanstack/svelte-query";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
+  import { handleValidateAddress, getHoldingNFT } from "~/lib/queryAPI";
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
@@ -25,18 +25,6 @@
 
   let selectedTypeDisplay: "grid" | "table" = "grid";
 
-  const handleValidateAddress = async (address: string) => {
-    if (address) {
-      const response = await nimbus.get(`/v2/address/${address}/validate`);
-      return (
-        response?.data || {
-          address: "",
-          type: "",
-        }
-      );
-    }
-  };
-
   $: queryValidate = createQuery({
     queryKey: ["validate", $wallet],
     queryFn: () => handleValidateAddress($wallet),
@@ -46,24 +34,6 @@
   });
 
   // nft holding
-  const getHoldingNFT = async (chain) => {
-    let addressChain = chain;
-
-    if (addressChain === "ALL") {
-      const validateAccount = $queryValidate.data;
-      addressChain = validateAccount?.type;
-    }
-
-    const response = await nimbus
-      .get(
-        `/v2/address/${$wallet}/nft-holding?chain=${
-          addressChain === "BUNDLE" ? "" : addressChain
-        }`
-      )
-      .then((response: any) => response?.data);
-    return response;
-  };
-
   const formatDataHoldingNFT = (dataNftHolding) => {
     const selectedCollection = dataNftHolding.find(
       (item) =>
@@ -102,7 +72,7 @@
   // query nft holding
   $: queryNftHolding = createQuery({
     queryKey: ["nft-holding", $wallet, $chain],
-    queryFn: () => getHoldingNFT($chain),
+    queryFn: () => getHoldingNFT($wallet, $chain, $queryValidate.data),
     staleTime: Infinity,
     retry: false,
     enabled:

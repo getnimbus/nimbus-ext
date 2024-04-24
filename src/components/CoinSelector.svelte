@@ -1,6 +1,6 @@
 <script lang="ts">
   import { clickOutside } from "~/utils";
-  import { nimbus } from "~/lib/network";
+  import { handleSearchToken } from "~/lib/queryAPI";
   import { createQuery } from "@tanstack/svelte-query";
   import { isDarkMode } from "~/store";
 
@@ -35,14 +35,9 @@
     }, 300);
   };
 
-  const handleSearchTokenMobula = async (searchValue: string) => {
-    const response = await nimbus.get(`/token/${searchValue}/info/mobula`);
-    return response?.data?.data;
-  };
-
   $: query = createQuery({
     queryKey: ["search-token-mobula", search],
-    queryFn: () => handleSearchTokenMobula(search),
+    queryFn: () => handleSearchToken(search),
     enabled: search.length !== 0,
     staleTime: Infinity,
     retry: false,
