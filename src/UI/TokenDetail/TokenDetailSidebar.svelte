@@ -228,7 +228,7 @@
   <div class="flex flex-col justify-between gap-6">
     <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
       <OverviewCard title={"Avg Cost"}>
-        <div class="flex justify-end text-3xl">
+        <div class="flex justify-end text-4xl xl:text-3xl">
           ${#if data?.profit}
             <TooltipNumber
               number={data?.profit?.averageCost}
@@ -242,7 +242,7 @@
       </OverviewCard>
 
       <OverviewCard title={"30D Trx (Buy/Sell)"}>
-        <div class="text-3xl">
+        <div class="text-4xl xl:text-3xl">
           {buyHistoryTradeList.length}/{sellHistoryTradeList.length}
         </div>
       </OverviewCard>
@@ -252,7 +252,7 @@
       <OverviewCard title={"Realized PnL"}>
         <div class="flex flex-col">
           <div
-            class={`text-3xl ${
+            class={`text-4xl xl:text-3xl ${
               realizedProfit !== 0
                 ? realizedProfit >= 0
                   ? "text-[#00A878]"
@@ -268,7 +268,7 @@
           </div>
           <div class="flex items-center gap-1">
             <div
-              class={`flex items-center text-lg ${
+              class={`flex items-center xl:text-lg text-xl ${
                 realizedProfit !== 0
                   ? realizedProfit >= 0
                     ? "text-[#00A878]"
@@ -296,7 +296,7 @@
       <OverviewCard title={"Unrealized PnL"}>
         <div class="flex flex-col">
           <div
-            class={`text-3xl ${
+            class={`text-4xl xl:text-3xl ${
               unrealizedProfit !== 0
                 ? percentUnrealizedProfit >= 0
                   ? "text-[#00A878]"
@@ -312,7 +312,7 @@
           </div>
           <div class="flex items-center gap-1">
             <div
-              class={`flex items-center text-lg ${
+              class={`flex items-center xl:text-lg text-xl ${
                 unrealizedProfit !== 0
                   ? unrealizedProfit >= 0
                     ? "text-[#00A878]"
@@ -340,7 +340,7 @@
 
     <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
       <OverviewCard title={"Total Fee"}>
-        <div class="flex justify-end text-3xl">
+        <div class="flex justify-end text-4xl xl:text-3xl">
           ${#if $isHidePortfolio}
             ******
           {:else if totalFee}
@@ -352,7 +352,7 @@
       </OverviewCard>
 
       <OverviewCard title={"Avg Fee"}>
-        <div class="flex justify-end text-3xl">
+        <div class="flex justify-end text-4xl xl:text-3xl">
           ${#if $isHidePortfolio}
             ******
           {:else if avgFee}

@@ -205,7 +205,7 @@
     {#if $detectParams && $detectParams === "/recap"}
       <Router routes={recapRoutes} options={{ gaPageviews: true }} />
     {:else}
-      <div class="flex flex-col pb-40 xl:pb-14">
+      <div class="flex flex-col pb-64 xl:pb-14">
         <Header {navActive} {handleUpdateNavActive} />
         <Router {routes} options={{ gaPageviews: true }} />
       </div>

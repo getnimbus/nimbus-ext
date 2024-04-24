@@ -24,6 +24,8 @@
     unrealizedProfit,
     realizedProfit,
     pastProfit,
+    tonConnector,
+    suiWalletInstance,
   } from "~/store";
   import { shorterAddress } from "~/utils";
   import mixpanel from "mixpanel-browser";
@@ -40,6 +42,9 @@
     detectedGeneration,
     otherGeneration,
   } from "~/lib/chains";
+  import onboard from "~/lib/web3-onboard";
+  import { walletStore } from "@aztemi/svelte-on-solana-wallet-adapter-core";
+  import type { WalletState } from "nimbus-sui-kit";
 
   import tooltip from "~/entries/contentScript/views/tooltip";
   import Auth from "~/UI/Auth/Auth.svelte";
@@ -244,6 +249,56 @@
       }
 
       handleSaveSuggest(validateAccount?.address);
+    }
+  };
+
+  const wallets$ = onboard.state.select("wallets");
+
+  const disconnect = (value: any) => {
+    if (value && Object.keys(value).length !== 0) {
+      onboard.disconnectWallet({ label: value.label });
+    }
+  };
+
+  const handleSignOut = () => {
+    mixpanel.track("user_logout");
+    try {
+      user.update((n) => (n = {}));
+      wallet.update((n) => (n = ""));
+      chain.update((n) => (n = ""));
+      typeWallet.update((n) => (n = ""));
+      userPublicAddress.update((n) => (n = ""));
+      selectedPackage.update((n) => (n = "FREE"));
+
+      localStorage.removeItem("public_address");
+
+      localStorage.removeItem("evm_token");
+      disconnect($wallets$?.[0]);
+
+      localStorage.removeItem("solana_token");
+      $walletStore.disconnect();
+
+      localStorage.removeItem("ton_token");
+      if ($tonConnector.connected) {
+        $tonConnector.disconnect();
+      }
+
+      localStorage.removeItem("sui_token");
+      if (
+        ($suiWalletInstance as WalletState) &&
+        ($suiWalletInstance as WalletState).connected
+      ) {
+        ($suiWalletInstance as WalletState).disconnect();
+      }
+
+      localStorage.removeItem("auth_token");
+
+      queryClient?.invalidateQueries(["list-address"]);
+      queryClient?.invalidateQueries(["users-me"]);
+      navigateTo("/");
+      mixpanel.reset();
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -795,9 +850,7 @@
         <img src={Bell} alt="" class="xl:w-5 xl:h-5 w-7 h-7" />
       </div> -->
 
-      <div class="xl:block hidden">
-        <Auth {displayName} {publicAddress} {buyPackage} />
-      </div>
+      <Auth {displayName} {publicAddress} {buyPackage} />
     </div>
   </div>
 </div>
@@ -1106,22 +1159,41 @@
         </div>
       </div>
 
-      <div class="flex flex-col gap-12 w-full pb-12">
-        <div class="flex flex-col gap-6 px-5">
+      <div class="flex flex-col gap-12 w-full pb-12 mt-2">
+        <div class="flex flex-col gap-5 px-5">
           <DarkModeFooter />
           <div class="w-max">
             {#if Object.keys($user).length === 0}
-              <div
-                class="text-2xl font-semibold text-white cursor-pointer"
-                on:click={() => {
-                  isOpenModalSync = true;
-                  isShowHeaderMobile.update((n) => (n = false));
-                }}
-              >
-                Sync from Desktop
+              <div class="flex flex-col gap-5">
+                <div
+                  class="text-xl font-semibold text-white cursor-pointer"
+                  on:click={() => {
+                    isOpenModalSync = true;
+                    isShowHeaderMobile.update((n) => (n = false));
+                  }}
+                >
+                  Sync from Desktop
+                </div>
+
+                <div
+                  class="text-xl font-semibold text-white cursor-pointer"
+                  on:click={() => {
+                    triggerConnectWallet.update((n) => (n = true));
+                    isShowHeaderMobile.update((n) => (n = false));
+                  }}
+                >
+                  Connect Wallet
+                </div>
               </div>
             {:else}
-              <Auth {displayName} {publicAddress} {buyPackage} />
+              <div
+                class={`text-xl font-medium text-red-500 cursor-pointer ${
+                  $isDarkMode ? "hover:bg-[#222222]" : "hover:bg-[#eff0f4]"
+                }`}
+                on:click={handleSignOut}
+              >
+                Log out
+              </div>
             {/if}
           </div>
         </div>

@@ -169,10 +169,10 @@
   <div class="flex flex-col justify-between gap-6">
     <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
       <OverviewCard title={"Position Value"}>
-        <div class="text-3xl flex">
+        <div class="text-4xl xl:text-3xl flex">
           <TooltipNumber number={data?.current_value} type="value" />
         </div>
-        <div class="text-lg flex">
+        <div class="xl:text-lg text-xl flex">
           {tokens.length}
           {tokens.length > 1 ? "NFTs" : "NFT"}
         </div>
@@ -185,7 +185,7 @@
       >
         <div class="flex items-end gap-1">
           <div
-            class={`text-3xl ${
+            class={`text-4xl xl:text-3xl ${
               profitAndLoss !== 0
                 ? profitAndLoss >= 0
                   ? "text-[#00A878]"
@@ -195,12 +195,12 @@
           >
             <TooltipNumber number={Math.abs(profitAndLoss)} type="balance" />
           </div>
-          <span class="text-xl text-gray-500">
+          <span class="xl:text-lg text-xl text-gray-500">
             {data?.nativeToken?.symbol || "-"}
           </span>
         </div>
         <div
-          class={`text-lg flex ${
+          class={`xl:text-lg text-xl flex ${
             profitAndLossPercent !== 0
               ? profitAndLossPercent >= 0
                 ? "text-[#00A878]"
@@ -231,13 +231,13 @@
         tooltipText="Learn more"
         link="https://docs.getnimbus.io/metrics/average_cost/"
       >
-        <div class="text-3xl flex items-end gap-1">
+        <div class="text-4xl xl:text-3xl flex items-end gap-1">
           <TooltipNumber number={totalNativeTokenPrice} type="balance" />
-          <span class="text-xl text-gray-500">
+          <span class="xl:text-lg text-xl text-gray-500">
             {data?.nativeToken?.symbol || "-"}
           </span>
         </div>
-        <div class="text-lg flex">
+        <div class="xl:text-lg text-xl flex">
           <TooltipNumber number={totalCost} type="value" />
         </div>
       </OverviewCard>
@@ -252,16 +252,16 @@
           ? `https://magiceden.io/ordinals/marketplace/${selectedNftCollectionId}`
           : ""}
       >
-        <div class="text-3xl flex items-end gap-1">
+        <div class="text-4xl xl:text-3xl flex items-end gap-1">
           <TooltipNumber
             number={Number(data?.floorPrice || 0)}
             type="balance"
           />
-          <span class="text-xl text-gray-500">
+          <span class="xl:text-lg text-xl text-gray-500">
             {data?.nativeToken?.symbol || "-"}
           </span>
         </div>
-        <div class="text-lg flex">
+        <div class="xl:text-lg text-xl flex">
           <TooltipNumber
             number={Number(data?.floorPrice || 0) * (marketPriceNFT || 0)}
             type="value"
