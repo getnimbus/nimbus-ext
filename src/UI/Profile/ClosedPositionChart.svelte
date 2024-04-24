@@ -1,8 +1,11 @@
 <script lang="ts">
-  import { nimbus } from "~/lib/network";
   import { createQuery } from "@tanstack/svelte-query";
-  import { isDarkMode } from "~/store";
-  import { getTradingStats, handleValidateAddress } from "~/lib/queryAPI";
+  import { isDarkMode, chain } from "~/store";
+  import {
+    getTradingStats,
+    getHoldingToken,
+    handleValidateAddress,
+  } from "~/lib/queryAPI";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import numeral from "numeral";
   import {
@@ -210,25 +213,22 @@
 
   $: isFetch = isSync ? enabledFetchAllData : true;
 
+  $: queryValidate = createQuery({
+    queryKey: ["validate", selectedAddress],
+    queryFn: () => handleValidateAddress(selectedAddress),
+    staleTime: Infinity,
+    retry: false,
+    enabled: Boolean(selectedAddress && selectedAddress?.length !== 0),
+  });
+
   // query holding token
-  const getHoldingToken = async (address) => {
-    const validateAccount = await handleValidateAddress(address);
-
-    const response = await nimbus
-      .get(
-        `/v2/address/${address}/holding?chain=${
-          validateAccount?.type === "BUNDLE" ? "" : validateAccount?.type
-        }`
-      )
-      .then((response) => response.data);
-    return response;
-  };
-
   $: queryHoldingToken = createQuery({
     queryKey: ["token-holding", selectedAddress],
-    queryFn: () => getHoldingToken(selectedAddress),
+    queryFn: () =>
+      getHoldingToken(selectedAddress, $chain, $queryValidate.data),
     staleTime: Infinity,
-    enabled: selectedAddress?.length !== 0 && isFetch,
+    enabled:
+      selectedAddress?.length !== 0 && isFetch && !$queryValidate.isFetching,
   });
 
   const formatDataMetadata = (dataTokenHolding, dataTradingStats) => {

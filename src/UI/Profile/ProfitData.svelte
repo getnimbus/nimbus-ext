@@ -2,8 +2,12 @@
   import { createQuery } from "@tanstack/svelte-query";
   import tooltip from "~/entries/contentScript/views/tooltip";
   import dayjs from "dayjs";
-  import { nimbus } from "~/lib/network";
-  import { getTradingStats, handleValidateAddress } from "~/lib/queryAPI";
+  import { chain } from "~/store";
+  import {
+    getTradingStats,
+    getHoldingToken,
+    handleValidateAddress,
+  } from "~/lib/queryAPI";
 
   import Loading from "~/components/Loading.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
@@ -27,19 +31,6 @@
   let goodPerf = {};
 
   $: isFetch = isSync ? enabledFetchAllData : true;
-
-  const getHoldingToken = async (address) => {
-    const validateAccount = await handleValidateAddress(address);
-
-    const response = await nimbus
-      .get(
-        `/v2/address/${address}/holding?chain=${
-          validateAccount?.type === "BUNDLE" ? "" : validateAccount?.type
-        }`
-      )
-      .then((response) => response.data);
-    return response;
-  };
 
   const formatDataHoldingToken = (dataTokenHolding) => {
     const formatData = dataTokenHolding
@@ -85,7 +76,7 @@
   };
 
   const formatDataTradingStats = (dataTokenHolding, data) => {
-    const formatMetaData = data.map((item) => {
+    const formatMetaData = data.metadata.map((item) => {
       const selectedHolding = dataTokenHolding.find(
         (dataToken) =>
           dataToken.contractAddress.toString().toLowerCase() ===
@@ -185,6 +176,14 @@
       {};
   };
 
+  $: queryValidate = createQuery({
+    queryKey: ["validate", selectedAddress],
+    queryFn: () => handleValidateAddress(selectedAddress),
+    staleTime: Infinity,
+    retry: false,
+    enabled: Boolean(selectedAddress && selectedAddress?.length !== 0),
+  });
+
   $: queryTradingStats = createQuery({
     queryKey: ["trading-stats", selectedAddress],
     queryFn: () => getTradingStats(selectedAddress),
@@ -195,9 +194,11 @@
 
   $: queryTokenHolding = createQuery({
     queryKey: ["token-holding", selectedAddress],
-    queryFn: () => getHoldingToken(selectedAddress),
+    queryFn: () =>
+      getHoldingToken(selectedAddress, $chain, $queryValidate.data),
     staleTime: Infinity,
-    enabled: selectedAddress?.length !== 0 && isFetch,
+    enabled:
+      selectedAddress?.length !== 0 && isFetch && !$queryValidate.isFetching,
   });
 
   $: {

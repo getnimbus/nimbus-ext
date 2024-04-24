@@ -18,7 +18,7 @@
   import dayjs from "dayjs";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
   import numeral from "numeral";
-  import { handleValidateAddress } from "~/lib/queryAPI";
+  import { handleValidateAddress, getHoldingToken } from "~/lib/queryAPI";
 
   import type { HoldingTokenRes } from "~/types/HoldingTokenData";
 
@@ -377,23 +377,12 @@
   }
 
   // query holding token
-  const getHoldingToken = async (chain) => {
-    let addressChain = chain;
-
-    if (addressChain === "ALL") {
-      const validateAccount = $queryValidate.data;
-      addressChain = validateAccount?.type;
-    }
-
-    const response: HoldingTokenRes = await nimbus
-      .get(
-        `/v2/address/${$wallet}/holding?chain=${
-          addressChain === "BUNDLE" ? "" : addressChain
-        }`
-      )
-      .then((response) => response.data);
-    return response;
-  };
+  $: queryHoldingToken = createQuery({
+    queryKey: ["token-holding", $wallet, $chain],
+    queryFn: () => getHoldingToken($wallet, $chain, $queryValidate.data),
+    staleTime: Infinity,
+    enabled: enabledQuery && isFetch && !$queryValidate.isFetching,
+  });
 
   const formatDataHoldingToken = (data) => {
     if (data && data.length !== 0) {
@@ -405,13 +394,6 @@
       dataSector = handleFormatDataPieChart(data, "sector");
     }
   };
-
-  $: queryHoldingToken = createQuery({
-    queryKey: ["token-holding", $wallet, $chain],
-    queryFn: () => getHoldingToken($chain),
-    staleTime: Infinity,
-    enabled: enabledQuery && isFetch && !$queryValidate.isFetching,
-  });
 
   $: {
     if (!$queryHoldingToken.isError && $queryHoldingToken.data !== null) {

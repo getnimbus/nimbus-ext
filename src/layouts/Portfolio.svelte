@@ -33,7 +33,7 @@
     useQueryClient,
   } from "@tanstack/svelte-query";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
-  import { handleValidateAddress } from "~/lib/queryAPI";
+  import { handleValidateAddress, getHoldingToken } from "~/lib/queryAPI";
 
   import type { NewData, NewDataRes } from "~/types/NewData";
   import type { OverviewData, OverviewDataRes } from "~/types/OverviewData";
@@ -535,27 +535,9 @@
   });
 
   //// TOKEN HOLDING
-  const getHoldingToken = async (chain) => {
-    let addressChain = chain;
-
-    if (addressChain === "ALL") {
-      const validateAccount = $queryValidate.data;
-      addressChain = validateAccount?.type;
-    }
-
-    const response: any = await nimbus
-      .get(
-        `/v2/address/${$wallet}/holding?chain=${
-          addressChain === "BUNDLE" ? "" : addressChain
-        }`
-      )
-      .then((response) => response?.data);
-    return response;
-  };
-
   $: queryTokenHolding = createQuery({
     queryKey: ["token-holding", $wallet, $chain],
-    queryFn: () => getHoldingToken($chain),
+    queryFn: () => getHoldingToken($wallet, $chain, $queryValidate.data),
     staleTime: Infinity,
     enabled: Boolean(
       enabledFetchAllData &&
@@ -573,7 +555,7 @@
     chainListQueries.map((item) => {
       return {
         queryKey: ["token-holding", $wallet, $chain, item],
-        queryFn: () => getHoldingToken(item),
+        queryFn: () => getHoldingToken($wallet, item, $queryValidate.data),
         staleTime: Infinity,
         enabled: Boolean(
           enabledFetchAllData &&
@@ -1106,10 +1088,6 @@
                 />
               {/if}
 
-              {#if $tab === "summary"}
-                <PerformanceSummary />
-              {/if}
-
               {#if $tab === "defi"}
                 <DefiPosition
                   data={positionsData}
@@ -1121,6 +1099,10 @@
 
               {#if $tab === "airdropsAndPoints"}
                 <AirdropsAndPointsTracker />
+              {/if}
+
+              {#if $tab === "summary"}
+                <PerformanceSummary />
               {/if}
 
               <!-- <News isLoading={false} data={newsData} /> -->
