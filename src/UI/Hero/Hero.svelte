@@ -188,17 +188,6 @@
         </div>
 
         <div class="w-full flex gap-4 justify-start">
-          <div class="xl:hidden block w-max">
-            <Button
-              on:click={() => {
-                triggerSync.update((n) => (n = true));
-                drivePortfolio?.destroy();
-              }}
-            >
-              Sync from Desktop
-            </Button>
-          </div>
-
           <div class="w-max">
             <Button
               on:click={() => {
@@ -207,6 +196,17 @@
               }}
             >
               Connect Wallet
+            </Button>
+          </div>
+          <div class="xl:hidden block w-max">
+            <Button
+              on:click={() => {
+                triggerSync.update((n) => (n = true));
+                drivePortfolio?.destroy();
+              }}
+              variant="secondary"
+            >
+              Sync from Desktop
             </Button>
           </div>
         </div>
@@ -263,7 +263,7 @@
     </div>
   </div>
 
-  <div class="xl:order-2 order-1 flex-1">
+  <div class="xl:order-2 order-1 flex-1 xl:ml-0 -ml-5">
     <img
       src={heroImage}
       alt=""
