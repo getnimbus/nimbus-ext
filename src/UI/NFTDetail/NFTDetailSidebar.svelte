@@ -179,7 +179,7 @@
       </OverviewCard>
 
       <OverviewCard
-        title={"Profit & Loss"}
+        title={"PnL"}
         tooltipText="Price NFTs now - Price NFTs at time you spent"
         isTooltip
       >
@@ -423,7 +423,7 @@
                       <TooltipTitle
                         tooltipText="Price NFTs now - Price NFTs at time you spent"
                       >
-                        Profit & Loss
+                        PnL
                       </TooltipTitle>
                     </div>
                   </th>
