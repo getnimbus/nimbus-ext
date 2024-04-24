@@ -17,6 +17,7 @@
     AnalyticHistoricalFormat,
   } from "~/types/AnalyticHistoricalData";
   import { otherGeneration } from "~/lib/chains";
+  import { handleValidateAddress } from "~/lib/queryAPI";
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import HistoricalTransactions from "~/UI/Transaction/HistoricalTransactions.svelte";
@@ -138,19 +139,6 @@
 
   $: selectedTypeValue = selectedType?.value;
   $: selectedCoinValue = selectedCoin?.symbol;
-
-  const handleValidateAddress = async (address: string) => {
-    try {
-      const response = await nimbus.get(`/v2/address/${address}/validate`);
-      return response?.data;
-    } catch (e) {
-      console.error(e);
-      return {
-        address: "",
-        type: "",
-      };
-    }
-  };
 
   const getAnalyticHistorical = async (address, chain) => {
     let addressChain = chain;

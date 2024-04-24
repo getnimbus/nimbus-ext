@@ -1,7 +1,8 @@
 <script lang="ts">
   import { nimbus } from "~/lib/network";
   import { createQuery } from "@tanstack/svelte-query";
-  import { isDarkMode, user } from "~/store";
+  import { isDarkMode } from "~/store";
+  import { getTradingStats, handleValidateAddress } from "~/lib/queryAPI";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import numeral from "numeral";
   import {
@@ -209,15 +210,44 @@
 
   $: isFetch = isSync ? enabledFetchAllData : true;
 
-  const getTradingStats = async (address) => {
-    const response: any = await nimbus.get(
-      `/v2/analysis/${address}/trading-stats`
-    );
-    return response?.data;
+  // query holding token
+  const getHoldingToken = async (address) => {
+    const validateAccount = await handleValidateAddress(address);
+
+    const response = await nimbus
+      .get(
+        `/v2/address/${address}/holding?chain=${
+          validateAccount?.type === "BUNDLE" ? "" : validateAccount?.type
+        }`
+      )
+      .then((response) => response.data);
+    return response;
   };
 
-  const formatDataHoldingToken = (dataTokenHolding) => {
-    const formatData = dataTokenHolding.metadata
+  $: queryHoldingToken = createQuery({
+    queryKey: ["token-holding", selectedAddress],
+    queryFn: () => getHoldingToken(selectedAddress),
+    staleTime: Infinity,
+    enabled: selectedAddress?.length !== 0 && isFetch,
+  });
+
+  const formatDataMetadata = (dataTokenHolding, dataTradingStats) => {
+    const formatMetaData = dataTradingStats.metadata.map((item) => {
+      const selectedHolding = dataTokenHolding.find(
+        (dataToken) =>
+          dataToken.contractAddress.toString().toLowerCase() ===
+          item.address.toString().toLowerCase()
+      );
+      if (selectedHolding) {
+        return {
+          ...item,
+          holding: selectedHolding,
+        };
+      }
+      return item;
+    });
+
+    const formatData = formatMetaData
       .filter((item) => item.holding)
       .filter(
         (item) => dayjs().subtract(30, "day").valueOf() < item.lastTrade * 1000
@@ -327,9 +357,12 @@
     if (
       !$queryTradingStats.isError &&
       $queryTradingStats.data &&
-      $queryTradingStats.data !== undefined
+      $queryTradingStats.data !== undefined &&
+      !$queryHoldingToken.isError &&
+      $queryHoldingToken.data &&
+      $queryHoldingToken?.data !== undefined
     ) {
-      formatDataHoldingToken($queryTradingStats.data);
+      formatDataMetadata($queryHoldingToken.data, $queryTradingStats.data);
     }
   }
 

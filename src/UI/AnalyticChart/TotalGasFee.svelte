@@ -5,6 +5,7 @@
   import { listSupported, otherGeneration } from "~/lib/chains";
   import { createQuery } from "@tanstack/svelte-query";
   import { nimbus } from "~/lib/network";
+  import { handleValidateAddress } from "~/lib/queryAPI";
 
   import CalendarChart from "~/components/CalendarChart.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
@@ -81,18 +82,6 @@
       coordinateSystem: "calendar",
       data: [dayjs(new Date()).format("YYYY-MM-DD"), 1],
     },
-  };
-
-  const handleValidateAddress = async (address: string) => {
-    if (address) {
-      const response = await nimbus.get(`/v2/address/${address}/validate`);
-      return (
-        response?.data || {
-          address: "",
-          type: "",
-        }
-      );
-    }
   };
 
   $: queryValidate = createQuery({

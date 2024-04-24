@@ -3,6 +3,7 @@
   import { nimbus } from "~/lib/network";
   import { formatBalance } from "~/utils";
   import { user } from "~/store";
+  import { handleValidateAddress } from "~/lib/queryAPI";
 
   import Loading from "~/components/Loading.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
@@ -12,19 +13,6 @@
   let topThreeTokenHolding = [];
   let closedHoldingPosition = [];
   let netWorth = 0;
-
-  const handleValidateAddress = async (address: string) => {
-    try {
-      const response = await nimbus.get(`/v2/address/${address}/validate`);
-      return response?.data;
-    } catch (e) {
-      console.error(e);
-      return {
-        address: "",
-        type: "",
-      };
-    }
-  };
 
   const getHoldingToken = async (address) => {
     const validateAccount = await handleValidateAddress(address);

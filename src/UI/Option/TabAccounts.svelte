@@ -27,6 +27,7 @@
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { wait } from "~/entries/background/utils";
   import * as browser from "webextension-polyfill";
+  import { handleValidateAddress } from "~/lib/queryAPI";
 
   import Tooltip from "~/components/Tooltip.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
@@ -197,16 +198,6 @@
 
   const isRequiredFieldValid = (value) => {
     return value != null && value !== "";
-  };
-
-  const handleValidateAddress = async (address: string) => {
-    try {
-      const response = await nimbus.get(`/v2/address/${address}/validate`);
-      return response?.data;
-    } catch (e) {
-      console.error(e);
-      return undefined;
-    }
   };
 
   const validateForm = async (data) => {

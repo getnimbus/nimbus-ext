@@ -16,6 +16,7 @@
   import { listSupported } from "~/lib/chains";
   import { defillama, nimbus } from "~/lib/network";
   import dayjs from "dayjs";
+  import { handleValidateAddress } from "~/lib/queryAPI";
 
   import type { HoldingTokenRes } from "~/types/HoldingTokenData";
 
@@ -88,18 +89,6 @@
     timerDebounce = setTimeout(() => {
       searchValue = value;
     }, 300);
-  };
-
-  const handleValidateAddress = async (address: string) => {
-    if (address) {
-      const response = await nimbus.get(`/v2/address/${address}/validate`);
-      return (
-        response?.data || {
-          address: "",
-          type: "",
-        }
-      );
-    }
   };
 
   $: queryValidate = createQuery({

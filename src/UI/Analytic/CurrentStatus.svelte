@@ -18,6 +18,7 @@
   import dayjs from "dayjs";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
   import numeral from "numeral";
+  import { handleValidateAddress } from "~/lib/queryAPI";
 
   import type { HoldingTokenRes } from "~/types/HoldingTokenData";
 
@@ -323,18 +324,6 @@
   };
 
   const queryClient = useQueryClient();
-
-  const handleValidateAddress = async (address: string) => {
-    if (address) {
-      const response = await nimbus.get(`/v2/address/${address}/validate`);
-      return (
-        response?.data || {
-          address: "",
-          type: "",
-        }
-      );
-    }
-  };
 
   $: queryValidate = createQuery({
     queryKey: ["validate", $wallet],

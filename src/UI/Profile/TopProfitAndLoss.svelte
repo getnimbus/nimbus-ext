@@ -7,6 +7,7 @@
   import { shorterAddress, shorterName } from "~/utils";
   import { detectedChain } from "~/lib/chains";
   import { wait } from "~/entries/background/utils";
+  import { getTradingStats, handleValidateAddress } from "~/lib/queryAPI";
 
   import Image from "~/components/Image.svelte";
   import Loading from "~/components/Loading.svelte";
@@ -33,15 +34,52 @@
 
   $: isFetch = isSync ? enabledFetchAllData : true;
 
-  const getTradingStats = async (address) => {
-    const response: any = await nimbus.get(
-      `/v2/analysis/${address}/trading-stats`
-    );
-    return response?.data;
+  const getHoldingToken = async (address) => {
+    const validateAccount = await handleValidateAddress(address);
+
+    const response = await nimbus
+      .get(
+        `/v2/address/${address}/holding?chain=${
+          validateAccount?.type === "BUNDLE" ? "" : validateAccount?.type
+        }`
+      )
+      .then((response) => response.data);
+    return response;
   };
 
-  const formatDataTradingStats = (data) => {
-    const formatData = data?.metadata
+  $: queryTokenHolding = createQuery({
+    queryKey: ["token-holding", selectedAddress],
+    queryFn: () => getHoldingToken(selectedAddress),
+    staleTime: Infinity,
+    enabled: selectedAddress?.length !== 0 && isFetch,
+  });
+
+  $: queryTradingStats = createQuery({
+    queryKey: ["trading-stats", selectedAddress],
+    queryFn: () => getTradingStats(selectedAddress),
+    staleTime: Infinity,
+    retry: false,
+    enabled: selectedAddress?.length !== 0 && isFetch,
+  });
+
+  const formatDataTradingStats = (dataTokenHolding, data) => {
+    const formatMetaData = data.map((item) => {
+      const selectedHolding = dataTokenHolding.find(
+        (dataToken) =>
+          dataToken.contractAddress.toString().toLowerCase() ===
+          item.address.toString().toLowerCase()
+      );
+      if (selectedHolding) {
+        return {
+          ...item,
+          holding: selectedHolding,
+        };
+      }
+      return item;
+    });
+
+    const formatData = formatMetaData
+      .filter((item) => item.holding)
       .filter(
         (item) => dayjs().subtract(30, "day").valueOf() < item.lastTrade * 1000
       )
@@ -97,21 +135,16 @@
     );
   };
 
-  $: queryTradingStats = createQuery({
-    queryKey: ["trading-stats", selectedAddress],
-    queryFn: () => getTradingStats(selectedAddress),
-    staleTime: Infinity,
-    retry: false,
-    enabled: selectedAddress?.length !== 0 && isFetch,
-  });
-
   $: {
     if (
       !$queryTradingStats.isError &&
       $queryTradingStats.data &&
-      $queryTradingStats.data !== undefined
+      $queryTradingStats.data !== undefined &&
+      !$queryTokenHolding.isError &&
+      $queryTokenHolding.data &&
+      $queryTokenHolding?.data !== undefined
     ) {
-      formatDataTradingStats($queryTradingStats.data);
+      formatDataTradingStats($queryTokenHolding?.data, $queryTradingStats.data);
     }
   }
 </script>

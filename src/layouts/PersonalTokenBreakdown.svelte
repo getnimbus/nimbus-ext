@@ -19,6 +19,7 @@
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
   import { priceMobulaSubscribe } from "~/lib/price-mobulaWs";
   import { priceSubscribe } from "~/lib/price-ws";
+  import { handleValidateAddress } from "~/lib/queryAPI";
 
   import type { TokenData, HoldingTokenRes } from "~/types/HoldingTokenData";
 
@@ -134,18 +135,6 @@
       window.removeEventListener("scroll", handleScroll);
     };
   });
-
-  const handleValidateAddress = async (address: string) => {
-    if (address) {
-      const response = await nimbus.get(`/v2/address/${address}/validate`);
-      return (
-        response?.data || {
-          address: "",
-          type: "",
-        }
-      );
-    }
-  };
 
   $: queryValidate = createQuery({
     queryKey: ["validate", $wallet],
