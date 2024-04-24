@@ -19,6 +19,7 @@
   import Copy from "~/components/Copy.svelte";
 
   import FollowWhale from "~/assets/whale-tracking.gif";
+  import { getListAddress } from "~/lib/queryAPI";
 
   const MultipleLang = {
     content: {
@@ -132,11 +133,6 @@
     show = false;
     toastMsg = "";
     isSuccess = false;
-  };
-
-  const getListAddress = async () => {
-    const response: any = await nimbus.get("/accounts/list");
-    return response?.data;
   };
 
   $: query = createQuery({

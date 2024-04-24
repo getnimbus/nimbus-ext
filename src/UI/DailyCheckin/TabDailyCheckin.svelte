@@ -16,6 +16,11 @@
   import { driver } from "driver.js";
   import "driver.js/dist/driver.css";
   import mixpanel from "mixpanel-browser";
+  import {
+    handleGetDataDailyCheckin,
+    handleGetDataRewards,
+    handleGetListQuest,
+  } from "~/lib/queryAPI";
 
   import Button from "~/components/Button.svelte";
   import Loading from "~/components/Loading.svelte";
@@ -151,23 +156,6 @@
     }
   };
 
-  const handleGetListQuest = async () => {
-    const response = await nimbus.get("/v2/checkin/quest");
-    return response.data;
-  };
-
-  const handleDailyCheckin = async () => {
-    const response = await nimbus.get("/v2/checkin");
-    return response.data;
-  };
-
-  const handleRewards = async () => {
-    const response = await nimbus.post(`/v2/reward`, {
-      address: $userPublicAddress,
-    });
-    return response.data;
-  };
-
   const triggerCheckinSuccess = async () => {
     openScreenSuccess = true;
     triggerFirework();
@@ -229,14 +217,14 @@
 
   $: queryReward = createQuery({
     queryKey: [$userPublicAddress, "rewards"],
-    queryFn: () => handleRewards(),
+    queryFn: () => handleGetDataRewards($userPublicAddress),
     staleTime: Infinity,
     enabled: $userPublicAddress.length !== 0,
   });
 
   $: queryDailyCheckin = createQuery({
     queryKey: [$userPublicAddress, "daily-checkin"],
-    queryFn: () => handleDailyCheckin(),
+    queryFn: () => handleGetDataDailyCheckin(),
     staleTime: Infinity,
     enabled: $userPublicAddress.length !== 0,
   });

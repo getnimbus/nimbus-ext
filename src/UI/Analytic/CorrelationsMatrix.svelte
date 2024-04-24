@@ -16,7 +16,11 @@
   import { listSupported } from "~/lib/chains";
   import { defillama, nimbus } from "~/lib/network";
   import dayjs from "dayjs";
-  import { handleValidateAddress, getHoldingToken } from "~/lib/queryAPI";
+  import {
+    handleValidateAddress,
+    getHoldingToken,
+    handleMarketTokens,
+  } from "~/lib/queryAPI";
 
   import type { HoldingTokenRes } from "~/types/HoldingTokenData";
 
@@ -141,15 +145,10 @@
   };
 
   // get list all token
-  const getListAllToken = async () => {
-    const res = await nimbus.get("/tokens/coingecko").then((res) => res?.data);
-    return res || [];
-  };
-
   $: queryListToken = createQuery({
     queryKey: ["list-all-token"],
     enabled: enabledQuery && isFetch,
-    queryFn: () => getListAllToken(),
+    queryFn: () => handleMarketTokens(),
     staleTime: Infinity,
   });
 

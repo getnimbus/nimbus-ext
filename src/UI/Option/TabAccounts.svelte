@@ -27,7 +27,7 @@
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { wait } from "~/entries/background/utils";
   import * as browser from "webextension-polyfill";
-  import { handleValidateAddress } from "~/lib/queryAPI";
+  import { getListAddress, handleValidateAddress } from "~/lib/queryAPI";
 
   import Tooltip from "~/components/Tooltip.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
@@ -252,11 +252,6 @@
     } else {
       errorsEdit["label"] = { ...errorsEdit["label"], required: false };
     }
-  };
-
-  const getListAddress = async () => {
-    const response: any = await nimbus.get("/accounts/list");
-    return response?.data;
   };
 
   const formatDataListAddress = (data) => {

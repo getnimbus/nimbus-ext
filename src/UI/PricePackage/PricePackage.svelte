@@ -1,8 +1,8 @@
 <script lang="ts">
   import { getTooltipContent } from "~/utils";
-  import { nimbus } from "~/lib/network";
   import { createQuery } from "@tanstack/svelte-query";
   import { isDarkMode, user } from "~/store";
+  import { getUserInfo } from "~/lib/queryAPI";
 
   import tooltip from "~/entries/contentScript/views/tooltip";
   import { priceTable } from "~/UI/PricePackage/DataTable";
@@ -23,11 +23,6 @@
     const utc2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
 
     return Math.floor((utc2 - utc1) / _MS_PER_DAY);
-  };
-
-  const getUserInfo = async () => {
-    const response: any = await nimbus.get("/users/me");
-    return response?.data;
   };
 
   $: query = createQuery({

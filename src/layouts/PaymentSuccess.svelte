@@ -7,6 +7,7 @@
   import { blur } from "svelte/transition";
   import { selectedPackage } from "~/store";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
+  import { getUserInfo } from "~/lib/queryAPI";
 
   import Button from "~/components/Button.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
@@ -84,11 +85,6 @@
       clearInterval(intervalId);
       navigateTo("/payments/fail");
     }
-  };
-
-  const getUserInfo = async () => {
-    const response: any = await nimbus.get("/users/me");
-    return response?.data;
   };
 
   $: queryUserInfo = createQuery({

@@ -35,6 +35,7 @@
   import bs58 from "bs58";
   import { walletStore } from "@aztemi/svelte-on-solana-wallet-adapter-core";
   import type { WalletState } from "nimbus-sui-kit";
+  import { getUserInfo } from "~/lib/queryAPI";
 
   import Tooltip from "~/components/Tooltip.svelte";
   import DarkMode from "~/components/DarkMode.svelte";
@@ -94,11 +95,6 @@
   let timerCountdown;
   let loading = false;
   let isShowTooltipCopy = false;
-
-  const getUserInfo = async () => {
-    const response: any = await nimbus.get("/users/me");
-    return response?.data;
-  };
 
   $: queryUserInfo = createQuery({
     queryKey: ["users-me"],

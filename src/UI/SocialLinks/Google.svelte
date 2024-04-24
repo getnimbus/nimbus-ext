@@ -8,6 +8,7 @@
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
   import { triggerFirework } from "~/utils";
   import { wait } from "~/entries/background/utils";
+  import { getUserInfo, handleGetDataDailyCheckin } from "~/lib/queryAPI";
 
   import Button from "~/components/Button.svelte";
 
@@ -51,19 +52,9 @@
     openScreenBonusScore = false;
   };
 
-  const handleDailyCheckin = async () => {
-    const response = await nimbus.get("/v2/checkin");
-    return response.data;
-  };
-
-  const getUserInfo = async () => {
-    const response: any = await nimbus.get("/users/me");
-    return response?.data;
-  };
-
   $: queryDailyCheckin = createQuery({
     queryKey: [$userPublicAddress, "daily-checkin"],
-    queryFn: () => handleDailyCheckin(),
+    queryFn: () => handleGetDataDailyCheckin(),
     staleTime: Infinity,
     enabled:
       $user &&

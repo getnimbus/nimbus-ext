@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { nimbus } from "~/lib/network";
+  import { getReferrals } from "~/lib/queryAPI";
   import QRCode from "qrcode-generator";
   import CopyToClipboard from "svelte-copy-to-clipboard";
   import html2canvas from "html2canvas";
@@ -39,11 +39,6 @@
     showToast = false;
     toastMsg = "";
     isSuccessToast = false;
-  };
-
-  const getReferrals = async () => {
-    const response: any = await nimbus.get("/referrals");
-    return response.data;
   };
 
   // query referrals

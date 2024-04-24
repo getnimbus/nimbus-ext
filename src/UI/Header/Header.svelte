@@ -45,7 +45,11 @@
   import onboard from "~/lib/web3-onboard";
   import { walletStore } from "@aztemi/svelte-on-solana-wallet-adapter-core";
   import type { WalletState } from "nimbus-sui-kit";
-  import { handleValidateAddress } from "~/lib/queryAPI";
+  import {
+    getListAddress,
+    getUserInfo,
+    handleValidateAddress,
+  } from "~/lib/queryAPI";
 
   import tooltip from "~/entries/contentScript/views/tooltip";
   import Auth from "~/UI/Auth/Auth.svelte";
@@ -103,11 +107,6 @@
     timerDebounce = setTimeout(() => {
       search = value;
     }, 300);
-  };
-
-  const getListAddress = async () => {
-    const response: any = await nimbus.get("/accounts/list");
-    return response?.data;
   };
 
   // query list address
@@ -430,11 +429,6 @@
   onDestroy(() => {
     Mousetrap.reset();
   });
-
-  const getUserInfo = async () => {
-    const response: any = await nimbus.get("/users/me");
-    return response?.data;
-  };
 
   $: queryUserInfo = createQuery({
     queryKey: ["users-me"],
