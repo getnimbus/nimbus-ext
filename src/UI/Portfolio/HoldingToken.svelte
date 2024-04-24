@@ -204,18 +204,67 @@
     return (value / sumTokens) * 100;
   };
 
-  const handleCalculatePnL = (data, price) => {
+  const handleCalculatePnL = (data) => {
+    const realizedProfit = handleCalculateRealizedProfit(data);
+    const unrealizedProfit = handleCalculateUnrealizedProfit(data);
+
     return {
-      pnl:
-        Number(data?.profit?.averageCost) !== 0
-          ? Number(data?.amount) * Number(price) -
-            Number(data?.amount) * Number(data?.profit?.averageCost)
-          : 0,
+      pnl: realizedProfit.realizedProfit + unrealizedProfit.unrealizedProfit,
       percentPnL:
-        Number(data?.profit?.averageCost) !== 0
-          ? (Number(data?.amount) * Number(price)) /
-            Math.abs(Number(data?.amount) * Number(data?.profit?.averageCost))
-          : 0,
+        realizedProfit.percentRealizedProfit +
+        unrealizedProfit.percentUnrealizedProfit,
+    };
+  };
+
+  const handleCalculateRealizedProfit = (data) => {
+    return {
+      realizedProfit: data?.profit?.realizedProfit
+        ? Number(data?.profit?.realizedProfit)
+        : 0,
+      percentRealizedProfit:
+        Number(data?.avgCost) === 0
+          ? 0
+          : (data?.profit?.realizedProfit
+              ? Number(data?.profit?.realizedProfit)
+              : 0) / Math.abs(Number(data?.avgCost)),
+    };
+  };
+
+  const handleCalculateUnrealizedProfit = (data) => {
+    const pnl =
+      Number(data?.balance || 0) *
+        Number(
+          $realtimePrice[
+            data?.cmc_id ||
+              data?.contractAddress ||
+              data?.symbol ||
+              data?.price?.symbol
+          ]
+            ? Number(
+                $realtimePrice[
+                  data?.cmc_id ||
+                    data?.contractAddress ||
+                    data?.symbol ||
+                    data?.price?.symbol
+                ]?.price
+              )
+            : Number(data.market_price) || 0
+        ) +
+      Number(data?.profit?.totalGain || 0) -
+      Number(data?.profit?.cost || 0);
+
+    const realizedProfit = data?.profit?.realizedProfit
+      ? Number(data?.profit?.realizedProfit)
+      : 0;
+
+    return {
+      unrealizedProfit:
+        Number(data?.avgCost) === 0 ? 0 : Number(pnl) - realizedProfit,
+      percentUnrealizedProfit:
+        Number(data?.avgCost) === 0
+          ? 0
+          : (Number(data?.avgCost) === 0 ? 0 : Number(pnl) - realizedProfit) /
+            Math.abs(Number(data?.avgCost)),
     };
   };
 
@@ -1177,42 +1226,8 @@
                 <div class="flex flex-col">
                   <div
                     class={`flex justify-end ${
-                      handleCalculatePnL(
-                        data[index - 1],
-                        $realtimePrice[
-                          data[index - 1]?.cmc_id ||
-                            data[index - 1]?.contractAddress ||
-                            data[index - 1]?.symbol ||
-                            data[index - 1]?.price?.symbol
-                        ]
-                          ? Number(
-                              $realtimePrice[
-                                data[index - 1]?.cmc_id ||
-                                  data[index - 1]?.contractAddress ||
-                                  data[index - 1]?.symbol ||
-                                  data[index - 1]?.price?.symbol
-                              ]?.price
-                            )
-                          : Number(data[index - 1].market_price)
-                      )?.pnl !== 0
-                        ? handleCalculatePnL(
-                            data[index - 1],
-                            $realtimePrice[
-                              data[index - 1]?.cmc_id ||
-                                data[index - 1]?.contractAddress ||
-                                data[index - 1]?.symbol ||
-                                data[index - 1]?.price?.symbol
-                            ]
-                              ? Number(
-                                  $realtimePrice[
-                                    data[index - 1]?.cmc_id ||
-                                      data[index - 1]?.contractAddress ||
-                                      data[index - 1]?.symbol ||
-                                      data[index - 1]?.price?.symbol
-                                  ]?.price
-                                )
-                              : Number(data[index - 1].market_price)
-                          )?.pnl >= 0
+                      handleCalculatePnL(data[index - 1])?.pnl !== 0
+                        ? handleCalculatePnL(data[index - 1])?.pnl >= 0
                           ? "text-[#00A878]"
                           : "text-red-500"
                         : "text_00000099"
@@ -1220,24 +1235,7 @@
                   >
                     <TooltipNumber
                       number={Math.abs(
-                        handleCalculatePnL(
-                          data[index - 1],
-                          $realtimePrice[
-                            data[index - 1]?.cmc_id ||
-                              data[index - 1]?.contractAddress ||
-                              data[index - 1]?.symbol ||
-                              data[index - 1]?.price?.symbol
-                          ]
-                            ? Number(
-                                $realtimePrice[
-                                  data[index - 1]?.cmc_id ||
-                                    data[index - 1]?.contractAddress ||
-                                    data[index - 1]?.symbol ||
-                                    data[index - 1]?.price?.symbol
-                                ]?.price
-                              )
-                            : Number(data[index - 1].market_price)
-                        )?.pnl
+                        handleCalculatePnL(data[index - 1])?.pnl
                       )}
                       type="value"
                       personalValue
@@ -1246,42 +1244,8 @@
                   <div class="flex items-center justify-end gap-1">
                     <div
                       class={`flex items-center ${
-                        handleCalculatePnL(
-                          data[index - 1],
-                          $realtimePrice[
-                            data[index - 1]?.cmc_id ||
-                              data[index - 1]?.contractAddress ||
-                              data[index - 1]?.symbol ||
-                              data[index - 1]?.price?.symbol
-                          ]
-                            ? Number(
-                                $realtimePrice[
-                                  data[index - 1]?.cmc_id ||
-                                    data[index - 1]?.contractAddress ||
-                                    data[index - 1]?.symbol ||
-                                    data[index - 1]?.price?.symbol
-                                ]?.price
-                              )
-                            : Number(data[index - 1].market_price)
-                        )?.pnl !== 0
-                          ? handleCalculatePnL(
-                              data[index - 1],
-                              $realtimePrice[
-                                data[index - 1]?.cmc_id ||
-                                  data[index - 1]?.contractAddress ||
-                                  data[index - 1]?.symbol ||
-                                  data[index - 1]?.price?.symbol
-                              ]
-                                ? Number(
-                                    $realtimePrice[
-                                      data[index - 1]?.cmc_id ||
-                                        data[index - 1]?.contractAddress ||
-                                        data[index - 1]?.symbol ||
-                                        data[index - 1]?.price?.symbol
-                                    ]?.price
-                                  )
-                                : Number(data[index - 1].market_price)
-                            )?.pnl >= 0
+                        handleCalculatePnL(data[index - 1])?.pnl !== 0
+                          ? handleCalculatePnL(data[index - 1])?.pnl >= 0
                             ? "text-[#00A878]"
                             : "text-red-500"
                           : "text_00000099"
@@ -1289,44 +1253,10 @@
                     >
                       <TooltipNumber
                         number={Math.abs(
-                          handleCalculatePnL(
-                            data[index - 1],
-                            $realtimePrice[
-                              data[index - 1]?.cmc_id ||
-                                data[index - 1]?.contractAddress ||
-                                data[index - 1]?.symbol ||
-                                data[index - 1]?.price?.symbol
-                            ]
-                              ? Number(
-                                  $realtimePrice[
-                                    data[index - 1]?.cmc_id ||
-                                      data[index - 1]?.contractAddress ||
-                                      data[index - 1]?.symbol ||
-                                      data[index - 1]?.price?.symbol
-                                  ]?.price
-                                )
-                              : Number(data[index - 1].market_price)
-                          )?.percentPnL
+                          handleCalculatePnL(data[index - 1])?.percentPnL
                         ) * 100}
                         type={Math.abs(
-                          handleCalculatePnL(
-                            data[index - 1],
-                            $realtimePrice[
-                              data[index - 1]?.cmc_id ||
-                                data[index - 1]?.contractAddress ||
-                                data[index - 1]?.symbol ||
-                                data[index - 1]?.price?.symbol
-                            ]
-                              ? Number(
-                                  $realtimePrice[
-                                    data[index - 1]?.cmc_id ||
-                                      data[index - 1]?.contractAddress ||
-                                      data[index - 1]?.symbol ||
-                                      data[index - 1]?.price?.symbol
-                                  ]?.price
-                                )
-                              : Number(data[index - 1].market_price)
-                          )?.percentPnL
+                          handleCalculatePnL(data[index - 1])?.percentPnL
                         ) *
                           100 >
                         999999
@@ -1336,44 +1266,10 @@
                       <span>%</span>
                     </div>
 
-                    {#if handleCalculatePnL(data[index - 1], $realtimePrice[data[index - 1]?.cmc_id || data[index - 1]?.contractAddress || data[index - 1]?.symbol || data[index - 1]?.price?.symbol] ? Number($realtimePrice[data[index - 1]?.cmc_id || data[index - 1]?.contractAddress || data[index - 1]?.symbol || data[index - 1]?.price?.symbol]?.price) : Number(data[index - 1].market_price))?.pnl !== 0}
+                    {#if handleCalculatePnL(data[index - 1])?.pnl !== 0}
                       <img
-                        src={handleCalculatePnL(
-                          data[index - 1],
-                          $realtimePrice[
-                            data[index - 1]?.cmc_id ||
-                              data[index - 1]?.contractAddress ||
-                              data[index - 1]?.symbol ||
-                              data[index - 1]?.price?.symbol
-                          ]
-                            ? Number(
-                                $realtimePrice[
-                                  data[index - 1]?.cmc_id ||
-                                    data[index - 1]?.contractAddress ||
-                                    data[index - 1]?.symbol ||
-                                    data[index - 1]?.price?.symbol
-                                ]?.price
-                              )
-                            : Number(data[index - 1].market_price)
-                        )?.pnl !== 0
-                          ? handleCalculatePnL(
-                              data[index - 1],
-                              $realtimePrice[
-                                data[index - 1]?.cmc_id ||
-                                  data[index - 1]?.contractAddress ||
-                                  data[index - 1]?.symbol ||
-                                  data[index - 1]?.price?.symbol
-                              ]
-                                ? Number(
-                                    $realtimePrice[
-                                      data[index - 1]?.cmc_id ||
-                                        data[index - 1]?.contractAddress ||
-                                        data[index - 1]?.symbol ||
-                                        data[index - 1]?.price?.symbol
-                                    ]?.price
-                                  )
-                                : Number(data[index - 1].market_price)
-                            )?.pnl >= 0
+                        src={handleCalculatePnL(data[index - 1])?.pnl !== 0
+                          ? handleCalculatePnL(data[index - 1])?.pnl >= 0
                             ? TrendUp
                             : TrendDown
                           : ""}
@@ -2220,68 +2116,15 @@
               <div class="flex flex-col">
                 <div
                   class={`flex justify-end ${
-                    handleCalculatePnL(
-                      data[index],
-                      $realtimePrice[
-                        data[index]?.cmc_id ||
-                          data[index]?.contractAddress ||
-                          data[index]?.symbol ||
-                          data[index]?.price?.symbol
-                      ]
-                        ? Number(
-                            $realtimePrice[
-                              data[index]?.cmc_id ||
-                                data[index]?.contractAddress ||
-                                data[index]?.symbol ||
-                                data[index]?.price?.symbol
-                            ]?.price
-                          )
-                        : Number(data[index].market_price)
-                    )?.pnl !== 0
-                      ? handleCalculatePnL(
-                          data[index],
-                          $realtimePrice[
-                            data[index]?.cmc_id ||
-                              data[index]?.contractAddress ||
-                              data[index]?.symbol ||
-                              data[index]?.price?.symbol
-                          ]
-                            ? Number(
-                                $realtimePrice[
-                                  data[index]?.cmc_id ||
-                                    data[index]?.contractAddress ||
-                                    data[index]?.symbol ||
-                                    data[index]?.price?.symbol
-                                ]?.price
-                              )
-                            : Number(data[index].market_price)
-                        )?.pnl >= 0
+                    handleCalculatePnL(data[index])?.pnl !== 0
+                      ? handleCalculatePnL(data[index])?.pnl >= 0
                         ? "text-[#00A878]"
                         : "text-red-500"
                       : "text_00000099"
                   }`}
                 >
                   <TooltipNumber
-                    number={Math.abs(
-                      handleCalculatePnL(
-                        data[index],
-                        $realtimePrice[
-                          data[index]?.cmc_id ||
-                            data[index]?.contractAddress ||
-                            data[index]?.symbol ||
-                            data[index]?.price?.symbol
-                        ]
-                          ? Number(
-                              $realtimePrice[
-                                data[index]?.cmc_id ||
-                                  data[index]?.contractAddress ||
-                                  data[index]?.symbol ||
-                                  data[index]?.price?.symbol
-                              ]?.price
-                            )
-                          : Number(data[index].market_price)
-                      )?.pnl
-                    )}
+                    number={Math.abs(handleCalculatePnL(data[index])?.pnl)}
                     type="value"
                     personalValue
                   />
@@ -2289,42 +2132,8 @@
                 <div class="flex items-center justify-end gap-1">
                   <div
                     class={`flex items-center ${
-                      handleCalculatePnL(
-                        data[index],
-                        $realtimePrice[
-                          data[index]?.cmc_id ||
-                            data[index]?.contractAddress ||
-                            data[index]?.symbol ||
-                            data[index]?.price?.symbol
-                        ]
-                          ? Number(
-                              $realtimePrice[
-                                data[index]?.cmc_id ||
-                                  data[index]?.contractAddress ||
-                                  data[index]?.symbol ||
-                                  data[index]?.price?.symbol
-                              ]?.price
-                            )
-                          : Number(data[index].market_price)
-                      )?.pnl !== 0
-                        ? handleCalculatePnL(
-                            data[index],
-                            $realtimePrice[
-                              data[index]?.cmc_id ||
-                                data[index]?.contractAddress ||
-                                data[index]?.symbol ||
-                                data[index]?.price?.symbol
-                            ]
-                              ? Number(
-                                  $realtimePrice[
-                                    data[index]?.cmc_id ||
-                                      data[index]?.contractAddress ||
-                                      data[index]?.symbol ||
-                                      data[index]?.price?.symbol
-                                  ]?.price
-                                )
-                              : Number(data[index].market_price)
-                          )?.pnl >= 0
+                      handleCalculatePnL(data[index])?.pnl !== 0
+                        ? handleCalculatePnL(data[index])?.pnl >= 0
                           ? "text-[#00A878]"
                           : "text-red-500"
                         : "text_00000099"
@@ -2332,44 +2141,10 @@
                   >
                     <TooltipNumber
                       number={Math.abs(
-                        handleCalculatePnL(
-                          data[index],
-                          $realtimePrice[
-                            data[index]?.cmc_id ||
-                              data[index]?.contractAddress ||
-                              data[index]?.symbol ||
-                              data[index]?.price?.symbol
-                          ]
-                            ? Number(
-                                $realtimePrice[
-                                  data[index]?.cmc_id ||
-                                    data[index]?.contractAddress ||
-                                    data[index]?.symbol ||
-                                    data[index]?.price?.symbol
-                                ]?.price
-                              )
-                            : Number(data[index].market_price)
-                        )?.percentPnL
+                        handleCalculatePnL(data[index])?.percentPnL
                       ) * 100}
                       type={Math.abs(
-                        handleCalculatePnL(
-                          data[index],
-                          $realtimePrice[
-                            data[index]?.cmc_id ||
-                              data[index]?.contractAddress ||
-                              data[index]?.symbol ||
-                              data[index]?.price?.symbol
-                          ]
-                            ? Number(
-                                $realtimePrice[
-                                  data[index]?.cmc_id ||
-                                    data[index]?.contractAddress ||
-                                    data[index]?.symbol ||
-                                    data[index]?.price?.symbol
-                                ]?.price
-                              )
-                            : Number(data[index].market_price)
-                        )?.percentPnL
+                        handleCalculatePnL(data[index])?.percentPnL
                       ) *
                         100 >
                       999999
@@ -2378,26 +2153,9 @@
                     />
                     <span>%</span>
                   </div>
-                  {#if handleCalculatePnL(data[index], $realtimePrice[data[index]?.cmc_id || data[index]?.contractAddress || data[index]?.symbol || data[index]?.price?.symbol] ? Number($realtimePrice[data[index]?.cmc_id || data[index]?.contractAddress || data[index]?.symbol || data[index]?.price?.symbol]?.price) : Number(data[index].market_price))?.pnl !== 0}
+                  {#if handleCalculatePnL(data[index])?.pnl !== 0}
                     <img
-                      src={handleCalculatePnL(
-                        data[index],
-                        $realtimePrice[
-                          data[index]?.cmc_id ||
-                            data[index]?.contractAddress ||
-                            data[index]?.symbol ||
-                            data[index]?.price?.symbol
-                        ]
-                          ? Number(
-                              $realtimePrice[
-                                data[index]?.cmc_id ||
-                                  data[index]?.contractAddress ||
-                                  data[index]?.symbol ||
-                                  data[index]?.price?.symbol
-                              ]?.price
-                            )
-                          : Number(data[index].market_price)
-                      )?.pnl >= 0
+                      src={handleCalculatePnL(data[index])?.pnl >= 0
                         ? TrendUp
                         : TrendDown}
                       alt="trend"
