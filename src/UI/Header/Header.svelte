@@ -524,7 +524,7 @@
   class="mobile-header-container md:py-1 pt-1 pb-5 border-b-[1px] border-[#ffffff1a] relative"
 >
   <div
-    class="flex md:flex-row flex-col md:items-center items-start justify-between max-w-[2000px] m-auto w-[90%] cursor-pointer"
+    class="flex items-center justify-between max-w-[2000px] m-auto w-[90%] cursor-pointer"
   >
     <img
       src={Logo}
@@ -706,7 +706,17 @@
     <div class="flex items-center justify-end gap-6 xl:gap-3 md:w-max w-full">
       <!-- Search -->
       <div
-        class={`px-4 xl:w-[220px] md:w-[400px] w-full flex items-center gap-4 rounded-[1000px] cursor-pointer ${
+        class="xl:hidden block"
+        on:click={() => {
+          showPopoverSearch = true;
+          search = "";
+        }}
+      >
+        <img src={Search} alt="" class="xl:w-5 xl:h-5 w-7 h-7" />
+      </div>
+
+      <div
+        class={`px-4 xl:w-[220px] md:w-[400px] w-full xl:flex hidden items-center gap-4 rounded-[1000px] cursor-pointer ${
           $isDarkMode ? "bg-[#212121]" : "bg-[#525B8C]"
         }`}
       >

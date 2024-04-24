@@ -425,7 +425,9 @@
     if (filterTokenType) {
       const formatDataWithVault = formatData?.map((item) => {
         try {
-          const regex = new RegExp(`(^${item?.symbol}|-${item?.symbol})`);
+          const regex = new RegExp(
+            `(^${item?.symbol !== "N/A" ? item?.symbol : item?.chain}|-${item?.symbol !== "N/A" ? item?.symbol : item?.chain})`
+          );
           const filteredVaults = dataVaults?.filter((data) =>
             data.name.match(regex)
           );

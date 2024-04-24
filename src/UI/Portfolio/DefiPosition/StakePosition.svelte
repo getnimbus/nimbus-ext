@@ -86,7 +86,7 @@
             : "bg-white group-hover:bg-gray-100"
         }`}
       >
-        <div class="flex flex-col gap-2 m-auto h-full">
+        <div class="flex flex-col gap-2 m-auto h-full justify-center">
           {#if itemRow.tags && itemRow.tags.length !== 0}
             <div class="flex items-center gap-1 flex-wrap">
               {#each itemRow.tags as tag}
