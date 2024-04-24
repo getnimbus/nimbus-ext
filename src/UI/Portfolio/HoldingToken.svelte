@@ -204,6 +204,18 @@
     return (value / sumTokens) * 100;
   };
 
+  const handleCalculatePnL = (data) => {
+    const realizedProfit = handleCalculateRealizedProfit(data);
+    const unrealizedProfit = handleCalculateUnrealizedProfit(data);
+
+    return {
+      pnl: realizedProfit.realizedProfit + unrealizedProfit.unrealizedProfit,
+      percentPnL:
+        realizedProfit.percentRealizedProfit +
+        unrealizedProfit.percentUnrealizedProfit,
+    };
+  };
+
   const handleCalculateRealizedProfit = (data) => {
     return {
       realizedProfit: data?.profit?.realizedProfit
@@ -404,7 +416,7 @@
 >
   {#if data && data.length === 0 && !isLoading}
     <div
-      class={`bg_f4f5f8 grid ${listSupported.includes($typeWallet) && $typeWallet === "BUNDLE" ? "grid-cols-10" : "grid-cols-9"}`}
+      class={`bg_f4f5f8 grid ${listSupported.includes($typeWallet) && $typeWallet === "BUNDLE" ? "grid-cols-8" : "grid-cols-7"}`}
     >
       <div class="col-spans-3 pl-3 py-3 rounded-tl-[10px]">
         <div class="text-left xl:text-xs text-xl uppercase font-medium">
@@ -430,27 +442,9 @@
         </div>
       </div>
 
-      <div class="py-3">
+      <div class="py-3 pr-3">
         <div class="text-right xl:text-xs text-xl uppercase font-medium">
-          Avg Cost
-        </div>
-      </div>
-
-      <div class="py-3">
-        <div class="text-right xl:text-xs text-xl uppercase font-medium">
-          Realized PnL
-        </div>
-      </div>
-
-      <div
-        class={`py-3 ${
-          listSupported.includes($typeWallet) && $typeWallet === "BUNDLE"
-            ? ""
-            : "rounded-tr-[10px] pr-3"
-        }`}
-      >
-        <div class="text-right xl:text-xs text-xl uppercase font-medium">
-          Unrealized PnL
+          PnL
         </div>
       </div>
 
@@ -459,7 +453,7 @@
       {/if}
     </div>
     <div
-      class={`grid ${listSupported.includes($typeWallet) && $typeWallet === "BUNDLE" ? "grid-cols-10" : "grid-cols-9"}`}
+      class={`grid ${listSupported.includes($typeWallet) && $typeWallet === "BUNDLE" ? "grid-cols-8" : "grid-cols-7"}`}
     >
       <div
         class="col-span-full flex justify-center items-center h-[465px] py-3 px-3 text-base text-gray-400"
@@ -495,7 +489,7 @@
       stickyIndices={[0]}
     >
       <div
-        class={`grid group transition-all ${index > 0 ? "cursor-pointer" : ""} ${listSupported.includes($typeWallet) && $typeWallet === "BUNDLE" ? "grid-cols-10" : "grid-cols-9"}`}
+        class={`grid group transition-all ${index > 0 ? "cursor-pointer" : ""} ${listSupported.includes($typeWallet) && $typeWallet === "BUNDLE" ? "grid-cols-8" : "grid-cols-7"}`}
         slot="item"
         let:index
         let:style
@@ -566,27 +560,9 @@
             </div>
           </div>
 
-          <div class="bg_f4f5f8 py-3">
+          <div class="bg_f4f5f8 py-3 pr-3">
             <div class="text-right xl:text-xs text-xl uppercase font-medium">
-              Avg Cost
-            </div>
-          </div>
-
-          <div class="bg_f4f5f8 py-3">
-            <div class="text-right xl:text-xs text-xl uppercase font-medium">
-              Realized PnL
-            </div>
-          </div>
-
-          <div
-            class={`bg_f4f5f8 py-3 ${
-              listSupported.includes($typeWallet) && $typeWallet === "BUNDLE"
-                ? ""
-                : "rounded-tr-[10px] pr-3"
-            }`}
-          >
-            <div class="text-right xl:text-xs text-xl uppercase font-medium">
-              Unrealized PnL
+              PnL
             </div>
           </div>
 
@@ -1231,32 +1207,7 @@
           </div>
 
           <div
-            class={`py-3 ${
-              listSelectedIndex.includes(index - 1)
-                ? $isDarkMode
-                  ? "bg-[#000]"
-                  : "bg-gray-100"
-                : $isDarkMode
-                  ? "bg-[#131313] group-hover:bg-[#000]"
-                  : "bg-white group-hover:bg-gray-100"
-            }`}
-          >
-            <div
-              class="h-[50px] flex items-center justify-end text-2xl font-medium xl:text-sm text_00000099"
-            >
-              ${#if data[index - 1]?.profit}
-                <TooltipNumber
-                  number={data[index - 1]?.profit?.averageCost}
-                  type="balance"
-                />
-              {:else}
-                0
-              {/if}
-            </div>
-          </div>
-
-          <div
-            class={`py-3 ${
+            class={`py-3 pr-3 ${
               listSelectedIndex.includes(index - 1)
                 ? $isDarkMode
                   ? "bg-[#000]"
@@ -1275,10 +1226,8 @@
                 <div class="flex flex-col">
                   <div
                     class={`flex justify-end ${
-                      handleCalculateRealizedProfit(data[index - 1])
-                        ?.realizedProfit !== 0
-                        ? handleCalculateRealizedProfit(data[index - 1])
-                            ?.realizedProfit >= 0
+                      handleCalculatePnL(data[index - 1])?.pnl !== 0
+                        ? handleCalculatePnL(data[index - 1])?.pnl >= 0
                           ? "text-[#00A878]"
                           : "text-red-500"
                         : "text_00000099"
@@ -1286,8 +1235,7 @@
                   >
                     <TooltipNumber
                       number={Math.abs(
-                        handleCalculateRealizedProfit(data[index - 1])
-                          ?.realizedProfit
+                        handleCalculatePnL(data[index - 1])?.pnl
                       )}
                       type="value"
                       personalValue
@@ -1296,10 +1244,8 @@
                   <div class="flex items-center justify-end gap-1">
                     <div
                       class={`flex items-center ${
-                        handleCalculateRealizedProfit(data[index - 1])
-                          ?.realizedProfit !== 0
-                          ? handleCalculateRealizedProfit(data[index - 1])
-                              ?.realizedProfit >= 0
+                        handleCalculatePnL(data[index - 1])?.pnl !== 0
+                          ? handleCalculatePnL(data[index - 1])?.pnl >= 0
                             ? "text-[#00A878]"
                             : "text-red-500"
                           : "text_00000099"
@@ -1307,12 +1253,10 @@
                     >
                       <TooltipNumber
                         number={Math.abs(
-                          handleCalculateRealizedProfit(data[index - 1])
-                            ?.percentRealizedProfit
+                          handleCalculatePnL(data[index - 1])?.percentPnL
                         ) * 100}
                         type={Math.abs(
-                          handleCalculateRealizedProfit(data[index - 1])
-                            ?.percentRealizedProfit
+                          handleCalculatePnL(data[index - 1])?.percentPnL
                         ) *
                           100 >
                         999999
@@ -1321,98 +1265,14 @@
                       />
                       <span>%</span>
                     </div>
-                    {#if handleCalculateRealizedProfit(data[index - 1])?.realizedProfit !== 0}
-                      <img
-                        src={handleCalculateRealizedProfit(data[index - 1])
-                          ?.realizedProfit >= 0
-                          ? TrendUp
-                          : TrendDown}
-                        alt="trend"
-                        class="mb-1"
-                      />
-                    {/if}
-                  </div>
-                </div>
-              {/if}
-            </div>
-          </div>
 
-          <div
-            class={`py-3 ${
-              listSupported.includes($typeWallet) && $typeWallet === "BUNDLE"
-                ? ""
-                : "pr-3"
-            } ${
-              listSelectedIndex.includes(index - 1)
-                ? $isDarkMode
-                  ? "bg-[#000]"
-                  : "bg-gray-100"
-                : $isDarkMode
-                  ? "bg-[#131313] group-hover:bg-[#000]"
-                  : "bg-white group-hover:bg-gray-100"
-            }`}
-          >
-            <div
-              class="flex items-center justify-end gap-1 text-2xl font-medium xl:text-sm view-token-detail2"
-            >
-              {#if ["BTC"].includes($typeWallet)}
-                N/A
-              {:else}
-                <div class="flex flex-col">
-                  <div
-                    class={`flex justify-end ${
-                      handleCalculateUnrealizedProfit(data[index - 1])
-                        ?.unrealizedProfit !== 0
-                        ? handleCalculateUnrealizedProfit(data[index - 1])
-                            ?.unrealizedProfit >= 0
-                          ? "text-[#00A878]"
-                          : "text-red-500"
-                        : "text_00000099"
-                    }`}
-                  >
-                    <TooltipNumber
-                      number={Math.abs(
-                        handleCalculateUnrealizedProfit(data[index - 1])
-                          ?.unrealizedProfit
-                      )}
-                      type="value"
-                      personalValue
-                    />
-                  </div>
-                  <div class="flex items-center justify-end gap-1">
-                    <div
-                      class={`flex items-center ${
-                        handleCalculateUnrealizedProfit(data[index - 1])
-                          ?.unrealizedProfit !== 0
-                          ? handleCalculateUnrealizedProfit(data[index - 1])
-                              ?.unrealizedProfit >= 0
-                            ? "text-[#00A878]"
-                            : "text-red-500"
-                          : "text_00000099"
-                      }`}
-                    >
-                      <TooltipNumber
-                        number={Math.abs(
-                          handleCalculateUnrealizedProfit(data[index - 1])
-                            ?.percentUnrealizedProfit
-                        ) * 100}
-                        type={Math.abs(
-                          handleCalculateUnrealizedProfit(data[index - 1])
-                            ?.percentUnrealizedProfit
-                        ) *
-                          100 >
-                        999999
-                          ? "balance"
-                          : "percent"}
-                      />
-                      <span>%</span>
-                    </div>
-                    {#if handleCalculateUnrealizedProfit(data[index - 1])?.unrealizedProfit !== 0}
+                    {#if handleCalculatePnL(data[index - 1])?.pnl !== 0}
                       <img
-                        src={handleCalculateUnrealizedProfit(data[index - 1])
-                          ?.unrealizedProfit >= 0
-                          ? TrendUp
-                          : TrendDown}
+                        src={handleCalculatePnL(data[index - 1])?.pnl !== 0
+                          ? handleCalculatePnL(data[index - 1])?.pnl >= 0
+                            ? TrendUp
+                            : TrendDown
+                          : ""}
                         alt="trend"
                         class="mb-1"
                       />
@@ -1669,9 +1529,9 @@
     <VirtualList
       scrollDirection="vertical"
       width="100%"
-      height={data.length < 10 ? data.length * 470 : 940}
+      height={data.length < 10 ? data.length * 360 : 940}
       itemCount={data.length}
-      itemSize={470}
+      itemSize={360}
     >
       <div
         class="flex flex-col gap-4 border-b-[1px] border_0000000d last:border-none py-4"
@@ -2246,25 +2106,7 @@
         </div>
 
         <div class="flex justify-between items-start">
-          <div class="text-right text-sm uppercase font-medium">Avg Cost</div>
-          <div
-            class="flex items-center justify-end font-medium text-sm text_00000099"
-          >
-            ${#if data[index]?.profit}
-              <TooltipNumber
-                number={data[index]?.profit?.averageCost}
-                type="balance"
-              />
-            {:else}
-              0
-            {/if}
-          </div>
-        </div>
-
-        <div class="flex justify-between items-start">
-          <div class="text-right text-sm uppercase font-medium">
-            Realized PnL
-          </div>
+          <div class="text-right text-sm uppercase font-medium">PnL</div>
           <div
             class="flex items-center justify-end gap-1 font-medium text-sm view-token-detail1"
           >
@@ -2274,19 +2116,15 @@
               <div class="flex flex-col">
                 <div
                   class={`flex justify-end ${
-                    handleCalculateRealizedProfit(data[index])
-                      ?.realizedProfit !== 0
-                      ? handleCalculateRealizedProfit(data[index])
-                          ?.realizedProfit >= 0
+                    handleCalculatePnL(data[index])?.pnl !== 0
+                      ? handleCalculatePnL(data[index])?.pnl >= 0
                         ? "text-[#00A878]"
                         : "text-red-500"
                       : "text_00000099"
                   }`}
                 >
                   <TooltipNumber
-                    number={Math.abs(
-                      handleCalculateRealizedProfit(data[index])?.realizedProfit
-                    )}
+                    number={Math.abs(handleCalculatePnL(data[index])?.pnl)}
                     type="value"
                     personalValue
                   />
@@ -2294,10 +2132,8 @@
                 <div class="flex items-center justify-end gap-1">
                   <div
                     class={`flex items-center ${
-                      handleCalculateRealizedProfit(data[index])
-                        ?.realizedProfit !== 0
-                        ? handleCalculateRealizedProfit(data[index])
-                            ?.realizedProfit >= 0
+                      handleCalculatePnL(data[index])?.pnl !== 0
+                        ? handleCalculatePnL(data[index])?.pnl >= 0
                           ? "text-[#00A878]"
                           : "text-red-500"
                         : "text_00000099"
@@ -2305,12 +2141,10 @@
                   >
                     <TooltipNumber
                       number={Math.abs(
-                        handleCalculateRealizedProfit(data[index])
-                          ?.percentRealizedProfit
+                        handleCalculatePnL(data[index])?.percentPnL
                       ) * 100}
                       type={Math.abs(
-                        handleCalculateRealizedProfit(data[index])
-                          ?.percentRealizedProfit
+                        handleCalculatePnL(data[index])?.percentPnL
                       ) *
                         100 >
                       999999
@@ -2319,85 +2153,9 @@
                     />
                     <span>%</span>
                   </div>
-                  {#if handleCalculateRealizedProfit(data[index])?.realizedProfit !== 0}
+                  {#if handleCalculatePnL(data[index])?.pnl !== 0}
                     <img
-                      src={handleCalculateRealizedProfit(data[index])
-                        ?.realizedProfit >= 0
-                        ? TrendUp
-                        : TrendDown}
-                      alt="trend"
-                      class="mb-1"
-                    />
-                  {/if}
-                </div>
-              </div>
-            {/if}
-          </div>
-        </div>
-
-        <div class="flex justify-between items-start">
-          <div class="text-right text-sm uppercase font-medium">
-            Unrealized PnL
-          </div>
-          <div
-            class="flex items-center justify-end gap-1 font-medium text-sm view-token-detail2"
-          >
-            {#if ["BTC"].includes($typeWallet)}
-              N/A
-            {:else}
-              <div class="flex flex-col">
-                <div
-                  class={`flex justify-end ${
-                    handleCalculateUnrealizedProfit(data[index])
-                      ?.unrealizedProfit !== 0
-                      ? handleCalculateUnrealizedProfit(data[index])
-                          ?.unrealizedProfit >= 0
-                        ? "text-[#00A878]"
-                        : "text-red-500"
-                      : "text_00000099"
-                  }`}
-                >
-                  <TooltipNumber
-                    number={Math.abs(
-                      handleCalculateUnrealizedProfit(data[index])
-                        ?.unrealizedProfit
-                    )}
-                    type="value"
-                    personalValue
-                  />
-                </div>
-                <div class="flex items-center justify-end gap-1">
-                  <div
-                    class={`flex items-center ${
-                      handleCalculateUnrealizedProfit(data[index])
-                        ?.unrealizedProfit !== 0
-                        ? handleCalculateUnrealizedProfit(data[index])
-                            ?.unrealizedProfit >= 0
-                          ? "text-[#00A878]"
-                          : "text-red-500"
-                        : "text_00000099"
-                    }`}
-                  >
-                    <TooltipNumber
-                      number={Math.abs(
-                        handleCalculateUnrealizedProfit(data[index])
-                          ?.percentUnrealizedProfit
-                      ) * 100}
-                      type={Math.abs(
-                        handleCalculateUnrealizedProfit(data[index])
-                          ?.percentUnrealizedProfit
-                      ) *
-                        100 >
-                      999999
-                        ? "balance"
-                        : "percent"}
-                    />
-                    <span>%</span>
-                  </div>
-                  {#if handleCalculateUnrealizedProfit(data[index])?.unrealizedProfit !== 0}
-                    <img
-                      src={handleCalculateUnrealizedProfit(data[index])
-                        ?.unrealizedProfit >= 0
+                      src={handleCalculatePnL(data[index])?.pnl >= 0
                         ? TrendUp
                         : TrendDown}
                       alt="trend"
