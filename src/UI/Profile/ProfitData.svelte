@@ -2,7 +2,12 @@
   import { createQuery } from "@tanstack/svelte-query";
   import tooltip from "~/entries/contentScript/views/tooltip";
   import dayjs from "dayjs";
-  import { nimbus } from "~/lib/network";
+  import { chain } from "~/store";
+  import {
+    getTradingStats,
+    getHoldingToken,
+    handleValidateAddress,
+  } from "~/lib/queryAPI";
 
   import Loading from "~/components/Loading.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
@@ -26,39 +31,6 @@
   let goodPerf = {};
 
   $: isFetch = isSync ? enabledFetchAllData : true;
-
-  const getTradingStats = async (address) => {
-    const response: any = await nimbus.get(
-      `/v2/analysis/${address}/trading-stats`
-    );
-    return response?.data;
-  };
-
-  const handleValidateAddress = async (address: string) => {
-    try {
-      const response = await nimbus.get(`/v2/address/${address}/validate`);
-      return response?.data;
-    } catch (e) {
-      console.error(e);
-      return {
-        address: "",
-        type: "",
-      };
-    }
-  };
-
-  const getHoldingToken = async (address) => {
-    const validateAccount = await handleValidateAddress(address);
-
-    const response = await nimbus
-      .get(
-        `/v2/address/${address}/holding?chain=${
-          validateAccount?.type === "BUNDLE" ? "" : validateAccount?.type
-        }`
-      )
-      .then((response) => response.data);
-    return response;
-  };
 
   const formatDataHoldingToken = (dataTokenHolding) => {
     const formatData = dataTokenHolding
@@ -103,8 +75,23 @@
     totalToken = format30D.length;
   };
 
-  const formatDataTradingStats = (data) => {
-    const formatData = data?.metadata
+  const formatDataTradingStats = (dataTokenHolding, data) => {
+    const formatMetaData = data.metadata.map((item) => {
+      const selectedHolding = dataTokenHolding.find(
+        (dataToken) =>
+          dataToken.contractAddress.toString().toLowerCase() ===
+          item.address.toString().toLowerCase()
+      );
+      if (selectedHolding) {
+        return {
+          ...item,
+          holding: selectedHolding,
+        };
+      }
+      return item;
+    });
+
+    const formatData = formatMetaData
       .filter((item) => item.holding)
       .filter(
         (item) => dayjs().subtract(30, "day").valueOf() < item.lastTrade * 1000
@@ -189,6 +176,14 @@
       {};
   };
 
+  $: queryValidate = createQuery({
+    queryKey: ["validate", selectedAddress],
+    queryFn: () => handleValidateAddress(selectedAddress),
+    staleTime: Infinity,
+    retry: false,
+    enabled: Boolean(selectedAddress && selectedAddress?.length !== 0),
+  });
+
   $: queryTradingStats = createQuery({
     queryKey: ["trading-stats", selectedAddress],
     queryFn: () => getTradingStats(selectedAddress),
@@ -199,9 +194,11 @@
 
   $: queryTokenHolding = createQuery({
     queryKey: ["token-holding", selectedAddress],
-    queryFn: () => getHoldingToken(selectedAddress),
+    queryFn: () =>
+      getHoldingToken(selectedAddress, $chain, $queryValidate.data),
     staleTime: Infinity,
-    enabled: selectedAddress?.length !== 0 && isFetch,
+    enabled:
+      selectedAddress?.length !== 0 && isFetch && !$queryValidate.isFetching,
   });
 
   $: {
@@ -218,9 +215,12 @@
     if (
       !$queryTradingStats.isError &&
       $queryTradingStats.data &&
-      $queryTradingStats?.data !== undefined
+      $queryTradingStats?.data !== undefined &&
+      !$queryTokenHolding.isError &&
+      $queryTokenHolding.data &&
+      $queryTokenHolding?.data !== undefined
     ) {
-      formatDataTradingStats($queryTradingStats.data);
+      formatDataTradingStats($queryTokenHolding?.data, $queryTradingStats.data);
     }
   }
 </script>

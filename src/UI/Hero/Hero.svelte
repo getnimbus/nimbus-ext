@@ -2,7 +2,6 @@
   import { navigateTo } from "svelte-router-spa";
   import mixpanel from "mixpanel-browser";
   import * as browser from "webextension-polyfill";
-  import { nimbus } from "~/lib/network";
   import {
     tab,
     chain,
@@ -17,6 +16,7 @@
   import { drivePortfolio } from "~/utils";
   import { bigGeneration, otherGeneration } from "~/lib/chains";
   import { i18n } from "~/lib/i18n";
+  import { handleValidateAddress } from "~/lib/queryAPI";
 
   import Button from "~/components/Button.svelte";
 
@@ -41,16 +41,6 @@
     timerDebounce = setTimeout(() => {
       search = value;
     }, 300);
-  };
-
-  const handleValidateAddress = async (address: string) => {
-    try {
-      const response = await nimbus.get(`/v2/address/${address}/validate`);
-      return response?.data;
-    } catch (e) {
-      console.error(e);
-      return undefined;
-    }
   };
 
   const handleSearchAddress = async (value: string) => {

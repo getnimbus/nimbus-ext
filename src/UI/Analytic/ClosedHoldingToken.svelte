@@ -18,6 +18,7 @@
     typeClosedHoldingTokenChart,
   } from "~/utils";
   import { listSupported } from "~/lib/chains";
+  import { handleValidateAddress, getHoldingToken } from "~/lib/queryAPI";
 
   import type { HoldingTokenRes } from "~/types/HoldingTokenData";
 
@@ -225,18 +226,6 @@
   let worseLose = {};
   let sumRealizedProfit = 0;
 
-  const handleValidateAddress = async (address: string) => {
-    if (address) {
-      const response = await nimbus.get(`/v2/address/${address}/validate`);
-      return (
-        response?.data || {
-          address: "",
-          type: "",
-        }
-      );
-    }
-  };
-
   $: queryValidate = createQuery({
     queryKey: ["validate", $wallet],
     queryFn: () => handleValidateAddress($wallet),
@@ -244,25 +233,6 @@
     retry: false,
     enabled: Boolean($wallet && $wallet?.length !== 0),
   });
-
-  const getHoldingToken = async (chain) => {
-    let addressChain = chain;
-
-    if (addressChain === "ALL") {
-      const validateAccount = $queryValidate.data;
-      addressChain = validateAccount?.type;
-    }
-
-    const response: HoldingTokenRes = await nimbus
-      .get(
-        `/v2/address/${$wallet}/holding?chain=${
-          addressChain === "BUNDLE" ? "" : addressChain
-        }`
-      )
-      .then((response) => response?.data || []);
-
-    return response;
-  };
 
   const formatDataHoldingToken = (dataTokenHolding) => {
     const formatData = dataTokenHolding
@@ -411,7 +381,7 @@
 
   $: queryTokenHolding = createQuery({
     queryKey: ["token-holding", $wallet, $chain],
-    queryFn: () => getHoldingToken($chain),
+    queryFn: () => getHoldingToken($wallet, $chain, $queryValidate.data),
     placeholderData: [],
     staleTime: Infinity,
     enabled: enabledQuery && isFetch && !$queryValidate.isFetching,

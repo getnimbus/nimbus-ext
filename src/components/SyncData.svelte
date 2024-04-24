@@ -4,6 +4,7 @@
   import { wait } from "~/entries/background/utils";
   import { nimbus } from "~/lib/network";
   import { createQuery } from "@tanstack/svelte-query";
+  import { handleValidateAddress } from "~/lib/queryAPI";
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import Testimonial from "~/UI/Testimonial/Testimonial.svelte";
@@ -21,16 +22,6 @@
       handleGetAllData();
     }
   });
-
-  const handleValidateAddress = async (address: string) => {
-    const response = await nimbus.get(`/v2/address/${address}/validate`);
-    return (
-      response?.data || {
-        address: "",
-        type: "",
-      }
-    );
-  };
 
   $: queryValidate = createQuery({
     queryKey: ["validate", $wallet],

@@ -27,6 +27,7 @@
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { wait } from "~/entries/background/utils";
   import * as browser from "webextension-polyfill";
+  import { getListAddress, handleValidateAddress } from "~/lib/queryAPI";
 
   import Tooltip from "~/components/Tooltip.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
@@ -199,16 +200,6 @@
     return value != null && value !== "";
   };
 
-  const handleValidateAddress = async (address: string) => {
-    try {
-      const response = await nimbus.get(`/v2/address/${address}/validate`);
-      return response?.data;
-    } catch (e) {
-      console.error(e);
-      return undefined;
-    }
-  };
-
   const validateForm = async (data) => {
     const isDuplicatedAddress = listAddress.some((item) => {
       return item.address.toLowerCase() === data.address.toLowerCase();
@@ -261,11 +252,6 @@
     } else {
       errorsEdit["label"] = { ...errorsEdit["label"], required: false };
     }
-  };
-
-  const getListAddress = async () => {
-    const response: any = await nimbus.get("/accounts/list");
-    return response?.data;
   };
 
   const formatDataListAddress = (data) => {

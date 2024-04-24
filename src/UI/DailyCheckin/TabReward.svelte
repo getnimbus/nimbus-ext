@@ -3,6 +3,13 @@
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { nimbus } from "~/lib/network";
   import { user, userPublicAddress } from "~/store";
+  import {
+    handleGetDataDailyCheckin,
+    handleGetDataRewards,
+    handleValidateAddress,
+  } from "~/lib/queryAPI";
+  import { Toast } from "flowbite-svelte";
+  import { blur } from "svelte/transition";
 
   import Loading from "~/components/Loading.svelte";
   import RedeemCard from "~/components/RedeemCard.svelte";
@@ -20,42 +27,58 @@
     },
   ];
 
-  let selectedType: "redeemGift" | "yourGift" = "redeemGift";
-
   const queryClient = useQueryClient();
 
-  const handleDailyCheckin = async () => {
-    const response = await nimbus.get("/v2/checkin");
-    return response.data;
+  let selectedType: "redeemGift" | "yourGift" = "redeemGift";
+
+  let toastMsg = "";
+  let isSuccessToast = false;
+  let counter = 3;
+  let showToast = false;
+
+  const trigger = () => {
+    showToast = true;
+    counter = 3;
+    timeout();
   };
 
-  const handleRewards = async () => {
-    const response = await nimbus.post(`/v2/reward`, {
-      address: $userPublicAddress,
-    });
-    return response.data;
+  const timeout = () => {
+    if (--counter > 0) return setTimeout(timeout, 1000);
+    showToast = false;
+    toastMsg = "";
+    isSuccessToast = false;
   };
 
   const handleRedeem = async (data) => {
-    try {
-      await nimbus
-        .post("/v2/reward/redeem", {
-          address: $userPublicAddress,
-          campaignName: data?.campaignName,
-        })
-        .then(() => {
-          queryClient.invalidateQueries([$userPublicAddress, "rewards"]);
-          queryClient.invalidateQueries([$userPublicAddress, "daily-checkin"]);
-          selectedType = "yourGift";
-        });
-    } catch (e) {
-      console.error(e);
+    const validateAddress = await handleValidateAddress($userPublicAddress);
+    if (validateAddress?.type === "MOVE") {
+      try {
+        await nimbus
+          .post("/v2/reward/redeem", {
+            address: $userPublicAddress,
+            campaignName: data?.campaignName,
+          })
+          .then(() => {
+            queryClient.invalidateQueries([$userPublicAddress, "rewards"]);
+            queryClient.invalidateQueries([
+              $userPublicAddress,
+              "daily-checkin",
+            ]);
+            selectedType = "yourGift";
+          });
+      } catch (e) {
+        console.error(e);
+      }
+    } else {
+      toastMsg = "Please connect your SUI wallet to redeem!";
+      isSuccessToast = false;
+      trigger();
     }
   };
 
   $: queryDailyCheckin = createQuery({
     queryKey: [$userPublicAddress, "daily-checkin"],
-    queryFn: () => handleDailyCheckin(),
+    queryFn: () => handleGetDataDailyCheckin(),
     staleTime: Infinity,
     enabled:
       $user &&
@@ -73,7 +96,7 @@
 
   $: queryReward = createQuery({
     queryKey: [$userPublicAddress, "rewards"],
-    queryFn: () => handleRewards(),
+    queryFn: () => handleGetDataRewards($userPublicAddress),
     staleTime: Infinity,
     enabled:
       $user &&
@@ -193,6 +216,51 @@
     {/if}
   </div>
 </div>
+
+{#if showToast}
+  <div class="fixed top-3 right-3 w-full" style="z-index: 2147483648;">
+    <Toast
+      transition={blur}
+      params={{ amount: 10 }}
+      position="top-right"
+      color={isSuccessToast ? "green" : "red"}
+      bind:open={showToast}
+    >
+      <svelte:fragment slot="icon">
+        {#if isSuccessToast}
+          <svg
+            aria-hidden="true"
+            class="w-5 h-5"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+            ><path
+              fill-rule="evenodd"
+              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+              clip-rule="evenodd"
+            /></svg
+          >
+          <span class="sr-only">Check icon</span>
+        {:else}
+          <svg
+            aria-hidden="true"
+            class="w-5 h-5"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+            ><path
+              fill-rule="evenodd"
+              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+              clip-rule="evenodd"
+            /></svg
+          >
+          <span class="sr-only">Error icon</span>
+        {/if}
+      </svelte:fragment>
+      {toastMsg}
+    </Toast>
+  </div>
+{/if}
 
 <style windi:preflights:global windi:safelist:global>
 </style>

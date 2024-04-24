@@ -1,8 +1,8 @@
 <script lang="ts">
   import { createQuery } from "@tanstack/svelte-query";
-  import { nimbus } from "~/lib/network";
   import { formatBalance } from "~/utils";
-  import { user } from "~/store";
+  import { user, chain } from "~/store";
+  import { getHoldingToken, handleValidateAddress } from "~/lib/queryAPI";
 
   import Loading from "~/components/Loading.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
@@ -13,37 +13,23 @@
   let closedHoldingPosition = [];
   let netWorth = 0;
 
-  const handleValidateAddress = async (address: string) => {
-    try {
-      const response = await nimbus.get(`/v2/address/${address}/validate`);
-      return response?.data;
-    } catch (e) {
-      console.error(e);
-      return {
-        address: "",
-        type: "",
-      };
-    }
-  };
-
-  const getHoldingToken = async (address) => {
-    const validateAccount = await handleValidateAddress(address);
-
-    const response = await nimbus
-      .get(
-        `/v2/address/${address}/holding?chain=${
-          validateAccount?.type === "BUNDLE" ? "" : validateAccount?.type
-        }`
-      )
-      .then((response) => response.data);
-    return response;
-  };
+  $: queryValidate = createQuery({
+    queryKey: ["validate", selectedAddress],
+    queryFn: () => handleValidateAddress(selectedAddress),
+    staleTime: Infinity,
+    retry: false,
+    enabled: Boolean(selectedAddress && selectedAddress?.length !== 0),
+  });
 
   $: queryTokenHolding = createQuery({
     queryKey: ["token-holding", selectedAddress],
-    queryFn: () => getHoldingToken(selectedAddress),
+    queryFn: () =>
+      getHoldingToken(selectedAddress, $chain, $queryValidate.data),
     staleTime: Infinity,
-    enabled: selectedAddress?.length !== 0 && Object.keys($user).length !== 0,
+    enabled:
+      selectedAddress?.length !== 0 &&
+      Object.keys($user).length !== 0 &&
+      !$queryValidate.isFetching,
   });
 
   $: {

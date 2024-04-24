@@ -33,6 +33,15 @@
     useQueryClient,
   } from "@tanstack/svelte-query";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
+  import {
+    handleValidateAddress,
+    getHoldingToken,
+    getOverview,
+    getPositionList,
+    getPositions,
+    getVaults,
+    getHoldingNFT,
+  } from "~/lib/queryAPI";
 
   import type { NewData, NewDataRes } from "~/types/NewData";
   import type { OverviewData, OverviewDataRes } from "~/types/OverviewData";
@@ -136,18 +145,6 @@
 
   let chainListQueries = [];
   let positionListQueries = [];
-
-  const handleValidateAddress = async (address: string) => {
-    if (address) {
-      const response = await nimbus.get(`/v2/address/${address}/validate`);
-      return (
-        response?.data || {
-          address: "",
-          type: "",
-        }
-      );
-    }
-  };
 
   $: queryValidate = createQuery({
     queryKey: ["validate", $wallet],
@@ -282,13 +279,6 @@
   };
 
   //// POSITIONS
-  const getPositionList = async (address) => {
-    const response: any = await nimbus.get(
-      `/v2/address/${address}/positions-prepare`
-    );
-    return response?.data;
-  };
-
   $: queryPositionList = createQuery({
     queryKey: ["position-list", $wallet],
     queryFn: () => getPositionList($wallet),
@@ -308,13 +298,6 @@
       positionListQueries = $queryPositionList.data;
     }
   }
-
-  const getPositions = async (address, protocol) => {
-    const response: any = await nimbus.get(
-      `/v2/address/${address}/positions?protocol=${protocol}`
-    );
-    return response?.data;
-  };
 
   $: queryAllPositions = createQueries(
     positionListQueries.map((item) => {
@@ -346,27 +329,9 @@
       : [];
 
   //// OVERVIEW
-  const getOverview = async (chain) => {
-    let addressChain = chain;
-
-    if (addressChain === "ALL") {
-      const validateAccount = $queryValidate.data;
-      addressChain = validateAccount?.type;
-    }
-
-    const response: any = await nimbus
-      .get(
-        `/v2/address/${$wallet}/overview?chain=${
-          addressChain === "BUNDLE" ? "" : addressChain
-        }`
-      )
-      .then((response) => response?.data);
-    return response;
-  };
-
   $: queryOverview = createQuery({
     queryKey: ["overview", $wallet, $chain],
-    queryFn: () => getOverview($chain),
+    queryFn: () => getOverview($wallet, $chain, $queryValidate.data),
     staleTime: Infinity,
     enabled: Boolean(
       enabledFetchAllData &&
@@ -437,27 +402,9 @@
   };
 
   //// NFT HOLDING
-  const getHoldingNFT = async (chain) => {
-    let addressChain = chain;
-
-    if (addressChain === "ALL") {
-      const validateAccount = $queryValidate.data;
-      addressChain = validateAccount?.type;
-    }
-
-    const response: any = await nimbus
-      .get(
-        `/v2/address/${$wallet}/nft-holding?chain=${
-          addressChain === "BUNDLE" ? "" : addressChain
-        }`
-      )
-      .then((response) => response?.data);
-    return response;
-  };
-
   $: queryNftHolding = createQuery({
     queryKey: ["nft-holding", $wallet, $chain],
-    queryFn: () => getHoldingNFT($chain),
+    queryFn: () => getHoldingNFT($wallet, $chain, $queryValidate.data),
     staleTime: Infinity,
     enabled: Boolean(
       enabledFetchAllData &&
@@ -475,7 +422,7 @@
     chainListQueries.map((item) => {
       return {
         queryKey: ["nft-holding", $wallet, $chain, item],
-        queryFn: () => getHoldingNFT(item),
+        queryFn: () => getHoldingNFT($wallet, item, $queryValidate.data),
         staleTime: Infinity,
         enabled: Boolean(
           enabledFetchAllData &&
@@ -516,25 +463,9 @@
   };
 
   //// VAULTS
-  const getVaults = async (chain) => {
-    let addressChain = chain;
-
-    if (addressChain === "ALL") {
-      const validateAccount = $queryValidate.data;
-      addressChain = validateAccount?.type;
-    }
-
-    const response: any = await nimbus.get(
-      `/v2/investment/${$wallet}/vaults?chain=${
-        addressChain === "BUNDLE" ? "" : addressChain
-      }`
-    );
-    return response?.data;
-  };
-
   $: queryVaults = createQuery({
     queryKey: ["vaults", $wallet, $chain],
-    queryFn: () => getVaults($chain),
+    queryFn: () => getVaults($wallet, $chain, $queryValidate.data),
     staleTime: Infinity,
     enabled: Boolean(
       enabledFetchAllData &&
@@ -546,27 +477,9 @@
   });
 
   //// TOKEN HOLDING
-  const getHoldingToken = async (chain) => {
-    let addressChain = chain;
-
-    if (addressChain === "ALL") {
-      const validateAccount = $queryValidate.data;
-      addressChain = validateAccount?.type;
-    }
-
-    const response: any = await nimbus
-      .get(
-        `/v2/address/${$wallet}/holding?chain=${
-          addressChain === "BUNDLE" ? "" : addressChain
-        }`
-      )
-      .then((response) => response?.data);
-    return response;
-  };
-
   $: queryTokenHolding = createQuery({
     queryKey: ["token-holding", $wallet, $chain],
-    queryFn: () => getHoldingToken($chain),
+    queryFn: () => getHoldingToken($wallet, $chain, $queryValidate.data),
     staleTime: Infinity,
     enabled: Boolean(
       enabledFetchAllData &&
@@ -584,7 +497,7 @@
     chainListQueries.map((item) => {
       return {
         queryKey: ["token-holding", $wallet, $chain, item],
-        queryFn: () => getHoldingToken(item),
+        queryFn: () => getHoldingToken($wallet, item, $queryValidate.data),
         staleTime: Infinity,
         enabled: Boolean(
           enabledFetchAllData &&
@@ -826,7 +739,6 @@
     queryKey: ["compare", $wallet, $chain],
     queryFn: () => getAnalyticCompare($wallet),
     staleTime: Infinity,
-    // enabled: enabledFetchAllData && $wallet && $wallet?.length !== 0,
     enabled: false,
   });
 
@@ -1117,10 +1029,6 @@
                 />
               {/if}
 
-              {#if $tab === "summary"}
-                <PerformanceSummary />
-              {/if}
-
               {#if $tab === "defi"}
                 <DefiPosition
                   data={positionsData}
@@ -1132,6 +1040,10 @@
 
               {#if $tab === "airdropsAndPoints"}
                 <AirdropsAndPointsTracker />
+              {/if}
+
+              {#if $tab === "summary"}
+                <PerformanceSummary />
               {/if}
 
               <!-- <News isLoading={false} data={newsData} /> -->

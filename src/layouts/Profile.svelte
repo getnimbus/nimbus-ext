@@ -9,11 +9,17 @@
     typeWallet,
     userId,
     userPublicAddress,
+    chain,
   } from "~/store";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
   import { flatMap } from "lodash";
   import { detectedGeneration } from "~/lib/chains";
+  import {
+    handleValidateAddress,
+    getHoldingNFT,
+    getListAddress,
+  } from "~/lib/queryAPI";
 
   import ProfitData from "~/UI/Profile/ProfitData.svelte";
   import InviterQr from "~/UI/Profile/InviterQR.svelte";
@@ -168,34 +174,13 @@
     }
   };
 
-  const handleValidateAddress = async (address: string) => {
-    try {
-      const response = await nimbus.get(`/v2/address/${address}/validate`);
-      return response?.data;
-    } catch (e) {
-      console.error(e);
-      return {
-        address: "",
-        type: "",
-      };
-    }
-  };
-
-  const getListAddress = async () => {
-    const response: any = await nimbus.get("/accounts/list");
-    return response?.data;
-  };
-
-  const getHoldingNFT = async (address) => {
-    const validateAccount = await handleValidateAddress(address);
-
-    const response = await nimbus.get(
-      `/v2/address/${address}/nft-holding?chain=${
-        validateAccount?.type === "BUNDLE" ? "" : validateAccount?.type
-      }`
-    );
-    return response?.data;
-  };
+  $: queryValidate = createQuery({
+    queryKey: ["validate", selectedAddress],
+    queryFn: () => handleValidateAddress(selectedAddress),
+    staleTime: Infinity,
+    retry: false,
+    enabled: Boolean(selectedAddress && selectedAddress?.length !== 0),
+  });
 
   const formatDataListAddress = (data) => {
     listAddress = data.map((item) => {
@@ -241,9 +226,12 @@
   // query nft holding
   $: queryNftHolding = createQuery({
     queryKey: ["nft-holding", selectedAddress],
-    queryFn: () => getHoldingNFT(selectedAddress),
+    queryFn: () => getHoldingNFT(selectedAddress, $chain, $queryValidate.data),
     staleTime: Infinity,
-    enabled: selectedAddress?.length !== 0 && Object.keys($user).length !== 0,
+    enabled:
+      selectedAddress?.length !== 0 &&
+      Object.keys($user).length !== 0 &&
+      !$queryValidate.isFetching,
     onError(err) {
       localStorage.removeItem("auth_token");
       localStorage.removeItem("solana_token");
