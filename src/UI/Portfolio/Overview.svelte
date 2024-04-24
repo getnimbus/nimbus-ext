@@ -50,7 +50,7 @@
           }`}
         >
           <div
-            class={`flex xl:text-lg text-2xl font-medium ${
+            class={`flex xl:text-lg text-xl font-medium ${
               data?.overview?.networthChange < 0
                 ? "text-red-500"
                 : "text-[#00A878]"
@@ -66,7 +66,7 @@
               type="percent"
             />%
           </div>
-          <div class="text-xl font-medium text_00000066 xl:text-base">24h</div>
+          <div class="font-medium text_00000066 text-base">24h</div>
         </div>
       </OverviewCard>
 
@@ -118,7 +118,7 @@
           }`}
         >
           <div
-            class={`flex xl:text-lg text-2xl font-medium ${
+            class={`flex xl:text-lg text-xl font-medium ${
               data?.overview?.cumulativeInflow < 0
                 ? "text-red-500"
                 : "text-[#00A878]"
@@ -134,7 +134,7 @@
               type="percent"
             />%
           </div>
-          <div class="text-xl font-medium text_00000066 xl:text-base">24h</div>
+          <div class="font-medium text_00000066 text-base">24h</div>
         </div> -->
       </OverviewCard>
 
@@ -165,7 +165,7 @@
           }`}
         >
           <div
-            class={`flex xl:text-lg text-2xl font-medium ${
+            class={`flex xl:text-lg text-xl font-medium ${
               data?.overview.postionNetworthChange < 0
                 ? "text-red-500"
                 : "text-[#00A878]"
@@ -181,7 +181,7 @@
               type="percent"
             />%
           </div>
-          <div class="text-xl font-medium text_00000066 xl:text-base">24h</div>
+          <div class="font-medium text_00000066 text-base">24h</div>
         </div> -->
       </OverviewCard>
     </div>

@@ -95,7 +95,7 @@
     class="xl:order-1 order-2 xl:flex-[0.7] flex-1 flex flex-col items-start gap-6"
   >
     <div class="flex flex-col gap-4">
-      <div class="font-bold text-5xl">Your Personalized portfolio</div>
+      <div class="font-bold text-4xl">Your Personalized portfolio</div>
       <div class="flex flex-col xl:gap-2 gap-4">
         <div class="xl:text-lg text-xl">
           Track your Web3 investment across 60+ chains and CEX in one single
@@ -179,7 +179,7 @@
           </div>
 
           <div
-            class="hover:underline text-[#1E96FC] xl:text-base text-xl cursor-pointer"
+            class="hover:underline text-[#1E96FC] xl:text-base text-lg cursor-pointer"
             on:click={() => {
               mixpanel.track("user_search");
               chain.update((n) => (n = "ALL"));
@@ -197,19 +197,8 @@
           </div>
         </div>
 
-        <div class="w-full flex justify-start">
-          <div class="xl:block hidden">
-            <Button
-              on:click={() => {
-                triggerConnectWallet.update((n) => (n = true));
-                drivePortfolio?.destroy();
-              }}
-            >
-              Connect Wallet
-            </Button>
-          </div>
-
-          <div class="xl:hidden block">
+        <div class="w-full flex gap-4 justify-start">
+          <div class="xl:hidden block w-max">
             <Button
               on:click={() => {
                 triggerSync.update((n) => (n = true));
@@ -217,6 +206,17 @@
               }}
             >
               Sync from Desktop
+            </Button>
+          </div>
+
+          <div class="w-max">
+            <Button
+              on:click={() => {
+                triggerConnectWallet.update((n) => (n = true));
+                drivePortfolio?.destroy();
+              }}
+            >
+              Connect Wallet
             </Button>
           </div>
         </div>

@@ -202,12 +202,12 @@
       <div class="flex xl:flex-row flex-col justify-between gap-6">
         <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
           <OverviewCard title={MultipleLang.networth}>
-            <div class="xl:text-3xl text-5xl flex">
+            <div class="text-4xl xl:text-3xl flex">
               $<CountUpNumber number={0} type="balance" />
             </div>
             <div class="flex items-center gap-3 opacity-50">
               <div
-                class={`flex xl:text-lg text-3xl font-medium ${
+                class={`flex xl:text-lg text-xl font-medium ${
                   false ? "text-red-500" : "text-[#00A878]"
                 }`}
               >
@@ -218,14 +218,14 @@
                 {/if}
                 <CountUpNumber number={Math.abs(0)} type="percent" />%
               </div>
-              <div class="text-[#00000066] xl:text-base text-2xl font-medium">
+              <div class="text-[#00000066] xl:text-lg text-xl font-medium">
                 24h
               </div>
             </div>
           </OverviewCard>
 
           <OverviewCard title={MultipleLang.claimable}>
-            <div class="flex xl:text-3xl text-5xl">
+            <div class="flex text-4xl xl:text-3xl">
               {#if {}.toString().toLowerCase().includes("e-")}
                 $<TooltipNumber number={0} type="balance" />
               {:else}
@@ -234,7 +234,7 @@
             </div>
             <div class="flex items-center gap-3 opacity-50">
               <div
-                class={`flex xl:text-lg text-3xl font-medium ${
+                class={`flex xl:text-lg text-xl font-medium ${
                   false ? "text-red-500" : "text-[#00A878]"
                 }`}
               >
@@ -245,7 +245,7 @@
                 {/if}
                 <CountUpNumber number={Math.abs(0)} type="percent" />%
               </div>
-              <div class="text-[#00000066] xl:text-base text-2xl font-medium">
+              <div class="text-[#00000066] xl:text-lg text-xl font-medium">
                 24h
               </div>
             </div>
@@ -254,12 +254,12 @@
 
         <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
           <OverviewCard title={MultipleLang.total_assets}>
-            <div class="xl:text-3xl text-5xl flex">
+            <div class="text-4xl xl:text-3xl flex">
               $<CountUpNumber number={0} type="balance" />
             </div>
             <div class="flex items-center gap-3 opacity-50">
               <div
-                class={`flex xl:text-lg text-3xl font-medium ${
+                class={`flex xl:text-lg text-xl font-medium ${
                   false ? "text-red-500" : "text-[#00A878]"
                 }`}
               >
@@ -270,14 +270,14 @@
                 {/if}
                 <CountUpNumber number={Math.abs(0)} type="percent" />%
               </div>
-              <div class="text-[#00000066] xl:text-base text-2xl font-medium">
+              <div class="text-[#00000066] xl:text-lg text-xl font-medium">
                 24h
               </div>
             </div>
           </OverviewCard>
 
           <OverviewCard title={MultipleLang.total_positions}>
-            <div class="flex xl:text-3xl text-5xl">
+            <div class="flex text-4xl xl:text-3xl">
               {#if {}.toString().toLowerCase().includes("e-")}
                 $<TooltipNumber number={0} type="balance" />
               {:else}
@@ -286,7 +286,7 @@
             </div>
             <div class="flex items-center gap-3 opacity-50">
               <div
-                class={`flex xl:text-lg text-3xl font-medium ${
+                class={`flex xl:text-lg text-xl font-medium ${
                   false ? "text-red-500" : "text-[#00A878]"
                 }`}
               >
@@ -297,7 +297,7 @@
                 {/if}
                 <CountUpNumber number={Math.abs(0)} type="percent" />%
               </div>
-              <div class="text-[#00000066] xl:text-base text-2xl font-medium">
+              <div class="text-[#00000066] xl:text-lg text-xl font-medium">
                 24h
               </div>
             </div>
