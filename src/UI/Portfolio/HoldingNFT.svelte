@@ -47,7 +47,7 @@
     price: i18n("newtabPage.price", "Price"),
     amount: i18n("newtabPage.amount", "Amount"),
     value: i18n("newtabPage.value", "Value"),
-    profit: i18n("newtabPage.profit", "Profit & Loss"),
+    profit: i18n("newtabPage.profit", "PnL"),
     total_spent: i18n("newtabPage.total_spent", "Total Spent"),
     collection: i18n("newtabPage.collection", "Collection"),
     floor_price: i18n("newtabPage.floor_price", "Floor Price"),
@@ -240,7 +240,7 @@
           <TooltipTitle
             tooltipText="Price NFTs now - Price NFTs at time you spent"
           >
-            {MultipleLang.profit}
+            PnL
           </TooltipTitle>
         </div>
       </div>
@@ -345,7 +345,7 @@
               <TooltipTitle
                 tooltipText="Price NFTs now - Price NFTs at time you spent"
               >
-                {MultipleLang.profit}
+                PnL
               </TooltipTitle>
             </div>
           </div>
