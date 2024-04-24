@@ -462,7 +462,7 @@
 
 <AnalyticSection>
   <span slot="title">
-    <div class="flex justify-start font-medium xl:text-2xl text-3xl">
+    <div class="flex justify-start font-medium text-2xl">
       Volatility & Returns
     </div>
   </span>

@@ -693,16 +693,14 @@
 
   <div class="max-w-[2000px] m-auto xl:w-[90%] w-[90%] xl:-mt-26 -mt-34">
     <div
-      class="custom_token_breakdown_container rounded-[20px] xl:p-8 p-4 xl:shadow-md"
+      class="custom_token_breakdown_container rounded-[20px] xl:p-8 p-3 xl:shadow-md"
     >
       <div
-        class={`rounded-[20px] p-6 flex flex-col gap-4 ${
+        class={`rounded-[20px] xl:p-6 p-3 flex flex-col gap-4 ${
           $isDarkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
         }`}
       >
-        <div class="xl:text-2xl text-3xl font-medium">
-          Custom Token Breakdown
-        </div>
+        <div class="text-2xl font-medium">Custom Token Breakdown</div>
 
         {#if listCustom.length === 0}
           <div

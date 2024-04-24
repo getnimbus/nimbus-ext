@@ -722,14 +722,14 @@
   $: theme = $isDarkMode ? "dark" : "white";
 </script>
 
-<div class="flex flex-col justify-between xl:gap-6 gap-0 xl:flex-row">
+<div class="flex flex-col justify-between xl:gap-6 gap-5 xl:flex-row">
   <!-- Token allocation -->
   <div
     class={`xl:w-1/2 w-full flex flex-col justify-between items-start gap-2 rounded-[20px] xl:p-6 py-4 px-3 ${
       $isDarkMode ? "bg-[#222222]" : "bg-[#fff] xl:border border_0000001a"
     }`}
   >
-    <div class="text-3xl font-medium xl:text-2xl">
+    <div class="font-medium text-2xl">
       {MultipleLang.token_allocation}
     </div>
 
@@ -901,12 +901,12 @@
             tooltipText="The performance data can only get after 7 days you connect to Nimbus"
             type="warning"
           >
-            <div class="md:pl-4 text-3xl font-medium xl:text-2xl">
+            <div class="md:pl-4 font-medium text-2xl">
               {MultipleLang.performance}
             </div>
           </TooltipTitle>
         {:else}
-          <div class="md:pl-4 text-3xl font-medium xl:text-2xl">
+          <div class="md:pl-4 font-medium text-2xl">
             {MultipleLang.performance}
           </div>
         {/if}

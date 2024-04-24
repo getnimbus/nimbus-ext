@@ -596,7 +596,9 @@
 
         <div class="flex flex-col gap-4">
           {#if selectedType === "collectGMPoint"}
-            <div class="flex items-center justify-between">
+            <div
+              class="flex md:flex-row flex-col gap-4 md:items-center justify-between"
+            >
               <div class="flex flex-col gap-1">
                 <div class="text-lg font-medium">
                   Collect your GM Points every day
