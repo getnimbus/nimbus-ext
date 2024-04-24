@@ -561,7 +561,7 @@
 </svelte:head>
 
 <div
-  class="mobile-header-container md:py-1 pt-1 pb-5 border-b-[1px] border-[#ffffff1a] relative"
+  class="mobile-header-container py-1 border-b-[1px] border-[#ffffff1a] relative"
 >
   <div
     class="flex items-center justify-between max-w-[2000px] m-auto w-[90%] cursor-pointer"
@@ -571,7 +571,7 @@
       alt="logo"
       loading="lazy"
       decoding="async"
-      class="-ml-6 xl:w-[177px] w-[200px] xl:h-[60px] h-[80px] cursor-pointer"
+      class="xl:-ml-6 -ml-4 w-[177px] h-[60px] cursor-pointer"
       on:click={() => {
         if ($user && Object.keys($user)?.length === 0) {
           user.update((n) => (n = {}));
@@ -857,7 +857,7 @@
         alt=""
         loading="lazy"
         decoding="async"
-        class="-ml-6 w-[200px] h-[80px]"
+        class="-ml-6 w-[177px] h-[60px]"
       />
       <div
         class="-mr-1 text-5xl text-white"
@@ -1512,7 +1512,7 @@
           loading="lazy"
           decoding="async"
           alt=""
-          class="-ml-6 w-[170px] h-[80px]"
+          class="-ml-4 w-[140px] h-[64px]"
         />
         <div
           class="-mr-1 text-5xl"
