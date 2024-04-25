@@ -30,7 +30,7 @@
     publicClient,
     walletClient,
   } from "~/lib/u2u_chain_viem/viem-u2u-client";
-  import { u2uTestnet } from "~/lib/u2u_chain_viem/u2uTest";
+  import { u2uTestnet } from "~/lib/u2u_chain_viem/u2uTestnet";
 
   import Button from "~/components/Button.svelte";
   import Loading from "~/components/Loading.svelte";

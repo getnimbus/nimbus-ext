@@ -1,5 +1,5 @@
 import { createWalletClient, createPublicClient, http, custom } from 'viem';
-import { u2uTestnet } from './u2uTest';
+import { u2uTestnet } from './u2uTestnet';
 
 export const walletClient = createWalletClient({
   chain: u2uTestnet,
