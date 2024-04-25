@@ -580,7 +580,7 @@
       await walletClient.writeContract({
         address:
           import.meta.env.VITE_PUBLIC_SC_ADDRESS ||
-          "0xe70DC1D08873055bd4F52C182323019542644339",
+          "0x8461f62AD82541E76bE5C36125B59FFa36b2cD84",
         account: account[0],
         chain: u2uTestnet,
         abi: wagmiU2UAbi,
@@ -606,7 +606,7 @@
     const isOwnerWinner = await publicClient.readContract({
       address:
         import.meta.env.VITE_PUBLIC_SC_ADDRESS ||
-        "0xe70DC1D08873055bd4F52C182323019542644339",
+        "0x8461f62AD82541E76bE5C36125B59FFa36b2cD84",
       abi: wagmiU2UAbi,
       functionName: "getWinner",
       args: [address],
