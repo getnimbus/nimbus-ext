@@ -22,7 +22,6 @@
     handleGetDataRewards,
     handleGetListQuest,
   } from "~/lib/queryAPI";
-  import { onMount } from "svelte";
   import dayjsUTC from "dayjs/plugin/utc";
   dayjs.extend(dayjsUTC);
   import { wagmiU2UAbi } from "~/lib/u2u_chain_viem/viem-u2u-abi";
@@ -578,9 +577,7 @@
       const account = await walletClient.requestAddresses();
 
       await walletClient.writeContract({
-        address:
-          import.meta.env.VITE_PUBLIC_SC_ADDRESS ||
-          "0x8461f62AD82541E76bE5C36125B59FFa36b2cD84",
+        address: "0x8461f62AD82541E76bE5C36125B59FFa36b2cD84",
         account: account[0],
         chain: u2uTestnet,
         abi: wagmiU2UAbi,
@@ -604,9 +601,7 @@
 
   const checkOwnerIsWinner = async (address: any) => {
     const isOwnerWinner = await publicClient.readContract({
-      address:
-        import.meta.env.VITE_PUBLIC_SC_ADDRESS ||
-        "0x8461f62AD82541E76bE5C36125B59FFa36b2cD84",
+      address: "0x8461f62AD82541E76bE5C36125B59FFa36b2cD84",
       abi: wagmiU2UAbi,
       functionName: "getWinner",
       args: [address],
