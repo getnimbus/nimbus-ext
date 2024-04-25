@@ -43,7 +43,6 @@
   import rank3 from "~/assets/dailycheckin/3rd.png";
 
   import goldImg from "~/assets/Gold4.svg";
-  import { includes } from "lodash";
 
   const dailyCheckinTypePortfolio = [
     {
@@ -566,7 +565,9 @@
     if (
       !$queryUserInfo.isError &&
       $queryUserInfo &&
-      $queryUserInfo?.data !== undefined
+      $queryUserInfo?.data !== undefined &&
+      !$queryDailyCheckin.isError &&
+      $queryDailyCheckin.data !== undefined
     ) {
       checkOwnerIsWinner($queryUserInfo?.data?.publicAddress);
     }
@@ -577,7 +578,7 @@
       const account = await walletClient.requestAddresses();
 
       await walletClient.writeContract({
-        address: "0x8461f62AD82541E76bE5C36125B59FFa36b2cD84",
+        address: "0xC5EFb7bd30b7AA7Fae16B44e34Aee946f1Eb2AFd",
         account: account[0],
         chain: u2uTestnet,
         abi: wagmiU2UAbi,
@@ -601,7 +602,7 @@
 
   const checkOwnerIsWinner = async (address: any) => {
     const isOwnerWinner = await publicClient.readContract({
-      address: "0x8461f62AD82541E76bE5C36125B59FFa36b2cD84",
+      address: "0xC5EFb7bd30b7AA7Fae16B44e34Aee946f1Eb2AFd",
       abi: wagmiU2UAbi,
       functionName: "getWinner",
       args: [address],
