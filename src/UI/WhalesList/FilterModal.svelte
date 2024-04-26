@@ -15,19 +15,11 @@
   export let resetFilter = () => {};
 
   let searchValue = "";
-  let timerSearchDebounce;
 
   let selectedNetWorth = "";
   let selectedSharpeRatio = "";
   let selectedVolatility = "";
   let listSelectedReturn: string[] = [];
-
-  const debounceSearch = (value) => {
-    clearTimeout(timerSearchDebounce);
-    timerSearchDebounce = setTimeout(() => {
-      searchValue = value;
-    }, 300);
-  };
 
   onMount(() => {
     const whalesTokenSearch = localStorage.getItem("whales_token_search");
@@ -80,8 +72,10 @@
       }`}
     >
       <input
-        on:keyup={({ target: { value } }) => debounceSearch(value)}
-        value={searchValue}
+        bind:value={searchValue}
+        on:change={(event) => {
+          searchValue = event?.target.value;
+        }}
         placeholder={"Filter by token symbol. Eg: ETH, UNI,..."}
         type="text"
         class={`w-full p-0 border-none focus:outline-none focus:ring-0 xl:text-base text-2xl font-normal ${

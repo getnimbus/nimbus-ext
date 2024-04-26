@@ -93,7 +93,6 @@
 
   let userID = "";
 
-  let timerDebounce;
   let search = "";
   let showPopoverSearch = false;
   let listAddress = [];
@@ -101,13 +100,6 @@
   let selectedIndexAddress = 0;
   let listAddressElement;
   let indexSelectedAddressResult = -1;
-
-  const debounceSearch = (value) => {
-    clearTimeout(timerDebounce);
-    timerDebounce = setTimeout(() => {
-      search = value;
-    }, 300);
-  };
 
   // query list address
   $: query = createQuery({
@@ -264,6 +256,20 @@
         );
       }
       handleSaveSuggest(validateAccount?.address);
+    }
+  };
+
+  const handleSearch = (event) => {
+    search = event.target.value;
+    if (
+      search &&
+      search?.length !== 0 &&
+      (event.which == 13 || event.keyCode == 13) &&
+      selectedIndexAddress === -1
+    ) {
+      handleSearchAddress(search);
+      showPopoverSearch = false;
+      search = "";
     }
   };
 
@@ -1325,7 +1331,7 @@
             name="code"
             required
             placeholder="Your code"
-            value=""
+            bind:value={code}
             class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-base font-normal ${
               code && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
             } ${
@@ -1333,7 +1339,9 @@
                 ? "text-white"
                 : "text-[#5E656B] placeholder-[#5E656B]"
             }`}
-            on:keyup={({ target: { value } }) => (code = value)}
+            on:change={(e) => {
+              code = e?.target?.value;
+            }}
           />
         </div>
         {#if errors.code && errors.code.required}
@@ -1381,21 +1389,11 @@
       <div class="flex items-center">
         <img src={$isDarkMode ? Search : SearchBlack} alt="" class="w-5 h-5" />
         <input
-          on:keyup={({ target: { value } }) => debounceSearch(value)}
-          on:keydown={(event) => {
-            if (
-              search &&
-              search?.length !== 0 &&
-              (event.which == 13 || event.keyCode == 13) &&
-              selectedIndexAddress === -1
-            ) {
-              handleSearchAddress(search);
-              showPopoverSearch = false;
-              search = "";
-            }
+          on:change={(event) => {
+            handleSearch(event);
           }}
           bind:value={search}
-          autofocus={true}
+          autofocus
           placeholder={MultipleLang.search_placeholder}
           type="text"
           class={`flex-1 py-2 text-sm border-none focus:outline-none focus:ring-0 ${
@@ -1562,18 +1560,8 @@
             class="w-7 h-7"
           />
           <input
-            on:keyup={({ target: { value } }) => debounceSearch(value)}
-            on:keydown={(event) => {
-              if (
-                search &&
-                search?.length !== 0 &&
-                (event.which == 13 || event.keyCode == 13) &&
-                selectedIndexAddress === -1
-              ) {
-                handleSearchAddress(search);
-                showPopoverSearch = false;
-                search = "";
-              }
+            on:change={(event) => {
+              handleSearch(event);
             }}
             bind:value={search}
             autofocus={true}

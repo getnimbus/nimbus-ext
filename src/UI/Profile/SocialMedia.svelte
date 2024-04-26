@@ -121,13 +121,15 @@
           id="label"
           name="label"
           placeholder="Your label"
-          value={label}
+          bind:value={label}
           class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-base font-normal text-[#5E656B] placeholder-[#5E656B] ${
             label && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
           } ${
             $isDarkMode ? "text-white" : "text-[#5E656B] placeholder-[#5E656B]"
           }`}
-          on:keyup={({ target: { value } }) => (label = value)}
+          on:change={(event) => {
+            label = event?.target.value;
+          }}
         />
       </div>
 
@@ -148,13 +150,15 @@
           id="username"
           name="username"
           placeholder="Your username"
-          value={userName}
+          bind:value={userName}
           class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-base font-normal text-[#5E656B] placeholder-[#5E656B] ${
             userName && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
           } ${
             $isDarkMode ? "text-white" : "text-[#5E656B] placeholder-[#5E656B]"
           }`}
-          on:keyup={({ target: { value } }) => (userName = value)}
+          on:change={(event) => {
+            userName = event?.target.value;
+          }}
         />
       </div>
 

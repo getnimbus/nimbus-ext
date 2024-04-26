@@ -949,9 +949,11 @@
                       on:focus={() => {
                         showSuggestListTag = true;
                       }}
-                      on:keyup={({ target: { value } }) => {
+                      on:change={(e) => {
                         filteredListTag = listTag.filter((tag) =>
-                          tag.toLowerCase().includes(value.toLowerCase())
+                          tag
+                            .toLowerCase()
+                            .includes(e?.target?.value.toLowerCase())
                         );
                       }}
                       bind:value={query}
@@ -1021,8 +1023,9 @@
                                             : "text-[#5E656B] placeholder-[#5E656B]"
                                         }`}
                                         bind:value={tag}
-                                        on:keyup={({ target: { value } }) =>
-                                          (tag = value)}
+                                        on:change={(e) => {
+                                          tag = e?.target?.value;
+                                        }}
                                       />
                                     </div>
                                     <div class="flex items-center gap-2">
