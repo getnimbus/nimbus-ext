@@ -129,6 +129,7 @@
   let isSuccessToast = false;
   let counter = 3;
   let showToast = false;
+  let addAccountError = false;
 
   const trigger = () => {
     showToast = true;
@@ -535,12 +536,26 @@
           queryClient.invalidateQueries(["list-bundle"]);
         }
 
-        await nimbus.post("/accounts", {
-          type: "DEX",
-          publicAddress: validateAccount?.address,
-          accountId: validateAccount?.address,
-          label: dataFormat.label,
-        });
+        await nimbus
+          .post("/accounts", {
+            type: "DEX",
+            publicAddress: validateAccount?.address,
+            accountId: validateAccount?.address,
+            label: dataFormat.label,
+          })
+          .then((data) => {
+            if (data?.error) {
+              addAccountError = true;
+              e.target.reset();
+              triggerModalAddAddress.update((n) => (n = false));
+              isLoadingAddDEX = false;
+
+              toastMsg = "Can't add new wallet address at this time!";
+              isSuccessToast = false;
+              trigger();
+            }
+            return data;
+          });
 
         queryClient.invalidateQueries(["list-address"]);
         wallet.update((n) => (n = validateAccount?.address));
@@ -573,18 +588,24 @@
           );
         }
 
-        e.target.reset();
-        errors = {};
-        triggerModalAddAddress.update((n) => (n = false));
-        isLoadingAddDEX = false;
+        if (!addAccountError) {
+          e.target.reset();
+          errors = {};
+          triggerModalAddAddress.update((n) => (n = false));
+          isLoadingAddDEX = false;
 
-        toastMsg = "Successfully add On-Chain account!";
-        isSuccessToast = true;
-        trigger();
-        mixpanel.track("user_add_address");
+          toastMsg = "Successfully add On-Chain account!";
+          isSuccessToast = true;
+          trigger();
+          mixpanel.track("user_add_address");
 
-        errors["address"] = { ...errors["address"], required: false, msg: "" };
-        errors["label"] = { ...errors["label"], required: false, msg: "" };
+          errors["address"] = {
+            ...errors["address"],
+            required: false,
+            msg: "",
+          };
+          errors["label"] = { ...errors["label"], required: false, msg: "" };
+        }
       } else {
         console.error("Invalid Form");
         isLoadingAddDEX = false;
