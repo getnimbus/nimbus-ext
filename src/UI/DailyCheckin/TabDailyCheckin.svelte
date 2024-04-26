@@ -25,9 +25,12 @@
   import dayjsUTC from "dayjs/plugin/utc";
   dayjs.extend(dayjsUTC);
   import { wagmiNimbusDailyCheckinRedeemAbi } from "~/lib/u2u_chain_viem/nimbus-dailyCheckinRedeem-abi";
-  import walletClient from "~/lib/u2u_chain_viem/viem-u2u-walletClient";
-  import publicClient from "~/lib/u2u_chain_viem/viem-u2u-publicClient";
-  import { u2uTestnet } from "~/lib/u2u_chain_viem/u2uTestnet";
+  // import walletClient from "~/lib/u2u_chain_viem/viem-u2u-walletClient";
+  // import publicClient from "~/lib/u2u_chain_viem/viem-u2u-publicClient";
+  // import { u2uTestnet } from "~/lib/u2u_chain_viem/u2uTestnet";
+  import walletClient from "~/lib/viem/viem-walletClient";
+  import publicClient from "~/lib/viem/viem-publicClient";
+  import { scrollSepolia } from "viem/chains";
 
   import Button from "~/components/Button.svelte";
   import Loading from "~/components/Loading.svelte";
@@ -577,9 +580,9 @@
 
       if (account && account.length !== 0) {
         await walletClient.writeContract({
-          address: "0xC5EFb7bd30b7AA7Fae16B44e34Aee946f1Eb2AFd",
+          address: "0x21a7205A528A6De0A0aB05fb96254A460b5E5899",
           account: account[0],
-          chain: u2uTestnet,
+          chain: scrollSepolia,
           abi: wagmiNimbusDailyCheckinRedeemAbi,
           functionName: "redeemPrize",
         });
@@ -602,7 +605,7 @@
 
   const checkOwnerIsWinner = async (address: any) => {
     const isOwnerWinner = await publicClient.readContract({
-      address: "0xC5EFb7bd30b7AA7Fae16B44e34Aee946f1Eb2AFd",
+      address: "0x21a7205A528A6De0A0aB05fb96254A460b5E5899",
       abi: wagmiNimbusDailyCheckinRedeemAbi,
       functionName: "getWinner",
       args: [address],
@@ -841,7 +844,7 @@
               {/if}
             </div>
 
-            <!-- {#if isShowBanner}
+            {#if isShowBanner}
               <div class="overflow-hidden">
                 <div
                   class={`mx-auto max-w-c-1390 px-6 py-7 rounded-[20px] bg-gradient-to-t flex xl:flex-row flex-col xl:items-center justify-between xl:gap-10 gap-6 ${
@@ -857,7 +860,7 @@
                     Claim before: {dayjs()
                       .utc()
                       .startOf("month")
-                      .add(27, "day")
+                      .add(7, "day")
                       .format("YYYY-MM-DD hh:mm")}
                   </div>
                   <div class="xl:w-[184px] w-max h-[40px]">
@@ -866,7 +869,7 @@
                       .isBefore(dayjs()
                           .utc()
                           .startOf("month")
-                          .add(27, "day")) || isDisabledRedeem || ($user && Object.keys($user).length === 0)}
+                          .add(7, "day")) || isDisabledRedeem || ($user && Object.keys($user).length === 0)}
                       <Button disabled>Claim Prize</Button>
                     {:else}
                       <Button on:click={RedeemPrize}>Claim Prize</Button>
@@ -874,7 +877,7 @@
                   </div>
                 </div>
               </div>
-            {/if} -->
+            {/if}
 
             <div class="flex flex-col gap-4 mt-5 view-checkin-quests">
               <div class="text-lg font-medium">
