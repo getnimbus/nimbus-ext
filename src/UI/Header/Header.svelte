@@ -93,7 +93,6 @@
 
   let userID = "";
 
-  let timerDebounce;
   let search = "";
   let showPopoverSearch = false;
   let listAddress = [];
@@ -101,13 +100,6 @@
   let selectedIndexAddress = 0;
   let listAddressElement;
   let indexSelectedAddressResult = -1;
-
-  const debounceSearch = (value) => {
-    clearTimeout(timerDebounce);
-    timerDebounce = setTimeout(() => {
-      search = value;
-    }, 300);
-  };
 
   // query list address
   $: query = createQuery({
@@ -239,6 +231,20 @@
       }
 
       handleSaveSuggest(validateAccount?.address);
+    }
+  };
+
+  const handleSearch = (event) => {
+    search = event.target.value;
+    if (
+      search &&
+      search?.length !== 0 &&
+      (event.which == 13 || event.keyCode == 13) &&
+      selectedIndexAddress === -1
+    ) {
+      handleSearchAddress(search);
+      showPopoverSearch = false;
+      search = "";
     }
   };
 
@@ -1355,18 +1361,8 @@
       <div class="flex items-center">
         <img src={$isDarkMode ? Search : SearchBlack} alt="" class="w-5 h-5" />
         <input
-          on:keyup={({ target: { value } }) => debounceSearch(value)}
-          on:keydown={(event) => {
-            if (
-              search &&
-              search?.length !== 0 &&
-              (event.which == 13 || event.keyCode == 13) &&
-              selectedIndexAddress === -1
-            ) {
-              handleSearchAddress(search);
-              showPopoverSearch = false;
-              search = "";
-            }
+          on:change={(event) => {
+            handleSearch(event);
           }}
           bind:value={search}
           autofocus={true}
@@ -1536,18 +1532,8 @@
             class="w-7 h-7"
           />
           <input
-            on:keyup={({ target: { value } }) => debounceSearch(value)}
-            on:keydown={(event) => {
-              if (
-                search &&
-                search?.length !== 0 &&
-                (event.which == 13 || event.keyCode == 13) &&
-                selectedIndexAddress === -1
-              ) {
-                handleSearchAddress(search);
-                showPopoverSearch = false;
-                search = "";
-              }
+            on:change={(event) => {
+              handleSearch(event);
             }}
             bind:value={search}
             autofocus={true}
