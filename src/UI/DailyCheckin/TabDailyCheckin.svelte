@@ -17,10 +17,17 @@
   import "driver.js/dist/driver.css";
   import mixpanel from "mixpanel-browser";
   import {
+    getUserInfo,
     handleGetDataDailyCheckin,
     handleGetDataRewards,
     handleGetListQuest,
   } from "~/lib/queryAPI";
+  import dayjsUTC from "dayjs/plugin/utc";
+  dayjs.extend(dayjsUTC);
+  import { wagmiU2UAbi } from "~/lib/u2u_chain_viem/viem-u2u-abi";
+  import walletClient from "~/lib/u2u_chain_viem/viem-u2u-walletClient";
+  import publicClient from "~/lib/u2u_chain_viem/viem-u2u-publicClient";
+  import { u2uTestnet } from "~/lib/u2u_chain_viem/u2uTestnet";
 
   import Button from "~/components/Button.svelte";
   import Loading from "~/components/Loading.svelte";
@@ -120,9 +127,13 @@
   let selectedQuestId = "";
 
   let toastMsg = "";
-  let isSuccessToast = false;
+  let isSuccessToast: boolean = false;
   let counter = 3;
-  let showToast = false;
+  let showToast: boolean = false;
+
+  let isDisabledRedeem: boolean = false;
+  let isShowBanner: boolean = false;
+  let lastMonthWinners = [];
 
   const trigger = () => {
     showToast = true;
@@ -240,6 +251,7 @@
       selectedCheckinIndex = $queryDailyCheckin?.data?.steak;
       isDisabledCheckin = $queryDailyCheckin?.data?.checkinable;
       dataCheckinHistory = $queryDailyCheckin?.data?.checkinLogs;
+      lastMonthWinners = $queryDailyCheckin?.data?.lastMonthWinners;
       quests = $queryDailyCheckin?.data?.quests.map((item) => {
         const selectedLogs = dataCheckinHistory
           .filter((log) => log.type === "QUEST" && log.note !== "id-generate")
@@ -532,6 +544,78 @@
       localStorage.setItem("view-checkin-tour", "true");
     }
   }
+
+  $: queryUserInfo = createQuery({
+    queryKey: ["users-me"],
+    queryFn: () => getUserInfo(),
+    staleTime: Infinity,
+    retry: false,
+    onError(err) {
+      localStorage.removeItem("auth_token");
+      localStorage.removeItem("solana_token");
+      localStorage.removeItem("sui_token");
+      localStorage.removeItem("ton_token");
+      localStorage.removeItem("evm_token");
+    },
+  });
+
+  $: {
+    if (
+      !$queryUserInfo.isError &&
+      $queryUserInfo &&
+      $queryUserInfo?.data !== undefined &&
+      !$queryDailyCheckin.isError &&
+      $queryDailyCheckin.data !== undefined
+    ) {
+      checkOwnerIsWinner($queryUserInfo?.data?.publicAddress);
+    }
+  }
+
+  const RedeemPrize = async () => {
+    try {
+      const account = await walletClient.requestAddresses();
+
+      if (account && account.length !== 0) {
+        await walletClient.writeContract({
+          address: "0xC5EFb7bd30b7AA7Fae16B44e34Aee946f1Eb2AFd",
+          account: account[0],
+          chain: u2uTestnet,
+          abi: wagmiU2UAbi,
+          functionName: "redeemPrize",
+        });
+
+        toastMsg = "Successfully redeem prize!";
+        isSuccessToast = true;
+        trigger();
+
+        isDisabledRedeem = true;
+        checkOwnerIsWinner($queryUserInfo?.data?.publicAddress);
+      }
+    } catch (e) {
+      console.error("Error: ", e);
+      toastMsg = "Something wrong when redeem prize. Please try again!";
+      isSuccessToast = false;
+      trigger();
+      checkOwnerIsWinner($queryUserInfo?.data?.publicAddress);
+    }
+  };
+
+  const checkOwnerIsWinner = async (address: any) => {
+    const isOwnerWinner = await publicClient.readContract({
+      address: "0xC5EFb7bd30b7AA7Fae16B44e34Aee946f1Eb2AFd",
+      abi: wagmiU2UAbi,
+      functionName: "getWinner",
+      args: [address],
+    });
+
+    isShowBanner = lastMonthWinners
+      .map((item) => item.owner.toString().toLowerCase())
+      .includes(address.toString().toLowerCase());
+
+    if (isOwnerWinner.prizeAmount === 0n) {
+      isDisabledRedeem = true;
+    }
+  };
 </script>
 
 <div class="flex flex-col gap-4 min-h-screen">
@@ -756,6 +840,41 @@
                 </div>
               {/if}
             </div>
+
+            <!-- {#if isShowBanner}
+              <div class="overflow-hidden">
+                <div
+                  class={`mx-auto max-w-c-1390 px-6 py-7 rounded-[20px] bg-gradient-to-t flex xl:flex-row flex-col xl:items-center justify-between xl:gap-10 gap-6 ${
+                    $isDarkMode
+                      ? "from-[#0f0f0f] to-[#222222]"
+                      : "from-[#F8F9FF] to-[#DEE7FF]"
+                  }`}
+                >
+                  <div class="text-xl font-medium">
+                    🏆 Congratulations! Top 3 Daily Check-in Champions of the
+                    Month Claim your prize now for being among the elite. <br
+                    /><br />
+                    Claim before: {dayjs()
+                      .utc()
+                      .startOf("month")
+                      .add(27, "day")
+                      .format("YYYY-MM-DD hh:mm")}
+                  </div>
+                  <div class="xl:w-[184px] w-max h-[40px]">
+                    {#if !dayjs()
+                      .utc()
+                      .isBefore(dayjs()
+                          .utc()
+                          .startOf("month")
+                          .add(27, "day")) || isDisabledRedeem || ($user && Object.keys($user).length === 0)}
+                      <Button disabled>Claim Prize</Button>
+                    {:else}
+                      <Button on:click={RedeemPrize}>Claim Prize</Button>
+                    {/if}
+                  </div>
+                </div>
+              </div>
+            {/if} -->
 
             <div class="flex flex-col gap-4 mt-5 view-checkin-quests">
               <div class="text-lg font-medium">
