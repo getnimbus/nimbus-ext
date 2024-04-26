@@ -486,7 +486,7 @@
           addresses: [$userPublicAddress],
         }),
       ]);
-      if (resAddAccount && resAddBundle) {
+      if (resAddAccount && !resAddAccount?.error && resAddBundle) {
         wallet.update((n) => (n = $userPublicAddress));
         queryClient.invalidateQueries(["list-bundle"]);
         queryClient.invalidateQueries(["list-address"]);
@@ -535,12 +535,18 @@
           queryClient.invalidateQueries(["list-bundle"]);
         }
 
-        await nimbus.post("/accounts", {
+        const response = await nimbus.post("/accounts", {
           type: "DEX",
           publicAddress: validateAccount?.address,
           accountId: validateAccount?.address,
           label: dataFormat.label,
         });
+
+        if (response?.error) {
+          toastMsg = "Can't add new wallet address at this time!";
+          isSuccessToast = false;
+          return;
+        }
 
         queryClient.invalidateQueries(["list-address"]);
         wallet.update((n) => (n = validateAccount?.address));
@@ -583,7 +589,11 @@
         trigger();
         mixpanel.track("user_add_address");
 
-        errors["address"] = { ...errors["address"], required: false, msg: "" };
+        errors["address"] = {
+          ...errors["address"],
+          required: false,
+          msg: "",
+        };
         errors["label"] = { ...errors["label"], required: false, msg: "" };
       } else {
         console.error("Invalid Form");
