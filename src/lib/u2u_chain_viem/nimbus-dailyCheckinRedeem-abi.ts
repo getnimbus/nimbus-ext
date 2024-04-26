@@ -1,4 +1,4 @@
-export const wagmiU2UAbi = [
+export const wagmiNimbusDailyCheckinRedeemAbi = [
   {
     type: "constructor",
     stateMutability: "nonpayable",

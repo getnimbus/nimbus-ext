@@ -24,7 +24,7 @@
   } from "~/lib/queryAPI";
   import dayjsUTC from "dayjs/plugin/utc";
   dayjs.extend(dayjsUTC);
-  import { wagmiU2UAbi } from "~/lib/u2u_chain_viem/viem-u2u-abi";
+  import { wagmiNimbusDailyCheckinRedeemAbi } from "~/lib/u2u_chain_viem/nimbus-dailyCheckinRedeem-abi";
   import walletClient from "~/lib/u2u_chain_viem/viem-u2u-walletClient";
   import publicClient from "~/lib/u2u_chain_viem/viem-u2u-publicClient";
   import { u2uTestnet } from "~/lib/u2u_chain_viem/u2uTestnet";
@@ -580,7 +580,7 @@
           address: "0xC5EFb7bd30b7AA7Fae16B44e34Aee946f1Eb2AFd",
           account: account[0],
           chain: u2uTestnet,
-          abi: wagmiU2UAbi,
+          abi: wagmiNimbusDailyCheckinRedeemAbi,
           functionName: "redeemPrize",
         });
 
@@ -603,7 +603,7 @@
   const checkOwnerIsWinner = async (address: any) => {
     const isOwnerWinner = await publicClient.readContract({
       address: "0xC5EFb7bd30b7AA7Fae16B44e34Aee946f1Eb2AFd",
-      abi: wagmiU2UAbi,
+      abi: wagmiNimbusDailyCheckinRedeemAbi,
       functionName: "getWinner",
       args: [address],
     });

@@ -1,11 +1,11 @@
 import { createWalletClient, custom } from 'viem';
-import { mainnet } from 'viem/chains';
+import { scrollSepolia } from "viem/chains";
 
 let publicClient
 
-if (mainnet && window?.ethereum) {
+if (window && window?.ethereum) {
   publicClient = createWalletClient({
-    chain: mainnet,
+    chain: scrollSepolia,
     transport: custom(window?.ethereum)
   })
 }
