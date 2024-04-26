@@ -21,20 +21,12 @@
   };
 
   let searchValue = "";
-  let timerDebounce;
   let virtualPortfolioName = "";
   let time = new Date();
   let listToken = [];
   let isLoadingListToken = false;
   let selectedTokenList = [];
   let selectedTokenRemove = {};
-
-  const debounceSearch = (value) => {
-    clearTimeout(timerDebounce);
-    timerDebounce = setTimeout(() => {
-      searchValue = value;
-    }, 300);
-  };
 
   $: {
     if (selectedWallet && selectedChain && defaultData) {
@@ -179,8 +171,10 @@
           $isDarkMode ? "text-white" : "text-[#5E656B] placeholder-[#5E656B]"
         }`}
         style="border: 1px solid rgba(103, 113, 137, 0.3)"
-        value={virtualPortfolioName}
-        on:keyup={(e) => (virtualPortfolioName = e.target.value)}
+        bind:value={virtualPortfolioName}
+        on:change={(event) => {
+          virtualPortfolioName = event?.target.value;
+        }}
       />
     </div>
 
@@ -222,8 +216,10 @@
           }`}
         >
           <input
-            on:keyup={({ target: { value } }) => debounceSearch(value)}
-            value={searchValue}
+            bind:value={searchValue}
+            on:change={(event) => {
+              searchValue = event?.target.value;
+            }}
             placeholder={"Find by token name"}
             type="text"
             class={`w-full p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal ${
@@ -452,9 +448,9 @@
                   type="number"
                   min="0"
                   max="100"
-                  value={data.percent}
-                  on:keyup={(e) => {
-                    if (e.target.value) {
+                  bind:value={data.percent}
+                  on:change={(e) => {
+                    if (e?.target.value) {
                       let number = 0;
                       if (parseInt(e.target.value) < parseInt(e.target.min)) {
                         e.target.value = e.target.min;

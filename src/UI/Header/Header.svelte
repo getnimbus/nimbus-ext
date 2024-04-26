@@ -1305,7 +1305,7 @@
             name="code"
             required
             placeholder="Your code"
-            value=""
+            bind:value={code}
             class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-base font-normal ${
               code && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
             } ${
@@ -1313,7 +1313,9 @@
                 ? "text-white"
                 : "text-[#5E656B] placeholder-[#5E656B]"
             }`}
-            on:keyup={({ target: { value } }) => (code = value)}
+            on:change={(e) => {
+              code = e?.target?.value;
+            }}
           />
         </div>
         {#if errors.code && errors.code.required}
@@ -1365,7 +1367,7 @@
             handleSearch(event);
           }}
           bind:value={search}
-          autofocus={true}
+          autofocus
           placeholder={MultipleLang.search_placeholder}
           type="text"
           class={`flex-1 py-2 text-sm border-none focus:outline-none focus:ring-0 ${

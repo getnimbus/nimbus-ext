@@ -28,8 +28,6 @@
   let marketData = [];
   let searchValue = "";
   let amountValue = "";
-  let timerSearchDebounce;
-  let timerAmountDebounce;
   let isLoading = false;
   let tableHeader;
   let isSticky = false;
@@ -50,20 +48,6 @@
     } finally {
       isLoading = false;
     }
-  };
-
-  const debounceSearch = (value) => {
-    clearTimeout(timerSearchDebounce);
-    timerSearchDebounce = setTimeout(() => {
-      searchValue = value;
-    }, 300);
-  };
-
-  const debounceAmount = (value) => {
-    clearTimeout(timerAmountDebounce);
-    timerAmountDebounce = setTimeout(() => {
-      amountValue = value;
-    }, 300);
   };
 
   onMount(() => {
@@ -109,13 +93,13 @@
             }`}
           >
             <input
-              on:keyup={({ target: { value } }) => debounceSearch(value)}
-              on:keydown={(event) => {
-                if ((event.which == 13 || event.keyCode == 13) && searchValue) {
+              on:change={(e) => {
+                searchValue = e?.target?.value;
+                if ((e.which == 13 || e.keyCode == 13) && searchValue) {
                   getMarketData();
                 }
               }}
-              value={searchValue}
+              bind:value={searchValue}
               placeholder={MultipleLang.market_search_symbol}
               type="text"
               class={`w-full p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal ${
@@ -133,20 +117,18 @@
             }`}
           >
             <input
-              on:keyup={({ target: { value } }) => {
-                const parsedValue = parseFloat(value);
+              on:change={(e) => {
+                const parsedValue = parseFloat(e?.target?.value);
                 if (!isNaN(parsedValue) && parsedValue > 0) {
-                  debounceAmount(value);
+                  amountValue = e?.target?.value;
                 } else {
                   amountValue = "";
                 }
-              }}
-              on:keydown={(event) => {
-                if ((event.which == 13 || event.keyCode == 13) && amountValue) {
+                if ((e.which == 13 || e.keyCode == 13) && searchValue) {
                   getMarketData();
                 }
               }}
-              value={amountValue}
+              bind:value={amountValue}
               placeholder={MultipleLang.market_search_amount}
               inputmode="decimal"
               pattern="[0-9]*(.[0-9]+)?"

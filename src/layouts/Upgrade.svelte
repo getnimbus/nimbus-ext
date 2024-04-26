@@ -204,7 +204,7 @@
                 name="code"
                 required
                 placeholder="Couple code"
-                value=""
+                bind:value={code}
                 class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal ${
                   code && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
                 } ${
@@ -212,7 +212,9 @@
                     ? "text-white"
                     : "text-[#5E656B] placeholder-[#5E656B]"
                 }`}
-                on:keyup={({ target: { value } }) => (code = value)}
+                on:change={(e) => {
+                  code = e?.target?.value;
+                }}
               />
             </div>
             <div class="w-[120px]">

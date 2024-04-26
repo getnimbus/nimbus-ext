@@ -34,13 +34,16 @@
   };
 
   let search = "";
-  let timerDebounce;
 
-  const debounceSearch = (value) => {
-    clearTimeout(timerDebounce);
-    timerDebounce = setTimeout(() => {
-      search = value;
-    }, 300);
+  const handleSearch = (event) => {
+    search = event.target.value;
+    if (
+      search &&
+      search?.length !== 0 &&
+      (event.which == 13 || event.keyCode == 13)
+    ) {
+      handleSearchAddress(search);
+    }
   };
 
   const handleSearchAddress = async (value: string) => {
@@ -129,18 +132,11 @@
             <input
               type="text"
               placeholder="Type your wallet to see demo"
-              on:keyup={({ target: { value } }) => debounceSearch(value)}
-              on:keydown={(event) => {
-                if (
-                  search &&
-                  search?.length !== 0 &&
-                  (event.which == 13 || event.keyCode == 13)
-                ) {
-                  handleSearchAddress(search);
-                }
-              }}
               autofocus
-              value={search}
+              on:change={(event) => {
+                handleSearch(event);
+              }}
+              bind:value={search}
               class={`xl:px-5 xl:py-3 px-6 py-4 border border-gray-300 focus:ring-0 xl:text-sm text-base font-normal rounded-xl w-full ${
                 !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
               } ${
