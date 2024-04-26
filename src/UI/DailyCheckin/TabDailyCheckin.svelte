@@ -841,7 +841,7 @@
               {/if}
             </div>
 
-            {#if isShowBanner}
+            <!-- {#if isShowBanner}
               <div class="overflow-hidden">
                 <div
                   class={`mx-auto max-w-c-1390 px-6 py-7 rounded-[20px] bg-gradient-to-t flex xl:flex-row flex-col xl:items-center justify-between xl:gap-10 gap-6 ${
@@ -874,7 +874,7 @@
                   </div>
                 </div>
               </div>
-            {/if}
+            {/if} -->
 
             <div class="flex flex-col gap-4 mt-5 view-checkin-quests">
               <div class="text-lg font-medium">
