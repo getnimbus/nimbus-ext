@@ -253,7 +253,6 @@
     series: [],
   };
 
-  let timerDebounce;
   let search = "";
 
   const getAnalyticCompare = async (address, searchValue) => {
@@ -830,13 +829,6 @@
   };
 
   $: theme = $isDarkMode ? "dark" : "white";
-
-  const debounceSearch = (value) => {
-    clearTimeout(timerDebounce);
-    timerDebounce = setTimeout(() => {
-      search = value;
-    }, 300);
-  };
 </script>
 
 <ErrorBoundary>
@@ -1169,9 +1161,10 @@
                                 }`}
                               >
                                 <input
-                                  on:keyup={({ target: { value } }) =>
-                                    debounceSearch(value)}
-                                  value={search}
+                                  on:change={(e) => {
+                                    search = e?.target?.value;
+                                  }}
+                                  bind:value={search}
                                   placeholder={"Search address to compare"}
                                   type="text"
                                   class={`w-full p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-base font-normal h-full ${

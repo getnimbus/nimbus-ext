@@ -25,15 +25,7 @@
 
   let coins = DEFAULT_COINS;
   let open = false;
-  let timerDebounce;
   let search = "";
-
-  const debounceSearch = (value) => {
-    clearTimeout(timerDebounce);
-    timerDebounce = setTimeout(() => {
-      search = value;
-    }, 300);
-  };
 
   $: query = createQuery({
     queryKey: ["search-token-mobula", search],
@@ -115,7 +107,10 @@
             $isDarkMode ? "bg-[#212121]" : "bg-[#eff0f4]"
           }`}
           placeholder="Search"
-          on:keyup={({ target: { value } }) => debounceSearch(value)}
+          bind:value={search}
+          on:change={(e) => {
+            search = e?.target?.value;
+          }}
         />
       </div>
       {#if $query.isFetching}

@@ -75,7 +75,7 @@
               name="email"
               placeholder="Your email"
               required
-              value=""
+              bind:value={email}
               class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-base font-normal ${
                 email && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
               } ${
@@ -84,7 +84,9 @@
                   : "text-[#5E656B] placeholder-[#5E656B]"
               }
               `}
-              on:keyup={({ target: { value } }) => (email = value)}
+              on:change={(e) => {
+                email = e?.target?.value;
+              }}
             />
           </div>
         </div>

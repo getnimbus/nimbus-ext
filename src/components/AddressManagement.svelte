@@ -1786,7 +1786,7 @@
                   id="address"
                   name="address"
                   placeholder={"Your wallet address"}
-                  value=""
+                  bind:value={address}
                   class={`p-0 border-none focus:outline-none focus:ring-0 text-sm font-normal ${
                     address && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
                   } ${
@@ -1794,7 +1794,9 @@
                       ? "text-white"
                       : "text-[#5E656B] placeholder-[#5E656B]"
                   }`}
-                  on:keyup={({ target: { value } }) => (address = value)}
+                  on:change={(e) => {
+                    address = e?.target?.value;
+                  }}
                 />
               </div>
               {#if errors.address && errors.address.required}
@@ -1822,16 +1824,17 @@
                   id="label"
                   name="label"
                   placeholder={MultipleLang.content.modal_label_label}
-                  value=""
+                  bind:value={label}
                   class={`p-0 border-none focus:outline-none focus:ring-0 text-sm font-normal ${
                     label && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
                   } ${
                     $isDarkMode
                       ? "text-white"
                       : "text-[#5E656B] placeholder-[#5E656B]"
-                  }
-              `}
-                  on:keyup={({ target: { value } }) => (label = value)}
+                  }`}
+                  on:change={(e) => {
+                    label = e?.target?.value;
+                  }}
                 />
               </div>
               {#if errors.label && errors.label.required}
@@ -2009,7 +2012,7 @@
                     id="address"
                     name="address"
                     placeholder={"Your wallet address"}
-                    value=""
+                    bind:value={address}
                     class={`p-0 border-none focus:outline-none focus:ring-0 text-base font-normal ${
                       address && !$isDarkMode
                         ? "bg-[#F0F2F7]"
@@ -2019,7 +2022,9 @@
                         ? "text-white"
                         : "text-[#5E656B] placeholder-[#5E656B]"
                     }`}
-                    on:keyup={({ target: { value } }) => (address = value)}
+                    on:change={(e) => {
+                      address = e?.target?.value;
+                    }}
                   />
                 </div>
                 {#if errors.address && errors.address.required}
@@ -2049,7 +2054,7 @@
                     id="label"
                     name="label"
                     placeholder={MultipleLang.content.modal_label_label}
-                    value=""
+                    bind:value={label}
                     class={`p-0 border-none focus:outline-none focus:ring-0 text-base font-normal ${
                       label && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
                     } ${
@@ -2058,7 +2063,9 @@
                         : "text-[#5E656B] placeholder-[#5E656B]"
                     }
               `}
-                    on:keyup={({ target: { value } }) => (label = value)}
+                    on:change={(e) => {
+                      label = e?.target?.value;
+                    }}
                   />
                 </div>
                 {#if errors.label && errors.label.required}
@@ -2163,11 +2170,13 @@
           name="email"
           required
           placeholder="Your email"
-          value=""
+          bind:value={email}
           class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-base font-normal text-[#5E656B] placeholder-[#5E656B] ${
             email && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
           }`}
-          on:keyup={({ target: { value } }) => (email = value)}
+          on:change={(e) => {
+            email = e?.target?.value;
+          }}
         />
       </div>
 

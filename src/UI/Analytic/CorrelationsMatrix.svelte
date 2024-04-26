@@ -47,7 +47,6 @@
   let isOpenModal = false;
   let listToken = [];
   let searchValue = "";
-  let timerDebounce;
   let matrix = [];
   let colImg = false;
 
@@ -86,13 +85,6 @@
 
     const correlation = numerator / (denominatorX * denominatorY);
     return correlation;
-  };
-
-  const debounceSearch = (value) => {
-    clearTimeout(timerDebounce);
-    timerDebounce = setTimeout(() => {
-      searchValue = value;
-    }, 300);
   };
 
   $: queryValidate = createQuery({
@@ -620,8 +612,10 @@
         }`}
       >
         <input
-          on:keyup={({ target: { value } }) => debounceSearch(value)}
-          value={searchValue}
+          on:change={(e) => {
+            searchValue = e?.target?.value;
+          }}
+          bind:value={searchValue}
           placeholder={"Find by token name"}
           class={`w-full p-0 border-none focus:outline-none focus:ring-0 text-base font-normal ${
             searchValue && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
