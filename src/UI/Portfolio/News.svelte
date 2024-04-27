@@ -42,17 +42,16 @@
 </script>
 
 <ErrorBoundary>
-  <div
-    class="max-w-[2000px] min-h-screen m-auto xl:w-[90%] w-[90%] py-8 flex flex-col gap-10"
-  >
-    <div class="flex flex-col gap-2 justify-center">
-      <div class="xl:text-5xl text-7xl font-semibold">
+  <div class="flex flex-col gap-8 xl:px-3">
+    <div class="flex flex-col justify-center">
+      <div class="text-2xl font-medium">
         {MultipleLang.news}
       </div>
-      <div class="xl:text-xl text-3xl">
+      <div class="text-lg">
         {MultipleLang.news_page_title}
       </div>
     </div>
+
     <div class="flex flex-col gap-4">
       {#if isLoading && pageValue === 1}
         <div class="w-full h-screen flex justify-center items-center">

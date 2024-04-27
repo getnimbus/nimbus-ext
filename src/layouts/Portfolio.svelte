@@ -55,6 +55,7 @@
 
   import Reload from "~/assets/reload.svg";
   import defaultToken from "~/assets/defaultToken.png";
+  import News from "~/UI/Portfolio/News.svelte";
 
   const MultipleLang = {
     portfolio: i18n("newtabPage.portfolio", "Portfolio"),
@@ -918,19 +919,28 @@
                           return;
                         }
                         tab.update((n) => (n = type.value));
-                        window.history.replaceState(
-                          null,
-                          "",
-                          window.location.pathname +
-                            `?tab=${type.value}&type=${$typeWallet}&chain=${$chain}&address=${$wallet}`
-                        );
-                        totalTokens.update((n) => (n = 0));
-                        totalAirdrops.update((n) => (n = 0));
-                        totalNfts.update((n) => (n = 0));
-                        totalPositions.update((n) => (n = 0));
-                        unrealizedProfit.update((n) => (n = 0));
-                        realizedProfit.update((n) => (n = 0));
-                        pastProfit.update((n) => (n = 0));
+                        if (type.value === "news") {
+                          window.history.replaceState(
+                            null,
+                            "",
+                            window.location.pathname + `?tab=${type.value}`
+                          );
+                        } else {
+                          window.history.replaceState(
+                            null,
+                            "",
+                            window.location.pathname +
+                              `?tab=${type.value}&type=${$typeWallet}&chain=${$chain}&address=${$wallet}`
+                          );
+                          totalTokens.update((n) => (n = 0));
+                          totalAirdrops.update((n) => (n = 0));
+                          totalNfts.update((n) => (n = 0));
+                          totalPositions.update((n) => (n = 0));
+                          unrealizedProfit.update((n) => (n = 0));
+                          realizedProfit.update((n) => (n = 0));
+                          pastProfit.update((n) => (n = 0));
+                        }
+
                         mixpanel.track(`user_select_tab_${type.value}`);
                       }}
                     >
@@ -941,6 +951,7 @@
                       >
                         {type.label}
                       </div>
+
                       {#if type.value === $tab}
                         <Motion
                           let:motion
@@ -1014,6 +1025,10 @@
 
               {#if $tab === "summary"}
                 <PerformanceSummary />
+              {/if}
+
+              {#if $tab === "news"}
+                <News />
               {/if}
             </div>
           {/if}
