@@ -2,6 +2,7 @@
   import { onMount } from "svelte";
   import { i18n } from "~/lib/i18n";
   import { nimbus } from "~/lib/network";
+  import { tab } from "~/store";
   import mixpanel from "mixpanel-browser";
 
   import NewsCard from "~/components/NewsCard.svelte";
@@ -36,8 +37,10 @@
   };
 
   onMount(() => {
-    getNews();
-    mixpanel.track("news_page");
+    if ($tab === "news") {
+      getNews();
+      mixpanel.track("news_page");
+    }
   });
 </script>
 
@@ -80,8 +83,10 @@
             <Button
               variant="secondary"
               on:click={() => {
-                pageValue = pageValue + 1;
-                getNews();
+                if ($tab === "news") {
+                  pageValue = pageValue + 1;
+                  getNews();
+                }
               }}
               disabled={isLoading}
               {isLoading}
