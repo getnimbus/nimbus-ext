@@ -2,6 +2,7 @@
   import { onMount } from "svelte";
   import { i18n } from "~/lib/i18n";
   import { nimbus } from "~/lib/network";
+  import { tab } from "~/store";
   import mixpanel from "mixpanel-browser";
 
   import NewsCard from "~/components/NewsCard.svelte";
@@ -36,23 +37,24 @@
   };
 
   onMount(() => {
-    getNews();
-    mixpanel.track("news_page");
+    if ($tab === "news") {
+      getNews();
+      mixpanel.track("news_page");
+    }
   });
 </script>
 
 <ErrorBoundary>
-  <div
-    class="max-w-[2000px] min-h-screen m-auto xl:w-[90%] w-[90%] py-8 flex flex-col gap-10"
-  >
-    <div class="flex flex-col gap-2 justify-center">
-      <div class="xl:text-5xl text-7xl font-semibold">
+  <div class="flex flex-col gap-8 xl:px-3">
+    <div class="flex flex-col justify-center">
+      <div class="text-2xl font-medium">
         {MultipleLang.news}
       </div>
-      <div class="xl:text-xl text-3xl">
+      <div class="text-lg">
         {MultipleLang.news_page_title}
       </div>
     </div>
+
     <div class="flex flex-col gap-4">
       {#if isLoading && pageValue === 1}
         <div class="w-full h-screen flex justify-center items-center">
@@ -63,7 +65,7 @@
           class={`grid gap-10 ${
             newsData && newsData.length === 0
               ? "grid-cols-1"
-              : "2xl:grid-cols-4 xl:grid-cols-3 grid-cols-2"
+              : "2xl:grid-cols-5 xl:grid-cols-3 lg:grid-cols-2 grid-cols-1"
           }`}
         >
           {#if newsData.length === 0}
@@ -81,8 +83,10 @@
             <Button
               variant="secondary"
               on:click={() => {
-                pageValue = pageValue + 1;
-                getNews();
+                if ($tab === "news") {
+                  pageValue = pageValue + 1;
+                  getNews();
+                }
               }}
               disabled={isLoading}
               {isLoading}
