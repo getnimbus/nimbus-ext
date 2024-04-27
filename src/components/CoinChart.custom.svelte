@@ -8,11 +8,6 @@
   import { sendMessage } from "webext-bridge";
   import { isEmpty } from "lodash";
 
-  import type {
-    LocalChartTokenData,
-    ChartTokenData,
-  } from "~/types/ChartTokenData";
-
   import "~/components/ResetStyle.custom.svelte";
 
   export let symbol;
@@ -29,7 +24,7 @@
   let isDownPrice = 0;
 
   const getChartData = async () => {
-    const dataLocal: LocalChartTokenData = await sendMessage("chartDataLocal", {
+    const dataLocal: any = await sendMessage("chartDataLocal", {
       symbol: symbol?.toLowerCase(),
     });
 
@@ -41,7 +36,7 @@
 
   const getNewDataChart = async () => {
     if (hasData) return;
-    const newestData: ChartTokenData = await sendMessage("chartData", {
+    const newestData: any = await sendMessage("chartData", {
       symbol: symbol?.toLowerCase(),
     });
 

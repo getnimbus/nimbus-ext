@@ -43,12 +43,6 @@
     getHoldingNFT,
   } from "~/lib/queryAPI";
 
-  import type { NewData, NewDataRes } from "~/types/NewData";
-  import type { OverviewData, OverviewDataRes } from "~/types/OverviewData";
-  import type { PositionData, PositionDataRes } from "~/types/PositionData";
-  import type { TokenData, HoldingTokenRes } from "~/types/HoldingTokenData";
-  import type { NFTData, HoldingNFTRes } from "~/types/HoldingNFTData";
-
   import AddressManagement from "~/components/AddressManagement.svelte";
   import Overview from "~/UI/Portfolio/Overview.svelte";
   import Testimonial from "~/UI/Testimonial/Testimonial.svelte";
@@ -57,13 +51,11 @@
   import PerformanceSummary from "~/UI/Portfolio/PerformanceSummary.svelte";
   import DefiPosition from "~/UI/Portfolio/DefiPosition.svelte";
   import AirdropsAndPointsTracker from "~/UI/Portfolio/AirdropsAndPointsTracker.svelte";
-  import RiskReturn from "~/UI/Portfolio/RiskReturn.svelte";
-  import News from "~/UI/Portfolio/News.svelte";
-  import Button from "~/components/Button.svelte";
   import "~/components/Tooltip.custom.svelte";
 
   import Reload from "~/assets/reload.svg";
   import defaultToken from "~/assets/defaultToken.png";
+  import News from "~/UI/Portfolio/News.svelte";
 
   const MultipleLang = {
     portfolio: i18n("newtabPage.portfolio", "Portfolio"),
@@ -111,13 +103,11 @@
     updatedAt: "",
   };
 
-  let newsData: any = [];
+  let formatHoldingTokenData = [];
+  let holdingTokenData = [];
+  let holdingNFTData = [];
 
-  let formatHoldingTokenData: any = [];
-  let holdingTokenData: any = [];
-  let holdingNFTData: any = [];
-
-  let positionsData: any = [];
+  let positionsData = [];
   let overviewDataPerformance = {
     performance: [],
     portfolioChart: [],
@@ -193,7 +183,6 @@
     queryClient.invalidateQueries(["vaults"]);
     queryClient.invalidateQueries(["token-holding"]);
     queryClient.invalidateQueries(["nft-holding"]);
-    queryClient.invalidateQueries(["compare"]);
     queryClient.invalidateQueries(["position-list"]);
   };
 
@@ -218,7 +207,6 @@
           !$queryTokenHolding.isError &&
           !$queryVaults.isError &&
           !$queryNftHolding.isError &&
-          !$queryCompare.isError &&
           !$queryPositionList.isError &&
           !$queryAllPositions.some((item) => item.isError === true)
         ) {
@@ -245,7 +233,6 @@
                 !$queryTokenHolding.isError &&
                 !$queryVaults.isError &&
                 !$queryNftHolding.isError &&
-                !$queryCompare.isError &&
                 !$queryPositionList.isError &&
                 !$queryAllPositions.some((item) => item.isError === true)
               ) {
@@ -728,21 +715,6 @@
     };
   };
 
-  //// COMPARE
-  const getAnalyticCompare = async (address) => {
-    const response: any = await nimbus.get(
-      `/v2/analysis/${address}/compare?compareAddress=${""}`
-    );
-    return response?.data || [];
-  };
-
-  $: queryCompare = createQuery({
-    queryKey: ["compare", $wallet, $chain],
-    queryFn: () => getAnalyticCompare($wallet),
-    staleTime: Infinity,
-    enabled: false,
-  });
-
   onMount(() => {
     mixpanel.track("portfolio_page", {
       address: $wallet,
@@ -803,7 +775,6 @@
         };
         positionListQueries = [];
         positionsData = [];
-        newsData = [];
         holdingNFTData = [];
         holdingTokenData = [];
         formatHoldingTokenData = [];
@@ -949,19 +920,28 @@
                           return;
                         }
                         tab.update((n) => (n = type.value));
-                        window.history.replaceState(
-                          null,
-                          "",
-                          window.location.pathname +
-                            `?tab=${type.value}&type=${$typeWallet}&chain=${$chain}&address=${$wallet}`
-                        );
-                        totalTokens.update((n) => (n = 0));
-                        totalAirdrops.update((n) => (n = 0));
-                        totalNfts.update((n) => (n = 0));
-                        totalPositions.update((n) => (n = 0));
-                        unrealizedProfit.update((n) => (n = 0));
-                        realizedProfit.update((n) => (n = 0));
-                        pastProfit.update((n) => (n = 0));
+                        if (type.value === "news") {
+                          window.history.replaceState(
+                            null,
+                            "",
+                            window.location.pathname + `?tab=${type.value}`
+                          );
+                        } else {
+                          window.history.replaceState(
+                            null,
+                            "",
+                            window.location.pathname +
+                              `?tab=${type.value}&type=${$typeWallet}&chain=${$chain}&address=${$wallet}`
+                          );
+                          totalTokens.update((n) => (n = 0));
+                          totalAirdrops.update((n) => (n = 0));
+                          totalNfts.update((n) => (n = 0));
+                          totalPositions.update((n) => (n = 0));
+                          unrealizedProfit.update((n) => (n = 0));
+                          realizedProfit.update((n) => (n = 0));
+                          pastProfit.update((n) => (n = 0));
+                        }
+
                         mixpanel.track(`user_select_tab_${type.value}`);
                       }}
                     >
@@ -972,6 +952,7 @@
                       >
                         {type.label}
                       </div>
+
                       {#if type.value === $tab}
                         <Motion
                           let:motion
@@ -1047,15 +1028,9 @@
                 <PerformanceSummary />
               {/if}
 
-              <!-- <News isLoading={false} data={newsData} /> -->
-
-              <!-- {#if $typeWallet === "EVM" || $typeWallet === "MOVE" || $typeWallet === "CEX" || $typeWallet === "BUNDLE"}
-                <RiskReturn
-                  isLoading={$queryCompare.isFetching}
-                  isError={$queryCompare.isError}
-                  data={$queryCompare.data}
-                />
-              {/if} -->
+              {#if $tab === "news"}
+                <News />
+              {/if}
             </div>
           {/if}
         </div>

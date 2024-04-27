@@ -7,27 +7,22 @@
   import relativeTime from "dayjs/plugin/relativeTime";
   dayjs.extend(relativeTime);
   import { wallet, chain, typeWallet, isDarkMode } from "~/store";
-  import { typeTrx } from "~/utils";
-  import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { createQuery } from "@tanstack/svelte-query";
   import { nimbus } from "~/lib/network";
-  import type { TrxHistoryDataRes } from "~/types/TrxHistoryData";
-  import type {
-    AnalyticHistoricalRes,
-    AnalyticHistoricalFormat,
-  } from "~/types/AnalyticHistoricalData";
   import { otherGeneration } from "~/lib/chains";
   import { handleValidateAddress } from "~/lib/queryAPI";
+  import { typeTrx } from "~/utils";
+  import { AnimateSharedLayout, Motion } from "svelte-motion";
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import HistoricalTransactions from "~/UI/Transaction/HistoricalTransactions.svelte";
   import AddressManagement from "~/components/AddressManagement.svelte";
-  import CalendarChart from "~/components/CalendarChart.svelte";
   import CoinSelector from "~/components/CoinSelector.svelte";
   import Select from "~/components/Select.svelte";
+  import TooltipTitle from "~/components/TooltipTitle.svelte";
+  import CalendarChart from "~/components/CalendarChart.svelte";
 
   import All from "~/assets/all.svg";
-  import TooltipTitle from "~/components/TooltipTitle.svelte";
 
   const types = [
     {
@@ -148,7 +143,7 @@
       addressChain = validateAccount?.type;
     }
 
-    const response: AnalyticHistoricalRes = await nimbus.get(
+    const response: any = await nimbus.get(
       `/v2/analysis/${address}/historical?chain=${
         addressChain === "BUNDLE" ? "" : addressChain
       }`
@@ -161,7 +156,7 @@
       const maxHistorical = data?.reduce((prev, current) =>
         prev.count > current.count ? prev : current
       );
-      const formatData: AnalyticHistoricalFormat = data?.map((item) => {
+      const formatData: any = data?.map((item) => {
         return [
           dayjs(Number(item.date) * 1000).format("YYYY-MM-DD"),
           item.count,
@@ -221,7 +216,7 @@
   }
 
   const getListTransactions = async (type: string, coin: string) => {
-    const response: TrxHistoryDataRes = await nimbus.get(
+    const response: any = await nimbus.get(
       `/v2/address/${$wallet}/history?chain=${$chain}&pageToken=${paginate}${
         type !== "all" ? `&type=${type}` : ""
       }${coin !== "all" ? `&coin=${coin}` : ""}`

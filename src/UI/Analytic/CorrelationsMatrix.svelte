@@ -14,15 +14,13 @@
     formatPercent,
   } from "~/utils";
   import { listSupported } from "~/lib/chains";
-  import { defillama, nimbus } from "~/lib/network";
+  import { defillama } from "~/lib/network";
   import dayjs from "dayjs";
   import {
     handleValidateAddress,
     getHoldingToken,
     handleMarketTokens,
   } from "~/lib/queryAPI";
-
-  import type { HoldingTokenRes } from "~/types/HoldingTokenData";
 
   import LoadingPremium from "~/components/LoadingPremium.svelte";
   import AppOverlay from "~/components/Overlay.svelte";

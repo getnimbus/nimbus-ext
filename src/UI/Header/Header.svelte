@@ -61,21 +61,18 @@
   import Logo from "~/assets/logo-white.svg";
   import LogoBlack from "~/assets/logo-2.png";
   import PortfolioIcon from "~/assets/portfolio.svg";
-  import MarketIcon from "~/assets/market.svg";
   import WhaleIcon from "~/assets/whale.svg";
-  import NewsIcon from "~/assets/news.svg";
   import AnalyticIcon from "~/assets/analytic.svg";
   import TransactionsIcon from "~/assets/transactions.svg";
   import SettingsIcon from "~/assets/settings.svg";
-  import ChangeLogIcon from "~/assets/change-log.svg";
   import Search from "~/assets/search.svg";
   import SearchBlack from "~/assets/search-black.svg";
-  import Bell from "~/assets/bell.svg";
   import Crown from "~/assets/crown.svg";
-  import Close from "~/assets/close-menu-bar.svg";
   import Chat from "~/assets/chat.svg";
   import User from "~/assets/user.png";
   import goldImg from "~/assets/Gold4.svg";
+  import Bell from "~/assets/bell.svg";
+  import ChangeLogIcon from "~/assets/change-log.svg";
 
   export let navActive;
   export let handleUpdateNavActive = (value) => {};
@@ -547,51 +544,6 @@
   }
 </script>
 
-<svelte:head>
-  <!-- import Jupiter Swap -->
-  <script src="/main-2.2.1.js" data-preload></script>
-  <script>
-    !(function (e, t) {
-      const a = "featurebase-sdk";
-      function n() {
-        if (!t.getElementById(a)) {
-          var e = t.createElement("script");
-          (e.id = a),
-            (e.src = "https://do.featurebase.app/js/sdk.js"),
-            t
-              .getElementsByTagName("script")[0]
-              .parentNode.insertBefore(e, t.getElementsByTagName("script")[0]);
-        }
-      }
-      "function" != typeof e.Featurebase &&
-        (e.Featurebase = function () {
-          (e.Featurebase.q = e.Featurebase.q || []).push(arguments);
-        }),
-        "complete" === t.readyState || "interactive" === t.readyState
-          ? n()
-          : t.addEventListener("DOMContentLoaded", n);
-    })(window, document);
-
-    Featurebase("initialize_changelog_widget", {
-      organization: "nimbus",
-      placement: "bottom",
-      theme: "light",
-      initialPage: "MainView",
-      fullscreenPopup: true,
-      // fullScreen: false,
-    });
-  </script>
-
-  <script>
-    Featurebase("initialize_feedback_widget", {
-      organization: "nimbus", // required
-      theme: "light", // required
-      placement: "right", // optional
-      // email: "youruser@example.com", // optional
-    });
-  </script>
-</svelte:head>
-
 <div
   class="mobile-header-container py-1 border-b-[1px] border-[#ffffff1a] relative"
 >
@@ -750,29 +702,6 @@
           {MultipleLang.whales}
         </span>
       </div>
-
-      <!-- <div
-        class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:opacity-100 transition-all
-          ${
-            $isDarkMode
-              ? navActive === "/news"
-                ? "bg-[#212121] opacity-100"
-                : "opacity-70 hover:bg-[#212121]"
-              : navActive === "/news"
-                ? "bg-[#525B8C] opacity-100"
-                : "opacity-70 hover:bg-[#525B8C]"
-          }
-          `}
-        on:click={() => {
-          handleUpdateNavActive("/news");
-          navigateTo("/news");
-        }}
-      >
-        <img src={NewsIcon} alt="" width="20" height="20" />
-        <span class="text-sm font-medium text-white xl:text-base">
-          {MultipleLang.news}
-        </span>
-      </div> -->
     </div>
 
     <div class="flex items-center justify-end gap-6 xl:gap-3 md:w-max w-full">
@@ -1032,30 +961,6 @@
               {MultipleLang.whales}
             </span>
           </div>
-
-          <!-- <div
-            class={`flex items-center gap-3 text-white px-5 py-3 cursor-pointer
-            ${
-              $isDarkMode
-                ? navActive === "/news"
-                  ? "bg-[#212121] rounded-[1000px] opacity-100"
-                  : "opacity-70"
-                : navActive === "/news"
-                  ? "bg-[#525B8C] rounded-[1000px] opacity-100"
-                  : "opacity-70"
-            }
-          `}
-            on:click={() => {
-              handleUpdateNavActive("/news");
-              isShowHeaderMobile.update((n) => (n = false));
-              navigateTo("/news");
-            }}
-          >
-            <img src={NewsIcon} alt="" width="30" height="30" />
-            <span class="text-xl font-medium">
-              {MultipleLang.news}
-            </span>
-          </div> -->
 
           {#if $user && Object.keys($user).length !== 0}
             <div
