@@ -27,7 +27,7 @@
       const res = await nimbus
         .get(`/news?page=${pageValue}`)
         .then((response) => response.data);
-      newsData = [...newsData, ...res.news];
+      newsData = [...newsData, ...res.data];
     } catch (e) {
       console.error("error: ", e);
     } finally {

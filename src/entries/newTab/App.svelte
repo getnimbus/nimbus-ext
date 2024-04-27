@@ -27,7 +27,6 @@
   import Recap from "~/layouts/Recap.svelte";
   import Transactions from "~/layouts/Transactions.svelte";
   import WhalesList from "~/layouts/WhalesList.svelte";
-  import News from "~/layouts/News.svelte";
   import Settings from "~/layouts/Settings.svelte";
   import Invitation from "~/layouts/Invitation.svelte";
   import Upgrade from "~/layouts/Upgrade.svelte";
@@ -136,10 +135,6 @@
       layout: WhalesList,
     },
     {
-      name: "/news",
-      layout: News,
-    },
-    {
       name: "/settings",
       layout: Settings,
     },
@@ -198,6 +193,50 @@
     navActive = value;
   };
 </script>
+
+<svelte:head>
+  <!-- import Jupiter Swap -->
+  <script src="/main-2.2.1.js" data-preload></script>
+  <script>
+    !(function (e, t) {
+      const a = "featurebase-sdk";
+      function n() {
+        if (!t.getElementById(a)) {
+          var e = t.createElement("script");
+          (e.id = a),
+            (e.src = "https://do.featurebase.app/js/sdk.js"),
+            t
+              .getElementsByTagName("script")[0]
+              .parentNode.insertBefore(e, t.getElementsByTagName("script")[0]);
+        }
+      }
+      "function" != typeof e.Featurebase &&
+        (e.Featurebase = function () {
+          (e.Featurebase.q = e.Featurebase.q || []).push(arguments);
+        }),
+        "complete" === t.readyState || "interactive" === t.readyState
+          ? n()
+          : t.addEventListener("DOMContentLoaded", n);
+    })(window, document);
+
+    Featurebase("initialize_changelog_widget", {
+      organization: "nimbus",
+      placement: "bottom",
+      theme: "light",
+      initialPage: "MainView",
+      fullscreenPopup: true,
+      // fullScreen: false,
+    });
+  </script>
+  <script>
+    Featurebase("initialize_feedback_widget", {
+      organization: "nimbus", // required
+      theme: "light", // required
+      placement: "right", // optional
+      // email: "youruser@example.com", // optional
+    });
+  </script>
+</svelte:head>
 
 <ErrorBoundary>
   <QueryClientProvider client={queryClient}>
