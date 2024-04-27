@@ -62,7 +62,7 @@
           class={`grid gap-10 ${
             newsData && newsData.length === 0
               ? "grid-cols-1"
-              : "2xl:grid-cols-4 xl:grid-cols-3 grid-cols-2"
+              : "2xl:grid-cols-5 xl:grid-cols-3 lg:grid-cols-2 grid-cols-1"
           }`}
         >
           {#if newsData.length === 0}
