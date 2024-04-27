@@ -568,7 +568,7 @@
     {/if}
 
     {#if isLoading}
-      <div class="w-full h-full grid grid-cols-5">
+      <div class="grid grid-cols-5">
         <div
           class="col-span-full flex justify-center items-center h-full py-3 px-3"
         >
