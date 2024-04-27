@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { nimbus } from "~/lib/network";
   import { createQuery } from "@tanstack/svelte-query";
   import {
     isDarkMode,
@@ -19,8 +18,6 @@
   } from "~/utils";
   import { listSupported } from "~/lib/chains";
   import { handleValidateAddress, getHoldingToken } from "~/lib/queryAPI";
-
-  import type { HoldingTokenRes } from "~/types/HoldingTokenData";
 
   import AnalyticSection from "~/components/AnalyticSection.svelte";
   import LoadingPremium from "~/components/LoadingPremium.svelte";

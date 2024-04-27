@@ -5,8 +5,6 @@
   import { sendMessage } from "webext-bridge";
   import { add3Dots } from "~/utils";
 
-  import type { TokenInfoData } from "~/types/TokenInfoData";
-
   import "~/components/Loading.custom.svelte";
   import "~/components/ResetStyle.custom.svelte";
   import "~/components/CoinChart.custom.svelte";
@@ -48,7 +46,7 @@
   const getTokenInfo = async () => {
     isLoading = true;
     try {
-      const data: TokenInfoData = await sendMessage("tokenInfoData", {
+      const data: any = await sendMessage("tokenInfoData", {
         id: id,
       });
 
