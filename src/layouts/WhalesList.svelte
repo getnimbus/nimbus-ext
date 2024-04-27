@@ -335,7 +335,7 @@
 
 <ErrorBoundary>
   <div
-    class="max-w-[2000px] m-auto xl:w-[90%] w-[90%] py-8 flex flex-col gap-6"
+    class="max-w-[2000px] m-auto xl:w-[90%] w-[90%] py-8 flex flex-col gap-4"
   >
     <div
       class="flex xl:flex-row flex-col justify-between xl:items-end xl:gap-0 gap-4"
@@ -387,8 +387,7 @@
       class={`xl:block hidden rounded-[10px] border border_0000000d xl:overflow-visible overflow-x-auto ${
         $isDarkMode ? "bg-[#131313]" : "bg-[#fff]"
       } ${
-        ($queryWhalesList.isLoading && $queryWhalesList.isError) ||
-        (whalesData && whalesData?.length === 0)
+        $queryWhalesList.isFetching || (whalesData && whalesData?.length === 0)
           ? "h-screen"
           : ""
       }`}
@@ -612,7 +611,7 @@
           </tr>
         </thead>
 
-        {#if $queryWhalesList.isLoading}
+        {#if $queryWhalesList.isFetching}
           <tbody>
             <tr>
               <td colspan="11">
@@ -728,7 +727,7 @@
         $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
       }`}
     >
-      {#if $queryWhalesList.isLoading}
+      {#if $queryWhalesList.isFetching}
         <div class="flex justify-center items-center h-full py-3 px-3">
           <Loading />
         </div>
