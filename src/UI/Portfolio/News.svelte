@@ -1,48 +1,102 @@
 <script lang="ts">
+  import { onMount } from "svelte";
   import { i18n } from "~/lib/i18n";
+  import { nimbus } from "~/lib/network";
+  import { tab } from "~/store";
+  import mixpanel from "mixpanel-browser";
 
-  export let data;
-  export let isLoading;
-
-  import Loading from "~/components/Loading.svelte";
   import NewsCard from "~/components/NewsCard.svelte";
+  import Loading from "~/components/Loading.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
+  import Button from "~/components/Button.svelte";
 
   const MultipleLang = {
     news: i18n("newtabPage.news", "News"),
-    view_more: i18n("newtabPage.view-more", "View more"),
+    news_page_title: i18n(
+      "newtabPage.news-page-title",
+      "Check out the latest blockchain and crypto articles we've put together"
+    ),
   };
+
+  let pageValue = 1;
+  let isLoading = false;
+  let newsData = [];
+
+  const getNews = async () => {
+    try {
+      isLoading = true;
+      const res = await nimbus
+        .get(`/news?page=${pageValue}`)
+        .then((response) => response.data);
+      newsData = [...newsData, ...res.data];
+    } catch (e) {
+      console.error("error: ", e);
+    } finally {
+      isLoading = false;
+    }
+  };
+
+  onMount(() => {
+    if ($tab === "news") {
+      getNews();
+      mixpanel.track("news_page");
+    }
+  });
 </script>
 
 <ErrorBoundary>
-  <div class="flex flex-col gap-10 border border_0000001a rounded-[20px] p-6">
-    <div class="flex justify-between border-b border-[#00000014] pb-4">
+  <div class="flex flex-col gap-8 xl:px-3">
+    <div class="flex flex-col justify-center">
       <div class="text-2xl font-medium">
         {MultipleLang.news}
       </div>
-      <div class="font-bold text-base cursor-pointer">
-        {MultipleLang.view_more}
+      <div class="text-lg">
+        {MultipleLang.news_page_title}
       </div>
     </div>
-    {#if isLoading}
-      <div class="flex items-center justify-center">
-        <Loading />
-      </div>
-    {:else}
-      <div>
-        {#if data && data.length !== 0}
-          <div class="grid 2xl:grid-cols-3 xl:grid-cols-2 grid-cols-1 gap-10">
-            {#each data as news}
-              <NewsCard data={news} />
+
+    <div class="flex flex-col gap-4">
+      {#if isLoading && pageValue === 1}
+        <div class="w-full h-screen flex justify-center items-center">
+          <Loading />
+        </div>
+      {:else}
+        <div
+          class={`grid gap-10 ${
+            newsData && newsData.length === 0
+              ? "grid-cols-1"
+              : "2xl:grid-cols-5 xl:grid-cols-3 lg:grid-cols-2 grid-cols-1"
+          }`}
+        >
+          {#if newsData.length === 0}
+            <div class="text-lg text-gray-400">Empty</div>
+          {:else}
+            {#each newsData as data}
+              <NewsCard {data} />
             {/each}
+          {/if}
+        </div>
+      {/if}
+      {#if newsData.length !== 0}
+        <div class="mx-auto mt-6">
+          <div class="w-[140px]">
+            <Button
+              variant="secondary"
+              on:click={() => {
+                if ($tab === "news") {
+                  pageValue = pageValue + 1;
+                  getNews();
+                }
+              }}
+              disabled={isLoading}
+              {isLoading}
+            >
+              Load more
+            </Button>
           </div>
-        {:else}
-          <div class="flex items-center justify-center text-base text-gray-400">
-            Empty
-          </div>
-        {/if}
-      </div>
-    {/if}
+        </div>
+      {/if}
+    </div>
   </div>
 </ErrorBoundary>
 

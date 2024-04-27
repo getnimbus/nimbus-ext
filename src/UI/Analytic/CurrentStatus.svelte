@@ -20,8 +20,6 @@
   import numeral from "numeral";
   import { handleValidateAddress, getHoldingToken } from "~/lib/queryAPI";
 
-  import type { HoldingTokenRes } from "~/types/HoldingTokenData";
-
   import EChart from "~/components/EChart.svelte";
   import LoadingPremium from "~/components/LoadingPremium.svelte";
   import TooltipTitle from "~/components/TooltipTitle.svelte";

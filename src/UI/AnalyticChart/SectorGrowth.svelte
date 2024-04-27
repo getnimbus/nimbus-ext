@@ -7,8 +7,6 @@
   import { autoFontSize, formatCurrency, typeList } from "~/utils";
   import { nimbus } from "~/lib/network";
 
-  import type { AnalyticSectorGrowthRes } from "~/types/AnalyticSectorGrowthData";
-
   import EChart from "~/components/EChart.svelte";
   import LoadingPremium from "~/components/LoadingPremium.svelte";
 
@@ -153,15 +151,12 @@
   const getSectorGrowth = async (dataPersonalizeTag) => {
     isLoadingSectorGrowth = true;
     try {
-      const response: AnalyticSectorGrowthRes = await sendMessage(
-        "getSectorGrowth",
-        {
-          address: $wallet,
-          chain: $chain,
-          // fromDate: "YYYY-MM-DD",
-          // toDate: "YYYY-MM-DD",
-        }
-      );
+      const response: any = await sendMessage("getSectorGrowth", {
+        address: $wallet,
+        chain: $chain,
+        // fromDate: "YYYY-MM-DD",
+        // toDate: "YYYY-MM-DD",
+      });
 
       if (response === undefined) {
         isEmptySectorGrowth = true;

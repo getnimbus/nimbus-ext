@@ -21,8 +21,6 @@
   import { priceSubscribe } from "~/lib/price-ws";
   import { handleValidateAddress, getHoldingToken } from "~/lib/queryAPI";
 
-  import type { TokenData, HoldingTokenRes } from "~/types/HoldingTokenData";
-
   import Tooltip from "~/components/Tooltip.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
@@ -53,7 +51,7 @@
   let dataSubWS = [];
   let filteredUndefinedCmcHoldingTokenData = [];
   let filteredNullCmcHoldingTokenData = [];
-  let holdingTokenData: TokenData = [];
+  let holdingTokenData = [];
   let formatData = [];
   let sumTokens = 0;
   let tableTokenHeader;

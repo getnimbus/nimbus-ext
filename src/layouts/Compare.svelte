@@ -24,8 +24,6 @@
   import mixpanel from "mixpanel-browser";
   import { Avatar } from "flowbite-svelte";
 
-  import type { TokenData } from "~/types/HoldingTokenData";
-
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import Copy from "~/components/Copy.svelte";
   import TokenAllocation from "~/components/TokenAllocation.svelte";
@@ -74,7 +72,7 @@
   ];
   let selectedType;
 
-  let holdingTokenData: TokenData = [];
+  let holdingTokenData = [];
   let dataPieChartToken = {
     sumOrderBreakdownToken: 0,
     formatDataPieChartTopFiveToken: [],
@@ -87,7 +85,7 @@
   let compareData = {};
   let searchCompare = "";
 
-  let holdingTokenDataCompare: TokenData = [];
+  let holdingTokenDataCompare = [];
   let dataPieChartCompare = {
     sumOrderBreakdownToken: 0,
     formatDataPieChartTopFiveToken: [],

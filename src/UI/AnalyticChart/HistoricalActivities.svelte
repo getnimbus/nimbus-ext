@@ -4,7 +4,6 @@
   import { nimbus } from "~/lib/network";
   import { listSupported, otherGeneration } from "~/lib/chains";
   import { createQuery } from "@tanstack/svelte-query";
-  import type { AnalyticHistoricalFormat } from "~/types/AnalyticHistoricalData";
   import { handleValidateAddress } from "~/lib/queryAPI";
 
   import CalendarChart from "~/components/CalendarChart.svelte";
@@ -90,7 +89,7 @@
         prev.count > current.count ? prev : current
       );
 
-      const formatData: AnalyticHistoricalFormat = data?.map((item) => {
+      const formatData: any = data?.map((item) => {
         return [
           dayjs(Number(item.date) * 1000).format("YYYY-MM-DD"),
           item.count,
