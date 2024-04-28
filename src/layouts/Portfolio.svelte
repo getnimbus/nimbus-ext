@@ -916,33 +916,32 @@
                       class="relative cursor-pointer xl:text-base text-xl font-medium py-1 px-3 rounded-[100px] transition-all"
                       id={type.id}
                       on:click={() => {
-                        if ($tab === type.value) {
-                          return;
-                        }
-                        tab.update((n) => (n = type.value));
-                        if (type.value === "news") {
-                          window.history.replaceState(
-                            null,
-                            "",
-                            window.location.pathname + `?tab=${type.value}`
-                          );
-                        } else {
-                          window.history.replaceState(
-                            null,
-                            "",
-                            window.location.pathname +
-                              `?tab=${type.value}&type=${$typeWallet}&chain=${$chain}&address=${$wallet}`
-                          );
-                          totalTokens.update((n) => (n = 0));
-                          totalAirdrops.update((n) => (n = 0));
-                          totalNfts.update((n) => (n = 0));
-                          totalPositions.update((n) => (n = 0));
-                          unrealizedProfit.update((n) => (n = 0));
-                          realizedProfit.update((n) => (n = 0));
-                          pastProfit.update((n) => (n = 0));
-                        }
+                        if ($tab !== type.value) {
+                          tab.update((n) => (n = type.value));
+                          if (type.value === "news") {
+                            window.history.replaceState(
+                              null,
+                              "",
+                              window.location.pathname + `?tab=${type.value}`
+                            );
+                          } else {
+                            window.history.replaceState(
+                              null,
+                              "",
+                              window.location.pathname +
+                                `?tab=${type.value}&type=${$typeWallet}&chain=${$chain}&address=${$wallet}`
+                            );
+                            totalTokens.update((n) => (n = 0));
+                            totalAirdrops.update((n) => (n = 0));
+                            totalNfts.update((n) => (n = 0));
+                            totalPositions.update((n) => (n = 0));
+                            unrealizedProfit.update((n) => (n = 0));
+                            realizedProfit.update((n) => (n = 0));
+                            pastProfit.update((n) => (n = 0));
+                          }
 
-                        mixpanel.track(`user_select_tab_${type.value}`);
+                          mixpanel.track(`user_select_tab_${type.value}`);
+                        }
                       }}
                     >
                       <div
