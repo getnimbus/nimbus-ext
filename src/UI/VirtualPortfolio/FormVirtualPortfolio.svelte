@@ -449,19 +449,23 @@
                   min="0"
                   max="100"
                   bind:value={data.percent}
-                  on:change={(e) => {
-                    if (e?.target.value) {
+                  on:change={(event) => {
+                    if (event?.target?.value) {
                       let number = 0;
-                      if (parseInt(e.target.value) < parseInt(e.target.min)) {
-                        e.target.value = e.target.min;
-                        number = e.target.min;
-                      } else if (
-                        parseInt(e.target.value) > parseInt(e.target.max)
+                      if (
+                        parseInt(event?.target?.value) <
+                        parseInt(event?.target?.min)
                       ) {
-                        e.target.value = e.target.max;
-                        number = e.target.max;
+                        event?.target?.value = event?.target?.min;
+                        number = event?.target?.min;
+                      } else if (
+                        parseInt(event?.target?.value) >
+                        parseInt(event?.target?.max)
+                      ) {
+                        event?.target?.value = event?.target?.max;
+                        number = event?.target?.max;
                       } else {
-                        number = e.target.value;
+                        number = event?.target?.value;
                       }
                       selectedTokenList = selectedTokenList.map((item) => {
                         if (item.id === data.id) {

@@ -253,6 +253,8 @@
         );
       }
       handleSaveSuggest(validateAccount?.address);
+
+      search = "";
     }
   };
 
@@ -335,6 +337,7 @@
               picture: User,
             })
         );
+        code = "";
         queryClient?.invalidateQueries(["users-me"]);
         isOpenModalSync = false;
       }
@@ -1234,8 +1237,8 @@
                 ? "text-white"
                 : "text-[#5E656B] placeholder-[#5E656B]"
             }`}
-            on:change={(e) => {
-              code = e?.target?.value;
+            on:change={(event) => {
+              code = event?.target?.value;
             }}
           />
         </div>
@@ -1296,7 +1299,6 @@
             ) {
               handleSearchAddress(search);
               showPopoverSearch = false;
-              search = "";
             }
           }}
           bind:value={search}
@@ -1479,7 +1481,6 @@
               ) {
                 handleSearchAddress(search);
                 showPopoverSearch = false;
-                search = "";
               }
             }}
             bind:value={search}

@@ -41,6 +41,7 @@
       await nimbus.post("/subscription/failure-email", {
         email: data.email,
       });
+      email = "";
       isLoadingSendMail = false;
       toastMsg =
         "We have received you email. Let's us check you payment and email to you soon!";
@@ -84,8 +85,8 @@
                   : "text-[#5E656B] placeholder-[#5E656B]"
               }
               `}
-              on:change={(e) => {
-                email = e?.target?.value;
+              on:change={(event) => {
+                email = event?.target?.value;
               }}
             />
           </div>

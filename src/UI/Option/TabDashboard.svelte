@@ -83,8 +83,8 @@
         <input
           type="checkbox"
           bind:checked
-          on:change={(e) => {
-            browser.storage.sync.set({ defaultnewtab: e.target.checked });
+          on:change={(event) => {
+            browser.storage.sync.set({ defaultnewtab: event.target.checked });
             trigger();
           }}
         />

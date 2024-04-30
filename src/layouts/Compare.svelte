@@ -1159,8 +1159,8 @@
                                 }`}
                               >
                                 <input
-                                  on:change={(e) => {
-                                    search = e?.target?.value;
+                                  on:change={(event) => {
+                                    search = event?.target?.value;
                                   }}
                                   bind:value={search}
                                   placeholder={"Search address to compare"}
