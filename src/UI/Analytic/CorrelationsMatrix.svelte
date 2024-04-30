@@ -610,8 +610,8 @@
         }`}
       >
         <input
-          on:change={(e) => {
-            searchValue = e?.target?.value;
+          on:change={(event) => {
+            searchValue = event?.target?.value;
           }}
           bind:value={searchValue}
           placeholder={"Find by token name"}

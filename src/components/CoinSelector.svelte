@@ -108,8 +108,8 @@
           }`}
           placeholder="Search"
           bind:value={search}
-          on:change={(e) => {
-            search = e?.target?.value;
+          on:change={(event) => {
+            search = event?.target?.value;
           }}
         />
       </div>

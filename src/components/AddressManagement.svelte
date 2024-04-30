@@ -1,6 +1,5 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { navigateTo } from "svelte-router-spa";
   import * as browser from "webextension-polyfill";
   import {
     tab,
@@ -579,6 +578,8 @@
           );
         }
 
+        address = "";
+        label = "";
         e.target.reset();
         errors = {};
         triggerModalAddAddress.update((n) => (n = false));
@@ -700,6 +701,7 @@
         email: data.email,
         address: $wallet,
       });
+      email = "";
       isLoadingSendMail = false;
       localStorage.setItem("isGetUserEmailYet", "true");
       toastMsg = "Ready to receive exclusive benefits soon!";
@@ -1794,8 +1796,8 @@
                       ? "text-white"
                       : "text-[#5E656B] placeholder-[#5E656B]"
                   }`}
-                  on:change={(e) => {
-                    address = e?.target?.value;
+                  on:change={(event) => {
+                    address = event?.target?.value;
                   }}
                 />
               </div>
@@ -1832,8 +1834,8 @@
                       ? "text-white"
                       : "text-[#5E656B] placeholder-[#5E656B]"
                   }`}
-                  on:change={(e) => {
-                    label = e?.target?.value;
+                  on:change={(event) => {
+                    label = event?.target?.value;
                   }}
                 />
               </div>
@@ -2022,8 +2024,8 @@
                         ? "text-white"
                         : "text-[#5E656B] placeholder-[#5E656B]"
                     }`}
-                    on:change={(e) => {
-                      address = e?.target?.value;
+                    on:change={(event) => {
+                      address = event?.target?.value;
                     }}
                   />
                 </div>
@@ -2063,8 +2065,8 @@
                         : "text-[#5E656B] placeholder-[#5E656B]"
                     }
               `}
-                    on:change={(e) => {
-                      label = e?.target?.value;
+                    on:change={(event) => {
+                      label = event?.target?.value;
                     }}
                   />
                 </div>
@@ -2174,8 +2176,8 @@
           class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-base font-normal text-[#5E656B] placeholder-[#5E656B] ${
             email && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
           }`}
-          on:change={(e) => {
-            email = e?.target?.value;
+          on:change={(event) => {
+            email = event?.target?.value;
           }}
         />
       </div>

@@ -947,11 +947,11 @@
                       on:focus={() => {
                         showSuggestListTag = true;
                       }}
-                      on:change={(e) => {
+                      on:change={(event) => {
                         filteredListTag = listTag.filter((tag) =>
                           tag
                             .toLowerCase()
-                            .includes(e?.target?.value.toLowerCase())
+                            .includes(event?.target?.value.toLowerCase())
                         );
                       }}
                       bind:value={query}
@@ -1021,8 +1021,8 @@
                                             : "text-[#5E656B] placeholder-[#5E656B]"
                                         }`}
                                         bind:value={tag}
-                                        on:change={(e) => {
-                                          tag = e?.target?.value;
+                                        on:change={(event) => {
+                                          tag = event?.target?.value;
                                         }}
                                       />
                                     </div>
