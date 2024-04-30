@@ -233,16 +233,6 @@
 
   const handleSearch = (event) => {
     search = event.target.value;
-    if (
-      search &&
-      search?.length !== 0 &&
-      (event.which == 13 || event.keyCode == 13) &&
-      selectedIndexAddress === -1
-    ) {
-      handleSearchAddress(search);
-      showPopoverSearch = false;
-      search = "";
-    }
   };
 
   const wallets$ = onboard.state.select("wallets");
@@ -1272,6 +1262,18 @@
           on:change={(event) => {
             handleSearch(event);
           }}
+          on:keydown={(event) => {
+            if (
+              search &&
+              search?.length !== 0 &&
+              (event.which == 13 || event.keyCode == 13) &&
+              selectedIndexAddress === -1
+            ) {
+              handleSearchAddress(search);
+              showPopoverSearch = false;
+              search = "";
+            }
+          }}
           bind:value={search}
           autofocus
           placeholder={MultipleLang.search_placeholder}
@@ -1442,6 +1444,18 @@
           <input
             on:change={(event) => {
               handleSearch(event);
+            }}
+            on:keydown={(event) => {
+              if (
+                search &&
+                search?.length !== 0 &&
+                (event.which == 13 || event.keyCode == 13) &&
+                selectedIndexAddress === -1
+              ) {
+                handleSearchAddress(search);
+                showPopoverSearch = false;
+                search = "";
+              }
             }}
             bind:value={search}
             autofocus={true}
