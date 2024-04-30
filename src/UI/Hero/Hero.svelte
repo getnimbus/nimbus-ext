@@ -37,13 +37,6 @@
 
   const handleSearch = (event) => {
     search = event.target.value;
-    if (
-      search &&
-      search?.length !== 0 &&
-      (event.which == 13 || event.keyCode == 13)
-    ) {
-      handleSearchAddress(search);
-    }
   };
 
   const handleSearchAddress = async (value: string) => {
@@ -135,6 +128,15 @@
               autofocus
               on:change={(event) => {
                 handleSearch(event);
+              }}
+              on:keydown={(event) => {
+                if (
+                  search &&
+                  search?.length !== 0 &&
+                  (event.which == 13 || event.keyCode == 13)
+                ) {
+                  handleSearchAddress(search);
+                }
               }}
               bind:value={search}
               class={`xl:px-5 xl:py-3 px-6 py-4 border border-gray-300 focus:ring-0 xl:text-sm text-base font-normal rounded-xl w-full ${
