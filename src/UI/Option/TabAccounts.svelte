@@ -402,6 +402,9 @@
           msg: "",
         };
         errors["label"] = { ...errors["label"], required: false, msg: "" };
+
+        address = "";
+        label = "";
       } else {
         console.error("Invalid Form");
         isLoadingAddDEX = false;
@@ -648,6 +651,7 @@
       toastMsg = "Ready to receive exclusive benefits soon!";
       isSuccess = true;
       trigger();
+      email = "";
     } catch (e) {
       isLoadingSendMail = false;
       toastMsg = "Something wrong when sending email. Please try again!";

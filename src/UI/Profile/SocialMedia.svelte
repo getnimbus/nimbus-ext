@@ -37,6 +37,9 @@
       type: typeSocialMedia,
     });
     isOpenModal = false;
+
+    label = "";
+    userName = "";
   };
 
   $: {

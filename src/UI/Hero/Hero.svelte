@@ -72,6 +72,8 @@
             `?tab=${$tab}&type=${validateAccount?.type}&address=${validateAccount?.address}`
         );
       }
+
+      search = "";
     }
   };
 </script>

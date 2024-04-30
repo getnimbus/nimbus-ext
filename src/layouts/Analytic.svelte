@@ -31,16 +31,11 @@
     }
 
     try {
-      await nimbus.post(
-        "/subscription/analysis",
-        {
-          email: data.email,
-          address: $wallet,
-        },
-        {
-          headers: { "Content-Type": "application/json" },
-        }
-      );
+      await nimbus.post("/subscription/analysis", {
+        email: data.email,
+        address: $wallet,
+      });
+      email = "";
       isLoadingSendMail = false;
     } catch (e) {
       isLoadingSendMail = false;
@@ -133,8 +128,8 @@
                     : "text-[#5E656B] placeholder-[#5E656B]"
                 }
               `}
-                on:change={(e) => {
-                  email = e?.target?.value;
+                on:change={(event) => {
+                  email = event?.target?.value;
                 }}
               />
             </div>

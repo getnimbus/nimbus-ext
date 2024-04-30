@@ -80,6 +80,7 @@
       }
       isLoadingSubmitCoupleCode = false;
       trigger();
+      code = "";
     } catch (e) {
       console.error(e);
       isLoadingSubmitCoupleCode = false;
@@ -212,8 +213,8 @@
                     ? "text-white"
                     : "text-[#5E656B] placeholder-[#5E656B]"
                 }`}
-                on:change={(e) => {
-                  code = e?.target?.value;
+                on:change={(event) => {
+                  code = event?.target?.value;
                 }}
               />
             </div>
