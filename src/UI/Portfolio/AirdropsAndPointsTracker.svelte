@@ -588,6 +588,14 @@
           </table>
         </div>
       </div>
+      <div class="-mt-4 text-right text-sm text_00000099">
+        Data by <a
+          href="https://www.airdropped.link/"
+          class="hover:underline max-lg:underline text-[#1E96FC]"
+          target="_blank"
+          >https://www.airdropped.link
+        </a>
+      </div>
 
       <div class="flex flex-col gap-3">
         <div class="flex items-center gap-2 justify-between">
@@ -760,10 +768,12 @@
                     }`}
                   >
                     <div
-                      class="flex justify-end gap-1 text-sm font-medium text_00000099"
+                      class="flex justify-end text-sm font-medium text_00000099"
                     >
-                      <TooltipNumber number={item?.value || 0} type="amount" />
-                      {item?.ex_token?.symbol}
+                      $<TooltipNumber
+                        number={item?.listing_value / item?.total_amount || 0}
+                        type="balance"
+                      />/point
                     </div>
                   </td>
 
@@ -778,17 +788,17 @@
                       class="flex justify-end text-sm font-medium text_00000099"
                     >
                       <div class="flex flex-col items-end gap-1">
+                        <div>
+                          <TooltipNumber
+                            number={item?.value || 0}
+                            type="amount"
+                          />
+                          {item?.ex_token?.symbol}
+                        </div>
                         <TooltipNumber
                           number={item?.listing_value || 0}
                           type="value"
                         />
-                        <div>
-                          $<TooltipNumber
-                            number={item?.listing_value / item?.total_amount ||
-                              0}
-                            type="balance"
-                          />/point
-                        </div>
                       </div>
                     </div>
                   </td>
@@ -1068,6 +1078,14 @@
           {/if}
         </div>
       </div>
+      <div class="-mt-4 text-right text-sm text_00000099">
+        Data by <a
+          href="https://www.airdropped.link/"
+          class="hover:underline max-lg:underline text-[#1E96FC]"
+          target="_blank"
+          >https://www.airdropped.link
+        </a>
+      </div>
 
       <div class="flex flex-col gap-3">
         <div class="flex flex-col gap-2">
@@ -1190,13 +1208,12 @@
                       </div>
 
                       <div
-                        class="flex items-center justify-end gap-1 font-medium text-sm text_00000099"
+                        class="flex items-center justify-end font-medium text-sm text_00000099"
                       >
-                        <TooltipNumber
-                          number={item?.value || 0}
-                          type="amount"
-                        />
-                        {item?.ex_token?.symbol}
+                        $<TooltipNumber
+                          number={item?.listing_value / item?.total_amount || 0}
+                          type="balance"
+                        />/point
                       </div>
                     </div>
 
@@ -1209,17 +1226,17 @@
                         class="flex items-center justify-end font-medium text-sm text_00000099"
                       >
                         <div class="flex flex-col items-end gap-1">
+                          <div>
+                            <TooltipNumber
+                              number={item?.value || 0}
+                              type="amount"
+                            />
+                            {item?.ex_token?.symbol}
+                          </div>
                           <TooltipNumber
                             number={item?.listing_value || 0}
                             type="value"
                           />
-                          <div>
-                            $<TooltipNumber
-                              number={item?.listing_value /
-                                item?.total_amount || 0}
-                              type="balance"
-                            />/point
-                          </div>
                         </div>
                       </div>
                     </div>
@@ -1230,15 +1247,6 @@
           {/if}
         </div>
       </div>
-    </div>
-
-    <div class="py-3 px-3 text-right text-sm text_00000099">
-      Data by <a
-        href="https://www.airdropped.link/"
-        class="hover:underline max-lg:underline text-[#1E96FC]"
-        target="_blank"
-        >https://www.airdropped.link
-      </a>
     </div>
   </div>
 </ErrorBoundary>
