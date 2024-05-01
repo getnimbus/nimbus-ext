@@ -54,6 +54,12 @@
       twitter: "https://twitter.com/SharkyFi",
       logo: "https://sharky.fi/sharky.svg",
     },
+    Sanctum: {
+      name: "Sanctum",
+      website: "https://www.sanctum.so/",
+      twitter: "https://twitter.com/sanctumso",
+      logo: "https://image.typedream.com/cdn-cgi/image/width=256,format=auto,fit=scale-down,quality=100/https://api.typedream.com/v0/document/public/1e17facc-56e9-4158-9522-8cfee85931a9/2eijF98kDTQfQ2udXN7dGWGRb4E_Sanctum_logo.png",
+    },
   };
 
   const getPointsAirdrop = async () => {
