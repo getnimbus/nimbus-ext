@@ -11,6 +11,7 @@
   import Loading from "~/components/Loading.svelte";
   import Button from "~/components/Button.svelte";
   import ConnectSui from "~/components/SUI Campaign/ConnectSUI.svelte";
+  import PartnerQuestCard from "~/components/SUI Campaign/PartnerQuestCard.svelte";
 
   import goldImg from "~/assets/Gold4.svg";
   import User from "~/assets/user.png";
@@ -196,7 +197,11 @@
         offers
       </div>
     </div>
-    <div>quests</div>
+    <div class="flex flex-wrap gap-6">
+      {#each [1, 2, 3, 4, 5, 6] as item}
+        <PartnerQuestCard />
+      {/each}
+    </div>
   </div>
 </div>
 
