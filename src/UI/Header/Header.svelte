@@ -517,14 +517,14 @@
   class="mobile-header-container py-1 border-b-[1px] border-[#ffffff1a] relative"
 >
   <div
-    class="flex items-center justify-between max-w-[2000px] m-auto w-[90%] cursor-pointer"
+    class="flex items-center justify-between gap-2 max-w-[2000px] m-auto w-[90%] cursor-pointer"
   >
     <img
       src={Logo}
       alt="logo"
       loading="lazy"
       decoding="async"
-      class="xl:-ml-6 -ml-4 w-[177px] h-[60px] cursor-pointer"
+      class="xl:-ml-10 -ml-4 w-[177px] h-[60px] cursor-pointer"
       on:click={() => {
         if ($user && Object.keys($user)?.length === 0) {
           user.update((n) => (n = {}));
@@ -545,39 +545,40 @@
       }}
     />
 
-    <div
-      class="items-center justify-between hidden gap-1 xl:flex 2xl:absolute 2xl:top-[34px] 2xl:ml-0 xl:ml-40 absolute-center"
-    >
+    <div class="flex items-center gap-2">
       <div
-        class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:opacity-100 transition-all ${
-          $isDarkMode
-            ? navActive === "/portfolio"
-              ? "bg-[#212121] opacity-100"
-              : "opacity-70 hover:bg-[#212121]"
-            : navActive === "/portfolio"
-              ? "bg-[#525B8C] opacity-100"
-              : "opacity-70 hover:bg-[#525B8C]"
-        }`}
-        on:click={() => {
-          handleUpdateNavActive("/portfolio");
-          queryClient?.invalidateQueries(["users-me"]);
-          if ($wallet) {
-            navigateTo(
-              `/?tab=${$tab}&type=${$typeWallet}&chain=${$chain}&address=${$wallet}`
-            );
-          } else {
-            navigateTo("/");
-          }
-        }}
+        class="flex-1 items-center justify-between hidden gap-1 xl:flex 2xl:absolute 2xl:top-[34px] absolute-center"
       >
-        <img src={PortfolioIcon} alt="" width="20" height="20" />
-        <span class="text-sm font-medium text-white xl:text-base">
-          {MultipleLang.portfolio}
-        </span>
-      </div>
+        <div
+          class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:opacity-100 transition-all ${
+            $isDarkMode
+              ? navActive === "/portfolio"
+                ? "bg-[#212121] opacity-100"
+                : "opacity-70 hover:bg-[#212121]"
+              : navActive === "/portfolio"
+                ? "bg-[#525B8C] opacity-100"
+                : "opacity-70 hover:bg-[#525B8C]"
+          }`}
+          on:click={() => {
+            handleUpdateNavActive("/portfolio");
+            queryClient?.invalidateQueries(["users-me"]);
+            if ($wallet) {
+              navigateTo(
+                `/?tab=${$tab}&type=${$typeWallet}&chain=${$chain}&address=${$wallet}`
+              );
+            } else {
+              navigateTo("/");
+            }
+          }}
+        >
+          <img src={PortfolioIcon} alt="" width="20" height="20" />
+          <span class="text-sm font-medium text-white xl:text-base">
+            {MultipleLang.portfolio}
+          </span>
+        </div>
 
-      <div
-        class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:opacity-100 transition-all
+        <div
+          class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:opacity-100 transition-all
           ${
             $isDarkMode
               ? navActive === "/analytic"
@@ -588,33 +589,34 @@
                 : "opacity-70 hover:bg-[#525B8C]"
           }
           `}
-        on:click={() => {
-          handleUpdateNavActive("/analytic");
-          queryClient?.invalidateQueries(["users-me"]);
-          if ($wallet) {
-            navigateTo(
-              `/analytic?type=${$typeWallet}&chain=${$chain}&address=${$wallet}`
-            );
-          } else {
-            navigateTo("/");
-          }
-        }}
-      >
-        <img src={AnalyticIcon} alt="" width="20" height="20" />
-        <span class="flex gap-[1px]">
-          <span class="text-sm font-medium text-white xl:text-base">
-            {MultipleLang.analytics}
+          on:click={() => {
+            handleUpdateNavActive("/analytic");
+            queryClient?.invalidateQueries(["users-me"]);
+            if ($wallet) {
+              navigateTo(
+                `/analytic?type=${$typeWallet}&chain=${$chain}&address=${$wallet}`
+              );
+            } else {
+              navigateTo("/");
+            }
+          }}
+        >
+          <img src={AnalyticIcon} alt="" width="20" height="20" />
+          <span class="flex gap-[1px]">
+            <span class="text-sm font-medium text-white xl:text-base">
+              {MultipleLang.analytics}
+            </span>
+            <span class="flex items-center gap-[1px] -mt-2">
+              <img src={Crown} alt="" width="13" height="12" />
+              <span class="text-xs font-medium text-[#FFB800] -mt-[1px]"
+                >Pro</span
+              >
+            </span>
           </span>
-          <span class="flex items-center gap-[1px] -mt-2">
-            <img src={Crown} alt="" width="13" height="12" />
-            <span class="text-xs font-medium text-[#FFB800] -mt-[1px]">Pro</span
-            >
-          </span>
-        </span>
-      </div>
+        </div>
 
-      <div
-        class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:opacity-100 transition-all
+        <div
+          class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:opacity-100 transition-all
           ${
             $isDarkMode
               ? navActive === "/daily-checkin"
@@ -625,24 +627,24 @@
                 : "opacity-70 hover:bg-[#525B8C]"
           }
           `}
-        on:click={() => {
-          queryClient?.invalidateQueries(["users-me"]);
-          if ($user && Object.keys($user).length !== 0) {
+          on:click={() => {
             handleUpdateNavActive("/daily-checkin");
-            navigateTo("/daily-checkin");
-          } else {
-            navigateTo("/");
-          }
-        }}
-      >
-        <img src={QuestsIcon} alt="" width="20" height="20" />
-        <span class="text-sm font-medium text-white xl:text-base">
-          Quests
-        </span>
-      </div>
+            queryClient?.invalidateQueries(["users-me"]);
+            if ($user && Object.keys($user).length !== 0) {
+              navigateTo("/daily-checkin");
+            } else {
+              navigateTo("/");
+            }
+          }}
+        >
+          <img src={QuestsIcon} alt="" width="20" height="20" />
+          <span class="text-sm font-medium text-white xl:text-base">
+            Quests
+          </span>
+        </div>
 
-      <div
-        class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:opacity-100 transition-all
+        <div
+          class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:opacity-100 transition-all
           ${
             $isDarkMode
               ? navActive === "/transactions"
@@ -653,25 +655,25 @@
                 : "opacity-70 hover:bg-[#525B8C]"
           }
           `}
-        on:click={() => {
-          handleUpdateNavActive("/transactions");
-          if ($wallet) {
-            navigateTo(
-              `/transactions?type=${$typeWallet}&chain=${$chain}&address=${$wallet}`
-            );
-          } else {
-            navigateTo("/");
-          }
-        }}
-      >
-        <img src={TransactionsIcon} alt="" width="19" height="19" />
-        <span class="text-sm font-medium text-white xl:text-base">
-          {MultipleLang.transactions}
-        </span>
-      </div>
+          on:click={() => {
+            handleUpdateNavActive("/transactions");
+            if ($wallet) {
+              navigateTo(
+                `/transactions?type=${$typeWallet}&chain=${$chain}&address=${$wallet}`
+              );
+            } else {
+              navigateTo("/");
+            }
+          }}
+        >
+          <img src={TransactionsIcon} alt="" width="19" height="19" />
+          <span class="text-sm font-medium text-white xl:text-base">
+            {MultipleLang.transactions}
+          </span>
+        </div>
 
-      <div
-        class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:opacity-100 transition-all
+        <div
+          class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:opacity-100 transition-all
           ${
             $isDarkMode
               ? navActive === "/whales"
@@ -682,69 +684,69 @@
                 : "opacity-70 hover:bg-[#525B8C]"
           }
           `}
-        on:click={() => {
-          handleUpdateNavActive("/whales");
-          navigateTo("/whales");
-        }}
-      >
-        <img
-          src={WhaleIcon}
-          alt=""
-          loading="lazy"
-          decoding="async"
-          width="20"
-          height="20"
-        />
-        <span class="text-sm font-medium text-white xl:text-base">
-          {MultipleLang.whales}
-        </span>
-      </div>
-    </div>
-
-    <div class="flex items-center justify-end gap-6 xl:gap-3 md:w-max w-full">
-      <!-- Search -->
-      <div
-        class="xl:hidden block"
-        on:click={() => {
-          showPopoverSearch = true;
-          search = "";
-        }}
-      >
-        <img src={Search} alt="" class="xl:w-5 xl:h-5 w-7 h-7" />
+          on:click={() => {
+            handleUpdateNavActive("/whales");
+            navigateTo("/whales");
+          }}
+        >
+          <img
+            src={WhaleIcon}
+            alt=""
+            loading="lazy"
+            decoding="async"
+            width="20"
+            height="20"
+          />
+          <span class="text-sm font-medium text-white xl:text-base">
+            {MultipleLang.whales}
+          </span>
+        </div>
       </div>
 
-      <div
-        class={`px-4 xl:w-[220px] md:w-[400px] w-full xl:flex hidden items-center gap-4 rounded-[1000px] cursor-pointer ${
-          $isDarkMode ? "bg-[#212121]" : "bg-[#525B8C]"
-        }`}
-      >
-        <img src={Search} alt="" class="xl:w-5 xl:h-5 w-7 h-7" />
+      <div class="2xl:w-full w-max flex items-center justify-end gap-3">
+        <!-- Search -->
         <div
+          class="xl:hidden block"
           on:click={() => {
             showPopoverSearch = true;
             search = "";
           }}
-          class={`flex-1 xl:py-2 py-3 rounded-r-[1000px] text-[#ffffff80] xl:text-sm text-xl ${
+        >
+          <img src={Search} alt="" class="xl:w-5 xl:h-5 w-7 h-7" />
+        </div>
+
+        <div
+          class={`px-4 xl:w-[220px] md:w-[400px] w-full xl:flex hidden items-center gap-4 rounded-[1000px] cursor-pointer ${
             $isDarkMode ? "bg-[#212121]" : "bg-[#525B8C]"
           }`}
         >
-          {MultipleLang.search_placeholder}
+          <img src={Search} alt="" class="xl:w-5 xl:h-5 w-7 h-7" />
+          <div
+            on:click={() => {
+              showPopoverSearch = true;
+              search = "";
+            }}
+            class={`flex-1 xl:py-2 py-3 rounded-r-[1000px] text-[#ffffff80] xl:text-sm text-xl ${
+              $isDarkMode ? "bg-[#212121]" : "bg-[#525B8C]"
+            }`}
+          >
+            {MultipleLang.search_placeholder}
+          </div>
+          <div
+            class="xl:flex hidden rounded-md w-[24px] h-[24px] p-2 justify-center items-center bg-[#a6b0c3] text-white text-sm"
+            use:tooltip={{
+              content: `<tooltip-detail text="Use to trigger search" />`,
+              allowHTML: true,
+              placement: "bottom",
+              interactive: true,
+            }}
+          >
+            /
+          </div>
         </div>
-        <div
-          class="xl:flex hidden rounded-md w-[24px] h-[24px] p-2 justify-center items-center bg-[#a6b0c3] text-white text-sm"
-          use:tooltip={{
-            content: `<tooltip-detail text="Use to trigger search" />`,
-            allowHTML: true,
-            placement: "bottom",
-            interactive: true,
-          }}
-        >
-          /
-        </div>
-      </div>
 
-      <!-- Change log -->
-      <!-- <div class="xl:w-10 xl:h-10 w-12 h-12 relative xl:block hidden">
+        <!-- Change log -->
+        <!-- <div class="xl:w-10 xl:h-10 w-12 h-12 relative xl:block hidden">
         <div
           class={`rounded-full flex justify-center items-center w-full h-full ${
             $isDarkMode ? "bg-[#212121]" : "bg-[#525B8C]"
@@ -758,8 +760,8 @@
         />
       </div> -->
 
-      <!-- Daily Checkin -->
-      <!-- {#if $user && Object.keys($user).length !== 0}
+        <!-- Daily Checkin -->
+        <!-- {#if $user && Object.keys($user).length !== 0}
         <div
           class="xl:block hidden cursor-pointer"
           use:tooltip={{
@@ -785,7 +787,7 @@
         </div>
       {/if} -->
 
-      <!-- <div
+        <!-- <div
         class={`cursor-pointer rounded-full flex justify-center items-center xl:w-10 xl:h-10 w-12 h-12 ${
           $isDarkMode ? "bg-[#212121]" : "bg-[#525B8C]"
         }`}
@@ -793,13 +795,14 @@
         <img src={Bell} alt="" class="xl:w-5 xl:h-5 w-7 h-7" />
       </div> -->
 
-      <Auth
-        {displayName}
-        {publicAddress}
-        {buyPackage}
-        {navActive}
-        {handleUpdateNavActive}
-      />
+        <Auth
+          {displayName}
+          {publicAddress}
+          {buyPackage}
+          {navActive}
+          {handleUpdateNavActive}
+        />
+      </div>
     </div>
   </div>
 </div>

@@ -1,8 +1,9 @@
-<script>
+<script lang="ts">
   import { onMount } from "svelte";
   import * as browser from "webextension-polyfill";
   import { i18n } from "~/lib/i18n";
   import { isDarkMode } from "~/store";
+  import { createQuery } from "@tanstack/svelte-query";
 
   import mixpanel from "mixpanel-browser";
   import Icon from "~/UI/Option/Icon.svelte";
@@ -10,6 +11,7 @@
   import TabLeaderBoard from "~/UI/DailyCheckin/TabLeaderBoard.svelte";
   import TabReward from "~/UI/DailyCheckin/TabReward.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
+  import { nimbus } from "~/lib/network";
 
   export let currentRoute;
 
@@ -71,6 +73,24 @@
       window.location.pathname + `?tab=${tabValue}`
     );
   };
+
+  const getLinkData = async () => {
+    const response: any = await nimbus.get("/accounts/link");
+    return response;
+  };
+
+  $: queryLinkSocial = createQuery({
+    queryKey: ["link-socials"],
+    queryFn: () => getLinkData(),
+    staleTime: Infinity,
+    retry: false,
+  });
+
+  $: {
+    if (!$queryLinkSocial.isError && $queryLinkSocial.data !== undefined) {
+      console.log("HELLO WORLD: ", $queryLinkSocial?.data?.data);
+    }
+  }
 </script>
 
 <ErrorBoundary>
