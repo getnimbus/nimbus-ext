@@ -793,7 +793,13 @@
         <img src={Bell} alt="" class="xl:w-5 xl:h-5 w-7 h-7" />
       </div> -->
 
-      <Auth {displayName} {publicAddress} {buyPackage} />
+      <Auth
+        {displayName}
+        {publicAddress}
+        {buyPackage}
+        {navActive}
+        {handleUpdateNavActive}
+      />
     </div>
   </div>
 </div>
