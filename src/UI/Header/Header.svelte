@@ -64,6 +64,7 @@
   import WhaleIcon from "~/assets/whale.svg";
   import AnalyticIcon from "~/assets/analytic.svg";
   import TransactionsIcon from "~/assets/transactions.svg";
+  import QuestsIcon from "~/assets/quests.svg";
   import SettingsIcon from "~/assets/settings.svg";
   import Search from "~/assets/search.svg";
   import SearchBlack from "~/assets/search-black.svg";
@@ -616,6 +617,34 @@
         class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:opacity-100 transition-all
           ${
             $isDarkMode
+              ? navActive === "/daily-checkin"
+                ? "bg-[#212121] opacity-100"
+                : "opacity-70 hover:bg-[#212121]"
+              : navActive === "/daily-checkin"
+                ? "bg-[#525B8C] opacity-100"
+                : "opacity-70 hover:bg-[#525B8C]"
+          }
+          `}
+        on:click={() => {
+          queryClient?.invalidateQueries(["users-me"]);
+          if ($user && Object.keys($user).length !== 0) {
+            handleUpdateNavActive("/daily-checkin");
+            navigateTo("/daily-checkin");
+          } else {
+            navigateTo("/");
+          }
+        }}
+      >
+        <img src={QuestsIcon} alt="" width="20" height="20" />
+        <span class="text-sm font-medium text-white xl:text-base">
+          Quests
+        </span>
+      </div>
+
+      <div
+        class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:opacity-100 transition-all
+          ${
+            $isDarkMode
               ? navActive === "/transactions"
                 ? "bg-[#212121] opacity-100"
                 : "opacity-70 hover:bg-[#212121]"
@@ -635,7 +664,7 @@
           }
         }}
       >
-        <img src={TransactionsIcon} alt="" width="20" height="20" />
+        <img src={TransactionsIcon} alt="" width="19" height="19" />
         <span class="text-sm font-medium text-white xl:text-base">
           {MultipleLang.transactions}
         </span>
@@ -730,7 +759,7 @@
       </div> -->
 
       <!-- Daily Checkin -->
-      {#if $user && Object.keys($user).length !== 0}
+      <!-- {#if $user && Object.keys($user).length !== 0}
         <div
           class="xl:block hidden cursor-pointer"
           use:tooltip={{
@@ -754,7 +783,7 @@
             </span>
           </div>
         </div>
-      {/if}
+      {/if} -->
 
       <!-- <div
         class={`cursor-pointer rounded-full flex justify-center items-center xl:w-10 xl:h-10 w-12 h-12 ${
@@ -979,8 +1008,8 @@
                 loading="lazy"
                 decoding="async"
                 alt=""
-                width="30"
-                height="30"
+                width="26"
+                height="26"
               />
               <span class="text-xl font-medium">Feedback</span>
             </a>
@@ -1004,24 +1033,8 @@
                 navigateTo("/daily-checkin");
               }}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="30"
-                height="30"
-                viewBox="0 0 24 24"
-              >
-                <g
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                >
-                  <path d="M6 5h12l3 5l-8.5 9.5a.7.7 0 0 1-1 0L3 10l3-5" />
-                  <path d="M10 12L8 9.8l.6-1" />
-                </g>
-              </svg>
-              <span class="text-xl font-medium">Daily Checkin</span>
+              <img src={QuestsIcon} alt="" width="26" height="26" />
+              <span class="text-xl font-medium">Quests</span>
             </div>
 
             <div
@@ -1042,7 +1055,7 @@
                 navigateTo("/settings");
               }}
             >
-              <img src={SettingsIcon} alt="" width="30" height="30" />
+              <img src={SettingsIcon} alt="" width="26" height="26" />
               <span class="text-xl font-medium">Settings</span>
             </div>
           {/if}
