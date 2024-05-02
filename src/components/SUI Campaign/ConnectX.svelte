@@ -5,6 +5,7 @@
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
   import { useQueryClient } from "@tanstack/svelte-query";
+  import { userPublicAddress } from "~/store";
 
   import Button from "~/components/Button.svelte";
 
@@ -54,6 +55,7 @@
         type: "twitter",
         info,
         displayName,
+        userPublicAddress: $userPublicAddress,
       };
 
       const response = await nimbus.post("/accounts/link", params);
