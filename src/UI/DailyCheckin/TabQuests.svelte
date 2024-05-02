@@ -12,6 +12,7 @@
   import Button from "~/components/Button.svelte";
   import ConnectSui from "~/components/SUI Campaign/ConnectSUI.svelte";
   import PartnerQuestCard from "~/components/SUI Campaign/PartnerQuestCard.svelte";
+  import StarterQuests from "~/components/SUI Campaign/StarterQuests.svelte";
 
   import goldImg from "~/assets/Gold4.svg";
   import User from "~/assets/user.png";
@@ -167,7 +168,7 @@
         </div>
       </div>
 
-      <div class="flex-1 flex flex-col gap-3 bg-[#F0F2F7] py-4 px-6 rounded-lg">
+      <div class="flex-1 flex flex-col gap-3 bg-white py-4 px-6 rounded-lg">
         <div class="text-2xl font-medium text-[#00000099]">
           Total Quests Completed
         </div>
@@ -186,7 +187,7 @@
         offers
       </div>
     </div>
-    <div>quests</div>
+    <StarterQuests />
   </div>
 
   <div class="flex flex-col gap-4">
