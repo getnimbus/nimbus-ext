@@ -18,7 +18,7 @@
 <div
   class="flex items-center gap-2 text-white bg-[#4BA2FF] py-1 px-2 rounded-[10px] cursor-pointer"
 >
-  Connect SUI for
+  Connect SUI
   <div
     class="flex items-center gap-1 text-sm font-medium bg-[#27326F] py-1 px-2 text-white rounded-[10px]"
   >

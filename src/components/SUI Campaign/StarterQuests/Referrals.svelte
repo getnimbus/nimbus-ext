@@ -22,19 +22,20 @@
 </script>
 
 <div
-  class={`flex-1 flex flex-col gap-3 rounded-[10px] xl:p-4 py-3 px-2 ${
+  class={`xl:flex-[0.81] flex-1 w-full flex flex-col gap-3 rounded-[10px] xl:p-4 py-3 px-2 ${
     $isDarkMode ? "bg-[#222222]" : "bg-[#fff] xl:border border_0000001a"
   }`}
 >
   <div class="text-xl font-medium">Referrals</div>
   <div class="flex flex-col gap-4">
-    <div class="flex justify-between gap-3">
+    <div class="flex md:flex-row flex-col justify-between gap-3">
       <div
         class={`flex-1 rounded-[10px] py-2 px-3 flex flex-col items-center gap-2 ${$isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"}`}
       >
         <div class="text-base">Your Invites</div>
         <div class="text-3xl font-medium">3</div>
       </div>
+
       <div
         class={`flex-1 rounded-[10px] py-2 px-3 flex flex-col items-center gap-2 ${$isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"}`}
       >
@@ -85,7 +86,7 @@
       {#if tabSelected === "codes"}
         <div class="flex flex-col gap-2">
           <div
-            class={`rounded-[10px] border border_0000000d ${
+            class={`rounded-[10px] border border_0000000d overflow-hidden ${
               $isDarkMode ? "bg-[#131313]" : "bg-[#fff]"
             }`}
           >
@@ -94,14 +95,16 @@
                 <tr class="bg_f4f5f8">
                   <th class="pl-3 py-3 rounded-tl-[10px] bg_f4f5f8">
                     <div
-                      class="text-left xl:text-xs text-lg uppercase font-medium"
+                      class="text-left xl:text-xs text-sm uppercase font-medium"
                     >
                       Code
                     </div>
                   </th>
 
                   <th class="pr-3 py-3 rounded-tr-[10px]">
-                    <div class="text-left xl:text-xs uppercase font-medium">
+                    <div
+                      class="text-left xl:text-xs text-sm uppercase font-medium"
+                    >
                       Status
                     </div>
                   </th>
@@ -115,28 +118,28 @@
                   }`}
                 >
                   <td
-                    class={`xl:py-3 py-6 pl-3 ${
+                    class={`py-3 pl-3 ${
                       $isDarkMode
                         ? "group-hover:bg-[#000]"
                         : "group-hover:bg-gray-100"
                     }`}
                   >
                     <div
-                      class="flex items-center gap-1 text-left xl:text-xs uppercase font-medium"
+                      class="flex items-center gap-1 text-left xl:text-xs text-sm uppercase font-medium"
                     >
                       <img src={CodeIcon} alt="" class="w-3 h-3" />
                       CODE01CODE01
                     </div>
                   </td>
                   <td
-                    class={`xl:py-3 py-6 pr-3 ${
+                    class={`py-3 pr-3 ${
                       $isDarkMode
                         ? "group-hover:bg-[#000]"
                         : "group-hover:bg-gray-100"
                     }`}
                   >
                     <div
-                      class="text-left xl:text-xs uppercase font-medium text-[#00A878]"
+                      class="text-left xl:text-xs text-sm uppercase font-medium text-[#00A878]"
                     >
                       USED
                     </div>
@@ -149,28 +152,28 @@
                   }`}
                 >
                   <td
-                    class={`xl:py-3 py-6 pl-3 ${
+                    class={`py-3 pl-3 ${
                       $isDarkMode
                         ? "group-hover:bg-[#000]"
                         : "group-hover:bg-gray-100"
                     }`}
                   >
                     <div
-                      class={`flex items-center gap-1 text-left xl:text-xs uppercase font-medium ${$isDarkMode ? "text-[#292929]" : "text-gray-300"}`}
+                      class={`flex items-center gap-1 text-left xl:text-xs text-sm uppercase font-medium ${$isDarkMode ? "text-[#292929]" : "text-gray-300"}`}
                     >
                       <img src={CodeIcon} alt="" class="w-3 h-3" />
                       CODE01CODE01
                     </div>
                   </td>
                   <td
-                    class={`xl:py-3 py-6 pr-3 ${
+                    class={`py-3 pr-3 ${
                       $isDarkMode
                         ? "group-hover:bg-[#000]"
                         : "group-hover:bg-gray-100"
                     }`}
                   >
                     <div
-                      class={`text-left xl:text-xs uppercase font-medium ${$isDarkMode ? "text-[#292929]" : "text-gray-300"}`}
+                      class={`text-left xl:text-xs text-sm uppercase font-medium ${$isDarkMode ? "text-[#292929]" : "text-gray-300"}`}
                     >
                       UNUSED
                     </div>
@@ -187,7 +190,7 @@
 
       {#if tabSelected === "history"}
         <div
-          class={`rounded-[10px] border border_0000000d ${
+          class={`md:block hidden rounded-[10px] border border_0000000d overflow-hidden ${
             $isDarkMode ? "bg-[#131313]" : "bg-[#fff]"
           }`}
         >
@@ -225,7 +228,7 @@
                 }`}
               >
                 <td
-                  class={`xl:py-3 py-6 pl-3 ${
+                  class={`py-3 pl-3 ${
                     $isDarkMode
                       ? "group-hover:bg-[#000]"
                       : "group-hover:bg-gray-100"
@@ -237,7 +240,7 @@
                 </td>
 
                 <td
-                  class={`xl:py-3 py-6 ${
+                  class={`py-3 ${
                     $isDarkMode
                       ? "group-hover:bg-[#000]"
                       : "group-hover:bg-gray-100"
@@ -251,7 +254,7 @@
                 </td>
 
                 <td
-                  class={`xl:py-3 py-6 pr-3 ${
+                  class={`py-3 pr-3 ${
                     $isDarkMode
                       ? "group-hover:bg-[#000]"
                       : "group-hover:bg-gray-100"
@@ -267,6 +270,44 @@
               </tr>
             </tbody>
           </table>
+        </div>
+
+        <div
+          class={`xl:hidden block rounded-[10px] p-2 overflow-hidden w-full ${
+            $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
+          }`}
+        >
+          <div
+            class="flex flex-col gap-4 border-b-[1px] border_0000000d last:border-none py-4"
+          >
+            <div class="flex justify-between items-start">
+              <div class="text-right text-sm uppercase font-medium">User</div>
+              <div
+                class="flex items-center justify-end font-medium text-sm text_00000099"
+              >
+                @thanhle27
+              </div>
+            </div>
+
+            <div class="flex justify-between items-start">
+              <div class="text-right text-sm uppercase font-medium">Time</div>
+              <div
+                class="flex items-center justify-end font-medium text-sm text_00000099"
+              >
+                2024-04-30
+              </div>
+            </div>
+
+            <div class="flex justify-between items-start">
+              <div class="text-right text-sm uppercase font-medium">Reward</div>
+              <div
+                class="flex items-center justify-end gap-1 font-medium text-sm text_00000099"
+              >
+                <img src={goldImg} alt="" class="w-4 h-4" />
+                300
+              </div>
+            </div>
+          </div>
         </div>
       {/if}
     </div>

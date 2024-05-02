@@ -213,7 +213,7 @@
         </div>
       {:else}
         <div class="h-screen flex items-center justify-center flex-col">
-          <div class="text-3xl font-medium flex gap-2">
+          <div class="md:text-3xl text-lg font-medium flex gap-2">
             Use an invite code for <img
               src={goldImg}
               alt=""
@@ -237,7 +237,7 @@
                   required
                   placeholder="Your Invite code"
                   bind:value={code}
-                  class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal min-w-[350px] ${
+                  class={`p-0 border-none focus:outline-none focus:ring-0 text-sm font-normal md:w-[350px] w-max ${
                     code && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
                   } ${
                     $isDarkMode
@@ -274,7 +274,7 @@
       </div>
     {/if}
 
-    <div class="absolute bottom-[-100px] left-[0px] z-1">
+    <div class="absolute xl:bottom-[-100px] bottom-[-160px] left-[0px] z-1">
       <img src={wheelIcon} alt="" class="w-[70%] h-[70%] object-contain" />
     </div>
   </div>

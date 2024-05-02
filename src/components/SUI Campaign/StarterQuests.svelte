@@ -3,7 +3,7 @@
   import StarterQuestTable from "./StarterQuests/StarterQuestTable.svelte";
 </script>
 
-<div class="flex items-start justify-between gap-6">
+<div class="flex xl:flex-row flex-col items-start justify-between gap-6">
   <Referrals />
   <StarterQuestTable />
 </div>

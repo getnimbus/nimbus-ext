@@ -90,8 +90,8 @@
 </script>
 
 <div class="flex flex-col gap-10">
-  <div class="flex items-start justify-between gap-6">
-    <div class="flex-1 flex flex-col gap-3">
+  <div class="flex lg:flex-row flex-col items-start justify-between gap-6">
+    <div class="lg:flex-[0.81] flex-1 flex flex-col gap-3 w-full">
       <div class="flex items-start gap-4">
         <div class="w-20 h-20 rounded-full overflow-hidden">
           <img src={User} alt="" class="object-cover w-full h-full" />
@@ -155,8 +155,10 @@
       </form>
     </div>
 
-    <div class="flex-1 flex flex-col gap-4">
-      <div class="flex-1 flex flex-col gap-3 bg-[#1589EB] py-4 px-6 rounded-lg">
+    <div class="flex-1 flex xl:flex-row flex-col gap-4 w-full">
+      <div
+        class="flex-1 w-full flex flex-col gap-3 bg-[#1589EB] py-4 px-6 rounded-lg"
+      >
         <div class="text-2xl font-medium text-white">My GM Points</div>
         <div class="text-4xl font-medium flex items-center gap-2 text-white">
           {#if $queryDailyCheckin.isFetching}
@@ -168,9 +170,11 @@
         </div>
       </div>
 
-      <div class="flex-1 flex flex-col gap-3 bg-white py-4 px-6 rounded-lg">
+      <div
+        class="flex-1 w-full flex flex-col gap-3 bg-white py-4 px-6 rounded-lg"
+      >
         <div class="text-2xl font-medium text-[#00000099]">
-          Total Quests Completed
+          Quests Completed
         </div>
         <div class="text-4xl font-medium flex items-center gap-2 text-black">
           2

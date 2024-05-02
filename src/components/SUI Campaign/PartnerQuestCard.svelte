@@ -5,7 +5,7 @@
 </script>
 
 <div
-  class="relative flex flex-col bg-white border border_0000000d rounded-[10px] w-[320px] py-8 px-6 transition-all hover:shadow-md hover:shadow-gray-400"
+  class="relative flex flex-col bg-white border border_0000000d rounded-[10px] xl:w-[320px] lg:w-[290px] md:w-[330px] w-full py-8 px-6 transition-all hover:shadow-md hover:shadow-gray-400"
 >
   <div
     class="absolute top-6 left-6 text-sm bg-[#CBFDE1] text-[#49A37B] rounded-[30px] px-2 py-1"
