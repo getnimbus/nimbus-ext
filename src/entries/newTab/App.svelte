@@ -192,8 +192,6 @@
   const handleUpdateNavActive = (value: string) => {
     navActive = value;
   };
-
-  $: console.log("HELLO WORLD: ", $user && Object.keys($user).length !== 0);
 </script>
 
 <svelte:head>
