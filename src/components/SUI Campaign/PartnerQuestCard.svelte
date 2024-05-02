@@ -1,13 +1,12 @@
 <script lang="ts">
   import flowXFinance from "~/assets/campaign/FLX-logo-black-square.png";
-  import sui from "~/assets/chains/sui.png";
+  import SUILogo from "~/assets/chains/sui.png";
   import gmPoint from "~/assets/Gold4.svg";
 </script>
 
 <div
   class="relative flex flex-col bg-white border rounded-[20px] w-[320px] p-8"
 >
-  <!-- tag -->
   <div
     class="absolute top-6 left-8 text-sm bg-green-300 text-green-600 rounded-xl px-2 py-1"
   >
@@ -19,7 +18,7 @@
   </div>
   <div class="flex flex-col gap-2">
     <div class="flex items-center gap-1">
-      <img src={sui} alt="" class="w-6 h-6 rounded-full" />
+      <img src={SUILogo} alt="" class="w-6 h-6 rounded-full" />
       <div class="font-medium text-lg">Flow Finance</div>
     </div>
     <div class="flex">
@@ -36,4 +35,4 @@
   </div>
 </div>
 
-<style></style>
+<style windi:preflights:global windi:safelist:global></style>
