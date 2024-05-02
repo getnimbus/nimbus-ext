@@ -1,16 +1,12 @@
 <script lang="ts">
   import { nimbus } from "~/lib/network";
-  import { userPublicAddress, user } from "~/store";
   import { TwitterAuthProvider, signInWithPopup } from "firebase/auth";
   import { auth } from "~/lib/firebase";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
-  import { createQuery, useQueryClient } from "@tanstack/svelte-query";
-  import { handleGetDataDailyCheckin } from "~/lib/queryAPI";
+  import { useQueryClient } from "@tanstack/svelte-query";
 
   import Button from "~/components/Button.svelte";
-
-  export let data: any;
 
   const queryClient = useQueryClient();
   const twitterProvider = new TwitterAuthProvider();
@@ -32,24 +28,6 @@
     toastMsg = "";
     isSuccessToast = false;
   };
-
-  let dataCheckinHistory = [];
-
-  $: queryDailyCheckin = createQuery({
-    queryKey: [$userPublicAddress, "daily-checkin"],
-    queryFn: () => handleGetDataDailyCheckin(),
-    staleTime: Infinity,
-    enabled:
-      $user &&
-      Object.keys($user).length !== 0 &&
-      $userPublicAddress.length !== 0,
-  });
-
-  $: {
-    if (!$queryDailyCheckin.isError && $queryDailyCheckin.data !== undefined) {
-      dataCheckinHistory = $queryDailyCheckin?.data?.checkinLogs;
-    }
-  }
 
   const handleTwitterAuth = async () => {
     try {
@@ -78,13 +56,6 @@
         displayName,
       };
 
-      if (data && Object.keys(data).length === 0) {
-        params = {
-          ...params,
-          userPublicAddress: $userPublicAddress,
-        };
-      }
-
       const response = await nimbus.post("/accounts/link", params);
       if (response && response?.error) {
         toastMsg = response?.error;
@@ -107,40 +78,20 @@
   };
 </script>
 
-<div
-  class="max-w-[350px] md:w-[350px] w-full bg_f4f5f8 rounded-[10px] px-4 py-5 flex flex-col"
->
-  <div class="flex justify-between items-start">
-    <div class="flex flex-col gap-3">
-      <div class="p-4 rounded-[10px] shadow-sm bg-white">
-        <img
-          alt="link X"
-          loading="lazy"
-          decoding="async"
-          data-nimg="1"
-          style="color:transparent"
-          src="https://getnimbus.io/logoSocialMedia/twitterX1.svg"
-          class="w-[26px] h-[26px]"
-        />
-      </div>
-      <div class="xl:text-lg text-xl">X</div>
+<div class="w-max">
+  <Button variant="tertiary" on:click={handleTwitterAuth} className="py-3 px-6">
+    <div class="font-semibold text-base flex items-center gap-2">
+      Connect with <img
+        alt="link X"
+        loading="lazy"
+        decoding="async"
+        data-nimg="1"
+        style="color:transparent"
+        src="https://getnimbus.io/logoSocialMedia/twitterX1.svg"
+        class="w-[26px] h-[26px]"
+      />
     </div>
-  </div>
-
-  <div class="flex flex-col gap-3">
-    {#if data && Object.keys(data).length !== 0}
-      <div class="xl:text-base text-lg text-gray-400">@{data?.name}</div>
-    {:else}
-      <div class="xl:text-base text-lg text-gray-400">@username</div>
-      <Button
-        variant="tertiary"
-        on:click={handleTwitterAuth}
-        className="py-3 px-6"
-      >
-        <div class="font-semibold text-[15px]">Connect</div>
-      </Button>
-    {/if}
-  </div>
+  </Button>
 </div>
 
 {#if showToast}
