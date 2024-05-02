@@ -15,6 +15,7 @@
   import RedeemCard from "~/components/RedeemCard.svelte";
 
   import goldImg from "~/assets/Gold4.svg";
+  import CampaignQuest from "~/components/SUI Campaign/CampaignQuest.svelte";
 
   const dailyCheckinRewardsTypePortfolio = [
     {
@@ -170,7 +171,6 @@
             {/each}
           </AnimateSharedLayout>
         </div>
-
         {#if selectedType === "redeemGift"}
           <div class="flex flex-col gap-4">
             <div
