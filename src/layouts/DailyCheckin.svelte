@@ -20,6 +20,7 @@
   import Button from "~/components/Button.svelte";
 
   import goldImg from "~/assets/Gold4.svg";
+  import wheelIcon from "~/assets/wheel-icon.svg";
 
   export let currentRoute;
 
@@ -46,7 +47,7 @@
   let isSkipToMainPage = false;
   let code = "";
   let isLoadingSubmitInviteCode = false;
-  let openScreenSuccess: boolean = false;
+  let openScreenSuccess = false;
 
   let toastMsg = "";
   let isSuccessToast = false;
@@ -160,101 +161,113 @@
 </script>
 
 <ErrorBoundary>
-  {#if socialData.find((item) => item.type === "twitter")}
-    {#if isSkipToMainPage}
-      <div
-        class="max-w-[2000px] m-auto xl:w-[90%] w-[90%] py-8 grid xl:grid-cols-6 grid-cols-1 gap-6"
-      >
-        <div class="col-span-1">
-          <div class="w-full flex flex-col gap-4">
-            {#each listSideBar as item}
-              <div
-                on:click={(e) => handleClick(e, item.value)}
-                class={`flex items-center gap-2 rounded-[10px] py-2 px-3 cursor-pointer transition-all ${
-                  $isDarkMode
-                    ? activeTabValue === item.value
-                      ? "text-blue-500 bg-[#ffffff1c]"
-                      : "text-white hover:bg-[#222222]"
-                    : activeTabValue === item.value
-                      ? "text-blue-500 bg-gray-200"
-                      : "text-gray-500 hover:bg-gray-100"
-                }`}
-              >
-                <Icon
-                  type={item.type}
-                  active={activeTabValue === item.value ? true : false}
-                />
-                <div class="xl:text-base text-lg">{item.label}</div>
-              </div>
-            {/each}
+  <div class="relative">
+    {#if socialData.find((item) => item.type === "twitter")}
+      {#if isSkipToMainPage}
+        <div
+          class="max-w-[2000px] m-auto xl:w-[90%] w-[90%] py-8 grid xl:grid-cols-6 grid-cols-1 gap-6 relative z-2"
+        >
+          <div class="col-span-1">
+            <div class="w-full flex flex-col gap-4">
+              {#each listSideBar as item}
+                <div
+                  on:click={(e) => handleClick(e, item.value)}
+                  class={`flex items-center gap-2 rounded-[10px] py-2 px-3 cursor-pointer transition-all ${
+                    $isDarkMode
+                      ? activeTabValue === item.value
+                        ? "text-blue-500 bg-[#ffffff1c]"
+                        : "text-white hover:bg-[#222222]"
+                      : activeTabValue === item.value
+                        ? "text-blue-500 bg-gray-200"
+                        : "text-gray-500 hover:bg-gray-100"
+                  }`}
+                >
+                  <Icon
+                    type={item.type}
+                    active={activeTabValue === item.value ? true : false}
+                  />
+                  <div class="xl:text-base text-lg">{item.label}</div>
+                </div>
+              {/each}
+            </div>
+          </div>
+          <div class="xl:col-span-5 col-span-1">
+            {#if activeTabValue === "checkin"}
+              <TabDailyCheckin {currentRoute} />
+            {:else if activeTabValue === "leaderboard"}
+              <TabLeaderBoard />
+            {:else if activeTabValue === "rewards"}
+              <TabReward />
+            {/if}
           </div>
         </div>
-        <div class="xl:col-span-5 col-span-1">
-          {#if activeTabValue === "checkin"}
-            <TabDailyCheckin {currentRoute} />
-          {:else if activeTabValue === "leaderboard"}
-            <TabLeaderBoard />
-          {:else if activeTabValue === "rewards"}
-            <TabReward />
-          {/if}
-        </div>
-      </div>
-    {:else}
-      <div class="h-screen flex items-center justify-center flex-col">
-        <div class="text-3xl font-medium flex gap-2">
-          Use an invite code for <img src={goldImg} alt="" class="w-10 h-10" /> 1000
-          GM points
-        </div>
-        <div class="flex flex-col gap-2 justify-center items-center mt-4">
-          <form
-            on:submit|preventDefault={onSubmitInviteCode}
-            class="flex items-center gap-3"
-          >
-            <div
-              class={`input-2 input-border w-full xl:py-[6px] py-3 px-3 ${
-                code && !$isDarkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
-              }`}
+      {:else}
+        <div class="h-screen flex items-center justify-center flex-col">
+          <div class="text-3xl font-medium flex gap-2">
+            Use an invite code for <img
+              src={goldImg}
+              alt=""
+              class="w-10 h-10"
+            /> 1000 GM points
+          </div>
+          <div class="flex flex-col gap-2 justify-center items-center mt-4">
+            <form
+              on:submit|preventDefault={onSubmitInviteCode}
+              class="flex items-center gap-3"
             >
-              <input
-                type="text"
-                id="code"
-                name="code"
-                required
-                placeholder="Your Invite code"
-                bind:value={code}
-                class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal min-w-[350px] ${
-                  code && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
-                } ${
-                  $isDarkMode
-                    ? "text-white"
-                    : "text-[#5E656B] placeholder-[#5E656B]"
+              <div
+                class={`input-2 input-border w-full xl:py-[6px] py-3 px-3 ${
+                  code && !$isDarkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
                 }`}
-                on:change={(event) => {
-                  code = event?.target?.value;
-                }}
-              />
-            </div>
-            <div class="w-[120px]">
-              <Button
-                type="submit"
-                isLoading={isLoadingSubmitInviteCode}
-                disabled={isLoadingSubmitInviteCode}
               >
-                <div class="uppercase">Let's roll</div>
-              </Button>
+                <input
+                  type="text"
+                  id="code"
+                  name="code"
+                  required
+                  placeholder="Your Invite code"
+                  bind:value={code}
+                  class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal min-w-[350px] ${
+                    code && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+                  } ${
+                    $isDarkMode
+                      ? "text-white"
+                      : "text-[#5E656B] placeholder-[#5E656B]"
+                  }`}
+                  on:change={(event) => {
+                    code = event?.target?.value;
+                  }}
+                />
+              </div>
+              <div class="w-[120px]">
+                <Button
+                  type="submit"
+                  isLoading={isLoadingSubmitInviteCode}
+                  disabled={isLoadingSubmitInviteCode}
+                >
+                  <div class="uppercase">Let's roll</div>
+                </Button>
+              </div>
+            </form>
+            <div
+              class="text-xs underline text-gray-500 uppercase cursor-pointer"
+              on:click={() => (isSkipToMainPage = true)}
+            >
+              Or skip it
             </div>
-          </form>
-          <div class="text-xs underline text-gray-500 uppercase cursor-pointer">
-            Or skip it
           </div>
         </div>
+      {/if}
+    {:else}
+      <div class="h-screen flex items-center justify-center">
+        <ConnectX />
       </div>
     {/if}
-  {:else}
-    <div class="h-screen flex items-center justify-center">
-      <ConnectX />
+
+    <div class="absolute bottom-[-100px] left-[0px] z-1">
+      <img src={wheelIcon} alt="" class="w-[70%] h-[70%] object-contain" />
     </div>
-  {/if}
+  </div>
 </ErrorBoundary>
 
 {#if openScreenSuccess}
