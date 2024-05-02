@@ -73,7 +73,7 @@
     } catch (e) {
       console.log(e);
       toastMsg =
-        "There are some problem when link X account. Please try again!";
+        "There are some problem when connect X account. Please try again!";
       isSuccessToast = false;
       trigger();
     }

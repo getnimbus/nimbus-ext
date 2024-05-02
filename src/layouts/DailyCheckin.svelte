@@ -12,6 +12,7 @@
   import { wait } from "~/entries/background/utils";
 
   import Icon from "~/UI/Option/Icon.svelte";
+  import TabQuests from "~/UI/DailyCheckin/TabQuests.svelte";
   import TabDailyCheckin from "~/UI/DailyCheckin/TabDailyCheckin.svelte";
   import TabLeaderBoard from "~/UI/DailyCheckin/TabLeaderBoard.svelte";
   import TabReward from "~/UI/DailyCheckin/TabReward.svelte";
@@ -25,6 +26,11 @@
   export let currentRoute;
 
   const listSideBar = [
+    {
+      label: i18n("checkinPage.tab-quests", "Quests"),
+      value: "quests",
+      type: "Quests",
+    },
     {
       label: i18n("checkinPage.tab-daily-checkin", "Daily Check in"),
       value: "checkin",
@@ -47,7 +53,8 @@
   let isSkipToMainPage = false;
   let code = "";
   let isLoadingSubmitInviteCode = false;
-  let openScreenSuccess = false;
+  let openScreenBonusScore = false;
+  let bonusScore = 0;
 
   let toastMsg = "";
   let isSuccessToast = false;
@@ -87,11 +94,11 @@
         window.location.pathname + `?tab=${tabParams}`
       );
     } else {
-      activeTabValue = "checkin";
+      activeTabValue = "quests";
       window.history.replaceState(
         null,
         "",
-        window.location.pathname + "?tab=checkin"
+        window.location.pathname + "?tab=quests"
       );
     }
   });
@@ -124,11 +131,11 @@
     }
   }
 
-  const triggerCheckinSuccess = async () => {
-    openScreenSuccess = true;
+  const triggerBonusScore = async () => {
+    openScreenBonusScore = true;
     triggerFirework();
     await wait(2000);
-    openScreenSuccess = false;
+    openScreenBonusScore = false;
   };
 
   const onSubmitInviteCode = async (e) => {
@@ -149,7 +156,8 @@
         isSuccessToast = false;
         trigger();
       } else {
-        triggerCheckinSuccess();
+        bonusScore = response?.data?.bonus;
+        triggerBonusScore();
       }
       isLoadingSubmitInviteCode = false;
       code = "";
@@ -192,7 +200,9 @@
             </div>
           </div>
           <div class="xl:col-span-5 col-span-1">
-            {#if activeTabValue === "checkin"}
+            {#if activeTabValue === "quests"}
+              <TabQuests {socialData} />
+            {:else if activeTabValue === "checkin"}
               <TabDailyCheckin {currentRoute} />
             {:else if activeTabValue === "leaderboard"}
               <TabLeaderBoard />
@@ -270,22 +280,23 @@
   </div>
 </ErrorBoundary>
 
-{#if openScreenSuccess}
+{#if openScreenBonusScore}
   <div
-    class="fixed h-screen w-screen top-0 left-0 z-[19] flex items-center justify-center bg-[#000000cc]"
+    class="fixed h-screen w-screen top-0 left-0 flex items-center justify-center bg-[#000000cc]"
+    style="z-index: 2147483648;"
     on:click={() => {
       setTimeout(() => {
-        openScreenSuccess = false;
+        openScreenBonusScore = false;
       }, 500);
     }}
   >
     <div class="flex flex-col items-center justify-center gap-10">
       <div class="xl:text-2xl text-4xl text-white font-medium">
-        Received successfully
+        Congratulation!!!
       </div>
       <img src={goldImg} alt="" class="w-40 h-40" />
       <div class="xl:text-2xl text-4xl text-white font-medium">
-        +1000 GM Points
+        You have received {bonusScore} Bonus GM Points
       </div>
     </div>
   </div>
