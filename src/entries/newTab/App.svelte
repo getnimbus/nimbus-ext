@@ -192,6 +192,8 @@
   const handleUpdateNavActive = (value: string) => {
     navActive = value;
   };
+
+  $: console.log("HELLO WORLD: ", $user && Object.keys($user).length !== 0);
 </script>
 
 <svelte:head>
@@ -245,7 +247,15 @@
       <Router routes={recapRoutes} options={{ gaPageviews: true }} />
     {:else}
       <div
-        class={`flex flex-col xl:pb-14 ${$user && Object.keys($user).length !== 0 ? "pb-34" : "pb-64"}`}
+        class={`flex flex-col xl:pb-14 ${
+          localStorage.getItem("auth_token") ||
+          localStorage.getItem("solana_token") ||
+          localStorage.getItem("evm_token") ||
+          localStorage.getItem("sui_token") ||
+          localStorage.getItem("ton_token")
+            ? "pb-34"
+            : "pb-64"
+        }`}
       >
         <Header {navActive} {handleUpdateNavActive} />
         <Router {routes} options={{ gaPageviews: true }} />
