@@ -57,6 +57,8 @@
   export let displayName;
   export let publicAddress;
   export let buyPackage = "Free";
+  export let navActive;
+  export let handleUpdateNavActive = (value) => {};
 
   const wallets = [new PhantomWalletAdapter(), new SolflareWalletAdapter()];
 
@@ -439,7 +441,7 @@
         </div>
         {#if buyPackage !== "Free"}
           <div
-            class="cursor-pointer flex items-center gap-1 absolute -bottom-1 left-1/2 transform -translate-x-1/2 z-10 rounded px-1 bg-[#ffb800]"
+            class="cursor-pointer flex items-center gap-1 absolute -bottom-1 left-1/2 transform -translate-x-1/2 z-9 rounded px-1 bg-[#ffb800]"
           >
             <div class="text-white text-xs">
               {#if buyPackage === "Explorer"}
@@ -506,10 +508,17 @@
           >
             <div
               class={`flex items-center gap-1 text-2xl font-medium text-yellow-400 cursor-pointer xl:text-base rounded-md transition-all px-2 py-1 ${
-                $isDarkMode ? "hover:bg-[#222222]" : "hover:bg-[#eff0f4]"
+                $isDarkMode
+                  ? navActive === "/upgrade"
+                    ? "bg-[#222222]"
+                    : "hover:bg-[#222222]"
+                  : navActive === "/upgrade"
+                    ? "bg-[#eff0f4]"
+                    : "hover:bg-[#eff0f4]"
               }`}
               on:click={() => {
                 navigateTo("/upgrade");
+                handleUpdateNavActive("/upgrade");
               }}
             >
               Upgrade
@@ -533,10 +542,17 @@
           <div on:click={() => (showPopover = false)}>
             <div
               class={`text-2xl text_00000066 cursor-pointer xl:text-base rounded-md transition-all px-2 py-1 ${
-                $isDarkMode ? "hover:bg-[#222222]" : "hover:bg-[#eff0f4]"
+                $isDarkMode
+                  ? navActive === "/profile"
+                    ? "bg-[#222222]"
+                    : "hover:bg-[#222222]"
+                  : navActive === "/profile"
+                    ? "bg-[#eff0f4]"
+                    : "hover:bg-[#eff0f4]"
               }`}
               on:click={() => {
                 navigateTo(`/profile?id=${$userId}`);
+                handleUpdateNavActive("/profile");
               }}
             >
               My Profile
@@ -559,10 +575,17 @@
           <div on:click={() => (showPopover = false)}>
             <div
               class={`text-2xl text_00000066 cursor-pointer xl:text-base rounded-md transition-all px-2 py-1 ${
-                $isDarkMode ? "hover:bg-[#222222]" : "hover:bg-[#eff0f4]"
+                $isDarkMode
+                  ? navActive === "/invitation"
+                    ? "bg-[#222222]"
+                    : "hover:bg-[#222222]"
+                  : navActive === "/invitation"
+                    ? "bg-[#eff0f4]"
+                    : "hover:bg-[#eff0f4]"
               }`}
               on:click={() => {
                 navigateTo("/invitation");
+                handleUpdateNavActive("/invitation");
               }}
             >
               Invite
@@ -572,10 +595,17 @@
           <div on:click={() => (showPopover = false)}>
             <div
               class={`hidden text-2xl text_00000066 cursor-pointer xl:block xl:text-base rounded-md transition-all px-2 py-1 ${
-                $isDarkMode ? "hover:bg-[#222222]" : "hover:bg-[#eff0f4]"
+                $isDarkMode
+                  ? navActive === "/settings"
+                    ? "bg-[#222222]"
+                    : "hover:bg-[#222222]"
+                  : navActive === "/settings"
+                    ? "bg-[#eff0f4]"
+                    : "hover:bg-[#eff0f4]"
               }`}
               on:click={() => {
                 navigateTo("/settings");
+                handleUpdateNavActive("/settings");
               }}
             >
               Settings
@@ -600,7 +630,7 @@
         mixpanel.track("user_connect_wallet");
         isShowHeaderMobile.update((n) => (n = false));
       }}
-      class="button xl:text-base text-2xl font-semibold text-white cursor-pointer"
+      class="connect text-sm font-semibold text-white cursor-pointer w-full"
     >
       Connect Wallet
     </div>
@@ -873,17 +903,16 @@
 {/if}
 
 <style windi:preflights:global windi:safelist:global>
-  .button {
+  .connect {
     animation: pulse 0.5s infinite alternate; /* Adjust the duration and other parameters as needed */
   }
-
   @keyframes pulse {
     0% {
       transform: scale(1);
     }
 
     100% {
-      transform: scale(1.1); /* Adjust the scaling factor as needed */
+      transform: scale(1.1);
     }
   }
 

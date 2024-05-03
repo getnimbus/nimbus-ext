@@ -514,7 +514,7 @@
 
                           {#if item?.protocolLabel === "GMPoints"}
                             <a
-                              href="https://app.getnimbus.io/daily-checkin?tab=checkin"
+                              href="https://app.getnimbus.io/daily-checkin?tab=quests"
                               target="_blank"
                             >
                               <svg
@@ -1007,7 +1007,7 @@
 
                         {#if item?.protocolLabel === "GMPoints"}
                           <a
-                            href="https://app.getnimbus.io/daily-checkin?tab=checkin"
+                            href="https://app.getnimbus.io/daily-checkin?tab=quests"
                             target="_blank"
                           >
                             <svg
