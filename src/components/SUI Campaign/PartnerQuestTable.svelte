@@ -1,129 +1,167 @@
-<script>
+<script lang="ts">
   import { isDarkMode } from "~/store";
 
-  import gmPoint from "~/assets/Gold4.svg";
+  import Button from "~/components/Button.svelte";
+
+  import goldImg from "~/assets/Gold4.svg";
+  import playIcon from "~/assets/play-icon.svg";
 </script>
 
+<!-- Desktop -->
 <div
-  class={`flex flex-col gap-4 rounded-[20px] px-5 py-3 ${$isDarkMode ? "bg-[#222222]" : "border bg-white"} `}
+  class={`md:block hidden rounded-[10px] border border_0000000d overflow-hidden ${
+    $isDarkMode ? "bg-[#131313]" : "bg-[#fff]"
+  }`}
 >
-  <div class={`font-medium text-3xl ${$isDarkMode ? "text-white" : ""}`}>
-    Quests
-  </div>
-  <hr />
-  <!-- Desktop -->
-  <div class="w-full xl:block hidden">
-    <div
-      class={`w-full flex flex-col rounded-[10px] ${
-        $isDarkMode ? "bg-black text-white" : "border"
-      }`}
-    >
-      <div
-        class={`grid grid-cols-5 px-3 rounded-t-[10px] ${$isDarkMode ? "bg-gray-100" : "bg-[#fff] border border_0000000d"}`}
+  <table class="table-auto w-full h-full">
+    <thead>
+      <tr class="bg_f4f5f8">
+        <th class="pl-3 py-3 rounded-tl-[10px] bg_f4f5f8">
+          <div class="text-left xl:text-xs text-lg uppercase font-medium">
+            Task
+          </div>
+        </th>
+
+        <th class="py-3">
+          <div
+            class="flex items-center justify-start xl:gap-2 gap-4 text-right xl:text-xs uppercase font-medium"
+          >
+            GM Points
+          </div>
+        </th>
+
+        <th class="py-3">
+          <div
+            class="flex items-center justify-start xl:gap-2 gap-4 text-right xl:text-xs uppercase font-medium"
+          >
+            Repetition
+          </div>
+        </th>
+
+        <th class="pr-3 py-3 rounded-tr-[10px]">
+          <div
+            class="flex gap-1 justify-end items-center text-right xl:text-xs uppercase font-medium relative"
+          >
+            Status
+          </div>
+        </th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr
+        class={`group transition-all ${
+          $isDarkMode ? "text-gray-400" : "text-[#666666]"
+        }`}
       >
-        <div
-          class={`col-span-2 text-left text-xs rounded-tl-[10px] uppercase font-medium py-2`}
+        <td
+          class={`xl:py-3 py-6 pl-3 ${
+            $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
+          }`}
         >
-          Task
-        </div>
-        <div class="text-center text-xs uppercase font-medium py-2">
-          GM Points
-        </div>
-        <div class="text-center text-xs uppercase font-medium py-2">
-          Repetition
-        </div>
-        <div class="text-center text-xs uppercase font-medium py-2">Status</div>
-      </div>
-      <div class="flex flex-col">
-        {#each [{}, {}, {}, {}] as item}
-          <div class="grid grid-cols-5 py-2 px-3">
-            <div class="col-span-2">
-              <div>Like this tweet</div>
+          <div class="text-left xl:text-xs uppercase font-medium">
+            Like this tweet
+          </div>
+        </td>
+
+        <td
+          class={`xl:py-3 py-6 ${
+            $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
+          }`}
+        >
+          <div
+            class="text-left xl:text-xs uppercase font-medium flex justify-start items-center gap-1"
+          >
+            <img src={goldImg} alt="" class="w-4 h-4" />
+            300
+          </div>
+        </td>
+
+        <td
+          class={`xl:py-3 py-6 ${
+            $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
+          }`}
+        >
+          <div
+            class="text-left xl:text-xs uppercase font-medium flex justify-start items-center"
+          >
+            Daily
+          </div>
+        </td>
+
+        <td
+          class={`xl:py-3 py-6 pr-3 ${
+            $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
+          }`}
+        >
+          <div
+            class="text-right xl:text-xs uppercase font-medium flex justify-end items-center gap-2"
+          >
+            <div class="w-[50px]">
+              <Button>
+                <img src={playIcon} alt="" class="w-4 h-4" />
+              </Button>
             </div>
-            <div class="text-center">
-              <div class="flex gap-1 items-center justify-center">
-                200 <img src={gmPoint} alt="" class="w-4 h-4" />
-              </div>
-            </div>
-            <div class="text-center">
-              <div>One Time</div>
-            </div>
-            <div>
-              <div class="flex gap-2 items-center justify-center">
-                <button class="bg-[#2F3C85] py-2 px-4 rounded-lg text-white">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="14"
-                    height="14"
-                    viewBox="0 0 256 256"
-                  >
-                    <rect width="256" height="256" fill="none" />
-                    <path
-                      fill="currentColor"
-                      d="M240 128a15.74 15.74 0 0 1-7.6 13.51L88.32 229.65a16 16 0 0 1-16.2.3A15.86 15.86 0 0 1 64 216.13V39.87a15.86 15.86 0 0 1 8.12-13.82a16 16 0 0 1 16.2.3l144.08 88.14A15.74 15.74 0 0 1 240 128"
-                    />
-                  </svg>
-                </button>
-                <button class="bg-[#1E96FC] py-1 px-3 rounded-lg text-white">
-                  Check
-                </button>
-              </div>
+            <div class="w-[90px]">
+              <Button variant="tertiary">Check</Button>
             </div>
           </div>
-        {/each}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Tablet/Mobile -->
+<div
+  class={`md:hidden block rounded-[10px] p-2 overflow-hidden w-full ${
+    $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
+  }`}
+>
+  <div
+    class="flex flex-col gap-4 border-b-[1px] border_0000000d last:border-none py-4"
+  >
+    <div class="flex justify-between items-start">
+      <div class="text-right text-sm uppercase font-medium">Task</div>
+      <div
+        class="flex items-center justify-end font-medium text-sm text_00000099"
+      >
+        Like this tweet
       </div>
     </div>
-  </div>
 
-  <!-- Mobile  -->
-  <div class="w-full xl:hidden block">
-    <div
-      class={`w-full flex flex-col rounded-[10px] ${
-        $isDarkMode ? "bg-black text-white" : ""
-      }`}
-    >
-      <div class="flex flex-col">
-        {#each [{}, {}, {}, {}] as item}
-          <div class="flex flex-col">
-            <div class="flex justify-between items-center py-2">
-              <div class="text-sm uppercase font-medium">Task</div>
-              <div class="text-sm font-medium text_00000099">
-                Like this tweet
-              </div>
-            </div>
-            <div class="flex justify-between items-center py-2">
-              <div class="text-sm uppercase font-medium">GM Points</div>
-              <div
-                class="flex gap-1 items-center justify-center font-medium text-sm text_00000099"
-              >
-                200 <img src={gmPoint} alt="" class="w-4 h-4" />
-              </div>
-            </div>
-            <div class="flex justify-between items-center py-2">
-              <div class="font-medium text-sm uppercase">Repetition</div>
-              <div class="font-medium text-sm text_00000099">One Time</div>
-            </div>
-            <div class="flex gap-2 items-center justify-center py-2">
-              <button class="bg-[#2F3C85] py-2 px-4 rounded-lg text-white">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="14"
-                  height="14"
-                  viewBox="0 0 256 256"
-                >
-                  <rect width="256" height="256" fill="none" />
-                  <path
-                    fill="currentColor"
-                    d="M240 128a15.74 15.74 0 0 1-7.6 13.51L88.32 229.65a16 16 0 0 1-16.2.3A15.86 15.86 0 0 1 64 216.13V39.87a15.86 15.86 0 0 1 8.12-13.82a16 16 0 0 1 16.2.3l144.08 88.14A15.74 15.74 0 0 1 240 128"
-                  />
-                </svg>
-              </button>
-              <button class="bg-[#1E96FC] py-1 px-3 rounded-lg text-white">
-                Check
-              </button>
-            </div>
-          </div>
-        {/each}
+    <div class="flex justify-between items-start">
+      <div class="text-right text-sm uppercase font-medium">GM Points</div>
+      <div
+        class="flex items-center justify-end gap-1 font-medium text-sm text_00000099"
+      >
+        <img src={goldImg} alt="" class="w-4 h-4" />
+        300
+      </div>
+    </div>
+
+    <div class="flex justify-between items-start">
+      <div class="text-right text-sm uppercase font-medium">Repetition</div>
+      <div
+        class="flex items-center justify-end gap-1 font-medium text-sm text_00000099"
+      >
+        Daily
+      </div>
+    </div>
+
+    <div class="flex justify-between items-center">
+      <div class="text-right text-sm uppercase font-medium">Status</div>
+      <div
+        class="flex items-center justify-end gap-2 font-medium text-sm text_00000099"
+      >
+        <div class="w-[50px]">
+          <Button>
+            <img src={playIcon} alt="" class="w-4 h-4" />
+          </Button>
+        </div>
+        <div class="w-[90px]">
+          <Button variant="tertiary">Check</Button>
+        </div>
       </div>
     </div>
   </div>

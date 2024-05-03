@@ -13,6 +13,7 @@
   }`}
 >
   <div class="text-xl font-medium">Quests</div>
+  <!-- Desktop -->
   <div
     class={`md:block hidden rounded-[10px] border border_0000000d overflow-hidden ${
       $isDarkMode ? "bg-[#131313]" : "bg-[#fff]"
@@ -97,6 +98,7 @@
     </table>
   </div>
 
+  <!-- Tablet/Mobile -->
   <div
     class={`md:hidden block rounded-[10px] p-2 overflow-hidden w-full ${
       $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"

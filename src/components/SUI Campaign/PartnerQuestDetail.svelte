@@ -2,12 +2,28 @@
   import { wait } from "~/entries/background/utils";
   import { triggerFirework } from "~/utils";
   import { isDarkMode } from "~/store";
+  // import { AnimateSharedLayout, Motion } from "svelte-motion";
+
+  import PartnerQuestTable from "./PartnerQuestTable.svelte";
 
   import goldImg from "~/assets/Gold4.svg";
   import flowXFinance from "~/assets/campaign/FLX-logo-black-square.png";
 
+  // const typeTab = [
+  //   {
+  //     label: "Quests",
+  //     value: "quests",
+  //   },
+  //   {
+  //     label: "DeFi",
+  //     value: "defi",
+  //   },
+  // ];
+
   let openScreenBonusScore = false;
   let bonusScore = 0;
+
+  // let tabSelected = "quests";
 
   const triggerBonusScore = async () => {
     openScreenBonusScore = true;
@@ -35,7 +51,7 @@
             href="https://twitter.com/get_nimbus"
             target="_blank"
             aria-label="Learn more about GetNimbus"
-            class="hover:text-[#3b82f6] transition-all w-6 h-6 flex items-center justify-center"
+            class="hover:text-[#3b82f6] transition-all xl:w-5 xl:h-5 w-6 h-6 flex items-center justify-center"
           >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
               <path
@@ -48,7 +64,7 @@
             href="https://discord.gg/u5b9dTrSTr"
             target="_blank"
             aria-label="Learn more about GetNimbus"
-            class="hover:text-[#3b82f6] transition-all w-8 h-8 flex items-center justify-center"
+            class="hover:text-[#3b82f6] transition-all xl:w-6 xl:h-6 w-8 h-8 flex items-center justify-center"
           >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
               <g
@@ -70,7 +86,7 @@
             href="https://t.me/getnimbus"
             target="_blank"
             aria-label="Learn more about GetNimbus"
-            class="transition-all hover:text-[#3b82f6] w-7 h-7 flex items-center justify-center"
+            class="transition-all hover:text-[#3b82f6] xl:w-6 xl:h-6 w-7 h-7 flex items-center justify-center"
           >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
               <path
@@ -141,7 +157,65 @@
       </div>
     </div>
   </div>
-  <div class="flex items-center">hello world</div>
+
+  <div class="flex flex-col gap-6">
+    <!-- <div class="flex flex-wrap items-center xl:gap-2 gap-4">
+      <AnimateSharedLayout>
+        {#each typeTab as type}
+          <div
+            class="relative cursor-pointer xl:text-base text-xl font-medium py-1 px-3 rounded-[100px] transition-all"
+            id={type.value}
+            on:click={() => {
+              if (tabSelected !== type.value) {
+                tabSelected = type.value;
+              }
+            }}
+          >
+            <div
+              class={`relative z-1 ${tabSelected === type.value && "text-white"}`}
+            >
+              {type.label}
+            </div>
+
+            {#if type.value === tabSelected}
+              <Motion
+                let:motion
+                layoutId="active-pill"
+                transition={{ type: "spring", duration: 0.6 }}
+              >
+                <div
+                  class="absolute inset-0 rounded-full bg-[#1E96FC] z-0"
+                  use:motion
+                />
+              </Motion>
+            {/if}
+          </div>
+        {/each}
+      </AnimateSharedLayout>
+    </div>
+
+    {#if tabSelected === "quests"}
+      <div>quests</div>
+    {/if}
+
+    {#if tabSelected === "defi"}
+      <div>DeFi</div>
+    {/if} -->
+
+    <div class="flex flex-col gap-4">
+      <div class="border-b-[1.5px] border_0000000d pb-2">
+        <div class="xl:title-3 title-2">Quests</div>
+      </div>
+      <PartnerQuestTable />
+    </div>
+
+    <div class="flex flex-col gap-4">
+      <div class="border-b-[1.5px] border_0000000d pb-2">
+        <div class="xl:title-3 title-2">DeFi</div>
+      </div>
+      <div>Empty</div>
+    </div>
+  </div>
 </div>
 
 {#if openScreenBonusScore}

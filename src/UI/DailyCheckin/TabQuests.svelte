@@ -221,7 +221,7 @@
 {:else}
   <div class="flex flex-col gap-6">
     <div
-      class="flex items-center gap-1 cursor-pointer"
+      class="flex items-center gap-1 cursor-pointer w-max"
       on:click={() => {
         partnerQuestId = -1;
         window.history.replaceState(
