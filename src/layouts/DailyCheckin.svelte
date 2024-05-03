@@ -170,7 +170,7 @@
 
 <ErrorBoundary>
   <div class="relative z-9">
-    {#if socialData.find((item) => item.type === "twitter")}
+    {#if socialData && socialData.find((item) => item.type === "twitter")}
       {#if isSkipToMainPage}
         <div
           class="max-w-[2000px] m-auto xl:w-[90%] w-[90%] py-8 grid xl:grid-cols-6 grid-cols-1 gap-6 relative z-2"
