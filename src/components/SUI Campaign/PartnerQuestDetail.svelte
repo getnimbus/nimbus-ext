@@ -7,6 +7,7 @@
   import PartnerQuestTable from "./PartnerQuestTable.svelte";
 
   import goldImg from "~/assets/Gold4.svg";
+  import GreenTick from "~/assets/green-tick.svg";
   import flowXFinance from "~/assets/campaign/FLX-logo-black-square.png";
 
   // const typeTab = [
@@ -41,7 +42,10 @@
       <div
         class={`py-6 px-8 rounded-[10px] border border_0000001a flex flex-col justify-center gap-4 ${$isDarkMode ? "bg-[#000]" : "bg-[#fff]"}`}
       >
-        <div class="uppercase text-2xl font-medium">FLOWX FINANCE</div>
+        <div class="flex items-center gap-2">
+          <div class="uppercase text-2xl font-medium">FLOWX FINANCE</div>
+          <img src={GreenTick} alt="" class="w-[18px] h-[18px]" />
+        </div>
         <div class="text-[#7A7A7A]">
           FlowX is the ultimate destination for all your trading needs, designed
           to provide a seamless, user-friendly experience for all.
@@ -136,7 +140,11 @@
         </div>
         <div class="uppercase text-3xl font-medium">FLOWX FINANCE</div>
       </div>
-      <div class="flex items-center gap-2 text-[#999999B2] cursor-pointer">
+      <a
+        href="https://t.me/getnimbus"
+        target="_blank"
+        class="flex items-center gap-2 text-[#999999B2] cursor-pointer"
+      >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="16"
@@ -156,7 +164,7 @@
             />
           </g>
         </svg> Report issues
-      </div>
+      </a>
     </div>
   </div>
 

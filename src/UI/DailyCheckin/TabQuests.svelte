@@ -15,6 +15,7 @@
   import StarterQuests from "~/components/SUI Campaign/StarterQuests.svelte";
   import PartnerQuestDetail from "~/components/SUI Campaign/PartnerQuestDetail.svelte";
 
+  import User from "~/assets/user.png";
   import goldImg from "~/assets/Gold4.svg";
   import LeftArrow from "~/assets/left-arrow.svg";
   import LeftArrowBlack from "~/assets/left-arrow-black.svg";
@@ -100,51 +101,56 @@
   <div class="flex flex-col gap-10">
     <div class="flex lg:flex-row flex-col items-start justify-between gap-6">
       <div class="lg:flex-[0.81] flex-1 flex flex-col gap-3 w-full">
-        <div class="flex flex-col gap-1">
-          <div class="text-xl font-medium">@{twitterUsername}</div>
-          <div class="w-max">
+        <div class="flex items-center gap-4">
+          <div class="w-26 h-26 rounded-full overflow-hidden">
+            <img src={User} alt="" class="object-cover w-full h-full" />
+          </div>
+
+          <div class="flex-1 flex flex-col gap-1">
+            <div class="text-xl font-medium">@{twitterUsername}</div>
+
             <ConnectSui />
+
+            <form
+              on:submit|preventDefault={onSubmitInviteCode}
+              class="flex items-center gap-3"
+            >
+              <div
+                class={`input-2 input-border xl:py-[6px] py-3 px-3 ${
+                  code && !$isDarkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
+                }`}
+              >
+                <input
+                  type="text"
+                  id="code"
+                  name="code"
+                  required
+                  placeholder="Your Invite code"
+                  bind:value={code}
+                  class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal w-full ${
+                    code && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+                  } ${
+                    $isDarkMode
+                      ? "text-white"
+                      : "text-[#5E656B] placeholder-[#5E656B]"
+                  }`}
+                  on:change={(event) => {
+                    code = event?.target?.value;
+                  }}
+                />
+              </div>
+              <div class="w-[120px]">
+                <Button
+                  type="submit"
+                  isLoading={isLoadingSubmitInviteCode}
+                  disabled={isLoadingSubmitInviteCode}
+                >
+                  <div class="uppercase">Verify</div>
+                </Button>
+              </div>
+            </form>
           </div>
         </div>
-
-        <form
-          on:submit|preventDefault={onSubmitInviteCode}
-          class="flex items-center gap-3"
-        >
-          <div
-            class={`input-2 input-border xl:py-[6px] py-3 px-3 ${
-              code && !$isDarkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
-            }`}
-          >
-            <input
-              type="text"
-              id="code"
-              name="code"
-              required
-              placeholder="Your Invite code"
-              bind:value={code}
-              class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal w-full ${
-                code && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
-              } ${
-                $isDarkMode
-                  ? "text-white"
-                  : "text-[#5E656B] placeholder-[#5E656B]"
-              }`}
-              on:change={(event) => {
-                code = event?.target?.value;
-              }}
-            />
-          </div>
-          <div class="w-[120px]">
-            <Button
-              type="submit"
-              isLoading={isLoadingSubmitInviteCode}
-              disabled={isLoadingSubmitInviteCode}
-            >
-              <div class="uppercase">Verify</div>
-            </Button>
-          </div>
-        </form>
       </div>
 
       <div class="flex-1 flex xl:flex-row flex-col gap-4 w-full">
@@ -193,7 +199,7 @@
         </div>
       </div>
       <div class="flex flex-wrap gap-6">
-        {#each [1, 2, 3, 4, 5, 6] as item}
+        {#each [1] as item}
           <PartnerQuestCard data={item} {handleUpdatePartnerQuestsId} />
         {/each}
       </div>

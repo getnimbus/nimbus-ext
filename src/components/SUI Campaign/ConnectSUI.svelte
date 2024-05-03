@@ -151,7 +151,7 @@
 </script>
 
 <div
-  class="flex items-center gap-2 text-white bg-[#4BA2FF] py-1 px-2 rounded-[10px] cursor-pointer"
+  class="flex items-center gap-2 text-white bg-[#4BA2FF] py-1 px-2 rounded-[10px] cursor-pointer w-max"
   on:click={() => {
     // handleSUIAuth();
   }}
@@ -160,7 +160,7 @@
   <div
     class="flex items-center gap-1 text-sm font-medium bg-[#27326F] py-1 px-2 text-white rounded-[10px]"
   >
-    1,000
+    1000
     <img src={goldImg} alt="" class="w-6 h-6" />
   </div>
 </div>

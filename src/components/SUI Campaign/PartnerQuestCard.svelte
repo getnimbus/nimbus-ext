@@ -31,9 +31,9 @@
   </div>
 
   <div class="flex flex-col gap-2">
-    <div class="flex items-center gap-1">
+    <div class="flex items-center gap-2">
       <img src={SUILogo} alt="" class="w-6 h-6 rounded-full" />
-      <div class="font-medium text-lg">Flow Finance</div>
+      <div class="font-medium text-lg">FlowX Finance</div>
     </div>
     <div class="flex">
       <div
