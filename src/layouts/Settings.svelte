@@ -137,7 +137,9 @@
       </div>
     </div>
 
-    <div class="absolute xl:bottom-[-100px] bottom-[-160px] left-[0px] z-1">
+    <div
+      class="absolute xl:bottom-[-60px] bottom-[-40px] lg:left-[-120px] left-0 z-1"
+    >
       <img src={wheelIcon} alt="" class="w-[70%] h-[70%] object-contain" />
     </div>
   </div>

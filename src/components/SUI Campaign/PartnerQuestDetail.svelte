@@ -125,7 +125,9 @@
       class={`xl:col-span-2 xl:order-2 order-1 col-span-full py-10 px-14 rounded-[10px] border border_0000001a flex flex-col items-center justify-between gap-4 ${$isDarkMode ? "bg-[#000]" : "bg-[#fff]"}`}
     >
       <div class="flex flex-col items-center gap-4">
-        <div class="h-[262px] w-[262px] flex items-center justify-center">
+        <div
+          class="h-[262px] w-[262px] flex items-center justify-center bg-white rounded-[10px]"
+        >
           <img
             src={flowXFinance}
             alt=""
