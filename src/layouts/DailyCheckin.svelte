@@ -148,22 +148,22 @@
     }
     try {
       // TODO: update bonus GM Point handler link
-      const response = await nimbus.post("/v3/payments/check-coupon", {
-        code: data.code,
-      });
-      if (response?.error) {
-        toastMsg = response?.error;
-        isSuccessToast = false;
-        trigger();
-      } else {
-        bonusScore = response?.data?.bonus;
-        triggerBonusScore();
-      }
-      isLoadingSubmitInviteCode = false;
-      code = "";
+      // const response = await nimbus.post("/v3/payments/check-coupon", {
+      //   code: data.code,
+      // });
+      // if (response?.error) {
+      //   toastMsg = response?.error;
+      //   isSuccessToast = false;
+      //   trigger();
+      // } else {
+      //   bonusScore = response?.data?.bonus;
+      //   triggerBonusScore();
+      // }
+      // isLoadingSubmitInviteCode = false;
+      // code = "";
     } catch (e) {
-      console.error(e);
-      isLoadingSubmitInviteCode = false;
+      // console.error(e);
+      // isLoadingSubmitInviteCode = false;
     }
   };
 </script>
