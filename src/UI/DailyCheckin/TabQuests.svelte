@@ -196,8 +196,7 @@
       <div class="flex flex-col gap-1 border-b-[1.5px] border_0000000d pb-4">
         <div class="xl:title-3 title-2">Starter Quests</div>
         <div class="text-base text-gray-500">
-          Collect GM Points and redeem them for exclusive rewards and special
-          offers
+          Complete all the tasks from Nimbus to collect more GM Points
         </div>
       </div>
       <StarterQuests />
@@ -207,8 +206,7 @@
       <div class="flex flex-col gap-1 border-b-[1.5px] border_0000000d pb-4">
         <div class="xl:title-3 title-2">Partners Quests</div>
         <div class="text-base text-gray-500">
-          Collect GM Points and redeem them for exclusive rewards and special
-          offers
+          Explore all the tasks from our Partners for more GM Points
         </div>
       </div>
       <div class="flex flex-wrap gap-6">
