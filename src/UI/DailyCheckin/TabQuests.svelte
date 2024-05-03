@@ -16,7 +16,6 @@
   import PartnerQuestDetail from "~/components/SUI Campaign/PartnerQuestDetail.svelte";
 
   import goldImg from "~/assets/Gold4.svg";
-  import User from "~/assets/user.png";
   import LeftArrow from "~/assets/left-arrow.svg";
   import LeftArrowBlack from "~/assets/left-arrow-black.svg";
 
@@ -101,26 +100,10 @@
   <div class="flex flex-col gap-10">
     <div class="flex lg:flex-row flex-col items-start justify-between gap-6">
       <div class="lg:flex-[0.81] flex-1 flex flex-col gap-3 w-full">
-        <div class="flex items-start gap-4">
-          <div class="w-20 h-20 rounded-full overflow-hidden">
-            <img src={User} alt="" class="object-cover w-full h-full" />
-          </div>
-          <div class="flex flex-col gap-1">
-            <div class="text-xl font-medium">@{twitterUsername}</div>
-            <div class="flex items-center gap-2">
-              <div class="p-2 rounded-[10px] shadow-xl bg-white/70">
-                <img
-                  alt="link X"
-                  loading="lazy"
-                  decoding="async"
-                  data-nimg="1"
-                  style="color:transparent"
-                  src="https://getnimbus.io/logoSocialMedia/twitterX1.svg"
-                  class="w-[26px] h-[26px]"
-                />
-              </div>
-              <ConnectSui />
-            </div>
+        <div class="flex flex-col gap-1">
+          <div class="text-xl font-medium">@{twitterUsername}</div>
+          <div class="w-max">
+            <ConnectSui />
           </div>
         </div>
 

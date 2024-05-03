@@ -212,69 +212,76 @@
           </div>
         </div>
       {:else}
-        <div class="h-screen flex items-center justify-center flex-col">
-          <div class="md:text-3xl text-lg font-medium flex gap-2">
-            Use an invite code for <img
-              src={goldImg}
-              alt=""
-              class="w-10 h-10"
-            /> 1000 GM points
-          </div>
-          <div class="flex flex-col gap-2 justify-center items-center mt-4">
-            <form
-              on:submit|preventDefault={onSubmitInviteCode}
-              class="flex items-center gap-3"
-            >
-              <div
-                class={`input-2 input-border w-full xl:py-[6px] py-3 px-3 ${
-                  code && !$isDarkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
-                }`}
-              >
-                <input
-                  type="text"
-                  id="code"
-                  name="code"
-                  required
-                  placeholder="Your Invite code"
-                  bind:value={code}
-                  class={`p-0 border-none focus:outline-none focus:ring-0 text-sm font-normal md:w-[350px] w-max ${
-                    code && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
-                  } ${
-                    $isDarkMode
-                      ? "text-white"
-                      : "text-[#5E656B] placeholder-[#5E656B]"
-                  }`}
-                  on:change={(event) => {
-                    code = event?.target?.value;
-                  }}
-                />
-              </div>
-              <div class="w-[120px]">
-                <Button
-                  type="submit"
-                  isLoading={isLoadingSubmitInviteCode}
-                  disabled={isLoadingSubmitInviteCode}
-                >
-                  <div class="uppercase">Let's roll</div>
-                </Button>
-              </div>
-            </form>
+        <div class="h-screen flex items-center justify-center relative z-9">
+          <div class="flex flex-col items-center justify-center">
             <div
-              class="text-xs underline text-gray-500 uppercase cursor-pointer"
-              on:click={() => (isSkipToMainPage = true)}
+              class="md:text-3xl text-lg font-medium flex items-center justify-center flex-wrap gap-2"
             >
-              Or skip it
+              Use an invite code for <span class="flex items-center gap-1">
+                <img src={goldImg} alt="" class="md:w-10 md:h-10 w-7 h-7" /> 1000
+                GM Points</span
+              >
+            </div>
+            <div
+              class="flex flex-col gap-3 justify-center items-center mt-4 w-full"
+            >
+              <form
+                on:submit|preventDefault={onSubmitInviteCode}
+                class="flex items-center gap-3 w-full"
+              >
+                <div
+                  class={`input-2 w-full input-border xl:py-[6px] py-3 px-3 ${
+                    code && !$isDarkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
+                  }`}
+                >
+                  <input
+                    type="text"
+                    id="code"
+                    name="code"
+                    required
+                    placeholder="Your Invite code"
+                    bind:value={code}
+                    class={`p-0 border-none focus:outline-none focus:ring-0 text-sm font-normal w-full ${
+                      code && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+                    } ${
+                      $isDarkMode
+                        ? "text-white"
+                        : "text-[#5E656B] placeholder-[#5E656B]"
+                    }`}
+                    on:change={(event) => {
+                      code = event?.target?.value;
+                    }}
+                  />
+                </div>
+                <div class="w-[120px]">
+                  <Button
+                    type="submit"
+                    isLoading={isLoadingSubmitInviteCode}
+                    disabled={isLoadingSubmitInviteCode}
+                  >
+                    <div class="uppercase">Let's roll</div>
+                  </Button>
+                </div>
+              </form>
+              <div
+                class="text-xs underline text-gray-500 uppercase cursor-pointer"
+                on:click={() => (isSkipToMainPage = true)}
+              >
+                Or skip it
+              </div>
             </div>
           </div>
         </div>
       {/if}
     {:else}
-      <div class="h-screen flex items-center justify-center">
+      <div class="h-screen flex items-center justify-center relative z-9">
         <ConnectX />
       </div>
     {/if}
 
-    <div class="absolute xl:bottom-[-100px] bottom-[-160px] left-[0px] z-1">
+    <div
+      class="absolute xl:bottom-[-60px] bottom-[-40px] lg:left-[-120px] left-0 z-1"
+    >
       <img src={wheelIcon} alt="" class="w-[70%] h-[70%] object-contain" />
     </div>
   </div>

@@ -26,7 +26,7 @@
     New
   </div>
 
-  <div class="p-4">
+  <div class="px-4 py-12 mt-10 mb-3 bg-white rounded-[10px]">
     <img src={flowXFinance} alt="" class="object-contain w-[140px] m-auto" />
   </div>
 
