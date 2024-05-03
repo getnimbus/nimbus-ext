@@ -1,11 +1,24 @@
 <script lang="ts">
+  import { isDarkMode } from "~/store";
+
   import flowXFinance from "~/assets/campaign/FLX-logo-black-square.png";
   import SUILogo from "~/assets/chains/sui.png";
   import gmPoint from "~/assets/Gold4.svg";
+
+  export let data;
+  export let handleUpdatePartnerQuestsId = (id) => {};
 </script>
 
 <div
-  class="relative flex flex-col bg-white border border_0000000d rounded-[10px] xl:w-[320px] lg:w-[290px] md:w-[330px] w-full py-8 px-6 transition-all hover:shadow-md hover:shadow-gray-400"
+  class={`relative flex flex-col border border_0000000d rounded-[10px] xl:w-[320px] lg:w-[290px] md:w-[330px] w-full py-8 px-6 transition-all hover:shadow-md cursor-pointer ${$isDarkMode ? "bg-[#000] hover:shadow-gray-600" : "bg-[#fff] hover:shadow-gray-400"}`}
+  on:click={() => {
+    handleUpdatePartnerQuestsId(data);
+    window.history.replaceState(
+      null,
+      "",
+      window.location.pathname + `?tab=quests&id=${data}`
+    );
+  }}
 >
   <div
     class="absolute top-6 left-6 text-sm bg-[#CBFDE1] text-[#49A37B] rounded-[30px] px-2 py-1"

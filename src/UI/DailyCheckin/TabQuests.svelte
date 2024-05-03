@@ -13,9 +13,12 @@
   import ConnectSui from "~/components/SUI Campaign/ConnectSUI.svelte";
   import PartnerQuestCard from "~/components/SUI Campaign/PartnerQuestCard.svelte";
   import StarterQuests from "~/components/SUI Campaign/StarterQuests.svelte";
+  import PartnerQuestDetail from "~/components/SUI Campaign/PartnerQuestDetail.svelte";
 
   import goldImg from "~/assets/Gold4.svg";
   import User from "~/assets/user.png";
+  import LeftArrow from "~/assets/left-arrow.svg";
+  import LeftArrowBlack from "~/assets/left-arrow-black.svg";
 
   export let socialData;
 
@@ -39,6 +42,7 @@
 
   let openScreenBonusScore = false;
   let bonusScore = 0;
+  let partnerQuestId = -1;
 
   $: twitterUsername = socialData.find((item) => item.type === "twitter")?.name;
 
@@ -87,128 +91,157 @@
     staleTime: Infinity,
     enabled: $userPublicAddress.length !== 0,
   });
+
+  const handleUpdatePartnerQuestsId = (id) => {
+    partnerQuestId = id;
+  };
 </script>
 
-<div class="flex flex-col gap-10">
-  <div class="flex lg:flex-row flex-col items-start justify-between gap-6">
-    <div class="lg:flex-[0.81] flex-1 flex flex-col gap-3 w-full">
-      <div class="flex items-start gap-4">
-        <div class="w-20 h-20 rounded-full overflow-hidden">
-          <img src={User} alt="" class="object-cover w-full h-full" />
-        </div>
-        <div class="flex flex-col gap-1">
-          <div class="text-xl font-medium">@{twitterUsername}</div>
-          <div class="flex items-center gap-2">
-            <div class="p-2 rounded-[10px] shadow-xl bg-white/70">
-              <img
-                alt="link X"
-                loading="lazy"
-                decoding="async"
-                data-nimg="1"
-                style="color:transparent"
-                src="https://getnimbus.io/logoSocialMedia/twitterX1.svg"
-                class="w-[26px] h-[26px]"
-              />
+{#if partnerQuestId === -1}
+  <div class="flex flex-col gap-10">
+    <div class="flex lg:flex-row flex-col items-start justify-between gap-6">
+      <div class="lg:flex-[0.81] flex-1 flex flex-col gap-3 w-full">
+        <div class="flex items-start gap-4">
+          <div class="w-20 h-20 rounded-full overflow-hidden">
+            <img src={User} alt="" class="object-cover w-full h-full" />
+          </div>
+          <div class="flex flex-col gap-1">
+            <div class="text-xl font-medium">@{twitterUsername}</div>
+            <div class="flex items-center gap-2">
+              <div class="p-2 rounded-[10px] shadow-xl bg-white/70">
+                <img
+                  alt="link X"
+                  loading="lazy"
+                  decoding="async"
+                  data-nimg="1"
+                  style="color:transparent"
+                  src="https://getnimbus.io/logoSocialMedia/twitterX1.svg"
+                  class="w-[26px] h-[26px]"
+                />
+              </div>
+              <ConnectSui />
             </div>
-            <ConnectSui />
           </div>
         </div>
-      </div>
 
-      <form
-        on:submit|preventDefault={onSubmitInviteCode}
-        class="flex items-center gap-3"
-      >
-        <div
-          class={`input-2 input-border xl:py-[6px] py-3 px-3 ${
-            code && !$isDarkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
-          }`}
+        <form
+          on:submit|preventDefault={onSubmitInviteCode}
+          class="flex items-center gap-3"
         >
-          <input
-            type="text"
-            id="code"
-            name="code"
-            required
-            placeholder="Your Invite code"
-            bind:value={code}
-            class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal w-full ${
-              code && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
-            } ${
-              $isDarkMode
-                ? "text-white"
-                : "text-[#5E656B] placeholder-[#5E656B]"
+          <div
+            class={`input-2 input-border xl:py-[6px] py-3 px-3 ${
+              code && !$isDarkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
             }`}
-            on:change={(event) => {
-              code = event?.target?.value;
-            }}
-          />
-        </div>
-        <div class="w-[120px]">
-          <Button
-            type="submit"
-            isLoading={isLoadingSubmitInviteCode}
-            disabled={isLoadingSubmitInviteCode}
           >
-            <div class="uppercase">Verify</div>
-          </Button>
-        </div>
-      </form>
-    </div>
-
-    <div class="flex-1 flex xl:flex-row flex-col gap-4 w-full">
-      <div
-        class="flex-1 w-full flex flex-col gap-3 bg-[#1589EB] py-4 px-6 rounded-lg"
-      >
-        <div class="text-2xl font-medium text-white">My GM Points</div>
-        <div class="text-4xl font-medium flex items-center gap-2 text-white">
-          {#if $queryDailyCheckin.isFetching}
-            <Loading />
-          {:else}
-            {$queryDailyCheckin?.data?.totalPoint || 0}
-            <img src={goldImg} alt="" class="w-13" />
-          {/if}
-        </div>
+            <input
+              type="text"
+              id="code"
+              name="code"
+              required
+              placeholder="Your Invite code"
+              bind:value={code}
+              class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal w-full ${
+                code && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+              } ${
+                $isDarkMode
+                  ? "text-white"
+                  : "text-[#5E656B] placeholder-[#5E656B]"
+              }`}
+              on:change={(event) => {
+                code = event?.target?.value;
+              }}
+            />
+          </div>
+          <div class="w-[120px]">
+            <Button
+              type="submit"
+              isLoading={isLoadingSubmitInviteCode}
+              disabled={isLoadingSubmitInviteCode}
+            >
+              <div class="uppercase">Verify</div>
+            </Button>
+          </div>
+        </form>
       </div>
 
-      <div
-        class="flex-1 w-full flex flex-col gap-3 bg-white py-4 px-6 rounded-lg"
-      >
-        <div class="text-2xl font-medium text-[#00000099]">
-          Quests Completed
+      <div class="flex-1 flex xl:flex-row flex-col gap-4 w-full">
+        <div
+          class="flex-1 w-full flex flex-col gap-3 bg-[#1589EB] py-4 px-6 rounded-lg"
+        >
+          <div class="text-2xl font-medium text-white">My GM Points</div>
+          <div class="text-4xl font-medium flex items-center gap-2 text-white">
+            {#if $queryDailyCheckin.isFetching}
+              <Loading />
+            {:else}
+              {$queryDailyCheckin?.data?.totalPoint || 0}
+              <img src={goldImg} alt="" class="w-13" />
+            {/if}
+          </div>
         </div>
-        <div class="text-4xl font-medium flex items-center gap-2 text-black">
-          2
+
+        <div
+          class={`flex-1 w-full flex flex-col gap-3 py-4 px-6 rounded-lg border border_0000001a ${$isDarkMode ? "bg-[#000]" : "bg-[#fff]"}`}
+        >
+          <div
+            class={`text-2xl font-medium ${$isDarkMode ? "text-[#ccc]" : "text-[#00000099]"}`}
+          >
+            Quests Completed
+          </div>
+          <div class="text-4xl font-medium flex items-center gap-2">2</div>
         </div>
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-4">
+      <div class="flex flex-col gap-1 border-b-[1.5px] border_0000000d pb-4">
+        <div class="xl:title-3 title-2">Starter Quests</div>
+        <div class="text-base text-gray-500">
+          Collect GM Points and redeem them for exclusive rewards and special
+          offers
+        </div>
+      </div>
+      <StarterQuests />
+    </div>
+
+    <div class="flex flex-col gap-4">
+      <div class="flex flex-col gap-1 border-b-[1.5px] border_0000000d pb-4">
+        <div class="xl:title-3 title-2">Partners Quests</div>
+        <div class="text-base text-gray-500">
+          Collect GM Points and redeem them for exclusive rewards and special
+          offers
+        </div>
+      </div>
+      <div class="flex flex-wrap gap-6">
+        {#each [1, 2, 3, 4, 5, 6] as item}
+          <PartnerQuestCard data={item} {handleUpdatePartnerQuestsId} />
+        {/each}
       </div>
     </div>
   </div>
+{:else}
+  <div class="flex flex-col gap-6">
+    <div
+      class="flex items-center gap-1 cursor-pointer"
+      on:click={() => {
+        partnerQuestId = -1;
+        window.history.replaceState(
+          null,
+          "",
+          window.location.pathname + "?tab=quests"
+        );
+      }}
+    >
+      <img
+        src={$isDarkMode ? LeftArrow : LeftArrowBlack}
+        alt=""
+        class="xl:w-5 xl:h-5 w-7 h-7"
+      />
+      <div class="xl:text-sm text-xl font-medium">Quests</div>
+    </div>
 
-  <div class="flex flex-col gap-4">
-    <div class="flex flex-col gap-1 border-b-[1.5px] border_0000000d pb-4">
-      <div class="xl:title-3 title-2">Starter Quests</div>
-      <div class="text-base text-gray-500">
-        Collect GM Points and redeem them for exclusive rewards and special
-        offers
-      </div>
-    </div>
-    <StarterQuests />
+    <PartnerQuestDetail />
   </div>
-
-  <div class="flex flex-col gap-4">
-    <div class="flex flex-col gap-1 border-b-[1.5px] border_0000000d pb-4">
-      <div class="xl:title-3 title-2">Partners Quests</div>
-      <div class="text-base text-gray-500">
-        Collect GM Points and redeem them for exclusive rewards and special
-        offers
-      </div>
-    </div>
-    <div class="flex flex-wrap gap-6">
-      {#each [1, 2, 3, 4, 5, 6] as item}
-        <PartnerQuestCard />
-      {/each}
-    </div>
-  </div>
-</div>
+{/if}
 
 {#if openScreenBonusScore}
   <div
