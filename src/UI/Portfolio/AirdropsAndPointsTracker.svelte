@@ -60,6 +60,11 @@
       twitter: "https://twitter.com/sanctumso",
       logo: "https://image.typedream.com/cdn-cgi/image/width=256,format=auto,fit=scale-down,quality=100/https://api.typedream.com/v0/document/public/1e17facc-56e9-4158-9522-8cfee85931a9/2eijF98kDTQfQ2udXN7dGWGRb4E_Sanctum_logo.png",
     },
+    SPAM: {
+      name: "SPAM",
+      website: "https://spamsui.com/",
+      logo: "https://spamsui.com/img/spam-logo.webp",
+    },
   };
 
   const getPointsAirdrop = async () => {
@@ -85,15 +90,13 @@
     if (
       !$query.isError &&
       $query.data !== undefined &&
-      $query.data?.data?.length !== 0 &&
-      $query.data?.dataWhalesMarket?.length !== 0
+      $query.data?.data?.length !== 0
     ) {
       formatData = $query?.data?.data.map((item) => {
         return {
           ...item,
           points: item.points.map((point) => {
-            const data = $query?.data?.dataWhalesMarket;
-            const pointIndex = data
+            const pointIndex = ($query?.data?.dataWhalesMarket || [])
               .map((datawhale) =>
                 datawhale?.name === "Sharky"
                   ? "Sharky.fi"
@@ -102,11 +105,10 @@
               )
               .indexOf(point.protocolLabel);
 
-            const price = data[pointIndex]?.average_bids || null;
-
             return {
               ...point,
-              price: price,
+              price:
+                $query?.data?.dataWhalesMarket[pointIndex]?.last_price || null,
             };
           }),
         };
