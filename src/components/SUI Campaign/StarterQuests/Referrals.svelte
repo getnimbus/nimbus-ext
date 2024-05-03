@@ -143,9 +143,7 @@
                   }}
                 >
                   <tr
-                    class={`cursor-pointer group transition-all ${
-                      $isDarkMode ? "text-gray-400" : "text-[#666666]"
-                    }`}
+                    class="cursor-pointer group transition-all"
                     on:click={copy}
                   >
                     <td
@@ -156,7 +154,7 @@
                       }`}
                     >
                       <div
-                        class="flex items-center gap-1 text-left xl:text-xs text-sm uppercase font-medium"
+                        class="flex items-center gap-1 text-left xl:text-xs text-sm uppercase font-medium text-[#ccc]"
                       >
                         <img src={CodeIcon} alt="" class="w-3 h-3" />
                         CODE01CODE01
@@ -201,7 +199,9 @@
                       }`}
                     >
                       <div
-                        class={`flex items-center gap-1 text-left xl:text-xs text-sm uppercase font-medium ${$isDarkMode ? "text-[#292929]" : "text-gray-300"}`}
+                        class={`flex items-center gap-1 text-left xl:text-xs text-sm uppercase font-medium ${
+                          $isDarkMode ? "text-[#fff]" : "text-[#000]"
+                        }`}
                       >
                         <img src={CodeIcon} alt="" class="w-3 h-3" />
                         CODE01CODE01
@@ -215,7 +215,9 @@
                       }`}
                     >
                       <div
-                        class={`text-left xl:text-xs text-sm uppercase font-medium ${$isDarkMode ? "text-[#292929]" : "text-gray-300"}`}
+                        class={`text-left xl:text-xs text-sm uppercase font-medium ${
+                          $isDarkMode ? "text-[#fff]" : "text-[#000]"
+                        }`}
                       >
                         UNUSED
                       </div>
