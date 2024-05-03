@@ -169,7 +169,7 @@
 </script>
 
 <ErrorBoundary>
-  <div class="relative">
+  <div class="relative z-9">
     {#if socialData.find((item) => item.type === "twitter")}
       {#if isSkipToMainPage}
         <div
