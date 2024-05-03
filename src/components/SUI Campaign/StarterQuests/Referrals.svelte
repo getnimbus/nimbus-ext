@@ -1,6 +1,9 @@
 <script lang="ts">
+  import { Toast } from "flowbite-svelte";
+  import { blur } from "svelte/transition";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { isDarkMode } from "~/store";
+  import CopyToClipboard from "svelte-copy-to-clipboard";
 
   import Button from "~/components/Button.svelte";
 
@@ -17,6 +20,24 @@
       value: "history",
     },
   ];
+
+  let toastMsg = "";
+  let isSuccessToast: boolean = false;
+  let counter = 3;
+  let showToast: boolean = false;
+
+  const trigger = () => {
+    showToast = true;
+    counter = 3;
+    timeout();
+  };
+
+  const timeout = () => {
+    if (--counter > 0) return setTimeout(timeout, 1000);
+    showToast = false;
+    toastMsg = "";
+    isSuccessToast = false;
+  };
 
   let tabSelected = "codes";
 </script>
@@ -112,78 +133,110 @@
               </thead>
 
               <tbody>
-                <tr
-                  class={`group transition-all ${
-                    $isDarkMode ? "text-gray-400" : "text-[#666666]"
-                  }`}
+                <CopyToClipboard
+                  text={"HELLO WORLD"}
+                  let:copy
+                  on:copy={async () => {
+                    toastMsg = "Copied code successfully!";
+                    isSuccessToast = true;
+                    trigger();
+                  }}
                 >
-                  <td
-                    class={`py-3 pl-3 ${
-                      $isDarkMode
-                        ? "group-hover:bg-[#000]"
-                        : "group-hover:bg-gray-100"
+                  <tr
+                    class={`cursor-pointer group transition-all ${
+                      $isDarkMode ? "text-gray-400" : "text-[#666666]"
                     }`}
+                    on:click={copy}
                   >
-                    <div
-                      class="flex items-center gap-1 text-left xl:text-xs text-sm uppercase font-medium"
+                    <td
+                      class={`py-3 pl-3 ${
+                        $isDarkMode
+                          ? "group-hover:bg-[#000]"
+                          : "group-hover:bg-gray-100"
+                      }`}
                     >
-                      <img src={CodeIcon} alt="" class="w-3 h-3" />
-                      CODE01CODE01
-                    </div>
-                  </td>
-                  <td
-                    class={`py-3 pr-3 ${
-                      $isDarkMode
-                        ? "group-hover:bg-[#000]"
-                        : "group-hover:bg-gray-100"
-                    }`}
-                  >
-                    <div
-                      class="text-left xl:text-xs text-sm uppercase font-medium text-[#00A878]"
+                      <div
+                        class="flex items-center gap-1 text-left xl:text-xs text-sm uppercase font-medium"
+                      >
+                        <img src={CodeIcon} alt="" class="w-3 h-3" />
+                        CODE01CODE01
+                      </div>
+                    </td>
+                    <td
+                      class={`py-3 pr-3 ${
+                        $isDarkMode
+                          ? "group-hover:bg-[#000]"
+                          : "group-hover:bg-gray-100"
+                      }`}
                     >
-                      USED
-                    </div>
-                  </td>
-                </tr>
+                      <div
+                        class="text-left xl:text-xs text-sm uppercase font-medium text-[#00A878]"
+                      >
+                        USED
+                      </div>
+                    </td>
+                  </tr>
+                </CopyToClipboard>
 
-                <tr
-                  class={`group transition-all ${
-                    $isDarkMode ? "text-gray-400" : "text-[#666666]"
-                  }`}
+                <CopyToClipboard
+                  text={"HI WORLD"}
+                  let:copy
+                  on:copy={async () => {
+                    toastMsg = "Copied code successfully!";
+                    isSuccessToast = true;
+                    trigger();
+                  }}
                 >
-                  <td
-                    class={`py-3 pl-3 ${
-                      $isDarkMode
-                        ? "group-hover:bg-[#000]"
-                        : "group-hover:bg-gray-100"
+                  <tr
+                    class={`cursor-pointer group transition-all ${
+                      $isDarkMode ? "text-gray-400" : "text-[#666666]"
                     }`}
+                    on:click={copy}
                   >
-                    <div
-                      class={`flex items-center gap-1 text-left xl:text-xs text-sm uppercase font-medium ${$isDarkMode ? "text-[#292929]" : "text-gray-300"}`}
+                    <td
+                      class={`py-3 pl-3 ${
+                        $isDarkMode
+                          ? "group-hover:bg-[#000]"
+                          : "group-hover:bg-gray-100"
+                      }`}
                     >
-                      <img src={CodeIcon} alt="" class="w-3 h-3" />
-                      CODE01CODE01
-                    </div>
-                  </td>
-                  <td
-                    class={`py-3 pr-3 ${
-                      $isDarkMode
-                        ? "group-hover:bg-[#000]"
-                        : "group-hover:bg-gray-100"
-                    }`}
-                  >
-                    <div
-                      class={`text-left xl:text-xs text-sm uppercase font-medium ${$isDarkMode ? "text-[#292929]" : "text-gray-300"}`}
+                      <div
+                        class={`flex items-center gap-1 text-left xl:text-xs text-sm uppercase font-medium ${$isDarkMode ? "text-[#292929]" : "text-gray-300"}`}
+                      >
+                        <img src={CodeIcon} alt="" class="w-3 h-3" />
+                        CODE01CODE01
+                      </div>
+                    </td>
+                    <td
+                      class={`py-3 pr-3 ${
+                        $isDarkMode
+                          ? "group-hover:bg-[#000]"
+                          : "group-hover:bg-gray-100"
+                      }`}
                     >
-                      UNUSED
-                    </div>
-                  </td>
-                </tr>
+                      <div
+                        class={`text-left xl:text-xs text-sm uppercase font-medium ${$isDarkMode ? "text-[#292929]" : "text-gray-300"}`}
+                      >
+                        UNUSED
+                      </div>
+                    </td>
+                  </tr>
+                </CopyToClipboard>
               </tbody>
             </table>
           </div>
           <div class="w-max mx-auto">
-            <Button variant="tertiary" on:click={() => {}}>Copy All</Button>
+            <CopyToClipboard
+              text={"HELLO WORLD, HI WORLD"}
+              let:copy
+              on:copy={async () => {
+                toastMsg = "Copied all code successfully!";
+                isSuccessToast = true;
+                trigger();
+              }}
+            >
+              <Button variant="tertiary" on:click={copy}>Copy All</Button>
+            </CopyToClipboard>
           </div>
         </div>
       {/if}
@@ -313,6 +366,51 @@
     </div>
   </div>
 </div>
+
+{#if showToast}
+  <div class="fixed top-3 right-3 w-full" style="z-index: 2147483648;">
+    <Toast
+      transition={blur}
+      params={{ amount: 10 }}
+      position="top-right"
+      color={isSuccessToast ? "green" : "red"}
+      bind:open={showToast}
+    >
+      <svelte:fragment slot="icon">
+        {#if isSuccessToast}
+          <svg
+            aria-hidden="true"
+            class="w-5 h-5"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+            ><path
+              fill-rule="evenodd"
+              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+              clip-rule="evenodd"
+            /></svg
+          >
+          <span class="sr-only">Check icon</span>
+        {:else}
+          <svg
+            aria-hidden="true"
+            class="w-5 h-5"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+            ><path
+              fill-rule="evenodd"
+              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+              clip-rule="evenodd"
+            /></svg
+          >
+          <span class="sr-only">Error icon</span>
+        {/if}
+      </svelte:fragment>
+      {toastMsg}
+    </Toast>
+  </div>
+{/if}
 
 <style windi:preflights:global windi:safelist:global>
 </style>
