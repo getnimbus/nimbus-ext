@@ -177,13 +177,6 @@
             />
           </div>
         {/if}
-
-        {#if dataUserSocialLogin && dataUserSocialLogin.isPrimaryLogin}
-          <div class="text-yellow-300">
-            ⚠️ For connecting with an empty Gmail or X account without prior
-            linking, we will permanently lock this wallet.
-          </div>
-        {/if}
       </div>
     {/if}
 
@@ -196,18 +189,18 @@
         <div class="flex md:flex-row flex-col items-center gap-6">
           {#each socialData as item}
             {#if item.type === "google"}
-              <Google data={item} isDisabledRemove={item.isPrimaryLogin} />
+              <Google data={item} />
             {/if}
             {#if item.type === "twitter"}
-              <Twitter data={item} isDisabledRemove={item.isPrimaryLogin} />
+              <Twitter data={item} />
             {/if}
           {/each}
 
-          {#if socialData && socialData.length === 1 && socialData.find((item) => item.type === "google") && !socialData[0].isPrimaryLogin}
+          {#if socialData && socialData.length === 1 && socialData.find((item) => item.type === "google")}
             <Twitter data={{}} />
           {/if}
 
-          {#if socialData && socialData.length === 1 && socialData.find((item) => item.type === "twitter") && !socialData[0].isPrimaryLogin}
+          {#if socialData && socialData.length === 1 && socialData.find((item) => item.type === "twitter")}
             <Google data={{}} />
           {/if}
 

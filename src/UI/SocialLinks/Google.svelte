@@ -16,7 +16,6 @@
   import goldImg from "~/assets/Gold4.svg";
 
   export let data: any;
-  export let isDisabledRemove: any = false;
 
   const queryClient = useQueryClient();
   const googleProvider = new GoogleAuthProvider();
@@ -171,25 +170,6 @@
     }
   };
 
-  const handleRemoveGoogle = async () => {
-    try {
-      await nimbus.put(`/users/displayName?name=${""}`, {});
-      await nimbus.delete(`/accounts/link/${data?.uid}`, {});
-      localStorage.removeItem("socialAuthType");
-      queryClient?.invalidateQueries(["users-me"]);
-      queryClient.invalidateQueries(["link-socials"]);
-      toastMsg = "Successfully remove link Google account!";
-      isSuccessToast = true;
-      trigger();
-    } catch (e) {
-      console.log(e);
-      toastMsg =
-        "There are some problem when remove link Google account. Please try again!";
-      isSuccessToast = true;
-      trigger();
-    }
-  };
-
   const handleDisplayName = async () => {
     try {
       checked = !checked;
@@ -216,22 +196,11 @@
 <div
   class="max-w-[350px] md:w-[350px] w-full bg_f4f5f8 rounded-[10px] px-4 py-5 flex flex-col"
 >
-  <div class="flex justify-between items-start">
-    <div class="flex flex-col gap-3">
-      <div class="p-4 rounded-[10px] shadow-sm bg-white">
-        <img src={Google} alt="" width="26" height="26" />
-      </div>
-      <div class="xl:text-lg text-xl">Google</div>
+  <div class="flex flex-col gap-3">
+    <div class="p-4 rounded-[10px] shadow-sm bg-white">
+      <img src={Google} alt="" width="26" height="26" />
     </div>
-
-    {#if data && Object.keys(data).length !== 0 && !isDisabledRemove}
-      <div
-        class="cursor-pointer text-red-600 font-medium text-xl xl:text-base"
-        on:click={handleRemoveGoogle}
-      >
-        Remove
-      </div>
-    {/if}
+    <div class="xl:text-lg text-xl">Google</div>
   </div>
 
   <div class="flex flex-col gap-3">
