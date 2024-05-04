@@ -24,9 +24,10 @@
     title: i18n("optionsPage.links-page-title", "Link Settings"),
   };
 
-  let dataUserSocialLogin: any = {};
-  let socialData = [];
+  let dataUserSocial: any = {};
+  let data = [];
   let chain = "";
+  let userLinkWalletData = [];
 
   $: queryLinkSocial = createQuery({
     queryKey: ["link-socials"],
@@ -42,14 +43,14 @@
 
   $: {
     if (!$queryLinkSocial.isError && $queryLinkSocial.data !== undefined) {
-      socialData = $queryLinkSocial?.data?.data;
+      data = $queryLinkSocial?.data?.data;
       if (
         $queryLinkSocial?.data?.data &&
         $queryLinkSocial?.data?.data[0] &&
         $queryLinkSocial?.data?.data[0]?.uid
       ) {
-        dataUserSocialLogin = $queryLinkSocial?.data?.data[0] || {};
-        handleCheckChain(dataUserSocialLogin?.publicAddress);
+        dataUserSocial = $queryLinkSocial?.data?.data[0] || {};
+        handleCheckChain(dataUserSocial?.publicAddress);
       }
     }
   }
@@ -73,6 +74,28 @@
   onMount(() => {
     mixpanel.track("accounts_page");
   });
+
+  const handleFormatDataWithoutSocial = async (data) => {
+    userLinkWalletData = await Promise.all(
+      data?.map(async (item) => {
+        const validateAddress = await handleValidateAddress(item?.uid);
+        return {
+          ...item,
+          chain: validateAddress.type,
+        };
+      })
+    );
+  };
+
+  $: {
+    if (data && data.length !== 0) {
+      handleFormatDataWithoutSocial(
+        data?.filter(
+          (item) => item.type !== "twitter" && item.type !== "google"
+        )
+      );
+    }
+  }
 </script>
 
 <div class="flex flex-col gap-4">
@@ -91,7 +114,7 @@
         Link your social accounts
       </div>
       <div class="flex md:flex-row flex-col items-center gap-6">
-        {#each socialData as item}
+        {#each data?.filter((item) => item.type === "twitter" || item.type === "google") as item}
           {#if item.type === "google"}
             <Google data={item} />
           {/if}
@@ -100,15 +123,15 @@
           {/if}
         {/each}
 
-        {#if socialData && socialData.length === 1 && socialData.find((item) => item.type === "google")}
+        {#if data && data.length === 1 && data.find((item) => item.type === "google")}
           <Twitter data={{}} />
         {/if}
 
-        {#if socialData && socialData.length === 1 && socialData.find((item) => item.type === "twitter")}
+        {#if data && data.length === 1 && data.find((item) => item.type === "twitter")}
           <Google data={{}} />
         {/if}
 
-        {#if socialData && socialData.length === 0}
+        {#if data && data.length === 0}
           <Google data={{}} />
           <Twitter data={{}} />
         {/if}
@@ -120,7 +143,20 @@
         Your main wallet address
       </div>
 
-      <div class="flex flex-col gap-3">
+      <div class="flex flex-col gap-4">
+        {#if chain === ""}
+          <Solana
+            data={dataUserSocial}
+            isPrimaryLogin={dataUserSocial.isPrimaryLogin}
+          />
+
+          <Evm data={dataUserSocial} />
+
+          <Ton data={dataUserSocial} />
+
+          <Sui data={dataUserSocial} />
+        {/if}
+
         {#if chain === "EVM"}
           <div class="xl:text-lg text-2xl flex items-center gap-3">
             <img
@@ -132,9 +168,30 @@
             />
             {shorterAddress($userPublicAddress)}
           </div>
-          <Solana data={dataUserSocialLogin} />
-          <Ton data={dataUserSocialLogin} />
-          <Sui data={dataUserSocialLogin} />
+
+          {#if userLinkWalletData.find((item) => item.chain === "SOL")}
+            <div class="xl:text-lg text-2xl flex items-center gap-3">
+              <img
+                src={SolanaLogo}
+                alt=""
+                width="28"
+                height="28"
+                class="rounded-full"
+              />
+              {shorterAddress(
+                userLinkWalletData.find((item) => item.chain === "SOL")?.uid
+              )}
+            </div>
+          {:else}
+            <Solana
+              data={dataUserSocial}
+              isPrimaryLogin={dataUserSocial.isPrimaryLogin}
+            />
+          {/if}
+
+          <Ton data={dataUserSocial} />
+
+          <Sui data={dataUserSocial} />
         {/if}
 
         {#if chain === "SOL"}
@@ -148,9 +205,12 @@
             />
             {shorterAddress($userPublicAddress)}
           </div>
-          <Evm data={dataUserSocialLogin} />
-          <Ton data={dataUserSocialLogin} />
-          <Sui data={dataUserSocialLogin} />
+
+          <Evm data={dataUserSocial} />
+
+          <Ton data={dataUserSocial} />
+
+          <Sui data={dataUserSocial} />
         {/if}
 
         {#if chain === "MOVE"}
@@ -164,9 +224,29 @@
             />
             {shorterAddress($userPublicAddress)}
           </div>
-          <Evm data={dataUserSocialLogin} />
-          <Solana data={dataUserSocialLogin} />
-          <Ton data={dataUserSocialLogin} />
+          <Evm data={dataUserSocial} />
+
+          {#if userLinkWalletData.find((item) => item.chain === "SOL")}
+            <div class="xl:text-lg text-2xl flex items-center gap-3">
+              <img
+                src={SolanaLogo}
+                alt=""
+                width="28"
+                height="28"
+                class="rounded-full"
+              />
+              {shorterAddress(
+                userLinkWalletData.find((item) => item.chain === "SOL")?.uid
+              )}
+            </div>
+          {:else}
+            <Solana
+              data={dataUserSocial}
+              isPrimaryLogin={dataUserSocial.isPrimaryLogin}
+            />
+          {/if}
+
+          <Ton data={dataUserSocial} />
         {/if}
 
         {#if chain === "TON"}
@@ -180,9 +260,30 @@
             />
             {shorterAddress($userPublicAddress)}
           </div>
-          <Evm data={dataUserSocialLogin} />
-          <Solana data={dataUserSocialLogin} />
-          <Sui data={dataUserSocialLogin} />
+
+          <Evm data={dataUserSocial} />
+
+          {#if userLinkWalletData.find((item) => item.chain === "SOL")}
+            <div class="xl:text-lg text-2xl flex items-center gap-3">
+              <img
+                src={SolanaLogo}
+                alt=""
+                width="28"
+                height="28"
+                class="rounded-full"
+              />
+              {shorterAddress(
+                userLinkWalletData.find((item) => item.chain === "SOL")?.uid
+              )}
+            </div>
+          {:else}
+            <Solana
+              data={dataUserSocial}
+              isPrimaryLogin={dataUserSocial.isPrimaryLogin}
+            />
+          {/if}
+
+          <Sui data={dataUserSocial} />
         {/if}
       </div>
     </div>

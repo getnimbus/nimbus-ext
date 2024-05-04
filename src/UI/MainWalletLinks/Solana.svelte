@@ -7,7 +7,7 @@
   import { WalletProvider } from "@aztemi/svelte-on-solana-wallet-adapter-ui";
   import { useQueryClient } from "@tanstack/svelte-query";
   import { nimbus } from "~/lib/network";
-  import { isDarkMode } from "~/store";
+  import { isDarkMode, userPublicAddress } from "~/store";
   import bs58 from "bs58";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
@@ -17,6 +17,7 @@
   import Solana from "~/assets/chains/solana.png";
 
   export let data;
+  export let isPrimaryLogin;
 
   const queryClient = useQueryClient();
 
@@ -66,10 +67,7 @@
 
   $: {
     if (solanaPublicAddress) {
-      const solanaToken = localStorage.getItem("solana_token");
-      if (!solanaToken) {
-        handleGetSolanaNonce(solanaPublicAddress);
-      }
+      handleGetSolanaNonce(solanaPublicAddress);
     }
   }
 
@@ -92,30 +90,36 @@
 
   const handleGetSolanaNonce = async (address) => {
     try {
-      const signatureString = await handleSignSolanaAddressMessage(
-        `${Math.floor(Math.random() * 10000)}`
-      );
-      if (signatureString) {
-        const payload = {
-          signature: signatureString,
-          publicAddress: address,
-        };
-        handleUpdatePublicAddress(payload);
+      const res: any = await nimbus.post("/users/nonce?verified=true", {
+        publicAddress: address,
+        referrer: undefined,
+      });
+      if (res && res.data) {
+        const signatureString = await handleSignSolanaAddressMessage(
+          res?.data?.nonce
+        );
+        if (signatureString) {
+          const payload = {
+            signature: signatureString,
+            publicAddress: address,
+          };
+          handleUpdatePublicAddress(payload);
+        }
       }
     } catch (e) {
       console.error("error: ", e);
+      $walletStore.disconnect();
     }
   };
 
   const handleUpdatePublicAddress = async (payload) => {
     try {
-      let params: any = {
+      const params: any = {
+        id: isPrimaryLogin ? data?.uid : $userPublicAddress,
         kind: "wallet",
         type: null,
-        userPublicAddress: data?.publicAddress,
-        id: data?.uid,
-        info: data?.info,
-        displayName: data?.name,
+        userPublicAddress: payload?.publicAddress,
+        signature: payload?.signature,
       };
       const res = await nimbus.post("/accounts/link", params);
       if (res && res?.error) {
@@ -124,15 +128,19 @@
         trigger();
         return;
       }
-      queryClient?.invalidateQueries(["users-me"]);
-      queryClient?.invalidateQueries(["list-address"]);
-      queryClient.invalidateQueries(["list-bundle"]);
-      queryClient.invalidateQueries(["link-socials"]);
+
+      queryClient?.invalidateQueries(["link-socials"]);
       toastMsg = "Your are successfully connect your Solana wallet!";
-      isSuccessToast = false;
+      isSuccessToast = true;
       trigger();
     } catch (e) {
       console.log(e);
+      toastMsg =
+        "Something wrong when connect your Solana wallet. Please try again!";
+      isSuccessToast = true;
+      trigger();
+    } finally {
+      $walletStore.disconnect();
     }
   };
 </script>
