@@ -1,18 +1,16 @@
 <script lang="ts">
   import { useQueryClient } from "@tanstack/svelte-query";
   import { SuiConnector, WalletState } from "nimbus-sui-kit";
-  import { isDarkMode, user, suiWalletInstance } from "~/store";
+  import { isDarkMode, suiWalletInstance } from "~/store";
   import { nimbus } from "~/lib/network";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
 
   import ReactAdapter from "~/components/ReactAdapter.svelte";
 
-  import User from "~/assets/user.png";
   import SUI from "~/assets/chains/sui.png";
 
   export let data;
-  export let reCallAPI = () => {};
 
   const queryClient = useQueryClient();
   const chains = [
@@ -114,7 +112,7 @@
       let params: any = {
         kind: "wallet",
         type: null,
-        userPublicAddress: address,
+        userPublicAddress: data?.publicAddress,
         id: data?.uid,
         info: data?.info,
         displayName: data?.name,
@@ -130,7 +128,6 @@
       queryClient?.invalidateQueries(["list-address"]);
       queryClient.invalidateQueries(["list-bundle"]);
       queryClient.invalidateQueries(["link-socials"]);
-      reCallAPI();
       toastMsg = "Your are successfully connect your Sui wallet!";
       isSuccessToast = false;
       trigger();

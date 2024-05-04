@@ -197,7 +197,7 @@
   class="max-w-[350px] md:w-[350px] w-full bg_f4f5f8 rounded-[10px] px-4 py-5 flex flex-col"
 >
   <div class="flex flex-col gap-3">
-    <div class="p-4 rounded-[10px] shadow-sm bg-white">
+    <div class="p-4 rounded-[10px] shadow-sm bg-white w-max">
       <img src={Google} alt="" width="26" height="26" />
     </div>
     <div class="xl:text-lg text-xl">Google</div>
