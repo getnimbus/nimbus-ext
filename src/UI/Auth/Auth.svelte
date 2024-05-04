@@ -205,6 +205,8 @@
 
       localStorage.removeItem("public_address");
 
+      localStorage.removeItem("auth_token");
+
       localStorage.removeItem("evm_token");
       disconnect($wallets$?.[0]);
 
@@ -223,8 +225,6 @@
       ) {
         ($suiWalletInstance as WalletState).disconnect();
       }
-
-      localStorage.removeItem("auth_token");
 
       queryClient?.invalidateQueries(["list-address"]);
       queryClient?.invalidateQueries(["users-me"]);
@@ -406,6 +406,8 @@
       }
     } catch (e) {
       console.error("error: ", e);
+    } finally {
+      $walletStore.disconnect();
     }
   };
 
