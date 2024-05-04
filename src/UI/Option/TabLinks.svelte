@@ -10,10 +10,10 @@
 
   import Google from "../SocialLinks/Google.svelte";
   import Twitter from "../SocialLinks/Twitter.svelte";
-  import Solana from "../MainWalletLinks/Solana.svelte";
   import Evm from "../MainWalletLinks/Evm.svelte";
-  import Ton from "../MainWalletLinks/Ton.svelte";
+  import Solana from "../MainWalletLinks/Solana.svelte";
   import Sui from "../MainWalletLinks/Sui.svelte";
+  import Ton from "../MainWalletLinks/Ton.svelte";
 
   import EvmLogo from "~/assets/chains/evm.png";
   import SolanaLogo from "~/assets/chains/solana.png";
@@ -86,137 +86,43 @@
   </div>
 
   <div class="flex flex-col gap-6">
-    <!-- user social login -->
-    {#if localStorage.getItem("auth_token")}
-      <div class="flex flex-col gap-2">
-        <div class="xl:text-base text-xl font-medium">
-          Link your social accounts
-        </div>
-        <div class="flex md:flex-row flex-col items-center gap-6">
-          {#each socialData as item}
-            {#if localStorage.getItem("socialAuthType") === "google"}
-              <Google data={item} isDisabledRemove />
-            {/if}
-            {#if localStorage.getItem("socialAuthType") === "twitter"}
-              <Twitter data={item} isDisabledRemove />
-            {/if}
-          {/each}
-        </div>
+    <div class="flex flex-col gap-2">
+      <div class="xl:text-base text-xl font-medium">
+        Link your social accounts
       </div>
+      <div class="flex md:flex-row flex-col items-center gap-6">
+        {#each socialData as item}
+          {#if item.type === "google"}
+            <Google data={item} />
+          {/if}
+          {#if item.type === "twitter"}
+            <Twitter data={item} />
+          {/if}
+        {/each}
 
-      <div class="flex flex-col gap-2">
-        <div class="xl:text-base text-xl font-medium">
-          Connect your main wallet
-        </div>
+        {#if socialData && socialData.length === 1 && socialData.find((item) => item.type === "google")}
+          <Twitter data={{}} />
+        {/if}
 
-        {#if dataUserSocialLogin && dataUserSocialLogin.publicAddress}
-          <div class="xl:text-lg text-2xl flex items-center gap-3">
-            {#if chain === "EVM"}
-              <img
-                src={EvmLogo}
-                alt=""
-                width="28"
-                height="28"
-                class="rounded-full"
-              />
-            {/if}
-            {#if chain === "SOL"}
-              <img
-                src={SolanaLogo}
-                alt=""
-                width="28"
-                height="28"
-                class="rounded-full"
-              />
-            {/if}
-            {#if chain === "MOVE"}
-              <img
-                src={SUILogo}
-                alt=""
-                width="28"
-                height="28"
-                class="rounded-full"
-              />
-            {/if}
-            {#if chain === "TON"}
-              <img
-                src={TonLogo}
-                alt=""
-                width="28"
-                height="28"
-                class="rounded-full"
-              />
-            {/if}
-            {shorterAddress(dataUserSocialLogin?.publicAddress)}
-          </div>
-        {:else}
-          <div class="flex flex-col gap-3">
-            <Evm
-              data={dataUserSocialLogin}
-              reCallAPI={() => {
-                dataUserSocialLogin = {};
-              }}
-            />
-            <Solana
-              data={dataUserSocialLogin}
-              reCallAPI={() => {
-                dataUserSocialLogin = {};
-              }}
-            />
-            <Ton
-              data={dataUserSocialLogin}
-              reCallAPI={() => {
-                dataUserSocialLogin = {};
-              }}
-            />
-            <Sui
-              data={dataUserSocialLogin}
-              reCallAPI={() => {
-                dataUserSocialLogin = {};
-              }}
-            />
-          </div>
+        {#if socialData && socialData.length === 1 && socialData.find((item) => item.type === "twitter")}
+          <Google data={{}} />
+        {/if}
+
+        {#if socialData && socialData.length === 0}
+          <Google data={{}} />
+          <Twitter data={{}} />
         {/if}
       </div>
-    {/if}
+    </div>
 
-    <!-- user connect wallet -->
-    {#if !localStorage.getItem("auth_token")}
-      <div class="flex flex-col gap-2">
-        <div class="xl:text-base text-xl font-medium">
-          Link your social accounts
-        </div>
-        <div class="flex md:flex-row flex-col items-center gap-6">
-          {#each socialData as item}
-            {#if item.type === "google"}
-              <Google data={item} />
-            {/if}
-            {#if item.type === "twitter"}
-              <Twitter data={item} />
-            {/if}
-          {/each}
-
-          {#if socialData && socialData.length === 1 && socialData.find((item) => item.type === "google")}
-            <Twitter data={{}} />
-          {/if}
-
-          {#if socialData && socialData.length === 1 && socialData.find((item) => item.type === "twitter")}
-            <Google data={{}} />
-          {/if}
-
-          {#if socialData && socialData.length === 0}
-            <Google data={{}} />
-            <Twitter data={{}} />
-          {/if}
-        </div>
+    <div class="flex flex-col gap-2">
+      <div class="xl:text-base text-xl font-medium">
+        Your main wallet address
       </div>
 
-      <div class="flex flex-col gap-2">
-        <div class="xl:text-base text-xl font-medium">
-          Your main wallet address
-        </div>
-        <div class="xl:text-lg text-2xl flex items-center gap-3">
-          {#if chain === "EVM"}
+      <div class="flex flex-col gap-3">
+        {#if chain === "EVM"}
+          <div class="xl:text-lg text-2xl flex items-center gap-3">
             <img
               src={EvmLogo}
               alt=""
@@ -224,8 +130,15 @@
               height="28"
               class="rounded-full"
             />
-          {/if}
-          {#if chain === "SOL"}
+            {shorterAddress($userPublicAddress)}
+          </div>
+          <Solana data={dataUserSocialLogin} />
+          <Ton data={dataUserSocialLogin} />
+          <Sui data={dataUserSocialLogin} />
+        {/if}
+
+        {#if chain === "SOL"}
+          <div class="xl:text-lg text-2xl flex items-center gap-3">
             <img
               src={SolanaLogo}
               alt=""
@@ -233,8 +146,15 @@
               height="28"
               class="rounded-full"
             />
-          {/if}
-          {#if chain === "MOVE"}
+            {shorterAddress($userPublicAddress)}
+          </div>
+          <Evm data={dataUserSocialLogin} />
+          <Ton data={dataUserSocialLogin} />
+          <Sui data={dataUserSocialLogin} />
+        {/if}
+
+        {#if chain === "MOVE"}
+          <div class="xl:text-lg text-2xl flex items-center gap-3">
             <img
               src={SUILogo}
               alt=""
@@ -242,8 +162,15 @@
               height="28"
               class="rounded-full"
             />
-          {/if}
-          {#if chain === "TON"}
+            {shorterAddress($userPublicAddress)}
+          </div>
+          <Evm data={dataUserSocialLogin} />
+          <Solana data={dataUserSocialLogin} />
+          <Ton data={dataUserSocialLogin} />
+        {/if}
+
+        {#if chain === "TON"}
+          <div class="xl:text-lg text-2xl flex items-center gap-3">
             <img
               src={TonLogo}
               alt=""
@@ -251,11 +178,14 @@
               height="28"
               class="rounded-full"
             />
-          {/if}
-          {shorterAddress($userPublicAddress)}
-        </div>
+            {shorterAddress($userPublicAddress)}
+          </div>
+          <Evm data={dataUserSocialLogin} />
+          <Solana data={dataUserSocialLogin} />
+          <Sui data={dataUserSocialLogin} />
+        {/if}
       </div>
-    {/if}
+    </div>
   </div>
 </div>
 

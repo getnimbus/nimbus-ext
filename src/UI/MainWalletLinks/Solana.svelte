@@ -7,7 +7,7 @@
   import { WalletProvider } from "@aztemi/svelte-on-solana-wallet-adapter-ui";
   import { useQueryClient } from "@tanstack/svelte-query";
   import { nimbus } from "~/lib/network";
-  import { isDarkMode, user } from "~/store";
+  import { isDarkMode } from "~/store";
   import bs58 from "bs58";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
@@ -15,10 +15,8 @@
   import WalletModal from "~/UI/SolanaCustomWalletBtn/WalletModal.svelte";
 
   import Solana from "~/assets/chains/solana.png";
-  import User from "~/assets/user.png";
 
   export let data;
-  export let reCallAPI = () => {};
 
   const queryClient = useQueryClient();
 
@@ -114,7 +112,7 @@
       let params: any = {
         kind: "wallet",
         type: null,
-        userPublicAddress: payload.publicAddress,
+        userPublicAddress: data?.publicAddress,
         id: data?.uid,
         info: data?.info,
         displayName: data?.name,
@@ -130,7 +128,6 @@
       queryClient?.invalidateQueries(["list-address"]);
       queryClient.invalidateQueries(["list-bundle"]);
       queryClient.invalidateQueries(["link-socials"]);
-      reCallAPI();
       toastMsg = "Your are successfully connect your Solana wallet!";
       isSuccessToast = false;
       trigger();

@@ -1,17 +1,15 @@
 <script lang="ts">
   import onboard from "~/lib/web3-onboard";
   import { ethers } from "ethers";
-  import { isDarkMode, user } from "~/store";
+  import { isDarkMode } from "~/store";
   import { nimbus } from "~/lib/network";
   import { useQueryClient } from "@tanstack/svelte-query";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
 
   import Evm from "~/assets/chains/evm.png";
-  import User from "~/assets/user.png";
 
   export let data;
-  export let reCallAPI = () => {};
 
   const queryClient = useQueryClient();
 
@@ -87,7 +85,7 @@
       let params: any = {
         kind: "wallet",
         type: null,
-        userPublicAddress: payload.publicAddress,
+        userPublicAddress: data?.publicAddress,
         id: data?.uid,
         info: data?.info,
         displayName: data?.name,
@@ -103,7 +101,6 @@
       queryClient.invalidateQueries(["list-address"]);
       queryClient.invalidateQueries(["list-bundle"]);
       queryClient.invalidateQueries(["link-socials"]);
-      reCallAPI();
       toastMsg = "Your are successfully connect your wallet!";
       isSuccessToast = false;
       trigger();

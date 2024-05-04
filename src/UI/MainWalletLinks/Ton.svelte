@@ -1,16 +1,14 @@
 <script lang="ts">
-  import { isDarkMode, user, tonConnector } from "~/store";
+  import { isDarkMode, tonConnector } from "~/store";
   import { nimbus } from "~/lib/network";
   import { useQueryClient } from "@tanstack/svelte-query";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
   import { v4 as uuidv4 } from "uuid";
 
-  import User from "~/assets/user.png";
   import Ton from "~/assets/chains/ton.png";
 
   export let data;
-  export let reCallAPI = () => {};
 
   const queryClient = useQueryClient();
 
@@ -70,7 +68,7 @@
       let params: any = {
         kind: "wallet",
         type: null,
-        userPublicAddress: payload?.account?.address,
+        userPublicAddress: data?.publicAddress,
         id: data?.uid,
         info: data?.info,
         displayName: data?.name,
@@ -86,7 +84,6 @@
       queryClient.invalidateQueries(["list-address"]);
       queryClient.invalidateQueries(["list-bundle"]);
       queryClient.invalidateQueries(["link-socials"]);
-      reCallAPI();
       toastMsg = "Your are successfully connect your Ton wallet!";
       isSuccessToast = false;
       trigger();
