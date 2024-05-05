@@ -44,6 +44,9 @@
   $: {
     if (!$queryLinkSocial.isError && $queryLinkSocial.data !== undefined) {
       data = $queryLinkSocial?.data?.data;
+      userLinkWalletData = $queryLinkSocial?.data?.data?.filter(
+        (item) => item.type !== "twitter" && item.type !== "google"
+      );
       if (
         $queryLinkSocial?.data?.data &&
         $queryLinkSocial?.data?.data[0] &&
@@ -74,28 +77,6 @@
   onMount(() => {
     mixpanel.track("accounts_page");
   });
-
-  const handleFormatDataWithoutSocial = async (data) => {
-    userLinkWalletData = await Promise.all(
-      data?.map(async (item) => {
-        const validateAddress = await handleValidateAddress(item?.uid);
-        return {
-          ...item,
-          chain: validateAddress.type,
-        };
-      })
-    );
-  };
-
-  $: {
-    if (data && data.length !== 0) {
-      handleFormatDataWithoutSocial(
-        data?.filter(
-          (item) => item.type !== "twitter" && item.type !== "google"
-        )
-      );
-    }
-  }
 </script>
 
 <div class="flex flex-col gap-4">
