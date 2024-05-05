@@ -591,7 +591,7 @@
               }`}
             >
               <div
-                class="flex items-center justify-end gap-1 text-2xl font-medium xl:text-sm view-token-detail2"
+                class="flex items-center justify-end gap-1 text-2xl font-medium xl:text-sm"
               >
                 {#if ["BTC"].includes($typeWallet)}
                   N/A
@@ -863,7 +863,7 @@
           <div class="flex justify-between items-start">
             <div class="text-right text-sm uppercase font-medium">Pnl</div>
             <div
-              class="flex items-center justify-end gap-1 font-medium text-sm view-token-detail2"
+              class="flex items-center justify-end gap-1 font-medium text-sm"
             >
               {#if ["BTC"].includes($typeWallet)}
                 N/A
