@@ -481,12 +481,10 @@
     userPublicAddress.update((n) => (n = data?.publicAddress));
     userId.update((n) => (n = data?.id));
     userID = data?.id;
+    selectedPackage.update((n) => (n = data?.plan?.tier.toUpperCase()));
+    buyPackage = data.plan?.tier;
     displayName = data?.displayName;
     publicAddress = data?.publicAddress;
-    if (data?.plan?.tier && data?.plan?.tier.length !== 0) {
-      selectedPackage.update((n) => (n = data?.plan?.tier.toUpperCase()));
-    }
-    buyPackage = data.plan?.tier;
     mixpanel.identify(data.publicAddress);
   };
 

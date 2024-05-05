@@ -1,22 +1,45 @@
 <script lang="ts">
   import { isDarkMode } from "~/store";
+  import { getCampaignPartnerDetail } from "~/lib/queryAPI";
+  import { createQuery } from "@tanstack/svelte-query";
 
-  import flowXFinance from "~/assets/campaign/FLX-logo-black-square.png";
   import SUILogo from "~/assets/chains/sui.png";
   import gmPoint from "~/assets/Gold4.svg";
 
   export let data;
   export let handleUpdatePartnerQuestsId = (id) => {};
+
+  let points = 0;
+
+  $: queryCampaignPartnerDetail = createQuery({
+    queryKey: ["partners-detail-campaign", data?.id],
+    queryFn: () => getCampaignPartnerDetail(data?.id),
+    staleTime: Infinity,
+    retry: false,
+  });
+
+  $: {
+    if (
+      !$queryCampaignPartnerDetail.isError &&
+      $queryCampaignPartnerDetail &&
+      $queryCampaignPartnerDetail?.data !== undefined
+    ) {
+      points = $queryCampaignPartnerDetail?.data?.campaign?.quests?.reduce(
+        (prev, item) => prev + item.point,
+        0
+      );
+    }
+  }
 </script>
 
 <div
   class={`relative flex flex-col border border_0000000d rounded-[10px] xl:w-[320px] lg:w-[290px] md:w-[330px] w-full py-8 px-6 transition-all hover:shadow-md cursor-pointer ${$isDarkMode ? "bg-[#000] hover:shadow-gray-600" : "bg-[#fff] hover:shadow-gray-400"}`}
   on:click={() => {
-    handleUpdatePartnerQuestsId(data);
+    handleUpdatePartnerQuestsId(data?.id);
     window.history.replaceState(
       null,
       "",
-      window.location.pathname + `?tab=quests&id=${data}`
+      window.location.pathname + `?tab=quests&id=${data?.id}`
     );
   }}
 >
@@ -27,24 +50,29 @@
   </div>
 
   <div class="px-4 py-12 mt-10 mb-3 bg-white rounded-[10px]">
-    <img src={flowXFinance} alt="" class="object-contain w-[140px] m-auto" />
+    <img
+      src={data?.sponsor?.logo}
+      alt=""
+      class="object-contain w-[140px] m-auto"
+    />
   </div>
 
   <div class="flex flex-col gap-2">
     <div class="flex items-center gap-2">
       <img src={SUILogo} alt="" class="w-6 h-6 rounded-full" />
-      <div class="font-medium text-lg">FlowX Finance</div>
+      <div class="font-medium text-lg">
+        {data?.sponsor?.title || data?.title}
+      </div>
     </div>
     <div class="flex">
       <div
         class="flex items-center gap-2 font-medium bg-[#27326F] rounded-[10px] text-white py-1 px-4"
       >
-        1,000 <img src={gmPoint} alt="" class="w-4 h-4" />
+        {points} <img src={gmPoint} alt="" class="w-4 h-4" />
       </div>
     </div>
     <div class="text-[#7A7A7A]">
-      FlowX is the ultimate destination for all your trading needs, designed to
-      provide a seamless, user-friendly experience for all.
+      {data?.sponsor?.description}
     </div>
   </div>
 </div>

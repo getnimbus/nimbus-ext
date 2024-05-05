@@ -126,9 +126,7 @@
     localStorage.setItem("public_address", data?.publicAddress);
     userPublicAddress.update((n) => (n = data?.publicAddress));
     userId.update((n) => (n = data?.id));
-    if (data?.plan?.tier && data?.plan?.tier.length !== 0) {
-      selectedPackage.update((n) => (n = data?.plan?.tier.toUpperCase()));
-    }
+    selectedPackage.update((n) => (n = data?.plan?.tier.toUpperCase()));
     mixpanel.identify(data.publicAddress);
   };
 
