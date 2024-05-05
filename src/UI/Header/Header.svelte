@@ -437,18 +437,16 @@
       localStorage.removeItem("sui_token");
       localStorage.removeItem("ton_token");
       localStorage.removeItem("evm_token");
+      handleSignOut();
+    },
+    onSuccess(data) {
+      if (data) {
+        handleSetUserData(data);
+      } else {
+        handleSignOut();
+      }
     },
   });
-
-  $: {
-    if (
-      !$queryUserInfo.isError &&
-      $queryUserInfo &&
-      $queryUserInfo?.data !== undefined
-    ) {
-      handleSetUserData($queryUserInfo?.data);
-    }
-  }
 
   const handleSetUserData = (data) => {
     localStorage.setItem("public_address", data?.publicAddress);
@@ -457,9 +455,9 @@
     userID = data?.id;
     displayName = data?.displayName;
     publicAddress = data?.publicAddress;
-    if (data?.plan?.tier && data?.plan?.tier.length !== 0) {
-      selectedPackage.update((n) => (n = data?.plan?.tier.toUpperCase()));
-    }
+    selectedPackage.update(
+      (n) => (n = data?.plan?.tier.toUpperCase() || "FREE")
+    );
     buyPackage = data.plan?.tier;
     mixpanel.identify(data.publicAddress);
   };
