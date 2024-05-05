@@ -6,7 +6,11 @@
   import { triggerFirework } from "~/utils";
   import { wait } from "~/entries/background/utils";
   import { createQuery } from "@tanstack/svelte-query";
-  import { handleGetDataDailyCheckin } from "~/lib/queryAPI";
+  import {
+    handleGetDataDailyCheckin,
+    getUserInfo,
+    getCampaignPartnerList,
+  } from "~/lib/queryAPI";
 
   import Loading from "~/components/Loading.svelte";
   import Button from "~/components/Button.svelte";
@@ -42,12 +46,14 @@
 
   let openScreenBonusScore = false;
   let bonusScore = 0;
-  let partnerQuestId = -1;
 
-  $: twitterUsername = socialData.find((item) => item.type === "twitter")?.name;
+  let partnerQuestId = -1;
 
   let code = "";
   let isLoadingSubmitInviteCode = false;
+
+  let totalCompletedQuests = 0;
+  let partnersDataList = [];
 
   const triggerBonusScore = async () => {
     openScreenBonusScore = true;
@@ -65,23 +71,29 @@
       data[key] = value;
     }
     try {
-      // TODO: update bonus GM Point handler link
-      // const response = await nimbus.post("/v3/payments/check-coupon", {
-      //   code: data.code,
-      // });
-      // if (response?.error) {
-      //   toastMsg = response?.error;
-      //   isSuccessToast = false;
-      //   trigger();
-      // } else {
-      //   bonusScore = response?.data?.bonus;
-      //   triggerBonusScore();
-      // }
-      // isLoadingSubmitInviteCode = false;
-      // code = "";
+      const response = await nimbus.post("/v2/campaign/sui-unlock/invitation", {
+        code: data.code,
+      });
+      if (response?.error) {
+        toastMsg = response?.error;
+        isSuccessToast = false;
+        trigger();
+        return;
+      }
+
+      toastMsg = "Successfully submit your invitation code!";
+      isSuccessToast = true;
+      trigger();
+
+      code = "";
     } catch (e) {
-      // console.error(e);
-      // isLoadingSubmitInviteCode = false;
+      console.error(e);
+      toastMsg =
+        "Something wrong when submit your invitation code. Please try again!";
+      isSuccessToast = false;
+      trigger();
+    } finally {
+      isLoadingSubmitInviteCode = false;
     }
   };
 
@@ -95,6 +107,49 @@
   const handleUpdatePartnerQuestsId = (id) => {
     partnerQuestId = id;
   };
+
+  $: queryUserInfo = createQuery({
+    queryKey: ["users-me"],
+    queryFn: () => getUserInfo(),
+    staleTime: Infinity,
+    retry: false,
+    onError(err) {
+      localStorage.removeItem("auth_token");
+      localStorage.removeItem("solana_token");
+      localStorage.removeItem("sui_token");
+      localStorage.removeItem("ton_token");
+      localStorage.removeItem("evm_token");
+    },
+  });
+
+  $: {
+    if (
+      !$queryUserInfo.isError &&
+      $queryUserInfo &&
+      $queryUserInfo?.data !== undefined
+    ) {
+      totalCompletedQuests = $queryUserInfo?.data?.totalQuest;
+    }
+  }
+
+  $: queryCampaignPartnerList = createQuery({
+    queryKey: ["partners-campaign"],
+    queryFn: () => getCampaignPartnerList(),
+    staleTime: Infinity,
+    retry: false,
+  });
+
+  $: {
+    if (
+      !$queryCampaignPartnerList.isError &&
+      $queryCampaignPartnerList &&
+      $queryCampaignPartnerList?.data !== undefined
+    ) {
+      partnersDataList = $queryCampaignPartnerList?.data;
+    }
+  }
+
+  $: twitterUsername = socialData.find((item) => item.type === "twitter")?.name;
 </script>
 
 {#if partnerQuestId === -1}
@@ -176,7 +231,13 @@
           >
             Quests Completed
           </div>
-          <div class="text-4xl font-medium flex items-center gap-2">2</div>
+          <div class="text-4xl font-medium flex items-center gap-2">
+            {#if $queryUserInfo.isFetching}
+              <Loading />
+            {:else}
+              {totalCompletedQuests}
+            {/if}
+          </div>
         </div>
       </div>
     </div>
@@ -199,9 +260,13 @@
         </div>
       </div>
       <div class="flex flex-wrap gap-6">
-        {#each [1] as item}
-          <PartnerQuestCard data={item} {handleUpdatePartnerQuestsId} />
-        {/each}
+        {#if $queryCampaignPartnerList.isFetching}
+          <Loading />
+        {:else}
+          {#each partnersDataList as data}
+            <PartnerQuestCard {data} {handleUpdatePartnerQuestsId} />
+          {/each}
+        {/if}
       </div>
     </div>
   </div>
@@ -226,7 +291,7 @@
       <div class="xl:text-sm text-xl font-medium">Quests</div>
     </div>
 
-    <PartnerQuestDetail />
+    <PartnerQuestDetail {partnersDataList} id={partnerQuestId} />
   </div>
 {/if}
 

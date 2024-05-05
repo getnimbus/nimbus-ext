@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { getReferrals } from "~/lib/queryAPI";
+  import { getReferralInvitation } from "~/lib/queryAPI";
   import QRCode from "qrcode-generator";
   import CopyToClipboard from "svelte-copy-to-clipboard";
   import html2canvas from "html2canvas";
@@ -43,8 +43,8 @@
 
   // query referrals
   $: queryReferrals = createQuery({
-    queryKey: ["referrals"],
-    queryFn: () => getReferrals(),
+    queryKey: ["referrals-invitation"],
+    queryFn: () => getReferralInvitation(),
     staleTime: Infinity,
     onError(err) {
       localStorage.removeItem("auth_token");
