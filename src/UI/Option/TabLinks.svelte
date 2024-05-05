@@ -3,11 +3,11 @@
   import { userPublicAddress } from "~/store";
   import { nimbus } from "~/lib/network";
   import { i18n } from "~/lib/i18n";
-  import { shorterAddress } from "~/utils";
   import mixpanel from "mixpanel-browser";
   import { createQuery } from "@tanstack/svelte-query";
   import { handleValidateAddress } from "~/lib/queryAPI";
 
+  import ConnectedBtn from "./TabLinks/MainWalletLinks/ConnectedBtn.svelte";
   import Google from "./TabLinks/SocialLinks/Google.svelte";
   import Twitter from "./TabLinks/SocialLinks/Twitter.svelte";
   import Evm from "./TabLinks/MainWalletLinks/Evm.svelte";
@@ -131,18 +131,11 @@
       <div class="flex flex-col gap-4">
         {#if chain === ""}
           {#if userLinkWalletData.find((item) => item.chain === "EVM")}
-            <div class="xl:text-lg text-2xl flex items-center gap-3">
-              <img
-                src={SUILogo}
-                alt=""
-                width="28"
-                height="28"
-                class="rounded-full"
-              />
-              {shorterAddress(
-                userLinkWalletData.find((item) => item.chain === "EVM")?.uid
-              )}
-            </div>
+            <ConnectedBtn
+              logo={EvmLogo}
+              address={userLinkWalletData.find((item) => item.chain === "EVM")
+                ?.uid}
+            />
           {:else}
             <Evm
               data={dataUserSocial}
@@ -151,18 +144,11 @@
           {/if}
 
           {#if userLinkWalletData.find((item) => item.chain === "SOL")}
-            <div class="xl:text-lg text-2xl flex items-center gap-3">
-              <img
-                src={SolanaLogo}
-                alt=""
-                width="28"
-                height="28"
-                class="rounded-full"
-              />
-              {shorterAddress(
-                userLinkWalletData.find((item) => item.chain === "SOL")?.uid
-              )}
-            </div>
+            <ConnectedBtn
+              logo={SolanaLogo}
+              address={userLinkWalletData.find((item) => item.chain === "SOL")
+                ?.uid}
+            />
           {:else}
             <Solana
               data={dataUserSocial}
@@ -171,18 +157,11 @@
           {/if}
 
           {#if userLinkWalletData.find((item) => item.chain === "TON")}
-            <div class="xl:text-lg text-2xl flex items-center gap-3">
-              <img
-                src={SolanaLogo}
-                alt=""
-                width="28"
-                height="28"
-                class="rounded-full"
-              />
-              {shorterAddress(
-                userLinkWalletData.find((item) => item.chain === "TON")?.uid
-              )}
-            </div>
+            <ConnectedBtn
+              logo={TonLogo}
+              address={userLinkWalletData.find((item) => item.chain === "TON")
+                ?.uid}
+            />
           {:else}
             <Ton
               data={dataUserSocial}
@@ -191,18 +170,11 @@
           {/if}
 
           {#if userLinkWalletData.find((item) => item.chain === "MOVE")}
-            <div class="xl:text-lg text-2xl flex items-center gap-3">
-              <img
-                src={SUILogo}
-                alt=""
-                width="28"
-                height="28"
-                class="rounded-full"
-              />
-              {shorterAddress(
-                userLinkWalletData.find((item) => item.chain === "MOVE")?.uid
-              )}
-            </div>
+            <ConnectedBtn
+              logo={SUILogo}
+              address={userLinkWalletData.find((item) => item.chain === "MOVE")
+                ?.uid}
+            />
           {:else}
             <Sui
               data={dataUserSocial}
@@ -212,30 +184,14 @@
         {/if}
 
         {#if chain === "EVM"}
-          <div class="xl:text-lg text-2xl flex items-center gap-3">
-            <img
-              src={EvmLogo}
-              alt=""
-              width="28"
-              height="28"
-              class="rounded-full"
-            />
-            {shorterAddress($userPublicAddress)}
-          </div>
+          <ConnectedBtn logo={EvmLogo} address={$userPublicAddress} />
 
           {#if userLinkWalletData.find((item) => item.chain === "SOL")}
-            <div class="xl:text-lg text-2xl flex items-center gap-3">
-              <img
-                src={SolanaLogo}
-                alt=""
-                width="28"
-                height="28"
-                class="rounded-full"
-              />
-              {shorterAddress(
-                userLinkWalletData.find((item) => item.chain === "SOL")?.uid
-              )}
-            </div>
+            <ConnectedBtn
+              logo={SolanaLogo}
+              address={userLinkWalletData.find((item) => item.chain === "SOL")
+                ?.uid}
+            />
           {:else}
             <Solana
               data={dataUserSocial}
@@ -244,18 +200,11 @@
           {/if}
 
           {#if userLinkWalletData.find((item) => item.chain === "TON")}
-            <div class="xl:text-lg text-2xl flex items-center gap-3">
-              <img
-                src={SolanaLogo}
-                alt=""
-                width="28"
-                height="28"
-                class="rounded-full"
-              />
-              {shorterAddress(
-                userLinkWalletData.find((item) => item.chain === "TON")?.uid
-              )}
-            </div>
+            <ConnectedBtn
+              logo={TonLogo}
+              address={userLinkWalletData.find((item) => item.chain === "TON")
+                ?.uid}
+            />
           {:else}
             <Ton
               data={dataUserSocial}
@@ -264,18 +213,11 @@
           {/if}
 
           {#if userLinkWalletData.find((item) => item.chain === "MOVE")}
-            <div class="xl:text-lg text-2xl flex items-center gap-3">
-              <img
-                src={SUILogo}
-                alt=""
-                width="28"
-                height="28"
-                class="rounded-full"
-              />
-              {shorterAddress(
-                userLinkWalletData.find((item) => item.chain === "MOVE")?.uid
-              )}
-            </div>
+            <ConnectedBtn
+              logo={SUILogo}
+              address={userLinkWalletData.find((item) => item.chain === "MOVE")
+                ?.uid}
+            />
           {:else}
             <Sui
               data={dataUserSocial}
@@ -285,30 +227,14 @@
         {/if}
 
         {#if chain === "SOL"}
-          <div class="xl:text-lg text-2xl flex items-center gap-3">
-            <img
-              src={SolanaLogo}
-              alt=""
-              width="28"
-              height="28"
-              class="rounded-full"
-            />
-            {shorterAddress($userPublicAddress)}
-          </div>
+          <ConnectedBtn logo={SolanaLogo} address={$userPublicAddress} />
 
           {#if userLinkWalletData.find((item) => item.chain === "EVM")}
-            <div class="xl:text-lg text-2xl flex items-center gap-3">
-              <img
-                src={SUILogo}
-                alt=""
-                width="28"
-                height="28"
-                class="rounded-full"
-              />
-              {shorterAddress(
-                userLinkWalletData.find((item) => item.chain === "EVM")?.uid
-              )}
-            </div>
+            <ConnectedBtn
+              logo={EvmLogo}
+              address={userLinkWalletData.find((item) => item.chain === "EVM")
+                ?.uid}
+            />
           {:else}
             <Evm
               data={dataUserSocial}
@@ -317,18 +243,11 @@
           {/if}
 
           {#if userLinkWalletData.find((item) => item.chain === "TON")}
-            <div class="xl:text-lg text-2xl flex items-center gap-3">
-              <img
-                src={SolanaLogo}
-                alt=""
-                width="28"
-                height="28"
-                class="rounded-full"
-              />
-              {shorterAddress(
-                userLinkWalletData.find((item) => item.chain === "TON")?.uid
-              )}
-            </div>
+            <ConnectedBtn
+              logo={TonLogo}
+              address={userLinkWalletData.find((item) => item.chain === "TON")
+                ?.uid}
+            />
           {:else}
             <Ton
               data={dataUserSocial}
@@ -337,18 +256,11 @@
           {/if}
 
           {#if userLinkWalletData.find((item) => item.chain === "MOVE")}
-            <div class="xl:text-lg text-2xl flex items-center gap-3">
-              <img
-                src={SUILogo}
-                alt=""
-                width="28"
-                height="28"
-                class="rounded-full"
-              />
-              {shorterAddress(
-                userLinkWalletData.find((item) => item.chain === "MOVE")?.uid
-              )}
-            </div>
+            <ConnectedBtn
+              logo={SUILogo}
+              address={userLinkWalletData.find((item) => item.chain === "MOVE")
+                ?.uid}
+            />
           {:else}
             <Sui
               data={dataUserSocial}
@@ -358,30 +270,14 @@
         {/if}
 
         {#if chain === "MOVE"}
-          <div class="xl:text-lg text-2xl flex items-center gap-3">
-            <img
-              src={SUILogo}
-              alt=""
-              width="28"
-              height="28"
-              class="rounded-full"
-            />
-            {shorterAddress($userPublicAddress)}
-          </div>
+          <ConnectedBtn logo={SUILogo} address={$userPublicAddress} />
 
           {#if userLinkWalletData.find((item) => item.chain === "EVM")}
-            <div class="xl:text-lg text-2xl flex items-center gap-3">
-              <img
-                src={SUILogo}
-                alt=""
-                width="28"
-                height="28"
-                class="rounded-full"
-              />
-              {shorterAddress(
-                userLinkWalletData.find((item) => item.chain === "EVM")?.uid
-              )}
-            </div>
+            <ConnectedBtn
+              logo={EvmLogo}
+              address={userLinkWalletData.find((item) => item.chain === "EVM")
+                ?.uid}
+            />
           {:else}
             <Evm
               data={dataUserSocial}
@@ -390,18 +286,11 @@
           {/if}
 
           {#if userLinkWalletData.find((item) => item.chain === "SOL")}
-            <div class="xl:text-lg text-2xl flex items-center gap-3">
-              <img
-                src={SolanaLogo}
-                alt=""
-                width="28"
-                height="28"
-                class="rounded-full"
-              />
-              {shorterAddress(
-                userLinkWalletData.find((item) => item.chain === "SOL")?.uid
-              )}
-            </div>
+            <ConnectedBtn
+              logo={SolanaLogo}
+              address={userLinkWalletData.find((item) => item.chain === "SOL")
+                ?.uid}
+            />
           {:else}
             <Solana
               data={dataUserSocial}
@@ -410,18 +299,11 @@
           {/if}
 
           {#if userLinkWalletData.find((item) => item.chain === "TON")}
-            <div class="xl:text-lg text-2xl flex items-center gap-3">
-              <img
-                src={SolanaLogo}
-                alt=""
-                width="28"
-                height="28"
-                class="rounded-full"
-              />
-              {shorterAddress(
-                userLinkWalletData.find((item) => item.chain === "TON")?.uid
-              )}
-            </div>
+            <ConnectedBtn
+              logo={TonLogo}
+              address={userLinkWalletData.find((item) => item.chain === "TON")
+                ?.uid}
+            />
           {:else}
             <Ton
               data={dataUserSocial}
@@ -431,30 +313,14 @@
         {/if}
 
         {#if chain === "TON"}
-          <div class="xl:text-lg text-2xl flex items-center gap-3">
-            <img
-              src={TonLogo}
-              alt=""
-              width="28"
-              height="28"
-              class="rounded-full"
-            />
-            {shorterAddress($userPublicAddress)}
-          </div>
+          <ConnectedBtn logo={TonLogo} address={$userPublicAddress} />
 
           {#if userLinkWalletData.find((item) => item.chain === "EVM")}
-            <div class="xl:text-lg text-2xl flex items-center gap-3">
-              <img
-                src={SUILogo}
-                alt=""
-                width="28"
-                height="28"
-                class="rounded-full"
-              />
-              {shorterAddress(
-                userLinkWalletData.find((item) => item.chain === "EVM")?.uid
-              )}
-            </div>
+            <ConnectedBtn
+              logo={EvmLogo}
+              address={userLinkWalletData.find((item) => item.chain === "EVM")
+                ?.uid}
+            />
           {:else}
             <Evm
               data={dataUserSocial}
@@ -463,18 +329,11 @@
           {/if}
 
           {#if userLinkWalletData.find((item) => item.chain === "SOL")}
-            <div class="xl:text-lg text-2xl flex items-center gap-3">
-              <img
-                src={SolanaLogo}
-                alt=""
-                width="28"
-                height="28"
-                class="rounded-full"
-              />
-              {shorterAddress(
-                userLinkWalletData.find((item) => item.chain === "SOL")?.uid
-              )}
-            </div>
+            <ConnectedBtn
+              logo={SolanaLogo}
+              address={userLinkWalletData.find((item) => item.chain === "SOL")
+                ?.uid}
+            />
           {:else}
             <Solana
               data={dataUserSocial}
@@ -483,18 +342,11 @@
           {/if}
 
           {#if userLinkWalletData.find((item) => item.chain === "MOVE")}
-            <div class="xl:text-lg text-2xl flex items-center gap-3">
-              <img
-                src={SUILogo}
-                alt=""
-                width="28"
-                height="28"
-                class="rounded-full"
-              />
-              {shorterAddress(
-                userLinkWalletData.find((item) => item.chain === "MOVE")?.uid
-              )}
-            </div>
+            <ConnectedBtn
+              logo={SUILogo}
+              address={userLinkWalletData.find((item) => item.chain === "MOVE")
+                ?.uid}
+            />
           {:else}
             <Sui
               data={dataUserSocial}
