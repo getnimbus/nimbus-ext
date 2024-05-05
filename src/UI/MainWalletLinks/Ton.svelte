@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { isDarkMode, tonConnector } from "~/store";
+  import { isDarkMode, tonConnector, userPublicAddress } from "~/store";
   import { nimbus } from "~/lib/network";
   import { useQueryClient } from "@tanstack/svelte-query";
   import { Toast } from "flowbite-svelte";
@@ -9,6 +9,7 @@
   import Ton from "~/assets/chains/ton.png";
 
   export let data;
+  export let isPrimaryLogin;
 
   const queryClient = useQueryClient();
 
@@ -60,18 +61,42 @@
       });
     } catch (e) {
       console.error("error: ", e);
+      if ($tonConnector.connected) {
+        $tonConnector.disconnect();
+      }
     }
   };
 
-  const handleUpdatePublicAddress = async (payload, id) => {
+  const handleUpdatePublicAddress = async (payload) => {
     try {
-      let params: any = {
+      const formatData = {
+        account: {
+          address: payload?.account?.address,
+          chain: payload?.account?.chain,
+          walletStateInit: payload?.account?.walletStateInit,
+        },
+        connectItems: {
+          tonProof: {
+            name: payload?.connectItems?.tonProof?.name,
+            proof: {
+              timestamp: payload?.connectItems?.tonProof?.proof?.timestamp,
+              domain: {
+                lengthBytes:
+                  payload?.connectItems?.tonProof?.proof?.domain?.lengthBytes,
+                value: payload?.connectItems?.tonProof?.proof?.domain?.value,
+              },
+              signature: payload?.connectItems?.tonProof?.proof?.signature,
+            },
+          },
+        },
+      };
+
+      const params: any = {
+        id: isPrimaryLogin ? data?.uid : $userPublicAddress,
         kind: "wallet",
         type: null,
-        userPublicAddress: data?.publicAddress,
-        id: data?.uid,
-        info: data?.info,
-        displayName: data?.name,
+        userPublicAddress: formatData?.account?.address,
+        signature: formatData?.connectItems?.tonProof?.proof?.signature,
       };
       const res = await nimbus.post("/accounts/link", params);
       if (res && res?.error) {
@@ -80,15 +105,21 @@
         trigger();
         return;
       }
-      queryClient?.invalidateQueries(["users-me"]);
-      queryClient.invalidateQueries(["list-address"]);
-      queryClient.invalidateQueries(["list-bundle"]);
+
       queryClient.invalidateQueries(["link-socials"]);
       toastMsg = "Your are successfully connect your Ton wallet!";
       isSuccessToast = false;
       trigger();
     } catch (e) {
       console.log(e);
+      toastMsg =
+        "Something wrong when connect your Ton wallet. Please try again!";
+      isSuccessToast = true;
+      trigger();
+    } finally {
+      if ($tonConnector.connected) {
+        $tonConnector.disconnect();
+      }
     }
   };
 </script>
