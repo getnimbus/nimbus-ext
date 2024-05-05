@@ -8,8 +8,6 @@
   import mixpanel from "mixpanel-browser";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
-  import { triggerFirework } from "~/utils";
-  import { wait } from "~/entries/background/utils";
 
   import Icon from "~/UI/Option/Icon.svelte";
   import TabQuests from "~/UI/DailyCheckin/TabQuests.svelte";
@@ -53,8 +51,6 @@
   let isSkipToMainPage = false;
   let code = "";
   let isLoadingSubmitInviteCode = false;
-  let openScreenBonusScore = false;
-  let bonusScore = 0;
 
   let toastMsg = "";
   let isSuccessToast = false;
@@ -135,13 +131,6 @@
     }
   }
 
-  const triggerBonusScore = async () => {
-    openScreenBonusScore = true;
-    triggerFirework();
-    await wait(2000);
-    openScreenBonusScore = false;
-  };
-
   const onSubmitInviteCode = async (e) => {
     isLoadingSubmitInviteCode = true;
     const formData = new FormData(e.target);
@@ -151,23 +140,31 @@
       data[key] = value;
     }
     try {
-      // TODO: update bonus GM Point handler link
-      // const response = await nimbus.post("/v3/payments/check-coupon", {
-      //   code: data.code,
-      // });
-      // if (response?.error) {
-      //   toastMsg = response?.error;
-      //   isSuccessToast = false;
-      //   trigger();
-      // } else {
-      //   bonusScore = response?.data?.bonus;
-      //   triggerBonusScore();
-      // }
-      // isLoadingSubmitInviteCode = false;
-      // code = "";
+      const response = await nimbus.post("/v2/campaign/sui-unlock/invitation", {
+        code: data.code,
+      });
+      if (response?.error) {
+        toastMsg = response?.error;
+        isSuccessToast = false;
+        trigger();
+        return;
+      }
+
+      toastMsg = "Successfully submit your invitation code!";
+      isSuccessToast = true;
+      trigger();
+
+      code = "";
+      localStorage.setItem("isSkipInviteCodeCampaign", "true");
+      isSkipToMainPage = true;
     } catch (e) {
-      // console.error(e);
-      // isLoadingSubmitInviteCode = false;
+      console.error(e);
+      toastMsg =
+        "Something wrong when submit your invitation code. Please try again!";
+      isSuccessToast = false;
+      trigger();
+    } finally {
+      isLoadingSubmitInviteCode = false;
     }
   };
 </script>
@@ -293,28 +290,6 @@
     </div>
   </div>
 </ErrorBoundary>
-
-{#if openScreenBonusScore}
-  <div
-    class="fixed h-screen w-screen top-0 left-0 flex items-center justify-center bg-[#000000cc]"
-    style="z-index: 2147483648;"
-    on:click={() => {
-      setTimeout(() => {
-        openScreenBonusScore = false;
-      }, 500);
-    }}
-  >
-    <div class="flex flex-col items-center justify-center gap-10">
-      <div class="xl:text-2xl text-4xl text-white font-medium">
-        Congratulation!!!
-      </div>
-      <img src={goldImg} alt="" class="w-40 h-40" />
-      <div class="xl:text-2xl text-4xl text-white font-medium">
-        You have received {bonusScore} Bonus GM Points
-      </div>
-    </div>
-  </div>
-{/if}
 
 {#if showToast}
   <div class="fixed top-3 right-3 w-full" style="z-index: 2147483648;">
