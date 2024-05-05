@@ -1,7 +1,7 @@
 <script lang="ts">
   import onboard from "~/lib/web3-onboard";
   import { ethers } from "ethers";
-  import { isDarkMode } from "~/store";
+  import { isDarkMode, userPublicAddress } from "~/store";
   import { nimbus } from "~/lib/network";
   import { useQueryClient } from "@tanstack/svelte-query";
   import { Toast } from "flowbite-svelte";
@@ -10,8 +10,10 @@
   import Evm from "~/assets/chains/evm.png";
 
   export let data;
+  export let isPrimaryLogin;
 
   const queryClient = useQueryClient();
+  const wallets$ = onboard.state.select("wallets");
 
   let toastMsg = "";
   let isSuccessToast = false;
@@ -29,6 +31,12 @@
     showToast = false;
     toastMsg = "";
     isSuccessToast = false;
+  };
+
+  const disconnect = (value: any) => {
+    if (value && Object.keys(value).length !== 0) {
+      onboard.disconnectWallet({ label: value.label });
+    }
   };
 
   // handle evm login
@@ -64,31 +72,37 @@
 
   const handleGetNonce = async (provider, address) => {
     try {
-      const signatureString = await handleSignAddressMessage(
-        provider,
-        `${Math.floor(Math.random() * 10000)}`
-      );
-      if (signatureString) {
-        const payload = {
-          signature: signatureString,
-          publicAddress: address?.toLowerCase(),
-        };
-        handleUpdatePublicAddress(payload);
+      const res: any = await nimbus.post("/users/nonce?verified=true", {
+        publicAddress: address,
+        referrer: undefined,
+      });
+      if (res && res.data) {
+        const signatureString = await handleSignAddressMessage(
+          provider,
+          res?.data?.nonce
+        );
+        if (signatureString) {
+          const payload = {
+            signature: signatureString,
+            publicAddress: address?.toLowerCase(),
+          };
+          handleUpdatePublicAddress(payload);
+        }
       }
     } catch (e) {
       console.error("error: ", e);
+      disconnect($wallets$?.[0]);
     }
   };
 
   const handleUpdatePublicAddress = async (payload) => {
     try {
-      let params: any = {
+      const params: any = {
+        id: isPrimaryLogin ? data?.uid : $userPublicAddress,
         kind: "wallet",
         type: null,
-        userPublicAddress: data?.publicAddress,
-        id: data?.uid,
-        info: data?.info,
-        displayName: data?.name,
+        userPublicAddress: payload?.publicAddress,
+        signature: payload?.signature,
       };
       const res = await nimbus.post("/accounts/link", params);
       if (res && res?.error) {
@@ -97,15 +111,19 @@
         trigger();
         return;
       }
-      queryClient?.invalidateQueries(["users-me"]);
-      queryClient.invalidateQueries(["list-address"]);
-      queryClient.invalidateQueries(["list-bundle"]);
+
       queryClient.invalidateQueries(["link-socials"]);
-      toastMsg = "Your are successfully connect your wallet!";
-      isSuccessToast = false;
+      toastMsg = "Your are successfully connect your Evm wallet!";
+      isSuccessToast = true;
       trigger();
     } catch (e) {
       console.log(e);
+      toastMsg =
+        "Something wrong when connect your Evm wallet. Please try again!";
+      isSuccessToast = true;
+      trigger();
+    } finally {
+      disconnect($wallets$?.[0]);
     }
   };
 </script>

@@ -150,11 +150,20 @@
             isPrimaryLogin={dataUserSocial.isPrimaryLogin}
           />
 
-          <Evm data={dataUserSocial} />
+          <Evm
+            data={dataUserSocial}
+            isPrimaryLogin={dataUserSocial.isPrimaryLogin}
+          />
 
-          <Ton data={dataUserSocial} />
+          <Ton
+            data={dataUserSocial}
+            isPrimaryLogin={dataUserSocial.isPrimaryLogin}
+          />
 
-          <Sui data={dataUserSocial} />
+          <Sui
+            data={dataUserSocial}
+            isPrimaryLogin={dataUserSocial.isPrimaryLogin}
+          />
         {/if}
 
         {#if chain === "EVM"}
@@ -189,9 +198,45 @@
             />
           {/if}
 
-          <Ton data={dataUserSocial} />
+          {#if userLinkWalletData.find((item) => item.chain === "TON")}
+            <div class="xl:text-lg text-2xl flex items-center gap-3">
+              <img
+                src={SolanaLogo}
+                alt=""
+                width="28"
+                height="28"
+                class="rounded-full"
+              />
+              {shorterAddress(
+                userLinkWalletData.find((item) => item.chain === "TON")?.uid
+              )}
+            </div>
+          {:else}
+            <Ton
+              data={dataUserSocial}
+              isPrimaryLogin={dataUserSocial.isPrimaryLogin}
+            />
+          {/if}
 
-          <Sui data={dataUserSocial} />
+          {#if userLinkWalletData.find((item) => item.chain === "MOVE")}
+            <div class="xl:text-lg text-2xl flex items-center gap-3">
+              <img
+                src={SUILogo}
+                alt=""
+                width="28"
+                height="28"
+                class="rounded-full"
+              />
+              {shorterAddress(
+                userLinkWalletData.find((item) => item.chain === "MOVE")?.uid
+              )}
+            </div>
+          {:else}
+            <Sui
+              data={dataUserSocial}
+              isPrimaryLogin={dataUserSocial.isPrimaryLogin}
+            />
+          {/if}
         {/if}
 
         {#if chain === "SOL"}
@@ -206,11 +251,65 @@
             {shorterAddress($userPublicAddress)}
           </div>
 
-          <Evm data={dataUserSocial} />
+          {#if userLinkWalletData.find((item) => item.chain === "EVM")}
+            <div class="xl:text-lg text-2xl flex items-center gap-3">
+              <img
+                src={SUILogo}
+                alt=""
+                width="28"
+                height="28"
+                class="rounded-full"
+              />
+              {shorterAddress(
+                userLinkWalletData.find((item) => item.chain === "EVM")?.uid
+              )}
+            </div>
+          {:else}
+            <Evm
+              data={dataUserSocial}
+              isPrimaryLogin={dataUserSocial.isPrimaryLogin}
+            />
+          {/if}
 
-          <Ton data={dataUserSocial} />
+          {#if userLinkWalletData.find((item) => item.chain === "TON")}
+            <div class="xl:text-lg text-2xl flex items-center gap-3">
+              <img
+                src={SolanaLogo}
+                alt=""
+                width="28"
+                height="28"
+                class="rounded-full"
+              />
+              {shorterAddress(
+                userLinkWalletData.find((item) => item.chain === "TON")?.uid
+              )}
+            </div>
+          {:else}
+            <Ton
+              data={dataUserSocial}
+              isPrimaryLogin={dataUserSocial.isPrimaryLogin}
+            />
+          {/if}
 
-          <Sui data={dataUserSocial} />
+          {#if userLinkWalletData.find((item) => item.chain === "MOVE")}
+            <div class="xl:text-lg text-2xl flex items-center gap-3">
+              <img
+                src={SUILogo}
+                alt=""
+                width="28"
+                height="28"
+                class="rounded-full"
+              />
+              {shorterAddress(
+                userLinkWalletData.find((item) => item.chain === "MOVE")?.uid
+              )}
+            </div>
+          {:else}
+            <Sui
+              data={dataUserSocial}
+              isPrimaryLogin={dataUserSocial.isPrimaryLogin}
+            />
+          {/if}
         {/if}
 
         {#if chain === "MOVE"}
@@ -224,7 +323,26 @@
             />
             {shorterAddress($userPublicAddress)}
           </div>
-          <Evm data={dataUserSocial} />
+
+          {#if userLinkWalletData.find((item) => item.chain === "EVM")}
+            <div class="xl:text-lg text-2xl flex items-center gap-3">
+              <img
+                src={SUILogo}
+                alt=""
+                width="28"
+                height="28"
+                class="rounded-full"
+              />
+              {shorterAddress(
+                userLinkWalletData.find((item) => item.chain === "EVM")?.uid
+              )}
+            </div>
+          {:else}
+            <Evm
+              data={dataUserSocial}
+              isPrimaryLogin={dataUserSocial.isPrimaryLogin}
+            />
+          {/if}
 
           {#if userLinkWalletData.find((item) => item.chain === "SOL")}
             <div class="xl:text-lg text-2xl flex items-center gap-3">
@@ -246,7 +364,25 @@
             />
           {/if}
 
-          <Ton data={dataUserSocial} />
+          {#if userLinkWalletData.find((item) => item.chain === "TON")}
+            <div class="xl:text-lg text-2xl flex items-center gap-3">
+              <img
+                src={SolanaLogo}
+                alt=""
+                width="28"
+                height="28"
+                class="rounded-full"
+              />
+              {shorterAddress(
+                userLinkWalletData.find((item) => item.chain === "TON")?.uid
+              )}
+            </div>
+          {:else}
+            <Ton
+              data={dataUserSocial}
+              isPrimaryLogin={dataUserSocial.isPrimaryLogin}
+            />
+          {/if}
         {/if}
 
         {#if chain === "TON"}
@@ -261,7 +397,25 @@
             {shorterAddress($userPublicAddress)}
           </div>
 
-          <Evm data={dataUserSocial} />
+          {#if userLinkWalletData.find((item) => item.chain === "EVM")}
+            <div class="xl:text-lg text-2xl flex items-center gap-3">
+              <img
+                src={SUILogo}
+                alt=""
+                width="28"
+                height="28"
+                class="rounded-full"
+              />
+              {shorterAddress(
+                userLinkWalletData.find((item) => item.chain === "EVM")?.uid
+              )}
+            </div>
+          {:else}
+            <Evm
+              data={dataUserSocial}
+              isPrimaryLogin={dataUserSocial.isPrimaryLogin}
+            />
+          {/if}
 
           {#if userLinkWalletData.find((item) => item.chain === "SOL")}
             <div class="xl:text-lg text-2xl flex items-center gap-3">
@@ -283,7 +437,25 @@
             />
           {/if}
 
-          <Sui data={dataUserSocial} />
+          {#if userLinkWalletData.find((item) => item.chain === "MOVE")}
+            <div class="xl:text-lg text-2xl flex items-center gap-3">
+              <img
+                src={SUILogo}
+                alt=""
+                width="28"
+                height="28"
+                class="rounded-full"
+              />
+              {shorterAddress(
+                userLinkWalletData.find((item) => item.chain === "MOVE")?.uid
+              )}
+            </div>
+          {:else}
+            <Sui
+              data={dataUserSocial}
+              isPrimaryLogin={dataUserSocial.isPrimaryLogin}
+            />
+          {/if}
         {/if}
       </div>
     </div>
