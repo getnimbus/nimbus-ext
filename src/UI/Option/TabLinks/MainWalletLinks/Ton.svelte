@@ -56,7 +56,7 @@
           wallet.connectItems?.tonProof &&
           "proof" in wallet.connectItems.tonProof
         ) {
-          handleUpdatePublicAddress(wallet, id);
+          handleUpdatePublicAddress(wallet);
         }
       });
     } catch (e) {
@@ -98,7 +98,7 @@
         userPublicAddress: formatData?.account?.address,
         signature: formatData?.connectItems?.tonProof?.proof?.signature,
       };
-      const res = await nimbus.post("/accounts/link", params);
+      const res: any = await nimbus.post("/accounts/link", params);
       if (res && res?.error) {
         toastMsg = res?.error;
         isSuccessToast = false;

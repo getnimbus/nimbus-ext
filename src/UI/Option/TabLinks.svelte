@@ -8,12 +8,12 @@
   import { createQuery } from "@tanstack/svelte-query";
   import { handleValidateAddress } from "~/lib/queryAPI";
 
-  import Google from "../SocialLinks/Google.svelte";
-  import Twitter from "../SocialLinks/Twitter.svelte";
-  import Evm from "../MainWalletLinks/Evm.svelte";
-  import Solana from "../MainWalletLinks/Solana.svelte";
-  import Sui from "../MainWalletLinks/Sui.svelte";
-  import Ton from "../MainWalletLinks/Ton.svelte";
+  import Google from "./TabLinks/SocialLinks/Google.svelte";
+  import Twitter from "./TabLinks/SocialLinks/Twitter.svelte";
+  import Evm from "./TabLinks/MainWalletLinks/Evm.svelte";
+  import Solana from "./TabLinks/MainWalletLinks/Solana.svelte";
+  import Sui from "./TabLinks/MainWalletLinks/Sui.svelte";
+  import Ton from "./TabLinks/MainWalletLinks/Ton.svelte";
 
   import EvmLogo from "~/assets/chains/evm.png";
   import SolanaLogo from "~/assets/chains/solana.png";

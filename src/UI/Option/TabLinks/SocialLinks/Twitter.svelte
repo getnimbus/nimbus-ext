@@ -88,7 +88,7 @@
 
   const handleTwitterAuth = async () => {
     try {
-      const res = await signInWithPopup(auth, twitterProvider).then(
+      const res: any = await signInWithPopup(auth, twitterProvider).then(
         (result) => result.user
       );
       if (res) {
@@ -120,7 +120,7 @@
         };
       }
 
-      const response = await nimbus.post("/accounts/link", params);
+      const response: any = await nimbus.post("/accounts/link", params);
       if (response && response?.error) {
         toastMsg = response?.error;
         isSuccessToast = false;
@@ -151,7 +151,7 @@
 
   const handleAddBonusQuest = async () => {
     try {
-      const res = await nimbus.post(`/v2/checkin/quest/link-google`, {});
+      const res: any = await nimbus.post(`/v2/checkin/quest/link-twitter`, {});
       if (res && res?.data === null) {
         toastMsg = "You are already finished this quest";
         isSuccessToast = false;
