@@ -23,7 +23,7 @@
   import { nimbus } from "~/lib/network";
   import mixpanel from "mixpanel-browser";
   import { shorterAddress, clickOutside } from "~/utils";
-  import { createQuery, useQueryClient } from "@tanstack/svelte-query";
+  import { useQueryClient } from "@tanstack/svelte-query";
   import QRCode from "qrcode-generator";
   import CopyToClipboard from "svelte-copy-to-clipboard";
   import { wait } from "~/entries/background/utils";
@@ -35,7 +35,6 @@
   import bs58 from "bs58";
   import { walletStore } from "@aztemi/svelte-on-solana-wallet-adapter-core";
   import type { WalletState } from "nimbus-sui-kit";
-  import { getUserInfo } from "~/lib/queryAPI";
 
   import Tooltip from "~/components/Tooltip.svelte";
   import DarkMode from "~/components/DarkMode.svelte";
@@ -97,38 +96,6 @@
   let timerCountdown;
   let loading = false;
   let isShowTooltipCopy = false;
-
-  $: queryUserInfo = createQuery({
-    queryKey: ["users-me"],
-    queryFn: () => getUserInfo(),
-    staleTime: Infinity,
-    retry: false,
-    onError(err) {
-      localStorage.removeItem("auth_token");
-      localStorage.removeItem("solana_token");
-      localStorage.removeItem("sui_token");
-      localStorage.removeItem("ton_token");
-      localStorage.removeItem("evm_token");
-    },
-  });
-
-  $: {
-    if (
-      !$queryUserInfo.isError &&
-      $queryUserInfo &&
-      $queryUserInfo?.data !== undefined
-    ) {
-      handleSetUserData($queryUserInfo?.data);
-    }
-  }
-
-  const handleSetUserData = (data) => {
-    localStorage.setItem("public_address", data?.publicAddress);
-    userPublicAddress.update((n) => (n = data?.publicAddress));
-    userId.update((n) => (n = data?.id));
-    selectedPackage.update((n) => (n = data?.plan?.tier.toUpperCase()));
-    mixpanel.identify(data.publicAddress);
-  };
 
   onMount(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -274,7 +241,7 @@
 
   const handleGetNonce = async (provider, address) => {
     try {
-      const res = await nimbus.post("/users/nonce", {
+      const res: any = await nimbus.post("/users/nonce", {
         publicAddress: address,
         referrer: invitation.length !== 0 ? invitation : undefined,
       });

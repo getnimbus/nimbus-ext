@@ -24,7 +24,11 @@
   });
 
   $: {
-    if (!$queryUserInfo.isError && $queryUserInfo.data !== undefined) {
+    if (
+      !$queryUserInfo.isError &&
+      $queryUserInfo &&
+      $queryUserInfo.data !== undefined
+    ) {
       userAddress = $queryUserInfo.data?.publicAddress;
       link = `https://app.getnimbus.io/?invitation=${$queryUserInfo?.data.id}`;
       qrcode.addData(link);
