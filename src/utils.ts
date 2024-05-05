@@ -916,7 +916,7 @@ export const drivePortfolio = () =>
         },
       },
       {
-        element: ".view-the-pnl",
+        element: ".view-the-chart-overview",
         popover: {
           title: "Track your portfolio Performance and Allocation 📊",
           description:
@@ -924,19 +924,11 @@ export const drivePortfolio = () =>
         },
       },
       {
-        element: ".view-token-detail1",
+        element: ".view-pnl",
         popover: {
-          title: "Your realized profit and loss, in every asset 💰",
+          title: "Your profit and loss, in every asset 💰",
           description:
-            "With Realized Profit and Loss Calculation, you have the power to make smarter investment choices",
-        },
-      },
-      {
-        element: ".view-token-detail2",
-        popover: {
-          title: "Your unrealized profit and loss, in every asset 💰",
-          description:
-            "With Unrealized Profit and Loss every asset, you have the tools to take your investment journey to new heights",
+            "With Profit and Loss Calculation, you have the power to make smarter investment choices",
         },
       },
     ],
