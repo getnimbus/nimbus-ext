@@ -1,48 +1,25 @@
 <script lang="ts">
+  import {
+    PhantomWalletAdapter,
+    SolflareWalletAdapter,
+  } from "@solana/wallet-adapter-wallets";
+  import { walletStore } from "@aztemi/svelte-on-solana-wallet-adapter-core";
+  import { WalletProvider } from "@aztemi/svelte-on-solana-wallet-adapter-ui";
   import { useQueryClient } from "@tanstack/svelte-query";
-  import { SuiConnector, WalletState } from "nimbus-sui-kit";
-  import { isDarkMode, suiWalletInstance, userPublicAddress } from "~/store";
   import { nimbus } from "~/lib/network";
+  import { isDarkMode, userPublicAddress } from "~/store";
+  import bs58 from "bs58";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
 
-  import ReactAdapter from "~/components/ReactAdapter.svelte";
+  import WalletModal from "~/UI/SolanaCustomWalletBtn/WalletModal.svelte";
 
-  import SUI from "~/assets/chains/sui.png";
+  import Solana from "~/assets/chains/solana.png";
 
   export let data;
   export let isPrimaryLogin;
 
   const queryClient = useQueryClient();
-  const chains = [
-    {
-      id: "sui:mainnet",
-      name: "Mainnet",
-      rpcUrl: "https://fullnode.mainnet.sui.io",
-    },
-  ];
-
-  const onConnectSuccess = (msg) => {
-    console.log("Success connect: ", msg);
-    if ($suiWalletInstance) {
-      ($suiWalletInstance as WalletState).toggleSelect();
-    }
-  };
-
-  const onConnectError = (msg) => {
-    console.error("Error connect", msg);
-    if ($suiWalletInstance) {
-      ($suiWalletInstance as WalletState).toggleSelect();
-    }
-  };
-
-  const widgetConfig = {
-    walletFn: (wallet) => {
-      suiWalletInstance.update((n) => (n = wallet));
-    },
-    onConnectSuccess,
-    onConnectError,
-  };
 
   let toastMsg = "";
   let isSuccessToast = false;
@@ -62,60 +39,77 @@
     isSuccessToast = false;
   };
 
-  const handleSUIAuth = async () => {
+  const wallets = [new PhantomWalletAdapter(), new SolflareWalletAdapter()];
+
+  let modalVisible = false;
+  const maxNumberOfWallets = 5;
+  const openModal = () => {
+    modalVisible = true;
+  };
+
+  const closeModal = () => (modalVisible = false);
+
+  const connectWallet = async (event) => {
+    closeModal();
     try {
-      if ($suiWalletInstance) {
-        ($suiWalletInstance as WalletState).toggleSelect();
-      }
-    } catch (e) {
-      console.log("error: ", e);
+      localStorage.removeItem("walletAdapter");
+      await walletStore.resetWallet();
+      await walletStore.setConnecting(false);
+      await $walletStore.disconnect();
+      await $walletStore.select(event.detail);
+      await $walletStore.connect();
+    } catch (error) {
+      console.log(error);
     }
   };
 
+  $: solanaPublicAddress = $walletStore?.publicKey?.toBase58();
+
   $: {
-    if (
-      ($suiWalletInstance as WalletState) &&
-      ($suiWalletInstance as WalletState).connected
-    ) {
-      handleGetNonce(($suiWalletInstance as WalletState)?.account?.address);
+    if (solanaPublicAddress) {
+      handleGetSolanaNonce(solanaPublicAddress);
     }
   }
 
-  const handleGetNonce = async (address: string) => {
+  const handleSignSolanaAddressMessage = async (signatureString) => {
+    if ($walletStore.connected) {
+      const res = await $walletStore?.signMessage(
+        Uint8Array.from(
+          Array.from(`I am signing my one-time nonce: ${signatureString}`).map(
+            (letter) => letter.charCodeAt(0)
+          )
+        )
+      );
+      if (res) {
+        return bs58.encode(res);
+      } else {
+        return "";
+      }
+    }
+  };
+
+  const handleGetSolanaNonce = async (address) => {
     try {
       const res: any = await nimbus.post("/users/nonce?verified=true", {
         publicAddress: address,
         referrer: undefined,
       });
       if (res && res.data) {
-        const signature = await handleSignAddressMessage(res?.data?.nonce);
-        if (signature) {
+        const signatureString = await handleSignSolanaAddressMessage(
+          res?.data?.nonce
+        );
+        if (signatureString) {
           const payload = {
-            signature: signature.signature,
-            bytes: signature.bytes,
-            publicAddress: address?.toLowerCase(),
+            signature: signatureString,
+            publicAddress: address,
           };
           handleUpdatePublicAddress(payload);
         }
       }
     } catch (e) {
       console.error("error: ", e);
-      if (
-        ($suiWalletInstance as WalletState) &&
-        ($suiWalletInstance as WalletState).connected
-      ) {
-        ($suiWalletInstance as WalletState).disconnect();
-      }
+      $walletStore.disconnect();
     }
-  };
-
-  const handleSignAddressMessage = async (nonce: string) => {
-    const msg = await ($suiWalletInstance as WalletState).signPersonalMessage({
-      message: new TextEncoder().encode(
-        `I am signing my one-time nonce: ${nonce}`
-      ),
-    });
-    return msg;
   };
 
   const handleUpdatePublicAddress = async (payload) => {
@@ -127,7 +121,7 @@
         userPublicAddress: payload?.publicAddress,
         signature: payload?.signature,
       };
-      const res = await nimbus.post("/accounts/link", params);
+      const res: any = await nimbus.post("/accounts/link", params);
       if (res && res?.error) {
         toastMsg = res?.error;
         isSuccessToast = false;
@@ -136,7 +130,7 @@
       }
 
       queryClient?.invalidateQueries(["link-socials"]);
-      toastMsg = "Your are successfully connect your SUI wallet!";
+      toastMsg = "Your are successfully connect your Solana wallet!";
       isSuccessToast = true;
       trigger();
     } catch (e) {
@@ -146,12 +140,7 @@
       isSuccessToast = true;
       trigger();
     } finally {
-      if (
-        ($suiWalletInstance as WalletState) &&
-        ($suiWalletInstance as WalletState).connected
-      ) {
-        ($suiWalletInstance as WalletState).disconnect();
-      }
+      $walletStore.disconnect();
     }
   };
 </script>
@@ -160,19 +149,28 @@
   class={`flex items-center justify-center gap-2 text-white border cursor-pointer py-3 px-6 rounded-[12px] w-[250px] ${
     $isDarkMode ? "border-white text-white" : "border-[#27326f] text-[#27326f]"
   }`}
-  on:click={handleSUIAuth}
+  on:click={() => {
+    openModal();
+  }}
 >
-  <img src={SUI} class="h-[24px] w-auto" />
-  <div class="font-semibold text-[15px]">Login with Sui</div>
+  <img src={Solana} alt="" width="24" height="24" class="rounded-full" />
+  <div class="font-semibold text-[15px]">Connect Solana</div>
 </div>
 
-<ReactAdapter
-  element={SuiConnector}
-  config={widgetConfig}
-  autoConnect={false}
-  {chains}
-  integrator="svelte-example"
+<WalletProvider
+  localStorageKey="walletAdapter"
+  {wallets}
+  autoConnect
+  onError={console.log}
 />
+
+{#if modalVisible}
+  <WalletModal
+    on:close={closeModal}
+    on:connect={connectWallet}
+    {maxNumberOfWallets}
+  />
+{/if}
 
 {#if showToast}
   <div class="fixed top-3 right-3 w-full" style="z-index: 2147483648;">

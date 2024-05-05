@@ -104,7 +104,7 @@
         userPublicAddress: payload?.publicAddress,
         signature: payload?.signature,
       };
-      const res = await nimbus.post("/accounts/link", params);
+      const res: any = await nimbus.post("/accounts/link", params);
       if (res && res?.error) {
         toastMsg = res?.error;
         isSuccessToast = false;
