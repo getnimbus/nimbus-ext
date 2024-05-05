@@ -33,7 +33,7 @@
 </script>
 
 <div
-  class={`relative flex flex-col border border_0000000d rounded-[10px] xl:w-[320px] lg:w-[290px] md:w-[330px] w-full py-8 px-6 transition-all hover:shadow-md cursor-pointer ${$isDarkMode ? "bg-[#000] hover:shadow-gray-600" : "bg-[#fff] hover:shadow-gray-400"}`}
+  class={`flex flex-col border border_0000000d rounded-[10px] xl:w-[320px] lg:w-[290px] md:w-[330px] w-full py-8 px-6 transition-all hover:shadow-md cursor-pointer ${$isDarkMode ? "bg-[#000] hover:shadow-gray-600" : "bg-[#fff] hover:shadow-gray-400"}`}
   on:click={() => {
     handleUpdatePartnerQuestsId(data?.id);
     window.history.replaceState(
@@ -43,18 +43,23 @@
     );
   }}
 >
-  <div
-    class="absolute top-6 left-6 text-sm bg-[#CBFDE1] text-[#49A37B] rounded-[30px] px-2 py-1"
-  >
-    New
-  </div>
-
-  <div class="px-4 py-12 mt-10 mb-3 bg-white rounded-[10px]">
-    <img
-      src={data?.sponsor?.logo}
-      alt=""
-      class="object-contain w-[140px] m-auto"
-    />
+  <div class="flex flex-col gap-6 w-full">
+    <div class="flex flex-wrap items-center gap-2">
+      {#each data?.tags || [] as tag}
+        <div
+          class="text-sm bg-[#CBFDE1] text-[#49A37B] rounded-[30px] px-2 py-1"
+        >
+          {tag}
+        </div>
+      {/each}
+    </div>
+    <div class="px-4 py-12 mb-3 bg-white rounded-[10px] w-full">
+      <img
+        src={data?.sponsor?.logo}
+        alt=""
+        class="object-contain w-[140px] m-auto"
+      />
+    </div>
   </div>
 
   <div class="flex flex-col gap-2">

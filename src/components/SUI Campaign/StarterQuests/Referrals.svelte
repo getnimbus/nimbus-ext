@@ -9,6 +9,10 @@
 
   import goldImg from "~/assets/Gold4.svg";
   import CodeIcon from "~/assets/code-icon.svg";
+  import Loading from "~/components/Loading.svelte";
+
+  export let dataReferrals;
+  export let isLoading;
 
   const typeTab = [
     {
@@ -20,6 +24,8 @@
       value: "history",
     },
   ];
+
+  const gmPointBonusEachReferral = 150;
 
   let toastMsg = "";
   let isSuccessToast: boolean = false;
@@ -40,6 +46,9 @@
   };
 
   let tabSelected = "codes";
+
+  $: listReferralCode =
+    dataReferrals?.referral_codes?.map((item) => item.id).join(" ") || [];
 </script>
 
 <div
@@ -54,7 +63,7 @@
         class={`flex-1 rounded-[10px] py-2 px-3 flex flex-col items-center gap-2 ${$isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"}`}
       >
         <div class="text-base">Your Invites</div>
-        <div class="text-3xl font-medium">3</div>
+        <div class="text-3xl font-medium">{dataReferrals?.count}</div>
       </div>
 
       <div
@@ -63,7 +72,7 @@
         <div class="text-base">Rewards</div>
         <div class="text-3xl font-medium flex items-center gap-2">
           <img src={goldImg} alt="" class="w-7 h-7" />
-          1230
+          {dataReferrals?.count * gmPointBonusEachReferral}
         </div>
       </div>
     </div>
@@ -132,113 +141,135 @@
                 </tr>
               </thead>
 
-              <tbody>
-                <CopyToClipboard
-                  text={"HELLO WORLD"}
-                  let:copy
-                  on:copy={async () => {
-                    toastMsg = "Copied code successfully!";
-                    isSuccessToast = true;
-                    trigger();
-                  }}
-                >
-                  <tr
-                    class="cursor-pointer group transition-all"
-                    on:click={copy}
-                  >
-                    <td
-                      class={`py-3 pl-3 ${
-                        $isDarkMode
-                          ? "group-hover:bg-[#000]"
-                          : "group-hover:bg-gray-100"
-                      }`}
-                    >
+              {#if isLoading}
+                <tbody>
+                  <tr>
+                    <td colspan="2">
                       <div
-                        class="flex items-center gap-1 text-left xl:text-xs text-sm uppercase font-medium text-[#ccc]"
+                        class="flex justify-center items-center h-full py-3 px-3"
                       >
-                        <img src={CodeIcon} alt="" class="w-3 h-3" />
-                        CODE01CODE01
-                      </div>
-                    </td>
-                    <td
-                      class={`py-3 pr-3 ${
-                        $isDarkMode
-                          ? "group-hover:bg-[#000]"
-                          : "group-hover:bg-gray-100"
-                      }`}
-                    >
-                      <div
-                        class="text-left xl:text-xs text-sm uppercase font-medium text-[#00A878]"
-                      >
-                        USED
+                        <Loading />
                       </div>
                     </td>
                   </tr>
-                </CopyToClipboard>
-
-                <CopyToClipboard
-                  text={"HI WORLD"}
-                  let:copy
-                  on:copy={async () => {
-                    toastMsg = "Copied code successfully!";
-                    isSuccessToast = true;
-                    trigger();
-                  }}
-                >
-                  <tr
-                    class={`cursor-pointer group transition-all ${
-                      $isDarkMode ? "text-gray-400" : "text-[#666666]"
-                    }`}
-                    on:click={copy}
-                  >
-                    <td
-                      class={`py-3 pl-3 ${
-                        $isDarkMode
-                          ? "group-hover:bg-[#000]"
-                          : "group-hover:bg-gray-100"
-                      }`}
-                    >
-                      <div
-                        class={`flex items-center gap-1 text-left xl:text-xs text-sm uppercase font-medium ${
-                          $isDarkMode ? "text-[#fff]" : "text-[#000]"
-                        }`}
-                      >
-                        <img src={CodeIcon} alt="" class="w-3 h-3" />
-                        CODE01CODE01
-                      </div>
-                    </td>
-                    <td
-                      class={`py-3 pr-3 ${
-                        $isDarkMode
-                          ? "group-hover:bg-[#000]"
-                          : "group-hover:bg-gray-100"
-                      }`}
-                    >
-                      <div
-                        class={`text-left xl:text-xs text-sm uppercase font-medium ${
-                          $isDarkMode ? "text-[#fff]" : "text-[#000]"
-                        }`}
-                      >
-                        UNUSED
-                      </div>
-                    </td>
-                  </tr>
-                </CopyToClipboard>
-              </tbody>
+                </tbody>
+              {:else}
+                <tbody>
+                  {#if dataReferrals?.referral_codes && dataReferrals?.referral_codes?.length === 0}
+                    <tr>
+                      <td colspan="2">
+                        <div
+                          class="flex justify-center items-center h-full py-4 px-3 text-lg text-gray-400"
+                        >
+                          Empty
+                        </div>
+                      </td>
+                    </tr>
+                  {:else}
+                    {#each dataReferrals?.referral_codes as data}
+                      {#if data?.used}
+                        <tr class="group transition-all">
+                          <td
+                            class={`py-3 pl-3 ${
+                              $isDarkMode
+                                ? "group-hover:bg-[#000]"
+                                : "group-hover:bg-gray-100"
+                            }`}
+                          >
+                            <div
+                              class="flex items-center gap-1 text-left xl:text-xs text-sm font-medium text-[#ccc]"
+                            >
+                              <img src={CodeIcon} alt="" class="w-3 h-3" />
+                              {data?.id}
+                            </div>
+                          </td>
+                          <td
+                            class={`py-3 pr-3 ${
+                              $isDarkMode
+                                ? "group-hover:bg-[#000]"
+                                : "group-hover:bg-gray-100"
+                            }`}
+                          >
+                            <div
+                              class="text-left xl:text-xs text-sm uppercase font-medium text-[#00A878]"
+                            >
+                              USED
+                            </div>
+                          </td>
+                        </tr>
+                      {:else}
+                        <CopyToClipboard
+                          text={data?.id}
+                          let:copy
+                          on:copy={async () => {
+                            toastMsg = "Copied code successfully!";
+                            isSuccessToast = true;
+                            trigger();
+                          }}
+                        >
+                          <tr
+                            class={`cursor-pointer group transition-all ${
+                              $isDarkMode ? "text-gray-400" : "text-[#666666]"
+                            }`}
+                            on:click={copy}
+                          >
+                            <td
+                              class={`py-3 pl-3 ${
+                                $isDarkMode
+                                  ? "group-hover:bg-[#000]"
+                                  : "group-hover:bg-gray-100"
+                              }`}
+                            >
+                              <div
+                                class={`flex items-center gap-1 text-left xl:text-xs text-sm font-medium ${
+                                  $isDarkMode ? "text-[#fff]" : "text-[#000]"
+                                }`}
+                              >
+                                <img src={CodeIcon} alt="" class="w-3 h-3" />
+                                {data?.id}
+                              </div>
+                            </td>
+                            <td
+                              class={`py-3 pr-3 ${
+                                $isDarkMode
+                                  ? "group-hover:bg-[#000]"
+                                  : "group-hover:bg-gray-100"
+                              }`}
+                            >
+                              <div
+                                class={`text-left xl:text-xs text-sm uppercase font-medium ${
+                                  $isDarkMode ? "text-[#fff]" : "text-[#000]"
+                                }`}
+                              >
+                                UNUSED
+                              </div>
+                            </td>
+                          </tr>
+                        </CopyToClipboard>
+                      {/if}
+                    {/each}
+                  {/if}
+                </tbody>
+              {/if}
             </table>
           </div>
+
           <div class="w-max mx-auto">
-            <CopyToClipboard
-              text={"HELLO WORLD, HI WORLD"}
-              let:copy
-              on:copy={async () => {
-                toastMsg = "Copied all code successfully!";
-                isSuccessToast = true;
-                trigger();
-              }}
-            >
-              <Button variant="tertiary" on:click={copy}>Copy All</Button>
-            </CopyToClipboard>
+            {#if listReferralCode && listReferralCode.length !== 0}
+              <CopyToClipboard
+                text={listReferralCode}
+                let:copy
+                on:copy={async () => {
+                  toastMsg = "Copied all code successfully!";
+                  isSuccessToast = true;
+                  trigger();
+                }}
+              >
+                <Button variant="tertiary" on:click={copy}>Copy All</Button>
+              </CopyToClipboard>
+            {:else}
+              <Button variant="tertiary" disabled>Copy All</Button>
+            {/if}
           </div>
         </div>
       {/if}
@@ -276,54 +307,82 @@
               </tr>
             </thead>
 
-            <tbody>
-              <tr
-                class={`group transition-all ${
-                  $isDarkMode ? "text-gray-400" : "text-[#666666]"
-                }`}
-              >
-                <td
-                  class={`py-3 pl-3 ${
-                    $isDarkMode
-                      ? "group-hover:bg-[#000]"
-                      : "group-hover:bg-gray-100"
-                  }`}
-                >
-                  <div class="text-left xl:text-xs uppercase font-medium">
-                    @thanhle27
-                  </div>
-                </td>
+            {#if isLoading}
+              <tbody>
+                <tr>
+                  <td colspan="3">
+                    <div
+                      class="flex justify-center items-center h-full py-3 px-3"
+                    >
+                      <Loading />
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            {:else}
+              <tbody>
+                {#if dataReferrals?.history && dataReferrals?.history?.length === 0}
+                  <tr>
+                    <td colspan="3">
+                      <div
+                        class="flex justify-center items-center h-full py-4 px-3 text-lg text-gray-400"
+                      >
+                        Empty
+                      </div>
+                    </td>
+                  </tr>
+                {:else}
+                  {#each dataReferrals?.history || [] as item}
+                    <tr
+                      class={`group transition-all ${
+                        $isDarkMode ? "text-gray-400" : "text-[#666666]"
+                      }`}
+                    >
+                      <td
+                        class={`py-3 pl-3 ${
+                          $isDarkMode
+                            ? "group-hover:bg-[#000]"
+                            : "group-hover:bg-gray-100"
+                        }`}
+                      >
+                        <div class="text-left xl:text-xs uppercase font-medium">
+                          @thanhle27
+                        </div>
+                      </td>
 
-                <td
-                  class={`py-3 ${
-                    $isDarkMode
-                      ? "group-hover:bg-[#000]"
-                      : "group-hover:bg-gray-100"
-                  }`}
-                >
-                  <div
-                    class="flex items-center gap-1 text-left xl:text-xs uppercase font-medium"
-                  >
-                    2024-04-30
-                  </div>
-                </td>
+                      <td
+                        class={`py-3 ${
+                          $isDarkMode
+                            ? "group-hover:bg-[#000]"
+                            : "group-hover:bg-gray-100"
+                        }`}
+                      >
+                        <div
+                          class="flex items-center gap-1 text-left xl:text-xs uppercase font-medium"
+                        >
+                          2024-04-30
+                        </div>
+                      </td>
 
-                <td
-                  class={`py-3 pr-3 ${
-                    $isDarkMode
-                      ? "group-hover:bg-[#000]"
-                      : "group-hover:bg-gray-100"
-                  }`}
-                >
-                  <div
-                    class="text-right xl:text-xs uppercase font-medium flex justify-end items-center gap-1"
-                  >
-                    <img src={goldImg} alt="" class="w-4 h-4" />
-                    300
-                  </div>
-                </td>
-              </tr>
-            </tbody>
+                      <td
+                        class={`py-3 pr-3 ${
+                          $isDarkMode
+                            ? "group-hover:bg-[#000]"
+                            : "group-hover:bg-gray-100"
+                        }`}
+                      >
+                        <div
+                          class="text-right xl:text-xs uppercase font-medium flex justify-end items-center gap-1"
+                        >
+                          <img src={goldImg} alt="" class="w-4 h-4" />
+                          300
+                        </div>
+                      </td>
+                    </tr>
+                  {/each}
+                {/if}
+              </tbody>
+            {/if}
           </table>
         </div>
 
@@ -332,37 +391,57 @@
             $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
           }`}
         >
-          <div
-            class="flex flex-col gap-4 border-b-[1px] border_0000000d last:border-none py-4"
-          >
-            <div class="flex justify-between items-start">
-              <div class="text-right text-sm uppercase font-medium">User</div>
-              <div
-                class="flex items-center justify-end font-medium text-sm text_00000099"
-              >
-                @thanhle27
-              </div>
+          {#if isLoading}
+            <div class="flex justify-center items-center h-full py-3 px-3">
+              <Loading />
             </div>
+          {:else if dataReferrals?.history && dataReferrals?.history?.length === 0}
+            <div
+              class="flex justify-center items-center h-full py-3 px-3 text-lg text-gray-400"
+            >
+              Empty
+            </div>
+          {:else}
+            {#each dataReferrals?.history || [] as item}
+              <div
+                class="flex flex-col gap-4 border-b-[1px] border_0000000d last:border-none py-4"
+              >
+                <div class="flex justify-between items-start">
+                  <div class="text-right text-sm uppercase font-medium">
+                    User
+                  </div>
+                  <div
+                    class="flex items-center justify-end font-medium text-sm text_00000099"
+                  >
+                    @thanhle27
+                  </div>
+                </div>
 
-            <div class="flex justify-between items-start">
-              <div class="text-right text-sm uppercase font-medium">Time</div>
-              <div
-                class="flex items-center justify-end font-medium text-sm text_00000099"
-              >
-                2024-04-30
-              </div>
-            </div>
+                <div class="flex justify-between items-start">
+                  <div class="text-right text-sm uppercase font-medium">
+                    Time
+                  </div>
+                  <div
+                    class="flex items-center justify-end font-medium text-sm text_00000099"
+                  >
+                    2024-04-30
+                  </div>
+                </div>
 
-            <div class="flex justify-between items-start">
-              <div class="text-right text-sm uppercase font-medium">Reward</div>
-              <div
-                class="flex items-center justify-end gap-1 font-medium text-sm text_00000099"
-              >
-                <img src={goldImg} alt="" class="w-4 h-4" />
-                300
+                <div class="flex justify-between items-start">
+                  <div class="text-right text-sm uppercase font-medium">
+                    Reward
+                  </div>
+                  <div
+                    class="flex items-center justify-end gap-1 font-medium text-sm text_00000099"
+                  >
+                    <img src={goldImg} alt="" class="w-4 h-4" />
+                    300
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
+            {/each}
+          {/if}
         </div>
       {/if}
     </div>
