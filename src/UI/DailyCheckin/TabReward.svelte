@@ -172,9 +172,7 @@
           </AnimateSharedLayout>
         </div>
 
-        <FlipCoin />
-
-        <!-- {#if selectedType === "redeemGift"}
+        {#if selectedType === "redeemGift"}
           <div class="flex flex-col gap-4">
             <div
               class="flex justify-center items-center h-full w-full xl:text-lg text-xl text-gray-400"
@@ -214,7 +212,7 @@
               {/each}
             </div>
           </div>
-        {/if} -->
+        {/if}
       </div>
     {/if}
   </div>
