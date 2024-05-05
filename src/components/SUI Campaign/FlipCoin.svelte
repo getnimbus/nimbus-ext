@@ -1,7 +1,5 @@
 <script>
-  import Button from "../Button.svelte";
   import { triggerFirework } from "~/utils";
-  import { wait } from "~/entries/background/utils";
 
   import suiBackground from "~/assets/campaign/sui-background-img.png";
   import flipCoin from "~/assets/campaign/flipCoin/flip-coin.png";

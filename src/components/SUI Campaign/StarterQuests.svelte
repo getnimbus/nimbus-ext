@@ -6,7 +6,9 @@
   import StarterQuestTable from "./StarterQuests/StarterQuestTable.svelte";
 
   let dataQuestsBoard = [];
+  let dataReferrals = {};
 
+  // TODO: re-call api every 5 minutes
   $: queryCampaignReferrals = createQuery({
     queryKey: ["referrals-campaign"],
     queryFn: () => getCampaignReferrals(),
@@ -20,7 +22,7 @@
       $queryCampaignReferrals &&
       $queryCampaignReferrals?.data !== undefined
     ) {
-      console.log($queryCampaignReferrals);
+      dataReferrals = $queryCampaignReferrals.data;
     }
   }
 
@@ -43,7 +45,7 @@
 </script>
 
 <div class="flex xl:flex-row flex-col items-start justify-between gap-6">
-  <Referrals />
+  <Referrals {dataReferrals} isLoading={$queryCampaignReferrals.isFetching} />
   <StarterQuestTable
     {dataQuestsBoard}
     isLoading={$queryQuestsBoard.isFetching}

@@ -15,7 +15,6 @@
   import RedeemCard from "~/components/RedeemCard.svelte";
 
   import goldImg from "~/assets/Gold4.svg";
-  import FlipCoin from "~/components/SUI Campaign/FlipCoin.svelte";
 
   const dailyCheckinRewardsTypePortfolio = [
     {
