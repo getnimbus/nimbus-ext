@@ -101,6 +101,10 @@
         window.location.pathname + "?tab=quests"
       );
     }
+
+    isSkipToMainPage = Boolean(
+      localStorage.getItem("isSkipInviteCodeCampaign")
+    );
   });
 
   const handleClick = (e, tabValue) => {
@@ -265,7 +269,10 @@
               </form>
               <div
                 class="text-xs underline text-gray-500 uppercase cursor-pointer"
-                on:click={() => (isSkipToMainPage = true)}
+                on:click={() => {
+                  localStorage.setItem("isSkipInviteCodeCampaign", "true");
+                  isSkipToMainPage = true;
+                }}
               >
                 Or skip it
               </div>
