@@ -15,6 +15,7 @@
   import RedeemCard from "~/components/RedeemCard.svelte";
 
   import goldImg from "~/assets/Gold4.svg";
+  import FlipCoin from "~/components/SUI Campaign/FlipCoin.svelte";
 
   const dailyCheckinRewardsTypePortfolio = [
     {
@@ -170,7 +171,10 @@
             {/each}
           </AnimateSharedLayout>
         </div>
-        {#if selectedType === "redeemGift"}
+
+        <FlipCoin />
+
+        <!-- {#if selectedType === "redeemGift"}
           <div class="flex flex-col gap-4">
             <div
               class="flex justify-center items-center h-full w-full xl:text-lg text-xl text-gray-400"
@@ -210,7 +214,7 @@
               {/each}
             </div>
           </div>
-        {/if}
+        {/if} -->
       </div>
     {/if}
   </div>
