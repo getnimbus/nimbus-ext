@@ -57,7 +57,7 @@
       <img
         src={data?.sponsor?.logo}
         alt=""
-        class="object-contain w-[140px] m-auto"
+        class="object-contain w-[140px] m-auto rounded-[10px] overflow-hidden"
       />
     </div>
   </div>

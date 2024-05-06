@@ -278,7 +278,7 @@
           <img
             src={selectedPartnersData?.sponsor?.logo}
             alt=""
-            class="object-contain w-[140px] m-auto"
+            class="object-contain w-[140px] m-auto rounded-[10px] overflow-hidden"
           />
         </div>
         <div class="uppercase text-3xl font-medium">
