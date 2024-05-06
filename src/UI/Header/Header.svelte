@@ -474,6 +474,16 @@
     },
   });
 
+  $: {
+    if (
+      !$queryUserInfo.isError &&
+      $queryUserInfo &&
+      $queryUserInfo?.data !== undefined
+    ) {
+      handleSetUserData($queryUserInfo?.data);
+    }
+  }
+
   const handleSetUserData = (data) => {
     localStorage.setItem("public_address", data?.publicAddress);
     userPublicAddress.update((n) => (n = data?.publicAddress));
