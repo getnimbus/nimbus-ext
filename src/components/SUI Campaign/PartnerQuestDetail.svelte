@@ -94,7 +94,7 @@
   }
 
   const handleFormatPositionData = (data) => {
-    positionListData = formatDataProtocol(data)?.filter(
+    positionListData = formatDataProtocol(data, false)?.filter(
       (item) =>
         item.protocol?.toLowerCase() ===
         (selectedPartnersData?.sponsor?.title?.toLowerCase() ||
