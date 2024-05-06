@@ -20,6 +20,7 @@
 
   import goldImg from "~/assets/Gold4.svg";
   import wheelIcon from "~/assets/wheel-icon.svg";
+  import TabFlipGmPoints from "~/UI/DailyCheckin/TabFlipGMPoints.svelte";
 
   export let currentRoute;
 
@@ -33,6 +34,11 @@
       label: i18n("checkinPage.tab-daily-checkin", "Daily Check in"),
       value: "checkin",
       type: "Daily Checkin",
+    },
+    {
+      label: i18n("checkinPage.tab-leaderboard", "Flip GM Points"),
+      value: "flip",
+      type: "Flip GM Points",
     },
     {
       label: i18n("checkinPage.tab-leaderboard", "Leaderboard"),
@@ -209,6 +215,8 @@
               <TabLeaderBoard />
             {:else if activeTabValue === "rewards"}
               <TabReward />
+            {:else if activeTabValue === "flip"}
+              <TabFlipGmPoints />
             {/if}
           </div>
         </div>
