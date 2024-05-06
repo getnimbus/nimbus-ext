@@ -5,7 +5,7 @@
   import { i18n } from "~/lib/i18n";
   import mixpanel from "mixpanel-browser";
   import { createQuery } from "@tanstack/svelte-query";
-  import { handleValidateAddress } from "~/lib/queryAPI";
+  import { getUserInfo, handleValidateAddress } from "~/lib/queryAPI";
 
   import ConnectedBtn from "./TabLinks/MainWalletLinks/ConnectedBtn.svelte";
   import Google from "./TabLinks/SocialLinks/Google.svelte";
@@ -81,6 +81,29 @@
   onMount(() => {
     mixpanel.track("accounts_page");
   });
+
+  let selectedDisplayName = "";
+
+  $: queryUserInfo = createQuery({
+    queryKey: ["users-me"],
+    queryFn: () => getUserInfo(),
+    staleTime: Infinity,
+    retry: false,
+  });
+
+  $: {
+    if (
+      !$queryUserInfo.isError &&
+      $queryUserInfo &&
+      $queryUserInfo.data !== undefined
+    ) {
+      selectedDisplayName = $queryUserInfo.data.displayName;
+    }
+  }
+
+  const handleUpdateSelectedDisplayName = (name) => {
+    selectedDisplayName = name;
+  };
 </script>
 
 <div class="flex flex-col gap-4">
@@ -101,24 +124,48 @@
       <div class="flex md:flex-row flex-col items-center gap-6">
         {#each data?.filter((item) => item.type === "twitter" || item.type === "google") as item}
           {#if item.type === "google"}
-            <Google data={item} />
+            <Google
+              data={item}
+              {selectedDisplayName}
+              {handleUpdateSelectedDisplayName}
+            />
           {/if}
           {#if item.type === "twitter"}
-            <Twitter data={item} />
+            <Twitter
+              data={item}
+              {selectedDisplayName}
+              {handleUpdateSelectedDisplayName}
+            />
           {/if}
         {/each}
 
         {#if data && data.length === 1 && data.find((item) => item.type === "google")}
-          <Twitter data={{}} />
+          <Twitter
+            data={{}}
+            {selectedDisplayName}
+            {handleUpdateSelectedDisplayName}
+          />
         {/if}
 
         {#if data && data.length === 1 && data.find((item) => item.type === "twitter")}
-          <Google data={{}} />
+          <Google
+            data={{}}
+            {selectedDisplayName}
+            {handleUpdateSelectedDisplayName}
+          />
         {/if}
 
         {#if data && data.length === 0}
-          <Google data={{}} />
-          <Twitter data={{}} />
+          <Google
+            data={{}}
+            {selectedDisplayName}
+            {handleUpdateSelectedDisplayName}
+          />
+          <Twitter
+            data={{}}
+            {selectedDisplayName}
+            {handleUpdateSelectedDisplayName}
+          />
         {/if}
       </div>
     </div>

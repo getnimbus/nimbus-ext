@@ -4,6 +4,8 @@
 
   export let logo;
   export let address;
+
+  import Copy from "~/components/Copy.svelte";
 </script>
 
 <div
@@ -12,7 +14,12 @@
   }`}
 >
   <img src={logo} alt="" width="24" height="24" />
-  {shorterAddress(address)}
+  <Copy
+    {address}
+    iconColor={$isDarkMode ? "#fff" : "#000"}
+    color={$isDarkMode ? "#fff" : "#000"}
+    isShorten
+  />
 </div>
 
 <style windi:preflights:global windi:safelist:global>
