@@ -22,27 +22,22 @@
 
 <div>
   <div
-    class={`flex flex-col items-center gap-4 rounded-[20px] py-10 px-8 ${$isDarkMode ? "bg-[#222222] text-white" : "border text-[#666666]"}`}
+    class={`flex flex-col items-center gap-4 rounded-[10px] py-10 px-8 ${$isDarkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"}`}
   >
-    <div
-      class={`text-3xl font-semibold ${$isDarkMode ? "text-white" : "text-black"}`}
-    >
-      Q&A
-    </div>
+    <div class="text-3xl font-semibold">Q&A</div>
 
-    <div class="flex flex-col items-center gap-5 w-full">
+    <div class="flex flex-col items-center gap-4 w-full">
       {#each fakeData as item}
-        <div class="flex flex-col w-full">
-          <div
-            class="flex justify-between items-center w-full py-4 border-b cursor-pointer"
-            on:click={() => (item.active = !item.active)}
-          >
-            <div
-              class={`font-medium ${$isDarkMode ? "text-white" : "text-black"}`}
-            >
-              {item.title}
-            </div>
-            <div>
+        <div
+          class="w-full py-2 border-b border-[#D9D9D914] last:border-none cursor-pointer"
+          on:click={() => (item.active = !item.active)}
+        >
+          <div class="flex flex-col gap-1">
+            <div class="flex justify-between items-center">
+              <div class="text-lg font-medium">
+                {item.title}
+              </div>
+
               {#if item.active}
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -51,7 +46,7 @@
                   viewBox="0 0 24 24"
                 >
                   <path
-                    fill="currentColor"
+                    fill="#D9D9D9"
                     fill-rule="evenodd"
                     d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12m5.757-1a1 1 0 1 0 0 2h8.486a1 1 0 1 0 0-2z"
                     clip-rule="evenodd"
@@ -65,7 +60,7 @@
                   viewBox="0 0 24 24"
                 >
                   <path
-                    fill="currentColor"
+                    fill="#D9D9D9"
                     fill-rule="evenodd"
                     d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12m11-4.243a1 1 0 1 0-2 0V11H7.757a1 1 0 1 0 0 2H11v3.243a1 1 0 1 0 2 0V13h3.243a1 1 0 1 0 0-2H13z"
                     clip-rule="evenodd"
@@ -73,12 +68,13 @@
                 </svg>
               {/if}
             </div>
+
+            {#if item.active}
+              <div class="text-base text-[#ccc]">
+                {item.desc}
+              </div>
+            {/if}
           </div>
-          {#if item.active}
-            <div class="flex py-4">
-              {item.desc}
-            </div>
-          {/if}
         </div>
       {/each}
     </div>

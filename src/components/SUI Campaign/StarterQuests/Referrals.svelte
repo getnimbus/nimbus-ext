@@ -4,6 +4,7 @@
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { isDarkMode } from "~/store";
   import CopyToClipboard from "svelte-copy-to-clipboard";
+  import dayjs from "dayjs";
 
   import Button from "~/components/Button.svelte";
 
@@ -43,10 +44,19 @@
     isSuccessToast = false;
   };
 
+  const formatTime = (date: Date) => {
+    if (dayjs().diff(date, "days") >= 1) {
+      return dayjs(date).format("YYYY-MM-DD");
+    }
+    return dayjs(date).fromNow();
+  };
+
   let tabSelected = "codes";
 
   $: listReferralCode =
     dataReferrals?.referral_codes?.map((item) => item.id).join(" ") || [];
+
+  $: console.log("HELLO WORLD: ", dataReferrals?.history);
 </script>
 
 <div
@@ -61,7 +71,7 @@
         class={`flex-1 rounded-[10px] py-2 px-3 flex flex-col items-center gap-2 ${$isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"}`}
       >
         <div class="text-base">Your Invites</div>
-        <div class="text-3xl font-medium">{dataReferrals?.count}</div>
+        <div class="text-3xl font-medium">{dataReferrals?.count || 0}</div>
       </div>
 
       <div
@@ -70,7 +80,7 @@
         <div class="text-base">Rewards</div>
         <div class="text-3xl font-medium flex items-center gap-2">
           <img src={goldImg} alt="" class="w-7 h-7" />
-          {dataReferrals?.count * gmPointBonusEachReferral}
+          {dataReferrals?.count * gmPointBonusEachReferral || 0}
         </div>
       </div>
     </div>
@@ -162,7 +172,7 @@
                           }`}
                         >
                           <div
-                            class="flex items-center gap-1 text-left xl:text-xs text-sm font-medium text-[#ccc]"
+                            class="flex items-center gap-1 text-left text-sm font-medium text-[#ccc]"
                           >
                             <img src={CodeIcon} alt="" class="w-3 h-3" />
                             {data?.id}
@@ -176,7 +186,7 @@
                           }`}
                         >
                           <div
-                            class="text-left xl:text-xs text-sm uppercase font-medium text-[#00A878]"
+                            class="text-left text-sm uppercase font-medium text-[#00A878]"
                           >
                             USED
                           </div>
@@ -206,7 +216,7 @@
                             }`}
                           >
                             <div
-                              class={`flex items-center gap-1 text-left xl:text-xs text-sm font-medium ${
+                              class={`flex items-center gap-1 text-left text-sm font-medium ${
                                 $isDarkMode ? "text-[#fff]" : "text-[#000]"
                               }`}
                             >
@@ -222,7 +232,7 @@
                             }`}
                           >
                             <div
-                              class={`text-left xl:text-xs text-sm uppercase font-medium ${
+                              class={`text-left text-sm uppercase font-medium ${
                                 $isDarkMode ? "text-[#fff]" : "text-[#000]"
                               }`}
                             >
@@ -271,7 +281,7 @@
                   <div
                     class="text-left xl:text-xs text-lg uppercase font-medium"
                   >
-                    User
+                    Code
                   </div>
                 </th>
                 <th class="py-3">
@@ -316,8 +326,8 @@
                           : "group-hover:bg-gray-100"
                       }`}
                     >
-                      <div class="text-left xl:text-xs uppercase font-medium">
-                        @thanhle27
+                      <div class="text-left text-sm uppercase font-medium">
+                        {item?.code}
                       </div>
                     </td>
 
@@ -329,9 +339,9 @@
                       }`}
                     >
                       <div
-                        class="flex items-center gap-1 text-left xl:text-xs uppercase font-medium"
+                        class="flex items-center gap-1 text-left text-sm uppercase font-medium"
                       >
-                        2024-04-30
+                        {formatTime(item?.createdAt)}
                       </div>
                     </td>
 
@@ -343,10 +353,10 @@
                       }`}
                     >
                       <div
-                        class="text-right xl:text-xs uppercase font-medium flex justify-end items-center gap-1"
+                        class="text-right text-sm uppercase font-medium flex justify-end items-center gap-1"
                       >
                         <img src={goldImg} alt="" class="w-4 h-4" />
-                        300
+                        150
                       </div>
                     </td>
                   </tr>
@@ -374,12 +384,12 @@
               >
                 <div class="flex justify-between items-start">
                   <div class="text-right text-sm uppercase font-medium">
-                    User
+                    Code
                   </div>
                   <div
                     class="flex items-center justify-end font-medium text-sm text_00000099"
                   >
-                    @thanhle27
+                    {item?.code}
                   </div>
                 </div>
 
@@ -390,7 +400,7 @@
                   <div
                     class="flex items-center justify-end font-medium text-sm text_00000099"
                   >
-                    2024-04-30
+                    {formatTime(item?.createdAt)}
                   </div>
                 </div>
 
@@ -402,7 +412,7 @@
                     class="flex items-center justify-end gap-1 font-medium text-sm text_00000099"
                   >
                     <img src={goldImg} alt="" class="w-4 h-4" />
-                    300
+                    150
                   </div>
                 </div>
               </div>

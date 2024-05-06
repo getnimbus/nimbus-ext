@@ -92,14 +92,19 @@
                 }`}
               >
                 <td
-                  class={`xl:py-3 py-6 pl-3 ${
+                  class={`xl:py-3 py-6 pl-3 flex flex-col gap-1 ${
                     $isDarkMode
                       ? "group-hover:bg-[#000]"
                       : "group-hover:bg-gray-100"
                   }`}
                 >
-                  <div class="text-left xl:text-xs uppercase font-medium">
+                  <div
+                    class={`text-left text-sm font-medium ${$isDarkMode ? "text-white" : "text-black"}`}
+                  >
                     {data?.title}
+                  </div>
+                  <div class="text-left text-xs w-[200px]">
+                    {data?.description}
                   </div>
                 </td>
 
@@ -111,7 +116,7 @@
                   }`}
                 >
                   <div
-                    class="text-left xl:text-xs uppercase font-medium flex justify-start items-center gap-1"
+                    class="text-left text-sm uppercase font-medium flex justify-start items-center gap-1"
                   >
                     <img src={goldImg} alt="" class="w-4 h-4" />
                     {data?.point}
@@ -126,7 +131,7 @@
                   }`}
                 >
                   <div
-                    class="text-right xl:text-xs uppercase font-medium flex justify-end items-center gap-2"
+                    class="text-right text-sm uppercase font-medium flex justify-end items-center gap-2"
                   >
                     {#if data?.status === "ACTIVE"}
                       <div class="w-[50px]">
@@ -173,12 +178,17 @@
         <div
           class="flex flex-col gap-4 border-b-[1px] border_0000000d last:border-none py-4"
         >
-          <div class="flex justify-between items-start">
+          <div class="flex flex-col gap-1 justify-between items-start">
             <div class="text-right text-sm uppercase font-medium">Task</div>
             <div
-              class="flex items-center justify-end font-medium text-sm text_00000099"
+              class="flex flex-col gap-1 items-start justify-end font-medium"
             >
-              {data?.title}
+              <div class="text-sm text_00000099">
+                {data?.title}
+              </div>
+              <div class="text-left text-sm">
+                {data?.description}
+              </div>
             </div>
           </div>
 
