@@ -157,14 +157,23 @@
     <div class="flex lg:flex-row flex-col items-start justify-between gap-6">
       <div class="lg:flex-[0.81] flex-1 flex flex-col gap-3 w-full">
         <div class="flex items-center gap-4">
-          <div class="w-26 h-26 rounded-full overflow-hidden">
+          <div class="w-26 h-26 rounded-full overflow-hidden md:block hidden">
             <img src={User} alt="" class="object-cover w-full h-full" />
           </div>
 
-          <div class="flex-1 flex flex-col gap-1">
-            <div class="text-xl font-medium">@{twitterUsername}</div>
+          <div class="flex-1 flex flex-col gap-2">
+            <div class="flex items-center gap-4">
+              <div
+                class="w-26 h-26 rounded-full overflow-hidden md:hidden block"
+              >
+                <img src={User} alt="" class="object-cover w-full h-full" />
+              </div>
+              <div class="flex-1 flex flex-col gap-1">
+                <div class="text-xl font-medium">@{twitterUsername}</div>
 
-            <ConnectSui />
+                <ConnectSui />
+              </div>
+            </div>
 
             <form
               on:submit|preventDefault={onSubmitInviteCode}
