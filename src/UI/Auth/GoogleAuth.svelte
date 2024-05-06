@@ -64,7 +64,6 @@
       if (res?.data?.result) {
         triggerConnectWallet.update((n) => (n = false));
         localStorage.setItem("auth_token", res?.data?.result);
-        localStorage.setItem("socialAuthType", "google");
         user.update(
           (n) =>
             (n = {
