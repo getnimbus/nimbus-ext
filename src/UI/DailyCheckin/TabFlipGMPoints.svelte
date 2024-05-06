@@ -4,9 +4,9 @@
   import QnA from "~/components/SUI Campaign/FlipCoinGame/QnA.svelte";
 </script>
 
-<div class="flex flex-col gap-14">
+<div class="flex flex-col gap-8">
   <FlipCoin />
-  <div class="grid xl:grid-cols-2 gap-14">
+  <div class="grid xl:grid-cols-2 gap-8">
     <QnA />
     <History />
   </div>
