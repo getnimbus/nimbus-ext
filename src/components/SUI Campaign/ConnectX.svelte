@@ -5,9 +5,11 @@
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
   import { useQueryClient } from "@tanstack/svelte-query";
-  import { userPublicAddress } from "~/store";
+  import { user, userPublicAddress } from "~/store";
 
   import Button from "~/components/Button.svelte";
+
+  import User from "~/assets/user.png";
 
   const queryClient = useQueryClient();
   const twitterProvider = new TwitterAuthProvider();
@@ -32,10 +34,20 @@
 
   const handleTwitterAuth = async () => {
     try {
-      const res = await signInWithPopup(auth, twitterProvider).then(
+      const res: any = await signInWithPopup(auth, twitterProvider).then(
         (result) => result.user
       );
       if (res) {
+        if ($user && Object.keys($user).length === 0) {
+          handleGetTwitterToken(
+            res.uid,
+            "twitter",
+            res?.reloadUserInfo?.providerUserInfo[0]?.email,
+            res?.reloadUserInfo?.screenName
+          );
+          return;
+        }
+
         handleAddTwitter(
           res.uid,
           res?.reloadUserInfo?.providerUserInfo[0]?.email,
@@ -44,6 +56,39 @@
       }
     } catch (e) {
       console.log(e);
+    }
+  };
+
+  const handleGetTwitterToken = async (uid, type, info, displayName) => {
+    try {
+      const res: any = await nimbus.post("/auth", {
+        uid,
+        type,
+        info,
+        displayName: displayName ? displayName : info,
+      });
+      if (res?.data?.result) {
+        localStorage.setItem("auth_token", res?.data?.result);
+        localStorage.setItem("socialAuthType", "twitter");
+        user.update(
+          (n) =>
+            (n = {
+              picture: User,
+            })
+        );
+        toastMsg = "Login with Twitter successfully!";
+        isSuccessToast = true;
+        trigger();
+        queryClient?.invalidateQueries(["users-me"]);
+        queryClient?.invalidateQueries(["list-address"]);
+        queryClient?.invalidateQueries(["link-socials"]);
+      } else {
+        toastMsg = res?.error;
+        isSuccessToast = false;
+        trigger();
+      }
+    } catch (e) {
+      console.error("error: ", e);
     }
   };
 
@@ -58,7 +103,7 @@
         userPublicAddress: $userPublicAddress,
       };
 
-      const response = await nimbus.post("/accounts/link", params);
+      const response: any = await nimbus.post("/accounts/link", params);
       if (response && response?.error) {
         toastMsg = response?.error;
         isSuccessToast = false;
