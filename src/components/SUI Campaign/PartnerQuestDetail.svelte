@@ -1,9 +1,17 @@
 <script lang="ts">
   import { isDarkMode } from "~/store";
-  import { getCampaignPartnerDetail } from "~/lib/queryAPI";
-  import { createQuery } from "@tanstack/svelte-query";
+  import {
+    getCampaignPartnerDetail,
+    getPositionList,
+    getPositions,
+  } from "~/lib/queryAPI";
+  import { createQueries, createQuery } from "@tanstack/svelte-query";
+  import { flatten } from "lodash";
+  import { formatDataProtocol } from "~/UI/Portfolio/DefiPosition/utils";
 
+  import Loading from "~/components/Loading.svelte";
   import PartnerQuestTable from "./PartnerQuestTable.svelte";
+  import Positions from "~/UI/Portfolio/DefiPosition/Positions.svelte";
 
   import GreenTick from "~/assets/green-tick.svg";
 
@@ -15,6 +23,8 @@
     partnersDataList.find((item) => item.id === id);
 
   let dataQuestsBoard = [];
+  let positionListQueries = [];
+  let positionListData = [];
 
   $: queryCampaignPartnerDetail = createQuery({
     queryKey: ["partners-detail-campaign", id],
@@ -33,6 +43,64 @@
       dataQuestsBoard = $queryCampaignPartnerDetail?.data?.campaign?.quests;
     }
   }
+
+  //// POSITIONS
+  $: queryPositionList = createQuery({
+    queryKey: ["position-list", selectedPartnersData],
+    queryFn: () =>
+      getPositionList(
+        "0x692853c81afc8f847147c8a8b4368dc894697fc12b929ef3071482d27339815e"
+      ),
+    staleTime: Infinity,
+    enabled: Boolean(selectedPartnersData),
+  });
+
+  $: {
+    if (!$queryPositionList.isError && $queryPositionList.data !== undefined) {
+      positionListQueries = $queryPositionList.data;
+    }
+  }
+
+  $: queryAllPositions = createQueries(
+    positionListQueries.map((item) => {
+      return {
+        queryKey: ["positions", selectedPartnersData, item],
+        queryFn: () =>
+          getPositions(
+            "0x692853c81afc8f847147c8a8b4368dc894697fc12b929ef3071482d27339815e",
+            item
+          ),
+        staleTime: Infinity,
+        enabled: Boolean(selectedPartnersData),
+      };
+    })
+  );
+
+  $: positionsData =
+    $queryAllPositions.length !== 0
+      ? flatten(
+          $queryAllPositions
+            ?.filter((item) => Array.isArray(item.data))
+            ?.map((item) => item.data)
+        )
+      : [];
+
+  $: {
+    if (!$queryAllPositions.some((item) => item.isFetching === true)) {
+      if (positionsData.length !== 0) {
+        handleFormatPositionData(positionsData);
+      }
+    }
+  }
+
+  const handleFormatPositionData = (data) => {
+    positionListData = formatDataProtocol(data)?.filter(
+      (item) =>
+        item.protocol?.toLowerCase() ===
+        (selectedPartnersData?.sponsor?.title?.toLowerCase() ||
+          selectedPartnersData?.title?.toLowerCase())
+    );
+  };
 </script>
 
 <div class="flex flex-col gap-6">
@@ -201,7 +269,26 @@
       <div class="border-b-[1.5px] border_0000000d pb-2">
         <div class="xl:title-3 title-2">DeFi</div>
       </div>
-      <div>Empty</div>
+
+      {#if $queryAllPositions.some((item) => item.isFetching === true)}
+        <div class="flex justify-center items-center min-h-[300px]">
+          <Loading />
+        </div>
+      {:else}
+        <div class="flex flex-col gap-6">
+          {#if positionsData && positionsData.length === 0}
+            <div
+              class="flex justify-center items-center min-h-[300px] py-4 px-3 text-lg text-gray-400"
+            >
+              Empty
+            </div>
+          {:else}
+            {#each positionListData as item}
+              <Positions data={item} />
+            {/each}
+          {/if}
+        </div>
+      {/if}
     </div>
   </div>
 </div>
