@@ -16,8 +16,6 @@
       positionsData = formatDataProtocol(data);
     }
   }
-
-  $: console.log("this : ", positionsData);
 </script>
 
 <ErrorBoundary>
