@@ -57,41 +57,43 @@
     </div>
   {:else}
     {#each data?.data as item}
-      {#if item.type === "Lending"}
-        <div class="flex flex-col gap-2">
-          <div class="text-base font-medium">{item.type}</div>
-          <LendingPosition data={item.data} />
-        </div>
-      {:else if item.type === "Staking"}
-        <div class="flex flex-col gap-2">
-          <div class="text-base font-medium">{item.type}</div>
-          <StakePosition data={item.data} />
-        </div>
-      {:else if item.type === "Borrow"}
-        <div class="flex flex-col gap-2">
-          <div class="text-base font-medium">{item.type}</div>
-          <BorrowPosition data={item.data} />
-        </div>
-      {:else if item.type === "Vest"}
-        <div class="flex flex-col gap-2">
-          <div class="text-base font-medium">{item.type}</div>
-          <VestPosition data={item.data} />
-        </div>
-      {:else if item.type === "AMM"}
-        <div class="flex flex-col gap-2">
-          <div class="text-base font-medium">Pool</div>
-          <AmmPosition data={item.data} />
-        </div>
-      {:else if item.type === "CLMM"}
-        <div class="flex flex-col gap-2">
-          <div class="text-base font-medium">Pool</div>
-          <ClmmPosition data={item.data} />
-        </div>
-      {:else if item.type === "Farm"}
-        <div class="flex flex-col gap-2">
-          <div class="text-base font-medium">{item.type}</div>
-          <FarmPosition data={item.data} />
-        </div>
+      {#if item.data.length !== 0}
+        {#if item.type === "Lending"}
+          <div class="flex flex-col gap-2">
+            <div class="text-base font-medium">{item.type}</div>
+            <LendingPosition data={item.data} />
+          </div>
+        {:else if item.type === "Staking"}
+          <div class="flex flex-col gap-2">
+            <div class="text-base font-medium">{item.type}</div>
+            <StakePosition data={item.data} />
+          </div>
+        {:else if item.type === "Borrow"}
+          <div class="flex flex-col gap-2">
+            <div class="text-base font-medium">{item.type}</div>
+            <BorrowPosition data={item.data} />
+          </div>
+        {:else if item.type === "Vest"}
+          <div class="flex flex-col gap-2">
+            <div class="text-base font-medium">{item.type}</div>
+            <VestPosition data={item.data} />
+          </div>
+        {:else if item.type === "AMM"}
+          <div class="flex flex-col gap-2">
+            <div class="text-base font-medium">Pool</div>
+            <AmmPosition data={item.data} />
+          </div>
+        {:else if item.type === "CLMM"}
+          <div class="flex flex-col gap-2">
+            <div class="text-base font-medium">Pool</div>
+            <ClmmPosition data={item.data} />
+          </div>
+        {:else if item.type === "Farm"}
+          <div class="flex flex-col gap-2">
+            <div class="text-base font-medium">{item.type}</div>
+            <FarmPosition data={item.data} />
+          </div>
+        {/if}
       {/if}
     {/each}
   {/if}
