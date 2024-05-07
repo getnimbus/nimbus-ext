@@ -252,7 +252,7 @@
             localStorage.getItem("evm_token") ||
             localStorage.getItem("sui_token") ||
             localStorage.getItem("ton_token")
-          ).length !== 0
+          )?.length !== 0
             ? "pb-34"
             : "pb-64"
         }`}
