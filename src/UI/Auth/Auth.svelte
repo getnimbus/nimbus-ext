@@ -285,10 +285,14 @@
         displayName,
       };
 
-      if ($userPublicAddress && $userPublicAddress.length === 0) {
+      if (
+        ($userPublicAddress && $userPublicAddress.length === 0) ||
+        localStorage.getItem("public_address")
+      ) {
         params = {
           ...params,
-          userPublicAddress: $userPublicAddress,
+          userPublicAddress:
+            $userPublicAddress || localStorage.getItem("public_address"),
         };
       }
 
