@@ -99,11 +99,11 @@
                   }`}
                 >
                   <div
-                    class={`text-left text-sm font-medium ${$isDarkMode ? "text-white" : "text-black"}`}
+                    class={`text-left text-base font-medium ${$isDarkMode ? "text-white" : "text-black"}`}
                   >
                     {data?.title}
                   </div>
-                  <div class="text-left text-xs w-[200px]">
+                  <div class="text-left text-sm w-[200px]">
                     {data?.description}
                   </div>
                 </td>
@@ -134,7 +134,7 @@
                     class="text-right text-sm uppercase font-medium flex justify-end items-center gap-2"
                   >
                     {#if data?.status === "ACTIVE"}
-                      <div class="w-[50px]">
+                      <div class="w-[50px] xl:h-[35px] h-[43px]">
                         <Button>
                           <img src={playIcon} alt="" class="w-4 h-4" />
                         </Button>
@@ -183,7 +183,7 @@
             <div
               class="flex flex-col gap-1 items-start justify-end font-medium"
             >
-              <div class="text-sm text_00000099">
+              <div class="text-base text_00000099">
                 {data?.title}
               </div>
               <div class="text-left text-sm">
@@ -210,7 +210,7 @@
               class="flex items-center justify-end gap-2 font-medium text-sm text_00000099"
             >
               {#if data?.status === "ACTIVE"}
-                <div class="w-[50px]">
+                <div class="w-[50px] h-[44px]">
                   <Button>
                     <img src={playIcon} alt="" class="w-4 h-4" />
                   </Button>

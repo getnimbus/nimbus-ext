@@ -246,11 +246,13 @@
     {:else}
       <div
         class={`flex flex-col xl:pb-14 ${
-          localStorage.getItem("auth_token") ||
-          localStorage.getItem("solana_token") ||
-          localStorage.getItem("evm_token") ||
-          localStorage.getItem("sui_token") ||
-          localStorage.getItem("ton_token")
+          (
+            localStorage.getItem("auth_token") ||
+            localStorage.getItem("solana_token") ||
+            localStorage.getItem("evm_token") ||
+            localStorage.getItem("sui_token") ||
+            localStorage.getItem("ton_token")
+          ).length !== 0
             ? "pb-34"
             : "pb-64"
         }`}

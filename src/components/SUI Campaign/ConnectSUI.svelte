@@ -156,7 +156,7 @@
     // handleSUIAuth();
   }}
 >
-  Connect SUI
+  Connect SUI Wallet
   <div
     class="flex items-center gap-1 text-sm font-medium bg-[#27326F] py-1 px-2 text-white rounded-[10px]"
   >
