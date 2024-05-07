@@ -1,15 +1,19 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { userPublicAddress } from "~/store";
-  import { nimbus } from "~/lib/network";
   import { i18n } from "~/lib/i18n";
   import mixpanel from "mixpanel-browser";
   import { createQuery } from "@tanstack/svelte-query";
-  import { getUserInfo, handleValidateAddress } from "~/lib/queryAPI";
+  import {
+    getLinkData,
+    getUserInfo,
+    handleValidateAddress,
+  } from "~/lib/queryAPI";
 
   import ConnectedBtn from "./TabLinks/MainWalletLinks/ConnectedBtn.svelte";
   import Google from "./TabLinks/SocialLinks/Google.svelte";
   import Twitter from "./TabLinks/SocialLinks/Twitter.svelte";
+  import Discord from "./TabLinks/SocialLinks/Discord.svelte";
   import Evm from "./TabLinks/MainWalletLinks/Evm.svelte";
   import Solana from "./TabLinks/MainWalletLinks/Solana.svelte";
   import Sui from "./TabLinks/MainWalletLinks/Sui.svelte";
@@ -35,11 +39,6 @@
     staleTime: Infinity,
     retry: false,
   });
-
-  const getLinkData = async () => {
-    const response: any = await nimbus.get("/accounts/link");
-    return response;
-  };
 
   $: {
     if (!$queryLinkSocial.isError && $queryLinkSocial.data !== undefined) {
@@ -104,6 +103,14 @@
   const handleUpdateSelectedDisplayName = (name) => {
     selectedDisplayName = name;
   };
+
+  $: dataSocials =
+    data?.filter(
+      (item) =>
+        item.type === "twitter" ||
+        item.type === "google" ||
+        item.type === "discord"
+    ) || [];
 </script>
 
 <div class="flex flex-col gap-4">
@@ -122,7 +129,7 @@
         Link your social accounts
       </div>
       <div class="flex md:flex-row flex-col items-center gap-6">
-        {#each data?.filter((item) => item.type === "twitter" || item.type === "google") as item}
+        {#each dataSocials as item}
           {#if item.type === "google"}
             <Google
               data={item}
@@ -137,9 +144,76 @@
               {handleUpdateSelectedDisplayName}
             />
           {/if}
+          {#if item.type === "discord"}
+            <Discord
+              data={item}
+              {selectedDisplayName}
+              {handleUpdateSelectedDisplayName}
+            />
+          {/if}
         {/each}
 
-        {#if data && data.length === 1 && data.find((item) => item.type === "google")}
+        {#if dataSocials && dataSocials.length === 1 && dataSocials.find((item) => item.type === "google")}
+          <Twitter
+            data={{}}
+            {selectedDisplayName}
+            {handleUpdateSelectedDisplayName}
+          />
+          <Discord
+            data={{}}
+            {selectedDisplayName}
+            {handleUpdateSelectedDisplayName}
+          />
+        {/if}
+
+        {#if dataSocials && dataSocials.length === 1 && dataSocials.find((item) => item.type === "twitter")}
+          <Google
+            data={{}}
+            {selectedDisplayName}
+            {handleUpdateSelectedDisplayName}
+          />
+          <Discord
+            data={{}}
+            {selectedDisplayName}
+            {handleUpdateSelectedDisplayName}
+          />
+        {/if}
+
+        {#if dataSocials && dataSocials.length === 1 && dataSocials.find((item) => item.type === "discord")}
+          <Twitter
+            data={{}}
+            {selectedDisplayName}
+            {handleUpdateSelectedDisplayName}
+          />
+          <Google
+            data={{}}
+            {selectedDisplayName}
+            {handleUpdateSelectedDisplayName}
+          />
+        {/if}
+
+        {#if dataSocials && dataSocials.length === 1 && dataSocials.find((item) => item.type === "discord")}
+          <Twitter
+            data={{}}
+            {selectedDisplayName}
+            {handleUpdateSelectedDisplayName}
+          />
+          <Google
+            data={{}}
+            {selectedDisplayName}
+            {handleUpdateSelectedDisplayName}
+          />
+        {/if}
+
+        {#if dataSocials && dataSocials.length === 2 && dataSocials.find((item) => item.type === "discord") && dataSocials.find((item) => item.type === "twitter")}
+          <Google
+            data={{}}
+            {selectedDisplayName}
+            {handleUpdateSelectedDisplayName}
+          />
+        {/if}
+
+        {#if dataSocials && dataSocials.length === 2 && dataSocials.find((item) => item.type === "discord") && dataSocials.find((item) => item.type === "google")}
           <Twitter
             data={{}}
             {selectedDisplayName}
@@ -147,8 +221,8 @@
           />
         {/if}
 
-        {#if data && data.length === 1 && data.find((item) => item.type === "twitter")}
-          <Google
+        {#if dataSocials && dataSocials.length === 2 && dataSocials.find((item) => item.type === "twitter") && dataSocials.find((item) => item.type === "google")}
+          <Discord
             data={{}}
             {selectedDisplayName}
             {handleUpdateSelectedDisplayName}
@@ -162,6 +236,11 @@
             {handleUpdateSelectedDisplayName}
           />
           <Twitter
+            data={{}}
+            {selectedDisplayName}
+            {handleUpdateSelectedDisplayName}
+          />
+          <Discord
             data={{}}
             {selectedDisplayName}
             {handleUpdateSelectedDisplayName}

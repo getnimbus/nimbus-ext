@@ -379,7 +379,7 @@
 
   onMount(() => {
     const urlParams = new URLSearchParams(window.location.search);
-    const syncCodeParams = urlParams.get("code");
+    const syncCodeParams = urlParams.get("syncCode");
 
     if (syncCodeParams) {
       handleMobileSignIn(syncCodeParams);
