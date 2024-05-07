@@ -134,12 +134,12 @@
                     class="text-right text-sm uppercase font-medium flex justify-end items-center gap-2"
                   >
                     {#if data?.status === "ACTIVE"}
-                      <div class="w-[50px] xl:h-[35px] h-[43px]">
+                      <div class="w-[50px] xl:h-[34px] h-[43px]">
                         <Button>
                           <img src={playIcon} alt="" class="w-4 h-4" />
                         </Button>
                       </div>
-                      <div class="w-[90px]">
+                      <div class="w-[90px] xl:h-[34px] h-[43px]">
                         <Button variant="tertiary">Check</Button>
                       </div>
                     {:else}
@@ -215,7 +215,7 @@
                     <img src={playIcon} alt="" class="w-4 h-4" />
                   </Button>
                 </div>
-                <div class="w-[90px]">
+                <div class="w-[90px] h-[44px]">
                   <Button variant="tertiary">Check</Button>
                 </div>
               {:else}
