@@ -183,16 +183,30 @@
   class="max-w-[350px] md:w-[350px] w-full bg_f4f5f8 rounded-[10px] px-4 py-5 flex flex-col"
 >
   <div class="flex flex-col gap-3">
-    <div class="p-4 rounded-[10px] shadow-sm bg-white w-max">
-      <img
-        alt="link X"
-        loading="lazy"
-        decoding="async"
-        data-nimg="1"
-        style="color:transparent"
-        src="https://getnimbus.io/logoSocialMedia/twitterX1.svg"
-        class="w-[26px] h-[26px]"
-      />
+    <div class="p-4 rounded-[10px] shadow-sm bg-black w-max">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="26"
+        height="26"
+        fill="none"
+        viewBox="0 0 512 512"
+        id="twitter"
+        ><script xmlns=""></script>
+        <g clip-path="url(#clip0_84_15697)">
+          <rect width="512" height="512" fill="#000" rx="60" />
+          <path
+            fill="#fff"
+            d="M355.904 100H408.832L293.2 232.16L429.232 412H322.72L239.296 302.928L143.84 412H90.8805L214.56 270.64L84.0645 100H193.28L268.688 199.696L355.904 100ZM337.328 380.32H366.656L177.344 130.016H145.872L337.328 380.32Z"
+          >
+          </path>
+        </g>
+        <defs>
+          <clipPath id="clip0_84_15697">
+            <rect width="512" height="512" fill="#fff" />
+          </clipPath>
+        </defs>
+        <script xmlns=""></script></svg
+      >
     </div>
     <div class="xl:text-lg text-xl">X</div>
   </div>

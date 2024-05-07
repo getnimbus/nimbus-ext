@@ -113,7 +113,6 @@
     </defs>
     <script xmlns=""></script></svg
   >
-
   <div class="font-semibold text-[15px]">Login with X</div>
 </div>
 
