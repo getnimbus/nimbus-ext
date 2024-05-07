@@ -1,7 +1,7 @@
 <script lang="ts">
   const handleRedirectDiscordAuth = () => {
     window.location.assign(
-      "https://discord.com/oauth2/authorize?client_id=1236967408204517396&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A5173&scope=identify+guilds+guilds.members.read"
+      "https://discord.com/oauth2/authorize?client_id=1236967408204517396&response_type=code&redirect_uri=https%3A%2F%2Fbeta.nimbus-ext.pages.dev&scope=identify+guilds+guilds.members.read"
     );
   };
 </script>
