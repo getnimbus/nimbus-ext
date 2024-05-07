@@ -1,15 +1,19 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { userPublicAddress } from "~/store";
-  import { nimbus } from "~/lib/network";
   import { i18n } from "~/lib/i18n";
   import mixpanel from "mixpanel-browser";
   import { createQuery } from "@tanstack/svelte-query";
-  import { getUserInfo, handleValidateAddress } from "~/lib/queryAPI";
+  import {
+    getLinkData,
+    getUserInfo,
+    handleValidateAddress,
+  } from "~/lib/queryAPI";
 
   import ConnectedBtn from "./TabLinks/MainWalletLinks/ConnectedBtn.svelte";
   import Google from "./TabLinks/SocialLinks/Google.svelte";
   import Twitter from "./TabLinks/SocialLinks/Twitter.svelte";
+  import Discord from "./TabLinks/SocialLinks/Discord.svelte";
   import Evm from "./TabLinks/MainWalletLinks/Evm.svelte";
   import Solana from "./TabLinks/MainWalletLinks/Solana.svelte";
   import Sui from "./TabLinks/MainWalletLinks/Sui.svelte";
@@ -35,11 +39,6 @@
     staleTime: Infinity,
     retry: false,
   });
-
-  const getLinkData = async () => {
-    const response: any = await nimbus.get("/accounts/link");
-    return response;
-  };
 
   $: {
     if (!$queryLinkSocial.isError && $queryLinkSocial.data !== undefined) {
@@ -137,6 +136,13 @@
               {handleUpdateSelectedDisplayName}
             />
           {/if}
+          {#if item.type === "discord"}
+            <Discord
+              data={item}
+              {selectedDisplayName}
+              {handleUpdateSelectedDisplayName}
+            />
+          {/if}
         {/each}
 
         {#if data && data.length === 1 && data.find((item) => item.type === "google")}
@@ -155,6 +161,14 @@
           />
         {/if}
 
+        {#if data && data.length === 1 && data.find((item) => item.type === "discord")}
+          <Discord
+            data={{}}
+            {selectedDisplayName}
+            {handleUpdateSelectedDisplayName}
+          />
+        {/if}
+
         {#if data && data.length === 0}
           <Google
             data={{}}
@@ -162,6 +176,11 @@
             {handleUpdateSelectedDisplayName}
           />
           <Twitter
+            data={{}}
+            {selectedDisplayName}
+            {handleUpdateSelectedDisplayName}
+          />
+          <Discord
             data={{}}
             {selectedDisplayName}
             {handleUpdateSelectedDisplayName}

@@ -87,20 +87,33 @@
 </script>
 
 <div
-  class={`flex items-center justify-center gap-2 text-white border cursor-pointer py-3 px-6 rounded-[12px] min-w-[250px] ${
-    $isDarkMode ? "border-white text-white" : "border-[#27326f] text-[#27326f]"
-  }`}
+  class="flex items-center justify-center gap-2 text-white border cursor-pointer py-3 px-6 rounded-[12px] min-w-[250px] bg-black"
   on:click={handleTwitterAuth}
 >
-  <img
-    alt="link Twitter"
-    loading="lazy"
-    decoding="async"
-    data-nimg="1"
-    style="color:transparent"
-    src="https://getnimbus.io/logoSocialMedia/twitterX1.svg"
-    class="w-[24px] h-[24px]"
-  />
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    fill="none"
+    viewBox="0 0 512 512"
+    id="twitter"
+    ><script xmlns=""></script>
+    <g clip-path="url(#clip0_84_15697)">
+      <rect width="512" height="512" fill="#000" rx="60" />
+      <path
+        fill="#fff"
+        d="M355.904 100H408.832L293.2 232.16L429.232 412H322.72L239.296 302.928L143.84 412H90.8805L214.56 270.64L84.0645 100H193.28L268.688 199.696L355.904 100ZM337.328 380.32H366.656L177.344 130.016H145.872L337.328 380.32Z"
+      >
+      </path>
+    </g>
+    <defs>
+      <clipPath id="clip0_84_15697">
+        <rect width="512" height="512" fill="#fff" />
+      </clipPath>
+    </defs>
+    <script xmlns=""></script></svg
+  >
+
   <div class="font-semibold text-[15px]">Login with X</div>
 </div>
 
@@ -148,3 +161,5 @@
     </Toast>
   </div>
 {/if}
+
+<style windi:preflights:global windi:safelist:global></style>

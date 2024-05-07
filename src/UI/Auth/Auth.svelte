@@ -22,8 +22,8 @@
   } from "~/store";
   import { nimbus } from "~/lib/network";
   import mixpanel from "mixpanel-browser";
-  import { shorterAddress, clickOutside } from "~/utils";
-  import { useQueryClient } from "@tanstack/svelte-query";
+  import { shorterAddress, clickOutside, triggerFirework } from "~/utils";
+  import { createQuery, useQueryClient } from "@tanstack/svelte-query";
   import QRCode from "qrcode-generator";
   import CopyToClipboard from "svelte-copy-to-clipboard";
   import { wait } from "~/entries/background/utils";
@@ -35,6 +35,7 @@
   import bs58 from "bs58";
   import { walletStore } from "@aztemi/svelte-on-solana-wallet-adapter-core";
   import type { WalletState } from "nimbus-sui-kit";
+  import { getLinkData, handleGetDataDailyCheckin } from "~/lib/queryAPI";
 
   import Tooltip from "~/components/Tooltip.svelte";
   import DarkMode from "~/components/DarkMode.svelte";
@@ -43,6 +44,8 @@
   import Button from "~/components/Button.svelte";
   import GoogleAuth from "./GoogleAuth.svelte";
   import TwitterAuth from "./TwitterAuth.svelte";
+  import DiscordAuth from "./DiscordAuth.svelte";
+  import TelegramAuth from "./TelegramAuth.svelte";
   import SuiAuth from "./SUIAuth.svelte";
   import SolanaAuth from "./SolanaAuth.svelte";
   import TonAuth from "./TonAuth.svelte";
@@ -52,6 +55,7 @@
   import Reload from "~/assets/reload-black.svg";
   import ReloadWhite from "~/assets/reload-white.svg";
   import Evm from "~/assets/chains/evm.png";
+  import goldImg from "~/assets/Gold4.svg";
 
   export let displayName;
   export let publicAddress;
@@ -95,11 +99,81 @@
   let loading = false;
   let isShowTooltipCopy = false;
 
+  let discordCode = "";
+  let linkData = [];
+  let dataCheckinHistory = [];
+
+  let openScreenBonusScore: boolean = false;
+  let bonusScore: number = 0;
+
+  const triggerBonusScore = async () => {
+    openScreenBonusScore = true;
+    triggerFirework();
+    await wait(2000);
+    openScreenBonusScore = false;
+  };
+
+  $: queryDailyCheckin = createQuery({
+    queryKey: [$userPublicAddress, "daily-checkin"],
+    queryFn: () => handleGetDataDailyCheckin(),
+    staleTime: Infinity,
+    enabled:
+      $user &&
+      Object.keys($user).length !== 0 &&
+      $userPublicAddress.length !== 0,
+  });
+
+  $: {
+    if (!$queryDailyCheckin.isError && $queryDailyCheckin.data !== undefined) {
+      dataCheckinHistory = $queryDailyCheckin?.data?.checkinLogs;
+    }
+  }
+
+  $: queryLinkSocial = createQuery({
+    queryKey: ["link-socials"],
+    queryFn: () => getLinkData(),
+    staleTime: Infinity,
+    retry: false,
+  });
+
+  $: {
+    if (!$queryLinkSocial.isError && $queryLinkSocial.data !== undefined) {
+      linkData = $queryLinkSocial?.data?.data;
+    }
+  }
+
+  $: {
+    if (
+      discordCode &&
+      linkData &&
+      linkData?.length !== 0 &&
+      !linkData.find((item) => item.type === "discord")
+    ) {
+      handleDiscordAuthLink(discordCode);
+    } else {
+      if (
+        discordCode &&
+        (localStorage.getItem("auth_token")?.length === 0 ||
+          localStorage.getItem("solana_token")?.length === 0 ||
+          localStorage.getItem("sui_token")?.length === 0 ||
+          localStorage.getItem("ton_token")?.length === 0 ||
+          localStorage.getItem("evm_token")?.length === 0)
+      ) {
+        handleDiscordAuth(discordCode);
+      }
+    }
+  }
+
   onMount(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const invitationParams = urlParams.get("invitation");
     if (invitationParams) {
       invitation = invitationParams;
+    }
+
+    const codeParams = urlParams.get("code");
+    if (codeParams) {
+      discordCode = codeParams;
     }
 
     const authToken = localStorage.getItem("auth_token");
@@ -197,6 +271,140 @@
       mixpanel.reset();
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  // handle link Discord social
+  const handleDiscordAuthLink = async (code: string) => {
+    mixpanel.track("user_login_discord");
+    try {
+      const res: any = await nimbus.get(`/auth/discord/redirect?code=${code}`);
+      if (res && res?.data) {
+        handleLinkDiscord(
+          res?.data.userInfo.id,
+          res?.data.userInfo.email,
+          res?.data.userInfo.global_name
+        );
+      }
+    } catch (e) {
+      console.log("error: ", e);
+    }
+  };
+
+  const handleLinkDiscord = async (id, info, displayName) => {
+    try {
+      let params: any = {
+        kind: "social",
+        id,
+        type: "twitter",
+        info,
+        displayName,
+      };
+
+      if ($userPublicAddress && $userPublicAddress.length === 0) {
+        params = {
+          ...params,
+          userPublicAddress: $userPublicAddress,
+        };
+      }
+
+      const response: any = await nimbus.post("/accounts/link", params);
+      if (response && response?.error) {
+        toastMsg = response?.error;
+        isSuccessToast = false;
+        trigger();
+      } else {
+        const quest =
+          dataCheckinHistory &&
+          dataCheckinHistory.length !== 0 &&
+          dataCheckinHistory.find(
+            (item) => item.type === "QUEST" && item.note === "link-discord"
+          );
+        if (!quest) {
+          handleAddBonusQuest();
+        }
+
+        queryClient?.invalidateQueries(["link-socials"]);
+
+        toastMsg = "Successfully link Discord account!";
+        isSuccessToast = true;
+        trigger();
+      }
+    } catch (e) {
+      console.log(e);
+      toastMsg =
+        "There are some problem when link X account. Please try again!";
+      isSuccessToast = false;
+      trigger();
+    }
+  };
+
+  const handleAddBonusQuest = async () => {
+    try {
+      const res: any = await nimbus.post(`/v2/checkin/quest/link-discord`, {});
+      if (res && res?.data === null) {
+        toastMsg = "You are already finished this quest";
+        isSuccessToast = false;
+      }
+      if (res?.data?.bonus !== undefined) {
+        triggerBonusScore();
+        bonusScore = res?.data?.bonus;
+        queryClient.invalidateQueries([$userPublicAddress, "daily-checkin"]);
+        queryClient.invalidateQueries(["users-me"]);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  // handle Discord login
+  const handleDiscordAuth = async (code: string) => {
+    mixpanel.track("user_login_discord");
+    try {
+      const res: any = await nimbus.get(`/auth/discord/redirect?code=${code}`);
+      if (res && res?.data) {
+        handleGetDiscordToken(
+          res?.data.userInfo.id,
+          res?.data.userInfo.username,
+          res?.data.userInfo.global_name,
+          res?.data.userInfo.email
+        );
+      }
+    } catch (e) {
+      console.log("error: ", e);
+    }
+  };
+
+  const handleGetDiscordToken = async (id, username, global_name, email) => {
+    try {
+      const res = await nimbus.post("/auth/discord", {
+        id,
+        username,
+        global_name,
+        email,
+      });
+      if (res?.data?.result) {
+        triggerConnectWallet.update((n) => (n = false));
+        localStorage.setItem("auth_token", res?.data?.result);
+        user.update(
+          (n) =>
+            (n = {
+              picture: User,
+            })
+        );
+        toastMsg = "Login with Discord successfully!";
+        isSuccessToast = true;
+        trigger();
+        queryClient?.invalidateQueries(["users-me"]);
+        queryClient.invalidateQueries(["list-address"]);
+        queryClient?.invalidateQueries(["link-socials"]);
+      } else {
+        toastMsg = res?.error;
+        isSuccessToast = false;
+        trigger();
+      }
+    } catch (e) {
+      console.error("error: ", e);
     }
   };
 
@@ -789,6 +997,8 @@
       <SuiAuth />
       <GoogleAuth />
       <TwitterAuth />
+      <DiscordAuth />
+      <TelegramAuth />
     </div>
   </div>
 </AppOverlay>
@@ -836,6 +1046,28 @@
       </svelte:fragment>
       {toastMsg}
     </Toast>
+  </div>
+{/if}
+
+{#if openScreenBonusScore}
+  <div
+    class="fixed h-screen w-screen top-0 left-0 flex items-center justify-center bg-[#000000cc]"
+    style="z-index: 2147483648;"
+    on:click={() => {
+      setTimeout(() => {
+        openScreenBonusScore = false;
+      }, 500);
+    }}
+  >
+    <div class="flex flex-col items-center justify-center gap-10">
+      <div class="xl:text-2xl text-4xl text-white font-medium">
+        Congratulation!!!
+      </div>
+      <img src={goldImg} alt="" class="w-40 h-40" />
+      <div class="xl:text-2xl text-4xl text-white font-medium">
+        You have received {bonusScore} Bonus GM Points
+      </div>
+    </div>
   </div>
 {/if}
 

@@ -20,6 +20,11 @@ export const getUserInfo = async () => {
   return response?.data;
 };
 
+export const getLinkData = async () => {
+  const response: any = await nimbus.get("/accounts/link");
+  return response;
+};
+
 export const handleValidateAddress = async (address: string) => {
   const response: any = await nimbus.get(`/v2/address/${address}/validate`);
   return (
