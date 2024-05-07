@@ -58,6 +58,8 @@
   let code = "";
   let isLoadingSubmitInviteCode = false;
 
+  let partnerQuestId = "";
+
   let toastMsg = "";
   let isSuccessToast = false;
   let counter = 3;
@@ -88,26 +90,40 @@
     mixpanel.track("checkin_page");
     const urlParams = new URLSearchParams(window.location.search);
     const tabParams = urlParams.get("tab");
+    const partnerId = urlParams.get("id");
     if (tabParams) {
       activeTabValue = tabParams;
-      window.history.replaceState(
-        null,
-        "",
-        window.location.pathname + `?tab=${tabParams}`
-      );
+      handleUpdateParamsPartnerSelected(tabParams, partnerId);
     } else {
       activeTabValue = "quests";
-      window.history.replaceState(
-        null,
-        "",
-        window.location.pathname + "?tab=quests"
-      );
+      handleUpdateParamsPartnerSelected("quests", partnerId);
     }
 
     isSkipToMainPage = Boolean(
       localStorage.getItem("isSkipInviteCodeCampaign")
     );
   });
+
+  const handleUpdateParamsPartnerSelected = (tab, partnerId) => {
+    if (partnerId) {
+      partnerQuestId = partnerId;
+      window.history.replaceState(
+        null,
+        "",
+        window.location.pathname + `?tab=${tab}&id=${partnerId}`
+      );
+    } else {
+      window.history.replaceState(
+        null,
+        "",
+        window.location.pathname + `?tab=${tab}`
+      );
+    }
+  };
+
+  const handleUpdatePartnerQuestsId = (id) => {
+    partnerQuestId = id;
+  };
 
   const handleClick = (e, tabValue) => {
     e.preventDefault();
@@ -208,7 +224,11 @@
           </div>
           <div class="xl:col-span-5 col-span-1">
             {#if activeTabValue === "quests"}
-              <TabQuests {socialData} />
+              <TabQuests
+                {socialData}
+                {partnerQuestId}
+                {handleUpdatePartnerQuestsId}
+              />
             {:else if activeTabValue === "checkin"}
               <TabDailyCheckin {currentRoute} />
             {:else if activeTabValue === "leaderboard"}

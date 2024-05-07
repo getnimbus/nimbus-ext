@@ -102,18 +102,15 @@
     );
   };
 
-  $: relatedLinks = selectedPartnersData?.sponsor?.extraInfo?.blog.map(
-    (item) => {
+  $: relatedLinks =
+    selectedPartnersData?.sponsor?.extraInfo?.blog?.map((item) => {
       const indexOfDot = item.indexOf(":");
 
       return {
         title: item?.slice(0, indexOfDot) || "",
         link: item?.slice(indexOfDot + 2) || "",
       };
-    }
-  );
-
-  $: console.log("HELLO WORLD: ", selectedPartnersData);
+    }) || [];
 </script>
 
 <div class="flex flex-col gap-6">
@@ -125,7 +122,7 @@
         class={`py-6 px-8 rounded-[10px] border border_0000001a flex flex-col justify-center gap-4 ${$isDarkMode ? "bg-[#000]" : "bg-[#fff]"}`}
       >
         <div class="flex items-center gap-2">
-          <div class="uppercase text-2xl font-medium">
+          <div class="uppercase text-2xl font-medium text-[#27326f]">
             {selectedPartnersData?.sponsor?.title ||
               selectedPartnersData?.title}
           </div>
@@ -143,7 +140,7 @@
               target="_blank"
               aria-label={selectedPartnersData?.sponsor?.title ||
                 selectedPartnersData?.title}
-              class="hover:text-[#3b82f6] transition-all xl:w-5 xl:h-5 w-6 h-6 flex items-center justify-center"
+              class="hover:text-[#3b82f6] transition-all w-6 h-6 flex items-center justify-center"
             >
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
                 <path
@@ -160,7 +157,7 @@
               target="_blank"
               aria-label={selectedPartnersData?.sponsor?.title ||
                 selectedPartnersData?.title}
-              class="hover:text-[#3b82f6] transition-all xl:w-6 xl:h-6 w-8 h-8 flex items-center justify-center"
+              class="hover:text-[#3b82f6] transition-all xl:w-7 xl:h-7 w-8 h-8 flex items-center justify-center"
             >
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                 <g
@@ -207,8 +204,8 @@
             >
               <svg
                 fill="currentColor"
-                height="54"
-                width="54"
+                height="38"
+                width="38"
                 version="1.1"
                 id="Layer_1"
                 xmlns="http://www.w3.org/2000/svg"
@@ -244,7 +241,7 @@
         class={`py-6 px-8 rounded-[10px] border border_0000001a flex flex-col gap-4 ${$isDarkMode ? "bg-[#000]" : "bg-[#fff]"}`}
       >
         <div class="text-2xl font-medium">Related Links</div>
-        {#each relatedLinks as item}
+        {#each relatedLinks || [] as item}
           <a
             href={item?.link}
             target="_blank"
@@ -269,7 +266,7 @@
     </div>
 
     <div
-      class={`xl:col-span-2 xl:order-2 order-1 col-span-full py-10 px-14 rounded-[10px] border border_0000001a flex flex-col items-center justify-between gap-4 ${$isDarkMode ? "bg-[#000]" : "bg-[#fff]"}`}
+      class={`xl:col-span-2 xl:order-2 order-1 col-span-full py-10 px-14 rounded-[10px] border border_0000001a flex justify-center items-center ${$isDarkMode ? "bg-[#000]" : "bg-[#fff]"}`}
     >
       <div class="flex flex-col items-center gap-4">
         <div
@@ -285,31 +282,6 @@
           {selectedPartnersData?.sponsor?.title || selectedPartnersData?.title}
         </div>
       </div>
-      <a
-        href="https://t.me/getnimbus"
-        target="_blank"
-        class="flex items-center gap-2 text-[#999999B2] cursor-pointer"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-        >
-          <g
-            fill="none"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-          >
-            <path d="M0 0h24v24H0z" />
-            <path
-              fill="currentColor"
-              d="M19 4c.852 0 1.297.986.783 1.623l-.076.084L15.915 9.5l3.792 3.793c.603.602.22 1.614-.593 1.701L19 15H6v6a1 1 0 0 1-.883.993L5 22a1 1 0 0 1-.993-.883L4 21V5a1 1 0 0 1 .883-.993L5 4h14z"
-            />
-          </g>
-        </svg> Report issues
-      </a>
     </div>
   </div>
 

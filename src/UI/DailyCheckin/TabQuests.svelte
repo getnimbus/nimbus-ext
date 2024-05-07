@@ -25,6 +25,8 @@
   import LeftArrowBlack from "~/assets/left-arrow-black.svg";
 
   export let socialData;
+  export let partnerQuestId;
+  export let handleUpdatePartnerQuestsId = (id) => {};
 
   let toastMsg = "";
   let isSuccessToast: boolean = false;
@@ -46,8 +48,6 @@
 
   let openScreenBonusScore = false;
   let bonusScore = 0;
-
-  let partnerQuestId = -1;
 
   let code = "";
   let isLoadingSubmitInviteCode = false;
@@ -104,10 +104,6 @@
     enabled: $userPublicAddress.length !== 0,
   });
 
-  const handleUpdatePartnerQuestsId = (id) => {
-    partnerQuestId = id;
-  };
-
   $: queryUserInfo = createQuery({
     queryKey: ["users-me"],
     queryFn: () => getUserInfo(),
@@ -152,7 +148,7 @@
   $: twitterUsername = socialData.find((item) => item.type === "twitter")?.name;
 </script>
 
-{#if partnerQuestId === -1}
+{#if partnerQuestId === ""}
   <div class="flex flex-col gap-10">
     <div class="flex lg:flex-row flex-col items-start justify-between gap-6">
       <div class="lg:flex-[0.81] flex-1 flex flex-col gap-3 w-full">
@@ -180,7 +176,7 @@
               class="flex items-center gap-3"
             >
               <div
-                class={`input-2 input-border xl:py-[6px] py-3 px-3 ${
+                class={`input-2 input-border xl:py-[4px] py-3 px-3 ${
                   code && !$isDarkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
                 }`}
               >
@@ -280,24 +276,52 @@
     </div>
   </div>
 {:else}
-  <div class="flex flex-col gap-6">
-    <div
-      class="flex items-center gap-1 cursor-pointer w-max"
-      on:click={() => {
-        partnerQuestId = -1;
-        window.history.replaceState(
-          null,
-          "",
-          window.location.pathname + "?tab=quests"
-        );
-      }}
-    >
-      <img
-        src={$isDarkMode ? LeftArrow : LeftArrowBlack}
-        alt=""
-        class="xl:w-5 xl:h-5 w-7 h-7"
-      />
-      <div class="xl:text-sm text-xl font-medium">Quests</div>
+  <div class="flex flex-col justify-end gap-6">
+    <div class="flex justify-between gap-4">
+      <div
+        class="flex items-center gap-1 cursor-pointer w-max"
+        on:click={() => {
+          handleUpdatePartnerQuestsId("");
+          window.history.replaceState(
+            null,
+            "",
+            window.location.pathname + "?tab=quests"
+          );
+        }}
+      >
+        <img
+          src={$isDarkMode ? LeftArrow : LeftArrowBlack}
+          alt=""
+          class="xl:w-5 xl:h-5 w-7 h-7"
+        />
+        <div class="xl:text-sm text-xl font-medium">Quests</div>
+      </div>
+
+      <a
+        href="https://t.me/getnimbus"
+        target="_blank"
+        class="flex items-center gap-2 text-[#999999B2] cursor-pointer"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+        >
+          <g
+            fill="none"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+          >
+            <path d="M0 0h24v24H0z" />
+            <path
+              fill="currentColor"
+              d="M19 4c.852 0 1.297.986.783 1.623l-.076.084L15.915 9.5l3.792 3.793c.603.602.22 1.614-.593 1.701L19 15H6v6a1 1 0 0 1-.883.993L5 22a1 1 0 0 1-.993-.883L4 21V5a1 1 0 0 1 .883-.993L5 4h14z"
+            />
+          </g>
+        </svg> Report issues
+      </a>
     </div>
 
     <PartnerQuestDetail {partnersDataList} id={partnerQuestId} />

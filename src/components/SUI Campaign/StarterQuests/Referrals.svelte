@@ -44,19 +44,10 @@
     isSuccessToast = false;
   };
 
-  const formatTime = (date: Date) => {
-    if (dayjs().diff(date, "days") >= 1) {
-      return dayjs(date).format("YYYY-MM-DD");
-    }
-    return dayjs(date).fromNow();
-  };
-
   let tabSelected = "codes";
 
   $: listReferralCode =
     dataReferrals?.referral_codes?.map((item) => item.id).join(" ") || [];
-
-  $: console.log("HELLO WORLD: ", dataReferrals?.history);
 </script>
 
 <div
@@ -163,7 +154,11 @@
                 {:else}
                   {#each (dataReferrals && dataReferrals?.referral_codes) || [] as data}
                     {#if data?.used}
-                      <tr class="group transition-all">
+                      <tr
+                        class={`cursor-pointer group transition-all ${
+                          $isDarkMode ? "text-gray-400" : "text-[#666666]"
+                        }`}
+                      >
                         <td
                           class={`py-3 pl-3 ${
                             $isDarkMode
@@ -172,7 +167,7 @@
                           }`}
                         >
                           <div
-                            class="flex items-center gap-1 text-left text-sm font-medium text-[#ccc]"
+                            class="flex items-center gap-1 text-left text-sm font-medium uppercase"
                           >
                             <img src={CodeIcon} alt="" class="w-3 h-3" />
                             {data?.id}
@@ -216,9 +211,7 @@
                             }`}
                           >
                             <div
-                              class={`flex items-center gap-1 text-left text-sm font-medium ${
-                                $isDarkMode ? "text-[#fff]" : "text-[#000]"
-                              }`}
+                              class="flex items-center gap-1 text-left text-sm font-medium uppercase text_00000099"
                             >
                               <img src={CodeIcon} alt="" class="w-3 h-3" />
                               {data?.id}
@@ -232,9 +225,7 @@
                             }`}
                           >
                             <div
-                              class={`text-left text-sm uppercase font-medium ${
-                                $isDarkMode ? "text-[#fff]" : "text-[#000]"
-                              }`}
+                              class="text-left text-sm uppercase font-medium text_00000099"
                             >
                               UNUSED
                             </div>
@@ -326,7 +317,10 @@
                           : "group-hover:bg-gray-100"
                       }`}
                     >
-                      <div class="text-left text-sm uppercase font-medium">
+                      <div
+                        class="flex items-center gap-1 text-left text-sm font-medium uppercase"
+                      >
+                        <img src={CodeIcon} alt="" class="w-3 h-3" />
                         {item?.code}
                       </div>
                     </td>
@@ -341,7 +335,7 @@
                       <div
                         class="flex items-center gap-1 text-left text-sm uppercase font-medium"
                       >
-                        {formatTime(item?.createdAt)}
+                        {dayjs(item?.createdAt).format("YYYY-MM-DD")}
                       </div>
                     </td>
 
@@ -387,8 +381,9 @@
                     Code
                   </div>
                   <div
-                    class="flex items-center justify-end font-medium text-sm text_00000099"
+                    class="flex items-center justify-end gap-1 text-left text-sm font-medium uppercase text_00000099"
                   >
+                    <img src={CodeIcon} alt="" class="w-3 h-3" />
                     {item?.code}
                   </div>
                 </div>
@@ -400,7 +395,7 @@
                   <div
                     class="flex items-center justify-end font-medium text-sm text_00000099"
                   >
-                    {formatTime(item?.createdAt)}
+                    {dayjs(item?.createdAt).format("YYYY-MM-DD")}
                   </div>
                 </div>
 

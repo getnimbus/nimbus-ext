@@ -36,7 +36,7 @@
     <img src={flipCoin2} alt="" class="h-full h-full object-contain" />
   </div>
 
-  <div class="text-[#FFD569] text-center relative z-2">
+  <div class="text-amber-400 font-medium text-center relative z-2">
     No Loss: Pay Gas > Flip GM Points > Get Rewards
   </div>
 

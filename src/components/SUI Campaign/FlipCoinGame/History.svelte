@@ -1,8 +1,6 @@
 <script>
   import { isDarkMode } from "~/store";
 
-  import Button from "~/components/Button.svelte";
-
   import gmPoints from "~/assets/Gold4.svg";
 
   const fakeData = [{}, {}, {}, {}, {}, {}];
@@ -47,12 +45,6 @@
         </tbody>
       {/each}
     </table>
-  </div>
-
-  <div class="w-max">
-    <Button variant="tertiary">
-      <div class="uppercase py-2 px-4">Copy All</div>
-    </Button>
   </div>
 </div>
 
