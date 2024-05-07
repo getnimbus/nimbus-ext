@@ -216,7 +216,7 @@
   class="col-span-4 xl:border border_0000001a rounded-xl flex flex-col gap-3 xl:p-6 py-3"
 >
   <div class="flex md:flex-row flex-col gap-4 justify-between">
-    <div class="font-medium text-2xl">Holding Trades</div>
+    <div class="font-medium text-2xl">Open positions</div>
     <div class="flex justify-between w-max">
       <AnimateSharedLayout>
         {#each timeFrame as type}
