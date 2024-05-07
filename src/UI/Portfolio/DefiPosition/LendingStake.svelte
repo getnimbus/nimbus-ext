@@ -22,7 +22,7 @@
 </script>
 
 {#each formatData as item}
-  {#if item.data.length !== 0}
+  {#if item?.data?.length !== 0}
     {#if item.type === "Lending"}
       <LendingPosition data={item.data} />
     {:else if item.type === "Staking"}

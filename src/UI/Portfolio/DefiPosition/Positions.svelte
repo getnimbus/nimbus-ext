@@ -57,7 +57,7 @@
     </div>
   {:else}
     {#each data?.data as item}
-      {#if item.data.length !== 0}
+      {#if item?.data?.length !== 0}
         {#if item.type === "Lending"}
           <div class="flex flex-col gap-2">
             <div class="text-base font-medium">{item.type}</div>
