@@ -35,7 +35,7 @@
   import bs58 from "bs58";
   import { walletStore } from "@aztemi/svelte-on-solana-wallet-adapter-core";
   import type { WalletState } from "nimbus-sui-kit";
-  import { getLinkData, handleGetDataDailyCheckin } from "~/lib/queryAPI";
+  import { handleGetDataDailyCheckin } from "~/lib/queryAPI";
 
   import Tooltip from "~/components/Tooltip.svelte";
   import DarkMode from "~/components/DarkMode.svelte";
@@ -61,6 +61,8 @@
   export let publicAddress;
   export let buyPackage = "Free";
 
+  const linkRedirect = "https://beta.nimbus-ext.pages.dev/settings?tab=links";
+
   const wallets = [new PhantomWalletAdapter(), new SolflareWalletAdapter()];
 
   const wallets$ = onboard.state.select("wallets");
@@ -83,6 +85,22 @@
     isSuccessToast = false;
   };
 
+  $: queryDailyCheckin = createQuery({
+    queryKey: [$userPublicAddress, "daily-checkin"],
+    queryFn: () => handleGetDataDailyCheckin(),
+    staleTime: Infinity,
+    enabled:
+      $user &&
+      Object.keys($user).length !== 0 &&
+      $userPublicAddress.length !== 0,
+  });
+
+  $: {
+    if (!$queryDailyCheckin.isError && $queryDailyCheckin.data !== undefined) {
+      dataCheckinHistory = $queryDailyCheckin?.data?.checkinLogs;
+    }
+  }
+
   let showPopover = false;
   let invitation = "";
 
@@ -100,7 +118,6 @@
   let isShowTooltipCopy = false;
 
   let discordCode = "";
-  let linkData = [];
   let dataCheckinHistory = [];
 
   let openScreenBonusScore: boolean = false;
@@ -113,52 +130,17 @@
     openScreenBonusScore = false;
   };
 
-  $: queryDailyCheckin = createQuery({
-    queryKey: [$userPublicAddress, "daily-checkin"],
-    queryFn: () => handleGetDataDailyCheckin(),
-    staleTime: Infinity,
-    enabled:
-      $user &&
-      Object.keys($user).length !== 0 &&
-      $userPublicAddress.length !== 0,
-  });
-
   $: {
-    if (!$queryDailyCheckin.isError && $queryDailyCheckin.data !== undefined) {
-      dataCheckinHistory = $queryDailyCheckin?.data?.checkinLogs;
-    }
-  }
-
-  $: queryLinkSocial = createQuery({
-    queryKey: ["link-socials"],
-    queryFn: () => getLinkData(),
-    staleTime: Infinity,
-    retry: false,
-  });
-
-  $: {
-    if (!$queryLinkSocial.isError && $queryLinkSocial.data !== undefined) {
-      linkData = $queryLinkSocial?.data?.data;
-    }
-  }
-
-  $: {
-    if (
-      discordCode &&
-      linkData &&
-      linkData?.length !== 0 &&
-      !linkData.find((item) => item.type === "discord")
-    ) {
-      handleDiscordAuthLink(discordCode);
-    } else {
+    if (discordCode) {
       if (
-        discordCode &&
-        (localStorage.getItem("auth_token")?.length === 0 ||
-          localStorage.getItem("solana_token")?.length === 0 ||
-          localStorage.getItem("sui_token")?.length === 0 ||
-          localStorage.getItem("ton_token")?.length === 0 ||
-          localStorage.getItem("evm_token")?.length === 0)
+        localStorage.getItem("auth_token") ||
+        localStorage.getItem("solana_token") ||
+        localStorage.getItem("sui_token") ||
+        localStorage.getItem("ton_token") ||
+        localStorage.getItem("evm_token")
       ) {
+        handleDiscordAuthLink(discordCode);
+      } else {
         handleDiscordAuth(discordCode);
       }
     }
@@ -296,7 +278,7 @@
       let params: any = {
         kind: "social",
         id,
-        type: "twitter",
+        type: "discord",
         info,
         displayName,
       };
@@ -329,6 +311,8 @@
         toastMsg = "Successfully link Discord account!";
         isSuccessToast = true;
         trigger();
+
+        window.location.assign(linkRedirect);
       }
     } catch (e) {
       console.log(e);
@@ -377,7 +361,7 @@
 
   const handleGetDiscordToken = async (id, username, global_name, email) => {
     try {
-      const res = await nimbus.post("/auth/discord", {
+      const res: any = await nimbus.post("/auth/discord", {
         id,
         username,
         global_name,

@@ -103,6 +103,14 @@
   const handleUpdateSelectedDisplayName = (name) => {
     selectedDisplayName = name;
   };
+
+  $: dataSocials =
+    data?.filter(
+      (item) =>
+        item.type === "twitter" ||
+        item.type === "google" ||
+        item.type === "discord"
+    ) || [];
 </script>
 
 <div class="flex flex-col gap-4">
@@ -121,7 +129,7 @@
         Link your social accounts
       </div>
       <div class="flex md:flex-row flex-col items-center gap-6">
-        {#each data?.filter((item) => item.type === "twitter" || item.type === "google") as item}
+        {#each dataSocials as item}
           {#if item.type === "google"}
             <Google
               data={item}
@@ -145,15 +153,38 @@
           {/if}
         {/each}
 
-        {#if data && data.length === 1 && data.find((item) => item.type === "google")}
+        {#if dataSocials && dataSocials.length === 1 && dataSocials.find((item) => item.type === "google")}
           <Twitter
+            data={{}}
+            {selectedDisplayName}
+            {handleUpdateSelectedDisplayName}
+          />
+          <Discord
             data={{}}
             {selectedDisplayName}
             {handleUpdateSelectedDisplayName}
           />
         {/if}
 
-        {#if data && data.length === 1 && data.find((item) => item.type === "twitter")}
+        {#if dataSocials && dataSocials.length === 1 && dataSocials.find((item) => item.type === "twitter")}
+          <Google
+            data={{}}
+            {selectedDisplayName}
+            {handleUpdateSelectedDisplayName}
+          />
+          <Discord
+            data={{}}
+            {selectedDisplayName}
+            {handleUpdateSelectedDisplayName}
+          />
+        {/if}
+
+        {#if dataSocials && dataSocials.length === 1 && dataSocials.find((item) => item.type === "discord")}
+          <Twitter
+            data={{}}
+            {selectedDisplayName}
+            {handleUpdateSelectedDisplayName}
+          />
           <Google
             data={{}}
             {selectedDisplayName}
@@ -161,7 +192,36 @@
           />
         {/if}
 
-        {#if data && data.length === 1 && data.find((item) => item.type === "discord")}
+        {#if dataSocials && dataSocials.length === 1 && dataSocials.find((item) => item.type === "discord")}
+          <Twitter
+            data={{}}
+            {selectedDisplayName}
+            {handleUpdateSelectedDisplayName}
+          />
+          <Google
+            data={{}}
+            {selectedDisplayName}
+            {handleUpdateSelectedDisplayName}
+          />
+        {/if}
+
+        {#if dataSocials && dataSocials.length === 2 && dataSocials.find((item) => item.type === "discord") && dataSocials.find((item) => item.type === "twitter")}
+          <Google
+            data={{}}
+            {selectedDisplayName}
+            {handleUpdateSelectedDisplayName}
+          />
+        {/if}
+
+        {#if dataSocials && dataSocials.length === 2 && dataSocials.find((item) => item.type === "discord") && dataSocials.find((item) => item.type === "google")}
+          <Twitter
+            data={{}}
+            {selectedDisplayName}
+            {handleUpdateSelectedDisplayName}
+          />
+        {/if}
+
+        {#if dataSocials && dataSocials.length === 2 && dataSocials.find((item) => item.type === "twitter") && dataSocials.find((item) => item.type === "google")}
           <Discord
             data={{}}
             {selectedDisplayName}
