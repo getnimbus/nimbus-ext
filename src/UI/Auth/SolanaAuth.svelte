@@ -90,15 +90,16 @@
 
 {#if !wallet}
   <div
-    class={`flex items-center justify-center gap-2 text-white border cursor-pointer py-3 px-6 rounded-[12px] min-w-[250px] ${
+    class={`flex items-center justify-center gap-3 text-white border cursor-pointer rounded-[12px] w-[219px] h-[42px] ${
       $isDarkMode
         ? "border-white text-white"
         : "border-[#27326f] text-[#27326f]"
     }`}
+    style="padding: 9px 21px 11px;"
     on:click={openModal}
   >
     <img src={SolanaIcon} alt="" width="24" height="24" class="rounded-full" />
-    <div class="font-semibold text-[15px]">{text}</div>
+    <div class="font-normal text-[15px]">{text}</div>
   </div>
 {:else if !base58}
   <WalletConnectButton />

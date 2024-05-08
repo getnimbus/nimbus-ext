@@ -967,7 +967,7 @@
     </div>
     <div class="flex flex-col items-center justify-center gap-4">
       <div
-        class={`flex items-center justify-center gap-2 text-white border cursor-pointer py-3 px-6 rounded-[12px] min-w-[250px] ${
+        class={`flex items-center justify-center gap-3 text-white border cursor-pointer rounded-[12px] w-[219px] h-[42px] ${
           $isDarkMode
             ? "border-white text-white"
             : "border-[#27326f] text-[#27326f]"
@@ -978,7 +978,7 @@
         }}
       >
         <img src={Evm} alt="" width="24" height="24" />
-        <div class="font-semibold text-[15px]">Log in with EVM</div>
+        <div class="font-normal text-[15px]">Log in with EVM</div>
       </div>
       <SolanaAuth text="Log in with Solana" />
       <TonAuth />

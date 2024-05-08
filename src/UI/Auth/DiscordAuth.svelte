@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { isDarkMode } from "~/store";
+
   const handleRedirectDiscordAuth = () => {
     window.location.assign(
       "https://discord.com/oauth2/authorize?client_id=1236967408204517396&response_type=code&redirect_uri=https%3A%2F%2Fbeta.nimbus-ext.pages.dev&scope=identify+guilds+guilds.members.read"
@@ -7,13 +9,16 @@
 </script>
 
 <div
-  class="flex items-center justify-center gap-2 text-white border cursor-pointer py-3 px-6 rounded-[12px] min-w-[250px] bg-[#5865F2] text-white"
+  class={`flex items-center justify-center gap-3 text-white cursor-pointer rounded-[12px] bg-[#5865F2] w-[219px] h-[44px] text-white ${
+    $isDarkMode ? "border border-white" : ""
+  }`}
+  style="padding: 9px 21px 11px;"
   on:click={handleRedirectDiscordAuth}
 >
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    width="28"
-    height="28"
+    width="24"
+    height="22"
     viewBox="0 0 29 22"
     fill="none"
     ><script xmlns=""></script>
@@ -23,7 +28,7 @@
     />
     <script xmlns=""></script></svg
   >
-  <div class="font-semibold text-[15px]">Log in with Discord</div>
+  <div class="font-normal text-[15px]">Log in with Discord</div>
 </div>
 
 <style windi:preflights:global windi:safelist:global></style>
