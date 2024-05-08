@@ -442,12 +442,12 @@
       <div class="md:flex hidden items-center gap-1">
         {#if paginationArr.length < 6}
           {#each paginationArr as item, index}
-            <div
+            <button
               on:click={() => (pagination = index + 1)}
-              class="bg-[#1e96fc] text-white px-3 py-1 rounded-[10px] cursor-pointer"
+              class={`px-3 py-1 rounded-[10px] cursor-pointer hover:bg-[#1e96fc] hover:text-white ${pagination === index + 1 ? "border border-[#1e96fc] text-[#1e96fc]" : ""}`}
             >
               {index + 1}
-            </div>
+            </button>
           {/each}
         {:else}
           {#if pagination > 4}
