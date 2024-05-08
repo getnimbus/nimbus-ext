@@ -246,11 +246,11 @@
             {selectedDisplayName}
             {handleUpdateSelectedDisplayName}
           />
-          <!-- <Telegram
+          <Telegram
             data={{}}
             {selectedDisplayName}
             {handleUpdateSelectedDisplayName}
-          /> -->
+          />
         {/if}
       </div>
     </div>
