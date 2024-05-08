@@ -451,6 +451,17 @@
 
   // handle Telegram login
   const handleTelegramAuth = async (data) => {
+    if (
+      localStorage.getItem("auth_token") ||
+      localStorage.getItem("solana_token") ||
+      localStorage.getItem("sui_token") ||
+      localStorage.getItem("ton_token") ||
+      localStorage.getItem("evm_token")
+    ) {
+      teleUserData = {};
+      return;
+    }
+
     mixpanel.track("user_login_telegram");
     try {
       const res: any = await nimbus.post("/auth/telegram", data);
