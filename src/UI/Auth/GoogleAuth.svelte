@@ -94,7 +94,7 @@
   on:click={handleGoogleAuth}
 >
   <img src={Google} class="h-[24px]" />
-  <div class="font-semibold text-[15px]">Login with Google</div>
+  <div class="font-semibold text-[15px]">Log in with Google</div>
 </div>
 
 {#if showToast}

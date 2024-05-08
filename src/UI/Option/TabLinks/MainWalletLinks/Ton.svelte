@@ -131,7 +131,7 @@
   on:click={handleTonAuth}
 >
   <img src={Ton} class="h-[24px] w-auto" />
-  <div class="font-semibold text-[15px]">Login with Ton</div>
+  <div class="font-semibold text-[15px]">Connect Ton Wallet</div>
 </div>
 
 {#if showToast}

@@ -135,7 +135,7 @@
   on:click={connect}
 >
   <img src={Evm} alt="" width="24" height="24" />
-  <div class="font-semibold text-[15px]">Connect EVM</div>
+  <div class="font-semibold text-[15px]">Connect EVM Wallet</div>
 </div>
 
 {#if showToast}
