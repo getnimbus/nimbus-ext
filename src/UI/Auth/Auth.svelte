@@ -471,6 +471,7 @@
         queryClient?.invalidateQueries(["users-me"]);
         queryClient.invalidateQueries(["list-address"]);
         queryClient?.invalidateQueries(["link-socials"]);
+        window.history.replaceState(null, "", window.location.pathname);
       } else {
         toastMsg = res?.error;
         isSuccessToast = false;
@@ -522,6 +523,7 @@
         queryClient?.invalidateQueries(["users-me"]);
         queryClient.invalidateQueries(["list-address"]);
         queryClient?.invalidateQueries(["link-socials"]);
+        window.history.replaceState(null, "", window.location.pathname);
       } else {
         toastMsg = res?.error;
         isSuccessToast = false;
