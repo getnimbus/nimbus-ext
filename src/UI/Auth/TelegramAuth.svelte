@@ -80,7 +80,7 @@
     $isDarkMode ? "border border-white" : ""
   }`}
 >
-  <script
+  <!-- <script
     async
     src="https://telegram.org/js/telegram-widget.js?22"
     data-telegram-login="test_nimbus_bot"
@@ -88,9 +88,19 @@
     data-radius="12"
     data-onauth="onTelegramAuth(user)"
     data-request-access="write"
+  ></script> -->
+
+  <script
+    async
+    src="https://telegram.org/js/telegram-widget.js?22"
+    data-telegram-login="test_nimbus_bot"
+    data-size="large"
+    data-radius="12"
+    data-auth-url="https://beta.nimbus-ext.pages.dev"
+    data-request-access="write"
   ></script>
 
-  <script type="text/javascript">
+  <!-- <script type="text/javascript">
     function onTelegramAuth(user) {
       if (
         !localStorage.getItem("auth_token") ||
@@ -99,11 +109,10 @@
         !localStorage.getItem("ton_token") ||
         !localStorage.getItem("evm_token")
       ) {
-        console.log("HELLO WORLD: ", user);
         data = user;
       }
     }
-  </script>
+  </script> -->
 </div>
 
 {#if showToast}
