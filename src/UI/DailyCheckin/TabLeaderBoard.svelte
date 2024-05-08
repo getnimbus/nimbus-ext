@@ -17,6 +17,7 @@
 
   let formatDataLeaderboard = [];
   let currentUserRank;
+  let pagination = 1;
 
   $: queryListLeaderboard = createQuery({
     queryKey: ["list-leaderboard"],
@@ -68,6 +69,40 @@
         });
     }
   }
+
+  const checkFormatDataLeaderboardSize = () => {
+    const leaderboardSize = Number(
+      (formatDataLeaderboard.length / 20).toFixed(0)
+    );
+    const leaderboardSizeIsResidual = formatDataLeaderboard.length % 20 === 0;
+    if (leaderboardSizeIsResidual) return leaderboardSize;
+    return leaderboardSize + 1;
+  };
+
+  const handleDecreasePagination = () => {
+    if (pagination === 1) {
+      pagination = 1;
+    } else {
+      pagination -= 1;
+    }
+  };
+
+  const handleIncreasePagination = () => {
+    const paginationSize = checkFormatDataLeaderboardSize();
+    if (pagination === paginationSize) {
+      pagination;
+    } else {
+      pagination += 1;
+    }
+  };
+
+  $: paginationChangeHandler = (input) => {
+    const firstRange = pagination === 1 ? 3 : (pagination - 1) * 20;
+    const secondRange = pagination * 20;
+    return input.slice(firstRange, secondRange);
+  };
+
+  $: console.log("pagination: ", pagination);
 </script>
 
 <div
@@ -310,7 +345,7 @@
             </tr>
           {/if}
 
-          {#each formatDataLeaderboard.slice(3, 20) as item}
+          {#each paginationChangeHandler(formatDataLeaderboard) as item}
             <tr class="group transition-all">
               <td
                 class={`py-2 pl-6 ${
@@ -370,6 +405,10 @@
           {/each}
         </tbody>
       </table>
+    </div>
+    <div class="mx-auto flex justify-center items-center gap-5">
+      <button on:click={handleDecreasePagination}>Back</button>
+      <button on:click={handleIncreasePagination}>Next</button>
     </div>
   </div>
 {/if}
