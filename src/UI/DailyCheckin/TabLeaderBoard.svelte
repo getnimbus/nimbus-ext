@@ -450,7 +450,7 @@
             </button>
           {/each}
         {:else}
-          {#if pagination > 4}
+          {#if pagination > 3}
             {#each [{}] as item, index}
               <div
                 on:click={() => (pagination = index + 1)}
@@ -459,9 +459,11 @@
                 {index + 1}
               </div>
             {/each}
-            <div class="font-medium px-3 py-2 rounded-[10px] cursor-pointer">
-              •••
-            </div>
+            {#if pagination > 4}
+              <div class="font-medium px-3 py-2 rounded-[10px] cursor-pointer">
+                •••
+              </div>
+            {/if}
           {/if}
           {#each paginationArr as item, index}
             {#if index + 1 === pagination - 1 || index + 1 === pagination - 2}
@@ -488,12 +490,14 @@
               </div>
             {/if}
           {/each}
-          {#if pagination < paginationArr.length - 3}
-            <div class="font-medium px-3 py-2 rounded-[10px] cursor-pointer">
-              •••
-            </div>
+          {#if pagination < paginationArr.length - 2}
+            {#if pagination < paginationArr.length - 3}
+              <div class="font-medium px-3 py-2 rounded-[10px] cursor-pointer">
+                •••
+              </div>
+            {/if}
             {#each paginationArr as item, index}
-              {#if index === paginationArr.length - 1 || pagination === paginationArr.length - 3}
+              {#if index === paginationArr.length - 1 || pagination === paginationArr.length - 2}
                 <div
                   on:click={() => (pagination = index + 1)}
                   class="px-3 py-1 rounded-[10px] cursor-pointer hover:bg-[#1e96fc] hover:text-white"
