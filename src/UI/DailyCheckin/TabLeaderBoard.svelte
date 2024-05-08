@@ -433,7 +433,7 @@
             d="M13 5H1m0 0 4 4M1 5l4-4"
           />
         </svg>
-        Previous
+        Prev
       </button>
       <div class="md:flex hidden items-center gap-1">
         {#if paginationArr.length < 6}
