@@ -417,7 +417,7 @@
         </tbody>
       </table>
     </div>
-    <div class="mx-auto flex justify-center items-center gap-4">
+    <div class="mx-auto flex justify-center items-center md:gap-4 gap-2">
       <Button variant="tertiary" on:click={handleDecreasePagination}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -432,7 +432,7 @@
           />
         </svg>
       </Button>
-      <div class="flex items-center gap-1">
+      <div class="md:flex hidden items-center gap-1">
         {#if paginationArr.length < 6}
           {#each paginationArr as item, index}
             <div
@@ -446,23 +446,23 @@
           {#each [{}] as item, index}
             <div
               on:click={() => (pagination = index + 1)}
-              class="bg-[#1e96fc] text-white px-4 py-2 rounded-[10px] cursor-pointer"
+              class="border border-[#1e96fc] text-[#1e96fc] px-4 py-2 rounded-[10px] cursor-pointer"
             >
               {index + 1}
             </div>
           {/each}
           <div
-            class="bg-[#1e96fc] text-white px-3 py-2 rounded-[10px] cursor-pointer"
+            class="border border-[#1e96fc] text-[#1e96fc] px-3 py-2 rounded-[10px] cursor-pointer"
           >
             •••
           </div>
           <div
-            class="bg-[#1e96fc] text-white px-4 py-2 rounded-[10px] cursor-pointer"
+            class="border border-[#1e96fc] text-[#1e96fc] px-4 py-2 rounded-[10px] cursor-pointer"
           >
             {pagination}
           </div>
           <div
-            class="bg-[#1e96fc] text-white px-3 py-2 rounded-[10px] cursor-pointer"
+            class="border border-[#1e96fc] text-[#1e96fc] px-3 py-2 rounded-[10px] cursor-pointer"
           >
             •••
           </div>
@@ -470,7 +470,7 @@
             {#if index === paginationArr.length - 1}
               <div
                 on:click={() => (pagination = index + 1)}
-                class="bg-[#1e96fc] text-white px-4 py-2 rounded-[10px] cursor-pointer"
+                class="border border-[#1e96fc] text-[#1e96fc] px-4 py-2 rounded-[10px] cursor-pointer"
               >
                 {index + 1}
               </div>
