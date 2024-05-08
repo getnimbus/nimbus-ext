@@ -14,7 +14,6 @@
   import rank3 from "~/assets/dailycheckin/Rank3.svg";
   import rankStatus from "~/assets/dailycheckin/Rankstatus.png";
   import frameLeaderboard from "~/assets/dailycheckin/frameLeaderboard.png";
-  import Button from "~/components/Button.svelte";
 
   let formatDataLeaderboard = [];
   let currentUserRank;
