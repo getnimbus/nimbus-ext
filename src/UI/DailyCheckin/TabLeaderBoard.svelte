@@ -14,7 +14,6 @@
   import rank3 from "~/assets/dailycheckin/Rank3.svg";
   import rankStatus from "~/assets/dailycheckin/Rankstatus.png";
   import frameLeaderboard from "~/assets/dailycheckin/frameLeaderboard.png";
-  import Button from "~/components/Button.svelte";
 
   let formatDataLeaderboard = [];
   let currentUserRank;
@@ -76,8 +75,6 @@
 
   $: paginationArr = new Array(leaderboardPaginationSize);
 
-  $: console.log("paginationArr", paginationArr);
-
   $: paginationChangeHandler = (input) => {
     const firstRange = pagination === 1 ? 3 : 20 + (pagination - 2) * 17;
     const secondRange = pagination === 1 ? 20 : 20 + (pagination - 1) * 17;
@@ -112,8 +109,6 @@
       pagination += 1;
     }
   };
-
-  $: console.log("pagination: ", pagination);
 </script>
 
 <div
@@ -437,7 +432,7 @@
             d="M13 5H1m0 0 4 4M1 5l4-4"
           />
         </svg>
-        Previous
+        Prev
       </button>
       <div class="md:flex hidden items-center gap-1">
         {#if paginationArr.length < 6}
