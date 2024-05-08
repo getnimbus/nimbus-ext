@@ -34,7 +34,7 @@
   const handleTwitterAuth = async () => {
     mixpanel.track("user_login_twitter");
     try {
-      const res = await signInWithPopup(auth, twitterProvider).then(
+      const res: any = await signInWithPopup(auth, twitterProvider).then(
         (result) => {
           return result.user;
         }
@@ -54,7 +54,7 @@
 
   const handleGetTwitterToken = async (uid, type, info, displayName) => {
     try {
-      const res = await nimbus.post("/auth", {
+      const res: any = await nimbus.post("/auth", {
         uid,
         type,
         info,
@@ -87,12 +87,13 @@
 </script>
 
 <div
-  class="flex items-center justify-center gap-2 text-white border cursor-pointer py-3 px-6 rounded-[12px] min-w-[250px] bg-black"
+  class={`flex items-center justify-center gap-2 text-white cursor-pointer rounded-[12px] bg-black w-[219px] h-[43px] ${$isDarkMode ? "border border-white" : ""}`}
+  style="padding: 9px 21px 11px;"
   on:click={handleTwitterAuth}
 >
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    width="24"
+    width="26"
     height="24"
     fill="none"
     viewBox="0 0 512 512"
@@ -113,7 +114,7 @@
     </defs>
     <script xmlns=""></script></svg
   >
-  <div class="font-semibold text-[15px]">Log in with X</div>
+  <div class="font-normal text-[15px]">Log in with X</div>
 </div>
 
 {#if showToast}

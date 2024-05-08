@@ -57,7 +57,7 @@
 
   const handleGetNonce = async (id: string) => {
     try {
-      const res = await nimbus.post("/users/nonce", {
+      const res: any = await nimbus.post("/users/nonce", {
         publicAddress: id,
         referrer: invitation.length !== 0 ? invitation : undefined,
       });
@@ -109,7 +109,7 @@
           },
         },
       };
-      const res = await nimbus.post(`/auth/ton?loginId=${id}`, {
+      const res: any = await nimbus.post(`/auth/ton?loginId=${id}`, {
         walletInfo: formatData,
       });
       if (res?.data?.result) {
@@ -139,13 +139,14 @@
 </script>
 
 <div
-  class={`flex items-center justify-center gap-2 text-white border cursor-pointer py-3 px-6 rounded-[12px] min-w-[250px] ${
+  class={`flex items-center justify-center gap-3 text-white border cursor-pointer rounded-[12px] w-[219px] h-[42px] ${
     $isDarkMode ? "border-white text-white" : "border-[#27326f] text-[#27326f]"
   }`}
+  style="padding: 9px 21px 11px;"
   on:click={handleTonAuth}
 >
-  <img src={Ton} class="h-[24px] w-auto" />
-  <div class="font-semibold text-[15px]">Log in with Ton</div>
+  <img src={Ton} class="h-[22px] w-[24px]" />
+  <div class="font-normal text-[15px]">Log in with Ton</div>
 </div>
 
 {#if showToast}
