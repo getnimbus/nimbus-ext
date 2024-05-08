@@ -457,7 +457,7 @@
             •••
           </div>
           <div
-            class="border border-[#1e96fc] text-[#1e96fc] px-4 py-2 rounded-[10px] cursor-pointer"
+            class="bg-[#1e96fc] text-white px-4 py-2 rounded-[10px] cursor-pointer"
           >
             {pagination}
           </div>
