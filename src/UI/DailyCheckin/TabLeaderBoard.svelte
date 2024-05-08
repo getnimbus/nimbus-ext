@@ -418,79 +418,114 @@
       </table>
     </div>
     <div class="mx-auto flex justify-center items-center md:gap-4 gap-2">
-      <Button variant="tertiary" on:click={handleDecreasePagination}>
+      <button
+        on:click={handleDecreasePagination}
+        class="flex gap-2 items-center border px-2 py-1 rounded-[10px] hover:bg-[#1e96fc] hover:text-white"
+      >
         <svg
+          class="w-3.5 h-3.5 me-2 rtl:rotate-180"
+          aria-hidden="true"
           xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 16 16"
-          class="rotate-180"
+          fill="none"
+          viewBox="0 0 14 10"
         >
           <path
-            fill="currentColor"
-            d="m5.157 13.069l4.611-4.685a.546.546 0 0 0 0-.768L5.158 2.93a.55.55 0 0 1 0-.771a.53.53 0 0 1 .759 0l4.61 4.684a1.65 1.65 0 0 1 0 2.312l-4.61 4.684a.53.53 0 0 1-.76 0a.55.55 0 0 1 0-.771"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M13 5H1m0 0 4 4M1 5l4-4"
           />
         </svg>
-      </Button>
+        Previous
+      </button>
       <div class="md:flex hidden items-center gap-1">
         {#if paginationArr.length < 6}
           {#each paginationArr as item, index}
             <div
               on:click={() => (pagination = index + 1)}
-              class="bg-[#1e96fc] text-white px-4 py-2 rounded-[10px] cursor-pointer"
+              class="bg-[#1e96fc] text-white px-3 py-1 rounded-[10px] cursor-pointer"
             >
               {index + 1}
             </div>
           {/each}
         {:else}
-          {#each [{}] as item, index}
-            <div
-              on:click={() => (pagination = index + 1)}
-              class="border border-[#1e96fc] text-[#1e96fc] px-4 py-2 rounded-[10px] cursor-pointer"
-            >
-              {index + 1}
-            </div>
-          {/each}
-          <div
-            class="border border-[#1e96fc] text-[#1e96fc] px-3 py-2 rounded-[10px] cursor-pointer"
-          >
-            •••
-          </div>
-          <div
-            class="bg-[#1e96fc] text-white px-4 py-2 rounded-[10px] cursor-pointer"
-          >
-            {pagination}
-          </div>
-          <div
-            class="border border-[#1e96fc] text-[#1e96fc] px-3 py-2 rounded-[10px] cursor-pointer"
-          >
-            •••
-          </div>
-          {#each paginationArr as item, index}
-            {#if index === paginationArr.length - 1}
+          {#if pagination > 4}
+            {#each [{}] as item, index}
               <div
                 on:click={() => (pagination = index + 1)}
-                class="border border-[#1e96fc] text-[#1e96fc] px-4 py-2 rounded-[10px] cursor-pointer"
+                class="px-3 py-1 rounded-[10px] cursor-pointer hover:bg-[#1e96fc] hover:text-white"
+              >
+                {index + 1}
+              </div>
+            {/each}
+            <div class="font-medium px-3 py-2 rounded-[10px] cursor-pointer">
+              •••
+            </div>
+          {/if}
+          {#each paginationArr as item, index}
+            {#if index + 1 === pagination - 1 || index + 1 === pagination - 2}
+              <div
+                on:click={() => (pagination = index + 1)}
+                class="px-3 py-1 rounded-[10px] cursor-pointer hover:bg-[#1e96fc] hover:text-white"
               >
                 {index + 1}
               </div>
             {/if}
           {/each}
+          <div
+            class="border border-[#1e96fc] text-[#1e96fc] px-3 py-1 rounded-[10px] cursor-pointer"
+          >
+            {pagination}
+          </div>
+          {#each paginationArr as item, index}
+            {#if index + 1 === pagination + 1 || index + 1 === pagination + 2}
+              <div
+                on:click={() => (pagination = index + 1)}
+                class="px-3 py-1 rounded-[10px] cursor-pointer hover:bg-[#1e96fc] hover:text-white"
+              >
+                {index + 1}
+              </div>
+            {/if}
+          {/each}
+          {#if pagination < paginationArr.length - 3}
+            <div class="font-medium px-3 py-2 rounded-[10px] cursor-pointer">
+              •••
+            </div>
+            {#each paginationArr as item, index}
+              {#if index === paginationArr.length - 1 || pagination === paginationArr.length - 3}
+                <div
+                  on:click={() => (pagination = index + 1)}
+                  class="px-3 py-1 rounded-[10px] cursor-pointer hover:bg-[#1e96fc] hover:text-white"
+                >
+                  {index + 1}
+                </div>
+              {/if}
+            {/each}
+          {/if}
         {/if}
       </div>
-      <Button variant="tertiary" on:click={handleIncreasePagination}>
+      <button
+        on:click={handleIncreasePagination}
+        class="flex gap-2 items-center border px-2 py-1 rounded-[10px] hover:bg-[#1e96fc] hover:text-white"
+      >
+        Next
         <svg
+          class="w-3.5 h-3.5 ms-2 rtl:rotate-180"
+          aria-hidden="true"
           xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 16 16"
+          fill="none"
+          viewBox="0 0 14 10"
         >
           <path
-            fill="currentColor"
-            d="m5.157 13.069l4.611-4.685a.546.546 0 0 0 0-.768L5.158 2.93a.55.55 0 0 1 0-.771a.53.53 0 0 1 .759 0l4.61 4.684a1.65 1.65 0 0 1 0 2.312l-4.61 4.684a.53.53 0 0 1-.76 0a.55.55 0 0 1 0-.771"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M1 5h12m0 0L9 1m4 4L9 9"
           />
         </svg>
-      </Button>
+      </button>
     </div>
   </div>
 {/if}
