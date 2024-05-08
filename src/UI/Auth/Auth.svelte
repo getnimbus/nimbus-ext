@@ -122,6 +122,8 @@
   let discordCode = "";
   let dataCheckinHistory = [];
 
+  let teleUserData = {};
+
   let openScreenBonusScore: boolean = false;
   let bonusScore: number = 0;
 
@@ -131,6 +133,26 @@
     await wait(2000);
     openScreenBonusScore = false;
   };
+
+  $: {
+    if (teleUserData && Object.keys(teleUserData).length !== 0) {
+      if (
+        localStorage.getItem("auth_token") ||
+        localStorage.getItem("solana_token") ||
+        localStorage.getItem("sui_token") ||
+        localStorage.getItem("ton_token") ||
+        localStorage.getItem("evm_token")
+      ) {
+        handleLinkTelegram(
+          teleUserData?.id,
+          teleUserData?.username,
+          teleUserData?.first_name + teleUserData?.last_name
+        );
+      } else {
+        handleTelegramAuth(teleUserData);
+      }
+    }
+  }
 
   $: {
     if (discordCode) {
@@ -158,6 +180,33 @@
     const codeParams = urlParams.get("code");
     if (codeParams) {
       discordCode = codeParams;
+    }
+
+    const teleIdParam = urlParams.get("id");
+    const teleFirstNameParam = urlParams.get("first_name");
+    const teleLastNameParam = urlParams.get("last_name");
+    const teleUsernameParam = urlParams.get("username");
+    const telePhotoUrlParam = urlParams.get("photo_url");
+    const teleAuthDateParam = urlParams.get("auth_date");
+    const teleHashParam = urlParams.get("hash");
+    if (
+      teleIdParam &&
+      teleFirstNameParam &&
+      teleLastNameParam &&
+      teleUsernameParam &&
+      telePhotoUrlParam &&
+      teleAuthDateParam &&
+      teleHashParam
+    ) {
+      teleUserData = {
+        id: teleIdParam,
+        first_name: teleFirstNameParam,
+        last_name: teleLastNameParam,
+        username: teleUsernameParam,
+        photo_url: telePhotoUrlParam,
+        auth_date: teleAuthDateParam,
+        hash: teleHashParam,
+      };
     }
 
     const authToken = localStorage.getItem("auth_token");
@@ -258,6 +307,24 @@
     }
   };
 
+  const handleAddBonusQuest = async (type) => {
+    try {
+      const res: any = await nimbus.post(`/v2/checkin/quest/${type}`, {});
+      if (res && res?.data === null) {
+        toastMsg = "You are already finished this quest";
+        isSuccessToast = false;
+      }
+      if (res?.data?.bonus !== undefined) {
+        triggerBonusScore();
+        bonusScore = res?.data?.bonus;
+        queryClient.invalidateQueries([$userPublicAddress, "daily-checkin"]);
+        queryClient.invalidateQueries(["users-me"]);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   // handle link Discord social
   const handleDiscordAuthLink = async (code: string) => {
     mixpanel.track("user_login_discord");
@@ -309,7 +376,7 @@
             (item) => item.type === "QUEST" && item.note === "link-discord"
           );
         if (!quest) {
-          handleAddBonusQuest();
+          handleAddBonusQuest("link-discord");
         }
 
         queryClient?.invalidateQueries(["link-socials"]);
@@ -329,21 +396,88 @@
     }
   };
 
-  const handleAddBonusQuest = async () => {
+  // handle link Telegram social
+  const handleLinkTelegram = async (id, info, displayName) => {
     try {
-      const res: any = await nimbus.post(`/v2/checkin/quest/link-discord`, {});
-      if (res && res?.data === null) {
-        toastMsg = "You are already finished this quest";
-        isSuccessToast = false;
+      let params: any = {
+        kind: "social",
+        id,
+        type: "telegram",
+        info,
+        displayName,
+      };
+
+      if (
+        ($userPublicAddress && $userPublicAddress.length === 0) ||
+        localStorage.getItem("public_address")
+      ) {
+        params = {
+          ...params,
+          userPublicAddress:
+            $userPublicAddress || localStorage.getItem("public_address"),
+        };
       }
-      if (res?.data?.bonus !== undefined) {
-        triggerBonusScore();
-        bonusScore = res?.data?.bonus;
-        queryClient.invalidateQueries([$userPublicAddress, "daily-checkin"]);
-        queryClient.invalidateQueries(["users-me"]);
+
+      const response: any = await nimbus.post("/accounts/link", params);
+      if (response && response?.error) {
+        toastMsg = response?.error;
+        isSuccessToast = false;
+        trigger();
+      } else {
+        const quest =
+          dataCheckinHistory &&
+          dataCheckinHistory.length !== 0 &&
+          dataCheckinHistory.find(
+            (item) => item.type === "QUEST" && item.note === "link-telegram"
+          );
+        if (!quest) {
+          handleAddBonusQuest("link-telegram");
+        }
+
+        queryClient?.invalidateQueries(["link-socials"]);
+
+        toastMsg = "Successfully link Telegram account!";
+        isSuccessToast = true;
+        trigger();
+
+        window.location.assign(linkRedirect);
       }
     } catch (e) {
-      console.error(e);
+      console.log(e);
+      toastMsg =
+        "There are some problem when link Telegram account. Please try again!";
+      isSuccessToast = false;
+      trigger();
+    }
+  };
+
+  // handle Telegram login
+  const handleTelegramAuth = async (data) => {
+    mixpanel.track("user_login_telegram");
+    try {
+      const res: any = await nimbus.post("/auth/telegram", data);
+      if (res?.data?.result) {
+        triggerConnectWallet.update((n) => (n = false));
+        localStorage.setItem("auth_token", res?.data?.result);
+        user.update(
+          (n) =>
+            (n = {
+              picture: User,
+            })
+        );
+        toastMsg = "Login with Telegram successfully!";
+        isSuccessToast = true;
+        trigger();
+        queryClient?.invalidateQueries(["users-me"]);
+        queryClient.invalidateQueries(["list-address"]);
+        queryClient?.invalidateQueries(["link-socials"]);
+      } else {
+        toastMsg = res?.error;
+        isSuccessToast = false;
+        trigger();
+      }
+    } catch (e) {
+      console.error("error: ", e);
     }
   };
 
