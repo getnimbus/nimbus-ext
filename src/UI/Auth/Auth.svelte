@@ -978,9 +978,9 @@
         }}
       >
         <img src={Evm} alt="" width="24" height="24" />
-        <div class="font-semibold text-[15px]">Login with EVM</div>
+        <div class="font-semibold text-[15px]">Log in with EVM</div>
       </div>
-      <SolanaAuth text="Login with Solana" />
+      <SolanaAuth text="Log in with Solana" />
       <TonAuth />
       <SuiAuth />
       <GoogleAuth />

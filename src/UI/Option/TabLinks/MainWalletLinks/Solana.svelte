@@ -154,7 +154,7 @@
   }}
 >
   <img src={Solana} alt="" width="24" height="24" class="rounded-full" />
-  <div class="font-semibold text-[15px]">Connect Solana</div>
+  <div class="font-semibold text-[15px]">Connect Solana Wallet</div>
 </div>
 
 <WalletProvider

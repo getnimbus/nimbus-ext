@@ -163,7 +163,7 @@
   on:click={handleSUIAuth}
 >
   <img src={SUI} class="h-[24px] w-auto" />
-  <div class="font-semibold text-[15px]">Login with Sui</div>
+  <div class="font-semibold text-[15px]">Connect Sui Wallet</div>
 </div>
 
 <ReactAdapter
