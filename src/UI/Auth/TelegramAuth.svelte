@@ -99,6 +99,7 @@
         !localStorage.getItem("ton_token") ||
         !localStorage.getItem("evm_token")
       ) {
+        console.log("HELLO WORLD: ", user);
         data = user;
       }
     }
