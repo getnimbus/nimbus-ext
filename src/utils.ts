@@ -233,11 +233,6 @@ export const typePortfolioPage = [
     label: "Summary",
     value: "summary",
   },
-  {
-    id: "view-the-news",
-    label: "News",
-    value: "news",
-  },
 ];
 
 export const filterTokenValueType = [
@@ -906,13 +901,6 @@ export const drivePortfolio = () =>
         popover: {
           title: "See our Summary about your portfolio 📊",
           description: "We give you the overview about your portfolio",
-        },
-      },
-      {
-        element: "#view-the-news",
-        popover: {
-          title: "See our News crypto and the latest blockchain articles 📰",
-          description: "We give you all news articles that put together",
         },
       },
       {
