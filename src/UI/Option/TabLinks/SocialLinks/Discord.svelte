@@ -55,13 +55,13 @@
         {}
       );
       queryClient.invalidateQueries(["users-me"]);
-      toastMsg = `Successfully ${checked ? "set" : "unset"} display X account!`;
+      toastMsg = `Successfully ${checked ? "set" : "unset"} display Discord account!`;
       isSuccessToast = true;
       trigger();
     } catch (e) {
       console.log(e);
       toastMsg =
-        "There are some problem when set display X account. Please try again!";
+        "There are some problem when set display Discord account. Please try again!";
       isSuccessToast = true;
       trigger();
     }
