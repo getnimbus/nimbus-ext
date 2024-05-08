@@ -1,25 +1,17 @@
 <script lang="ts">
   import { nimbus } from "~/lib/network";
-  import { userPublicAddress, user, isDarkMode } from "~/store";
-  import { TwitterAuthProvider, signInWithPopup } from "firebase/auth";
-  import { auth } from "~/lib/firebase";
+  import { isDarkMode } from "~/store";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
-  import { createQuery, useQueryClient } from "@tanstack/svelte-query";
-  import { triggerFirework } from "~/utils";
-  import { wait } from "~/entries/background/utils";
-  import { handleGetDataDailyCheckin } from "~/lib/queryAPI";
+  import { useQueryClient } from "@tanstack/svelte-query";
 
   import Button from "~/components/Button.svelte";
-
-  import goldImg from "~/assets/Gold4.svg";
 
   export let data: any;
   export let selectedDisplayName;
   export let handleUpdateSelectedDisplayName = (name) => {};
 
   const queryClient = useQueryClient();
-  const twitterProvider = new TwitterAuthProvider();
 
   let toastMsg = "";
   let isSuccessToast = false;
@@ -41,33 +33,6 @@
     isSuccessToast = false;
   };
 
-  let dataCheckinHistory = [];
-  let openScreenBonusScore: boolean = false;
-  let bonusScore: number = 0;
-
-  const triggerBonusScore = async () => {
-    openScreenBonusScore = true;
-    triggerFirework();
-    await wait(2000);
-    openScreenBonusScore = false;
-  };
-
-  $: queryDailyCheckin = createQuery({
-    queryKey: [$userPublicAddress, "daily-checkin"],
-    queryFn: () => handleGetDataDailyCheckin(),
-    staleTime: Infinity,
-    enabled:
-      $user &&
-      Object.keys($user).length !== 0 &&
-      $userPublicAddress.length !== 0,
-  });
-
-  $: {
-    if (!$queryDailyCheckin.isError && $queryDailyCheckin.data !== undefined) {
-      dataCheckinHistory = $queryDailyCheckin?.data?.checkinLogs;
-    }
-  }
-
   $: {
     if (selectedDisplayName === data?.name) {
       checked = true;
@@ -75,86 +40,6 @@
       checked = false;
     }
   }
-
-  const handleTwitterAuth = async () => {
-    try {
-      const res: any = await signInWithPopup(auth, twitterProvider).then(
-        (result) => result.user
-      );
-      if (res) {
-        handleAddTwitter(
-          res.uid,
-          res?.reloadUserInfo?.providerUserInfo[0]?.email,
-          res?.reloadUserInfo?.screenName
-        );
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
-  const handleAddTwitter = async (id, info, displayName) => {
-    try {
-      let params: any = {
-        kind: "social",
-        id,
-        type: "twitter",
-        info,
-        displayName,
-      };
-
-      if (data && Object.keys(data).length === 0) {
-        params = {
-          ...params,
-          userPublicAddress: $userPublicAddress,
-        };
-      }
-
-      const response: any = await nimbus.post("/accounts/link", params);
-      if (response && response?.error) {
-        toastMsg = response?.error;
-        isSuccessToast = false;
-        trigger();
-      } else {
-        const quest = dataCheckinHistory.find(
-          (item) => item.type === "QUEST" && item.note === "link-x"
-        );
-        if (!quest) {
-          handleAddBonusQuest();
-        }
-
-        queryClient?.invalidateQueries(["link-socials"]);
-
-        toastMsg = "Successfully link X account!";
-        isSuccessToast = true;
-        trigger();
-      }
-    } catch (e) {
-      console.log(e);
-      toastMsg =
-        "There are some problem when link X account. Please try again!";
-      isSuccessToast = false;
-      trigger();
-    }
-  };
-
-  const handleAddBonusQuest = async () => {
-    try {
-      const res: any = await nimbus.post(`/v2/checkin/quest/link-twitter`, {});
-      if (res && res?.data === null) {
-        toastMsg = "You are already finished this quest";
-        isSuccessToast = false;
-      }
-      if (res?.data?.bonus !== undefined) {
-        triggerBonusScore();
-        bonusScore = res?.data?.bonus;
-        queryClient.invalidateQueries([$userPublicAddress, "daily-checkin"]);
-        queryClient.invalidateQueries(["users-me"]);
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  };
 
   const handleDisplayName = async () => {
     try {
@@ -165,13 +50,13 @@
         {}
       );
       queryClient.invalidateQueries(["users-me"]);
-      toastMsg = `Successfully ${checked ? "set" : "unset"} display X account!`;
+      toastMsg = `Successfully ${checked ? "set" : "unset"} display Discord account!`;
       isSuccessToast = true;
       trigger();
     } catch (e) {
       console.log(e);
       toastMsg =
-        "There are some problem when set display X account. Please try again!";
+        "There are some problem when set display Discord account. Please try again!";
       isSuccessToast = true;
       trigger();
     }
@@ -179,43 +64,33 @@
 </script>
 
 <div
-  id="twitter"
+  id="discord"
   class="max-w-[350px] md:w-[350px] w-full bg_f4f5f8 rounded-[10px] px-4 py-5 flex flex-col"
 >
   <div class="flex flex-col gap-3">
     <div
-      class={`p-4 rounded-[10px] shadow-sm bg-black w-max ${$isDarkMode ? "border border-white" : ""}`}
+      class={`p-4 rounded-[10px] shadow-sm bg-[#5865F2] w-max ${$isDarkMode ? "border border-white" : ""}`}
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="26"
         height="26"
+        viewBox="0 0 29 22"
         fill="none"
-        viewBox="0 0 512 512"
-        id="twitter"
         ><script xmlns=""></script>
-        <g clip-path="url(#clip0_84_15697)">
-          <rect width="512" height="512" fill="#000" rx="60" />
-          <path
-            fill="#fff"
-            d="M355.904 100H408.832L293.2 232.16L429.232 412H322.72L239.296 302.928L143.84 412H90.8805L214.56 270.64L84.0645 100H193.28L268.688 199.696L355.904 100ZM337.328 380.32H366.656L177.344 130.016H145.872L337.328 380.32Z"
-          >
-          </path>
-        </g>
-        <defs>
-          <clipPath id="clip0_84_15697">
-            <rect width="512" height="512" fill="#fff" />
-          </clipPath>
-        </defs>
+        <path
+          d="M24.6361 1.96176C22.8237 1.13014 20.8801 0.517433 18.848 0.166511C18.811 0.159738 18.774 0.176664 18.755 0.210515C18.505 0.65509 18.2281 1.23507 18.0342 1.69094C15.8486 1.36372 13.6741 1.36372 11.5332 1.69094C11.3393 1.22494 11.0524 0.65509 10.8013 0.210515C10.7822 0.177793 10.7453 0.160868 10.7082 0.166511C8.67724 0.516312 6.73367 1.12902 4.9201 1.96176C4.9044 1.96853 4.89095 1.97983 4.88201 1.99449C1.19547 7.50211 0.185568 12.8744 0.68099 18.18C0.683232 18.206 0.697803 18.2308 0.717979 18.2466C3.15026 20.0328 5.50633 21.1172 7.81866 21.8359C7.85567 21.8472 7.89488 21.8337 7.91843 21.8032C8.46541 21.0562 8.95299 20.2686 9.37105 19.4404C9.39572 19.3919 9.37217 19.3343 9.32175 19.3151C8.54835 19.0218 7.81193 18.6641 7.10354 18.2579C7.04751 18.2251 7.04303 18.145 7.09457 18.1066C7.24364 17.9949 7.39275 17.8787 7.5351 17.7613C7.56085 17.7399 7.59673 17.7354 7.62701 17.7489C12.2808 19.8737 17.3191 19.8737 21.918 17.7489C21.9483 17.7343 21.9842 17.7388 22.0111 17.7602C22.1534 17.8776 22.3025 17.9949 22.4527 18.1066C22.5042 18.145 22.5009 18.2251 22.4449 18.2579C21.7365 18.6719 21 19.0218 20.2255 19.314C20.1751 19.3332 20.1527 19.3919 20.1773 19.4404C20.6044 20.2675 21.092 21.0551 21.6288 21.8021C21.6513 21.8337 21.6916 21.8472 21.7286 21.8359C24.0522 21.1172 26.4082 20.0328 28.8405 18.2466C28.8618 18.2308 28.8753 18.2071 28.8775 18.1811C29.4704 12.0472 27.8844 6.71902 24.6731 1.99561C24.6653 1.97983 24.6518 1.96853 24.6361 1.96176ZM10.066 14.9494C8.6649 14.9494 7.51042 13.6631 7.51042 12.0833C7.51042 10.5036 8.64252 9.21727 10.066 9.21727C11.5007 9.21727 12.644 10.5149 12.6216 12.0833C12.6216 13.6631 11.4895 14.9494 10.066 14.9494ZM19.5149 14.9494C18.1138 14.9494 16.9593 13.6631 16.9593 12.0833C16.9593 10.5036 18.0914 9.21727 19.5149 9.21727C20.9496 9.21727 22.0929 10.5149 22.0705 12.0833C22.0705 13.6631 20.9496 14.9494 19.5149 14.9494Z"
+          fill="#fff"
+        />
         <script xmlns=""></script></svg
       >
     </div>
-    <div class="xl:text-lg text-xl">X</div>
+    <div class="xl:text-lg text-xl">Telegram</div>
   </div>
 
   <div class="flex flex-col gap-3">
     {#if data && Object.keys(data).length !== 0}
-      <div class="xl:text-base text-lg text-gray-400">@{data?.name}</div>
+      <div class="xl:text-base text-lg text-gray-400">{data?.name}</div>
       <div class="flex items-center justify-start gap-2">
         <input
           type="checkbox"
@@ -227,38 +102,31 @@
       </div>
     {:else}
       <div class="xl:text-base text-lg text-gray-400">@username</div>
-      <Button
-        variant="tertiary"
-        on:click={handleTwitterAuth}
-        className="py-3 px-6"
-      >
+      <Button variant="tertiary" className="py-3 px-6">
         <div class="font-semibold text-[15px]">Connect</div>
+
+        <div class="border border-red-500">
+          <script
+            async
+            src="https://telegram.org/js/telegram-widget.js?22"
+            data-telegram-login="test_nimbus_bot"
+            data-size="large"
+            data-userpic="false"
+            data-radius="12"
+            data-onauth="onTelegramAuth(user)"
+            data-request-access="write"
+          ></script>
+
+          <script type="text/javascript">
+            function onTelegramAuth(user) {
+              console.log("HELLO WORLD", user);
+            }
+          </script>
+        </div>
       </Button>
     {/if}
   </div>
 </div>
-
-{#if openScreenBonusScore}
-  <div
-    class="fixed h-screen w-screen top-0 left-0 flex items-center justify-center bg-[#000000cc]"
-    style="z-index: 2147483648;"
-    on:click={() => {
-      setTimeout(() => {
-        openScreenBonusScore = false;
-      }, 500);
-    }}
-  >
-    <div class="flex flex-col items-center justify-center gap-10">
-      <div class="xl:text-2xl text-4xl text-white font-medium">
-        Congratulation!!!
-      </div>
-      <img src={goldImg} alt="" class="w-40 h-40" />
-      <div class="xl:text-2xl text-4xl text-white font-medium">
-        You have received {bonusScore} Bonus GM Points
-      </div>
-    </div>
-  </div>
-{/if}
 
 {#if showToast}
   <div class="fixed top-3 right-3 w-full" style="z-index: 2147483648;">

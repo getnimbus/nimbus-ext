@@ -1,6 +1,6 @@
 <script lang="ts">
   import { nimbus } from "~/lib/network";
-  import { userPublicAddress, user } from "~/store";
+  import { userPublicAddress, user, isDarkMode } from "~/store";
   import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
   import { auth } from "~/lib/firebase";
   import { Toast } from "flowbite-svelte";
@@ -188,7 +188,11 @@
   class="max-w-[350px] md:w-[350px] w-full bg_f4f5f8 rounded-[10px] px-4 py-5 flex flex-col"
 >
   <div class="flex flex-col gap-3">
-    <div class="p-4 rounded-[10px] shadow-sm bg-white w-max">
+    <div
+      class={`p-4 rounded-[10px] shadow-sm bg-white w-max ${
+        $isDarkMode ? "border border-white" : ""
+      }`}
+    >
       <img src={Google} alt="" width="26" height="26" />
     </div>
     <div class="xl:text-lg text-xl">Google</div>

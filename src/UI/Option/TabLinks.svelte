@@ -14,6 +14,7 @@
   import Google from "./TabLinks/SocialLinks/Google.svelte";
   import Twitter from "./TabLinks/SocialLinks/Twitter.svelte";
   import Discord from "./TabLinks/SocialLinks/Discord.svelte";
+  import Telegram from "./TabLinks/SocialLinks/Telegram.svelte";
   import Evm from "./TabLinks/MainWalletLinks/Evm.svelte";
   import Solana from "./TabLinks/MainWalletLinks/Solana.svelte";
   import Sui from "./TabLinks/MainWalletLinks/Sui.svelte";
@@ -241,6 +242,11 @@
             {handleUpdateSelectedDisplayName}
           />
           <Discord
+            data={{}}
+            {selectedDisplayName}
+            {handleUpdateSelectedDisplayName}
+          />
+          <Telegram
             data={{}}
             {selectedDisplayName}
             {handleUpdateSelectedDisplayName}

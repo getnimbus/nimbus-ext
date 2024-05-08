@@ -1,5 +1,6 @@
 <script lang="ts">
   import { nimbus } from "~/lib/network";
+  import { isDarkMode } from "~/store";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
   import { useQueryClient } from "@tanstack/svelte-query";
@@ -73,7 +74,9 @@
   class="max-w-[350px] md:w-[350px] w-full bg_f4f5f8 rounded-[10px] px-4 py-5 flex flex-col"
 >
   <div class="flex flex-col gap-3">
-    <div class="p-4 rounded-[10px] shadow-sm bg-[#5865F2] w-max">
+    <div
+      class={`p-4 rounded-[10px] shadow-sm bg-[#5865F2] w-max ${$isDarkMode ? "border border-white" : ""}`}
+    >
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="26"
