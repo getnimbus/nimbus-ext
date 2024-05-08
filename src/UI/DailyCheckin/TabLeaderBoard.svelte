@@ -14,10 +14,12 @@
   import rank3 from "~/assets/dailycheckin/Rank3.svg";
   import rankStatus from "~/assets/dailycheckin/Rankstatus.png";
   import frameLeaderboard from "~/assets/dailycheckin/frameLeaderboard.png";
+  import Button from "~/components/Button.svelte";
 
   let formatDataLeaderboard = [];
   let currentUserRank;
   let pagination = 1;
+  let leaderboardPaginationSize = 1;
 
   $: queryListLeaderboard = createQuery({
     queryKey: ["list-leaderboard"],
@@ -62,6 +64,8 @@
         };
       });
 
+      checkFormatDataLeaderboardSize();
+
       currentUserRank = $queryDailyCheckin?.data?.checkinLeaderboard
         .map((item: any) => item?.owner.toLowerCase())
         .findIndex((item: any) => {
@@ -70,13 +74,27 @@
     }
   }
 
+  $: paginationArr = new Array(leaderboardPaginationSize);
+
+  $: console.log("paginationArr", paginationArr);
+
+  $: paginationChangeHandler = (input) => {
+    const firstRange = pagination === 1 ? 3 : 20 + (pagination - 2) * 17;
+    const secondRange = pagination === 1 ? 20 : 20 + (pagination - 1) * 17;
+    return input.slice(firstRange, secondRange);
+  };
+
   const checkFormatDataLeaderboardSize = () => {
-    const leaderboardSize = Number(
-      (formatDataLeaderboard.length / 20).toFixed(0)
+    const checkLeaderboardSize = Math.floor(
+      Number(formatDataLeaderboard.length / 17)
     );
-    const leaderboardSizeIsResidual = formatDataLeaderboard.length % 20 === 0;
-    if (leaderboardSizeIsResidual) return leaderboardSize;
-    return leaderboardSize + 1;
+    const leaderboardSizeIsResidual = formatDataLeaderboard.length % 17 === 0;
+    console.log({ checkLeaderboardSize, leaderboardSizeIsResidual });
+    if (leaderboardSizeIsResidual) {
+      leaderboardPaginationSize = checkLeaderboardSize;
+    } else {
+      leaderboardPaginationSize = checkLeaderboardSize + 1;
+    }
   };
 
   const handleDecreasePagination = () => {
@@ -88,18 +106,11 @@
   };
 
   const handleIncreasePagination = () => {
-    const paginationSize = checkFormatDataLeaderboardSize();
-    if (pagination === paginationSize) {
+    if (pagination === leaderboardPaginationSize) {
       pagination;
     } else {
       pagination += 1;
     }
-  };
-
-  $: paginationChangeHandler = (input) => {
-    const firstRange = pagination === 1 ? 3 : (pagination - 1) * 20;
-    const secondRange = pagination * 20;
-    return input.slice(firstRange, secondRange);
   };
 
   $: console.log("pagination: ", pagination);
@@ -406,9 +417,80 @@
         </tbody>
       </table>
     </div>
-    <div class="mx-auto flex justify-center items-center gap-5">
-      <button on:click={handleDecreasePagination}>Back</button>
-      <button on:click={handleIncreasePagination}>Next</button>
+    <div class="mx-auto flex justify-center items-center gap-4">
+      <Button variant="tertiary" on:click={handleDecreasePagination}>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 16 16"
+          class="rotate-180"
+        >
+          <path
+            fill="currentColor"
+            d="m5.157 13.069l4.611-4.685a.546.546 0 0 0 0-.768L5.158 2.93a.55.55 0 0 1 0-.771a.53.53 0 0 1 .759 0l4.61 4.684a1.65 1.65 0 0 1 0 2.312l-4.61 4.684a.53.53 0 0 1-.76 0a.55.55 0 0 1 0-.771"
+          />
+        </svg>
+      </Button>
+      <div class="flex items-center gap-1">
+        {#if paginationArr.length < 6}
+          {#each paginationArr as item, index}
+            <div
+              on:click={() => (pagination = index + 1)}
+              class="bg-[#1e96fc] text-white px-4 py-2 rounded-[10px] cursor-pointer"
+            >
+              {index + 1}
+            </div>
+          {/each}
+        {:else}
+          {#each [{}] as item, index}
+            <div
+              on:click={() => (pagination = index + 1)}
+              class="bg-[#1e96fc] text-white px-4 py-2 rounded-[10px] cursor-pointer"
+            >
+              {index + 1}
+            </div>
+          {/each}
+          <div
+            class="bg-[#1e96fc] text-white px-3 py-2 rounded-[10px] cursor-pointer"
+          >
+            •••
+          </div>
+          <div
+            class="bg-[#1e96fc] text-white px-4 py-2 rounded-[10px] cursor-pointer"
+          >
+            {pagination}
+          </div>
+          <div
+            class="bg-[#1e96fc] text-white px-3 py-2 rounded-[10px] cursor-pointer"
+          >
+            •••
+          </div>
+          {#each paginationArr as item, index}
+            {#if index === paginationArr.length - 1}
+              <div
+                on:click={() => (pagination = index + 1)}
+                class="bg-[#1e96fc] text-white px-4 py-2 rounded-[10px] cursor-pointer"
+              >
+                {index + 1}
+              </div>
+            {/if}
+          {/each}
+        {/if}
+      </div>
+      <Button variant="tertiary" on:click={handleIncreasePagination}>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 16 16"
+        >
+          <path
+            fill="currentColor"
+            d="m5.157 13.069l4.611-4.685a.546.546 0 0 0 0-.768L5.158 2.93a.55.55 0 0 1 0-.771a.53.53 0 0 1 .759 0l4.61 4.684a1.65 1.65 0 0 1 0 2.312l-4.61 4.684a.53.53 0 0 1-.76 0a.55.55 0 0 1 0-.771"
+          />
+        </svg>
+      </Button>
     </div>
   </div>
 {/if}
