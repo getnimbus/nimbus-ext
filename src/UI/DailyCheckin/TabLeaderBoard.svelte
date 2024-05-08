@@ -76,8 +76,6 @@
 
   $: paginationArr = new Array(leaderboardPaginationSize);
 
-  $: console.log("paginationArr", paginationArr);
-
   $: paginationChangeHandler = (input) => {
     const firstRange = pagination === 1 ? 3 : 20 + (pagination - 2) * 17;
     const secondRange = pagination === 1 ? 20 : 20 + (pagination - 1) * 17;
@@ -112,8 +110,6 @@
       pagination += 1;
     }
   };
-
-  $: console.log("pagination: ", pagination);
 </script>
 
 <div
