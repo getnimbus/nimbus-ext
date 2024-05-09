@@ -150,8 +150,8 @@
 
 {#if partnerQuestId === ""}
   <div class="flex flex-col gap-10">
-    <div class="flex lg:flex-row flex-col items-start justify-between gap-6">
-      <div class="lg:flex-[0.81] flex-1 flex flex-col gap-3 w-full">
+    <div class="flex xl:flex-row flex-col items-start justify-between gap-6">
+      <div class="xl:w-max w-full flex flex-col gap-3">
         <div class="flex items-center gap-4">
           <div class="w-26 h-26 rounded-full overflow-hidden md:block hidden">
             <img src={User} alt="" class="object-cover w-full h-full" />

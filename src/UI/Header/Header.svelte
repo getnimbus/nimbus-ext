@@ -659,12 +659,7 @@
           `}
           on:click={() => {
             handleUpdateNavActive("/daily-checkin");
-            queryClient?.invalidateQueries(["users-me"]);
-            if ($user && Object.keys($user).length !== 0) {
-              navigateTo("/daily-checkin");
-            } else {
-              navigateTo("/");
-            }
+            navigateTo("/daily-checkin");
           }}
         >
           <img src={QuestsIcon} alt="" width="20" height="20" />
