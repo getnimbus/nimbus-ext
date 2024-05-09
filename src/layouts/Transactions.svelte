@@ -95,7 +95,11 @@
   });
 
   $: {
-    if (!$queryHistory.isError && $queryHistory.data !== undefined) {
+    if (
+      !$queryHistory.isError &&
+      $queryHistory.data !== undefined &&
+      $queryHistory?.data?.data !== null
+    ) {
       data = [...data, ...$queryHistory?.data?.data];
       pageToken = $queryHistory?.data.pageToken;
     }
@@ -158,7 +162,7 @@
             <HistoricalTransactions
               isLoading={$queryHistory.isFetching}
               {pageToken}
-              {data}
+              data={data || []}
               loadMore={handleLoadMore}
             />
           </div>
