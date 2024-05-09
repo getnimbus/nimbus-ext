@@ -122,7 +122,7 @@
         class={`py-6 px-8 rounded-[10px] border border_0000001a flex flex-col justify-center gap-4 ${$isDarkMode ? "bg-[#000]" : "bg-[#fff]"}`}
       >
         <div class="flex items-center gap-2">
-          <div class="uppercase text-2xl font-medium text-[#27326f]">
+          <div class="uppercase text-2xl font-medium">
             {selectedPartnersData?.sponsor?.title ||
               selectedPartnersData?.title}
           </div>
