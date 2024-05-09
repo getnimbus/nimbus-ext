@@ -353,7 +353,7 @@
 
   onMount(() => {
     const urlParams = new URLSearchParams(window.location.search);
-    const syncCodeParams = urlParams.get("code");
+    const syncCodeParams = urlParams.get("syncCode");
 
     if (syncCodeParams) {
       handleMobileSignIn(syncCodeParams);
@@ -438,6 +438,11 @@
       localStorage.removeItem("ton_token");
       localStorage.removeItem("evm_token");
     },
+    onSuccess(data) {
+      if (data) {
+        handleSetUserData(data);
+      }
+    },
   });
 
   $: {
@@ -457,9 +462,9 @@
     userID = data?.id;
     displayName = data?.displayName;
     publicAddress = data?.publicAddress;
-    if (data?.plan?.tier && data?.plan?.tier.length !== 0) {
-      selectedPackage.update((n) => (n = data?.plan?.tier.toUpperCase()));
-    }
+    selectedPackage.update(
+      (n) => (n = data?.plan?.tier.toUpperCase() || "FREE")
+    );
     buyPackage = data.plan?.tier;
     mixpanel.identify(data.publicAddress);
   };

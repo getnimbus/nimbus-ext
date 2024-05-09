@@ -1,18 +1,17 @@
 <script lang="ts">
   import { useQueryClient } from "@tanstack/svelte-query";
   import { SuiConnector, WalletState } from "nimbus-sui-kit";
-  import { isDarkMode, user, suiWalletInstance } from "~/store";
+  import { isDarkMode, suiWalletInstance, userPublicAddress } from "~/store";
   import { nimbus } from "~/lib/network";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
 
   import ReactAdapter from "~/components/ReactAdapter.svelte";
 
-  import User from "~/assets/user.png";
   import SUI from "~/assets/chains/sui.png";
 
   export let data;
-  export let reCallAPI = () => {};
+  export let isPrimaryLogin;
 
   const queryClient = useQueryClient();
   const chains = [
@@ -84,19 +83,29 @@
 
   const handleGetNonce = async (address: string) => {
     try {
-      const signature = await handleSignAddressMessage(
-        `${Math.floor(Math.random() * 10000)}`
-      );
-      if (signature) {
-        const payload = {
-          signature: signature.signature,
-          bytes: signature.bytes,
-          publicAddress: address?.toLowerCase(),
-        };
-        handleUpdatePublicAddress(payload, address);
+      const res: any = await nimbus.post("/users/nonce?verified=true", {
+        publicAddress: address,
+        referrer: undefined,
+      });
+      if (res && res.data) {
+        const signature = await handleSignAddressMessage(res?.data?.nonce);
+        if (signature) {
+          const payload = {
+            signature: signature.signature,
+            bytes: signature.bytes,
+            publicAddress: address?.toLowerCase(),
+          };
+          handleUpdatePublicAddress(payload);
+        }
       }
     } catch (e) {
       console.error("error: ", e);
+      if (
+        ($suiWalletInstance as WalletState) &&
+        ($suiWalletInstance as WalletState).connected
+      ) {
+        ($suiWalletInstance as WalletState).disconnect();
+      }
     }
   };
 
@@ -109,33 +118,40 @@
     return msg;
   };
 
-  const handleUpdatePublicAddress = async (payload, address) => {
+  const handleUpdatePublicAddress = async (payload) => {
     try {
-      let params: any = {
+      const params: any = {
+        id: isPrimaryLogin ? data?.uid : $userPublicAddress,
         kind: "wallet",
         type: null,
-        userPublicAddress: address,
-        id: data?.uid,
-        info: data?.info,
-        displayName: data?.name,
+        userPublicAddress: payload?.publicAddress,
+        signature: payload?.signature,
       };
-      const res = await nimbus.post("/accounts/link", params);
+      const res: any = await nimbus.post("/accounts/link", params);
       if (res && res?.error) {
         toastMsg = res?.error;
         isSuccessToast = false;
         trigger();
         return;
       }
-      queryClient?.invalidateQueries(["users-me"]);
-      queryClient?.invalidateQueries(["list-address"]);
-      queryClient.invalidateQueries(["list-bundle"]);
-      queryClient.invalidateQueries(["link-socials"]);
-      reCallAPI();
-      toastMsg = "Your are successfully connect your Sui wallet!";
-      isSuccessToast = false;
+
+      queryClient?.invalidateQueries(["link-socials"]);
+      toastMsg = "Your are successfully connect your SUI wallet!";
+      isSuccessToast = true;
       trigger();
     } catch (e) {
       console.log(e);
+      toastMsg =
+        "Something wrong when connect your Solana wallet. Please try again!";
+      isSuccessToast = true;
+      trigger();
+    } finally {
+      if (
+        ($suiWalletInstance as WalletState) &&
+        ($suiWalletInstance as WalletState).connected
+      ) {
+        ($suiWalletInstance as WalletState).disconnect();
+      }
     }
   };
 </script>
@@ -147,7 +163,7 @@
   on:click={handleSUIAuth}
 >
   <img src={SUI} class="h-[24px] w-auto" />
-  <div class="font-semibold text-[15px]">Login with Sui</div>
+  <div class="font-semibold text-[15px]">Connect Sui Wallet</div>
 </div>
 
 <ReactAdapter
