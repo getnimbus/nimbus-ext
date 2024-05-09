@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { WalletState } from "nimbus-sui-kit";
+  import type { WalletState } from "nimbus-sui-kit";
   import { suiWalletInstance } from "~/store";
   import { triggerFirework } from "~/utils";
   import { isDarkMode } from "~/store";

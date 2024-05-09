@@ -119,7 +119,7 @@
         info: data?.info,
         displayName: data?.name,
       };
-      const res = await nimbus.post("/accounts/link", params);
+      const res: any = await nimbus.post("/accounts/link", params);
       if (res && res?.error) {
         toastMsg = res?.error;
         isSuccessToast = false;
