@@ -282,6 +282,7 @@
                     <div class="w-[50px] xl:h-[33px] h-[43px]">
                       <Button
                         on:click={() => {
+                          window.open(data?.url, "_blank");
                           selectedQuestId = data?.id;
                           startPlay = true;
                           clearInterval(countdownInterval);
@@ -379,6 +380,7 @@
               <div class="w-[50px] h-[44px]">
                 <Button
                   on:click={() => {
+                    window.open(data?.url, "_blank");
                     selectedQuestId = data?.id;
                     startPlay = true;
                     clearInterval(countdownInterval);
