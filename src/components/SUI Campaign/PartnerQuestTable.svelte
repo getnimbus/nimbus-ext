@@ -1,9 +1,12 @@
 <script lang="ts">
+  import { nimbus } from "~/lib/network";
+  import { Toast } from "flowbite-svelte";
+  import { blur } from "svelte/transition";
   import { isDarkMode } from "~/store";
   import { triggerFirework } from "~/utils";
   import { wait } from "~/entries/background/utils";
   import { getCampaignQuestsBoard } from "~/lib/queryAPI";
-  import { createQuery } from "@tanstack/svelte-query";
+  import { createQuery, useQueryClient } from "@tanstack/svelte-query";
 
   import Button from "~/components/Button.svelte";
   import Loading from "~/components/Loading.svelte";
@@ -14,10 +17,36 @@
   export let dataQuestsBoard;
   export let isLoading;
 
+  const queryClient = useQueryClient();
+
+  let toastMsg = "";
+  let isSuccessToast: boolean = false;
+  let counter = 3;
+  let showToast: boolean = false;
+
+  const trigger = () => {
+    showToast = true;
+    counter = 3;
+    timeout();
+  };
+
+  const timeout = () => {
+    if (--counter > 0) return setTimeout(timeout, 1000);
+    showToast = false;
+    toastMsg = "";
+    isSuccessToast = false;
+  };
+
   let openScreenBonusScore = false;
   let bonusScore = 0;
 
   let listQuestCompleted = [];
+
+  let selectedQuestId = "";
+
+  let startPlay = false;
+  let countdown = 10;
+  let countdownInterval;
 
   const triggerBonusScore = async () => {
     openScreenBonusScore = true;
@@ -48,6 +77,74 @@
       completedQuests &&
       completedQuests.map((item: any) => item.questId).includes(campaign.id)
     );
+  };
+
+  const startCountdown = () => {
+    countdown = 10;
+    countdownInterval = setInterval(() => {
+      countdown--;
+      console.log(countdown);
+      if (countdown === 0) {
+        clearInterval(countdownInterval);
+        startPlay = false;
+      }
+    }, 1000);
+  };
+
+  const handleVerifyQuest = async (data) => {
+    try {
+      if (data?.id !== selectedQuestId) {
+        toastMsg = "Please Play the quest before Check!";
+        isSuccessToast = false;
+        trigger();
+        return;
+      }
+
+      const response: any = await nimbus.get(
+        `/v2/quest/${selectedQuestId}/verify`
+      );
+      if (response && !response?.data?.success) {
+        toastMsg = response?.data?.message;
+        isSuccessToast = false;
+        trigger();
+        selectedQuestId = "";
+        return;
+      }
+
+      handleClaimReward(data);
+    } catch (e) {
+      toastMsg = "Something wrong when verify quest. Please try again!";
+      isSuccessToast = false;
+      trigger();
+      console.error(e);
+    }
+  };
+
+  const handleClaimReward = async (data) => {
+    try {
+      const response: any = await nimbus.get(
+        `/v2/quest/${selectedQuestId}/claim`
+      );
+      if (response && !response?.data?.success) {
+        toastMsg = response?.data?.message;
+        isSuccessToast = false;
+        trigger();
+        return;
+      }
+
+      selectedQuestId = "";
+      triggerBonusScore();
+      bonusScore = data?.point;
+      queryClient?.invalidateQueries(["daily-checkin"]);
+      queryClient?.invalidateQueries(["partners-campaign"]);
+      queryClient?.invalidateQueries(["partners-detail-campaign"]);
+      queryClient?.invalidateQueries(["quests-campaign"]);
+    } catch (e) {
+      toastMsg = "Something wrong when claim quest reward. Please try again!";
+      isSuccessToast = false;
+      trigger();
+      console.error(e);
+    }
   };
 </script>
 
@@ -183,12 +280,29 @@
                     </div>
                   {:else}
                     <div class="w-[50px] xl:h-[33px] h-[43px]">
-                      <Button>
+                      <Button
+                        on:click={() => {
+                          window.open(data?.url, "_blank");
+                          selectedQuestId = data?.id;
+                          startPlay = true;
+                          clearInterval(countdownInterval);
+                          startCountdown();
+                        }}
+                      >
                         <img src={playIcon} alt="" class="w-4 h-4" />
                       </Button>
                     </div>
                     <div class="w-[90px] xl:h-[33px] h-[43px]">
-                      <Button variant="tertiary">Check</Button>
+                      {#if countdown > 0 && countdown < 10 && selectedQuestId === data?.id}
+                        <Button variant="tertiary">{countdown}s</Button>
+                      {:else}
+                        <Button
+                          variant="tertiary"
+                          on:click={() => handleVerifyQuest(data)}
+                        >
+                          Check
+                        </Button>
+                      {/if}
                     </div>
                   {/if}
                 </div>
@@ -264,12 +378,29 @@
               </div>
             {:else}
               <div class="w-[50px] h-[44px]">
-                <Button>
+                <Button
+                  on:click={() => {
+                    window.open(data?.url, "_blank");
+                    selectedQuestId = data?.id;
+                    startPlay = true;
+                    clearInterval(countdownInterval);
+                    startCountdown();
+                  }}
+                >
                   <img src={playIcon} alt="" class="w-4 h-4" />
                 </Button>
               </div>
               <div class="w-[90px] h-[44px]">
-                <Button variant="tertiary">Check</Button>
+                {#if countdown > 0 && countdown < 10 && selectedQuestId === data?.id}
+                  <Button variant="tertiary">{countdown}s</Button>
+                {:else}
+                  <Button
+                    variant="tertiary"
+                    on:click={() => handleVerifyQuest(data)}
+                  >
+                    Check
+                  </Button>
+                {/if}
               </div>
             {/if}
           </div>
@@ -298,6 +429,51 @@
         You have received {bonusScore} Bonus GM Points
       </div>
     </div>
+  </div>
+{/if}
+
+{#if showToast}
+  <div class="fixed top-3 right-3 w-full" style="z-index: 2147483648;">
+    <Toast
+      transition={blur}
+      params={{ amount: 10 }}
+      position="top-right"
+      color={isSuccessToast ? "green" : "red"}
+      bind:open={showToast}
+    >
+      <svelte:fragment slot="icon">
+        {#if isSuccessToast}
+          <svg
+            aria-hidden="true"
+            class="w-5 h-5"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+            ><path
+              fill-rule="evenodd"
+              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+              clip-rule="evenodd"
+            /></svg
+          >
+          <span class="sr-only">Check icon</span>
+        {:else}
+          <svg
+            aria-hidden="true"
+            class="w-5 h-5"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+            ><path
+              fill-rule="evenodd"
+              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+              clip-rule="evenodd"
+            /></svg
+          >
+          <span class="sr-only">Error icon</span>
+        {/if}
+      </svelte:fragment>
+      {toastMsg}
+    </Toast>
   </div>
 {/if}
 
