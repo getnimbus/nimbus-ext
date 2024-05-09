@@ -1,4 +1,6 @@
-<script>
+<script lang="ts">
+  import { WalletState } from "nimbus-sui-kit";
+  import { suiWalletInstance } from "~/store";
   import { triggerFirework } from "~/utils";
   import { isDarkMode } from "~/store";
 
@@ -14,11 +16,29 @@
   let startFlip = false; // swipe to flip
   let isUserWin = true; // state user win or lose
 
-  const triggerFlipResult = async () => {
+  const triggerFlipResult = async (type: number) => {
     // trigger the api in here
     isUserWin && triggerFirework();
     openScreenResult = true;
   };
+
+  const handleStartFlip = () => {
+    if (
+      ($suiWalletInstance as WalletState) &&
+      !($suiWalletInstance as WalletState).connected
+    ) {
+      // TODO: toast user must connect SUI Wallet
+      return;
+    }
+
+    startFlip = true;
+  };
+
+  $: {
+    if ($suiWalletInstance) {
+      console.log("HELLO WORLD: ", $suiWalletInstance as WalletState);
+    }
+  }
 </script>
 
 <div
@@ -64,7 +84,7 @@
       </div>
     {:else if !startFlip}
       <div class="w-max">
-        <Button variant="tertiary" on:click={() => (startFlip = true)}>
+        <Button variant="tertiary" on:click={handleStartFlip}>
           <div class="font-medium sm:text-2xl text-lg py-4 px-5">
             Flip Now 👑
           </div>
@@ -74,13 +94,13 @@
       <div class="w-full flex justify-between gap-4">
         <button
           class="rounded-[12px] text-white bg-[#FFB800] w-full py-4 px-5 font-medium sm:text-2xl text-lg"
-          on:click={triggerFlipResult}
+          on:click={() => triggerFlipResult(1)}
         >
           Head
         </button>
         <button
           class="rounded-[12px] text-white bg-[#FFB800] w-full py-4 px-5 font-medium sm:text-2xl text-lg"
-          on:click={triggerFlipResult}
+          on:click={() => triggerFlipResult(0)}
         >
           Tail
         </button>
