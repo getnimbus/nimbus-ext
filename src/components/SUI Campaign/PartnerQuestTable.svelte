@@ -2,6 +2,8 @@
   import { isDarkMode } from "~/store";
   import { triggerFirework } from "~/utils";
   import { wait } from "~/entries/background/utils";
+  import { getCampaignQuestsBoard } from "~/lib/queryAPI";
+  import { createQuery } from "@tanstack/svelte-query";
 
   import Button from "~/components/Button.svelte";
   import Loading from "~/components/Loading.svelte";
@@ -15,11 +17,37 @@
   let openScreenBonusScore = false;
   let bonusScore = 0;
 
+  let listQuestCompleted = [];
+
   const triggerBonusScore = async () => {
     openScreenBonusScore = true;
     triggerFirework();
     await wait(2000);
     openScreenBonusScore = false;
+  };
+
+  $: queryQuestsBoard = createQuery({
+    queryKey: ["quests-campaign"],
+    queryFn: () => getCampaignQuestsBoard(),
+    staleTime: Infinity,
+    retry: false,
+  });
+
+  $: {
+    if (
+      !$queryQuestsBoard.isError &&
+      $queryQuestsBoard &&
+      $queryQuestsBoard?.data !== undefined
+    ) {
+      listQuestCompleted = $queryQuestsBoard?.data?.completedQuests;
+    }
+  }
+
+  const checkUserFinishedQuest = (campaign: any, completedQuests: any) => {
+    return (
+      completedQuests &&
+      completedQuests.map((item: any) => item.questId).includes(campaign.id)
+    );
   };
 </script>
 
@@ -149,7 +177,11 @@
                 <div
                   class="text-right text-sm uppercase font-medium flex justify-end items-center gap-2"
                 >
-                  {#if data?.status === "ACTIVE"}
+                  {#if checkUserFinishedQuest(data, listQuestCompleted)}
+                    <div class="w-[90px]">
+                      <Button disabled>Done!</Button>
+                    </div>
+                  {:else}
                     <div class="w-[50px] xl:h-[33px] h-[43px]">
                       <Button>
                         <img src={playIcon} alt="" class="w-4 h-4" />
@@ -157,10 +189,6 @@
                     </div>
                     <div class="w-[90px] xl:h-[33px] h-[43px]">
                       <Button variant="tertiary">Check</Button>
-                    </div>
-                  {:else}
-                    <div class="w-[90px]">
-                      <Button disabled>Done!</Button>
                     </div>
                   {/if}
                 </div>
@@ -230,7 +258,11 @@
           <div
             class="flex items-center justify-end gap-2 font-medium text-sm text_00000099"
           >
-            {#if data?.status === "ACTIVE"}
+            {#if checkUserFinishedQuest(data, listQuestCompleted)}
+              <div class="w-[90px]">
+                <Button disabled>Done!</Button>
+              </div>
+            {:else}
               <div class="w-[50px] h-[44px]">
                 <Button>
                   <img src={playIcon} alt="" class="w-4 h-4" />
@@ -238,10 +270,6 @@
               </div>
               <div class="w-[90px] h-[44px]">
                 <Button variant="tertiary">Check</Button>
-              </div>
-            {:else}
-              <div class="w-[90px]">
-                <Button disabled>Done!</Button>
               </div>
             {/if}
           </div>
