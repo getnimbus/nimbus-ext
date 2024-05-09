@@ -129,8 +129,6 @@
         <TabReports />
       {:else if activeTabValue === "links"}
         <TabLinks />
-        <!-- {:else if activeTabValue === "settings"}
-          <TabSettings /> -->
       {/if}
     </div>
   </div>
