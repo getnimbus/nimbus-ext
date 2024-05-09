@@ -45,7 +45,11 @@
     if (!$queryLinkSocial.isError && $queryLinkSocial.data !== undefined) {
       data = $queryLinkSocial?.data?.data;
       userLinkWalletData = $queryLinkSocial?.data?.data?.filter(
-        (item) => item.type !== "twitter" && item.type !== "google"
+        (item) =>
+          item.type !== "twitter" &&
+          item.type !== "google" &&
+          item.type !== "discord" &&
+          item.type !== "telegram"
       );
       if (
         $queryLinkSocial?.data?.data &&
@@ -110,7 +114,8 @@
       (item) =>
         item.type === "twitter" ||
         item.type === "google" ||
-        item.type === "discord"
+        item.type === "discord" ||
+        item.type === "telegram"
     ) || [];
 </script>
 

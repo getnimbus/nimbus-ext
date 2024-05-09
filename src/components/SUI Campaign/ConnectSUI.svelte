@@ -1,17 +1,65 @@
 <script lang="ts">
   import { wait } from "~/entries/background/utils";
   import { triggerFirework } from "~/utils";
-  import { suiWalletInstance } from "~/store";
+  import { suiWalletInstance, userPublicAddress, isDarkMode } from "~/store";
   import { SuiConnector } from "nimbus-sui-kit";
   import type { WalletState } from "nimbus-sui-kit";
-  import { useQueryClient } from "@tanstack/svelte-query";
+  import { createQuery, useQueryClient } from "@tanstack/svelte-query";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
   import { nimbus } from "~/lib/network";
+  import { getLinkData } from "~/lib/queryAPI";
 
   import goldImg from "~/assets/Gold4.svg";
+  import SUI from "~/assets/chains/sui.png";
 
   import ReactAdapter from "~/components/ReactAdapter.svelte";
+  import Copy from "~/components/Copy.svelte";
+
+  let toastMsg = "";
+  let isSuccessToast = false;
+  let counter = 3;
+  let showToast = false;
+
+  const trigger = () => {
+    showToast = true;
+    counter = 3;
+    timeout();
+  };
+
+  const timeout = () => {
+    if (--counter > 0) return setTimeout(timeout, 1000);
+    showToast = false;
+    toastMsg = "";
+    isSuccessToast = false;
+  };
+
+  let openScreenBonusScore = false;
+  let bonusScore = 0;
+
+  const triggerBonusScore = async () => {
+    openScreenBonusScore = true;
+    triggerFirework();
+    await wait(2000);
+    openScreenBonusScore = false;
+  };
+
+  let selectedDataSUILink: any = {};
+
+  $: queryLinkSocial = createQuery({
+    queryKey: ["link-socials"],
+    queryFn: () => getLinkData(),
+    staleTime: Infinity,
+    retry: false,
+  });
+
+  $: {
+    if (!$queryLinkSocial.isError && $queryLinkSocial.data !== undefined) {
+      selectedDataSUILink = $queryLinkSocial?.data?.data?.find(
+        (item) => item.kind === "wallet" && item.chain === "MOVE"
+      );
+    }
+  }
 
   const queryClient = useQueryClient();
   const chains = [
@@ -65,19 +113,30 @@
 
   const handleGetNonce = async (address: string) => {
     try {
-      const signature = await handleSignAddressMessage(
-        `${Math.floor(Math.random() * 10000)}`
-      );
-      if (signature) {
-        const payload = {
-          signature: signature.signature,
-          bytes: signature.bytes,
-          publicAddress: address?.toLowerCase(),
-        };
-        handleUpdatePublicAddress(payload, address);
+      const res: any = await nimbus.post("/users/nonce?verified=true", {
+        publicAddress: address,
+        referrer: undefined,
+      });
+
+      if (res && res.data) {
+        const signature = await handleSignAddressMessage(res?.data?.nonce);
+        if (signature) {
+          const payload = {
+            signature: signature.signature,
+            bytes: signature.bytes,
+            publicAddress: address?.toLowerCase(),
+          };
+          handleUpdatePublicAddress(payload);
+        }
       }
     } catch (e) {
       console.error("error: ", e);
+      if (
+        ($suiWalletInstance as WalletState) &&
+        ($suiWalletInstance as WalletState).connected
+      ) {
+        ($suiWalletInstance as WalletState).disconnect();
+      }
     }
   };
 
@@ -90,17 +149,16 @@
     return msg;
   };
 
-  const handleUpdatePublicAddress = async (payload, address) => {
+  const handleUpdatePublicAddress = async (payload) => {
     try {
-      let params: any = {
+      const params: any = {
+        id: $userPublicAddress,
         kind: "wallet",
         type: null,
-        userPublicAddress: address,
-        id: data?.uid,
-        info: data?.info,
-        displayName: data?.name,
+        userPublicAddress: payload?.publicAddress,
+        signature: payload?.signature,
       };
-      const res = await nimbus.post("/accounts/link", params);
+      const res: any = await nimbus.post("/accounts/link", params);
       if (res && res?.error) {
         toastMsg = res?.error;
         isSuccessToast = false;
@@ -108,11 +166,11 @@
         return;
       }
 
-      // TODO: bonus 1k GM points
-      queryClient?.invalidateQueries(["users-me"]);
-      queryClient?.invalidateQueries(["list-address"]);
-      queryClient.invalidateQueries(["list-bundle"]);
-      queryClient.invalidateQueries(["link-socials"]);
+      queryClient?.invalidateQueries(["link-socials"]);
+      queryClient?.invalidateQueries(["daily-checkin"]);
+
+      triggerBonusScore();
+      bonusScore = 1000;
 
       toastMsg = "Your are successfully connect your Sui wallet!";
       isSuccessToast = false;
@@ -121,50 +179,34 @@
       console.log(e);
     }
   };
-
-  let openScreenBonusScore = false;
-  let bonusScore = 0;
-
-  const triggerBonusScore = async () => {
-    openScreenBonusScore = true;
-    triggerFirework();
-    await wait(2000);
-    openScreenBonusScore = false;
-  };
-
-  let toastMsg = "";
-  let isSuccessToast = false;
-  let counter = 3;
-  let showToast = false;
-
-  const trigger = () => {
-    showToast = true;
-    counter = 3;
-    timeout();
-  };
-
-  const timeout = () => {
-    if (--counter > 0) return setTimeout(timeout, 1000);
-    showToast = false;
-    toastMsg = "";
-    isSuccessToast = false;
-  };
 </script>
 
-<div
-  class="flex justify-center items-center gap-3 text-white bg-[#1e96fc] py-1 px-2 rounded-[10px] cursor-pointer xl:w-[280px] w-max"
-  on:click={() => {
-    // handleSUIAuth();
-  }}
->
-  Connect SUI Wallet
+{#if selectedDataSUILink && Object.keys(selectedDataSUILink).length !== 0}
   <div
-    class="flex items-center gap-1 text-sm font-medium bg-[#27326F] py-1 px-2 text-white rounded-[10px]"
+    class="flex justify-center items-center gap-3 text-white bg-[#1e96fc] py-1 px-2 rounded-[10px] cursor-pointer xl:w-[280px] w-max"
   >
-    1000
-    <img src={goldImg} alt="" class="w-6 h-6" />
+    <img src={SUI} alt="" width="24" height="24" />
+    <Copy
+      address={selectedDataSUILink?.publicAddress}
+      iconColor={$isDarkMode ? "#fff" : "#000"}
+      color={$isDarkMode ? "#fff" : "#000"}
+      isShorten
+    />
   </div>
-</div>
+{:else}
+  <div
+    class="flex justify-center items-center gap-3 text-white bg-[#1e96fc] py-1 px-2 rounded-[10px] cursor-pointer xl:w-[280px] w-max"
+    on:click={handleSUIAuth}
+  >
+    Connect SUI Wallet
+    <div
+      class="flex items-center gap-1 text-sm font-medium bg-[#27326F] py-1 px-2 text-white rounded-[10px]"
+    >
+      1000
+      <img src={goldImg} alt="" class="w-6 h-6" />
+    </div>
+  </div>
+{/if}
 
 <ReactAdapter
   element={SuiConnector}

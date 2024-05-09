@@ -125,7 +125,7 @@
 </script>
 
 <div
-  class={`flex items-center justify-center gap-2 text-white border cursor-pointer py-3 px-6 rounded-[12px] w-[250px] ${
+  class={`flex items-center justify-center gap-2 text-white border cursor-pointer py-3 px-6 rounded-[12px] md:w-[310px] w-full ${
     $isDarkMode ? "border-white text-white" : "border-[#27326f] text-[#27326f]"
   }`}
   on:click={handleTonAuth}
