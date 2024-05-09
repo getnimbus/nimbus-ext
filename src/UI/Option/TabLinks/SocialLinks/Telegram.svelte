@@ -94,10 +94,10 @@
     {:else}
       <div class="xl:text-base text-lg text-gray-400">@username</div>
       <Button variant="tertiary" className="py-3 px-6 relative">
-        <div class="font-semibold text-[15px]">Connect</div>
+        <div class="font-semibold text-[15px] relative z-9">Connect</div>
 
         <div
-          class="absolute top-0 left-1/2 transform -translate-x-1/2 z-1 opacity-0"
+          class="absolute top-0 left-1/2 transform -translate-x-1/2 z-10 opacity-0"
         >
           <script
             async
