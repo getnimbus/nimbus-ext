@@ -8,6 +8,7 @@
   import StarterQuestTable from "./StarterQuests/StarterQuestTable.svelte";
 
   let dataQuestsBoard = [];
+  let listQuestCompleted = [];
   let dataReferrals = {};
 
   let intervalId = null;
@@ -48,6 +49,7 @@
       $queryQuestsBoard?.data !== undefined
     ) {
       dataQuestsBoard = $queryQuestsBoard?.data?.campaign?.quests;
+      listQuestCompleted = $queryQuestsBoard?.data?.completedQuests;
     }
   }
 </script>
@@ -55,6 +57,7 @@
 <div class="flex xl:flex-row flex-col items-start justify-between gap-6">
   <Referrals {dataReferrals} />
   <StarterQuestTable
+    {listQuestCompleted}
     {dataQuestsBoard}
     isLoading={$queryQuestsBoard.isFetching}
   />

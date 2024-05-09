@@ -9,6 +9,7 @@
   import goldImg from "~/assets/Gold4.svg";
   import playIcon from "~/assets/play-icon.svg";
 
+  export let listQuestCompleted;
   export let dataQuestsBoard;
   export let isLoading;
 
@@ -20,6 +21,13 @@
     triggerFirework();
     await wait(2000);
     openScreenBonusScore = false;
+  };
+
+  const checkUserFinishedQuest = (campaign: any, completedQuests: any) => {
+    return (
+      completedQuests &&
+      completedQuests.map((item: any) => item.questId).includes(campaign.id)
+    );
   };
 </script>
 
@@ -133,7 +141,11 @@
                   <div
                     class="text-right text-sm uppercase font-medium flex justify-end items-center gap-2"
                   >
-                    {#if data?.status === "ACTIVE"}
+                    {#if checkUserFinishedQuest(data, listQuestCompleted)}
+                      <div class="w-[90px]">
+                        <Button disabled>Done!</Button>
+                      </div>
+                    {:else}
                       <div class="w-[50px] xl:h-[34px] h-[43px]">
                         <Button>
                           <img src={playIcon} alt="" class="w-4 h-4" />
@@ -141,10 +153,6 @@
                       </div>
                       <div class="w-[90px] xl:h-[34px] h-[43px]">
                         <Button variant="tertiary">Check</Button>
-                      </div>
-                    {:else}
-                      <div class="w-[90px]">
-                        <Button disabled>Done!</Button>
                       </div>
                     {/if}
                   </div>
@@ -209,7 +217,11 @@
             <div
               class="flex items-center justify-end gap-2 font-medium text-sm text_00000099"
             >
-              {#if data?.status === "ACTIVE"}
+              {#if checkUserFinishedQuest(data, listQuestCompleted)}
+                <div class="w-[90px]">
+                  <Button disabled>Done!</Button>
+                </div>
+              {:else}
                 <div class="w-[50px] h-[44px]">
                   <Button>
                     <img src={playIcon} alt="" class="w-4 h-4" />
@@ -217,10 +229,6 @@
                 </div>
                 <div class="w-[90px] h-[44px]">
                   <Button variant="tertiary">Check</Button>
-                </div>
-              {:else}
-                <div class="w-[90px]">
-                  <Button disabled>Done!</Button>
                 </div>
               {/if}
             </div>
