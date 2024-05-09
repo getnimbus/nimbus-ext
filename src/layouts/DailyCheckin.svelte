@@ -14,13 +14,14 @@
   import TabDailyCheckin from "~/UI/DailyCheckin/TabDailyCheckin.svelte";
   import TabLeaderBoard from "~/UI/DailyCheckin/TabLeaderBoard.svelte";
   import TabReward from "~/UI/DailyCheckin/TabReward.svelte";
+  import TabFlipGmPoints from "~/UI/DailyCheckin/TabFlipGMPoints.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import ConnectX from "~/components/SUI Campaign/ConnectX.svelte";
   import Button from "~/components/Button.svelte";
+  import Loading from "~/components/Loading.svelte";
 
   import goldImg from "~/assets/Gold4.svg";
   import wheelIcon from "~/assets/wheel-icon.svg";
-  import TabFlipGmPoints from "~/UI/DailyCheckin/TabFlipGMPoints.svelte";
 
   export let currentRoute;
 
@@ -307,7 +308,11 @@
       {/if}
     {:else}
       <div class="h-screen flex items-center justify-center relative z-9">
-        <ConnectX />
+        {#if $queryLinkSocial.isFetching}
+          <Loading />
+        {:else}
+          <ConnectX />
+        {/if}
       </div>
     {/if}
 
