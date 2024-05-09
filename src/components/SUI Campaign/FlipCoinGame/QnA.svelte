@@ -3,18 +3,18 @@
 
   let fakeData = [
     {
-      title: "What's Flip The GM?",
-      desc: "Descrition some thing on it!!!",
+      title: "What's Flip The GM 👀?",
+      desc: "Flip the GM is a new way for you to interact with SUI blockchain and get Reward in GMs and $SPAM 🤩 with just 2 clicks. It's a no risk high return game 👍",
       active: false,
     },
     {
-      title: "How can I play?",
-      desc: "Descrition some thing on it!!!",
+      title: "How can I Flip 🤔?",
+      desc: "Just simply connect your SUI wallet, pay the gas fee, and FLIP THE GMs 👏",
       active: false,
     },
     {
-      title: "Is my wallet safe?",
-      desc: "Descrition some thing on it!!!",
+      title: "Is my wallet Safu 😨?",
+      desc: "Yes, your wallet is Safu 😉",
       active: false,
     },
   ];

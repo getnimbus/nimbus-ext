@@ -122,7 +122,7 @@
   let discordCode = "";
   let dataCheckinHistory = [];
 
-  let teleUserData = {};
+  let teleUserData: any = {};
 
   let openScreenBonusScore: boolean = false;
   let bonusScore: number = 0;

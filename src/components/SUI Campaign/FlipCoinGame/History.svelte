@@ -3,7 +3,7 @@
 
   import gmPoints from "~/assets/Gold4.svg";
 
-  const fakeData = [{}, {}, {}, {}, {}, {}];
+  const fakeData = [];
 </script>
 
 <div
@@ -17,7 +17,7 @@
     <div class="text-base font-medium">Rewards</div>
     <div class="flex items-center gap-2">
       <img src={gmPoints} alt="" class="object-contain w-6 h-6" />
-      <div class="font-medium text-3xl">450</div>
+      <div class="font-medium text-3xl">0</div>
     </div>
   </div>
 
@@ -31,6 +31,7 @@
           <th class="py-2">Reward</th>
         </tr>
       </thead>
+
       {#each fakeData as item}
         <tbody>
           <tr>

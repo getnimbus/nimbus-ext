@@ -150,7 +150,9 @@
 
 {#if partnerQuestId === ""}
   <div class="flex flex-col gap-10">
-    <div class="flex xl:flex-row flex-col items-start justify-between gap-6">
+    <div
+      class="flex xl:flex-row flex-col items-start justify-between xl:gap-26 gap-6"
+    >
       <div class="xl:w-max w-full flex flex-col gap-3">
         <div class="flex items-center gap-4">
           <div class="w-26 h-26 rounded-full overflow-hidden md:block hidden">
@@ -213,7 +215,7 @@
         </div>
       </div>
 
-      <div class="flex-1 flex xl:flex-row flex-col gap-4 w-full">
+      <div class="flex-1 flex md:flex-row flex-col gap-4 w-full">
         <div
           class="flex-1 w-full flex flex-col gap-3 bg-[#1589EB] py-4 px-6 rounded-lg"
         >
@@ -264,7 +266,10 @@
           Explore all the tasks from our Partners for more GM Points
         </div>
       </div>
-      <div class="flex flex-wrap gap-6">
+
+      <div class="text-lg">Coming soon 🚀</div>
+
+      <!-- <div class="flex flex-wrap gap-6">
         {#if $queryCampaignPartnerList.isFetching}
           <Loading />
         {:else}
@@ -272,7 +277,7 @@
             <PartnerQuestCard {data} {handleUpdatePartnerQuestsId} />
           {/each}
         {/if}
-      </div>
+      </div> -->
     </div>
   </div>
 {:else}
