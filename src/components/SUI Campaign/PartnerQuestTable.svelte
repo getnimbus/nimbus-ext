@@ -128,6 +128,9 @@
         selectedQuestId = "";
         return;
       }
+      queryClient?.invalidateQueries(["partners-campaign"]);
+      queryClient?.invalidateQueries(["partners-detail-campaign"]);
+      queryClient?.invalidateQueries(["quests-campaign"]);
     } catch (e) {
       toastMsg = "Something wrong when verify quest. Please try again!";
       isSuccessToast = false;
@@ -149,6 +152,7 @@
       }
 
       selectedQuestId = "";
+      isClaimActive = false;
       triggerBonusScore();
       bonusScore = data?.point;
       queryClient?.invalidateQueries(["daily-checkin"]);
