@@ -41,6 +41,7 @@
   let bonusScore = 0;
 
   let listQuestCompleted = [];
+  let listQuestVerified = [];
 
   let selectedQuestId = "";
 
@@ -68,7 +69,12 @@
       $queryQuestsBoard &&
       $queryQuestsBoard?.data !== undefined
     ) {
-      listQuestCompleted = $queryQuestsBoard?.data?.completedQuests;
+      listQuestCompleted = $queryQuestsBoard?.data?.completedQuests.filter(
+        (item) => item.type === "QUEST"
+      );
+      listQuestVerified = $queryQuestsBoard?.data?.completedQuests.filter(
+        (item) => item.type === "QUEST_VERIFIED"
+      );
     }
   }
 
@@ -76,6 +82,13 @@
     return (
       completedQuests &&
       completedQuests.map((item: any) => item.questId).includes(campaign.id)
+    );
+  };
+
+  const checkUserVerifyQuest = (campaign: any, verifyQuests: any) => {
+    return (
+      verifyQuests &&
+      verifyQuests.map((item: any) => item.questId).includes(campaign.id)
     );
   };
 
@@ -110,8 +123,6 @@
         selectedQuestId = "";
         return;
       }
-
-      handleClaimReward(data);
     } catch (e) {
       toastMsg = "Something wrong when verify quest. Please try again!";
       isSuccessToast = false;
@@ -298,9 +309,19 @@
                       {:else}
                         <Button
                           variant="tertiary"
-                          on:click={() => handleVerifyQuest(data)}
+                          on:click={() => {
+                            if (checkUserVerifyQuest(data, listQuestVerified)) {
+                              handleClaimReward(data);
+                            } else {
+                              handleVerifyQuest(data);
+                            }
+                          }}
                         >
-                          Check
+                          {#if checkUserVerifyQuest(data, listQuestVerified)}
+                            Claim
+                          {:else}
+                            Check
+                          {/if}
                         </Button>
                       {/if}
                     </div>
@@ -396,9 +417,19 @@
                 {:else}
                   <Button
                     variant="tertiary"
-                    on:click={() => handleVerifyQuest(data)}
+                    on:click={() => {
+                      if (checkUserVerifyQuest(data, listQuestVerified)) {
+                        handleClaimReward(data);
+                      } else {
+                        handleVerifyQuest(data);
+                      }
+                    }}
                   >
-                    Check
+                    {#if checkUserVerifyQuest(data, listQuestVerified)}
+                      Claim
+                    {:else}
+                      Check
+                    {/if}
                   </Button>
                 {/if}
               </div>

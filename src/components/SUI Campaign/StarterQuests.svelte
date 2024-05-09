@@ -9,6 +9,7 @@
 
   let dataQuestsBoard = [];
   let listQuestCompleted = [];
+  let listQuestVerified = [];
   let dataReferrals = {};
 
   let intervalId = null;
@@ -49,7 +50,12 @@
       $queryQuestsBoard?.data !== undefined
     ) {
       dataQuestsBoard = $queryQuestsBoard?.data?.campaign?.quests;
-      listQuestCompleted = $queryQuestsBoard?.data?.completedQuests;
+      listQuestCompleted = $queryQuestsBoard?.data?.completedQuests.filter(
+        (item) => item.type === "QUEST"
+      );
+      listQuestVerified = $queryQuestsBoard?.data?.completedQuests.filter(
+        (item) => item.type === "QUEST_VERIFIED"
+      );
     }
   }
 </script>
@@ -58,6 +64,7 @@
   <Referrals {dataReferrals} />
   <StarterQuestTable
     {listQuestCompleted}
+    {listQuestVerified}
     {dataQuestsBoard}
     isLoading={$queryQuestsBoard.isFetching}
   />
