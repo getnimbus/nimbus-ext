@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { isDarkMode } from "~/store";
+  import { isDarkMode, userPublicAddress } from "~/store";
   import {
     getCampaignPartnerDetail,
     getPositionList,
@@ -47,10 +47,7 @@
   //// POSITIONS
   $: queryPositionList = createQuery({
     queryKey: ["position-list", selectedPartnersData],
-    queryFn: () =>
-      getPositionList(
-        "0x692853c81afc8f847147c8a8b4368dc894697fc12b929ef3071482d27339815e"
-      ),
+    queryFn: () => getPositionList($userPublicAddress),
     staleTime: Infinity,
     enabled: Boolean(selectedPartnersData),
   });
@@ -65,11 +62,7 @@
     positionListQueries.map((item) => {
       return {
         queryKey: ["positions", selectedPartnersData, item],
-        queryFn: () =>
-          getPositions(
-            "0x692853c81afc8f847147c8a8b4368dc894697fc12b929ef3071482d27339815e",
-            item
-          ),
+        queryFn: () => getPositions($userPublicAddress, item),
         staleTime: Infinity,
         enabled: Boolean(selectedPartnersData),
       };
