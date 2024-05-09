@@ -97,7 +97,7 @@
         <div class="font-semibold text-[15px] relative z-9">Connect</div>
 
         <div
-          class="absolute top-0 left-1/2 transform -translate-x-1/2 z-10 opacity-0"
+          class="absolute top-0 left-1/2 transform -translate-x-1/2 z-10 opacity-0 cursor-pointer"
         >
           <script
             async
