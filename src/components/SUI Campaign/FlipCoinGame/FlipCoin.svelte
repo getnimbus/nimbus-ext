@@ -5,6 +5,8 @@
   import { suiWalletInstance } from "~/store";
   import { triggerFirework } from "~/utils";
   import { isDarkMode } from "~/store";
+  import axios from "axios";
+  import { getFullnodeUrl, SuiClient } from "@mysten/sui.js/client";
 
   import Button from "~/components/Button.svelte";
 
@@ -17,6 +19,34 @@
   let isSuccessToast: boolean = false;
   let counter = 3;
   let showToast: boolean = false;
+
+  const client = new SuiClient({ url: getFullnodeUrl("testnet") });
+
+  const getRound = async () => {
+    const round = await client
+      .getObject({
+        id: "0x3deb4642a72d3cba7cac9dfc8ad209f7e98c85d3a3d84f6f2f909420103b1da2",
+        options: {
+          showContent: true,
+        },
+      })
+      .then((res) => res?.data?.content?.fields?.round)
+      .catch((err) => {
+        console.log(err);
+      });
+
+    return round;
+  };
+
+  const getSignature = async () => {
+    const signature = await axios
+      .get(
+        `https://drand.cloudflare.com/52db9ba70e0cc0f6eaf7803dd07447a1f5477735fd3f661792ba94600c84e971/public/${round}`
+      )
+      .then((res) => res?.data?.signature);
+
+    return signature;
+  };
 
   const trigger = () => {
     showToast = true;
@@ -48,11 +78,6 @@
         ($suiWalletInstance as WalletState).status === "disconnected") ||
       !finishedQuest
     ) {
-      console.log({
-        finishedQuest,
-        status: ($suiWalletInstance as WalletState).status === "disconnected",
-      });
-
       if (($suiWalletInstance as WalletState).status === "disconnected") {
         toastMsg = "Connect your SUI Wallet to Flip!";
       }
