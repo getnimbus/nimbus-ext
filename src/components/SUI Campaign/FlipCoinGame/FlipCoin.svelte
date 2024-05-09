@@ -183,9 +183,15 @@
   <div class="relative z-2">
     {#if !startFlip}
       <div class="w-max">
-        <Button variant="tertiary" on:click={handleStartFlip}>
+        <Button
+          variant="tertiary"
+          on:click={() => {
+            // handleStartFlip();
+          }}
+        >
           <div class="font-medium sm:text-2xl text-lg py-4 px-5">
-            Flip Now 👑
+            <!-- Flip Now 👑 -->
+            🔒
           </div>
         </Button>
       </div>

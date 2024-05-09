@@ -152,7 +152,7 @@
 </script>
 
 <div
-  class="flex justify-center items-center gap-3 text-white bg-[#4BA2FF] py-1 px-2 rounded-[10px] cursor-pointer xl:w-[280px] w-max"
+  class="flex justify-center items-center gap-3 text-white bg-[#1e96fc] py-1 px-2 rounded-[10px] cursor-pointer xl:w-[280px] w-max"
   on:click={() => {
     // handleSUIAuth();
   }}
