@@ -5,7 +5,6 @@
   import { fromHEX, bcs } from "@mysten/bcs";
   import { getFullnodeUrl, SuiClient } from "@mysten/sui.js/client";
   import axios from "axios";
-
   import type { WalletState } from "nimbus-sui-kit";
   import { suiWalletInstance } from "~/store";
   import { isDarkMode } from "~/store";
@@ -17,6 +16,8 @@
   import betterLuck from "~/assets/campaign/flipCoin/better-luck.png";
   import flipCoin2 from "~/assets/campaign/flipCoin/flip-coin2.png";
   import gmPoints from "~/assets/Gold4.svg";
+
+  export let point;
 
   let toastMsg = "";
   let isSuccessToast: boolean = false;
@@ -175,7 +176,7 @@
       <div class="p-2 rounded-[10px] bg-[#27326F]">
         <img src={gmPoints} alt="" class="h-7 w-7" />
       </div>
-      <div class="sm:text-[44px] text-2xl font-medium">1000</div>
+      <div class="sm:text-[44px] text-2xl font-medium">{point}</div>
     </div>
   </div>
 
