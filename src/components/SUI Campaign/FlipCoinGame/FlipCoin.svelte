@@ -124,10 +124,10 @@
   const handleStartFlip = () => {
     if (
       (($suiWalletInstance as WalletState) &&
-        ($suiWalletInstance as WalletState).status === "disconnected") ||
+        ($suiWalletInstance as WalletState)?.status === "disconnected") ||
       !finishedQuest
     ) {
-      if (($suiWalletInstance as WalletState).status === "disconnected") {
+      if (($suiWalletInstance as WalletState)?.status === "disconnected") {
         toastMsg = "Connect your SUI Wallet to Flip!";
       }
       if (!finishedQuest) {
@@ -181,7 +181,7 @@
   </div>
 
   <div class="relative z-2">
-    {#if startFlip}
+    {#if !startFlip}
       <div class="w-max">
         <Button variant="tertiary" on:click={handleStartFlip}>
           <div class="font-medium sm:text-2xl text-lg py-4 px-5">
