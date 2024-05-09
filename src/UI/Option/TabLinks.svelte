@@ -134,7 +134,7 @@
       <div class="xl:text-base text-xl font-medium">
         Link your social accounts
       </div>
-      <div class="flex md:flex-row flex-col items-center gap-6">
+      <div class="flex flex-wrap items-center gap-6">
         {#each dataSocials as item}
           {#if item.type === "google"}
             <Google
