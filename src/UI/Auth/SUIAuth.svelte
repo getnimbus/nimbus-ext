@@ -2,7 +2,8 @@
   import { onMount } from "svelte";
   import { useQueryClient } from "@tanstack/svelte-query";
   import mixpanel from "mixpanel-browser";
-  import { SuiConnector, WalletState } from "nimbus-sui-kit";
+  import { SuiConnector } from "nimbus-sui-kit";
+  import type { WalletState } from "nimbus-sui-kit";
   import {
     isDarkMode,
     user,
@@ -99,7 +100,7 @@
 
   const handleGetNonce = async (address: string) => {
     try {
-      const res = await nimbus.post("/users/nonce", {
+      const res: any = await nimbus.post("/users/nonce", {
         publicAddress: address,
         referrer: invitation.length !== 0 ? invitation : undefined,
       });
@@ -132,7 +133,7 @@
 
   const handleGetSUIToken = async (data) => {
     try {
-      const res = await nimbus.post("/auth/sui", data);
+      const res: any = await nimbus.post("/auth/sui", data);
       if (res?.data?.result) {
         triggerConnectWallet.update((n) => (n = false));
         localStorage.removeItem("auth_token");

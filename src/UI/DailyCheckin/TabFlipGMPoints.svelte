@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import FlipCoin from "~/components/SUI Campaign/FlipCoinGame/FlipCoin.svelte";
   import History from "~/components/SUI Campaign/FlipCoinGame/History.svelte";
   import QnA from "~/components/SUI Campaign/FlipCoinGame/QnA.svelte";

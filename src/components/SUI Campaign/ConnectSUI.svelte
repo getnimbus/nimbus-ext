@@ -2,7 +2,8 @@
   import { wait } from "~/entries/background/utils";
   import { triggerFirework } from "~/utils";
   import { suiWalletInstance } from "~/store";
-  import { SuiConnector, WalletState } from "nimbus-sui-kit";
+  import { SuiConnector } from "nimbus-sui-kit";
+  import type { WalletState } from "nimbus-sui-kit";
   import { useQueryClient } from "@tanstack/svelte-query";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
