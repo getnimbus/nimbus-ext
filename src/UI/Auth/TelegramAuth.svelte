@@ -13,7 +13,7 @@
     data-telegram-login="test_nimbus_bot"
     data-size="large"
     data-radius="12"
-    data-auth-url="https://beta.nimbus-ext.pages.dev"
+    data-auth-url="https://app.getnimbus.io/"
     data-request-access="write"
   ></script>
 </div>
