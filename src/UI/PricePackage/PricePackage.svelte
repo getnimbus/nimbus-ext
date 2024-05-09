@@ -25,7 +25,7 @@
     return Math.floor((utc2 - utc1) / _MS_PER_DAY);
   };
 
-  $: query = createQuery({
+  $: queryUserInfo = createQuery({
     queryKey: ["users-me"],
     queryFn: () => getUserInfo(),
     staleTime: Infinity,
@@ -40,11 +40,15 @@
   });
 
   $: {
-    if (!$query.isError && $query.data !== undefined) {
-      selectedPricePackage = $query.data.plan?.tier;
-      buyPackage = $query.data.plan?.tier;
-      interval = $query.data.plan?.interval;
-      endDatePackage = $query.data.plan?.endDate;
+    if (
+      !$queryUserInfo.isError &&
+      $queryUserInfo &&
+      $queryUserInfo.data !== undefined
+    ) {
+      selectedPricePackage = $queryUserInfo.data.plan?.tier;
+      buyPackage = $queryUserInfo.data.plan?.tier;
+      interval = $queryUserInfo.data.plan?.interval;
+      endDatePackage = $queryUserInfo.data.plan?.endDate;
     }
   }
 

@@ -102,15 +102,14 @@
   });
 
   $: {
-    if (!$queryUserInfo.isError && $queryUserInfo.data !== undefined) {
-      if (
-        $queryUserInfo.data?.plan?.tier &&
-        $queryUserInfo.data?.plan?.tier.length !== 0
-      ) {
-        selectedPackage.update(
-          (n) => (n = $queryUserInfo.data?.plan?.tier.toUpperCase())
-        );
-      }
+    if (
+      !$queryUserInfo.isError &&
+      $queryUserInfo &&
+      $queryUserInfo.data !== undefined
+    ) {
+      selectedPackage.update(
+        (n) => (n = $queryUserInfo.data?.plan?.tier.toUpperCase() || "FREE")
+      );
     }
   }
 

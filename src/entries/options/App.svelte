@@ -130,8 +130,6 @@
         <div class="xl:col-span-5 col-span-1">
           {#if activeTabValue === "highlight"}
             <TabHighlight />
-            <!-- {:else if activeTabValue === "settings"}
-              <TabSettings /> -->
           {/if}
         </div>
       </div>
