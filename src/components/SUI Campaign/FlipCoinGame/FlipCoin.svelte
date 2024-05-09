@@ -1,10 +1,14 @@
 <script lang="ts">
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
+  import { TransactionBlock } from "@mysten/sui.js/transactions";
+  import { fromHEX, bcs } from "@mysten/bcs";
+  import { getFullnodeUrl, SuiClient } from "@mysten/sui.js/client";
+  import axios from "axios";
   import type { WalletState } from "nimbus-sui-kit";
   import { suiWalletInstance } from "~/store";
-  import { triggerFirework } from "~/utils";
   import { isDarkMode } from "~/store";
+  import { triggerFirework } from "~/utils";
 
   import Button from "~/components/Button.svelte";
 
@@ -13,10 +17,91 @@
   import flipCoin2 from "~/assets/campaign/flipCoin/flip-coin2.png";
   import gmPoints from "~/assets/Gold4.svg";
 
+  export let point;
+
   let toastMsg = "";
   let isSuccessToast: boolean = false;
   let counter = 3;
   let showToast: boolean = false;
+
+  const client = new SuiClient({ url: getFullnodeUrl("testnet") });
+
+  const getRound = async () => {
+    const round = await client
+      .getObject({
+        id: "0x3deb4642a72d3cba7cac9dfc8ad209f7e98c85d3a3d84f6f2f909420103b1da2",
+        options: {
+          showContent: true,
+        },
+      })
+      .then((res) => res?.data?.content?.fields?.round)
+      .catch((err) => {
+        console.log(err);
+      });
+
+    return round;
+  };
+
+  const getSignature = async (round) => {
+    const signature = await axios
+      .get(
+        `https://drand.cloudflare.com/52db9ba70e0cc0f6eaf7803dd07447a1f5477735fd3f661792ba94600c84e971/public/${round}`
+      )
+      .then((res) => res?.data?.signature);
+
+    return signature;
+  };
+
+  const triggerFlipResult = async (type: number) => {
+    try {
+      const tx = new TransactionBlock();
+      tx.setGasPrice(20000);
+      tx.setGasBudget(50000000);
+      const round = await getRound();
+      const signature = await getSignature(round);
+      tx.moveCall({
+        target:
+          "0x7eb5bbdd60fec4a058d57d76de27130636a75f8e8d9f4250429b11913ffc77b3::coin_flip::flip",
+        typeArguments: [],
+        arguments: [
+          tx.object(
+            "0x3deb4642a72d3cba7cac9dfc8ad209f7e98c85d3a3d84f6f2f909420103b1da2"
+          ),
+          tx.pure(type, "u64"),
+          tx.pure(bcs.string().serialize(signature).toBytes()),
+        ],
+      });
+      const bytes = await tx.build({ client });
+      // code signTransactionBlock thiếu keypair
+      // const serializedSignature = (await keypair.signTransactionBlock(bytes))
+      //   .signature;
+      // execute transaction.
+      // let res = await client.executeTransactionBlock({
+      //   transactionBlock: bytes,
+      //   signature: serializedSignature,
+      //   requestType: "WaitForLocalExecution",
+      //   options: {
+      //     showInput: true,
+      //     showEffects: true,
+      //     showEvents: true,
+      //     showObjectChanges: true,
+      //     showBalanceChanges: true,
+      //   },
+      // });
+      // const playResult = res?.events?.[0]?.parsedJson;
+      // const isWin =
+      //   playResult?.result && playResult?.result === playResult?.user_input;
+      // console.log("User input", playResult?.user_input);
+      // console.log("Result", playResult?.result);
+      // console.log(isWin ? "You win" : "You lose");
+
+      // // trigger the api in here
+      // isUserWin && triggerFirework();
+      // openScreenResult = true;
+    } catch (error) {
+      console.log("err: ", error);
+    }
+  };
 
   const trigger = () => {
     showToast = true;
@@ -36,37 +121,23 @@
   let startFlip = false; // swipe to flip
   let isUserWin = true; // state user win or lose
 
-  const triggerFlipResult = async (type: number) => {
-    // trigger the api in here
-    isUserWin && triggerFirework();
-    openScreenResult = true;
-  };
-
   const handleStartFlip = () => {
     if (
       (($suiWalletInstance as WalletState) &&
         ($suiWalletInstance as WalletState).status === "disconnected") ||
       !finishedQuest
     ) {
-      console.log({
-        finishedQuest,
-        status: ($suiWalletInstance as WalletState).status === "disconnected",
-      });
-
       if (($suiWalletInstance as WalletState).status === "disconnected") {
         toastMsg = "Connect your SUI Wallet to Flip!";
       }
-
       if (!finishedQuest) {
         toastMsg = "Completed all the Start Quest to Flip!";
       }
-
       isSuccessToast = false;
       trigger();
 
       return;
     }
-
     startFlip = true;
   };
 
@@ -105,12 +176,12 @@
       <div class="p-2 rounded-[10px] bg-[#27326F]">
         <img src={gmPoints} alt="" class="h-7 w-7" />
       </div>
-      <div class="sm:text-[44px] text-2xl font-medium">1000</div>
+      <div class="sm:text-[44px] text-2xl font-medium">{point}</div>
     </div>
   </div>
 
   <div class="relative z-2">
-    {#if !startFlip}
+    {#if startFlip}
       <div class="w-max">
         <Button variant="tertiary" on:click={handleStartFlip}>
           <div class="font-medium sm:text-2xl text-lg py-4 px-5">
@@ -154,12 +225,13 @@
             fill="currentColor"
             viewBox="0 0 20 20"
             xmlns="http://www.w3.org/2000/svg"
-            ><path
+          >
+            <path
               fill-rule="evenodd"
               d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
               clip-rule="evenodd"
-            /></svg
-          >
+            />
+          </svg>
           <span class="sr-only">Check icon</span>
         {:else}
           <svg
@@ -168,12 +240,13 @@
             fill="currentColor"
             viewBox="0 0 20 20"
             xmlns="http://www.w3.org/2000/svg"
-            ><path
+          >
+            <path
               fill-rule="evenodd"
               d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
               clip-rule="evenodd"
-            /></svg
-          >
+            />
+          </svg>
           <span class="sr-only">Error icon</span>
         {/if}
       </svelte:fragment>
