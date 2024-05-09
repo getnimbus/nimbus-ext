@@ -50,13 +50,13 @@
         {}
       );
       queryClient.invalidateQueries(["users-me"]);
-      toastMsg = `Successfully ${checked ? "set" : "unset"} display Discord account!`;
+      toastMsg = `Successfully ${checked ? "set" : "unset"} display Telegram account!`;
       isSuccessToast = true;
       trigger();
     } catch (e) {
       console.log(e);
       toastMsg =
-        "There are some problem when set display Discord account. Please try again!";
+        "There are some problem when set display Telegram account. Please try again!";
       isSuccessToast = true;
       trigger();
     }
@@ -64,7 +64,7 @@
 </script>
 
 <div
-  id="discord"
+  id="telegram"
   class="max-w-[350px] md:w-[350px] w-full bg_f4f5f8 rounded-[10px] px-4 py-5 flex flex-col"
 >
   <div class="flex flex-col gap-3">
