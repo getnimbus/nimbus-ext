@@ -98,7 +98,9 @@
 
 {#if partnerQuestId === ""}
   <div class="flex flex-col gap-10">
-    <div class="flex xl:flex-row flex-col items-start justify-between gap-6">
+    <div
+      class="flex xl:flex-row flex-col xl:items-center items-start justify-between gap-8"
+    >
       <div class="xl:flex-[0.81] flex-1">
         <div class="xl:w-max w-full flex flex-col gap-3">
           <div class="flex items-center gap-4">

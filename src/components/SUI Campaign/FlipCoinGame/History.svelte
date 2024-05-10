@@ -7,7 +7,7 @@
 </script>
 
 <div
-  class={`flex flex-col items-center gap-4 rounded-[10px] py-10 px-8 ${$isDarkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"}`}
+  class={`flex flex-col items-center gap-4 rounded-[10px] xl:h-[410px] py-10 px-8 ${$isDarkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"}`}
 >
   <div class="text-3xl font-semibold">History</div>
 

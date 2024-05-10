@@ -84,7 +84,7 @@
     </div>
 
     <div class="flex flex-col gap-2">
-      <div class="w-full flex items-center xl:gap-2 gap-4">
+      <div class="w-full flex items-center gap-3">
         {#each typeTab as type}
           <div
             class="relative w-full text-center cursor-pointer xl:text-base text-xl font-medium rounded-[100px] transition-all"
