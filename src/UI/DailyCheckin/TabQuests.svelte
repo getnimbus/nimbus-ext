@@ -2,9 +2,6 @@
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
   import { isDarkMode, userPublicAddress } from "~/store";
-  import { nimbus } from "~/lib/network";
-  import { triggerFirework } from "~/utils";
-  import { wait } from "~/entries/background/utils";
   import { createQuery } from "@tanstack/svelte-query";
   import {
     handleGetDataDailyCheckin,
@@ -13,7 +10,6 @@
   } from "~/lib/queryAPI";
 
   import Loading from "~/components/Loading.svelte";
-  import Button from "~/components/Button.svelte";
   import ConnectSui from "~/components/SUI Campaign/ConnectSUI.svelte";
   import PartnerQuestCard from "~/components/SUI Campaign/PartnerQuestCard.svelte";
   import StarterQuests from "~/components/SUI Campaign/StarterQuests.svelte";
@@ -46,56 +42,8 @@
     isSuccessToast = false;
   };
 
-  let openScreenBonusScore = false;
-  let bonusScore = 0;
-
-  let code = "";
-  let isLoadingSubmitInviteCode = false;
-
   let totalCompletedQuests = 0;
   let partnersDataList = [];
-
-  const triggerBonusScore = async () => {
-    openScreenBonusScore = true;
-    triggerFirework();
-    await wait(2000);
-    openScreenBonusScore = false;
-  };
-
-  const onSubmitInviteCode = async (e) => {
-    isLoadingSubmitInviteCode = true;
-    const formData = new FormData(e.target);
-    const data: any = {};
-    for (let field of formData) {
-      const [key, value] = field;
-      data[key] = value;
-    }
-    try {
-      const response = await nimbus.post("/v2/campaign/sui-unlock/invitation", {
-        code: data.code,
-      });
-      if (response?.error) {
-        toastMsg = response?.error;
-        isSuccessToast = false;
-        trigger();
-        return;
-      }
-
-      toastMsg = "Successfully submit your invitation code!";
-      isSuccessToast = true;
-      trigger();
-
-      code = "";
-    } catch (e) {
-      console.error(e);
-      toastMsg =
-        "Something wrong when submit your invitation code. Please try again!";
-      isSuccessToast = false;
-      trigger();
-    } finally {
-      isLoadingSubmitInviteCode = false;
-    }
-  };
 
   $: queryDailyCheckin = createQuery({
     queryKey: ["daily-checkin", $userPublicAddress],
@@ -150,67 +98,28 @@
 
 {#if partnerQuestId === ""}
   <div class="flex flex-col gap-10">
-    <div
-      class="flex xl:flex-row flex-col items-start justify-between xl:gap-26 gap-6"
-    >
-      <div class="xl:w-max w-full flex flex-col gap-3">
-        <div class="flex items-center gap-4">
-          <div class="w-26 h-26 rounded-full overflow-hidden md:block hidden">
-            <img src={User} alt="" class="object-cover w-full h-full" />
-          </div>
-
-          <div class="flex-1 flex flex-col gap-2">
-            <div class="flex items-center gap-4">
-              <div
-                class="w-26 h-26 rounded-full overflow-hidden md:hidden block"
-              >
-                <img src={User} alt="" class="object-cover w-full h-full" />
-              </div>
-              <div class="flex-1 flex flex-col gap-1">
-                <div class="text-xl font-medium">@{twitterUsername}</div>
-
-                <ConnectSui />
-              </div>
+    <div class="flex xl:flex-row flex-col items-start justify-between gap-6">
+      <div class="xl:flex-[0.81] flex-1">
+        <div class="xl:w-max w-full flex flex-col gap-3">
+          <div class="flex items-center gap-4">
+            <div class="w-26 h-26 rounded-full overflow-hidden md:block hidden">
+              <img src={User} alt="" class="object-cover w-full h-full" />
             </div>
 
-            <form
-              on:submit|preventDefault={onSubmitInviteCode}
-              class="flex items-center gap-3"
-            >
-              <div
-                class={`input-2 input-border xl:py-[4px] py-3 px-3 ${
-                  code && !$isDarkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
-                }`}
-              >
-                <input
-                  type="text"
-                  id="code"
-                  name="code"
-                  required
-                  placeholder="Your Invite code"
-                  bind:value={code}
-                  class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal w-full ${
-                    code && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
-                  } ${
-                    $isDarkMode
-                      ? "text-white"
-                      : "text-[#5E656B] placeholder-[#5E656B]"
-                  }`}
-                  on:change={(event) => {
-                    code = event?.target?.value;
-                  }}
-                />
-              </div>
-              <div class="w-[120px]">
-                <Button
-                  type="submit"
-                  isLoading={isLoadingSubmitInviteCode}
-                  disabled={isLoadingSubmitInviteCode}
+            <div class="flex-1 flex flex-col gap-2">
+              <div class="flex items-center gap-4">
+                <div
+                  class="w-26 h-26 rounded-full overflow-hidden md:hidden block"
                 >
-                  <div class="uppercase">Verify</div>
-                </Button>
+                  <img src={User} alt="" class="object-cover w-full h-full" />
+                </div>
+                <div class="flex-1 flex flex-col gap-1">
+                  <div class="text-xl font-medium">@{twitterUsername}</div>
+
+                  <ConnectSui />
+                </div>
               </div>
-            </form>
+            </div>
           </div>
         </div>
       </div>
@@ -330,28 +239,6 @@
     </div>
 
     <PartnerQuestDetail {partnersDataList} id={partnerQuestId} />
-  </div>
-{/if}
-
-{#if openScreenBonusScore}
-  <div
-    class="fixed h-screen w-screen top-0 left-0 flex items-center justify-center bg-[#000000cc]"
-    style="z-index: 2147483648;"
-    on:click={() => {
-      setTimeout(() => {
-        openScreenBonusScore = false;
-      }, 500);
-    }}
-  >
-    <div class="flex flex-col items-center justify-center gap-10">
-      <div class="xl:text-2xl text-4xl text-white font-medium">
-        Congratulation!!!
-      </div>
-      <img src={goldImg} alt="" class="w-40 h-40" />
-      <div class="xl:text-2xl text-4xl text-white font-medium">
-        You have received {bonusScore} Bonus GM Points
-      </div>
-    </div>
   </div>
 {/if}
 

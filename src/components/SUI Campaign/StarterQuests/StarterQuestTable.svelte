@@ -174,7 +174,7 @@
         </tr>
       </thead>
 
-      {#if isLoading}
+      {#if isLoading && dataQuestsBoard && dataQuestsBoard?.length === 0}
         <tbody>
           <tr>
             <td colspan="3">
@@ -304,7 +304,7 @@
       $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
     }`}
   >
-    {#if isLoading}
+    {#if isLoading && dataQuestsBoard && dataQuestsBoard?.length === 0}
       <div class="flex justify-center items-center h-full py-3 px-3">
         <Loading />
       </div>
