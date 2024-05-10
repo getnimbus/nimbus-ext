@@ -143,6 +143,15 @@
     return response;
   };
 
+  $: queryUserInfo = createQuery({
+    queryKey: ["users-me"],
+    queryFn: () => getUserInfo(),
+    staleTime: Infinity,
+    retry: false,
+  });
+
+  $: allowSuiCamp = $queryUserInfo.data?.suiCampAllowed || false;
+
   $: queryLinkSocial = createQuery({
     queryKey: ["link-socials"],
     queryFn: () => getLinkData(),
@@ -199,7 +208,7 @@
 <ErrorBoundary>
   <div class="relative z-9">
     {#if socialData && socialData.find((item) => item.type === "twitter")}
-      {#if isSkipToMainPage}
+      {#if isSkipToMainPage || allowSuiCamp}
         <div
           class="max-w-[2000px] m-auto xl:w-[90%] w-[90%] py-8 grid xl:grid-cols-6 grid-cols-1 gap-6 relative z-2"
         >
