@@ -283,6 +283,8 @@
 
       localStorage.removeItem("public_address");
 
+      localStorage.removeItem("auth_token");
+
       localStorage.removeItem("evm_token");
       disconnect($wallets$?.[0]);
 
@@ -304,11 +306,12 @@
       }
       suiWalletInstance.update((n) => (n = null));
 
-      localStorage.removeItem("auth_token");
+      navigateTo("/");
+      handleUpdateNavActive("/portfolio");
 
       queryClient?.invalidateQueries(["list-address"]);
       queryClient?.invalidateQueries(["users-me"]);
-      navigateTo("/");
+
       mixpanel.reset();
     } catch (error) {
       console.log(error);
@@ -558,14 +561,15 @@
       decoding="async"
       class="xl:-ml-10 -ml-4 w-[177px] h-[60px] cursor-pointer"
       on:click={() => {
+        handleUpdateNavActive("/portfolio");
         if ($user && Object.keys($user)?.length === 0) {
           user.update((n) => (n = {}));
           wallet.update((n) => (n = ""));
           chain.update((n) => (n = ""));
           typeWallet.update((n) => (n = ""));
           queryClient.invalidateQueries(["list-address"]);
+          navigateTo("/");
         } else {
-          handleUpdateNavActive("/portfolio");
           if ($wallet) {
             navigateTo(
               `/?tab=${$tab}&type=${$typeWallet}&chain=${$chain}&address=${$wallet}`
@@ -828,6 +832,7 @@
           {buyPackage}
           {navActive}
           {handleUpdateNavActive}
+          {handleSignOut}
         />
       </div>
     </div>

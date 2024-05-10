@@ -109,7 +109,6 @@
         if (signature) {
           const payload = {
             signature: signature.signature,
-            bytes: signature.bytes,
             publicAddress: address?.toLowerCase(),
           };
           handleGetSUIToken(payload);

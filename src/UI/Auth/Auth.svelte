@@ -62,6 +62,7 @@
   export let buyPackage = "Free";
   export let navActive;
   export let handleUpdateNavActive = (value) => {};
+  export let handleSignOut = () => {};
 
   const linkRedirect = " https://app.getnimbus.io/settings?tab=links";
 
@@ -261,51 +262,6 @@
       console.error("error: ", e);
     } finally {
       loading = false;
-    }
-  };
-
-  const handleSignOut = () => {
-    mixpanel.track("user_logout");
-    try {
-      user.update((n) => (n = {}));
-      wallet.update((n) => (n = ""));
-      chain.update((n) => (n = ""));
-      typeWallet.update((n) => (n = ""));
-      userPublicAddress.update((n) => (n = ""));
-      selectedPackage.update((n) => (n = "FREE"));
-      showPopover = false;
-
-      localStorage.removeItem("public_address");
-
-      localStorage.removeItem("auth_token");
-
-      localStorage.removeItem("evm_token");
-      disconnect($wallets$?.[0]);
-
-      localStorage.removeItem("solana_token");
-      $walletStore.disconnect();
-
-      localStorage.removeItem("ton_token");
-      if ($tonConnector.connected) {
-        $tonConnector.disconnect();
-      }
-      tonConnector.update((n) => (n = null));
-
-      localStorage.removeItem("sui_token");
-      if (
-        ($suiWalletInstance as WalletState) &&
-        ($suiWalletInstance as WalletState).connected
-      ) {
-        ($suiWalletInstance as WalletState).disconnect();
-      }
-      suiWalletInstance.update((n) => (n = null));
-
-      queryClient?.invalidateQueries(["list-address"]);
-      queryClient?.invalidateQueries(["users-me"]);
-      navigateTo("/");
-      mixpanel.reset();
-    } catch (error) {
-      console.log(error);
     }
   };
 
@@ -786,6 +742,7 @@
           class="text-2xl font-medium text-white"
           on:click={() => {
             handleSignOut();
+            showPopover = false;
             isShowHeaderMobile.update((n) => (n = false));
           }}
         >
@@ -928,7 +885,10 @@
             class={`text-2xl font-medium text-red-500 cursor-pointer xl:text-base rounded-md transition-all px-2 py-1 ${
               $isDarkMode ? "hover:bg-[#222222]" : "hover:bg-[#eff0f4]"
             }`}
-            on:click={handleSignOut}
+            on:click={() => {
+              handleSignOut();
+              showPopover = false;
+            }}
           >
             Log out
           </div>
