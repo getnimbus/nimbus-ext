@@ -96,7 +96,6 @@
     countdown = 10;
     countdownInterval = setInterval(() => {
       countdown--;
-      console.log(countdown);
       if (countdown === 0) {
         clearInterval(countdownInterval);
         startPlay = false;
