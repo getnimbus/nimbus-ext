@@ -61,7 +61,7 @@
   export let publicAddress;
   export let buyPackage = "Free";
 
-  const linkRedirect = "https://beta.nimbus-ext.pages.dev/settings?tab=links";
+  const linkRedirect = " https://app.getnimbus.io/settings?tab=links";
 
   const wallets = [new PhantomWalletAdapter(), new SolflareWalletAdapter()];
 
