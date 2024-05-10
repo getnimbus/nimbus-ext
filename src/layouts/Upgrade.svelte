@@ -195,7 +195,7 @@
             class="flex items-center gap-3"
           >
             <div
-              class={`input-2 input-border w-full xl:py-[6px] py-3 px-3 ${
+              class={`input-2 input-border w-full xl:py-[4px] py-3 px-3 ${
                 code && !$isDarkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
               }`}
             >

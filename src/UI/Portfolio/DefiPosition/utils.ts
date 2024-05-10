@@ -2,7 +2,7 @@ import { totalPositions } from "~/store";
 import { groupBy, flatten } from "lodash";
 import { filterDuplicates } from "~/utils";
 
-export const formatDataProtocol = (data) => {
+export const formatDataProtocol = (data, isPositionTab) => {
   const formatData = data?.filter((item) => !item.error)?.map((item) => {
     return {
       ...item,
@@ -98,7 +98,9 @@ export const formatDataProtocol = (data) => {
     return prev + Number(item.sum);
   }, 0);
 
-  totalPositions.update((n) => (n = sum));
+  if (isPositionTab) {
+    totalPositions.update((n) => (n = sum));
+  }
 
   return positionsData;
 };

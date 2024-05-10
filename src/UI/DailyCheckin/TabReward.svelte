@@ -53,6 +53,11 @@
     const validateAddress = await handleValidateAddress($userPublicAddress);
     if (validateAddress?.type === "MOVE") {
       try {
+        if ($queryDailyCheckin?.data?.totalPoint < data.cost) {
+          selectedType = "yourGift";
+          return;
+        }
+
         await nimbus
           .post("/v2/reward/redeem", {
             address: $userPublicAddress,
@@ -77,7 +82,7 @@
   };
 
   $: queryDailyCheckin = createQuery({
-    queryKey: [$userPublicAddress, "daily-checkin"],
+    queryKey: ["daily-checkin", $userPublicAddress],
     queryFn: () => handleGetDataDailyCheckin(),
     staleTime: Infinity,
     enabled:

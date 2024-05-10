@@ -60,6 +60,9 @@
   export let displayName;
   export let publicAddress;
   export let buyPackage = "Free";
+  export let navActive;
+  export let handleUpdateNavActive = (value) => {};
+  export let handleSignOut = () => {};
 
   const linkRedirect = " https://app.getnimbus.io/settings?tab=links";
 
@@ -120,7 +123,7 @@
   let discordCode = "";
   let dataCheckinHistory = [];
 
-  let teleUserData = {};
+  let teleUserData: any = {};
 
   let openScreenBonusScore: boolean = false;
   let bonusScore: number = 0;
@@ -259,49 +262,6 @@
       console.error("error: ", e);
     } finally {
       loading = false;
-    }
-  };
-
-  const handleSignOut = () => {
-    mixpanel.track("user_logout");
-    try {
-      user.update((n) => (n = {}));
-      wallet.update((n) => (n = ""));
-      chain.update((n) => (n = ""));
-      typeWallet.update((n) => (n = ""));
-      userPublicAddress.update((n) => (n = ""));
-      selectedPackage.update((n) => (n = "FREE"));
-      showPopover = false;
-
-      localStorage.removeItem("public_address");
-
-      localStorage.removeItem("auth_token");
-
-      localStorage.removeItem("evm_token");
-      disconnect($wallets$?.[0]);
-
-      localStorage.removeItem("solana_token");
-      $walletStore.disconnect();
-
-      localStorage.removeItem("ton_token");
-      if ($tonConnector.connected) {
-        $tonConnector.disconnect();
-      }
-
-      localStorage.removeItem("sui_token");
-      if (
-        ($suiWalletInstance as WalletState) &&
-        ($suiWalletInstance as WalletState).connected
-      ) {
-        ($suiWalletInstance as WalletState).disconnect();
-      }
-
-      queryClient?.invalidateQueries(["list-address"]);
-      queryClient?.invalidateQueries(["users-me"]);
-      navigateTo("/");
-      mixpanel.reset();
-    } catch (error) {
-      console.log(error);
     }
   };
 
@@ -782,6 +742,7 @@
           class="text-2xl font-medium text-white"
           on:click={() => {
             handleSignOut();
+            showPopover = false;
             isShowHeaderMobile.update((n) => (n = false));
           }}
         >
@@ -816,10 +777,17 @@
           >
             <div
               class={`flex items-center gap-1 text-2xl font-medium text-yellow-400 cursor-pointer xl:text-base rounded-md transition-all px-2 py-1 ${
-                $isDarkMode ? "hover:bg-[#222222]" : "hover:bg-[#eff0f4]"
+                $isDarkMode
+                  ? navActive === "/upgrade"
+                    ? "bg-[#222222]"
+                    : "hover:bg-[#222222]"
+                  : navActive === "/upgrade"
+                    ? "bg-[#eff0f4]"
+                    : "hover:bg-[#eff0f4]"
               }`}
               on:click={() => {
                 navigateTo("/upgrade");
+                handleUpdateNavActive("/upgrade");
               }}
             >
               Upgrade
@@ -843,10 +811,17 @@
           <div on:click={() => (showPopover = false)}>
             <div
               class={`text-2xl text_00000066 cursor-pointer xl:text-base rounded-md transition-all px-2 py-1 ${
-                $isDarkMode ? "hover:bg-[#222222]" : "hover:bg-[#eff0f4]"
+                $isDarkMode
+                  ? navActive === "/profile"
+                    ? "bg-[#222222]"
+                    : "hover:bg-[#222222]"
+                  : navActive === "/profile"
+                    ? "bg-[#eff0f4]"
+                    : "hover:bg-[#eff0f4]"
               }`}
               on:click={() => {
                 navigateTo(`/profile?id=${$userId}`);
+                handleUpdateNavActive("/profile");
               }}
             >
               My Profile
@@ -869,10 +844,17 @@
           <div on:click={() => (showPopover = false)}>
             <div
               class={`text-2xl text_00000066 cursor-pointer xl:text-base rounded-md transition-all px-2 py-1 ${
-                $isDarkMode ? "hover:bg-[#222222]" : "hover:bg-[#eff0f4]"
+                $isDarkMode
+                  ? navActive === "/invitation"
+                    ? "bg-[#222222]"
+                    : "hover:bg-[#222222]"
+                  : navActive === "/invitation"
+                    ? "bg-[#eff0f4]"
+                    : "hover:bg-[#eff0f4]"
               }`}
               on:click={() => {
                 navigateTo("/invitation");
+                handleUpdateNavActive("/invitation");
               }}
             >
               Invite
@@ -882,10 +864,17 @@
           <div on:click={() => (showPopover = false)}>
             <div
               class={`hidden text-2xl text_00000066 cursor-pointer xl:block xl:text-base rounded-md transition-all px-2 py-1 ${
-                $isDarkMode ? "hover:bg-[#222222]" : "hover:bg-[#eff0f4]"
+                $isDarkMode
+                  ? navActive === "/settings"
+                    ? "bg-[#222222]"
+                    : "hover:bg-[#222222]"
+                  : navActive === "/settings"
+                    ? "bg-[#eff0f4]"
+                    : "hover:bg-[#eff0f4]"
               }`}
               on:click={() => {
                 navigateTo("/settings");
+                handleUpdateNavActive("/settings");
               }}
             >
               Settings
@@ -896,7 +885,10 @@
             class={`text-2xl font-medium text-red-500 cursor-pointer xl:text-base rounded-md transition-all px-2 py-1 ${
               $isDarkMode ? "hover:bg-[#222222]" : "hover:bg-[#eff0f4]"
             }`}
-            on:click={handleSignOut}
+            on:click={() => {
+              handleSignOut();
+              showPopover = false;
+            }}
           >
             Log out
           </div>
@@ -904,16 +896,18 @@
       {/if}
     </div>
   {:else}
-    <div
+    <Button
       on:click={() => {
         triggerConnectWallet.update((n) => (n = true));
         mixpanel.track("user_connect_wallet");
         isShowHeaderMobile.update((n) => (n = false));
       }}
-      class="button xl:text-base text-2xl font-semibold text-white cursor-pointer"
+      variant="tertiary"
     >
-      Connect Wallet
-    </div>
+      <div class="text-sm font-semibold text-white cursor-pointer w-full">
+        Connect Wallet
+      </div>
+    </Button>
   {/if}
 </div>
 
@@ -1207,19 +1201,6 @@
 {/if}
 
 <style windi:preflights:global windi:safelist:global>
-  .button {
-    animation: pulse 0.5s infinite alternate; /* Adjust the duration and other parameters as needed */
-  }
-  @keyframes pulse {
-    0% {
-      transform: scale(1);
-    }
-
-    100% {
-      transform: scale(1.1); /* Adjust the scaling factor as needed */
-    }
-  }
-
   :global(body) .select_content {
     background: #ffffff;
     border: 0.5px solid transparent;

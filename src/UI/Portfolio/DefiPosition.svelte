@@ -13,7 +13,7 @@
 
   $: {
     if (data) {
-      positionsData = formatDataProtocol(data);
+      positionsData = formatDataProtocol(data, true);
     }
   }
 </script>

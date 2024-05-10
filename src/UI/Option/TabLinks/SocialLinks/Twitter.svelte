@@ -53,7 +53,7 @@
   };
 
   $: queryDailyCheckin = createQuery({
-    queryKey: [$userPublicAddress, "daily-checkin"],
+    queryKey: ["daily-checkin", $userPublicAddress],
     queryFn: () => handleGetDataDailyCheckin(),
     staleTime: Infinity,
     enabled:

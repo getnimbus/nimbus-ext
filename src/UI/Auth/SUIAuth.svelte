@@ -2,7 +2,8 @@
   import { onMount } from "svelte";
   import { useQueryClient } from "@tanstack/svelte-query";
   import mixpanel from "mixpanel-browser";
-  import { SuiConnector, WalletState } from "nimbus-sui-kit";
+  import { SuiConnector } from "nimbus-sui-kit";
+  import type { WalletState } from "nimbus-sui-kit";
   import {
     isDarkMode,
     user,
@@ -80,9 +81,7 @@
   const handleSUIAuth = async () => {
     mixpanel.track("user_login_sui");
     try {
-      if ($suiWalletInstance) {
-        ($suiWalletInstance as WalletState).toggleSelect();
-      }
+      ($suiWalletInstance as WalletState).toggleSelect();
     } catch (e) {
       console.log("error: ", e);
     }
@@ -99,7 +98,7 @@
 
   const handleGetNonce = async (address: string) => {
     try {
-      const res = await nimbus.post("/users/nonce", {
+      const res: any = await nimbus.post("/users/nonce", {
         publicAddress: address,
         referrer: invitation.length !== 0 ? invitation : undefined,
       });
@@ -110,7 +109,6 @@
         if (signature) {
           const payload = {
             signature: signature.signature,
-            bytes: signature.bytes,
             publicAddress: address?.toLowerCase(),
           };
           handleGetSUIToken(payload);
@@ -118,6 +116,12 @@
       }
     } catch (e) {
       console.error("error: ", e);
+      if (
+        ($suiWalletInstance as WalletState) &&
+        ($suiWalletInstance as WalletState).connected
+      ) {
+        ($suiWalletInstance as WalletState).disconnect();
+      }
     }
   };
 
@@ -132,7 +136,7 @@
 
   const handleGetSUIToken = async (data) => {
     try {
-      const res = await nimbus.post("/auth/sui", data);
+      const res: any = await nimbus.post("/auth/sui", data);
       if (res?.data?.result) {
         triggerConnectWallet.update((n) => (n = false));
         localStorage.removeItem("auth_token");

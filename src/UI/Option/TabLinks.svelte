@@ -34,6 +34,20 @@
   let chain = "";
   let userLinkWalletData = [];
 
+  const handleCheckChain = async (address) => {
+    if (!address) {
+      chain = "";
+      return;
+    }
+    try {
+      const response = await handleValidateAddress(address);
+      chain = response?.type;
+    } catch (e) {
+      console.log("e");
+      chain = "";
+    }
+  };
+
   $: queryLinkSocial = createQuery({
     queryKey: ["link-socials"],
     queryFn: () => getLinkData(),
@@ -42,7 +56,11 @@
   });
 
   $: {
-    if (!$queryLinkSocial.isError && $queryLinkSocial.data !== undefined) {
+    if (
+      !$queryLinkSocial.isError &&
+      $queryLinkSocial.data !== undefined &&
+      queryLinkSocial?.data?.data?.length !== 0
+    ) {
       data = $queryLinkSocial?.data?.data;
       userLinkWalletData = $queryLinkSocial?.data?.data?.filter(
         (item) =>
@@ -62,22 +80,8 @@
     }
   }
 
-  const handleCheckChain = async (address) => {
-    if (!address) {
-      chain = "";
-      return;
-    }
-    try {
-      const response = await handleValidateAddress(address);
-      chain = response?.type;
-    } catch (e) {
-      console.log("e");
-      chain = "";
-    }
-  };
-
   $: {
-    if ($userPublicAddress && Object.keys(userPublicAddress).length === 0) {
+    if ($userPublicAddress && Object.keys($userPublicAddress).length !== 0) {
       handleCheckChain($userPublicAddress);
     }
   }

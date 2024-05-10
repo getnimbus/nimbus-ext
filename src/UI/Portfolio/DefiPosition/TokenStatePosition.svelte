@@ -10,7 +10,7 @@
   export let type;
 </script>
 
-{#if data.length !== 0}
+{#if data?.length !== 0}
   <!-- Desktop view -->
   <div
     class={`xl:block hidden rounded-[10px] overflow-hidden w-full ${
