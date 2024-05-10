@@ -22,6 +22,7 @@
 
   import goldImg from "~/assets/Gold4.svg";
   import wheelIcon from "~/assets/wheel-icon.svg";
+  import { getUserInfo } from "~/lib/queryAPI";
 
   export let currentRoute;
 
