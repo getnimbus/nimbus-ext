@@ -104,7 +104,7 @@
             width={150}
           />
           <div class="w-full flex flex-col gap-4">
-            {#each listSideBar as item}
+            {#each listSideBar || [] as item}
               <div
                 on:click={(e) => handleClick(e, item.value)}
                 class={`flex items-center gap-2 rounded-[10px] py-2 px-3 cursor-pointer transition-all ${
