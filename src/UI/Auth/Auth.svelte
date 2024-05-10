@@ -896,16 +896,18 @@
       {/if}
     </div>
   {:else}
-    <div
+    <Button
       on:click={() => {
         triggerConnectWallet.update((n) => (n = true));
         mixpanel.track("user_connect_wallet");
         isShowHeaderMobile.update((n) => (n = false));
       }}
-      class="connect text-sm font-semibold text-white cursor-pointer w-full"
+      variant="tertiary"
     >
-      Connect Wallet
-    </div>
+      <div class="text-sm font-semibold text-white cursor-pointer w-full">
+        Connect Wallet
+      </div>
+    </Button>
   {/if}
 </div>
 
@@ -1199,19 +1201,6 @@
 {/if}
 
 <style windi:preflights:global windi:safelist:global>
-  .connect {
-    animation: pulse 0.5s infinite alternate; /* Adjust the duration and other parameters as needed */
-  }
-  @keyframes pulse {
-    0% {
-      transform: scale(1);
-    }
-
-    100% {
-      transform: scale(1.1);
-    }
-  }
-
   :global(body) .select_content {
     background: #ffffff;
     border: 0.5px solid transparent;

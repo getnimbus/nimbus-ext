@@ -287,7 +287,7 @@
                     }}
                   />
                 </div>
-                <div class="w-[120px]">
+                <div class="w-[120px] h-[40px]">
                   <Button
                     type="submit"
                     isLoading={isLoadingSubmitInviteCode}

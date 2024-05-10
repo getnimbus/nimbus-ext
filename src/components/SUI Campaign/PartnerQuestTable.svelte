@@ -147,6 +147,7 @@
       selectedQuestId = "";
       triggerBonusScore();
       bonusScore = data?.point;
+      queryClient?.invalidateQueries(["users-me"]);
       queryClient?.invalidateQueries(["daily-checkin"]);
       queryClient?.invalidateQueries(["partners-detail-campaign"]);
       queryClient?.invalidateQueries(["quests-campaign"]);

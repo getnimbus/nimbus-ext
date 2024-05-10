@@ -186,10 +186,14 @@
       bonusScore = 1000;
 
       toastMsg = "Your are successfully connect your Sui wallet!";
-      isSuccessToast = false;
+      isSuccessToast = true;
       trigger();
     } catch (e) {
       console.log(e);
+      toastMsg =
+        "Something wrong when connect your Sui wallet. Please try again!";
+      isSuccessToast = true;
+      trigger();
     }
   };
 </script>

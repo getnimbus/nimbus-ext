@@ -15,6 +15,9 @@
     tonConnector,
     suiWalletInstance,
   } from "~/store";
+  import { walletStore } from "@aztemi/svelte-on-solana-wallet-adapter-core";
+  import onboard from "~/lib/web3-onboard";
+  import type { WalletState } from "nimbus-sui-kit";
 
   import Button from "~/components/Button.svelte";
 
@@ -58,6 +61,7 @@
         }
 
         handleAddTwitter(
+          res,
           res.uid,
           res?.reloadUserInfo?.providerUserInfo[0]?.email,
           res?.reloadUserInfo?.screenName
@@ -65,6 +69,43 @@
       }
     } catch (e) {
       console.log(e);
+    }
+  };
+
+  const handleAddTwitter = async (res, id, info, displayName) => {
+    try {
+      const params: any = {
+        kind: "social",
+        id,
+        type: "twitter",
+        info,
+        displayName,
+        userPublicAddress: $userPublicAddress,
+      };
+
+      const response: any = await nimbus.post("/accounts/link", params);
+      if (response && response?.error) {
+        handleSignOut();
+
+        handleGetTwitterToken(
+          res.uid,
+          "twitter",
+          res?.reloadUserInfo?.providerUserInfo[0]?.email,
+          res?.reloadUserInfo?.screenName
+        );
+      } else {
+        queryClient?.invalidateQueries(["link-socials"]);
+
+        toastMsg = "Successfully connect X account!";
+        isSuccessToast = true;
+        trigger();
+      }
+    } catch (e) {
+      console.log(e);
+      toastMsg =
+        "There are some problem when connect X account. Please try again!";
+      isSuccessToast = false;
+      trigger();
     }
   };
 
@@ -102,41 +143,6 @@
     }
   };
 
-  const handleAddTwitter = async (id, info, displayName) => {
-    try {
-      const params: any = {
-        kind: "social",
-        id,
-        type: "twitter",
-        info,
-        displayName,
-        userPublicAddress: $userPublicAddress,
-      };
-
-      const response: any = await nimbus.post("/accounts/link", params);
-      if (response && response?.error) {
-        handleSignOut();
-        handleTwitterAuth();
-      } else {
-        queryClient?.invalidateQueries(["link-socials"]);
-
-        toastMsg = "Successfully connect X account!";
-        isSuccessToast = true;
-        trigger();
-      }
-    } catch (e) {
-      console.log(e);
-      toastMsg =
-        "There are some problem when connect X account. Please try again!";
-      isSuccessToast = false;
-      trigger();
-    }
-  };
-
-  import { walletStore } from "@aztemi/svelte-on-solana-wallet-adapter-core";
-  import onboard from "~/lib/web3-onboard";
-  import type { WalletState } from "nimbus-sui-kit";
-
   const wallets$ = onboard.state.select("wallets");
 
   const disconnect = (value: any) => {
@@ -165,7 +171,7 @@
       $walletStore.disconnect();
 
       localStorage.removeItem("ton_token");
-      if ($tonConnector.connected) {
+      if ($tonConnector && $tonConnector?.connected) {
         $tonConnector.disconnect();
       }
       tonConnector.update((n) => (n = null));
@@ -173,7 +179,7 @@
       localStorage.removeItem("sui_token");
       if (
         ($suiWalletInstance as WalletState) &&
-        ($suiWalletInstance as WalletState).connected
+        ($suiWalletInstance as WalletState)?.connected
       ) {
         ($suiWalletInstance as WalletState).disconnect();
       }
