@@ -81,9 +81,7 @@
   const handleSUIAuth = async () => {
     mixpanel.track("user_login_sui");
     try {
-      if ($suiWalletInstance) {
-        ($suiWalletInstance as WalletState).toggleSelect();
-      }
+      ($suiWalletInstance as WalletState).toggleSelect();
     } catch (e) {
       console.log("error: ", e);
     }
@@ -119,6 +117,12 @@
       }
     } catch (e) {
       console.error("error: ", e);
+      if (
+        ($suiWalletInstance as WalletState) &&
+        ($suiWalletInstance as WalletState).connected
+      ) {
+        ($suiWalletInstance as WalletState).disconnect();
+      }
     }
   };
 

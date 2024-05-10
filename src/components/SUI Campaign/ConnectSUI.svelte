@@ -86,9 +86,7 @@
 
   const widgetConfig = {
     walletFn: (wallet) => {
-      if (($suiWalletInstance as WalletState).disconnect) {
-        suiWalletInstance.update((n) => (n = wallet));
-      }
+      suiWalletInstance.update((n) => (n = wallet));
     },
     onConnectSuccess,
     onConnectError,
@@ -96,14 +94,7 @@
 
   const handleSUIAuth = async () => {
     try {
-      if (
-        $suiWalletInstance &&
-        ($suiWalletInstance as WalletState).disconnect
-      ) {
-        ($suiWalletInstance as WalletState).toggleSelect();
-      } else {
-        handleGetNonce(($suiWalletInstance as WalletState)?.account?.address);
-      }
+      ($suiWalletInstance as WalletState).toggleSelect();
     } catch (e) {
       console.log("error: ", e);
     }

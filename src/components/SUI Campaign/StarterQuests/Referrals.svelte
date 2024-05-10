@@ -1,10 +1,11 @@
 <script lang="ts">
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
-  import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { isDarkMode } from "~/store";
   import CopyToClipboard from "svelte-copy-to-clipboard";
   import dayjs from "dayjs";
+  import { wait } from "~/entries/background/utils";
+  import tooltip from "~/entries/contentScript/views/tooltip";
 
   import Button from "~/components/Button.svelte";
 
@@ -31,6 +32,9 @@
   let counter = 3;
   let showToast: boolean = false;
 
+  let isCopied = false;
+  let code = "";
+
   const trigger = () => {
     showToast = true;
     counter = 3;
@@ -47,7 +51,10 @@
   let tabSelected = "codes";
 
   $: listReferralCode =
-    dataReferrals?.referral_codes?.map((item) => item.id).join(" ") || [];
+    dataReferrals?.referral_codes
+      ?.filter((item) => !item.used)
+      ?.map((item) => item.id)
+      .join(" ") || [];
 </script>
 
 <div
@@ -77,39 +84,24 @@
     </div>
 
     <div class="flex flex-col gap-2">
-      <div class="flex flex-wrap items-center xl:gap-2 gap-4">
-        <AnimateSharedLayout>
-          {#each typeTab as type}
+      <div class="w-full flex items-center xl:gap-2 gap-4">
+        {#each typeTab as type}
+          <div
+            class="relative w-full text-center cursor-pointer xl:text-base text-xl font-medium rounded-[100px] transition-all"
+            id={type.value}
+            on:click={() => {
+              if (tabSelected !== type.value) {
+                tabSelected = type.value;
+              }
+            }}
+          >
             <div
-              class="relative cursor-pointer xl:text-base text-xl font-medium py-1 px-3 rounded-[100px] transition-all"
-              id={type.value}
-              on:click={() => {
-                if (tabSelected !== type.value) {
-                  tabSelected = type.value;
-                }
-              }}
+              class={`relative z-1 py-1 px-3 rounded-md w-full border border-[#1e96fc] text-[#1e96fc] ${tabSelected === type.value && "bg-[#1e96fc] text-white"}`}
             >
-              <div
-                class={`relative z-1 ${tabSelected === type.value && "text-white"}`}
-              >
-                {type.label}
-              </div>
-
-              {#if type.value === tabSelected}
-                <Motion
-                  let:motion
-                  layoutId="active-pill"
-                  transition={{ type: "spring", duration: 0.6 }}
-                >
-                  <div
-                    class="absolute inset-0 rounded-full bg-[#1E96FC] z-0"
-                    use:motion
-                  />
-                </Motion>
-              {/if}
+              {type.label}
             </div>
-          {/each}
-        </AnimateSharedLayout>
+          </div>
+        {/each}
       </div>
 
       {#if tabSelected === "codes"}
@@ -124,7 +116,7 @@
                 <tr class="bg_f4f5f8">
                   <th class="pl-3 py-3 rounded-tl-[10px] bg_f4f5f8">
                     <div
-                      class="text-left xl:text-xs text-sm uppercase font-medium"
+                      class="text-center xl:text-xs text-sm uppercase font-medium"
                     >
                       Code
                     </div>
@@ -132,7 +124,7 @@
 
                   <th class="pr-3 py-3 rounded-tr-[10px]">
                     <div
-                      class="text-left xl:text-xs text-sm uppercase font-medium"
+                      class="text-center xl:text-xs text-sm uppercase font-medium"
                     >
                       Status
                     </div>
@@ -167,12 +159,13 @@
                           }`}
                         >
                           <div
-                            class="flex items-center gap-1 text-left text-sm font-medium uppercase"
+                            class="flex items-center justify-center gap-1 text-sm font-medium uppercase border border-red-500"
                           >
                             <img src={CodeIcon} alt="" class="w-3 h-3" />
                             {data?.id}
                           </div>
                         </td>
+
                         <td
                           class={`py-3 pr-3 ${
                             $isDarkMode
@@ -181,7 +174,7 @@
                           }`}
                         >
                           <div
-                            class="text-left text-sm uppercase font-medium text-[#00A878]"
+                            class="text-center text-sm uppercase font-medium text-[#00A878]"
                           >
                             USED
                           </div>
@@ -192,9 +185,13 @@
                         text={data?.id}
                         let:copy
                         on:copy={async () => {
+                          code = data?.id;
+                          isCopied = true;
+                          await wait(400);
                           toastMsg = "Copied code successfully!";
                           isSuccessToast = true;
                           trigger();
+                          isCopied = false;
                         }}
                       >
                         <tr
@@ -211,12 +208,64 @@
                             }`}
                           >
                             <div
-                              class="flex items-center gap-1 text-left text-sm font-medium uppercase text_00000099"
+                              class="flex items-center justify-center gap-1 text-left text-sm font-medium uppercase text_00000099"
                             >
                               <img src={CodeIcon} alt="" class="w-3 h-3" />
                               {data?.id}
+                              <div class="cursor-pointer" on:click={copy}>
+                                {#if isCopied && code === data?.id}
+                                  <svg
+                                    width={14}
+                                    height={14}
+                                    id="Layer_1"
+                                    data-name="Layer 1"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 122.88 74.46"
+                                    fill={$isDarkMode ? "#ccc" : "#00000099"}
+                                    ><path
+                                      fill-rule="evenodd"
+                                      d="M1.87,47.2a6.33,6.33,0,1,1,8.92-9c8.88,8.85,17.53,17.66,26.53,26.45l-3.76,4.45-.35.37a6.33,6.33,0,0,1-8.95,0L1.87,47.2ZM30,43.55a6.33,6.33,0,1,1,8.82-9.07l25,24.38L111.64,2.29c5.37-6.35,15,1.84,9.66,8.18L69.07,72.22l-.3.33a6.33,6.33,0,0,1-8.95.12L30,43.55Zm28.76-4.21-.31.33-9.07-8.85L71.67,4.42c5.37-6.35,15,1.83,9.67,8.18L58.74,39.34Z"
+                                    /></svg
+                                  >
+                                {:else}
+                                  <div
+                                    class="relative"
+                                    use:tooltip={{
+                                      content: `<tooltip-detail text="Copy Code" />`,
+                                      allowHTML: true,
+                                      placement: "top",
+                                    }}
+                                  >
+                                    <svg
+                                      width={14}
+                                      height={14}
+                                      viewBox="0 0 12 11"
+                                      fill="none"
+                                      xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                      <path
+                                        d="M8.1875 3.3125H10.6875V10.1875H3.8125V7.6875"
+                                        stroke={$isDarkMode
+                                          ? "#ccc"
+                                          : "#00000099"}
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                      />
+                                      <path
+                                        d="M8.1875 0.8125H1.3125V7.6875H8.1875V0.8125Z"
+                                        stroke={$isDarkMode
+                                          ? "#ccc"
+                                          : "#00000099"}
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                      />
+                                    </svg>
+                                  </div>
+                                {/if}
+                              </div>
                             </div>
                           </td>
+
                           <td
                             class={`py-3 pr-3 ${
                               $isDarkMode
@@ -225,7 +274,7 @@
                             }`}
                           >
                             <div
-                              class="text-left text-sm uppercase font-medium text_00000099"
+                              class="text-center text-sm uppercase font-medium text_00000099"
                             >
                               UNUSED
                             </div>
@@ -268,21 +317,21 @@
           <table class="table-auto w-full h-full">
             <thead>
               <tr class="bg_f4f5f8">
-                <th class="pl-3 py-3 rounded-tl-[10px] bg_f4f5f8">
+                <th class="pl-3 py-3 w-1/3 rounded-tl-[10px] bg_f4f5f8">
                   <div
                     class="text-left xl:text-xs text-lg uppercase font-medium"
                   >
                     Code
                   </div>
                 </th>
-                <th class="py-3">
+                <th class="py-3 w-1/3">
                   <div
-                    class="flex items-center justify-start xl:gap-2 gap-4 text-right xl:text-xs uppercase font-medium"
+                    class="flex items-center justify-center xl:gap-2 gap-4 text-center xl:text-xs uppercase font-medium"
                   >
                     Time
                   </div>
                 </th>
-                <th class="pr-3 py-3 rounded-tr-[10px]">
+                <th class="pr-3 py-3 w-1/3 rounded-tr-[10px]">
                   <div
                     class="flex gap-1 justify-end items-center text-right xl:text-xs uppercase font-medium relative"
                   >
@@ -311,7 +360,7 @@
                     }`}
                   >
                     <td
-                      class={`py-3 pl-3 ${
+                      class={`py-3 pl-3 w-1/3 ${
                         $isDarkMode
                           ? "group-hover:bg-[#000]"
                           : "group-hover:bg-gray-100"
@@ -326,21 +375,21 @@
                     </td>
 
                     <td
-                      class={`py-3 ${
+                      class={`py-3 w-1/3 ${
                         $isDarkMode
                           ? "group-hover:bg-[#000]"
                           : "group-hover:bg-gray-100"
                       }`}
                     >
                       <div
-                        class="flex items-center gap-1 text-left text-sm uppercase font-medium"
+                        class="flex items-center justify-center gap-1 text-center text-sm uppercase font-medium"
                       >
                         {dayjs(item?.createdAt).format("YYYY-MM-DD")}
                       </div>
                     </td>
 
                     <td
-                      class={`py-3 pr-3 ${
+                      class={`py-3 pr-3 w-1/3 ${
                         $isDarkMode
                           ? "group-hover:bg-[#000]"
                           : "group-hover:bg-gray-100"

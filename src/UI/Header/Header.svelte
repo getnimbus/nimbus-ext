@@ -293,6 +293,7 @@
       if ($tonConnector.connected) {
         $tonConnector.disconnect();
       }
+      tonConnector.update((n) => (n = null));
 
       localStorage.removeItem("sui_token");
       if (
@@ -301,6 +302,7 @@
       ) {
         ($suiWalletInstance as WalletState).disconnect();
       }
+      suiWalletInstance.update((n) => (n = null));
 
       localStorage.removeItem("auth_token");
 
