@@ -293,15 +293,6 @@
                   </Button>
                 </div>
               </form>
-              <div
-                class="text-xs underline text-gray-500 uppercase cursor-pointer"
-                on:click={() => {
-                  localStorage.setItem("isSkipInviteCodeCampaign", "true");
-                  isSkipToMainPage = true;
-                }}
-              >
-                Or skip it
-              </div>
             </div>
           </div>
         </div>
