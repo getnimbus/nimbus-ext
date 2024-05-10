@@ -17,6 +17,8 @@
 
   let formatDataLeaderboard = [];
   let currentUserRank;
+  let pagination = 1;
+  let leaderboardPaginationSize = 1;
 
   $: queryListLeaderboard = createQuery({
     queryKey: ["list-leaderboard"],
@@ -26,7 +28,7 @@
   });
 
   $: queryDailyCheckin = createQuery({
-    queryKey: [$userPublicAddress, "daily-checkin"],
+    queryKey: ["daily-checkin", $userPublicAddress],
     queryFn: () => handleGetDataDailyCheckin(),
     staleTime: Infinity,
     enabled: $userPublicAddress.length !== 0,
@@ -61,6 +63,8 @@
         };
       });
 
+      checkFormatDataLeaderboardSize();
+
       currentUserRank = $queryDailyCheckin?.data?.checkinLeaderboard
         .map((item: any) => item?.owner.toLowerCase())
         .findIndex((item: any) => {
@@ -68,6 +72,43 @@
         });
     }
   }
+
+  $: paginationArr = new Array(leaderboardPaginationSize);
+
+  $: paginationChangeHandler = (input) => {
+    const firstRange = pagination === 1 ? 3 : 20 + (pagination - 2) * 17;
+    const secondRange = pagination === 1 ? 20 : 20 + (pagination - 1) * 17;
+    return input.slice(firstRange, secondRange);
+  };
+
+  const checkFormatDataLeaderboardSize = () => {
+    const checkLeaderboardSize = Math.floor(
+      Number(formatDataLeaderboard.length / 17)
+    );
+    const leaderboardSizeIsResidual = formatDataLeaderboard.length % 17 === 0;
+    console.log({ checkLeaderboardSize, leaderboardSizeIsResidual });
+    if (leaderboardSizeIsResidual) {
+      leaderboardPaginationSize = checkLeaderboardSize;
+    } else {
+      leaderboardPaginationSize = checkLeaderboardSize + 1;
+    }
+  };
+
+  const handleDecreasePagination = () => {
+    if (pagination === 1) {
+      pagination = 1;
+    } else {
+      pagination -= 1;
+    }
+  };
+
+  const handleIncreasePagination = () => {
+    if (pagination === leaderboardPaginationSize) {
+      pagination;
+    } else {
+      pagination += 1;
+    }
+  };
 </script>
 
 <div
@@ -310,7 +351,7 @@
             </tr>
           {/if}
 
-          {#each formatDataLeaderboard.slice(3, 20) as item}
+          {#each paginationChangeHandler(formatDataLeaderboard) as item}
             <tr class="group transition-all">
               <td
                 class={`py-2 pl-6 ${
@@ -370,6 +411,120 @@
           {/each}
         </tbody>
       </table>
+    </div>
+    <div class="mx-auto flex justify-center items-center md:gap-4 gap-2">
+      <button
+        on:click={handleDecreasePagination}
+        class="flex gap-2 items-center border px-2 py-1 rounded-[10px] hover:bg-[#1e96fc] hover:text-white"
+      >
+        <svg
+          class="w-3.5 h-3.5 me-2 rtl:rotate-180"
+          aria-hidden="true"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 14 10"
+        >
+          <path
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M13 5H1m0 0 4 4M1 5l4-4"
+          />
+        </svg>
+        Prev
+      </button>
+      <div class="md:flex hidden items-center gap-1">
+        {#if paginationArr.length < 6}
+          {#each paginationArr as item, index}
+            <button
+              on:click={() => (pagination = index + 1)}
+              class={`px-3 py-1 rounded-[10px] cursor-pointer hover:bg-[#1e96fc] hover:text-white ${pagination === index + 1 ? "border border-[#1e96fc] text-[#1e96fc]" : ""}`}
+            >
+              {index + 1}
+            </button>
+          {/each}
+        {:else}
+          {#if pagination > 3}
+            {#each [{}] as item, index}
+              <div
+                on:click={() => (pagination = index + 1)}
+                class="px-3 py-1 rounded-[10px] cursor-pointer hover:bg-[#1e96fc] hover:text-white"
+              >
+                {index + 1}
+              </div>
+            {/each}
+            {#if pagination > 4}
+              <div class="font-medium px-3 py-2 rounded-[10px] cursor-pointer">
+                •••
+              </div>
+            {/if}
+          {/if}
+          {#each paginationArr as item, index}
+            {#if index + 1 === pagination - 1 || index + 1 === pagination - 2}
+              <div
+                on:click={() => (pagination = index + 1)}
+                class="px-3 py-1 rounded-[10px] cursor-pointer hover:bg-[#1e96fc] hover:text-white"
+              >
+                {index + 1}
+              </div>
+            {/if}
+          {/each}
+          <div
+            class="border border-[#1e96fc] text-[#1e96fc] px-3 py-1 rounded-[10px] cursor-pointer"
+          >
+            {pagination}
+          </div>
+          {#each paginationArr as item, index}
+            {#if index + 1 === pagination + 1 || index + 1 === pagination + 2}
+              <div
+                on:click={() => (pagination = index + 1)}
+                class="px-3 py-1 rounded-[10px] cursor-pointer hover:bg-[#1e96fc] hover:text-white"
+              >
+                {index + 1}
+              </div>
+            {/if}
+          {/each}
+          {#if pagination < paginationArr.length - 2}
+            {#if pagination < paginationArr.length - 3}
+              <div class="font-medium px-3 py-2 rounded-[10px] cursor-pointer">
+                •••
+              </div>
+            {/if}
+            {#each paginationArr as item, index}
+              {#if index === paginationArr.length - 1 || pagination === paginationArr.length - 2}
+                <div
+                  on:click={() => (pagination = index + 1)}
+                  class="px-3 py-1 rounded-[10px] cursor-pointer hover:bg-[#1e96fc] hover:text-white"
+                >
+                  {index + 1}
+                </div>
+              {/if}
+            {/each}
+          {/if}
+        {/if}
+      </div>
+      <button
+        on:click={handleIncreasePagination}
+        class="flex gap-2 items-center border px-2 py-1 rounded-[10px] hover:bg-[#1e96fc] hover:text-white"
+      >
+        Next
+        <svg
+          class="w-3.5 h-3.5 ms-2 rtl:rotate-180"
+          aria-hidden="true"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 14 10"
+        >
+          <path
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M1 5h12m0 0L9 1m4 4L9 9"
+          />
+        </svg>
+      </button>
     </div>
   </div>
 {/if}

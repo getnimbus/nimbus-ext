@@ -7,7 +7,7 @@
   import { WalletProvider } from "@aztemi/svelte-on-solana-wallet-adapter-ui";
   import { useQueryClient } from "@tanstack/svelte-query";
   import { nimbus } from "~/lib/network";
-  import { isDarkMode, user } from "~/store";
+  import { isDarkMode, userPublicAddress } from "~/store";
   import bs58 from "bs58";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
@@ -15,10 +15,9 @@
   import WalletModal from "~/UI/SolanaCustomWalletBtn/WalletModal.svelte";
 
   import Solana from "~/assets/chains/solana.png";
-  import User from "~/assets/user.png";
 
   export let data;
-  export let reCallAPI = () => {};
+  export let isPrimaryLogin;
 
   const queryClient = useQueryClient();
 
@@ -68,10 +67,7 @@
 
   $: {
     if (solanaPublicAddress) {
-      const solanaToken = localStorage.getItem("solana_token");
-      if (!solanaToken) {
-        handleGetSolanaNonce(solanaPublicAddress);
-      }
+      handleGetSolanaNonce(solanaPublicAddress);
     }
   }
 
@@ -94,54 +90,63 @@
 
   const handleGetSolanaNonce = async (address) => {
     try {
-      const signatureString = await handleSignSolanaAddressMessage(
-        `${Math.floor(Math.random() * 10000)}`
-      );
-      if (signatureString) {
-        const payload = {
-          signature: signatureString,
-          publicAddress: address,
-        };
-        handleUpdatePublicAddress(payload);
+      const res: any = await nimbus.post("/users/nonce?verified=true", {
+        publicAddress: address,
+        referrer: undefined,
+      });
+      if (res && res.data) {
+        const signatureString = await handleSignSolanaAddressMessage(
+          res?.data?.nonce
+        );
+        if (signatureString) {
+          const payload = {
+            signature: signatureString,
+            publicAddress: address,
+          };
+          handleUpdatePublicAddress(payload);
+        }
       }
     } catch (e) {
       console.error("error: ", e);
+      $walletStore.disconnect();
     }
   };
 
   const handleUpdatePublicAddress = async (payload) => {
     try {
-      let params: any = {
+      const params: any = {
+        id: isPrimaryLogin ? data?.uid : $userPublicAddress,
         kind: "wallet",
         type: null,
-        userPublicAddress: payload.publicAddress,
-        id: data?.uid,
-        info: data?.info,
-        displayName: data?.name,
+        userPublicAddress: payload?.publicAddress,
+        signature: payload?.signature,
       };
-      const res = await nimbus.post("/accounts/link", params);
+      const res: any = await nimbus.post("/accounts/link", params);
       if (res && res?.error) {
         toastMsg = res?.error;
         isSuccessToast = false;
         trigger();
         return;
       }
-      queryClient?.invalidateQueries(["users-me"]);
-      queryClient?.invalidateQueries(["list-address"]);
-      queryClient.invalidateQueries(["list-bundle"]);
-      queryClient.invalidateQueries(["link-socials"]);
-      reCallAPI();
+
+      queryClient?.invalidateQueries(["link-socials"]);
       toastMsg = "Your are successfully connect your Solana wallet!";
-      isSuccessToast = false;
+      isSuccessToast = true;
       trigger();
     } catch (e) {
       console.log(e);
+      toastMsg =
+        "Something wrong when connect your Solana wallet. Please try again!";
+      isSuccessToast = true;
+      trigger();
+    } finally {
+      $walletStore.disconnect();
     }
   };
 </script>
 
 <div
-  class={`flex items-center justify-center gap-2 text-white border cursor-pointer py-3 px-6 rounded-[12px] w-[250px] ${
+  class={`flex items-center justify-center gap-2 text-white border cursor-pointer py-3 px-6 rounded-[12px] md:w-[310px] w-full ${
     $isDarkMode ? "border-white text-white" : "border-[#27326f] text-[#27326f]"
   }`}
   on:click={() => {
@@ -149,7 +154,7 @@
   }}
 >
   <img src={Solana} alt="" width="24" height="24" class="rounded-full" />
-  <div class="font-semibold text-[15px]">Connect Solana</div>
+  <div class="font-semibold text-[15px]">Connect Solana Wallet</div>
 </div>
 
 <WalletProvider

@@ -216,7 +216,7 @@
   class="col-span-4 xl:border border_0000001a rounded-xl flex flex-col gap-3 xl:p-6 py-3"
 >
   <div class="flex md:flex-row flex-col gap-4 justify-between">
-    <div class="font-medium text-2xl">Holding Trades</div>
+    <div class="font-medium text-2xl">Open Positions</div>
     <div class="flex justify-between w-max">
       <AnimateSharedLayout>
         {#each timeFrame as type}
@@ -591,7 +591,7 @@
               }`}
             >
               <div
-                class="flex items-center justify-end gap-1 text-2xl font-medium xl:text-sm view-token-detail2"
+                class="flex items-center justify-end gap-1 text-2xl font-medium xl:text-sm"
               >
                 {#if ["BTC"].includes($typeWallet)}
                   N/A
@@ -863,7 +863,7 @@
           <div class="flex justify-between items-start">
             <div class="text-right text-sm uppercase font-medium">Pnl</div>
             <div
-              class="flex items-center justify-end gap-1 font-medium text-sm view-token-detail2"
+              class="flex items-center justify-end gap-1 font-medium text-sm"
             >
               {#if ["BTC"].includes($typeWallet)}
                 N/A

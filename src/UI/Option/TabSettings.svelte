@@ -1,4 +1,4 @@
-<svelte:options tag="tab-settings" />
+<!-- <svelte:options tag="tab-settings" />
 
 <script lang="ts">
   import { onMount } from "svelte";
@@ -54,4 +54,4 @@
 </div>
 
 <style windi:preflights:global windi:safelist:global>
-</style>
+</style> -->

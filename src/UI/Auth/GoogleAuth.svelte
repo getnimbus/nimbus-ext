@@ -64,7 +64,6 @@
       if (res?.data?.result) {
         triggerConnectWallet.update((n) => (n = false));
         localStorage.setItem("auth_token", res?.data?.result);
-        localStorage.setItem("socialAuthType", "google");
         user.update(
           (n) =>
             (n = {
@@ -89,13 +88,14 @@
 </script>
 
 <div
-  class={`flex items-center justify-center gap-2 text-white border cursor-pointer py-3 px-6 rounded-[12px] min-w-[250px] ${
+  class={`flex items-center justify-center gap-3 text-white border cursor-pointer rounded-[12px] w-[219px] h-[44px] ${
     $isDarkMode ? "border-white text-white" : "border-[#27326f] text-[#27326f]"
   }`}
+  style="padding: 9px 21px 11px;"
   on:click={handleGoogleAuth}
 >
-  <img src={Google} class="h-[24px]" />
-  <div class="font-semibold text-[15px]">Login with Google</div>
+  <img src={Google} class="h-[20px] w-[20px]" />
+  <div class="font-normal text-[15px]">Log in with Google</div>
 </div>
 
 {#if showToast}
@@ -145,5 +145,4 @@
   </div>
 {/if}
 
-<style>
-</style>
+<style windi:preflights:global windi:safelist:global></style>

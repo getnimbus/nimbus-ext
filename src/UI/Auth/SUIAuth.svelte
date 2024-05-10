@@ -2,7 +2,8 @@
   import { onMount } from "svelte";
   import { useQueryClient } from "@tanstack/svelte-query";
   import mixpanel from "mixpanel-browser";
-  import { SuiConnector, WalletState } from "nimbus-sui-kit";
+  import { SuiConnector } from "nimbus-sui-kit";
+  import type { WalletState } from "nimbus-sui-kit";
   import {
     isDarkMode,
     user,
@@ -80,9 +81,7 @@
   const handleSUIAuth = async () => {
     mixpanel.track("user_login_sui");
     try {
-      if ($suiWalletInstance) {
-        ($suiWalletInstance as WalletState).toggleSelect();
-      }
+      ($suiWalletInstance as WalletState).toggleSelect();
     } catch (e) {
       console.log("error: ", e);
     }
@@ -99,7 +98,7 @@
 
   const handleGetNonce = async (address: string) => {
     try {
-      const res = await nimbus.post("/users/nonce", {
+      const res: any = await nimbus.post("/users/nonce", {
         publicAddress: address,
         referrer: invitation.length !== 0 ? invitation : undefined,
       });
@@ -110,7 +109,6 @@
         if (signature) {
           const payload = {
             signature: signature.signature,
-            bytes: signature.bytes,
             publicAddress: address?.toLowerCase(),
           };
           handleGetSUIToken(payload);
@@ -118,6 +116,12 @@
       }
     } catch (e) {
       console.error("error: ", e);
+      if (
+        ($suiWalletInstance as WalletState) &&
+        ($suiWalletInstance as WalletState).connected
+      ) {
+        ($suiWalletInstance as WalletState).disconnect();
+      }
     }
   };
 
@@ -132,7 +136,7 @@
 
   const handleGetSUIToken = async (data) => {
     try {
-      const res = await nimbus.post("/auth/sui", data);
+      const res: any = await nimbus.post("/auth/sui", data);
       if (res?.data?.result) {
         triggerConnectWallet.update((n) => (n = false));
         localStorage.removeItem("auth_token");
@@ -160,13 +164,13 @@
 </script>
 
 <div
-  class={`flex items-center justify-center gap-2 text-white border cursor-pointer py-3 px-6 rounded-[12px] min-w-[250px] ${
+  class={`flex items-center justify-center gap-3 text-white border cursor-pointer rounded-[12px] w-[219px] h-[42px] ${
     $isDarkMode ? "border-white text-white" : "border-[#27326f] text-[#27326f]"
   }`}
   on:click={handleSUIAuth}
 >
-  <img src={SUI} class="h-[24px] w-auto" />
-  <div class="font-semibold text-[15px]">Login with Sui</div>
+  <img src={SUI} class="h-[24px] w-[24px]" />
+  <div class="font-normal text-[15px]">Log in with Sui</div>
 </div>
 
 <ReactAdapter
@@ -222,5 +226,4 @@
   </div>
 {/if}
 
-<style>
-</style>
+<style windi:preflights:global windi:safelist:global></style>

@@ -47,8 +47,8 @@
 
 <!-- Desktop view -->
 <div
-  class={`xl:block hidden rounded-[10px] overflow-hidden w-full ${
-    $isDarkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000000d"
+  class={`xl:block hidden rounded-[10px] border border_0000000d overflow-hidden w-full ${
+    $isDarkMode ? "bg-[#222222]" : "bg-[#fff]"
   }`}
 >
   <div class="bg_f4f5f8 grid grid-cols-5">
@@ -245,8 +245,8 @@
 
 <!-- Mobile view -->
 <div
-  class={`xl:hidden block rounded-[10px] p-2 overflow-hidden w-full ${
-    $isDarkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000000d"
+  class={`xl:hidden block rounded-[10px] border border_0000000d p-2 overflow-hidden w-full ${
+    $isDarkMode ? "bg-[#222222]" : "bg-[#fff]"
   }`}
 >
   {#each data as itemRow}

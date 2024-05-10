@@ -100,7 +100,7 @@
   {/if}
 </div>
 
-<style>
+<style windi:preflights:global windi:safelist:global>
   .marquee {
     height: 20px;
     overflow: hidden;

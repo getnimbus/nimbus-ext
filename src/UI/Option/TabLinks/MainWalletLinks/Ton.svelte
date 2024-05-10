@@ -1,16 +1,15 @@
 <script lang="ts">
-  import { isDarkMode, user, tonConnector } from "~/store";
+  import { isDarkMode, tonConnector, userPublicAddress } from "~/store";
   import { nimbus } from "~/lib/network";
   import { useQueryClient } from "@tanstack/svelte-query";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
   import { v4 as uuidv4 } from "uuid";
 
-  import User from "~/assets/user.png";
   import Ton from "~/assets/chains/ton.png";
 
   export let data;
-  export let reCallAPI = () => {};
+  export let isPrimaryLogin;
 
   const queryClient = useQueryClient();
 
@@ -57,53 +56,82 @@
           wallet.connectItems?.tonProof &&
           "proof" in wallet.connectItems.tonProof
         ) {
-          handleUpdatePublicAddress(wallet, id);
+          handleUpdatePublicAddress(wallet);
         }
       });
     } catch (e) {
       console.error("error: ", e);
+      if ($tonConnector.connected) {
+        $tonConnector.disconnect();
+      }
     }
   };
 
-  const handleUpdatePublicAddress = async (payload, id) => {
+  const handleUpdatePublicAddress = async (payload) => {
     try {
-      let params: any = {
+      const formatData = {
+        account: {
+          address: payload?.account?.address,
+          chain: payload?.account?.chain,
+          walletStateInit: payload?.account?.walletStateInit,
+        },
+        connectItems: {
+          tonProof: {
+            name: payload?.connectItems?.tonProof?.name,
+            proof: {
+              timestamp: payload?.connectItems?.tonProof?.proof?.timestamp,
+              domain: {
+                lengthBytes:
+                  payload?.connectItems?.tonProof?.proof?.domain?.lengthBytes,
+                value: payload?.connectItems?.tonProof?.proof?.domain?.value,
+              },
+              signature: payload?.connectItems?.tonProof?.proof?.signature,
+            },
+          },
+        },
+      };
+
+      const params: any = {
+        id: isPrimaryLogin ? data?.uid : $userPublicAddress,
         kind: "wallet",
         type: null,
-        userPublicAddress: payload?.account?.address,
-        id: data?.uid,
-        info: data?.info,
-        displayName: data?.name,
+        userPublicAddress: formatData?.account?.address,
+        signature: formatData?.connectItems?.tonProof?.proof?.signature,
       };
-      const res = await nimbus.post("/accounts/link", params);
+      const res: any = await nimbus.post("/accounts/link", params);
       if (res && res?.error) {
         toastMsg = res?.error;
         isSuccessToast = false;
         trigger();
         return;
       }
-      queryClient?.invalidateQueries(["users-me"]);
-      queryClient.invalidateQueries(["list-address"]);
-      queryClient.invalidateQueries(["list-bundle"]);
+
       queryClient.invalidateQueries(["link-socials"]);
-      reCallAPI();
       toastMsg = "Your are successfully connect your Ton wallet!";
       isSuccessToast = false;
       trigger();
     } catch (e) {
       console.log(e);
+      toastMsg =
+        "Something wrong when connect your Ton wallet. Please try again!";
+      isSuccessToast = true;
+      trigger();
+    } finally {
+      if ($tonConnector.connected) {
+        $tonConnector.disconnect();
+      }
     }
   };
 </script>
 
 <div
-  class={`flex items-center justify-center gap-2 text-white border cursor-pointer py-3 px-6 rounded-[12px] w-[250px] ${
+  class={`flex items-center justify-center gap-2 text-white border cursor-pointer py-3 px-6 rounded-[12px] md:w-[310px] w-full ${
     $isDarkMode ? "border-white text-white" : "border-[#27326f] text-[#27326f]"
   }`}
   on:click={handleTonAuth}
 >
   <img src={Ton} class="h-[24px] w-auto" />
-  <div class="font-semibold text-[15px]">Login with Ton</div>
+  <div class="font-semibold text-[15px]">Connect Ton Wallet</div>
 </div>
 
 {#if showToast}

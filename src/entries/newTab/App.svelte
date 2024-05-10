@@ -246,11 +246,13 @@
     {:else}
       <div
         class={`flex flex-col xl:pb-14 ${
-          localStorage.getItem("auth_token") ||
-          localStorage.getItem("solana_token") ||
-          localStorage.getItem("evm_token") ||
-          localStorage.getItem("sui_token") ||
-          localStorage.getItem("ton_token")
+          (
+            localStorage.getItem("auth_token") ||
+            localStorage.getItem("solana_token") ||
+            localStorage.getItem("evm_token") ||
+            localStorage.getItem("sui_token") ||
+            localStorage.getItem("ton_token")
+          )?.length !== 0
             ? "pb-34"
             : "pb-64"
         }`}
@@ -259,7 +261,7 @@
         <Router {routes} options={{ gaPageviews: true }} />
       </div>
 
-      <div class="fixed bottom-0 left-0 z-7 w-full footer xl:relative">
+      <div class="footer fixed bottom-0 left-0 z-10 w-full xl:relative">
         <div class="hidden xl:block">
           <Footer />
         </div>

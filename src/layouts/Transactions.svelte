@@ -7,7 +7,6 @@
   import relativeTime from "dayjs/plugin/relativeTime";
   dayjs.extend(relativeTime);
   import { wallet, chain, typeWallet, isDarkMode } from "~/store";
-  import { createQuery } from "@tanstack/svelte-query";
   import { nimbus } from "~/lib/network";
   import { otherGeneration } from "~/lib/chains";
 
@@ -42,6 +41,7 @@
     },
   ];
 
+  let isLoading = false;
   let data = [];
   let pageToken = "";
   let paginate = "";
@@ -61,43 +61,52 @@
   $: selectedCoinValue = selectedCoin?.symbol;
 
   const getListTransactions = async (type: string, coin: string) => {
-    const response: any = await nimbus.get(
-      `/v2/address/${$wallet}/history?chain=${$chain}&pageToken=${paginate}${
-        type !== "all" ? `&type=${type}` : ""
-      }${coin !== "all" ? `&coin=${coin}` : ""}`
-    );
-    return response.data;
+    isLoading = true;
+    try {
+      const response: any = await nimbus.get(
+        `/v2/address/${$wallet}/history?chain=${$chain}&pageToken=${paginate}${
+          type !== "all" ? `&type=${type}` : ""
+        }${coin !== "all" ? `&coin=${coin}` : ""}`
+      );
+      if (
+        response &&
+        response?.data?.data &&
+        response?.data?.data.length !== 0
+      ) {
+        data = [...data, ...response?.data?.data];
+        pageToken = response?.data?.pageToken;
+      }
+
+      isLoading = false;
+    } catch (e) {
+      console.log("e");
+    }
   };
 
   const handleLoadMore = (page: string) => {
     paginate = page;
   };
 
-  $: queryHistory = createQuery({
-    queryKey: [
-      "history",
-      $wallet,
-      $chain,
-      paginate,
-      selectedTypeValue,
-      selectedCoinValue,
-    ],
-    enabled: Boolean(
-      $wallet &&
-        $wallet.length !== 0 &&
-        $chain &&
-        $chain?.length !== 0 &&
-        $typeWallet !== "BUNDLE" &&
-        !otherGeneration.includes($typeWallet)
-    ),
-    queryFn: () => getListTransactions(selectedTypeValue, selectedCoinValue),
-    staleTime: Infinity,
-  });
-
   $: {
-    if (!$queryHistory.isError && $queryHistory.data !== undefined) {
-      data = [...data, ...$queryHistory?.data?.data];
-      pageToken = $queryHistory?.data.pageToken;
+    if (
+      $wallet ||
+      $chain ||
+      paginate ||
+      selectedTypeValue ||
+      selectedCoinValue
+    ) {
+      if (
+        Boolean(
+          $wallet &&
+            $wallet.length !== 0 &&
+            $chain &&
+            $chain?.length !== 0 &&
+            $typeWallet !== "BUNDLE" &&
+            !otherGeneration.includes($typeWallet)
+        )
+      ) {
+        getListTransactions(selectedTypeValue, selectedCoinValue);
+      }
     }
   }
 
@@ -156,9 +165,9 @@
               {/if}
             </div>
             <HistoricalTransactions
-              isLoading={$queryHistory.isFetching}
+              {isLoading}
               {pageToken}
-              {data}
+              data={data || []}
               loadMore={handleLoadMore}
             />
           </div>
@@ -178,7 +187,7 @@
   </AddressManagement>
 </ErrorBoundary>
 
-<style>
+<style windi:preflights:global windi:safelist:global>
   :global(body) .trx_container {
     background: #fff;
     box-shadow: 0px 0px 40px 0px rgba(0, 0, 0, 0.1);

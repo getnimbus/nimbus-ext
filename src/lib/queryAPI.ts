@@ -10,7 +10,7 @@ export const handleMarketTokens = async () => {
   return response.data || [];
 };
 
-export const getReferrals = async () => {
+export const getReferralInvitation = async () => {
   const response: any = await nimbus.get("/referrals");
   return response.data;
 };
@@ -18,6 +18,11 @@ export const getReferrals = async () => {
 export const getUserInfo = async () => {
   const response: any = await nimbus.get("/users/me");
   return response?.data;
+};
+
+export const getLinkData = async () => {
+  const response: any = await nimbus.get("/accounts/link");
+  return response;
 };
 
 export const handleValidateAddress = async (address: string) => {
@@ -137,3 +142,22 @@ export const handleGetDataRewards = async (address) => {
   return response.data;
 };
 
+export const getCampaignReferrals = async () => {
+  const response: any = await nimbus.get("/v2/campaign/sui-unlock/referral");
+  return response.data;
+};
+
+export const getCampaignQuestsBoard = async () => {
+  const response: any = await nimbus.get("/v2/campaign/sui-unlock/quest-board");
+  return response.data;
+};
+
+export const getCampaignPartnerList = async () => {
+  const response: any = await nimbus.get("/v2/campaign/sui-unlock/partners");
+  return response.data;
+};
+
+export const getCampaignPartnerDetail = async (id) => {
+  const response: any = await nimbus.get(`/v2/campaign/${id}/quest-board`);
+  return response.data;
+}
