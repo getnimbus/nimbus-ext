@@ -3,7 +3,7 @@
   import * as browser from "webextension-polyfill";
   import { i18n } from "~/lib/i18n";
   import { isDarkMode } from "~/store";
-  import { createQuery } from "@tanstack/svelte-query";
+  import { createQuery, useQueryClient } from "@tanstack/svelte-query";
   import { nimbus } from "~/lib/network";
   import mixpanel from "mixpanel-browser";
   import { Toast } from "flowbite-svelte";
@@ -52,6 +52,8 @@
       type: "Rewards",
     },
   ];
+
+  const queryClient = useQueryClient();
 
   let activeTabValue = "checkin";
   let socialData = [];
@@ -172,6 +174,8 @@
         trigger();
         return;
       }
+
+      queryClient?.invalidateQueries(["daily-checkin"]);
 
       toastMsg = "Successfully submit your invitation code!";
       isSuccessToast = true;
