@@ -77,7 +77,7 @@
   };
 
   $: {
-    if ($userPublicAddress && Object.keys(userPublicAddress).length === 0) {
+    if ($userPublicAddress && Object.keys($userPublicAddress).length === 0) {
       handleCheckChain($userPublicAddress);
     }
   }
@@ -117,6 +117,8 @@
         item.type === "discord" ||
         item.type === "telegram"
     ) || [];
+
+  $: console.log("HELLO: ", chain);
 </script>
 
 <div class="flex flex-col gap-4">
