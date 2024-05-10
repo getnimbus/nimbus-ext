@@ -281,6 +281,7 @@
 
       localStorage.removeItem("evm_token");
       disconnect($wallets$?.[0]);
+      suiWalletInstance.update((n) => (n = {}));
 
       localStorage.removeItem("solana_token");
       $walletStore.disconnect();

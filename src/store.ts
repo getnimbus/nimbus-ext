@@ -28,7 +28,7 @@ export const totalAirdrops = writable(0);
 export const unrealizedProfit = writable(0);
 export const realizedProfit = writable(0);
 export const pastProfit = writable(0);
-export const suiWalletInstance = writable(null);
+export const suiWalletInstance = writable({});
 export const tonConnector = writable(null);
 export const checkinPlusPoint = writable(0);
 
