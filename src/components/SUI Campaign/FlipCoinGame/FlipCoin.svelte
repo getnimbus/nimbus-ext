@@ -83,7 +83,7 @@
         ).signAndExecuteTransactionBlock({
           transactionBlock: tx,
         });
-        console.log("trigger execute success!!!");
+        console.log("trigger execute success!!!", res);
 
         // trigger the api in here
         isUserWin && triggerFirework();

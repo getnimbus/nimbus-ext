@@ -20,7 +20,7 @@
   ];
 </script>
 
-<div>
+<div class="xl:h-[500px]">
   <div
     class={`flex flex-col items-center gap-4 rounded-[10px] py-10 px-8 ${$isDarkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"}`}
   >

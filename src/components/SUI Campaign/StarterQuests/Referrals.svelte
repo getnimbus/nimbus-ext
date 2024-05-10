@@ -54,7 +54,7 @@
     dataReferrals?.referral_codes
       ?.filter((item) => !item.used)
       ?.map((item) => item.id)
-      .join(" ") || [];
+      .join("\n") || [];
 </script>
 
 <div
@@ -159,7 +159,7 @@
                           }`}
                         >
                           <div
-                            class="flex items-center justify-center gap-1 text-sm font-medium uppercase border border-red-500"
+                            class="flex items-center justify-center gap-1 text-sm font-medium uppercase"
                           >
                             <img src={CodeIcon} alt="" class="w-3 h-3" />
                             {data?.id}

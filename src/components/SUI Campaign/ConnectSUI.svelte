@@ -8,13 +8,14 @@
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
   import { nimbus } from "~/lib/network";
-  import { getLinkData } from "~/lib/queryAPI";
-
-  import goldImg from "~/assets/Gold4.svg";
-  import SUI from "~/assets/chains/sui.png";
+  import { getLinkData, handleValidateAddress } from "~/lib/queryAPI";
+  import { onMount } from "svelte";
 
   import ReactAdapter from "~/components/ReactAdapter.svelte";
   import Copy from "~/components/Copy.svelte";
+
+  import goldImg from "~/assets/Gold4.svg";
+  import SUI from "~/assets/chains/sui.png";
 
   let toastMsg = "";
   let isSuccessToast = false;
@@ -60,6 +61,21 @@
       );
     }
   }
+
+  onMount(() => {
+    if ($userPublicAddress) {
+      handleCheckPublicAddress($userPublicAddress);
+    }
+  });
+
+  const handleCheckPublicAddress = async (address) => {
+    const addressValidate = await handleValidateAddress(address);
+    if (addressValidate && addressValidate.type === "MOVE") {
+      selectedDataSUILink = {
+        uid: address,
+      };
+    }
+  };
 
   const queryClient = useQueryClient();
   const chains = [
@@ -181,13 +197,13 @@
 
 {#if selectedDataSUILink && Object.keys(selectedDataSUILink).length !== 0}
   <div
-    class="flex justify-center items-center gap-3 text-white bg-[#1e96fc] py-1 px-2 rounded-[10px] cursor-pointer xl:w-[280px] w-max"
+    class="flex justify-center items-center gap-3 text-white bg-[#1e96fc] py-3 px-2 rounded-[10px] cursor-pointer xl:w-[280px] w-max"
   >
     <img src={SUI} alt="" width="24" height="24" />
     <Copy
-      address={selectedDataSUILink?.publicAddress}
-      iconColor={$isDarkMode ? "#fff" : "#000"}
-      color={$isDarkMode ? "#fff" : "#000"}
+      address={selectedDataSUILink?.uid}
+      iconColor={"#fff"}
+      color={"#fff"}
       isShorten
     />
   </div>
