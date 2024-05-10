@@ -2,13 +2,14 @@
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
   import { TransactionBlock } from "@mysten/sui.js/transactions";
-  import { fromHEX, bcs } from "@mysten/bcs";
+  import { bcs } from "@mysten/bcs";
   import { getFullnodeUrl, SuiClient } from "@mysten/sui.js/client";
   import axios from "axios";
   import type { WalletState } from "nimbus-sui-kit";
   import { suiWalletInstance } from "~/store";
   import { isDarkMode } from "~/store";
   import { triggerFirework } from "~/utils";
+  import { nimbus } from "~/lib/network";
 
   import Button from "~/components/Button.svelte";
 
@@ -34,7 +35,7 @@
           showContent: true,
         },
       })
-      .then((res) => res?.data?.content?.fields?.round)
+      .then((res: any) => res?.data?.content?.fields?.round)
       .catch((err) => {
         console.log(err);
       });
@@ -53,53 +54,43 @@
   };
 
   const triggerFlipResult = async (type: number) => {
-    try {
-      const tx = new TransactionBlock();
-      tx.setGasPrice(20000);
-      tx.setGasBudget(50000000);
-      const round = await getRound();
-      const signature = await getSignature(round);
-      tx.moveCall({
-        target:
-          "0x7eb5bbdd60fec4a058d57d76de27130636a75f8e8d9f4250429b11913ffc77b3::coin_flip::flip",
-        typeArguments: [],
-        arguments: [
-          tx.object(
-            "0x3deb4642a72d3cba7cac9dfc8ad209f7e98c85d3a3d84f6f2f909420103b1da2"
-          ),
-          tx.pure(type, "u64"),
-          tx.pure(bcs.string().serialize(signature).toBytes()),
-        ],
-      });
-      const bytes = await tx.build({ client });
-      // code signTransactionBlock thiếu keypair
-      // const serializedSignature = (await keypair.signTransactionBlock(bytes))
-      //   .signature;
-      // execute transaction.
-      // let res = await client.executeTransactionBlock({
-      //   transactionBlock: bytes,
-      //   signature: serializedSignature,
-      //   requestType: "WaitForLocalExecution",
-      //   options: {
-      //     showInput: true,
-      //     showEffects: true,
-      //     showEvents: true,
-      //     showObjectChanges: true,
-      //     showBalanceChanges: true,
-      //   },
-      // });
-      // const playResult = res?.events?.[0]?.parsedJson;
-      // const isWin =
-      //   playResult?.result && playResult?.result === playResult?.user_input;
-      // console.log("User input", playResult?.user_input);
-      // console.log("Result", playResult?.result);
-      // console.log(isWin ? "You win" : "You lose");
+    if (
+      ($suiWalletInstance as WalletState) &&
+      ($suiWalletInstance as WalletState).connected
+    ) {
+      try {
+        const tx = new TransactionBlock();
+        tx.setGasPrice(20000);
+        tx.setGasBudget(50000000);
+        const round = await getRound();
+        const signature = await getSignature(round);
+        tx.moveCall({
+          target:
+            "0x7eb5bbdd60fec4a058d57d76de27130636a75f8e8d9f4250429b11913ffc77b3::coin_flip::flip",
+          typeArguments: [],
+          arguments: [
+            tx.object(
+              "0x3deb4642a72d3cba7cac9dfc8ad209f7e98c85d3a3d84f6f2f909420103b1da2"
+            ),
+            tx.pure(type, "u64"),
+            tx.pure(bcs.string().serialize(signature).toBytes()),
+          ],
+        });
 
-      // // trigger the api in here
-      // isUserWin && triggerFirework();
-      // openScreenResult = true;
-    } catch (error) {
-      console.log("err: ", error);
+        console.log("trigger execute!!!");
+        const res = await (
+          $suiWalletInstance as WalletState
+        ).signAndExecuteTransactionBlock({
+          transactionBlock: tx,
+        });
+        console.log("trigger execute success!!!");
+
+        // trigger the api in here
+        isUserWin && triggerFirework();
+        openScreenResult = true;
+      } catch (error) {
+        console.log("err: ", error);
+      }
     }
   };
 
@@ -122,30 +113,72 @@
   let isUserWin = true; // state user win or lose
 
   const handleStartFlip = () => {
-    if (
-      (($suiWalletInstance as WalletState) &&
-        ($suiWalletInstance as WalletState)?.status === "disconnected") ||
-      !finishedQuest
-    ) {
-      if (($suiWalletInstance as WalletState)?.status === "disconnected") {
-        toastMsg = "Connect your SUI Wallet to Flip!";
-      }
-      if (!finishedQuest) {
-        toastMsg = "Completed all the Start Quest to Flip!";
-      }
+    if (!finishedQuest) {
+      toastMsg = "Completed all the Start Quest to Flip!";
       isSuccessToast = false;
       trigger();
-
       return;
     }
-    startFlip = true;
+
+    if (
+      ($suiWalletInstance as WalletState) &&
+      ($suiWalletInstance as WalletState).connected
+    ) {
+      startFlip = true;
+    } else {
+      handleSUIAuth();
+    }
+  };
+
+  const handleSUIAuth = async () => {
+    try {
+      ($suiWalletInstance as WalletState).toggleSelect();
+    } catch (e) {
+      console.log("error: ", e);
+    }
   };
 
   $: {
-    if ($suiWalletInstance as WalletState) {
-      console.log("HELLO WORLD: ", $suiWalletInstance as WalletState);
+    if (
+      ($suiWalletInstance as WalletState) &&
+      ($suiWalletInstance as WalletState).connected
+    ) {
+      handleGetNonce(($suiWalletInstance as WalletState)?.account?.address);
     }
   }
+
+  const handleGetNonce = async (address: string) => {
+    try {
+      const res: any = await nimbus.post("/users/nonce?verified=true", {
+        publicAddress: address,
+        referrer: undefined,
+      });
+
+      if (res && res.data) {
+        const signature = await handleSignAddressMessage(res?.data?.nonce);
+        if (signature) {
+          startFlip = true;
+        }
+      }
+    } catch (e) {
+      console.error("error: ", e);
+      if (
+        ($suiWalletInstance as WalletState) &&
+        ($suiWalletInstance as WalletState).connected
+      ) {
+        ($suiWalletInstance as WalletState).disconnect();
+      }
+    }
+  };
+
+  const handleSignAddressMessage = async (nonce: string) => {
+    const msg = await ($suiWalletInstance as WalletState).signPersonalMessage({
+      message: new TextEncoder().encode(
+        `I am signing my one-time nonce: ${nonce}`
+      ),
+    });
+    return msg;
+  };
 </script>
 
 <div
@@ -176,35 +209,35 @@
       <div class="p-2 rounded-[10px] bg-[#27326F]">
         <img src={gmPoints} alt="" class="h-7 w-7" />
       </div>
-      <div class="sm:text-[44px] text-2xl font-medium">{point}</div>
+      <div class="sm:text-[44px] text-2xl font-medium">500</div>
     </div>
   </div>
 
-  <div class="relative z-2">
+  <div class="relative z-2 w-full">
     {#if !startFlip}
-      <div class="w-max">
+      <div class="w-max mx-auto">
         <Button
           variant="tertiary"
           on:click={() => {
-            // handleStartFlip();
+            handleStartFlip();
           }}
         >
           <div class="font-medium sm:text-2xl text-lg py-4 px-5">
-            <!-- Flip Now 👑 -->
-            🔒
+            Flip Now 👑
+            <!-- 🔒 -->
           </div>
         </Button>
       </div>
     {:else}
-      <div class="w-full flex justify-between gap-4">
+      <div class="flex justify-center items-center gap-4">
         <button
-          class="rounded-[12px] text-white bg-[#FFB800] w-full py-4 px-5 font-medium sm:text-2xl text-lg"
+          class="rounded-[12px] text-white bg-[#FFB800] w-full py-4 px-5 font-medium sm:text-2xl text-lg max-w-[140px]"
           on:click={() => triggerFlipResult(1)}
         >
           Head
         </button>
         <button
-          class="rounded-[12px] text-white bg-[#FFB800] w-full py-4 px-5 font-medium sm:text-2xl text-lg"
+          class="rounded-[12px] text-white bg-[#FFB800] w-full py-4 px-5 font-medium sm:text-2xl text-lg max-w-[140px]"
           on:click={() => triggerFlipResult(0)}
         >
           Tail

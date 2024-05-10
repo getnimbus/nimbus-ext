@@ -83,6 +83,9 @@
       }
     } catch (e) {
       console.error("error: ", e);
+      if ($tonConnector.connected) {
+        $tonConnector.disconnect();
+      }
     }
   };
 

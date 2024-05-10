@@ -281,7 +281,6 @@
 
       localStorage.removeItem("evm_token");
       disconnect($wallets$?.[0]);
-      suiWalletInstance.update((n) => (n = {}));
 
       localStorage.removeItem("solana_token");
       $walletStore.disconnect();
@@ -290,6 +289,7 @@
       if ($tonConnector.connected) {
         $tonConnector.disconnect();
       }
+      tonConnector.update((n) => (n = null));
 
       localStorage.removeItem("sui_token");
       if (
@@ -298,6 +298,7 @@
       ) {
         ($suiWalletInstance as WalletState).disconnect();
       }
+      suiWalletInstance.update((n) => (n = null));
 
       queryClient?.invalidateQueries(["list-address"]);
       queryClient?.invalidateQueries(["users-me"]);

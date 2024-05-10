@@ -44,9 +44,7 @@
 
   const widgetConfig = {
     walletFn: (wallet) => {
-      if ($suiWalletInstance && Object.keys($suiWalletInstance).length === 0) {
-        suiWalletInstance.update((n) => (n = wallet));
-      }
+      suiWalletInstance.update((n) => (n = wallet));
     },
     onConnectSuccess,
     onConnectError,
@@ -83,11 +81,7 @@
   const handleSUIAuth = async () => {
     mixpanel.track("user_login_sui");
     try {
-      if ($suiWalletInstance && Object.keys($suiWalletInstance).length === 0) {
-        ($suiWalletInstance as WalletState).toggleSelect();
-      } else {
-        handleGetNonce(($suiWalletInstance as WalletState)?.account?.address);
-      }
+      ($suiWalletInstance as WalletState).toggleSelect();
     } catch (e) {
       console.log("error: ", e);
     }
@@ -123,6 +117,12 @@
       }
     } catch (e) {
       console.error("error: ", e);
+      if (
+        ($suiWalletInstance as WalletState) &&
+        ($suiWalletInstance as WalletState).connected
+      ) {
+        ($suiWalletInstance as WalletState).disconnect();
+      }
     }
   };
 
