@@ -8,13 +8,14 @@
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
   import { nimbus } from "~/lib/network";
-  import { getLinkData } from "~/lib/queryAPI";
-
-  import goldImg from "~/assets/Gold4.svg";
-  import SUI from "~/assets/chains/sui.png";
+  import { getLinkData, handleValidateAddress } from "~/lib/queryAPI";
+  import { onMount } from "svelte";
 
   import ReactAdapter from "~/components/ReactAdapter.svelte";
   import Copy from "~/components/Copy.svelte";
+
+  import goldImg from "~/assets/Gold4.svg";
+  import SUI from "~/assets/chains/sui.png";
 
   let toastMsg = "";
   let isSuccessToast = false;
@@ -60,6 +61,21 @@
       );
     }
   }
+
+  onMount(() => {
+    if ($userPublicAddress) {
+      handleCheckPublicAddress($userPublicAddress);
+    }
+  });
+
+  const handleCheckPublicAddress = async (address) => {
+    const addressValidate = await handleValidateAddress(address);
+    if (addressValidate && addressValidate.type === "MOVE") {
+      selectedDataSUILink = {
+        publicAddress: address,
+      };
+    }
+  };
 
   const queryClient = useQueryClient();
   const chains = [
