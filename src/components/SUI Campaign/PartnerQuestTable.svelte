@@ -49,8 +49,6 @@
   let countdown = 10;
   let countdownInterval;
 
-  let isClaimActive = false;
-
   const triggerBonusScore = async () => {
     openScreenBonusScore = true;
     triggerFirework();
@@ -88,9 +86,6 @@
   };
 
   const checkUserVerifyQuest = (campaign: any, verifyQuests: any) => {
-    isClaimActive =
-      verifyQuests &&
-      verifyQuests.map((item: any) => item.questId).includes(campaign.id);
     return (
       verifyQuests &&
       verifyQuests.map((item: any) => item.questId).includes(campaign.id)
@@ -128,7 +123,6 @@
         selectedQuestId = "";
         return;
       }
-      queryClient?.invalidateQueries(["partners-campaign"]);
       queryClient?.invalidateQueries(["partners-detail-campaign"]);
       queryClient?.invalidateQueries(["quests-campaign"]);
     } catch (e) {
@@ -152,11 +146,9 @@
       }
 
       selectedQuestId = "";
-      isClaimActive = false;
       triggerBonusScore();
       bonusScore = data?.point;
       queryClient?.invalidateQueries(["daily-checkin"]);
-      queryClient?.invalidateQueries(["partners-campaign"]);
       queryClient?.invalidateQueries(["partners-detail-campaign"]);
       queryClient?.invalidateQueries(["quests-campaign"]);
     } catch (e) {
@@ -316,37 +308,22 @@
                       {#if countdown > 0 && countdown < 10 && selectedQuestId === data?.id}
                         <Button disabled>{countdown}s</Button>
                       {:else}
-                        <div>
-                          {#if isClaimActive}
-                            <Button
-                              variant="tertiary"
-                              on:click={() => {
-                                handleClaimReward(data);
-                              }}
-                            >
-                              Claim
-                            </Button>
+                        <Button
+                          variant="tertiary"
+                          on:click={() => {
+                            if (checkUserVerifyQuest(data, listQuestVerified)) {
+                              handleClaimReward(data);
+                            } else {
+                              handleVerifyQuest(data);
+                            }
+                          }}
+                        >
+                          {#if checkUserVerifyQuest(data, listQuestVerified)}
+                            Claim
                           {:else}
-                            <Button
-                              variant="tertiary"
-                              on:click={() => {
-                                if (
-                                  checkUserVerifyQuest(data, listQuestVerified)
-                                ) {
-                                  handleClaimReward(data);
-                                } else {
-                                  handleVerifyQuest(data);
-                                }
-                              }}
-                            >
-                              {#if checkUserVerifyQuest(data, listQuestVerified)}
-                                Claim
-                              {:else}
-                                Check
-                              {/if}
-                            </Button>
+                            Check
                           {/if}
-                        </div>
+                        </Button>
                       {/if}
                     </div>
                   {/if}
@@ -439,35 +416,22 @@
                 {#if countdown > 0 && countdown < 10 && selectedQuestId === data?.id}
                   <Button disabled>{countdown}s</Button>
                 {:else}
-                  <div>
-                    {#if isClaimActive}
-                      <Button
-                        variant="tertiary"
-                        on:click={() => {
-                          handleClaimReward(data);
-                        }}
-                      >
-                        Claim
-                      </Button>
+                  <Button
+                    variant="tertiary"
+                    on:click={() => {
+                      if (checkUserVerifyQuest(data, listQuestVerified)) {
+                        handleClaimReward(data);
+                      } else {
+                        handleVerifyQuest(data);
+                      }
+                    }}
+                  >
+                    {#if checkUserVerifyQuest(data, listQuestVerified)}
+                      Claim
                     {:else}
-                      <Button
-                        variant="tertiary"
-                        on:click={() => {
-                          if (checkUserVerifyQuest(data, listQuestVerified)) {
-                            handleClaimReward(data);
-                          } else {
-                            handleVerifyQuest(data);
-                          }
-                        }}
-                      >
-                        {#if checkUserVerifyQuest(data, listQuestVerified)}
-                          Claim
-                        {:else}
-                          Check
-                        {/if}
-                      </Button>
+                      Check
                     {/if}
-                  </div>
+                  </Button>
                 {/if}
               </div>
             {/if}
