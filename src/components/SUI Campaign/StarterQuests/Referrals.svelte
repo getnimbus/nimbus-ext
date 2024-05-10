@@ -77,39 +77,24 @@
     </div>
 
     <div class="flex flex-col gap-2">
-      <div class="flex flex-wrap items-center xl:gap-2 gap-4">
-        <AnimateSharedLayout>
-          {#each typeTab as type}
+      <div class="w-full flex items-center xl:gap-2 gap-4">
+        {#each typeTab as type}
+          <div
+            class="relative w-full text-center cursor-pointer xl:text-base text-xl font-medium rounded-[100px] transition-all"
+            id={type.value}
+            on:click={() => {
+              if (tabSelected !== type.value) {
+                tabSelected = type.value;
+              }
+            }}
+          >
             <div
-              class="relative cursor-pointer xl:text-base text-xl font-medium py-1 px-3 rounded-[100px] transition-all"
-              id={type.value}
-              on:click={() => {
-                if (tabSelected !== type.value) {
-                  tabSelected = type.value;
-                }
-              }}
+              class={`relative z-1 py-1 px-3 rounded-md w-full border border-[#1e96fc] text-[#1e96fc] ${tabSelected === type.value && "bg-[#1e96fc] text-white"}`}
             >
-              <div
-                class={`relative z-1 ${tabSelected === type.value && "text-white"}`}
-              >
-                {type.label}
-              </div>
-
-              {#if type.value === tabSelected}
-                <Motion
-                  let:motion
-                  layoutId="active-pill"
-                  transition={{ type: "spring", duration: 0.6 }}
-                >
-                  <div
-                    class="absolute inset-0 rounded-full bg-[#1E96FC] z-0"
-                    use:motion
-                  />
-                </Motion>
-              {/if}
+              {type.label}
             </div>
-          {/each}
-        </AnimateSharedLayout>
+          </div>
+        {/each}
       </div>
 
       {#if tabSelected === "codes"}
@@ -124,7 +109,7 @@
                 <tr class="bg_f4f5f8">
                   <th class="pl-3 py-3 rounded-tl-[10px] bg_f4f5f8">
                     <div
-                      class="text-left xl:text-xs text-sm uppercase font-medium"
+                      class="text-center xl:text-xs text-sm uppercase font-medium"
                     >
                       Code
                     </div>
@@ -132,7 +117,7 @@
 
                   <th class="pr-3 py-3 rounded-tr-[10px]">
                     <div
-                      class="text-left xl:text-xs text-sm uppercase font-medium"
+                      class="text-center xl:text-xs text-sm uppercase font-medium"
                     >
                       Status
                     </div>
@@ -167,7 +152,7 @@
                           }`}
                         >
                           <div
-                            class="flex items-center gap-1 text-left text-sm font-medium uppercase"
+                            class="flex items-center justify-center gap-1 text-sm font-medium uppercase border border-red-500"
                           >
                             <img src={CodeIcon} alt="" class="w-3 h-3" />
                             {data?.id}
@@ -181,7 +166,7 @@
                           }`}
                         >
                           <div
-                            class="text-left text-sm uppercase font-medium text-[#00A878]"
+                            class="text-center text-sm uppercase font-medium text-[#00A878]"
                           >
                             USED
                           </div>
@@ -211,7 +196,7 @@
                             }`}
                           >
                             <div
-                              class="flex items-center gap-1 text-left text-sm font-medium uppercase text_00000099"
+                              class="flex items-center justify-center gap-1 text-left text-sm font-medium uppercase text_00000099"
                             >
                               <img src={CodeIcon} alt="" class="w-3 h-3" />
                               {data?.id}
@@ -225,7 +210,7 @@
                             }`}
                           >
                             <div
-                              class="text-left text-sm uppercase font-medium text_00000099"
+                              class="text-center text-sm uppercase font-medium text_00000099"
                             >
                               UNUSED
                             </div>
@@ -268,21 +253,21 @@
           <table class="table-auto w-full h-full">
             <thead>
               <tr class="bg_f4f5f8">
-                <th class="pl-3 py-3 rounded-tl-[10px] bg_f4f5f8">
+                <th class="pl-3 py-3 w-1/3 rounded-tl-[10px] bg_f4f5f8">
                   <div
                     class="text-left xl:text-xs text-lg uppercase font-medium"
                   >
                     Code
                   </div>
                 </th>
-                <th class="py-3">
+                <th class="py-3 w-1/3">
                   <div
-                    class="flex items-center justify-start xl:gap-2 gap-4 text-right xl:text-xs uppercase font-medium"
+                    class="flex items-center justify-center xl:gap-2 gap-4 text-center xl:text-xs uppercase font-medium"
                   >
                     Time
                   </div>
                 </th>
-                <th class="pr-3 py-3 rounded-tr-[10px]">
+                <th class="pr-3 py-3 w-1/3 rounded-tr-[10px]">
                   <div
                     class="flex gap-1 justify-end items-center text-right xl:text-xs uppercase font-medium relative"
                   >
@@ -311,7 +296,7 @@
                     }`}
                   >
                     <td
-                      class={`py-3 pl-3 ${
+                      class={`py-3 pl-3 w-1/3 ${
                         $isDarkMode
                           ? "group-hover:bg-[#000]"
                           : "group-hover:bg-gray-100"
@@ -326,21 +311,21 @@
                     </td>
 
                     <td
-                      class={`py-3 ${
+                      class={`py-3 w-1/3 ${
                         $isDarkMode
                           ? "group-hover:bg-[#000]"
                           : "group-hover:bg-gray-100"
                       }`}
                     >
                       <div
-                        class="flex items-center gap-1 text-left text-sm uppercase font-medium"
+                        class="flex items-center justify-center gap-1 text-center text-sm uppercase font-medium"
                       >
                         {dayjs(item?.createdAt).format("YYYY-MM-DD")}
                       </div>
                     </td>
 
                     <td
-                      class={`py-3 pr-3 ${
+                      class={`py-3 pr-3 w-1/3 ${
                         $isDarkMode
                           ? "group-hover:bg-[#000]"
                           : "group-hover:bg-gray-100"

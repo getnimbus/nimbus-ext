@@ -41,11 +41,11 @@
       value: "flip",
       type: "Flip GM Points",
     },
-    {
-      label: i18n("checkinPage.tab-leaderboard", "Leaderboard"),
-      value: "leaderboard",
-      type: "Leaderboard",
-    },
+    // {
+    //   label: i18n("checkinPage.tab-leaderboard", "Leaderboard"),
+    //   value: "leaderboard",
+    //   type: "Leaderboard",
+    // },
     {
       label: i18n("checkinPage.tab-rewards", "Rewards"),
       value: "rewards",
@@ -232,8 +232,8 @@
               />
             {:else if activeTabValue === "checkin"}
               <TabDailyCheckin {currentRoute} />
-            {:else if activeTabValue === "leaderboard"}
-              <TabLeaderBoard />
+              <!-- {:else if activeTabValue === "leaderboard"}
+              <TabLeaderBoard /> -->
             {:else if activeTabValue === "rewards"}
               <TabReward />
             {:else if activeTabValue === "flip"}
