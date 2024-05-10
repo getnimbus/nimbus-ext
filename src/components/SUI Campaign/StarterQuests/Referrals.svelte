@@ -54,7 +54,7 @@
     dataReferrals?.referral_codes
       ?.filter((item) => !item.used)
       ?.map((item) => item.id)
-      .join(" ") || [];
+      .join("\n") || [];
 </script>
 
 <div
