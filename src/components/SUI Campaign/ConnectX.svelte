@@ -5,7 +5,16 @@
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
   import { useQueryClient } from "@tanstack/svelte-query";
-  import { user, userPublicAddress } from "~/store";
+  import {
+    selectedPackage,
+    typeWallet,
+    user,
+    userPublicAddress,
+    chain,
+    wallet,
+    tonConnector,
+    suiWalletInstance,
+  } from "~/store";
 
   import Button from "~/components/Button.svelte";
 
@@ -95,7 +104,7 @@
 
   const handleAddTwitter = async (id, info, displayName) => {
     try {
-      let params: any = {
+      const params: any = {
         kind: "social",
         id,
         type: "twitter",
@@ -106,9 +115,8 @@
 
       const response: any = await nimbus.post("/accounts/link", params);
       if (response && response?.error) {
-        toastMsg = response?.error;
-        isSuccessToast = false;
-        trigger();
+        handleSignOut();
+        handleTwitterAuth();
       } else {
         queryClient?.invalidateQueries(["link-socials"]);
 
@@ -122,6 +130,59 @@
         "There are some problem when connect X account. Please try again!";
       isSuccessToast = false;
       trigger();
+    }
+  };
+
+  import { walletStore } from "@aztemi/svelte-on-solana-wallet-adapter-core";
+  import onboard from "~/lib/web3-onboard";
+  import type { WalletState } from "nimbus-sui-kit";
+
+  const wallets$ = onboard.state.select("wallets");
+
+  const disconnect = (value: any) => {
+    if (value && Object.keys(value).length !== 0) {
+      onboard.disconnectWallet({ label: value.label });
+    }
+  };
+
+  const handleSignOut = () => {
+    try {
+      user.update((n) => (n = {}));
+      wallet.update((n) => (n = ""));
+      chain.update((n) => (n = ""));
+      typeWallet.update((n) => (n = ""));
+      userPublicAddress.update((n) => (n = ""));
+      selectedPackage.update((n) => (n = "FREE"));
+
+      localStorage.removeItem("public_address");
+
+      localStorage.removeItem("auth_token");
+
+      localStorage.removeItem("evm_token");
+      disconnect($wallets$?.[0]);
+
+      localStorage.removeItem("solana_token");
+      $walletStore.disconnect();
+
+      localStorage.removeItem("ton_token");
+      if ($tonConnector.connected) {
+        $tonConnector.disconnect();
+      }
+      tonConnector.update((n) => (n = null));
+
+      localStorage.removeItem("sui_token");
+      if (
+        ($suiWalletInstance as WalletState) &&
+        ($suiWalletInstance as WalletState).connected
+      ) {
+        ($suiWalletInstance as WalletState).disconnect();
+      }
+      suiWalletInstance.update((n) => (n = null));
+
+      queryClient?.invalidateQueries(["list-address"]);
+      queryClient?.invalidateQueries(["users-me"]);
+    } catch (error) {
+      console.log(error);
     }
   };
 </script>
