@@ -63,7 +63,7 @@
   export let navActive;
   export let handleUpdateNavActive = (value) => {};
 
-  const linkRedirect = "https://beta.nimbus-ext.pages.dev/settings?tab=links";
+  const linkRedirect = " https://app.getnimbus.io/settings?tab=links";
 
   const wallets = [new PhantomWalletAdapter(), new SolflareWalletAdapter()];
 
