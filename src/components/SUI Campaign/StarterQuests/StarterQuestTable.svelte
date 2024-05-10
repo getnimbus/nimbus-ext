@@ -99,6 +99,10 @@
         return;
       }
 
+      toastMsg = "You can claim your GMs nows!";
+      isSuccessToast = true;
+      trigger();
+
       queryClient?.invalidateQueries(["partners-detail-campaign"]);
       queryClient?.invalidateQueries(["quests-campaign"]);
     } catch (e) {
@@ -122,6 +126,7 @@
       selectedQuestId = "";
       triggerBonusScore();
       bonusScore = data?.point;
+      queryClient?.invalidateQueries(["users-me"]);
       queryClient?.invalidateQueries(["daily-checkin"]);
       queryClient?.invalidateQueries(["partners-detail-campaign"]);
       queryClient?.invalidateQueries(["quests-campaign"]);
