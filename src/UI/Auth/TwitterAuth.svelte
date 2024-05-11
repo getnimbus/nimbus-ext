@@ -41,7 +41,8 @@
       );
       if (res) {
         handleGetTwitterToken(
-          res.uid,
+          res?.uid,
+          res?.reloadUserInfo?.providerUserInfo[0]?.rawId,
           "twitter",
           res?.reloadUserInfo?.screenName,
           res?.reloadUserInfo?.screenName
@@ -52,10 +53,17 @@
     }
   };
 
-  const handleGetTwitterToken = async (uid, type, info, displayName) => {
+  const handleGetTwitterToken = async (
+    uid,
+    externalId,
+    type,
+    info,
+    displayName
+  ) => {
     try {
       const res: any = await nimbus.post("/auth", {
         uid,
+        externalId,
         type,
         info,
         displayName: displayName ? displayName : info,

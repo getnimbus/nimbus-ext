@@ -87,6 +87,7 @@
       if (res) {
         handleAddGoogle(
           res.uid,
+          res?.reloadUserInfo?.providerUserInfo[0]?.rawId,
           res?.reloadUserInfo?.providerUserInfo[0]?.email,
           res?.reloadUserInfo?.displayName
         );
@@ -96,11 +97,12 @@
     }
   };
 
-  const handleAddGoogle = async (id, info, displayName) => {
+  const handleAddGoogle = async (id, externalId, info, displayName) => {
     try {
       let params: any = {
         kind: "social",
         id,
+        externalId,
         type: "google",
         info,
         displayName,

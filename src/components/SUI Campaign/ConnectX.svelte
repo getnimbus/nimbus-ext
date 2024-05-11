@@ -53,6 +53,7 @@
         if ($user && Object.keys($user).length === 0) {
           handleGetTwitterToken(
             res.uid,
+            res?.reloadUserInfo?.providerUserInfo[0]?.rawId,
             "twitter",
             res?.reloadUserInfo?.screenName,
             res?.reloadUserInfo?.screenName
@@ -63,7 +64,8 @@
         handleAddTwitter(
           res,
           res.uid,
-          res?.reloadUserInfo?.providerUserInfo[0]?.email,
+          res?.reloadUserInfo?.providerUserInfo[0]?.rawId,
+          res?.reloadUserInfo?.screenName,
           res?.reloadUserInfo?.screenName
         );
       }
@@ -72,11 +74,12 @@
     }
   };
 
-  const handleAddTwitter = async (res, id, info, displayName) => {
+  const handleAddTwitter = async (res, id, externalId, info, displayName) => {
     try {
       const params: any = {
         kind: "social",
         id,
+        externalId,
         type: "twitter",
         info,
         displayName,
@@ -89,8 +92,9 @@
 
         handleGetTwitterToken(
           res.uid,
+          res?.reloadUserInfo?.providerUserInfo[0]?.rawId,
           "twitter",
-          res?.reloadUserInfo?.providerUserInfo[0]?.email,
+          res?.reloadUserInfo?.screenName,
           res?.reloadUserInfo?.screenName
         );
       } else {
@@ -109,10 +113,17 @@
     }
   };
 
-  const handleGetTwitterToken = async (uid, type, info, displayName) => {
+  const handleGetTwitterToken = async (
+    uid,
+    externalId,
+    type,
+    info,
+    displayName
+  ) => {
     try {
       const res: any = await nimbus.post("/auth", {
         uid,
+        externalId,
         type,
         info,
         displayName: displayName ? displayName : info,
