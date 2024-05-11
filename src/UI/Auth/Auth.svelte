@@ -7,18 +7,12 @@
   import onboard from "~/lib/web3-onboard";
   import { ethers } from "ethers";
   import {
-    wallet,
-    chain,
-    typeWallet,
     user,
-    selectedPackage,
     isDarkMode,
     isShowHeaderMobile,
     triggerConnectWallet,
     userId,
     userPublicAddress,
-    suiWalletInstance,
-    tonConnector,
   } from "~/store";
   import { nimbus } from "~/lib/network";
   import mixpanel from "mixpanel-browser";
@@ -34,7 +28,6 @@
   } from "@solana/wallet-adapter-wallets";
   import bs58 from "bs58";
   import { walletStore } from "@aztemi/svelte-on-solana-wallet-adapter-core";
-  import type { WalletState } from "nimbus-sui-kit";
   import { handleGetDataDailyCheckin } from "~/lib/queryAPI";
 
   import Tooltip from "~/components/Tooltip.svelte";
@@ -67,8 +60,6 @@
   const linkRedirect = " https://app.getnimbus.io/settings?tab=links";
 
   const wallets = [new PhantomWalletAdapter(), new SolflareWalletAdapter()];
-
-  const wallets$ = onboard.state.select("wallets");
 
   let toastMsg = "";
   let isSuccessToast = false;
@@ -512,12 +503,6 @@
       }
     } catch (e) {
       console.error("error: ", e);
-    }
-  };
-
-  const disconnect = (value: any) => {
-    if (value && Object.keys(value).length !== 0) {
-      onboard.disconnectWallet({ label: value.label });
     }
   };
 
