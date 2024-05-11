@@ -41,24 +41,31 @@
 
   const handleGetNonce = async (id: string) => {
     try {
-      const msg = `I am signing my one-time nonce: ${Math.floor(Math.random() * 10000)}`;
-
-      $tonConnector.setConnectRequestParameters({
-        state: "ready",
-        value: { tonProof: msg },
+      const res: any = await nimbus.post("/users/nonce?verified=true", {
+        publicAddress: id,
+        referrer: undefined,
       });
 
-      $tonConnector.openModal();
+      if (res && res.data) {
+        const msg = `I am signing my one-time nonce: ${res.data.nonce}`;
 
-      $tonConnector.onStatusChange((wallet) => {
-        if (
-          wallet &&
-          wallet.connectItems?.tonProof &&
-          "proof" in wallet.connectItems.tonProof
-        ) {
-          handleUpdatePublicAddress(wallet);
-        }
-      });
+        $tonConnector.setConnectRequestParameters({
+          state: "ready",
+          value: { tonProof: msg },
+        });
+
+        $tonConnector.openModal();
+
+        $tonConnector.onStatusChange((wallet) => {
+          if (
+            wallet &&
+            wallet.connectItems?.tonProof &&
+            "proof" in wallet.connectItems.tonProof
+          ) {
+            handleUpdatePublicAddress(wallet);
+          }
+        });
+      }
     } catch (e) {
       console.error("error: ", e);
       if ($tonConnector.connected) {
