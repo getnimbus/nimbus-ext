@@ -22,6 +22,7 @@
 
   import goldImg from "~/assets/Gold4.svg";
   import wheelIcon from "~/assets/wheel-icon.svg";
+  import { getUserInfo } from "~/lib/queryAPI";
 
   export let currentRoute;
 
@@ -36,11 +37,11 @@
       value: "checkin",
       type: "Daily Checkin",
     },
-    {
-      label: i18n("checkinPage.tab-leaderboard", "Flip GM Points"),
-      value: "flip",
-      type: "Flip GM Points",
-    },
+    // {
+    //   label: i18n("checkinPage.tab-leaderboard", "Flip GM Points"),
+    //   value: "flip",
+    //   type: "Flip GM Points",
+    // },
     // {
     //   label: i18n("checkinPage.tab-leaderboard", "Leaderboard"),
     //   value: "leaderboard",
@@ -143,6 +144,15 @@
     return response;
   };
 
+  $: queryUserInfo = createQuery({
+    queryKey: ["users-me"],
+    queryFn: () => getUserInfo(),
+    staleTime: Infinity,
+    retry: false,
+  });
+
+  $: allowSuiCamp = $queryUserInfo.data?.suiCampAllowed || false;
+
   $: queryLinkSocial = createQuery({
     queryKey: ["link-socials"],
     queryFn: () => getLinkData(),
@@ -199,7 +209,7 @@
 <ErrorBoundary>
   <div class="relative z-9">
     {#if socialData && socialData.find((item) => item.type === "twitter")}
-      {#if isSkipToMainPage}
+      {#if isSkipToMainPage || allowSuiCamp}
         <div
           class="max-w-[2000px] m-auto xl:w-[90%] w-[90%] py-8 grid xl:grid-cols-6 grid-cols-1 gap-6 relative z-2"
         >
