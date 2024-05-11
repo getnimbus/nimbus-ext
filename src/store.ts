@@ -30,7 +30,6 @@ export const realizedProfit = writable(0);
 export const pastProfit = writable(0);
 export const suiWalletInstance = writable(null);
 export const tonConnector = writable(null);
-export const checkinPlusPoint = writable(0);
 
 // let isFirstTime = true;
 // isOpenReport.subscribe((value) => {

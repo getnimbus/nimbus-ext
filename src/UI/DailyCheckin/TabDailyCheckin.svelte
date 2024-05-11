@@ -2,12 +2,7 @@
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { nimbus } from "~/lib/network";
-  import {
-    checkinPlusPoint,
-    isDarkMode,
-    user,
-    userPublicAddress,
-  } from "~/store";
+  import { isDarkMode, user, userPublicAddress } from "~/store";
   import { triggerFirework } from "~/utils";
   import dayjs from "dayjs";
   import { wait } from "~/entries/background/utils";
@@ -193,13 +188,7 @@
       if (response?.data !== undefined) {
         isDisabledCheckin = true;
         triggerCheckinSuccess();
-        checkinPlusPoint.update(
-          (data) =>
-            (data +=
-              $queryDailyCheckin?.data?.pointStreak[selectedIndexRewards])
-        );
         if (response?.data?.bonus !== undefined) {
-          checkinPlusPoint.update((data) => (data += response?.data?.bonus));
           bonusScore = response?.data?.bonus;
           isTriggerBonusScore = true;
         }

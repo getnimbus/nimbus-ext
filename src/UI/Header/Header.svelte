@@ -16,7 +16,6 @@
     triggerSync,
     triggerModalAddAddress,
     triggerConnectWallet,
-    checkinPlusPoint,
     totalTokens,
     totalAirdrops,
     totalNfts,
@@ -82,7 +81,6 @@
     portfolio: i18n("newtabPage.portfolio", "Portfolio"),
     analytics: i18n("newtabPage.analytics", "Analytics"),
     transactions: i18n("newtabPage.transactions", "Transactions"),
-    news: i18n("newtabPage.news", "News"),
     whales: i18n("newtabPage.whales", "Whales"),
     search_placeholder: i18n("newtabPage.search-placeholder", "Search address"),
   };
@@ -812,7 +810,7 @@
           >
             <img src={goldImg} alt="" class="w-[28px] h-[28px]" />
             <span class="text-yellow-400 font-medium">
-              {$queryUserInfo?.data?.totalPoint + $checkinPlusPoint || 0}
+              {$queryUserInfo?.data?.totalPoint}
             </span>
           </div>
         </div>
