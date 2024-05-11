@@ -108,7 +108,7 @@
 
     const tonInstance = new TonConnectUI({
       manifestUrl:
-        "https://gist.githubusercontent.com/toannhu96/0f9cdecbfa668157a901c76f41ced0f0/raw/0b8e76d86ca3ce0a14db9315c4e03ba3b9caaa60/tonconnect-manifest.json",
+        "https://gist.githubusercontent.com/toannhu96/0f9cdecbfa668157a901c76f41ced0f0/raw/78bdaee6e4f101032bb97cfece71b79b7f28fbd5/tonconnect-manifest.json",
     });
     tonConnector.update((n) => (n = tonInstance));
   });
