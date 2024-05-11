@@ -611,7 +611,7 @@ export const handleFormatDataTable = (data, type) => {
 };
 
 export const handleFormatDataTableBundle = (data, bundles) => {
-  let formatData = data.map((item) => {
+  let formatData = (data || [])?.map((item) => {
     return {
       ...item,
       value: Number(item?.amount) * Number(item?.price?.price),
