@@ -305,7 +305,7 @@
         null,
         "",
         window.location.pathname +
-          `${$tab === "news" ? `?tab=${$tab}` : `?tab=${$tab}&type=${$typeWallet}&address=${$wallet}`}`
+          `?tab=${$tab}&type=${$typeWallet}&address=${$wallet}`
       );
     }
 
@@ -323,7 +323,7 @@
           null,
           "",
           window.location.pathname +
-            `${$tab === "news" ? `?tab=${$tab}` : `?tab=${$tab}&type=${$typeWallet}&address=${$wallet}`}`
+            `?tab=${$tab}&type=${$typeWallet}&address=${$wallet}`
         );
       }
 
@@ -332,7 +332,7 @@
           null,
           "",
           window.location.pathname +
-            `${$tab === "news" ? `?tab=${$tab}` : `?tab=${$tab}&type=${$typeWallet}&chain=${$chain}&address=${$wallet}`}`
+            `?tab=${$tab}&type=${$typeWallet}&chain=${$chain}&address=${$wallet}`
         );
       }
     }
@@ -347,7 +347,7 @@
           null,
           "",
           window.location.pathname +
-            `${$tab === "news" ? `?tab=${$tab}` : `?tab=${$tab}&type=${$typeWallet}&address=${$wallet}`}`
+            `?tab=${$tab}&type=${$typeWallet}&address=${$wallet}`
         );
       }
     }
@@ -367,7 +367,7 @@
           null,
           "",
           window.location.pathname +
-            `${$tab === "news" ? `?tab=${$tab}` : `?tab=${$tab}&type=${$typeWallet}&address=${$wallet}`}`
+            `?tab=${$tab}&type=${$typeWallet}&address=${$wallet}`
         );
       }
 
@@ -383,7 +383,7 @@
           null,
           "",
           window.location.pathname +
-            `${$tab === "news" ? `?tab=${$tab}` : `?tab=${$tab}&type=${$typeWallet}&chain=${$chain}&address=${$wallet}`}`
+            `?tab=${$tab}&type=${$typeWallet}&chain=${$chain}&address=${$wallet}`
         );
       }
     } else {
@@ -391,7 +391,7 @@
         null,
         "",
         window.location.pathname +
-          `${$tab === "news" ? `?tab=${$tab}` : `?tab=${$tab}&type=${$typeWallet}&chain=${$chain}&address=${$wallet}`}`
+          `?tab=${$tab}&type=${$typeWallet}&chain=${$chain}&address=${$wallet}`
       );
     }
   };

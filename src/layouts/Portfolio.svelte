@@ -60,7 +60,6 @@
     portfolio: i18n("newtabPage.portfolio", "Portfolio"),
     analytic: i18n("newtabPage.analytic", "Analytics"),
     transactions: i18n("newtabPage.transactions", "Transactions"),
-    news: i18n("newtabPage.news", "News"),
     market: i18n("newtabPage.market", "Market"),
     settings: i18n("newtabPage.settings", "Settings"),
     overview: i18n("newtabPage.overview", "Overview"),
