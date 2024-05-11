@@ -304,6 +304,8 @@
       }
       suiWalletInstance.update((n) => (n = null));
 
+      localStorage.removeItem("isSkipInviteCodeCampaign");
+
       navigateTo("/");
       handleUpdateNavActive("/portfolio");
 
