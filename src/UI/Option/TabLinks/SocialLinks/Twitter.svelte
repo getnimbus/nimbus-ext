@@ -84,7 +84,8 @@
       if (res) {
         handleAddTwitter(
           res.uid,
-          res?.reloadUserInfo?.providerUserInfo[0]?.email,
+          res?.reloadUserInfo?.providerUserInfo[0]?.rawId,
+          res?.reloadUserInfo?.screenName,
           res?.reloadUserInfo?.screenName
         );
       }
@@ -93,11 +94,12 @@
     }
   };
 
-  const handleAddTwitter = async (id, info, displayName) => {
+  const handleAddTwitter = async (id, externalId, info, displayName) => {
     try {
       let params: any = {
         kind: "social",
         id,
+        externalId,
         type: "twitter",
         info,
         displayName,

@@ -37,12 +37,13 @@
     try {
       googleProvider.addScope("email");
       googleProvider.addScope("profile");
-      const res = await signInWithPopup(auth, googleProvider).then(
+      const res: any = await signInWithPopup(auth, googleProvider).then(
         (result) => result.user
       );
       if (res) {
         handleGetGoogleToken(
           res.uid,
+          res?.reloadUserInfo?.providerUserInfo[0]?.rawId,
           "google",
           res?.reloadUserInfo?.providerUserInfo[0]?.email,
           res?.reloadUserInfo?.displayName
@@ -53,10 +54,17 @@
     }
   };
 
-  const handleGetGoogleToken = async (uid, type, info, displayName) => {
+  const handleGetGoogleToken = async (
+    uid,
+    externalId,
+    type,
+    info,
+    displayName
+  ) => {
     try {
       const res = await nimbus.post("/auth", {
         uid,
+        externalId,
         type,
         info,
         displayName: displayName ? displayName : info,
