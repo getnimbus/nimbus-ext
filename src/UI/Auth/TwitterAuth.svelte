@@ -43,7 +43,7 @@
         handleGetTwitterToken(
           res.uid,
           "twitter",
-          res?.reloadUserInfo?.providerUserInfo[0]?.email,
+          res?.reloadUserInfo?.screenName,
           res?.reloadUserInfo?.screenName
         );
       }
