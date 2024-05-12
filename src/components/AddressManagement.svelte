@@ -867,7 +867,7 @@
     <Loading />
   </div>
 {:else}
-  <div class="min-h-screen">
+  <div class="xl:min-h-screen">
     {#if $wallet?.length === 0}
       <div class="flex justify-center items-center h-screen">
         {#if $query.isError && Object.keys($user).length !== 0}

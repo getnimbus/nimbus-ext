@@ -118,7 +118,7 @@
   });
 </script>
 
-<div class="flex flex-col gap-4 min-h-screen">
+<div class="flex flex-col gap-4">
   <div
     class="flex sm:flex-row flex-col sm:justify-between sm:items-center gap-4 border-b-[1.5px] border_0000000d pb-4"
   >
