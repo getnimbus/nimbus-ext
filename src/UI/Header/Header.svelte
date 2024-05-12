@@ -266,10 +266,14 @@
       localStorage.removeItem("solana_token");
       $walletStore.disconnect();
 
+      console.log("it trigger before ton!!!");
+      // error come from ton connect
       localStorage.removeItem("ton_token");
       if ($tonConnector.connected) {
         $tonConnector.disconnect();
       }
+      console.log("it trigger after ton!!!");
+
       tonConnector.update((n) => (n = null));
 
       localStorage.removeItem("sui_token");
