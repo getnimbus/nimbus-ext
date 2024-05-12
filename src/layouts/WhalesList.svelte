@@ -335,7 +335,7 @@
 
 <ErrorBoundary>
   <div
-    class="min-h-screen max-w-[2000px] m-auto xl:w-[90%] w-[90%] py-8 flex flex-col gap-4"
+    class="xl:min-h-screen max-w-[2000px] m-auto xl:w-[90%] w-[90%] py-8 flex flex-col gap-4"
   >
     <div
       class="flex xl:flex-row flex-col justify-between xl:items-end xl:gap-0 gap-4"

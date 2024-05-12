@@ -207,7 +207,7 @@
 </script>
 
 <ErrorBoundary>
-  <div class="relative z-9 min-h-screen">
+  <div class="xl:min-h-screen relative z-9">
     {#if socialData && socialData.find((item) => item.type === "twitter")}
       {#if isSkipToMainPage || allowSuiCamp}
         <div

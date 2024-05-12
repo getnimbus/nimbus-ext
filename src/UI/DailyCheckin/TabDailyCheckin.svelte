@@ -610,7 +610,7 @@
   };
 </script>
 
-<div class="flex flex-col gap-4 min-h-screen">
+<div class="flex flex-col gap-4">
   <div class="flex flex-col gap-1 border-b-[1.5px] border_0000000d pb-4">
     <div class="xl:title-3 title-2">My Nimbus GM Points</div>
     <div class="text-base text-gray-500">
