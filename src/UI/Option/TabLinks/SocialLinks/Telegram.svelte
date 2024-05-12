@@ -6,6 +6,7 @@
   import { useQueryClient } from "@tanstack/svelte-query";
 
   import Button from "~/components/Button.svelte";
+  import TelegramAuth from "~/UI/Auth/TelegramAuth.svelte";
 
   export let data: any;
   export let selectedDisplayName;
@@ -97,22 +98,16 @@
         variant="tertiary"
         className="py-3 px-6 relative relative"
         on:click={() => {
-          document.querySelector(".tgme_widget_login_button")?.click();
+          if (document.querySelector(".tgme_widget_login_button")) {
+            document.querySelector(".tgme_widget_login_button")?.click();
+          }
         }}
       >
         <div class="font-semibold text-[15px] relative z-9">Connect</div>
         <div
           class="absolute top-0 left-1/2 transform -translate-x-1/2 z-10 opacity-0 cursor-pointer"
         >
-          <script
-            async
-            src="https://telegram.org/js/telegram-widget.js?22"
-            data-telegram-login="test_nimbus_bot"
-            data-size="large"
-            data-radius="12"
-            data-auth-url="https://app.getnimbus.io/"
-            data-request-access="write"
-          ></script>
+          <TelegramAuth />
         </div>
       </Button>
     {/if}
