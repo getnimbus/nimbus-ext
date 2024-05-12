@@ -197,7 +197,9 @@
     </div>
   </div>
 
-  <div class="max-w-[2000px] m-auto xl:w-[90%] w-[90%] xl:-mt-26 -mt-34">
+  <div
+    class="min-h-screen max-w-[2000px] m-auto xl:w-[90%] w-[90%] xl:-mt-26 -mt-34"
+  >
     <div class="bg-white rounded-[20px] xl:p-8 p-4 xl:shadow-md">
       <div
         class="border border_0000001a rounded-[20px] p-6 flex flex-col gap-4"

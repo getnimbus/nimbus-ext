@@ -57,7 +57,7 @@
 </script>
 
 <ErrorBoundary>
-  <div class="flex justify-center items-center h-screen">
+  <div class="min-h-screen flex justify-center items-center">
     <div class="p-6 w-2/3 flex flex-col gap-5 justify-center items-center">
       <div class="text-lg text-center">
         There are some problem while upgrading your plan. <br /> Add your email to
