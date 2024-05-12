@@ -690,7 +690,7 @@
   </div>
 
   <div
-    class="min-h-screen max-w-[2000px] m-auto xl:w-[90%] w-[90%] xl:-mt-26 -mt-34"
+    class="xl:min-h-screen max-w-[2000px] m-auto xl:w-[90%] w-[90%] xl:-mt-26 -mt-34"
   >
     <div
       class="custom_token_breakdown_container rounded-[20px] xl:p-8 p-3 xl:shadow-md"
