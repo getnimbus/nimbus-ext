@@ -92,7 +92,7 @@
 </script>
 
 <ErrorBoundary>
-  <div class="relative z-9">
+  <div class="min-h-screen relative z-9">
     <div
       class="max-w-[2000px] xl:min-h-screen m-auto xl:w-[90%] w-[90%] py-8 grid xl:grid-cols-6 grid-cols-1 gap-6 relative z-2"
     >
