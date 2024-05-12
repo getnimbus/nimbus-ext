@@ -136,7 +136,7 @@
 
 <ErrorBoundary>
   <div
-    class="max-w-[2000px] m-auto xl:w-[90%] w-[90%] py-8 flex flex-col gap-10"
+    class="min-h-screen max-w-[2000px] m-auto xl:w-[90%] w-[90%] py-8 flex flex-col gap-10"
   >
     <div class="flex flex-col gap-2 justify-center">
       <div class="sm:text-5xl text-4xl font-semibold text-center">

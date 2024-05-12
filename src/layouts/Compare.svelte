@@ -831,7 +831,7 @@
 
 <ErrorBoundary>
   <div
-    class="max-w-[2000px] m-auto xl:w-[90%] w-[90%] py-8 flex flex-col xl:gap-10 gap-6"
+    class="min-h-screen max-w-[2000px] m-auto xl:w-[90%] w-[90%] py-8 flex flex-col xl:gap-10 gap-6"
   >
     <div class="flex flex-col justify-center gap-2">
       <div class="font-semibold text-4xl">Optimize your portfolio</div>
