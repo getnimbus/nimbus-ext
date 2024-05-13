@@ -3,7 +3,7 @@
   import { i18n } from "~/lib/i18n";
   import { navigateTo } from "svelte-router-spa";
   import { nimbus } from "~/lib/network";
-  import { wallet, chain, typeWallet } from "~/store";
+  import { wallet, chain, typeWallet, user, isDarkMode } from "~/store";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { createQuery } from "@tanstack/svelte-query";
 
@@ -12,9 +12,11 @@
   import CountUpNumber from "~/components/CountUpNumber.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import Button from "~/components/Button.svelte";
+  import Select from "~/components/Select.svelte";
 
   import LeftArrow from "~/assets/left-arrow.svg";
   import Plus from "~/assets/plus.svg";
+  import PlusBlack from "~/assets/plus-black.svg";
 
   const MultipleLang = {
     networth: i18n("newtabPage.networth", "Net Worth"),
@@ -47,29 +49,10 @@
   };
 
   const virtualPortfolioList = async (address: string) => {
-    try {
-      const response = await nimbus.get(
-        `/address/${address}/personalize/virtual-portfolio`
-      );
-      if (response) {
-        const virtualPortfolioNameList = Object.getOwnPropertyNames(
-          response?.data
-        );
-        listVirtualPortfolio = virtualPortfolioNameList.map((item) => {
-          return {
-            portfolioName: item,
-            coins: response?.data[item].tokens.map((coin) => {
-              return {
-                coin: Number(coin?.coinId),
-                percent: Number(coin?.percent),
-              };
-            }),
-          };
-        });
-      }
-    } catch (e) {
-      console.error("e: ", e);
-    }
+    const response = await nimbus.get(
+      `/address/${address}/personalize/virtual-portfolio`
+    );
+    return response;
   };
 
   $: queryAddressVirtualPortfolio = createQuery({
@@ -80,7 +63,55 @@
     enabled: Boolean($wallet && $wallet.length !== 0),
   });
 
-  $: console.log("HELLO WORLD: ", $queryAddressVirtualPortfolio);
+  $: {
+    if (
+      !$queryAddressVirtualPortfolio.isError &&
+      $queryAddressVirtualPortfolio.data !== undefined
+    ) {
+      const virtualPortfolioNameList = Object.getOwnPropertyNames(
+        $queryAddressVirtualPortfolio?.data?.data
+      );
+      listVirtualPortfolio =
+        virtualPortfolioNameList &&
+        virtualPortfolioNameList?.map((item) => {
+          return {
+            portfolioName: item,
+            coins: $queryAddressVirtualPortfolio?.data?.data[item]?.tokens?.map(
+              (coin) => {
+                return {
+                  coin: Number(coin?.coinId),
+                  percent: Number(coin?.percent),
+                };
+              }
+            ),
+          };
+        });
+    }
+  }
+
+  let showDisableAddWallet = false;
+  let showDisabledSelectWallet = false;
+  let indexSelectedAddress = 0;
+
+  const handleSelectNextAddress = () => {
+    if (indexSelectedAddress < listVirtualPortfolio.length - 1) {
+      indexSelectedAddress = indexSelectedAddress + 1;
+
+      const selectAddress = listVirtualPortfolio[indexSelectedAddress];
+
+      selectedVirtualPortfolio = selectAddress;
+    }
+  };
+
+  const handleSelectPrevAddress = () => {
+    if (indexSelectedAddress > 0) {
+      indexSelectedAddress = indexSelectedAddress - 1;
+
+      const selectAddress = listVirtualPortfolio[indexSelectedAddress];
+
+      selectedVirtualPortfolio = selectAddress;
+    }
+  };
 </script>
 
 <ErrorBoundary>
@@ -99,15 +130,207 @@
           </div>
         </div>
 
-        <div class="flex justify-between items-center w-full -mt-10">
-          {#if listVirtualPortfolio && listVirtualPortfolio.length !== 0}
+        <div
+          class="flex lg:flex-row flex-col lg:items-center items-start justify-between gap-6"
+        >
+          <!-- desktop list virtual portfolio -->
+          <div class="hidden xl:block">
+            {#if listVirtualPortfolio && listVirtualPortfolio?.length !== 0}
+              <div class="flex items-center gap-5">
+                {#if listVirtualPortfolio.length > 5}
+                  <AnimateSharedLayout>
+                    {#each listVirtualPortfolio as item, index}
+                      <div
+                        id={item.value}
+                        class="relative xl:text-base text-2xl text-white py-1 px-2 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline"
+                        class:hover:no-underline={item.value ===
+                          selectedVirtualPortfolio?.value}
+                        on:click={() => {
+                          selectedVirtualPortfolio = {};
+                        }}
+                      >
+                        {item.value}
+                        {#if item.value === selectedVirtualPortfolio?.value}
+                          <Motion
+                            let:motion
+                            layoutId="active-pill"
+                            transition={{
+                              type: "spring",
+                              duration: 0.6,
+                            }}
+                          >
+                            <div
+                              class="absolute inset-0 rounded-full bg-[#ffffff1c]"
+                              use:motion
+                            />
+                          </Motion>
+                        {/if}
+                      </div>
+                    {/each}
+                  </AnimateSharedLayout>
+                  <div class="relative">
+                    <div
+                      class={`relative z-2 ${$user && Object.keys($user).length === 0 ? "opacity-50" : "opacity-100"}`}
+                      on:mouseenter={() => {
+                        if ($user && Object.keys($user).length === 0) {
+                          showDisabledSelectWallet = true;
+                        }
+                      }}
+                      on:mouseleave={() => {
+                        if ($user && Object.keys($user).length === 0) {
+                          showDisabledSelectWallet = false;
+                        }
+                      }}
+                    >
+                      <Select
+                        type="wallet"
+                        positionSelectList="right-0"
+                        listSelect={listVirtualPortfolio.slice(
+                          5,
+                          listVirtualPortfolio.length
+                        )}
+                        bind:selected={$wallet}
+                        disabled={$user && Object.keys($user).length === 0}
+                      />
+                    </div>
+                    {#if listVirtualPortfolio
+                      .slice(5, listVirtualPortfolio.length)
+                      .find((item) => item.value === $wallet) !== undefined}
+                      <div
+                        class="absolute inset-0 rounded-full bg-[#ffffff1c] z-1"
+                      />
+                    {/if}
+                    {#if showDisabledSelectWallet}
+                      <div
+                        class={`absolute transform left-1/2 -translate-x-1/2 ${
+                          Object.keys($user).length === 0 ? "-top-8" : "-top-12"
+                        }`}
+                        style="z-index: 2147483648;"
+                      >
+                        <div
+                          class="max-w-[360px] text-white bg-black py-1 px-2 text-xs rounded relative w-max normal-case"
+                        >
+                          Connect your wallet to select virtual portfolio
+                        </div>
+                      </div>
+                    {/if}
+                  </div>
+                  {#if listVirtualPortfolio.length > 10}
+                    <div
+                      class={`flex items-center gap-3 ${$user && Object.keys($user).length === 0 ? "opacity-50" : "opacity-100"}`}
+                    >
+                      <div
+                        class={`cursor-pointer overflow-hidden border border-white rounded-full ${
+                          indexSelectedAddress === 0 &&
+                          !($user && Object.keys($user).length === 0)
+                            ? "opacity-50"
+                            : ""
+                        }`}
+                        on:click={() => {
+                          if ($user && Object.keys($user).length === 0) {
+                            return;
+                          }
+                          handleSelectPrevAddress();
+                        }}
+                      >
+                        <div class="transform -translate-x-[1px]">
+                          <svg
+                            width="24"
+                            height="24"
+                            viewBox="0 0 20 20"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              fill="#fff"
+                              fill-rule="evenodd"
+                              d="M12.79 5.23a.75.75 0 0 1-.02 1.06L8.832 10l3.938 3.71a.75.75 0 1 1-1.04 1.08l-4.5-4.25a.75.75 0 0 1 0-1.08l4.5-4.25a.75.75 0 0 1 1.06.02Z"
+                              clip-rule="evenodd"
+                            />
+                          </svg>
+                        </div>
+                      </div>
+                      <div
+                        class={`cursor-pointer overflow-hidden border border-white rounded-full ${
+                          indexSelectedAddress ===
+                            listVirtualPortfolio.length - 1 &&
+                          !($user && Object.keys($user).length === 0)
+                            ? "opacity-50"
+                            : ""
+                        }`}
+                        on:click={() => {
+                          if ($user && Object.keys($user).length === 0) {
+                            return;
+                          }
+                          handleSelectNextAddress();
+                        }}
+                      >
+                        <div class="transform translate-x-[1px]">
+                          <svg
+                            width="24"
+                            height="24"
+                            viewBox="0 0 20 20"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              fill="#fff"
+                              fill-rule="evenodd"
+                              d="M7.21 14.77a.75.75 0 0 1 .02-1.06L11.168 10L7.23 6.29a.75.75 0 1 1 1.04-1.08l4.5 4.25a.75.75 0 0 1 0 1.08l-4.5 4.25a.75.75 0 0 1-1.06-.02Z"
+                              clip-rule="evenodd"
+                            />
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+                  {/if}
+                {:else}
+                  <AnimateSharedLayout>
+                    {#each listVirtualPortfolio as item}
+                      <div
+                        id={item.value}
+                        class="relative xl:text-base text-2xl text-white py-1 xl:pl-2 xl:pr-3 px-3 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline"
+                        class:hover:no-underline={item.value ===
+                          selectedVirtualPortfolio?.value}
+                        on:click={() => {
+                          selectedVirtualPortfolio = {};
+                        }}
+                      >
+                        {item.value}
+                        {#if item.value === selectedVirtualPortfolio?.value}
+                          <Motion
+                            let:motion
+                            layoutId="active-pill"
+                            transition={{
+                              type: "spring",
+                              duration: 0.6,
+                            }}
+                          >
+                            <div
+                              class="absolute inset-0 rounded-full bg-[#ffffff1c]"
+                              use:motion
+                            />
+                          </Motion>
+                        {/if}
+                      </div>
+                    {/each}
+                  </AnimateSharedLayout>
+                {/if}
+              </div>
+            {:else}
+              <div class="text-2xl font-medium text-white xl:text-base">
+                Empty
+              </div>
+            {/if}
+          </div>
+
+          <!-- mobile list address wallet -->
+          <!-- {#if listAddress && listAddress?.length !== 0}
             <div
-              class="relative overflow-hidden w-full flex flex-row gap-3 justify-between items-center"
-              bind:this={containerVirtual}
+              class="relative flex flex-row items-center justify-between w-full gap-3 overflow-hidden xl:hidden"
+              bind:this={container}
             >
               <div
                 class={`text-white absolute left-0 py-2 rounded-tl-lg rounded-bl-lg ${
-                  isScrollStartVirtual ? "hidden" : "block"
+                  isScrollStart ? "hidden" : "block"
                 }`}
                 style="background-image: linear-gradient(to right, rgba(156, 163, 175, 0.5) 0%, rgba(255,255,255,0) 100% );"
               >
@@ -118,59 +341,64 @@
                   width="24px"
                   viewBox="0 0 24 24"
                   class="sc-aef7b723-0 fKbUaI"
-                  ><path
+                >
+                  <path
                     d="M15 6L9 12L15 18"
                     stroke="currentColor"
                     stroke-width="2"
                     stroke-miterlimit="10"
                     stroke-linecap="round"
                     stroke-linejoin="round"
-                  /></svg
-                >
+                  />
+                </svg>
               </div>
               <div
-                class="w-max flex gap-3 overflow-x-auto whitespace-nowrap"
-                bind:this={scrollContainerVirtual}
-                on:scroll={handleScrollVirtual}
+                class="container flex gap-3 overflow-x-auto w-max whitespace-nowrap"
+                bind:this={scrollContainer}
+                on:scroll={handleScroll}
               >
-                <AnimateSharedLayout>
-                  {#each listVirtualPortfolio as item (item.portfolioName)}
-                    <div
-                      id={item.portfolioName}
-                      class="w-max flex-shrink-0 relative xl:text-lg text-2xl text-white py-1 px-3 flex items-center gap-2 rounded-[100px] cursor-pointer hover:underline"
-                      class:hover:no-underline={item ===
-                        selectedVirtualPortfolio}
-                      on:click={() => {
-                        selectedVirtualPortfolio = item;
-                      }}
-                    >
-                      <div
-                        class={`relative z-1 ${
-                          item === selectedVirtualPortfolio && "text-white"
-                        }`}
+                {#each listAddress.sort((a, b) => {
+                  if (a.type === "BUNDLE" && a.label === "Your wallets") return -1;
+                  if (b.type === "BUNDLE" && b.label === "Your wallets") return 1;
+                  return 0;
+                }) as item, index}
+                  <div
+                    id={item.value}
+                    class={`w-max flex-shrink-0 relative text-xl text-white py-1 px-3 flex items-center gap-2 rounded-[100px] ${$user && Object.keys($user).length === 0 ? "opacity-50" : "opacity-100"}`}
+                    class:hover:no-underline={item.value === $wallet}
+                    on:click={() => {
+                      if (
+                        $user &&
+                        Object.keys($user).length === 0
+                      ) {
+                        return;
+                      }
+                      if ($wallet !== item.value) {
+                        wallet.update((n) => (n = item.value));
+                      }
+                    }}
+                  >
+                    <img src={item.logo} alt="" class="w-5 h-5" />
+                    {item.label}
+                    {#if item.value === $wallet}
+                      <Motion
+                        let:motion
+                        layoutId="active-pill"
+                        transition={{ type: "spring", duration: 0.6 }}
                       >
-                        {item.portfolioName}
-                      </div>
-                      {#if item === selectedVirtualPortfolio}
-                        <Motion
-                          let:motion
-                          layoutId="active-pill"
-                          transition={{ type: "spring", duration: 0.6 }}
-                        >
-                          <div
-                            class="absolute inset-0 z-0 rounded-full bg-[#ffffff1c]"
-                            use:motion
-                          />
-                        </Motion>
-                      {/if}
-                    </div>
-                  {/each}
-                </AnimateSharedLayout>
+                        <div
+                          class="absolute inset-0 rounded-full bg-[#ffffff1c]"
+                          use:motion
+                        />
+                      </Motion>
+                    {/if}
+                  </div>
+                {/each}
               </div>
-              {#if scrollContainerVirtual?.scrollWidth >= containerVirtual?.offsetWidth}
+              {#if scrollContainer?.scrollWidth >= container?.offsetWidth}
                 <div
                   class={`text-white absolute right-0 py-2 rounded-tr-lg rounded-br-lg ${
-                    isScrollEndVirtual ? "hidden" : "block"
+                    isScrollEnd ? "hidden" : "block"
                   }`}
                   style="background-image: linear-gradient(to left,rgba(156, 163, 175, 0.5) 0%, rgba(255,255,255,0) 100%);"
                 >
@@ -181,39 +409,86 @@
                     width="24px"
                     viewBox="0 0 24 24"
                     class="sc-aef7b723-0 fKbUaI"
-                    ><path
+                  >
+                    <path
                       d="M9 6L15 12L9 18"
                       stroke="currentColor"
                       stroke-width="2"
                       stroke-miterlimit="10"
                       stroke-linecap="round"
                       stroke-linejoin="round"
-                    /></svg
-                  >
+                    />
+                  </svg>
                 </div>
               {/if}
             </div>
           {:else}
-            <div class="text-lg text-gray-400">Empty</div>
-          {/if}
-
-          <div class="w-max">
-            <Button
-              variant="tertiary"
-              on:click={() => {
-                navigateTo(
-                  `/custom-virtual-portfolio?type=${$typeWallet}&chain=${$chain}&address=${$wallet}}`
-                );
-              }}
+            <div
+              class="block text-2xl font-medium text-white xl:hidden xl:text-base"
             >
-              <img src={Plus} alt="" class="w-3 h-3" />
-              <div class="text-white">Add virtual portfolio</div>
-            </Button>
+              Empty
+            </div>
+          {/if} -->
+
+          <!-- btn add virtual portfolio -->
+          <div
+            class="relative xl:w-max lg:w-[290px] w-max flex justify-end"
+            on:mouseenter={() => {
+              if ($user && Object.keys($user).length === 0) {
+                showDisableAddWallet = true;
+              }
+            }}
+            on:mouseleave={() => {
+              if ($user && Object.keys($user).length === 0) {
+                showDisableAddWallet = false;
+              }
+            }}
+          >
+            {#if $user && Object.keys($user).length === 0}
+              <Button variant="disabled" disabled>
+                <img
+                  src={$isDarkMode ? PlusBlack : Plus}
+                  alt=""
+                  class="w-3 h-3"
+                />
+                <div class={`${$isDarkMode ? "text-gray-400" : "text-white"}`}>
+                  Add virtual portfolio
+                </div>
+              </Button>
+            {:else}
+              <Button
+                variant="tertiary"
+                on:click={() => {
+                  navigateTo(
+                    `/custom-virtual-portfolio?type=${$typeWallet}&chain=${$chain}&address=${$wallet}}`
+                  );
+                }}
+              >
+                <img src={Plus} alt="" class="w-3 h-3" />
+                <div class="text-white">Add virtual portfolio</div>
+              </Button>
+            {/if}
+
+            {#if showDisableAddWallet}
+              <div
+                class={`xl:block hidden absolute transform left-1/2 -translate-x-1/2 ${
+                  Object.keys($user).length === 0 ? "-top-8" : "-top-12"
+                }`}
+                style="z-index: 2147483648;"
+              >
+                <div
+                  class="max-w-[360px] text-white bg-black py-1 px-2 text-xs rounded relative w-max normal-case"
+                >
+                  Connect your wallet to add virtual portfolio
+                </div>
+              </div>
+            {/if}
           </div>
         </div>
 
         <div class="text-5xl font-medium text-white">Virtual Portfolio</div>
       </div>
+
       <div class="flex xl:flex-row flex-col justify-between gap-6">
         <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
           <OverviewCard title={MultipleLang.networth}>
@@ -335,7 +610,7 @@
   </div>
 </ErrorBoundary>
 
-<style>
+<style windi:preflights:global windi:safelist:global>
   .header-container {
     background-image: url("~/assets/capa.svg");
     background-color: #27326f;
