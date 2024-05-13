@@ -58,13 +58,12 @@
   let showToast: boolean = false;
   let flipEvent = null;
 
-  const client = new SuiClient({ url: getFullnodeUrl("testnet") });
+  const client = new SuiClient({ url: getFullnodeUrl("devnet") });
 
   const getRound = async () => {
     const round = await client
       .getObject({
-        id: "0x3deb4642a72d3cba7cac9dfc8ad209f7e98c85d3a3d84f6f2f909420103b1da2", // testnet
-        // id: "0x94b046b2eb2b86bf6e88f0bc538c6fdd46258c2630ba40698ec94315c12269c5", // devnet
+        id: "0xb440cf576ccf24b5c9b81a80a146eeaae9c7f09a87983769ec2d34212a434815", // devnet
         options: {
           showContent: true,
         },
@@ -90,9 +89,6 @@
     return signature;
   };
 
-  $: console.log(">> 1: ", $suiWalletInstance as WalletState);
-  $: console.log("flipEvent: ", flipEvent);
-
   const triggerFlipResult = async (type: number) => {
     if (
       ($suiWalletInstance as WalletState) &&
@@ -100,19 +96,20 @@
     ) {
       try {
         const tx = new TransactionBlock();
-        // tx.setGasPrice(20000);
         tx.setGasBudget(50000000);
         const round = await getRound();
         const signature = await getSignature(round);
+
+        // call flip function
         tx.moveCall({
           target:
-            "0x7eb5bbdd60fec4a058d57d76de27130636a75f8e8d9f4250429b11913ffc77b3::coin_flip::flip",
+            "0x86611815332fbe7670121858bd75dd0a949cf7d9578a342d8a4a916ee66285ff::coin_flip::flip",
           typeArguments: [],
           arguments: [
             tx.object(
-              "0x3deb4642a72d3cba7cac9dfc8ad209f7e98c85d3a3d84f6f2f909420103b1da2"
-            ),
-            tx.pure(type, "u64"),
+              "0xb440cf576ccf24b5c9b81a80a146eeaae9c7f09a87983769ec2d34212a434815"
+            ), // devnet
+            tx.pure(type, "u64"), // user input 0 as HEAD or 1 as TAIL
             tx.pure(bcs.string().serialize(signature).toBytes()),
           ],
         });
@@ -133,14 +130,9 @@
         const resEvent: any = res.events;
         if (resEvent.length > 0) {
           flipEvent = resEvent[0];
-          if (
-            Number(resEvent[0]?.parsedJson?.result) ===
-            Number(resEvent[0]?.parsedJson?.user_input)
-          ) {
-            console.log("it trigger");
+          if (Number(resEvent[0]?.parsedJson?.result) === type) {
             isUserWin && triggerFirework();
             openScreenResult = true;
-            // call api cộng điểm
           }
         }
         console.log("trigger execute success!!!", { res, resEvent });
@@ -371,12 +363,12 @@
         <div class="text-4xl text-[#FFD569] font-medium">Stonk Stonk</div>
         <img src={gmPoints} alt="" class="w-40 h-40" />
         <div class="text-[34px] text-white font-medium">+1000 GMs</div>
-      {:else}
+        <!-- {:else}
         <div class="text-4xl text-[#FFD569] font-medium">
           ohh...it's stink stink
         </div>
         <img src={betterLuck} alt="" class="w-40 h-40 object-contain" />
-        <div class="text-[34px] text-white font-medium">Try again...</div>
+        <div class="text-[34px] text-white font-medium">Try again...</div> -->
       {/if}
     </div>
   </div>
