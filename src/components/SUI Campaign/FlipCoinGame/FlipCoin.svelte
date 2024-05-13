@@ -10,7 +10,9 @@
   import { isDarkMode } from "~/store";
   import { triggerFirework } from "~/utils";
   import { nimbus } from "~/lib/network";
+  import { SuiConnector } from "nimbus-sui-kit";
 
+  import ReactAdapter from "~/components/ReactAdapter.svelte";
   import Button from "~/components/Button.svelte";
 
   import suiBackground from "~/assets/campaign/flipCoin/sui-background-img.png";
@@ -19,6 +21,36 @@
   import gmPoints from "~/assets/Gold4.svg";
 
   export let point;
+
+  const chains = [
+    {
+      id: "sui:mainnet",
+      name: "Mainnet",
+      rpcUrl: "https://fullnode.mainnet.sui.io",
+    },
+  ];
+
+  const onConnectSuccess = (msg) => {
+    console.log("Success connect: ", msg);
+    if ($suiWalletInstance) {
+      ($suiWalletInstance as WalletState).toggleSelect();
+    }
+  };
+
+  const onConnectError = (msg) => {
+    console.error("Error connect", msg);
+    if ($suiWalletInstance) {
+      ($suiWalletInstance as WalletState).toggleSelect();
+    }
+  };
+
+  const widgetConfig = {
+    walletFn: (wallet) => {
+      suiWalletInstance.update((n) => (n = wallet));
+    },
+    onConnectSuccess,
+    onConnectError,
+  };
 
   let toastMsg = "";
   let isSuccessToast: boolean = false;
@@ -98,7 +130,7 @@
           },
         });
 
-        const resEvent = res.events;
+        const resEvent: any = res.events;
         if (resEvent.length > 0) {
           flipEvent = resEvent[0];
           if (
@@ -269,6 +301,14 @@
     {/if}
   </div>
 </div>
+
+<ReactAdapter
+  element={SuiConnector}
+  config={widgetConfig}
+  autoConnect={false}
+  {chains}
+  integrator="svelte-example"
+/>
 
 {#if showToast}
   <div class="fixed top-3 right-3 w-full" style="z-index: 2147483648;">
