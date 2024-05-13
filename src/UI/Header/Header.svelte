@@ -555,32 +555,34 @@
   <div
     class="flex items-center justify-between gap-2 max-w-[2000px] m-auto w-[90%] cursor-pointer"
   >
-    <img
-      src={Logo}
-      alt="logo"
-      loading="lazy"
-      decoding="async"
-      class="xl:-ml-10 -ml-4 w-[177px] h-[60px] cursor-pointer"
-      on:click={() => {
-        handleUpdateNavActive("/portfolio");
-        if ($user && Object.keys($user)?.length === 0) {
-          user.update((n) => (n = {}));
-          wallet.update((n) => (n = ""));
-          chain.update((n) => (n = ""));
-          typeWallet.update((n) => (n = ""));
-          queryClient.invalidateQueries(["list-address"]);
-          navigateTo("/");
-        } else {
-          if ($wallet) {
-            navigateTo(
-              `/?tab=${$tab}&type=${$typeWallet}&chain=${$chain}&address=${$wallet}`
-            );
-          } else {
+    <a href="/">
+      <img
+        src={Logo}
+        alt="logo"
+        loading="lazy"
+        decoding="async"
+        class="xl:-ml-10 -ml-4 w-[177px] h-[60px] cursor-pointer"
+        on:click={() => {
+          handleUpdateNavActive("/portfolio");
+          if ($user && Object.keys($user)?.length === 0) {
+            user.update((n) => (n = {}));
+            wallet.update((n) => (n = ""));
+            chain.update((n) => (n = ""));
+            typeWallet.update((n) => (n = ""));
+            queryClient.invalidateQueries(["list-address"]);
             navigateTo("/");
+          } else {
+            if ($wallet) {
+              navigateTo(
+                `/?tab=${$tab}&type=${$typeWallet}&chain=${$chain}&address=${$wallet}`
+              );
+            } else {
+              navigateTo("/");
+            }
           }
-        }
-      }}
-    />
+        }}
+      />
+    </a>
 
     <div class="flex items-center gap-2">
       <div
