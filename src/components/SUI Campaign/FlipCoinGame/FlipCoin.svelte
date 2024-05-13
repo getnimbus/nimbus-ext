@@ -164,7 +164,6 @@
     isSuccessToast = false;
   };
 
-  let finishedQuest = false;
   let openScreenResult = false;
   let startFlip = false;
   let linkedSuiWallet = false;
@@ -184,14 +183,7 @@
   });
 
   const handleStartFlip = async () => {
-    if (!finishedQuest) {
-      toastMsg = "Completed all the Starter Quests to Flip!";
-      isSuccessToast = false;
-      trigger();
-      return;
-    }
-
-    if (finishedQuest && !$queryFlipResult?.data?.canPlay) {
+    if (!$queryFlipResult?.data?.canPlay) {
       toastMsg =
         "Your flipping capacity has reached its limit! You can only flip 5 times a day.";
       isSuccessToast = false;
@@ -340,6 +332,8 @@
       </div>
     {/if}
   </div>
+
+  <div class="text-sm">Note: Max 5 tx/day</div>
 </div>
 
 <ReactAdapter
