@@ -1,9 +1,22 @@
 <script>
   import { isDarkMode } from "~/store";
 
+  import { createQuery } from "@tanstack/svelte-query";
+  import { getFlipCheck } from "~/lib/queryAPI";
+
   import gmPoints from "~/assets/Gold4.svg";
+  import Loading from "~/components/Loading.svelte";
 
   const fakeData = [];
+
+  $: checkFlip = createQuery({
+    queryKey: ["check-flip"],
+    queryFn: getFlipCheck,
+    staleTime: Infinity,
+    retry: false,
+  });
+
+  $: console.log("object: ", $checkFlip.data);
 </script>
 
 <div>
@@ -33,19 +46,37 @@
           </tr>
         </thead>
 
-        {#each fakeData as item}
+        {#if $checkFlip.isLoading}
           <tbody>
             <tr>
-              <td class="text-center py-2">1st April 2024</td>
-              <td class="text-center py-2">
-                <div class="flex justify-center items-center gap-1">
-                  <img src={gmPoints} alt="" class="w-3 h-3" />
-                  <div>1000</div>
-                </div>
+              <td colspan="2">
+                <div class="flex justify-center w-full"><Loading /></div>
               </td>
             </tr>
           </tbody>
-        {/each}
+        {:else if $checkFlip?.data?.history.length === 0}
+          <tbody>
+            <tr>
+              <td colspan="2">
+                <div class="text-center w-full text-gray-400">Empty</div>
+              </td>
+            </tr>
+          </tbody>
+        {:else}
+          {#each $checkFlip?.data?.history as item}
+            <tbody>
+              <tr>
+                <td class="text-center py-2">1st April 2024</td>
+                <td class="text-center py-2">
+                  <div class="flex justify-center items-center gap-1">
+                    <img src={gmPoints} alt="" class="w-3 h-3" />
+                    <div>1000</div>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          {/each}
+        {/if}
       </table>
     </div>
   </div>
