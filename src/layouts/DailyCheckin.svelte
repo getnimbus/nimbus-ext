@@ -8,6 +8,7 @@
   import mixpanel from "mixpanel-browser";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
+  import { getUserInfo } from "~/lib/queryAPI";
 
   import Icon from "~/UI/Option/Icon.svelte";
   import TabQuests from "~/UI/DailyCheckin/TabQuests.svelte";
@@ -22,7 +23,6 @@
 
   import goldImg from "~/assets/Gold4.svg";
   import wheelIcon from "~/assets/wheel-icon.svg";
-  import { getUserInfo } from "~/lib/queryAPI";
 
   export let currentRoute;
 
