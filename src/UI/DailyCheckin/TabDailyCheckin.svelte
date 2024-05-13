@@ -524,17 +524,17 @@
     queryClient.invalidateQueries(["users-me"]);
   };
 
-  $: {
-    if (
-      !$queryDailyCheckin.isLoading &&
-      currentRoute &&
-      currentRoute.name === "/daily-checkin" &&
-      !localStorage.getItem("view-checkin-tour")
-    ) {
-      driveCheckin().drive();
-      localStorage.setItem("view-checkin-tour", "true");
-    }
-  }
+  // $: {
+  //   if (
+  //     !$queryDailyCheckin.isLoading &&
+  //     currentRoute &&
+  //     currentRoute.name === "/daily-checkin" &&
+  //     !localStorage.getItem("view-checkin-tour")
+  //   ) {
+  //     driveCheckin().drive();
+  //     localStorage.setItem("view-checkin-tour", "true");
+  //   }
+  // }
 
   $: queryUserInfo = createQuery({
     queryKey: ["users-me"],
