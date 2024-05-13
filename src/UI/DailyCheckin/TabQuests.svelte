@@ -94,6 +94,9 @@
   }
 
   $: twitterUsername = socialData.find((item) => item.type === "twitter")?.name;
+
+  $: queryPositionAddress =
+    socialData.find((item) => item.chain === "MOVE")?.uid || $userPublicAddress;
 </script>
 
 {#if partnerQuestId === ""}
@@ -238,7 +241,11 @@
       </a>
     </div>
 
-    <PartnerQuestDetail {partnersDataList} id={partnerQuestId} />
+    <PartnerQuestDetail
+      {partnersDataList}
+      id={partnerQuestId}
+      {queryPositionAddress}
+    />
   </div>
 {/if}
 
