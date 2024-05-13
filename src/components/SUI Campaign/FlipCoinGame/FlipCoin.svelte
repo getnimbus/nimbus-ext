@@ -5,32 +5,71 @@
   import { bcs } from "@mysten/bcs";
   import { getFullnodeUrl, SuiClient } from "@mysten/sui.js/client";
   import axios from "axios";
+  import { createQuery, useQueryClient } from "@tanstack/svelte-query";
   import type { WalletState } from "nimbus-sui-kit";
+  import { SuiConnector } from "nimbus-sui-kit";
+
   import { suiWalletInstance } from "~/store";
   import { isDarkMode } from "~/store";
   import { triggerFirework } from "~/utils";
   import { nimbus } from "~/lib/network";
 
+  import ReactAdapter from "~/components/ReactAdapter.svelte";
   import Button from "~/components/Button.svelte";
 
   import suiBackground from "~/assets/campaign/flipCoin/sui-background-img.png";
   import betterLuck from "~/assets/campaign/flipCoin/better-luck.png";
   import flipCoin2 from "~/assets/campaign/flipCoin/flip-coin2.png";
   import gmPoints from "~/assets/Gold4.svg";
+  import { getFlipCheck, getLinkData } from "~/lib/queryAPI";
 
   export let point;
+
+  const chains = [
+    {
+      id: "sui:mainnet",
+      name: "Mainnet",
+      rpcUrl: "https://fullnode.mainnet.sui.io",
+    },
+  ];
+
+  const queryClient = useQueryClient();
+
+  const onConnectSuccess = (msg) => {
+    console.log("Success connect: ", msg);
+    if ($suiWalletInstance) {
+      ($suiWalletInstance as WalletState).toggleSelect();
+    }
+  };
+
+  const onConnectError = (msg) => {
+    console.error("Error connect", msg);
+    if ($suiWalletInstance) {
+      ($suiWalletInstance as WalletState).toggleSelect();
+    }
+  };
+
+  const widgetConfig = {
+    walletFn: (wallet) => {
+      suiWalletInstance.update((n) => (n = wallet));
+    },
+    onConnectSuccess,
+    onConnectError,
+  };
 
   let toastMsg = "";
   let isSuccessToast: boolean = false;
   let counter = 3;
   let showToast: boolean = false;
+  let isUserWin = false;
 
-  const client = new SuiClient({ url: getFullnodeUrl("testnet") });
+  const client = new SuiClient({ url: getFullnodeUrl("mainnet") });
 
   const getRound = async () => {
     const round = await client
       .getObject({
-        id: "0x3deb4642a72d3cba7cac9dfc8ad209f7e98c85d3a3d84f6f2f909420103b1da2",
+        // id: "0xb440cf576ccf24b5c9b81a80a146eeaae9c7f09a87983769ec2d34212a434815", // devnet
+        id: "0xfc94a9e689692098ad6c81cfe12b6ece40f3b8a354dd79a1a4ba47110408efcd", // mainnet
         options: {
           showContent: true,
         },
@@ -48,7 +87,10 @@
       .get(
         `https://drand.cloudflare.com/52db9ba70e0cc0f6eaf7803dd07447a1f5477735fd3f661792ba94600c84e971/public/${round}`
       )
-      .then((res) => res?.data?.signature);
+      .then((res) => res?.data?.signature)
+      .catch((err) => {
+        console.log("signature error: ", err);
+      });
 
     return signature;
   };
@@ -60,34 +102,51 @@
     ) {
       try {
         const tx = new TransactionBlock();
-        tx.setGasPrice(20000);
         tx.setGasBudget(50000000);
         const round = await getRound();
         const signature = await getSignature(round);
+
+        // call flip function
         tx.moveCall({
+          // target:
+          //   "0x86611815332fbe7670121858bd75dd0a949cf7d9578a342d8a4a916ee66285ff::coin_flip::flip", // devnet
           target:
-            "0x7eb5bbdd60fec4a058d57d76de27130636a75f8e8d9f4250429b11913ffc77b3::coin_flip::flip",
+            "0x5d20579940a0c071a8849bece0361c24a0c5296c1051c1648ec64a4f0b3975b8::coin_flip::flip", // mainnet
           typeArguments: [],
           arguments: [
+            // tx.object(
+            //   "0xb440cf576ccf24b5c9b81a80a146eeaae9c7f09a87983769ec2d34212a434815"
+            // ), // devnet
             tx.object(
-              "0x3deb4642a72d3cba7cac9dfc8ad209f7e98c85d3a3d84f6f2f909420103b1da2"
-            ),
+              "0xfc94a9e689692098ad6c81cfe12b6ece40f3b8a354dd79a1a4ba47110408efcd"
+            ), // mainnet
             tx.pure(type, "u64"),
             tx.pure(bcs.string().serialize(signature).toBytes()),
           ],
         });
 
-        console.log("trigger execute!!!");
         const res = await (
           $suiWalletInstance as WalletState
         ).signAndExecuteTransactionBlock({
           transactionBlock: tx,
+          options: {
+            showInput: true,
+            showEffects: true,
+            showEvents: true,
+            showObjectChanges: true,
+            showBalanceChanges: true,
+          },
         });
-        console.log("trigger execute success!!!", res);
 
-        // trigger the api in here
-        isUserWin && triggerFirework();
-        openScreenResult = true;
+        if (Number(res.events[0]?.parsedJson?.result) === type) {
+          isUserWin = true;
+          triggerFirework();
+          openScreenResult = true;
+        } else {
+          isUserWin = false;
+          openScreenResult = true;
+        }
+        queryClient?.invalidateQueries(["check-flip"]);
       } catch (error) {
         console.log("err: ", error);
       }
@@ -110,9 +169,23 @@
   let finishedQuest = false;
   let openScreenResult = false;
   let startFlip = false; // swipe to flip
-  let isUserWin = true; // state user win or lose
+  let linkedSuiWallet = false;
 
-  const handleStartFlip = () => {
+  $: queryLinkSocial = createQuery({
+    queryKey: ["link-socials"],
+    queryFn: getLinkData,
+    staleTime: Infinity,
+    retry: false,
+  });
+
+  $: checkFlip = createQuery({
+    queryKey: ["check-flip"],
+    queryFn: getFlipCheck,
+    staleTime: Infinity,
+    retry: false,
+  });
+
+  const handleStartFlip = async () => {
     if (!finishedQuest) {
       toastMsg = "Completed all the Start Quest to Flip!";
       isSuccessToast = false;
@@ -120,15 +193,46 @@
       return;
     }
 
-    if (
-      ($suiWalletInstance as WalletState) &&
-      ($suiWalletInstance as WalletState).connected
-    ) {
-      startFlip = true;
-    } else {
-      handleSUIAuth();
+    if (finishedQuest && !$checkFlip?.data?.canPlay) {
+      toastMsg =
+        "Your flipping capacity has reached its limit! You can only flip 5 times a day.";
+      isSuccessToast = false;
+      trigger();
+      return;
+    }
+
+    if ($suiWalletInstance as WalletState) {
+      if (($suiWalletInstance as WalletState).connected) {
+        startFlip = true;
+      } else {
+        handleSUIAuth();
+      }
     }
   };
+
+  $: {
+    const checkLinkSuiWallet = $queryLinkSocial?.data?.data.filter(
+      (item) => item?.chain === "MOVE"
+    );
+
+    if (
+      checkLinkSuiWallet.length > 0 &&
+      ($suiWalletInstance as WalletState)?.address !== undefined
+    ) {
+      if (
+        checkLinkSuiWallet[0]?.uid !==
+        ($suiWalletInstance as WalletState)?.address
+      ) {
+        toastMsg = "Your have to link your account to your Sui wallet first!";
+        isSuccessToast = false;
+        linkedSuiWallet = false;
+        trigger();
+        ($suiWalletInstance as WalletState)?.disconnect();
+      } else {
+        linkedSuiWallet = true;
+      }
+    }
+  }
 
   const handleSUIAuth = async () => {
     try {
@@ -204,31 +308,16 @@
     class="bg-[#424C81] text-white rounded-md flex flex-col items-center justify-center py-2 px-20 relative z-2"
   >
     <div class="text-2xl">Rewards</div>
-
     <div class="flex items-center gap-2 py-2">
       <div class="p-2 rounded-[10px] bg-[#27326F]">
         <img src={gmPoints} alt="" class="h-7 w-7" />
       </div>
-      <div class="sm:text-[44px] text-2xl font-medium">500</div>
+      <div class="sm:text-[44px] text-2xl font-medium">1000</div>
     </div>
   </div>
 
   <div class="relative z-2 w-full">
-    {#if !startFlip}
-      <div class="w-max mx-auto">
-        <Button
-          variant="tertiary"
-          on:click={() => {
-            // handleStartFlip();
-          }}
-        >
-          <div class="font-medium sm:text-2xl text-lg py-4 px-5">
-            <!-- Flip Now 👑 -->
-            🔒
-          </div>
-        </Button>
-      </div>
-    {:else}
+    {#if startFlip && $checkFlip?.data?.canPlay && linkedSuiWallet}
       <div class="flex justify-center items-center gap-4">
         <button
           class="rounded-[12px] text-white bg-[#FFB800] w-full py-4 px-5 font-medium sm:text-2xl text-lg max-w-[140px]"
@@ -243,9 +332,25 @@
           Tail
         </button>
       </div>
+    {:else}
+      <div class="w-max mx-auto">
+        <Button variant="tertiary" on:click={handleStartFlip}>
+          <div class="font-medium sm:text-2xl text-lg py-4 px-5">
+            Flip Now 👑
+          </div>
+        </Button>
+      </div>
     {/if}
   </div>
 </div>
+
+<ReactAdapter
+  element={SuiConnector}
+  config={widgetConfig}
+  autoConnect={false}
+  {chains}
+  integrator="svelte-example"
+/>
 
 {#if showToast}
   <div class="fixed top-3 right-3 w-full" style="z-index: 2147483648;">
