@@ -6,7 +6,7 @@
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
   import dayjs from "dayjs";
-  import { isDarkMode } from "~/store";
+  import { isDarkMode, typeWallet, wallet, chain } from "~/store";
 
   import Tooltip from "~/components/Tooltip.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
@@ -70,7 +70,7 @@
   const virtualPortfolioList = async () => {
     try {
       const response = await nimbus.get(
-        `/address/${selectedWallet}/personalize/virtual-portflio`
+        `/address/${selectedWallet}/personalize/virtual-portfolio`
       );
       if (response) {
         const virtualPortfolioNameList = Object.getOwnPropertyNames(
@@ -108,12 +108,12 @@
       let response;
       if (type === "edit") {
         response = await nimbus.put(
-          `/address/${selectedWallet}/personalize/virtual-portflio?portfolioName=${selectedVirtualPortfolio.portfolioName}`,
+          `/address/${selectedWallet}/personalize/virtual-portfolio?portfolioName=${selectedVirtualPortfolio?.portfolioName}`,
           data
         );
       } else {
         response = await nimbus.post(
-          `/address/${selectedWallet}/personalize/virtual-portflio`,
+          `/address/${selectedWallet}/personalize/virtual-portfolio`,
           data
         );
       }
@@ -141,7 +141,7 @@
   const handleDelete = async () => {
     try {
       const response = await nimbus.delete(
-        `/address/${selectedWallet}/personalize/virtual-portflio?portfolioName=${selectedVirtualPortfolio?.portfolioName}`,
+        `/address/${selectedWallet}/personalize/virtual-portfolio?portfolioName=${selectedVirtualPortfolio?.portfolioName}`,
         {}
       );
       if (response) {
@@ -168,11 +168,13 @@
           <div
             class="flex items-center gap-1 text-white cursor-pointer"
             on:click={() => {
-              navigateTo("/");
+              navigateTo(
+                `/virtual-portfolio?type=${$typeWallet}&chain=${$chain}&address=${$wallet}`
+              );
             }}
           >
             <img src={LeftArrow} alt="" class="xl:w-5 xl:h-5 w-7 h-7" />
-            <div class="xl:text-sm text-2xl font-medium">Portfolio</div>
+            <div class="xl:text-sm text-2xl font-medium">Virtual Portfolio</div>
           </div>
         </div>
         <div class="flex items-center justify-between">

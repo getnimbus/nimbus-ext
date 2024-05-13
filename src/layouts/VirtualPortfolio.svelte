@@ -1,9 +1,11 @@
 <script lang="ts">
+  import { onMount } from "svelte";
   import { i18n } from "~/lib/i18n";
   import { navigateTo } from "svelte-router-spa";
   import { nimbus } from "~/lib/network";
-  import { wallet, chain } from "~/store";
+  import { wallet, chain, typeWallet } from "~/store";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
+  import { createQuery } from "@tanstack/svelte-query";
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import OverviewCard from "~/components/OverviewCard.svelte";
@@ -29,25 +31,34 @@
   let isScrollEndVirtual = false;
   let containerVirtual;
 
+  onMount(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const addressParams = urlParams.get("address");
+
+    if (addressParams) {
+      wallet.update((n) => (n = addressParams));
+    }
+  });
+
   const handleScrollVirtual = () => {
     const { scrollLeft, scrollWidth, clientWidth } = scrollContainerVirtual;
     isScrollStartVirtual = scrollLeft === 0;
     isScrollEndVirtual = scrollLeft + clientWidth >= scrollWidth - 1;
   };
 
-  const virtualPortfolioList = async () => {
+  const virtualPortfolioList = async (address: string) => {
     try {
       const response = await nimbus.get(
-        `/address/${$wallet}/personalize/virtual-portflio`
+        `/address/${address}/personalize/virtual-portfolio`
       );
       if (response) {
         const virtualPortfolioNameList = Object.getOwnPropertyNames(
-          response.data
+          response?.data
         );
         listVirtualPortfolio = virtualPortfolioNameList.map((item) => {
           return {
             portfolioName: item,
-            coins: response.data[item].tokens.map((coin) => {
+            coins: response?.data[item].tokens.map((coin) => {
               return {
                 coin: Number(coin?.coinId),
                 percent: Number(coin?.percent),
@@ -61,11 +72,15 @@
     }
   };
 
-  $: {
-    if ($wallet) {
-      virtualPortfolioList();
-    }
-  }
+  $: queryAddressVirtualPortfolio = createQuery({
+    queryKey: ["list-virtual-portfolio-address", $wallet],
+    queryFn: () => virtualPortfolioList($wallet),
+    staleTime: Infinity,
+    retry: false,
+    enabled: Boolean($wallet && $wallet.length !== 0),
+  });
+
+  $: console.log("HELLO WORLD: ", $queryAddressVirtualPortfolio);
 </script>
 
 <ErrorBoundary>
@@ -76,13 +91,14 @@
           <div
             class="flex items-center gap-1 text-white cursor-pointer"
             on:click={() => {
-              navigateTo("/analytic");
+              navigateTo("/");
             }}
           >
             <img src={LeftArrow} alt="" class="xl:w-5 xl:h-5 w-7 h-7" />
-            <div class="xl:text-sm text-2xl font-medium">Analytics</div>
+            <div class="xl:text-sm text-2xl font-medium">Portfolio</div>
           </div>
         </div>
+
         <div class="flex justify-between items-center w-full -mt-10">
           {#if listVirtualPortfolio && listVirtualPortfolio.length !== 0}
             <div
@@ -180,14 +196,13 @@
           {:else}
             <div class="text-lg text-gray-400">Empty</div>
           {/if}
+
           <div class="w-max">
             <Button
               variant="tertiary"
               on:click={() => {
                 navigateTo(
-                  `/custom-virtual-portfolio?chain=${encodeURIComponent(
-                    $chain
-                  )}&address=${encodeURIComponent($chain)}`
+                  `/custom-virtual-portfolio?type=${$typeWallet}&chain=${$chain}&address=${$wallet}}`
                 );
               }}
             >
