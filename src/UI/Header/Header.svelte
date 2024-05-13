@@ -63,13 +63,13 @@
   import WhaleIcon from "~/assets/whale.svg";
   import AnalyticIcon from "~/assets/analytic.svg";
   import TransactionsIcon from "~/assets/transactions.svg";
-  import QuestsIcon from "~/assets/quests.svg";
   import SettingsIcon from "~/assets/settings.svg";
   import Search from "~/assets/search.svg";
   import SearchBlack from "~/assets/search-black.svg";
   import Crown from "~/assets/crown.svg";
   import Chat from "~/assets/chat.svg";
   import User from "~/assets/user.png";
+  import gmPoints from "~/assets/Gold4.svg";
   import goldImg from "~/assets/Gold4.svg";
   import Bell from "~/assets/bell.svg";
   import ChangeLogIcon from "~/assets/change-log.svg";
@@ -671,7 +671,7 @@
             navigateTo("/daily-checkin");
           }}
         >
-          <img src={QuestsIcon} alt="" width="20" height="20" />
+          <img src={gmPoints} alt="" width="20" height="20" />
           <span class="text-sm font-medium text-white xl:text-base">
             Quests
           </span>
@@ -1077,7 +1077,7 @@
                 navigateTo("/daily-checkin");
               }}
             >
-              <img src={QuestsIcon} alt="" width="26" height="26" />
+              <img src={gmPoints} alt="" width="26" height="26" />
               <span class="text-xl font-medium">Quests</span>
             </div>
 
