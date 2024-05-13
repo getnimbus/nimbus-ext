@@ -290,7 +290,7 @@
       $walletStore.disconnect();
 
       localStorage.removeItem("ton_token");
-      if ($tonConnector.connected) {
+      if ($tonConnector?.connected) {
         $tonConnector.disconnect();
       }
       tonConnector.update((n) => (n = null));

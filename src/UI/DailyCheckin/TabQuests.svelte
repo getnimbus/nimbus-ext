@@ -94,6 +94,9 @@
   }
 
   $: twitterUsername = socialData.find((item) => item.type === "twitter")?.name;
+
+  $: queryPositionAddress =
+    socialData.find((item) => item.chain === "MOVE")?.uid || $userPublicAddress;
 </script>
 
 {#if partnerQuestId === ""}
@@ -178,9 +181,7 @@
         </div>
       </div>
 
-      <div class="text-lg">Coming soon 🚀</div>
-
-      <!-- <div class="flex flex-wrap gap-6">
+      <div class="flex flex-wrap gap-6">
         {#if $queryCampaignPartnerList.isFetching}
           <Loading />
         {:else}
@@ -188,7 +189,7 @@
             <PartnerQuestCard {data} {handleUpdatePartnerQuestsId} />
           {/each}
         {/if}
-      </div> -->
+      </div>
     </div>
   </div>
 {:else}
@@ -240,7 +241,11 @@
       </a>
     </div>
 
-    <PartnerQuestDetail {partnersDataList} id={partnerQuestId} />
+    <PartnerQuestDetail
+      {partnersDataList}
+      id={partnerQuestId}
+      {queryPositionAddress}
+    />
   </div>
 {/if}
 
