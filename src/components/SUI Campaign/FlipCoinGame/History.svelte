@@ -1,18 +1,29 @@
 <script>
   import { isDarkMode } from "~/store";
-
   import { createQuery } from "@tanstack/svelte-query";
   import { getFlipCheck } from "~/lib/queryAPI";
+  import dayjs from "dayjs";
 
   import gmPoints from "~/assets/Gold4.svg";
-  import Loading from "~/components/Loading.svelte";
 
-  $: checkFlip = createQuery({
+  let flipHistoryData = [];
+
+  $: queryFlipResult = createQuery({
     queryKey: ["check-flip"],
-    queryFn: getFlipCheck,
+    queryFn: () => getFlipCheck(),
     staleTime: Infinity,
     retry: false,
   });
+
+  $: {
+    if (
+      !$queryFlipResult.isError &&
+      $queryFlipResult.data !== undefined &&
+      $queryFlipResult?.data?.history?.length !== 0
+    ) {
+      flipHistoryData = $queryFlipResult?.data?.history;
+    }
+  }
 </script>
 
 <div>
@@ -37,42 +48,40 @@
       <table class="w-full">
         <thead>
           <tr>
-            <th class="py-2">Time</th>
-            <th class="py-2">Reward</th>
+            <th class="py-2 text-xs uppercase font-medium">Time</th>
+            <th class="py-2 text-xs uppercase font-medium">Reward</th>
           </tr>
         </thead>
 
-        {#if $checkFlip.isLoading}
-          <tbody>
+        <tbody>
+          {#if flipHistoryData.length === 0}
             <tr>
               <td colspan="2">
-                <div class="flex justify-center w-full"><Loading /></div>
+                <div
+                  class="flex justify-center items-center h-full py-4 px-3 text-base text-gray-400"
+                >
+                  Empty
+                </div>
               </td>
             </tr>
-          </tbody>
-        {:else if $checkFlip?.data?.history.length === 0}
-          <tbody>
-            <tr>
-              <td colspan="2">
-                <div class="text-center w-full text-gray-400">Empty</div>
-              </td>
-            </tr>
-          </tbody>
-        {:else}
-          {#each $checkFlip?.data?.history as item}
-            <tbody>
+          {:else}
+            {#each flipHistoryData as item}
               <tr>
-                <td class="text-center py-2">1st April 2024</td>
+                <td class="text-center py-2 text-sm font-medium uppercase">
+                  {dayjs(item?.actualTime).format("YYYY-MM-DD")}</td
+                >
                 <td class="text-center py-2">
                   <div class="flex justify-center items-center gap-1">
                     <img src={gmPoints} alt="" class="w-3 h-3" />
-                    <div>1000</div>
+                    <div class="text-sm font-medium uppercase">
+                      {item?.point}
+                    </div>
                   </div>
                 </td>
               </tr>
-            </tbody>
-          {/each}
-        {/if}
+            {/each}
+          {/if}
+        </tbody>
       </table>
     </div>
   </div>

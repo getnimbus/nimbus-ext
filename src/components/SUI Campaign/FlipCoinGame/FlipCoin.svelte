@@ -8,11 +8,11 @@
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
   import type { WalletState } from "nimbus-sui-kit";
   import { SuiConnector } from "nimbus-sui-kit";
-
   import { suiWalletInstance } from "~/store";
   import { isDarkMode } from "~/store";
   import { triggerFirework } from "~/utils";
   import { nimbus } from "~/lib/network";
+  import { getFlipCheck, getLinkData } from "~/lib/queryAPI";
 
   import ReactAdapter from "~/components/ReactAdapter.svelte";
   import Button from "~/components/Button.svelte";
@@ -21,9 +21,6 @@
   import betterLuck from "~/assets/campaign/flipCoin/better-luck.png";
   import flipCoin2 from "~/assets/campaign/flipCoin/flip-coin2.png";
   import gmPoints from "~/assets/Gold4.svg";
-  import { getFlipCheck, getLinkData } from "~/lib/queryAPI";
-
-  export let point;
 
   const chains = [
     {
@@ -125,7 +122,7 @@
           ],
         });
 
-        const res = await (
+        const res: any = await (
           $suiWalletInstance as WalletState
         ).signAndExecuteTransactionBlock({
           transactionBlock: tx,
@@ -147,6 +144,7 @@
           openScreenResult = true;
         }
         queryClient?.invalidateQueries(["check-flip"]);
+        queryClient?.invalidateQueries(["daily-checkin"]);
       } catch (error) {
         console.log("err: ", error);
       }
@@ -168,32 +166,32 @@
 
   let finishedQuest = false;
   let openScreenResult = false;
-  let startFlip = false; // swipe to flip
+  let startFlip = false;
   let linkedSuiWallet = false;
 
   $: queryLinkSocial = createQuery({
     queryKey: ["link-socials"],
-    queryFn: getLinkData,
+    queryFn: () => getLinkData(),
     staleTime: Infinity,
     retry: false,
   });
 
-  $: checkFlip = createQuery({
+  $: queryFlipResult = createQuery({
     queryKey: ["check-flip"],
-    queryFn: getFlipCheck,
+    queryFn: () => getFlipCheck(),
     staleTime: Infinity,
     retry: false,
   });
 
   const handleStartFlip = async () => {
     if (!finishedQuest) {
-      toastMsg = "Completed all the Start Quest to Flip!";
+      toastMsg = "Completed all the Starter Quests to Flip!";
       isSuccessToast = false;
       trigger();
       return;
     }
 
-    if (finishedQuest && !$checkFlip?.data?.canPlay) {
+    if (finishedQuest && !$queryFlipResult?.data?.canPlay) {
       toastMsg =
         "Your flipping capacity has reached its limit! You can only flip 5 times a day.";
       isSuccessToast = false;
@@ -317,7 +315,7 @@
   </div>
 
   <div class="relative z-2 w-full">
-    {#if startFlip && $checkFlip?.data?.canPlay && linkedSuiWallet}
+    {#if startFlip && $queryFlipResult?.data?.canPlay && linkedSuiWallet}
       <div class="flex justify-center items-center gap-4">
         <button
           class="rounded-[12px] text-white bg-[#FFB800] w-full py-4 px-5 font-medium sm:text-2xl text-lg max-w-[140px]"

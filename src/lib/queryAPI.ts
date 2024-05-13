@@ -69,8 +69,7 @@ export const getOverview = async (wallet, chain, validatedAccount) => {
   }
 
   const response: any = await nimbus.get(
-    `/v2/address/${wallet}/overview?chain=${
-      addressChain === "BUNDLE" ? "" : addressChain
+    `/v2/address/${wallet}/overview?chain=${addressChain === "BUNDLE" ? "" : addressChain
     }`
   );
   return response.data;
@@ -84,8 +83,7 @@ export const getHoldingToken = async (wallet, chain, validatedAccount) => {
   }
 
   const response: any = await nimbus.get(
-    `/v2/address/${wallet}/holding?chain=${
-      addressChain === "BUNDLE" ? "" : addressChain
+    `/v2/address/${wallet}/holding?chain=${addressChain === "BUNDLE" ? "" : addressChain
     }`
   );
   return response.data;
@@ -99,8 +97,7 @@ export const getVaults = async (wallet, chain, validatedAccount) => {
   }
 
   const response: any = await nimbus.get(
-    `/v2/investment/${wallet}/vaults?chain=${
-      addressChain === "BUNDLE" ? "" : addressChain
+    `/v2/investment/${wallet}/vaults?chain=${addressChain === "BUNDLE" ? "" : addressChain
     }`
   );
   return response?.data;
@@ -114,8 +111,7 @@ export const getHoldingNFT = async (wallet, chain, validatedAccount) => {
   }
 
   const response: any = await nimbus.get(
-    `/v2/address/${wallet}/nft-holding?chain=${
-      addressChain === "BUNDLE" ? "" : addressChain
+    `/v2/address/${wallet}/nft-holding?chain=${addressChain === "BUNDLE" ? "" : addressChain
     }`
   );
   return response.data;
@@ -132,7 +128,7 @@ export const handleGetDataDailyCheckin = async () => {
 };
 
 export const getFlipCheck = async () => {
-  const response = await nimbus.get(`/v2/games/flip/check`);
+  const response: any = await nimbus.get(`/v2/games/flip/check`);
   return response?.data;
 };
 
