@@ -241,16 +241,18 @@
       isDisabledCheckin = $queryDailyCheckin?.data?.checkinable;
       dataCheckinHistory = $queryDailyCheckin?.data?.checkinLogs;
       lastMonthWinners = $queryDailyCheckin?.data?.lastMonthWinners;
-      quests = $queryDailyCheckin?.data?.quests.map((item) => {
-        const selectedLogs = dataCheckinHistory
-          .filter((log) => log.type === "QUEST" && log.note !== "id-generate")
-          .find((log) => log.note === item.id);
+      quests = $queryDailyCheckin?.data?.quests
+        ?.filter((item) => item.status === "ACTIVE")
+        ?.map((item) => {
+          const selectedLogs = dataCheckinHistory
+            .filter((log) => log.type === "QUEST" && log.note !== "id-generate")
+            .find((log) => log.note === item.id);
 
-        return {
-          ...item,
-          isDone: Boolean(selectedLogs),
-        };
-      });
+          return {
+            ...item,
+            isDone: Boolean(selectedLogs),
+          };
+        });
     }
   }
 

@@ -224,7 +224,7 @@
             </td>
           </tr>
         {:else}
-          {#each dataQuestsBoard as data}
+          {#each dataQuestsBoard?.filter((item) => item.status === "ACTIVE") as data}
             <tr
               class={`group transition-all ${
                 $isDarkMode ? "text-gray-400" : "text-[#666666]"
