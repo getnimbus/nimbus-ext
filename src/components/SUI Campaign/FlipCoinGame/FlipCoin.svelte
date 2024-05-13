@@ -201,21 +201,14 @@
       trigger();
       return;
     }
-    if (!linkedSuiWallet) {
-      toastMsg = "Your have to link your account to your Sui wallet first!";
-      isSuccessToast = false;
-      trigger();
-      return;
-    }
     // }
 
-    if (
-      ($suiWalletInstance as WalletState) &&
-      ($suiWalletInstance as WalletState).connected
-    ) {
-      startFlip = true;
-    } else {
-      handleSUIAuth();
+    if ($suiWalletInstance as WalletState) {
+      if (($suiWalletInstance as WalletState).connected) {
+        startFlip = true;
+      } else {
+        handleSUIAuth();
+      }
     }
   };
 
@@ -223,10 +216,27 @@
     const checkLinkSuiWallet = $queryLinkSocial?.data?.data.filter(
       (item) => item?.chain === "MOVE"
     );
-    if (checkLinkSuiWallet.length > 0) {
-      linkedSuiWallet = true;
+
+    if (
+      checkLinkSuiWallet.length > 0 &&
+      ($suiWalletInstance as WalletState)?.address !== undefined
+    ) {
+      if (
+        checkLinkSuiWallet[0]?.uid !==
+        ($suiWalletInstance as WalletState)?.address
+      ) {
+        toastMsg = "Your have to link your account to your Sui wallet first!";
+        isSuccessToast = false;
+        linkedSuiWallet = false;
+        trigger();
+        ($suiWalletInstance as WalletState)?.disconnect();
+      } else {
+        linkedSuiWallet = true;
+      }
     }
   }
+
+  $: console.log("suiWalletInstance: ", $suiWalletInstance as WalletState);
 
   const handleSUIAuth = async () => {
     try {
@@ -311,7 +321,7 @@
   </div>
 
   <div class="relative z-2 w-full">
-    {#if startFlip && $checkFlip?.data?.canPlay}
+    {#if startFlip && $checkFlip?.data?.canPlay && linkedSuiWallet}
       <div class="flex justify-center items-center gap-4">
         <button
           class="rounded-[12px] text-white bg-[#FFB800] w-full py-4 px-5 font-medium sm:text-2xl text-lg max-w-[140px]"
