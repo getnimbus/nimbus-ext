@@ -311,6 +311,7 @@
 
       queryClient?.invalidateQueries(["list-address"]);
       queryClient?.invalidateQueries(["users-me"]);
+      queryClient?.invalidateQueries(["link-socials"]);
 
       mixpanel.reset();
     } catch (error) {
