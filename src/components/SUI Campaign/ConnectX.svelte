@@ -88,6 +88,10 @@
 
       const response: any = await nimbus.post("/accounts/link", params);
       if (response && response?.error) {
+        toastMsg = response?.error;
+        isSuccessToast = false;
+        trigger();
+      } else {
         handleSignOut();
 
         handleGetTwitterToken(
@@ -97,12 +101,6 @@
           res?.reloadUserInfo?.screenName,
           res?.reloadUserInfo?.screenName
         );
-      } else {
-        queryClient?.invalidateQueries(["link-socials"]);
-
-        toastMsg = "Successfully connect X account!";
-        isSuccessToast = true;
-        trigger();
       }
     } catch (e) {
       console.log(e);
