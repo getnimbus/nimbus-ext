@@ -24,13 +24,15 @@
   let isSuccessToast: boolean = false;
   let counter = 3;
   let showToast: boolean = false;
+  let flipEvent = null;
 
   const client = new SuiClient({ url: getFullnodeUrl("testnet") });
 
   const getRound = async () => {
     const round = await client
       .getObject({
-        id: "0x3deb4642a72d3cba7cac9dfc8ad209f7e98c85d3a3d84f6f2f909420103b1da2",
+        id: "0x3deb4642a72d3cba7cac9dfc8ad209f7e98c85d3a3d84f6f2f909420103b1da2", // testnet
+        // id: "0x94b046b2eb2b86bf6e88f0bc538c6fdd46258c2630ba40698ec94315c12269c5", // devnet
         options: {
           showContent: true,
         },
@@ -48,10 +50,16 @@
       .get(
         `https://drand.cloudflare.com/52db9ba70e0cc0f6eaf7803dd07447a1f5477735fd3f661792ba94600c84e971/public/${round}`
       )
-      .then((res) => res?.data?.signature);
+      .then((res) => res?.data?.signature)
+      .catch((err) => {
+        console.log("signature error: ", err);
+      });
 
     return signature;
   };
+
+  $: console.log(">> 1: ", $suiWalletInstance as WalletState);
+  $: console.log("flipEvent: ", flipEvent);
 
   const triggerFlipResult = async (type: number) => {
     if (
@@ -60,7 +68,7 @@
     ) {
       try {
         const tx = new TransactionBlock();
-        tx.setGasPrice(20000);
+        // tx.setGasPrice(20000);
         tx.setGasBudget(50000000);
         const round = await getRound();
         const signature = await getSignature(round);
@@ -77,17 +85,33 @@
           ],
         });
 
-        console.log("trigger execute!!!");
         const res = await (
           $suiWalletInstance as WalletState
         ).signAndExecuteTransactionBlock({
           transactionBlock: tx,
+          options: {
+            showInput: true,
+            showEffects: true,
+            showEvents: true,
+            showObjectChanges: true,
+            showBalanceChanges: true,
+          },
         });
-        console.log("trigger execute success!!!", res);
 
-        // trigger the api in here
-        isUserWin && triggerFirework();
-        openScreenResult = true;
+        const resEvent = res.events;
+        if (resEvent.length > 0) {
+          flipEvent = resEvent[0];
+          if (
+            Number(resEvent[0]?.parsedJson?.result) ===
+            Number(resEvent[0]?.parsedJson?.user_input)
+          ) {
+            console.log("it trigger");
+            isUserWin && triggerFirework();
+            openScreenResult = true;
+            // call api cộng điểm
+          }
+        }
+        console.log("trigger execute success!!!", { res, resEvent });
       } catch (error) {
         console.log("err: ", error);
       }
@@ -113,12 +137,12 @@
   let isUserWin = true; // state user win or lose
 
   const handleStartFlip = () => {
-    if (!finishedQuest) {
-      toastMsg = "Completed all the Start Quest to Flip!";
-      isSuccessToast = false;
-      trigger();
-      return;
-    }
+    // if (!finishedQuest) {
+    //   toastMsg = "Completed all the Start Quest to Flip!";
+    //   isSuccessToast = false;
+    //   trigger();
+    //   return;
+    // }
 
     if (
       ($suiWalletInstance as WalletState) &&
