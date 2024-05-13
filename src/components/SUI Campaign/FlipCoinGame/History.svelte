@@ -1,36 +1,13 @@
 <script>
   import { isDarkMode } from "~/store";
-  import { createQuery } from "@tanstack/svelte-query";
-  import { getFlipCheck } from "~/lib/queryAPI";
   import dayjs from "dayjs";
 
   import gmPoints from "~/assets/Gold4.svg";
 
   import Copy from "~/components/Copy.svelte";
 
-  let flipHistoryData = [];
-  let totalReward = 0;
-
-  $: queryFlipResult = createQuery({
-    queryKey: ["check-flip"],
-    queryFn: () => getFlipCheck(),
-    staleTime: Infinity,
-    retry: false,
-  });
-
-  $: {
-    if (
-      !$queryFlipResult.isError &&
-      $queryFlipResult.data !== undefined &&
-      $queryFlipResult?.data?.history?.length !== 0
-    ) {
-      flipHistoryData = $queryFlipResult?.data?.history;
-      totalReward = flipHistoryData.reduce(
-        (prev, item) => prev + Number(item.point),
-        0
-      );
-    }
-  }
+  export let flipHistoryData = [];
+  export let totalReward = 0;
 </script>
 
 <div>

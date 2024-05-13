@@ -12,7 +12,8 @@
   import { isDarkMode } from "~/store";
   import { triggerFirework } from "~/utils";
   import { nimbus } from "~/lib/network";
-  import { getFlipCheck, getLinkData } from "~/lib/queryAPI";
+  import { getLinkData } from "~/lib/queryAPI";
+  import { wait } from "~/entries/background/utils";
 
   import ReactAdapter from "~/components/ReactAdapter.svelte";
   import Button from "~/components/Button.svelte";
@@ -21,6 +22,9 @@
   import betterLuck from "~/assets/campaign/flipCoin/better-luck.png";
   import flipCoin2 from "~/assets/campaign/flipCoin/flip-coin2.png";
   import gmPoints from "~/assets/Gold4.svg";
+
+  export let dataFlipCheck;
+  export let getFlipCheck = () => {};
 
   const chains = [
     {
@@ -55,10 +59,35 @@
   };
 
   let toastMsg = "";
-  let isSuccessToast: boolean = false;
+  let isSuccessToast = false;
   let counter = 3;
-  let showToast: boolean = false;
+  let showToast = false;
+  let isLoadingFlip = false;
+
+  const trigger = () => {
+    showToast = true;
+    counter = 3;
+    timeout();
+  };
+
+  const timeout = () => {
+    if (--counter > 0) return setTimeout(timeout, 1000);
+    showToast = false;
+    toastMsg = "";
+    isSuccessToast = false;
+  };
+
   let isUserWin = false;
+  let openScreenResult = false;
+  let startFlip = false;
+  let linkedSuiWallet = false;
+
+  $: queryLinkSocial = createQuery({
+    queryKey: ["link-socials"],
+    queryFn: () => getLinkData(),
+    staleTime: Infinity,
+    retry: false,
+  });
 
   const client = new SuiClient({ url: getFullnodeUrl("mainnet") });
 
@@ -97,6 +126,7 @@
       ($suiWalletInstance as WalletState) &&
       ($suiWalletInstance as WalletState).connected
     ) {
+      isLoadingFlip = true;
       try {
         const tx = new TransactionBlock();
         tx.setGasBudget(50000000);
@@ -135,6 +165,8 @@
           },
         });
 
+        await wait(3000);
+
         if (Number(res.events[0]?.parsedJson?.result) === type) {
           isUserWin = true;
           triggerFirework();
@@ -143,47 +175,20 @@
           isUserWin = false;
           openScreenResult = true;
         }
-        queryClient?.invalidateQueries(["check-flip"]);
+
+        getFlipCheck();
         queryClient?.invalidateQueries(["daily-checkin"]);
+
+        isLoadingFlip = false;
       } catch (error) {
         console.log("err: ", error);
+        isLoadingFlip = false;
       }
     }
   };
 
-  const trigger = () => {
-    showToast = true;
-    counter = 3;
-    timeout();
-  };
-
-  const timeout = () => {
-    if (--counter > 0) return setTimeout(timeout, 1000);
-    showToast = false;
-    toastMsg = "";
-    isSuccessToast = false;
-  };
-
-  let openScreenResult = false;
-  let startFlip = false;
-  let linkedSuiWallet = false;
-
-  $: queryLinkSocial = createQuery({
-    queryKey: ["link-socials"],
-    queryFn: () => getLinkData(),
-    staleTime: Infinity,
-    retry: false,
-  });
-
-  $: queryFlipResult = createQuery({
-    queryKey: ["check-flip"],
-    queryFn: () => getFlipCheck(),
-    staleTime: Infinity,
-    retry: false,
-  });
-
   const handleStartFlip = async () => {
-    if (!$queryFlipResult?.data?.canPlay) {
+    if (!dataFlipCheck.canPlay) {
       toastMsg =
         "Your flipping capacity has reached its limit! You can only flip 5 times a day.";
       isSuccessToast = false;
@@ -307,19 +312,37 @@
   </div>
 
   <div class="relative z-2 w-full">
-    {#if startFlip && $queryFlipResult?.data?.canPlay && linkedSuiWallet}
+    {#if startFlip && dataFlipCheck?.canPlay && linkedSuiWallet}
       <div class="flex justify-center items-center gap-4">
         <button
           class="rounded-[12px] text-white bg-[#FFB800] w-full py-4 px-5 font-medium sm:text-2xl text-lg max-w-[140px]"
-          on:click={() => triggerFlipResult(1)}
+          on:click={() => {
+            if (!isLoadingFlip) {
+              triggerFlipResult(1);
+            }
+          }}
+          disabled={isLoadingFlip}
         >
-          Head
+          {#if isLoadingFlip}
+            ...Loading
+          {:else}
+            Head
+          {/if}
         </button>
         <button
           class="rounded-[12px] text-white bg-[#FFB800] w-full py-4 px-5 font-medium sm:text-2xl text-lg max-w-[140px]"
-          on:click={() => triggerFlipResult(0)}
+          on:click={() => {
+            if (!isLoadingFlip) {
+              triggerFlipResult(0);
+            }
+          }}
+          disabled={isLoadingFlip}
         >
-          Tail
+          {#if isLoadingFlip}
+            ...Loading
+          {:else}
+            Tail
+          {/if}
         </button>
       </div>
     {:else}
