@@ -186,22 +186,20 @@
   });
 
   const handleStartFlip = async () => {
-    // if (!finishedQuest) {
-    //   toastMsg = "Completed all the Start Quest to Flip!";
-    //   isSuccessToast = false;
-    //   trigger();
-    //   return;
-    // }
+    if (!finishedQuest) {
+      toastMsg = "Completed all the Start Quest to Flip!";
+      isSuccessToast = false;
+      trigger();
+      return;
+    }
 
-    // if (finishedQuest) {
-    if (!$checkFlip?.data?.canPlay) {
+    if (finishedQuest && !$checkFlip?.data?.canPlay) {
       toastMsg =
         "Your flipping capacity has reached its limit! You can only flip 5 times a day.";
       isSuccessToast = false;
       trigger();
       return;
     }
-    // }
 
     if ($suiWalletInstance as WalletState) {
       if (($suiWalletInstance as WalletState).connected) {
@@ -235,8 +233,6 @@
       }
     }
   }
-
-  $: console.log("suiWalletInstance: ", $suiWalletInstance as WalletState);
 
   const handleSUIAuth = async () => {
     try {
