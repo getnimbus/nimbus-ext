@@ -6,7 +6,7 @@ export const handleSearchToken = async (searchValue: string) => {
 };
 
 export const handleMarketTokens = async () => {
-  const response: any = await nimbus.get("/tokens/coingecko")
+  const response: any = await nimbus.get("/tokens/coingecko");
   return response.data || [];
 };
 
@@ -68,11 +68,11 @@ export const getOverview = async (wallet, chain, validatedAccount) => {
     addressChain = validatedAccount?.type;
   }
 
-  const response: any = await nimbus
-    .get(
-      `/v2/address/${wallet}/overview?chain=${addressChain === "BUNDLE" ? "" : addressChain
-      }`
-    )
+  const response: any = await nimbus.get(
+    `/v2/address/${wallet}/overview?chain=${
+      addressChain === "BUNDLE" ? "" : addressChain
+    }`
+  );
   return response.data;
 };
 
@@ -83,11 +83,11 @@ export const getHoldingToken = async (wallet, chain, validatedAccount) => {
     addressChain = validatedAccount?.type;
   }
 
-  const response: any = await nimbus
-    .get(
-      `/v2/address/${wallet}/holding?chain=${addressChain === "BUNDLE" ? "" : addressChain
-      }`
-    )
+  const response: any = await nimbus.get(
+    `/v2/address/${wallet}/holding?chain=${
+      addressChain === "BUNDLE" ? "" : addressChain
+    }`
+  );
   return response.data;
 };
 
@@ -99,7 +99,8 @@ export const getVaults = async (wallet, chain, validatedAccount) => {
   }
 
   const response: any = await nimbus.get(
-    `/v2/investment/${wallet}/vaults?chain=${addressChain === "BUNDLE" ? "" : addressChain
+    `/v2/investment/${wallet}/vaults?chain=${
+      addressChain === "BUNDLE" ? "" : addressChain
     }`
   );
   return response?.data;
@@ -112,11 +113,11 @@ export const getHoldingNFT = async (wallet, chain, validatedAccount) => {
     addressChain = validatedAccount?.type;
   }
 
-  const response: any = await nimbus
-    .get(
-      `/v2/address/${wallet}/nft-holding?chain=${addressChain === "BUNDLE" ? "" : addressChain
-      }`
-    )
+  const response: any = await nimbus.get(
+    `/v2/address/${wallet}/nft-holding?chain=${
+      addressChain === "BUNDLE" ? "" : addressChain
+    }`
+  );
   return response.data;
 };
 
@@ -128,6 +129,11 @@ export const handleGetListQuest = async () => {
 export const handleGetDataDailyCheckin = async () => {
   const response: any = await nimbus.get("/v2/checkin");
   return response.data;
+};
+
+export const getFlipCheck = async () => {
+  const response = await nimbus.get(`/v2/games/flip/check`);
+  return response?.data;
 };
 
 export const handleGetDataLeaderboard = async () => {
@@ -160,4 +166,4 @@ export const getCampaignPartnerList = async () => {
 export const getCampaignPartnerDetail = async (id) => {
   const response: any = await nimbus.get(`/v2/campaign/${id}/quest-board`);
   return response.data;
-}
+};
