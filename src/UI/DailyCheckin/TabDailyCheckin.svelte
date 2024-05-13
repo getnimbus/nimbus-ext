@@ -53,6 +53,7 @@
   const rank = [rank1, rank2, rank3];
 
   export let currentRoute;
+  export let activeTabValue;
 
   const driveCheckin = () =>
     driver({
@@ -524,17 +525,18 @@
     queryClient.invalidateQueries(["users-me"]);
   };
 
-  // $: {
-  //   if (
-  //     !$queryDailyCheckin.isLoading &&
-  //     currentRoute &&
-  //     currentRoute.name === "/daily-checkin" &&
-  //     !localStorage.getItem("view-checkin-tour")
-  //   ) {
-  //     driveCheckin().drive();
-  //     localStorage.setItem("view-checkin-tour", "true");
-  //   }
-  // }
+  $: {
+    if (
+      !$queryDailyCheckin.isLoading &&
+      activeTabValue === "checkin" &&
+      currentRoute &&
+      currentRoute.name === "/daily-checkin" &&
+      !localStorage.getItem("view-checkin-tour")
+    ) {
+      driveCheckin().drive();
+      localStorage.setItem("view-checkin-tour", "true");
+    }
+  }
 
   $: queryUserInfo = createQuery({
     queryKey: ["users-me"],
