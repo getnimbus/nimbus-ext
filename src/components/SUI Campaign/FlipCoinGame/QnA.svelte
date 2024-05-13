@@ -4,7 +4,7 @@
   let fakeData = [
     {
       title: "What's Flip The GM 👀?",
-      desc: "Flip the GM is a new way for you to interact with SUI blockchain and get Reward in GMs and $SPAM 🤩 with just 2 clicks. It's a no risk high return game 👍",
+      desc: "Flip the GM is a new way for you to interact with SUI blockchain and get Reward in GMs 🤩 with just 2 clicks. It's a no risk high return game 👍",
       active: false,
     },
     {
