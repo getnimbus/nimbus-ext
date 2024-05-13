@@ -1,10 +1,10 @@
 <script>
   import { isDarkMode } from "~/store";
 
-  let fakeData = [
+  let contentQnA = [
     {
       title: "What's Flip The GM 👀?",
-      desc: "Flip the GM is a new way for you to interact with SUI blockchain and get Reward in GMs and $SPAM 🤩 with just 2 clicks. It's a no risk high return game 👍",
+      desc: "Flip the GM is a new way for you to interact with SUI blockchain and get Reward in GMs 🤩 with just 2 clicks. It's a no risk high return game 👍",
       active: false,
     },
     {
@@ -26,13 +26,13 @@
   >
     <div class="text-3xl font-semibold">Q&A</div>
 
-    <div class="flex flex-col items-center gap-4 w-full">
-      {#each fakeData as item}
+    <div class="flex flex-col items-center w-full">
+      {#each contentQnA as item}
         <div
-          class="w-full py-2 border-b border_0000001a last:border-none cursor-pointer"
+          class="w-full py-6 border-b border_0000001a last:border-none cursor-pointer"
           on:click={() => (item.active = !item.active)}
         >
-          <div class="flex flex-col gap-1">
+          <div class="flex flex-col gap-4">
             <div class="flex justify-between items-center">
               <div class="text-lg font-medium">
                 {item.title}

@@ -66,7 +66,6 @@
     {listQuestCompleted}
     {listQuestVerified}
     {dataQuestsBoard}
-    isLoading={$queryQuestsBoard.isFetching}
   />
 </div>
 

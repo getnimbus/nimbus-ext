@@ -1,7 +1,7 @@
 <script lang="ts">
   import { wait } from "~/entries/background/utils";
   import { triggerFirework } from "~/utils";
-  import { suiWalletInstance, userPublicAddress, isDarkMode } from "~/store";
+  import { suiWalletInstance, userPublicAddress } from "~/store";
   import { SuiConnector } from "nimbus-sui-kit";
   import type { WalletState } from "nimbus-sui-kit";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";

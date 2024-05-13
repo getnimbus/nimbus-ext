@@ -53,6 +53,7 @@
   const rank = [rank1, rank2, rank3];
 
   export let currentRoute;
+  export let activeTabValue;
 
   const driveCheckin = () =>
     driver({
@@ -527,6 +528,7 @@
   $: {
     if (
       !$queryDailyCheckin.isLoading &&
+      activeTabValue === "checkin" &&
       currentRoute &&
       currentRoute.name === "/daily-checkin" &&
       !localStorage.getItem("view-checkin-tour")
@@ -767,7 +769,7 @@
               </div>
             {/if}
 
-            <div class="flex flex-col gap-4">
+            <!-- <div class="flex flex-col gap-4">
               <div class="text-lg font-medium">This month reward</div>
               {#if $queryReward.data === undefined}
                 <div class="overflow-x-auto py-4">
@@ -830,7 +832,7 @@
                   </div>
                 </div>
               {/if}
-            </div>
+            </div> -->
 
             <!-- {#if isShowBanner}
               <div class="overflow-hidden">

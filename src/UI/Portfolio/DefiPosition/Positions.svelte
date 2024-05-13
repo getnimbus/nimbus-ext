@@ -85,7 +85,7 @@
           </div>
         {:else if item.type === "CLMM"}
           <div class="flex flex-col gap-2">
-            <div class="text-base font-medium">Pool</div>
+            <div class="text-base font-medium">CLMM Pool</div>
             <ClmmPosition data={item.data} />
           </div>
         {:else if item.type === "Farm"}

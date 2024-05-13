@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { isDarkMode, userPublicAddress } from "~/store";
+  import { isDarkMode } from "~/store";
   import {
     getCampaignPartnerDetail,
     getPositionList,
@@ -17,6 +17,7 @@
 
   export let partnersDataList;
   export let id;
+  export let queryPositionAddress;
 
   $: selectedPartnersData =
     partnersDataList.length !== 0 &&
@@ -47,7 +48,7 @@
   //// POSITIONS
   $: queryPositionList = createQuery({
     queryKey: ["position-list", selectedPartnersData],
-    queryFn: () => getPositionList($userPublicAddress),
+    queryFn: () => getPositionList(queryPositionAddress),
     staleTime: Infinity,
     enabled: Boolean(selectedPartnersData),
   });
@@ -62,7 +63,7 @@
     positionListQueries.map((item) => {
       return {
         queryKey: ["positions", selectedPartnersData, item],
-        queryFn: () => getPositions($userPublicAddress, item),
+        queryFn: () => getPositions(queryPositionAddress, item),
         staleTime: Infinity,
         enabled: Boolean(selectedPartnersData),
       };
@@ -283,10 +284,7 @@
       <div class="border-b-[1.5px] border_0000000d pb-2">
         <div class="xl:title-3 title-2">Quests</div>
       </div>
-      <PartnerQuestTable
-        {dataQuestsBoard}
-        isLoading={$queryCampaignPartnerDetail.isFetching}
-      />
+      <PartnerQuestTable {dataQuestsBoard} {id} />
     </div>
 
     <div class="flex flex-col gap-4">
