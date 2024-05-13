@@ -245,7 +245,7 @@
                 {handleUpdatePartnerQuestsId}
               />
             {:else if activeTabValue === "checkin"}
-              <TabDailyCheckin {currentRoute} />
+              <TabDailyCheckin {currentRoute} {activeTabValue} />
               <!-- {:else if activeTabValue === "leaderboard"}
               <TabLeaderBoard /> -->
             {:else if activeTabValue === "rewards"}
