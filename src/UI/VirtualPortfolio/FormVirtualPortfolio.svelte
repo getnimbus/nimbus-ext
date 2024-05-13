@@ -450,33 +450,33 @@
                   max="100"
                   bind:value={data.percent}
                   on:change={(event) => {
-                    if (event?.target?.value) {
-                      let number = 0;
-                      if (
-                        parseInt(event?.target?.value) <
-                        parseInt(event?.target?.min)
-                      ) {
-                        event?.target?.value = event?.target?.min;
-                        number = event?.target?.min;
-                      } else if (
-                        parseInt(event?.target?.value) >
-                        parseInt(event?.target?.max)
-                      ) {
-                        event?.target?.value = event?.target?.max;
-                        number = event?.target?.max;
-                      } else {
-                        number = event?.target?.value;
-                      }
-                      selectedTokenList = selectedTokenList.map((item) => {
-                        if (item.id === data.id) {
-                          return {
-                            ...data,
-                            percent: Number(number),
-                          };
-                        }
-                        return item;
-                      });
-                    }
+                    // if (event?.target?.value) {
+                    //   let number = 0;
+                    //   if (
+                    //     parseInt(event?.target?.value) <
+                    //     parseInt(event?.target?.min)
+                    //   ) {
+                    //     event?.target?.value = event?.target?.min;
+                    //     number = event?.target?.min;
+                    //   } else if (
+                    //     parseInt(event?.target?.value) >
+                    //     parseInt(event?.target?.max)
+                    //   ) {
+                    //     event?.target?.value = event?.target?.max;
+                    //     number = event?.target?.max;
+                    //   } else {
+                    //     number = event?.target?.value;
+                    //   }
+                    //   selectedTokenList = selectedTokenList.map((item) => {
+                    //     if (item.id === data.id) {
+                    //       return {
+                    //         ...data,
+                    //         percent: Number(number),
+                    //       };
+                    //     }
+                    //     return item;
+                    //   });
+                    // }
                   }}
                   class={`w-max border-none focus:outline-none focus:ring-0 xl:text-xl text-3xl font-normal text-center ${
                     $isDarkMode
