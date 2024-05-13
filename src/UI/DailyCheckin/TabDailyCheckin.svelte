@@ -767,7 +767,7 @@
               </div>
             {/if}
 
-            <div class="flex flex-col gap-4">
+            <!-- <div class="flex flex-col gap-4">
               <div class="text-lg font-medium">This month reward</div>
               {#if $queryReward.data === undefined}
                 <div class="overflow-x-auto py-4">
@@ -830,7 +830,7 @@
                   </div>
                 </div>
               {/if}
-            </div>
+            </div> -->
 
             <!-- {#if isShowBanner}
               <div class="overflow-hidden">

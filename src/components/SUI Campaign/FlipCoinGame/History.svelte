@@ -1,18 +1,36 @@
 <script>
   import { isDarkMode } from "~/store";
-
   import { createQuery } from "@tanstack/svelte-query";
   import { getFlipCheck } from "~/lib/queryAPI";
+  import dayjs from "dayjs";
 
   import gmPoints from "~/assets/Gold4.svg";
-  import Loading from "~/components/Loading.svelte";
 
-  $: checkFlip = createQuery({
+  import Copy from "~/components/Copy.svelte";
+
+  let flipHistoryData = [];
+  let totalReward = 0;
+
+  $: queryFlipResult = createQuery({
     queryKey: ["check-flip"],
-    queryFn: getFlipCheck,
+    queryFn: () => getFlipCheck(),
     staleTime: Infinity,
     retry: false,
   });
+
+  $: {
+    if (
+      !$queryFlipResult.isError &&
+      $queryFlipResult.data !== undefined &&
+      $queryFlipResult?.data?.history?.length !== 0
+    ) {
+      flipHistoryData = $queryFlipResult?.data?.history;
+      totalReward = flipHistoryData.reduce(
+        (prev, item) => prev + Number(item.point),
+        0
+      );
+    }
+  }
 </script>
 
 <div>
@@ -27,53 +45,156 @@
       <div class="text-base font-medium">Rewards</div>
       <div class="flex items-center gap-2">
         <img src={gmPoints} alt="" class="object-contain w-6 h-6" />
-        <div class="font-medium text-3xl">0</div>
+        <div class="font-medium text-3xl">{totalReward}</div>
       </div>
     </div>
 
     <div
-      class={`flex flex-col items-center gap-5 w-full px-8 py-8 rounded-[10px] ${$isDarkMode ? "bg-black" : "border border_0000001a"}`}
+      class={`w-full px-4 py-6 rounded-[10px] ${$isDarkMode ? "bg-black" : "border border_0000001a"}`}
     >
-      <table class="w-full">
-        <thead>
-          <tr>
-            <th class="py-2">Time</th>
-            <th class="py-2">Reward</th>
-          </tr>
-        </thead>
+      <div class="md:block hidden">
+        <table class="w-full">
+          <thead>
+            <tr>
+              <th class="py-2 text-xs uppercase font-medium text-left">Time</th>
+              <th class="py-2 text-xs uppercase font-medium text-left">
+                Status
+              </th>
+              <th class="py-2 text-xs uppercase font-medium text-center">
+                Reward
+              </th>
+              <th class="py-2 text-xs uppercase font-medium text-center">Trx</th
+              >
+            </tr>
+          </thead>
 
-        {#if $checkFlip.isLoading}
           <tbody>
-            <tr>
-              <td colspan="2">
-                <div class="flex justify-center w-full"><Loading /></div>
-              </td>
-            </tr>
-          </tbody>
-        {:else if $checkFlip?.data?.history.length === 0}
-          <tbody>
-            <tr>
-              <td colspan="2">
-                <div class="text-center w-full text-gray-400">Empty</div>
-              </td>
-            </tr>
-          </tbody>
-        {:else}
-          {#each $checkFlip?.data?.history as item}
-            <tbody>
+            {#if flipHistoryData && flipHistoryData?.length === 0}
               <tr>
-                <td class="text-center py-2">1st April 2024</td>
-                <td class="text-center py-2">
-                  <div class="flex justify-center items-center gap-1">
-                    <img src={gmPoints} alt="" class="w-3 h-3" />
-                    <div>1000</div>
+                <td colspan="4">
+                  <div
+                    class="flex justify-center items-center h-full py-4 px-3 text-base text-gray-400"
+                  >
+                    Empty
                   </div>
                 </td>
               </tr>
-            </tbody>
+            {:else}
+              {#each flipHistoryData as item}
+                <tr>
+                  <td class="text-left py-2 text-sm uppercase">
+                    {dayjs(item?.createdAt).format("YYYY-MM-DD hh:mm:ss")}
+                  </td>
+
+                  <td class="text-left py-2 text-sm uppercase">
+                    {#if Number(item?.point) >= 1000}
+                      Win
+                    {:else}
+                      Lose
+                    {/if}
+                  </td>
+
+                  <td class="py-2">
+                    <div class="flex justify-center items-center gap-1">
+                      <img src={gmPoints} alt="" class="w-3 h-3" />
+                      <div class="text-sm uppercase">
+                        {item?.point}
+                      </div>
+                    </div>
+                  </td>
+
+                  <td class="flex justify-end py-2 text-sm uppercase">
+                    <div class="w-max">
+                      <Copy
+                        address={item?.description}
+                        textTooltip="Copy transaction to clipboard"
+                        iconColor={`${$isDarkMode ? "#fff" : "#000"}`}
+                        color={`${$isDarkMode ? "#fff" : "#000"}`}
+                        isShorten={true}
+                      />
+                    </div>
+                  </td>
+                </tr>
+              {/each}
+            {/if}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="md:hidden block">
+        {#if flipHistoryData && flipHistoryData?.length === 0}
+          <div
+            class="flex justify-center items-center h-full py-3 px-3 text-lg text-gray-400"
+          >
+            Empty
+          </div>
+        {:else}
+          {#each flipHistoryData as item}
+            <div
+              class="flex flex-col gap-4 border-b-[1px] border_0000000d last:border-none py-4"
+            >
+              <div class="flex justify-between items-center">
+                <div class="text-right text-sm uppercase font-medium">Time</div>
+
+                <div
+                  class="flex items-center justify-end gap-2 font-medium text-sm text_00000099"
+                >
+                  {dayjs(item?.createdAt).format("YYYY-MM-DD hh:mm:ss")}
+                </div>
+              </div>
+
+              <div class="flex justify-between items-center">
+                <div class="text-right text-sm uppercase font-medium">
+                  Status
+                </div>
+
+                <div
+                  class="flex items-center justify-end gap-2 font-medium text-sm text_00000099"
+                >
+                  {#if Number(item?.point) >= 1000}
+                    Win
+                  {:else}
+                    Lose
+                  {/if}
+                </div>
+              </div>
+
+              <div class="flex justify-between items-center">
+                <div class="text-right text-sm uppercase font-medium">
+                  Reward
+                </div>
+
+                <div
+                  class="flex items-center justify-end gap-1 font-medium text-sm text_00000099"
+                >
+                  <img src={gmPoints} alt="" class="w-3 h-3" />
+                  <div class="text-sm uppercase">
+                    {item?.point}
+                  </div>
+                </div>
+              </div>
+
+              <div class="flex justify-between items-center">
+                <div class="text-right text-sm uppercase font-medium">Trx</div>
+
+                <div
+                  class="flex items-center justify-end font-medium text-sm text_00000099"
+                >
+                  <div class="w-max">
+                    <Copy
+                      address={item?.description}
+                      textTooltip="Copy transaction to clipboard"
+                      iconColor={`${$isDarkMode ? "#fff" : "#000"}`}
+                      color={`${$isDarkMode ? "#fff" : "#000"}`}
+                      isShorten={true}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
           {/each}
         {/if}
-      </table>
+      </div>
     </div>
   </div>
 </div>

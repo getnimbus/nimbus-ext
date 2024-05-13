@@ -5,17 +5,16 @@
   import { isDarkMode } from "~/store";
   import { triggerFirework } from "~/utils";
   import { wait } from "~/entries/background/utils";
-  import { getCampaignQuestsBoard, getLinkData } from "~/lib/queryAPI";
+  import { getLinkData, getCampaignPartnerDetail } from "~/lib/queryAPI";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
 
   import Button from "~/components/Button.svelte";
-  import Loading from "~/components/Loading.svelte";
 
   import goldImg from "~/assets/Gold4.svg";
   import playIcon from "~/assets/play-icon.svg";
 
   export let dataQuestsBoard;
-  export let isLoading;
+  export let id;
 
   const queryClient = useQueryClient();
 
@@ -75,25 +74,28 @@
     }
   }
 
-  $: queryQuestsBoard = createQuery({
-    queryKey: ["quests-campaign"],
-    queryFn: () => getCampaignQuestsBoard(),
+  $: queryCampaignPartnerDetail = createQuery({
+    queryKey: ["partners-detail-campaign", id],
+    queryFn: () => getCampaignPartnerDetail(id),
     staleTime: Infinity,
     retry: false,
+    enabled: id && id.length !== 0,
   });
 
   $: {
     if (
-      !$queryQuestsBoard.isError &&
-      $queryQuestsBoard &&
-      $queryQuestsBoard?.data !== undefined
+      !$queryCampaignPartnerDetail.isError &&
+      $queryCampaignPartnerDetail &&
+      $queryCampaignPartnerDetail?.data !== undefined
     ) {
-      listQuestCompleted = $queryQuestsBoard?.data?.completedQuests.filter(
-        (item) => item.type === "QUEST"
-      );
-      listQuestVerified = $queryQuestsBoard?.data?.completedQuests.filter(
-        (item) => item.type === "QUEST_VERIFIED"
-      );
+      listQuestCompleted =
+        $queryCampaignPartnerDetail?.data?.completedQuests.filter(
+          (item) => item.type === "QUEST"
+        );
+      listQuestVerified =
+        $queryCampaignPartnerDetail?.data?.completedQuests.filter(
+          (item) => item.type === "QUEST_VERIFIED"
+        );
     }
   }
 
@@ -220,152 +222,138 @@
       </tr>
     </thead>
 
-    {#if isLoading}
-      <tbody>
+    <tbody>
+      {#if dataQuestsBoard && dataQuestsBoard?.length === 0}
         <tr>
           <td colspan="4">
-            <div class="flex justify-center items-center h-full py-3 px-3">
-              <Loading />
+            <div
+              class="flex justify-center items-center h-full py-4 px-3 text-lg text-gray-400"
+            >
+              Empty
             </div>
           </td>
         </tr>
-      </tbody>
-    {:else}
-      <tbody>
-        {#if dataQuestsBoard && dataQuestsBoard?.length === 0}
-          <tr>
-            <td colspan="4">
-              <div
-                class="flex justify-center items-center h-full py-4 px-3 text-lg text-gray-400"
-              >
-                Empty
-              </div>
-            </td>
-          </tr>
-        {:else}
-          {#each dataQuestsBoard?.filter((item) => item.status === "ACTIVE") as data}
-            <tr
-              class={`group transition-all ${
-                $isDarkMode ? "text-gray-400" : "text-[#666666]"
+      {:else}
+        {#each dataQuestsBoard?.filter((item) => item.status === "ACTIVE") as data}
+          <tr
+            class={`group transition-all ${
+              $isDarkMode ? "text-gray-400" : "text-[#666666]"
+            }`}
+          >
+            <td
+              class={`xl:py-3 py-6 pl-3 flex flex-col gap-1 ${
+                $isDarkMode
+                  ? "group-hover:bg-[#000]"
+                  : "group-hover:bg-gray-100"
               }`}
             >
-              <td
-                class={`xl:py-3 py-6 pl-3 flex flex-col gap-1 ${
-                  $isDarkMode
-                    ? "group-hover:bg-[#000]"
-                    : "group-hover:bg-gray-100"
-                }`}
+              <div
+                class={`text-left text-base font-medium ${$isDarkMode ? "text-white" : "text-black"}`}
               >
-                <div
-                  class={`text-left text-base font-medium ${$isDarkMode ? "text-white" : "text-black"}`}
-                >
-                  {data?.title}
-                </div>
-                <div class="text-left text-sm w-[400px]">
-                  {data?.description}
-                </div>
-              </td>
+                {data?.title}
+              </div>
+              <div class="text-left text-sm w-[400px]">
+                {data?.description}
+              </div>
+            </td>
 
-              <td
-                class={`xl:py-3 py-6 ${
-                  $isDarkMode
-                    ? "group-hover:bg-[#000]"
-                    : "group-hover:bg-gray-100"
-                }`}
+            <td
+              class={`xl:py-3 py-6 ${
+                $isDarkMode
+                  ? "group-hover:bg-[#000]"
+                  : "group-hover:bg-gray-100"
+              }`}
+            >
+              <div
+                class="text-left text-sm uppercase font-medium flex justify-start items-center gap-1"
               >
-                <div
-                  class="text-left text-sm uppercase font-medium flex justify-start items-center gap-1"
-                >
-                  <img src={goldImg} alt="" class="w-4 h-4" />
-                  {data?.point}
-                </div>
-              </td>
+                <img src={goldImg} alt="" class="w-4 h-4" />
+                {data?.point}
+              </div>
+            </td>
 
-              <td
-                class={`xl:py-3 py-6 ${
-                  $isDarkMode
-                    ? "group-hover:bg-[#000]"
-                    : "group-hover:bg-gray-100"
-                }`}
+            <td
+              class={`xl:py-3 py-6 ${
+                $isDarkMode
+                  ? "group-hover:bg-[#000]"
+                  : "group-hover:bg-gray-100"
+              }`}
+            >
+              <div
+                class="text-left text-sm uppercase font-medium flex justify-start items-center"
               >
-                <div
-                  class="text-left text-sm uppercase font-medium flex justify-start items-center"
-                >
-                  {data?.recurringType}
-                </div>
-              </td>
+                {data?.recurringType}
+              </div>
+            </td>
 
-              <td
-                class={`xl:py-3 py-6 pr-3 ${
-                  $isDarkMode
-                    ? "group-hover:bg-[#000]"
-                    : "group-hover:bg-gray-100"
-                }`}
+            <td
+              class={`xl:py-3 py-6 pr-3 ${
+                $isDarkMode
+                  ? "group-hover:bg-[#000]"
+                  : "group-hover:bg-gray-100"
+              }`}
+            >
+              <div
+                class="text-right text-sm uppercase font-medium flex justify-end items-center gap-2"
               >
-                <div
-                  class="text-right text-sm uppercase font-medium flex justify-end items-center gap-2"
-                >
-                  {#if checkUserFinishedQuest(data, listQuestCompleted)}
-                    <div class="w-[90px]">
-                      <Button disabled>Done!</Button>
-                    </div>
-                  {:else}
-                    <div class="w-[50px] xl:h-[33px] h-[43px]">
+                {#if checkUserFinishedQuest(data, listQuestCompleted)}
+                  <div class="w-[90px]">
+                    <Button disabled>Done!</Button>
+                  </div>
+                {:else}
+                  <div class="w-[50px] xl:h-[33px] h-[43px]">
+                    <Button
+                      on:click={() => {
+                        if (
+                          data?.type === "DISCORD" &&
+                          userLinkData &&
+                          userLinkData?.length !== 0 &&
+                          !userLinkData.find((item) => item.type === "discord")
+                        ) {
+                          window.location.assign(
+                            "https://discord.com/oauth2/authorize?client_id=1236967408204517396&response_type=code&redirect_uri=https%3A%2F%2Fapp.getnimbus.io&scope=identify+guilds+guilds.members.read"
+                          );
+                        } else {
+                          window.open(data?.url, "_blank");
+                          selectedQuestId = data?.id;
+                          startPlay = true;
+                          clearInterval(countdownInterval);
+                          startCountdown();
+                        }
+                      }}
+                    >
+                      <img src={playIcon} alt="" class="w-4 h-4" />
+                    </Button>
+                  </div>
+                  <div class="w-[90px] xl:h-[33px] h-[43px]">
+                    {#if countdown > 0 && countdown < 10 && selectedQuestId === data?.id}
+                      <Button disabled>{countdown}s</Button>
+                    {:else}
                       <Button
+                        variant="tertiary"
                         on:click={() => {
-                          if (
-                            data?.type === "DISCORD" &&
-                            userLinkData &&
-                            userLinkData?.length !== 0 &&
-                            !userLinkData.find(
-                              (item) => item.type === "discord"
-                            )
-                          ) {
-                            window.location.assign(
-                              "https://discord.com/oauth2/authorize?client_id=1236967408204517396&response_type=code&redirect_uri=https%3A%2F%2Fapp.getnimbus.io&scope=identify+guilds+guilds.members.read"
-                            );
+                          if (checkUserVerifyQuest(data, listQuestVerified)) {
+                            handleClaimReward(data);
                           } else {
-                            window.open(data?.url, "_blank");
-                            selectedQuestId = data?.id;
-                            startPlay = true;
-                            clearInterval(countdownInterval);
-                            startCountdown();
+                            handleVerifyQuest(data);
                           }
                         }}
                       >
-                        <img src={playIcon} alt="" class="w-4 h-4" />
+                        {#if checkUserVerifyQuest(data, listQuestVerified)}
+                          Claim
+                        {:else}
+                          Check
+                        {/if}
                       </Button>
-                    </div>
-                    <div class="w-[90px] xl:h-[33px] h-[43px]">
-                      {#if countdown > 0 && countdown < 10 && selectedQuestId === data?.id}
-                        <Button disabled>{countdown}s</Button>
-                      {:else}
-                        <Button
-                          variant="tertiary"
-                          on:click={() => {
-                            if (checkUserVerifyQuest(data, listQuestVerified)) {
-                              handleClaimReward(data);
-                            } else {
-                              handleVerifyQuest(data);
-                            }
-                          }}
-                        >
-                          {#if checkUserVerifyQuest(data, listQuestVerified)}
-                            Claim
-                          {:else}
-                            Check
-                          {/if}
-                        </Button>
-                      {/if}
-                    </div>
-                  {/if}
-                </div>
-              </td>
-            </tr>
-          {/each}
-        {/if}
-      </tbody>
-    {/if}
+                    {/if}
+                  </div>
+                {/if}
+              </div>
+            </td>
+          </tr>
+        {/each}
+      {/if}
+    </tbody>
   </table>
 </div>
 
@@ -375,11 +363,7 @@
     $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
   }`}
 >
-  {#if isLoading}
-    <div class="flex justify-center items-center h-full py-3 px-3">
-      <Loading />
-    </div>
-  {:else if dataQuestsBoard && dataQuestsBoard?.length === 0}
+  {#if dataQuestsBoard && dataQuestsBoard?.length === 0}
     <div
       class="flex justify-center items-center h-full py-3 px-3 text-lg text-gray-400"
     >
