@@ -7,6 +7,7 @@
   import gmPoints from "~/assets/Gold4.svg";
 
   let flipHistoryData = [];
+  let totalReward = 0;
 
   $: queryFlipResult = createQuery({
     queryKey: ["check-flip"],
@@ -22,6 +23,10 @@
       $queryFlipResult?.data?.history?.length !== 0
     ) {
       flipHistoryData = $queryFlipResult?.data?.history;
+      totalReward = flipHistoryData.reduce(
+        (prev, item) => prev + Number(item.point),
+        0
+      );
     }
   }
 </script>
@@ -38,7 +43,7 @@
       <div class="text-base font-medium">Rewards</div>
       <div class="flex items-center gap-2">
         <img src={gmPoints} alt="" class="object-contain w-6 h-6" />
-        <div class="font-medium text-3xl">0</div>
+        <div class="font-medium text-3xl">{totalReward}</div>
       </div>
     </div>
 
