@@ -9,10 +9,8 @@
   import Loading from "~/components/Loading.svelte";
 
   export let handleSubmit = (data, type) => {};
-  export let isLoadingSubmit;
+  export let isLoading;
   export let listVirtualPortfolio;
-  export let selectedWallet;
-  export let selectedChain;
   export let defaultData;
 
   const MultipleLang = {
@@ -29,7 +27,7 @@
   let selectedTokenRemove = {};
 
   $: {
-    if (selectedWallet && selectedChain && defaultData) {
+    if (defaultData) {
       getListToken();
     }
   }
@@ -524,6 +522,7 @@
   </div>
 
   <div class="flex justify-end">
+    <div on:click={() => {}}>Cancel</div>
     <div class="md:w-[120px] w-full">
       {#if remaining !== 100 || virtualPortfolioName.length === 0}
         <Button variant="disabled" disabled>
@@ -535,7 +534,7 @@
         </Button>
       {:else}
         <Button
-          isLoading={isLoadingSubmit}
+          {isLoading}
           on:click={() =>
             handleSubmit(
               {

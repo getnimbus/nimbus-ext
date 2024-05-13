@@ -1,6 +1,5 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { i18n } from "~/lib/i18n";
   import { navigateTo } from "svelte-router-spa";
   import { nimbus } from "~/lib/network";
   import { wallet, chain, typeWallet, user, isDarkMode } from "~/store";
@@ -8,30 +7,17 @@
   import { createQuery } from "@tanstack/svelte-query";
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
-  import OverviewCard from "~/components/OverviewCard.svelte";
-  import CountUpNumber from "~/components/CountUpNumber.svelte";
-  import TooltipNumber from "~/components/TooltipNumber.svelte";
   import Button from "~/components/Button.svelte";
   import Select from "~/components/Select.svelte";
+  import Copy from "~/components/Copy.svelte";
+  import FormVirtualPortfolio from "~/UI/VirtualPortfolio/FormVirtualPortfolio.svelte";
 
   import LeftArrow from "~/assets/left-arrow.svg";
   import Plus from "~/assets/plus.svg";
   import PlusBlack from "~/assets/plus-black.svg";
 
-  const MultipleLang = {
-    networth: i18n("newtabPage.networth", "Net Worth"),
-    claimable: i18n("newtabPage.claimable", "Claimable"),
-    total_assets: i18n("newtabPage.total-assets", "Total Assets"),
-    total_positions: i18n("newtabPage.total-positions", "Total Positions"),
-  };
-
   let listVirtualPortfolio = [];
   let selectedVirtualPortfolio = {};
-
-  let scrollContainerVirtual;
-  let isScrollStartVirtual = true;
-  let isScrollEndVirtual = false;
-  let containerVirtual;
 
   onMount(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -41,12 +27,6 @@
       wallet.update((n) => (n = addressParams));
     }
   });
-
-  const handleScrollVirtual = () => {
-    const { scrollLeft, scrollWidth, clientWidth } = scrollContainerVirtual;
-    isScrollStartVirtual = scrollLeft === 0;
-    isScrollEndVirtual = scrollLeft + clientWidth >= scrollWidth - 1;
-  };
 
   const virtualPortfolioList = async (address: string) => {
     const response = await nimbus.get(
@@ -89,35 +69,52 @@
     }
   }
 
-  let showDisableAddWallet = false;
-  let showDisabledSelectWallet = false;
-  let indexSelectedAddress = 0;
+  let showDisableAdd = false;
+  let showDisabledSelect = false;
+  let indexSelected = 0;
 
-  const handleSelectNextAddress = () => {
-    if (indexSelectedAddress < listVirtualPortfolio.length - 1) {
-      indexSelectedAddress = indexSelectedAddress + 1;
+  let container;
+  let scrollContainer;
+  let isScrollStart = true;
+  let isScrollEnd = false;
 
-      const selectAddress = listVirtualPortfolio[indexSelectedAddress];
+  const handleScroll = () => {
+    const { scrollLeft, scrollWidth, clientWidth } = scrollContainer;
+    isScrollStart = scrollLeft === 0;
+    isScrollEnd = scrollLeft + clientWidth >= scrollWidth - 1;
+  };
+
+  const handleSelectNext = () => {
+    if (indexSelected < listVirtualPortfolio.length - 1) {
+      indexSelected = indexSelected + 1;
+
+      const selectAddress = listVirtualPortfolio[indexSelected];
 
       selectedVirtualPortfolio = selectAddress;
     }
   };
 
-  const handleSelectPrevAddress = () => {
-    if (indexSelectedAddress > 0) {
-      indexSelectedAddress = indexSelectedAddress - 1;
+  const handleSelectPrev = () => {
+    if (indexSelected > 0) {
+      indexSelected = indexSelected - 1;
 
-      const selectAddress = listVirtualPortfolio[indexSelectedAddress];
+      const selectAddress = listVirtualPortfolio[indexSelected];
 
       selectedVirtualPortfolio = selectAddress;
     }
+  };
+
+  let type = "create";
+  let isLoading = false;
+  const handleSubmit = (data: any) => {
+    console.log("HELLO WORLD: ", data);
   };
 </script>
 
 <ErrorBoundary>
   <div class="header-container">
     <div class="flex flex-col max-w-[2000px] m-auto xl:w-[82%] w-[90%]">
-      <div class="flex flex-col mb-5 gap-14">
+      <div class="flex flex-col mb-5 gap-7">
         <div class="flex items-center justify-between">
           <div
             class="flex items-center gap-1 text-white cursor-pointer"
@@ -127,6 +124,17 @@
           >
             <img src={LeftArrow} alt="" class="xl:w-5 xl:h-5 w-7 h-7" />
             <div class="xl:text-sm text-2xl font-medium">Portfolio</div>
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-3">
+          <div class="flex items-center gap-2 text-white">
+            <div class="xl:text-5xl text-7xl font-medium">
+              Virtual Portfolio
+            </div>
+          </div>
+          <div class="text-base">
+            <Copy address={$wallet} iconColor="#fff" color="#fff" />
           </div>
         </div>
 
@@ -168,17 +176,18 @@
                       </div>
                     {/each}
                   </AnimateSharedLayout>
+
                   <div class="relative">
                     <div
                       class={`relative z-2 ${$user && Object.keys($user).length === 0 ? "opacity-50" : "opacity-100"}`}
                       on:mouseenter={() => {
                         if ($user && Object.keys($user).length === 0) {
-                          showDisabledSelectWallet = true;
+                          showDisabledSelect = true;
                         }
                       }}
                       on:mouseleave={() => {
                         if ($user && Object.keys($user).length === 0) {
-                          showDisabledSelectWallet = false;
+                          showDisabledSelect = false;
                         }
                       }}
                     >
@@ -200,7 +209,7 @@
                         class="absolute inset-0 rounded-full bg-[#ffffff1c] z-1"
                       />
                     {/if}
-                    {#if showDisabledSelectWallet}
+                    {#if showDisabledSelect}
                       <div
                         class={`absolute transform left-1/2 -translate-x-1/2 ${
                           Object.keys($user).length === 0 ? "-top-8" : "-top-12"
@@ -215,13 +224,14 @@
                       </div>
                     {/if}
                   </div>
+
                   {#if listVirtualPortfolio.length > 10}
                     <div
                       class={`flex items-center gap-3 ${$user && Object.keys($user).length === 0 ? "opacity-50" : "opacity-100"}`}
                     >
                       <div
                         class={`cursor-pointer overflow-hidden border border-white rounded-full ${
-                          indexSelectedAddress === 0 &&
+                          indexSelected === 0 &&
                           !($user && Object.keys($user).length === 0)
                             ? "opacity-50"
                             : ""
@@ -230,7 +240,7 @@
                           if ($user && Object.keys($user).length === 0) {
                             return;
                           }
-                          handleSelectPrevAddress();
+                          handleSelectPrev();
                         }}
                       >
                         <div class="transform -translate-x-[1px]">
@@ -251,8 +261,7 @@
                       </div>
                       <div
                         class={`cursor-pointer overflow-hidden border border-white rounded-full ${
-                          indexSelectedAddress ===
-                            listVirtualPortfolio.length - 1 &&
+                          indexSelected === listVirtualPortfolio.length - 1 &&
                           !($user && Object.keys($user).length === 0)
                             ? "opacity-50"
                             : ""
@@ -261,7 +270,7 @@
                           if ($user && Object.keys($user).length === 0) {
                             return;
                           }
-                          handleSelectNextAddress();
+                          handleSelectNext();
                         }}
                       >
                         <div class="transform translate-x-[1px]">
@@ -322,8 +331,8 @@
             {/if}
           </div>
 
-          <!-- mobile list address wallet -->
-          <!-- {#if listAddress && listAddress?.length !== 0}
+          <!-- mobile list virtual portfolio -->
+          {#if listVirtualPortfolio && listVirtualPortfolio?.length !== 0}
             <div
               class="relative flex flex-row items-center justify-between w-full gap-3 overflow-hidden xl:hidden"
               bind:this={container}
@@ -357,30 +366,18 @@
                 bind:this={scrollContainer}
                 on:scroll={handleScroll}
               >
-                {#each listAddress.sort((a, b) => {
-                  if (a.type === "BUNDLE" && a.label === "Your wallets") return -1;
-                  if (b.type === "BUNDLE" && b.label === "Your wallets") return 1;
-                  return 0;
-                }) as item, index}
+                {#each listVirtualPortfolio as item, index}
                   <div
                     id={item.value}
                     class={`w-max flex-shrink-0 relative text-xl text-white py-1 px-3 flex items-center gap-2 rounded-[100px] ${$user && Object.keys($user).length === 0 ? "opacity-50" : "opacity-100"}`}
-                    class:hover:no-underline={item.value === $wallet}
+                    class:hover:no-underline={item.value ===
+                      selectedVirtualPortfolio?.value}
                     on:click={() => {
-                      if (
-                        $user &&
-                        Object.keys($user).length === 0
-                      ) {
-                        return;
-                      }
-                      if ($wallet !== item.value) {
-                        wallet.update((n) => (n = item.value));
-                      }
+                      selectedVirtualPortfolio = {};
                     }}
                   >
-                    <img src={item.logo} alt="" class="w-5 h-5" />
                     {item.label}
-                    {#if item.value === $wallet}
+                    {#if item.value === selectedVirtualPortfolio?.value}
                       <Motion
                         let:motion
                         layoutId="active-pill"
@@ -428,19 +425,19 @@
             >
               Empty
             </div>
-          {/if} -->
+          {/if}
 
           <!-- btn add virtual portfolio -->
           <div
             class="relative xl:w-max lg:w-[290px] w-max flex justify-end"
             on:mouseenter={() => {
               if ($user && Object.keys($user).length === 0) {
-                showDisableAddWallet = true;
+                showDisableAdd = true;
               }
             }}
             on:mouseleave={() => {
               if ($user && Object.keys($user).length === 0) {
-                showDisableAddWallet = false;
+                showDisableAdd = false;
               }
             }}
           >
@@ -469,7 +466,7 @@
               </Button>
             {/if}
 
-            {#if showDisableAddWallet}
+            {#if showDisableAdd}
               <div
                 class={`xl:block hidden absolute transform left-1/2 -translate-x-1/2 ${
                   Object.keys($user).length === 0 ? "-top-8" : "-top-12"
@@ -485,114 +482,6 @@
             {/if}
           </div>
         </div>
-
-        <div class="text-5xl font-medium text-white">Virtual Portfolio</div>
-      </div>
-
-      <div class="flex xl:flex-row flex-col justify-between gap-6">
-        <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
-          <OverviewCard title={MultipleLang.networth}>
-            <div class="text-4xl xl:text-3xl flex">
-              $<CountUpNumber number={0} type="balance" />
-            </div>
-            <div class="flex items-center gap-3 opacity-50">
-              <div
-                class={`flex xl:text-lg text-xl font-medium ${
-                  false ? "text-red-500" : "text-[#00A878]"
-                }`}
-              >
-                {#if false}
-                  ↓
-                {:else}
-                  ↑
-                {/if}
-                <CountUpNumber number={Math.abs(0)} type="percent" />%
-              </div>
-              <div class="text-[#00000066] xl:text-lg text-xl font-medium">
-                24h
-              </div>
-            </div>
-          </OverviewCard>
-
-          <OverviewCard title={MultipleLang.claimable}>
-            <div class="flex text-4xl xl:text-3xl">
-              {#if {}.toString().toLowerCase().includes("e-")}
-                $<TooltipNumber number={0} type="balance" />
-              {:else}
-                $<CountUpNumber number={0} type="balance" />
-              {/if}
-            </div>
-            <div class="flex items-center gap-3 opacity-50">
-              <div
-                class={`flex xl:text-lg text-xl font-medium ${
-                  false ? "text-red-500" : "text-[#00A878]"
-                }`}
-              >
-                {#if false}
-                  ↓
-                {:else}
-                  ↑
-                {/if}
-                <CountUpNumber number={Math.abs(0)} type="percent" />%
-              </div>
-              <div class="text-[#00000066] xl:text-lg text-xl font-medium">
-                24h
-              </div>
-            </div>
-          </OverviewCard>
-        </div>
-
-        <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
-          <OverviewCard title={MultipleLang.total_assets}>
-            <div class="text-4xl xl:text-3xl flex">
-              $<CountUpNumber number={0} type="balance" />
-            </div>
-            <div class="flex items-center gap-3 opacity-50">
-              <div
-                class={`flex xl:text-lg text-xl font-medium ${
-                  false ? "text-red-500" : "text-[#00A878]"
-                }`}
-              >
-                {#if 0}
-                  ↓
-                {:else}
-                  ↑
-                {/if}
-                <CountUpNumber number={Math.abs(0)} type="percent" />%
-              </div>
-              <div class="text-[#00000066] xl:text-lg text-xl font-medium">
-                24h
-              </div>
-            </div>
-          </OverviewCard>
-
-          <OverviewCard title={MultipleLang.total_positions}>
-            <div class="flex text-4xl xl:text-3xl">
-              {#if {}.toString().toLowerCase().includes("e-")}
-                $<TooltipNumber number={0} type="balance" />
-              {:else}
-                $<CountUpNumber number={0} type="balance" />
-              {/if}
-            </div>
-            <div class="flex items-center gap-3 opacity-50">
-              <div
-                class={`flex xl:text-lg text-xl font-medium ${
-                  false ? "text-red-500" : "text-[#00A878]"
-                }`}
-              >
-                {#if false}
-                  ↓
-                {:else}
-                  ↑
-                {/if}
-                <CountUpNumber number={Math.abs(0)} type="percent" />%
-              </div>
-              <div class="text-[#00000066] xl:text-lg text-xl font-medium">
-                24h
-              </div>
-            </div>
-          </OverviewCard>
-        </div>
       </div>
     </div>
   </div>
@@ -606,6 +495,17 @@
       >
         hello
       </div>
+    </div>
+  </div>
+
+  <div class="bg-white rounded-[20px] xl:p-8 p-4 xl:shadow-md">
+    <div class="border border_0000001a rounded-[20px] p-6 flex flex-col gap-4">
+      <FormVirtualPortfolio
+        {listVirtualPortfolio}
+        defaultData={selectedVirtualPortfolio}
+        {handleSubmit}
+        {isLoading}
+      />
     </div>
   </div>
 </ErrorBoundary>
