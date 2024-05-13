@@ -181,11 +181,11 @@
             {selectedDisplayName}
             {handleUpdateSelectedDisplayName}
           />
-          <Twitter
+          <!-- <Twitter
             data={{}}
             {selectedDisplayName}
             {handleUpdateSelectedDisplayName}
-          />
+          /> -->
           <Telegram
             data={{}}
             {selectedDisplayName}
@@ -199,11 +199,11 @@
             {selectedDisplayName}
             {handleUpdateSelectedDisplayName}
           />
-          <Twitter
+          <!-- <Twitter
             data={{}}
             {selectedDisplayName}
             {handleUpdateSelectedDisplayName}
-          />
+          /> -->
           <Telegram
             data={{}}
             {selectedDisplayName}
@@ -217,11 +217,11 @@
             {selectedDisplayName}
             {handleUpdateSelectedDisplayName}
           />
-          <Twitter
+          <!-- <Twitter
             data={{}}
             {selectedDisplayName}
             {handleUpdateSelectedDisplayName}
-          />
+          /> -->
           <Telegram
             data={{}}
             {selectedDisplayName}
@@ -258,19 +258,19 @@
             {selectedDisplayName}
             {handleUpdateSelectedDisplayName}
           />
-          <Twitter
+          <!-- <Twitter
             data={{}}
             {selectedDisplayName}
             {handleUpdateSelectedDisplayName}
-          />
+          /> -->
         {/if}
 
         {#if dataSocials && dataSocials.length === 2 && dataSocials.find((item) => item.type === "discord") && dataSocials.find((item) => item.type === "google")}
-          <Twitter
+          <!-- <Twitter
             data={{}}
             {selectedDisplayName}
             {handleUpdateSelectedDisplayName}
-          />
+          /> -->
           <Telegram
             data={{}}
             {selectedDisplayName}
@@ -297,11 +297,11 @@
             {selectedDisplayName}
             {handleUpdateSelectedDisplayName}
           />
-          <Twitter
+          <!-- <Twitter
             data={{}}
             {selectedDisplayName}
             {handleUpdateSelectedDisplayName}
-          />
+          /> -->
         {/if}
 
         {#if dataSocials && dataSocials.length === 2 && dataSocials.find((item) => item.type === "google") && dataSocials.find((item) => item.type === "twitter")}
@@ -323,11 +323,11 @@
             {selectedDisplayName}
             {handleUpdateSelectedDisplayName}
           />
-          <Twitter
+          <!-- <Twitter
             data={{}}
             {selectedDisplayName}
             {handleUpdateSelectedDisplayName}
-          />
+          /> -->
         {/if}
 
         {#if dataSocials && dataSocials.length === 2 && dataSocials.find((item) => item.type === "twitter") && dataSocials.find((item) => item.type === "telegram")}
@@ -360,11 +360,11 @@
         {/if}
 
         {#if dataSocials && dataSocials.length === 3 && dataSocials.find((item) => item.type === "discord") && dataSocials.find((item) => item.type === "google") && dataSocials.find((item) => item.type === "telegram")}
-          <Twitter
+          <!-- <Twitter
             data={{}}
             {selectedDisplayName}
             {handleUpdateSelectedDisplayName}
-          />
+          /> -->
         {/if}
 
         {#if dataSocials && dataSocials.length === 3 && dataSocials.find((item) => item.type === "discord") && dataSocials.find((item) => item.type === "google") && dataSocials.find((item) => item.type === "twitter")}
