@@ -127,11 +127,6 @@ export const handleGetDataDailyCheckin = async () => {
   return response.data;
 };
 
-export const getFlipCheck = async () => {
-  const response: any = await nimbus.get(`/v2/games/flip/check`);
-  return response?.data;
-};
-
 export const handleGetDataLeaderboard = async () => {
   const response: any = await nimbus.get("/v2/checkin/leaderboard");
   return response.data;
