@@ -76,34 +76,42 @@
 
   const handleAddTwitter = async (res, id, externalId, info, displayName) => {
     try {
-      const params: any = {
-        kind: "social",
-        id,
-        externalId,
-        type: "twitter",
-        info,
-        displayName,
-        userPublicAddress: $userPublicAddress,
-      };
+      handleSignOut();
 
-      const response: any = await nimbus.post("/accounts/link", params);
-      if (response && response?.error) {
-        handleSignOut();
+      handleGetTwitterToken(
+        res.uid,
+        res?.reloadUserInfo?.providerUserInfo[0]?.rawId,
+        "twitter",
+        res?.reloadUserInfo?.screenName,
+        res?.reloadUserInfo?.screenName
+      );
 
-        handleGetTwitterToken(
-          res.uid,
-          res?.reloadUserInfo?.providerUserInfo[0]?.rawId,
-          "twitter",
-          res?.reloadUserInfo?.screenName,
-          res?.reloadUserInfo?.screenName
-        );
-      } else {
-        queryClient?.invalidateQueries(["link-socials"]);
+      // const params: any = {
+      //   kind: "social",
+      //   id,
+      //   externalId,
+      //   type: "twitter",
+      //   info,
+      //   displayName,
+      //   userPublicAddress: $userPublicAddress,
+      // };
 
-        toastMsg = "Successfully connect X account!";
-        isSuccessToast = true;
-        trigger();
-      }
+      // const response: any = await nimbus.post("/accounts/link", params);
+      // if (response && response?.error) {
+      //   toastMsg = response?.error;
+      //   isSuccessToast = false;
+      //   trigger();
+      // } else {
+      //   handleSignOut();
+
+      //   handleGetTwitterToken(
+      //     res.uid,
+      //     res?.reloadUserInfo?.providerUserInfo[0]?.rawId,
+      //     "twitter",
+      //     res?.reloadUserInfo?.screenName,
+      //     res?.reloadUserInfo?.screenName
+      //   );
+      // }
     } catch (e) {
       console.log(e);
       toastMsg =
