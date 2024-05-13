@@ -5,7 +5,8 @@
   import { isDarkMode } from "~/store";
   import { triggerFirework } from "~/utils";
   import { wait } from "~/entries/background/utils";
-  import { useQueryClient } from "@tanstack/svelte-query";
+  import { createQuery, useQueryClient } from "@tanstack/svelte-query";
+  import { getLinkData } from "~/lib/queryAPI";
 
   import Button from "~/components/Button.svelte";
   import Loading from "~/components/Loading.svelte";
@@ -53,6 +54,25 @@
     await wait(2000);
     openScreenBonusScore = false;
   };
+
+  let userLinkData = [];
+
+  $: queryLinkSocial = createQuery({
+    queryKey: ["link-socials"],
+    queryFn: () => getLinkData(),
+    staleTime: Infinity,
+    retry: false,
+  });
+
+  $: {
+    if (
+      !$queryLinkSocial.isError &&
+      $queryLinkSocial.data !== undefined &&
+      queryLinkSocial?.data?.data?.length !== 0
+    ) {
+      userLinkData = $queryLinkSocial?.data?.data;
+    }
+  }
 
   const checkUserFinishedQuest = (campaign: any, completedQuests: any) => {
     return (
@@ -257,11 +277,24 @@
                       <div class="w-[50px] xl:h-[34px] h-[43px]">
                         <Button
                           on:click={() => {
-                            window.open(data?.url, "_blank");
-                            selectedQuestId = data?.id;
-                            startPlay = true;
-                            clearInterval(countdownInterval);
-                            startCountdown();
+                            if (
+                              data?.type === "DISCORD" &&
+                              userLinkData &&
+                              userLinkData?.length !== 0 &&
+                              !userLinkData.find(
+                                (item) => item.type === "discord"
+                              )
+                            ) {
+                              window.location.assign(
+                                "https://discord.com/oauth2/authorize?client_id=1236967408204517396&response_type=code&redirect_uri=https%3A%2F%2Fapp.getnimbus.io&scope=identify+guilds+guilds.members.read"
+                              );
+                            } else {
+                              window.open(data?.url, "_blank");
+                              selectedQuestId = data?.id;
+                              startPlay = true;
+                              clearInterval(countdownInterval);
+                              startCountdown();
+                            }
                           }}
                         >
                           <img src={playIcon} alt="" class="w-4 h-4" />
@@ -362,11 +395,22 @@
                 <div class="w-[50px] h-[44px]">
                   <Button
                     on:click={() => {
-                      window.open(data?.url, "_blank");
-                      selectedQuestId = data?.id;
-                      startPlay = true;
-                      clearInterval(countdownInterval);
-                      startCountdown();
+                      if (
+                        data?.type === "DISCORD" &&
+                        userLinkData &&
+                        userLinkData?.length !== 0 &&
+                        !userLinkData.find((item) => item.type === "discord")
+                      ) {
+                        window.location.assign(
+                          "https://discord.com/oauth2/authorize?client_id=1236967408204517396&response_type=code&redirect_uri=https%3A%2F%2Fapp.getnimbus.io&scope=identify+guilds+guilds.members.read"
+                        );
+                      } else {
+                        window.open(data?.url, "_blank");
+                        selectedQuestId = data?.id;
+                        startPlay = true;
+                        clearInterval(countdownInterval);
+                        startCountdown();
+                      }
                     }}
                   >
                     <img src={playIcon} alt="" class="w-4 h-4" />
