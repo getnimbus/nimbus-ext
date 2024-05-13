@@ -185,7 +185,7 @@
         {#if $queryCampaignPartnerList.isFetching}
           <Loading />
         {:else}
-          {#each partnersDataList as data}
+          {#each partnersDataList.filter((item) => item.status === "ACTIVE") as data}
             <PartnerQuestCard {data} {handleUpdatePartnerQuestsId} />
           {/each}
         {/if}
