@@ -219,12 +219,11 @@
         <Button
           variant="tertiary"
           on:click={() => {
-            // handleStartFlip();
+            handleStartFlip();
           }}
         >
           <div class="font-medium sm:text-2xl text-lg py-4 px-5">
-            <!-- Flip Now 👑 -->
-            🔒
+            Flip Now 👑
           </div>
         </Button>
       </div>
