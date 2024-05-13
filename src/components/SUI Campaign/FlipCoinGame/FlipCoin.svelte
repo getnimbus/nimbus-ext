@@ -63,7 +63,7 @@
   let showToast: boolean = false;
   let isUserWin = false;
 
-  const client = new SuiClient({ url: getFullnodeUrl("devnet") });
+  const client = new SuiClient({ url: getFullnodeUrl("mainnet") });
 
   const getRound = async () => {
     const round = await client

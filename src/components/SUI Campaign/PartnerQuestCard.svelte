@@ -33,7 +33,7 @@
 </script>
 
 <div
-  class={`flex flex-col border border_0000000d rounded-[10px] xl:w-[320px] lg:w-[290px] md:w-[330px] w-full py-8 px-6 transition-all hover:shadow-md cursor-pointer ${$isDarkMode ? "bg-[#000] hover:shadow-gray-600" : "bg-[#fff] hover:shadow-gray-400"}`}
+  class={`flex flex-col border border_0000000d rounded-[10px] mx-auto w-full py-8 px-6 transition-all hover:shadow-md cursor-pointer ${$isDarkMode ? "bg-[#000] hover:shadow-gray-600" : "bg-[#fff] hover:shadow-gray-400"}`}
   on:click={() => {
     handleUpdatePartnerQuestsId(data?.id);
     window.history.replaceState(

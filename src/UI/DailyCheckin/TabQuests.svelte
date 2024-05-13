@@ -181,15 +181,19 @@
         </div>
       </div>
 
-      <div class="flex flex-wrap gap-6">
-        {#if $queryCampaignPartnerList.isFetching}
+      {#if $queryCampaignPartnerList.isFetching}
+        <div class="mx-auto">
           <Loading />
-        {:else}
+        </div>
+      {:else}
+        <div
+          class="grid grid-cols-4-1900px lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-6 w-full"
+        >
           {#each partnersDataList.filter((item) => item.status === "ACTIVE") as data}
             <PartnerQuestCard {data} {handleUpdatePartnerQuestsId} />
           {/each}
-        {/if}
-      </div>
+        </div>
+      {/if}
     </div>
   </div>
 {:else}
@@ -295,4 +299,9 @@
 {/if}
 
 <style windi:preflights:global windi:safelist:global>
+  @media (min-width: 1900px) {
+    .grid-cols-4-1900px {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
 </style>
