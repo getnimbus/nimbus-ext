@@ -4,6 +4,7 @@
   import { nimbus } from "~/lib/network";
   import { user, userPublicAddress } from "~/store";
   import {
+    getLinkData,
     handleGetDataDailyCheckin,
     handleGetDataRewards,
     handleValidateAddress,
@@ -49,9 +50,27 @@
     isSuccessToast = false;
   };
 
+  let socialData = [];
+
+  $: queryLinkSocial = createQuery({
+    queryKey: ["link-socials"],
+    queryFn: () => getLinkData(),
+    staleTime: Infinity,
+    retry: false,
+  });
+
+  $: {
+    if (!$queryLinkSocial.isError && $queryLinkSocial.data !== undefined) {
+      socialData = $queryLinkSocial?.data?.data;
+    }
+  }
+
   const handleRedeem = async (data) => {
     const validateAddress = await handleValidateAddress($userPublicAddress);
-    if (validateAddress?.type === "MOVE") {
+    if (
+      validateAddress?.type === "MOVE" ||
+      socialData.find((item) => item.chain === "MOVE")
+    ) {
       try {
         if ($queryDailyCheckin?.data?.totalPoint < data.cost) {
           selectedType = "yourGift";
@@ -75,7 +94,8 @@
         console.error(e);
       }
     } else {
-      toastMsg = "Please connect your SUI wallet to redeem!";
+      toastMsg =
+        "Please connect your SUI wallet or link you SUI wallet to redeem!";
       isSuccessToast = false;
       trigger();
     }
