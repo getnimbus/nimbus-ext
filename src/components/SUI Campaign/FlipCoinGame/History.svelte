@@ -7,16 +7,12 @@
   import gmPoints from "~/assets/Gold4.svg";
   import Loading from "~/components/Loading.svelte";
 
-  const fakeData = [];
-
   $: checkFlip = createQuery({
     queryKey: ["check-flip"],
     queryFn: getFlipCheck,
     staleTime: Infinity,
     retry: false,
   });
-
-  $: console.log("object: ", $checkFlip.data);
 </script>
 
 <div>
