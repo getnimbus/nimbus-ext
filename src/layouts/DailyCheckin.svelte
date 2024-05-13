@@ -37,11 +37,11 @@
       value: "checkin",
       type: "Daily Checkin",
     },
-    // {
-    //   label: i18n("checkinPage.tab-leaderboard", "Flip GM Points"),
-    //   value: "flip",
-    //   type: "Flip GM Points",
-    // },
+    {
+      label: i18n("checkinPage.tab-leaderboard", "Flip GM Points"),
+      value: "flip",
+      type: "Flip GM Points",
+    },
     // {
     //   label: i18n("checkinPage.tab-leaderboard", "Leaderboard"),
     //   value: "leaderboard",

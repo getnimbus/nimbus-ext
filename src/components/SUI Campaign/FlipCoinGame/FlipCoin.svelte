@@ -10,7 +10,9 @@
   import { isDarkMode } from "~/store";
   import { triggerFirework } from "~/utils";
   import { nimbus } from "~/lib/network";
+  import { SuiConnector } from "nimbus-sui-kit";
 
+  import ReactAdapter from "~/components/ReactAdapter.svelte";
   import Button from "~/components/Button.svelte";
 
   import suiBackground from "~/assets/campaign/flipCoin/sui-background-img.png";
@@ -20,17 +22,48 @@
 
   export let point;
 
+  const chains = [
+    {
+      id: "sui:mainnet",
+      name: "Mainnet",
+      rpcUrl: "https://fullnode.mainnet.sui.io",
+    },
+  ];
+
+  const onConnectSuccess = (msg) => {
+    console.log("Success connect: ", msg);
+    if ($suiWalletInstance) {
+      ($suiWalletInstance as WalletState).toggleSelect();
+    }
+  };
+
+  const onConnectError = (msg) => {
+    console.error("Error connect", msg);
+    if ($suiWalletInstance) {
+      ($suiWalletInstance as WalletState).toggleSelect();
+    }
+  };
+
+  const widgetConfig = {
+    walletFn: (wallet) => {
+      suiWalletInstance.update((n) => (n = wallet));
+    },
+    onConnectSuccess,
+    onConnectError,
+  };
+
   let toastMsg = "";
   let isSuccessToast: boolean = false;
   let counter = 3;
   let showToast: boolean = false;
+  let flipEvent = null;
 
-  const client = new SuiClient({ url: getFullnodeUrl("testnet") });
+  const client = new SuiClient({ url: getFullnodeUrl("devnet") });
 
   const getRound = async () => {
     const round = await client
       .getObject({
-        id: "0x3deb4642a72d3cba7cac9dfc8ad209f7e98c85d3a3d84f6f2f909420103b1da2",
+        id: "0xb440cf576ccf24b5c9b81a80a146eeaae9c7f09a87983769ec2d34212a434815", // devnet
         options: {
           showContent: true,
         },
@@ -48,7 +81,10 @@
       .get(
         `https://drand.cloudflare.com/52db9ba70e0cc0f6eaf7803dd07447a1f5477735fd3f661792ba94600c84e971/public/${round}`
       )
-      .then((res) => res?.data?.signature);
+      .then((res) => res?.data?.signature)
+      .catch((err) => {
+        console.log("signature error: ", err);
+      });
 
     return signature;
   };
@@ -60,34 +96,46 @@
     ) {
       try {
         const tx = new TransactionBlock();
-        tx.setGasPrice(20000);
         tx.setGasBudget(50000000);
         const round = await getRound();
         const signature = await getSignature(round);
+
+        // call flip function
         tx.moveCall({
           target:
-            "0x7eb5bbdd60fec4a058d57d76de27130636a75f8e8d9f4250429b11913ffc77b3::coin_flip::flip",
+            "0x86611815332fbe7670121858bd75dd0a949cf7d9578a342d8a4a916ee66285ff::coin_flip::flip",
           typeArguments: [],
           arguments: [
             tx.object(
-              "0x3deb4642a72d3cba7cac9dfc8ad209f7e98c85d3a3d84f6f2f909420103b1da2"
-            ),
-            tx.pure(type, "u64"),
+              "0xb440cf576ccf24b5c9b81a80a146eeaae9c7f09a87983769ec2d34212a434815"
+            ), // devnet
+            tx.pure(type, "u64"), // user input 0 as HEAD or 1 as TAIL
             tx.pure(bcs.string().serialize(signature).toBytes()),
           ],
         });
 
-        console.log("trigger execute!!!");
         const res = await (
           $suiWalletInstance as WalletState
         ).signAndExecuteTransactionBlock({
           transactionBlock: tx,
+          options: {
+            showInput: true,
+            showEffects: true,
+            showEvents: true,
+            showObjectChanges: true,
+            showBalanceChanges: true,
+          },
         });
-        console.log("trigger execute success!!!", res);
 
-        // trigger the api in here
-        isUserWin && triggerFirework();
-        openScreenResult = true;
+        const resEvent: any = res.events;
+        if (resEvent.length > 0) {
+          flipEvent = resEvent[0];
+          if (Number(resEvent[0]?.parsedJson?.result) === type) {
+            isUserWin && triggerFirework();
+            openScreenResult = true;
+          }
+        }
+        console.log("trigger execute success!!!", { res, resEvent });
       } catch (error) {
         console.log("err: ", error);
       }
@@ -113,12 +161,12 @@
   let isUserWin = true; // state user win or lose
 
   const handleStartFlip = () => {
-    if (!finishedQuest) {
-      toastMsg = "Completed all the Start Quest to Flip!";
-      isSuccessToast = false;
-      trigger();
-      return;
-    }
+    // if (!finishedQuest) {
+    //   toastMsg = "Completed all the Start Quest to Flip!";
+    //   isSuccessToast = false;
+    //   trigger();
+    //   return;
+    // }
 
     if (
       ($suiWalletInstance as WalletState) &&
@@ -219,12 +267,11 @@
         <Button
           variant="tertiary"
           on:click={() => {
-            // handleStartFlip();
+            handleStartFlip();
           }}
         >
           <div class="font-medium sm:text-2xl text-lg py-4 px-5">
-            <!-- Flip Now 👑 -->
-            🔒
+            Flip Now 👑
           </div>
         </Button>
       </div>
@@ -246,6 +293,14 @@
     {/if}
   </div>
 </div>
+
+<ReactAdapter
+  element={SuiConnector}
+  config={widgetConfig}
+  autoConnect={false}
+  {chains}
+  integrator="svelte-example"
+/>
 
 {#if showToast}
   <div class="fixed top-3 right-3 w-full" style="z-index: 2147483648;">
@@ -308,12 +363,12 @@
         <div class="text-4xl text-[#FFD569] font-medium">Stonk Stonk</div>
         <img src={gmPoints} alt="" class="w-40 h-40" />
         <div class="text-[34px] text-white font-medium">+1000 GMs</div>
-      {:else}
+        <!-- {:else}
         <div class="text-4xl text-[#FFD569] font-medium">
           ohh...it's stink stink
         </div>
         <img src={betterLuck} alt="" class="w-40 h-40 object-contain" />
-        <div class="text-[34px] text-white font-medium">Try again...</div>
+        <div class="text-[34px] text-white font-medium">Try again...</div> -->
       {/if}
     </div>
   </div>
