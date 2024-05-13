@@ -5,7 +5,7 @@
   import { isDarkMode } from "~/store";
   import { triggerFirework } from "~/utils";
   import { wait } from "~/entries/background/utils";
-  import { getCampaignQuestsBoard, getLinkData } from "~/lib/queryAPI";
+  import { getLinkData, getCampaignPartnerDetail } from "~/lib/queryAPI";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
 
   import Button from "~/components/Button.svelte";
@@ -14,6 +14,7 @@
   import playIcon from "~/assets/play-icon.svg";
 
   export let dataQuestsBoard;
+  export let id;
 
   const queryClient = useQueryClient();
 
@@ -73,25 +74,28 @@
     }
   }
 
-  $: queryQuestsBoard = createQuery({
-    queryKey: ["quests-campaign"],
-    queryFn: () => getCampaignQuestsBoard(),
+  $: queryCampaignPartnerDetail = createQuery({
+    queryKey: ["partners-detail-campaign", id],
+    queryFn: () => getCampaignPartnerDetail(id),
     staleTime: Infinity,
     retry: false,
+    enabled: id && id.length !== 0,
   });
 
   $: {
     if (
-      !$queryQuestsBoard.isError &&
-      $queryQuestsBoard &&
-      $queryQuestsBoard?.data !== undefined
+      !$queryCampaignPartnerDetail.isError &&
+      $queryCampaignPartnerDetail &&
+      $queryCampaignPartnerDetail?.data !== undefined
     ) {
-      listQuestCompleted = $queryQuestsBoard?.data?.completedQuests.filter(
-        (item) => item.type === "QUEST"
-      );
-      listQuestVerified = $queryQuestsBoard?.data?.completedQuests.filter(
-        (item) => item.type === "QUEST_VERIFIED"
-      );
+      listQuestCompleted =
+        $queryCampaignPartnerDetail?.data?.completedQuests.filter(
+          (item) => item.type === "QUEST"
+        );
+      listQuestVerified =
+        $queryCampaignPartnerDetail?.data?.completedQuests.filter(
+          (item) => item.type === "QUEST_VERIFIED"
+        );
     }
   }
 

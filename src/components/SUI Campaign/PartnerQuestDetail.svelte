@@ -284,7 +284,7 @@
       <div class="border-b-[1.5px] border_0000000d pb-2">
         <div class="xl:title-3 title-2">Quests</div>
       </div>
-      <PartnerQuestTable {dataQuestsBoard} />
+      <PartnerQuestTable {dataQuestsBoard} {id} />
     </div>
 
     <div class="flex flex-col gap-4">
