@@ -137,12 +137,17 @@
 
   const handleRedeemTicket = async (body) => {
     try {
-      const post = await nimbus.post("/v2/campaign/sui-unlock/rewards", {
+      const post = await nimbus.post("/v2/campaign/sui-unlock/rewardss", {
         reward: body,
       });
       queryClient.invalidateQueries([$userPublicAddress, "rewards"]);
       queryClient.invalidateQueries([$userPublicAddress, "daily-checkin"]);
       openScreenTicketCardSuccess = true;
+      if (post?.error) {
+        toastMsg = post?.error;
+        isSuccessToast = false;
+        trigger();
+      }
     } catch (error) {
       console.log(error);
       toastMsg = "Something went wrong while redeeming the ticket";
