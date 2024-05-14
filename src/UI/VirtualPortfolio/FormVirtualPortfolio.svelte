@@ -1,9 +1,10 @@
 <script lang="ts">
-  import { coinmarketcap } from "~/lib/network";
   import dayjs from "dayjs";
   import { i18n } from "~/lib/i18n";
   import { DateInput } from "date-picker-svelte";
   import { isDarkMode } from "~/store";
+  import { handleMarketTokens } from "~/lib/queryAPI";
+  import { createQuery } from "@tanstack/svelte-query";
 
   import Button from "~/components/Button.svelte";
   import Loading from "~/components/Loading.svelte";
@@ -24,70 +25,85 @@
   let virtualPortfolioName = "";
   let time = new Date();
   let listToken = [];
-  let isLoadingListToken = false;
+
   let selectedTokenList = [];
   let selectedTokenRemove = {};
 
+  // get list all token
+  $: queryListToken = createQuery({
+    queryKey: ["list-all-token"],
+    queryFn: () => handleMarketTokens(),
+    staleTime: Infinity,
+  });
+
   $: {
-    if (defaultData) {
-      getListToken();
+    if (!$queryListToken.isError && $queryListToken?.data) {
+      formatListAllToken($queryListToken?.data);
     }
   }
 
-  const getListToken = async () => {
-    isLoadingListToken = true;
-    try {
-      const response: any = await coinmarketcap.get(
-        `/generated/core/crypto/cryptos.json`
-      );
-      if (response) {
-        if (defaultData && Object.keys(defaultData).length !== 0) {
-          virtualPortfolioName = defaultData.portfolioName;
-
-          time = defaultData.updatedTime;
-
-          listToken = response?.values.map((item) => {
-            const selectedToken = defaultData.coins.filter(
-              (data) => data.coin === item[0]
-            );
-
-            return {
-              id: item[0],
-              name: item[1],
-              symbol: item[2],
-              logo: `https://s2.coinmarketcap.com/static/img/coins/64x64/${item[0]}.png`,
-              percent: selectedToken[0] ? selectedToken[0]?.percent : 0,
-            };
-          });
-
-          selectedTokenList = listToken.filter((item) => {
-            return defaultData.coins.some((data) => data.coin === item.id);
-          });
-        } else {
-          time = new Date();
-          virtualPortfolioName = "";
-          searchValue = "";
-          selectedTokenList = [];
-          remaining = 0;
-          selectedTokenRemove = {};
-          listToken = response?.values.map((item) => {
-            return {
-              id: item[0],
-              name: item[1],
-              symbol: item[2],
-              logo: `https://s2.coinmarketcap.com/static/img/coins/64x64/${item[0]}.png`,
-              percent: 0,
-            };
-          });
-        }
-
-        isLoadingListToken = false;
-      }
-    } catch (e) {
-      console.error("e: ", e);
-      isLoadingListToken = false;
-    }
+  const formatListAllToken = (data) => {
+    listToken = data?.map((item) => {
+      return {
+        id: item?.id,
+        name: item?.name,
+        symbol: item?.symbol,
+        logo: item?.large,
+      };
+    });
   };
+
+  $: {
+    if (type === "edit") {
+      if (defaultData && Object.keys(defaultData).length !== 0) {
+        virtualPortfolioName = defaultData.portfolioName;
+
+        time = defaultData.updatedTime;
+
+        listToken = listToken.map((item) => {
+          const selectedToken = defaultData.coins.find(
+            (data) => data.coin === item.id
+          );
+          return {
+            ...item,
+            percent: selectedToken ? selectedToken?.percent : 0,
+          };
+        });
+
+        selectedTokenList = listToken.filter((item) => {
+          return defaultData.coins.some((data) => data.coin === item.id);
+        });
+      }
+    } else {
+      time = new Date();
+      virtualPortfolioName = "";
+      searchValue = "";
+      selectedTokenList = [];
+      remaining = 0;
+      selectedTokenRemove = {};
+      listToken = listToken.map((item) => {
+        return {
+          ...item,
+          percent: 0,
+        };
+      });
+    }
+  }
+
+  $: {
+    if (listVirtualPortfolio.length === 0) {
+      virtualPortfolioName = "";
+      searchValue = "";
+      selectedTokenList = [];
+      remaining = 0;
+      listToken = listToken.map((item) => {
+        return {
+          ...item,
+          percent: 0,
+        };
+      });
+    }
+  }
 
   $: searchDataResult = searchValue
     ? listToken.filter(
@@ -95,7 +111,7 @@
           item.name.toLowerCase() === searchValue.toLowerCase() ||
           item.name.toLowerCase().includes(searchValue.toLowerCase())
       )
-    : listToken.slice(0, 1000);
+    : listToken.slice(0, 100);
 
   $: {
     if (selectedTokenList) {
@@ -133,21 +149,6 @@
     (prev, item) => prev + Number(item.percent),
     0
   );
-
-  $: {
-    if (listVirtualPortfolio.length === 0) {
-      virtualPortfolioName = "";
-      searchValue = "";
-      selectedTokenList = [];
-      remaining = 0;
-      listToken = listToken.map((item) => {
-        return {
-          ...item,
-          percent: 0,
-        };
-      });
-    }
-  }
 </script>
 
 <div class="flex flex-col gap-5">
@@ -238,13 +239,13 @@
       >
         <table
           class={`table-auto w-full ${
-            isLoadingListToken ||
+            $queryListToken.isFetching ||
             (searchDataResult && searchDataResult.length === 0)
               ? "h-full"
               : ""
           }`}
         >
-          {#if isLoadingListToken}
+          {#if $queryListToken.isFetching}
             <tbody>
               <tr>
                 <td colspan={2}>
@@ -291,7 +292,7 @@
                     >
                       <div class="text-left flex items-center gap-3">
                         <img
-                          src={`https://s2.coinmarketcap.com/static/img/coins/64x64/${data.id}.png`}
+                          src={data?.logo}
                           alt=""
                           width="30"
                           height="30"
@@ -394,7 +395,7 @@
             >
               <div class="text-left flex items-center gap-3">
                 <img
-                  src={`https://s2.coinmarketcap.com/static/img/coins/64x64/${data.id}.png`}
+                  src={data?.logo}
                   alt=""
                   width="30"
                   height="30"
