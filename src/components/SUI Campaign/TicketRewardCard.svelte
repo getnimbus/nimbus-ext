@@ -6,11 +6,13 @@
 
   export let ticketData;
   export let handleRedeemTicket = (value) => {};
+  export let selectedTicketReward;
+
+  let openScreenSuccess = false;
 
   import Button from "~/components/Button.svelte";
 
   import goldImg from "~/assets/Gold4.svg";
-
   import Crown from "~/assets/crown.svg";
 
   const checkTicketValidate = () => {
@@ -33,7 +35,7 @@
   <div class="px-[16px] flex items-center h-full gap-[47px]">
     <div
       class={`flex-[0.6] rounded-2xl p-2 flex items-center h-full justify-center ${
-        $isDarkMode ? "bg-gray-200" : "bg-white"
+        $isDarkMode ? "" : "bg-white"
       }`}
     >
       <img src={ticketData?.logo} alt="" class="w-20 h-20 object-contain" />
@@ -65,7 +67,7 @@
       <div
         class={`w-4 h-10 rounded-r-none rounded-full absolute -right-[1px] -bottom-5 border-l border-t border-b border_0000000d ${
           $isDarkMode ? "bg-[#161616]" : "bg-[#fff]"
-        } `}
+        }`}
       />
     </div>
 
@@ -86,7 +88,11 @@
         {:else}
           <Button
             variant="tertiary"
-            on:click={() => handleRedeemTicket(ticketData?.body)}
+            on:click={() => {
+              handleRedeemTicket(ticketData?.body);
+              openScreenSuccess = true;
+              selectedTicketReward = ticketData;
+            }}
           >
             <div class="flex items-center gap-1">
               <img src={goldImg} alt="" class="w-[28px] h-[28px]" />
