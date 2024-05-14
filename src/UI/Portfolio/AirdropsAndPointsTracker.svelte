@@ -80,7 +80,7 @@
     queryKey: ["points-airdrop", $wallet],
     queryFn: () => getPointsAirdrop(),
     staleTime: Infinity,
-    enabled: $user && Object.keys($user).length !== 0,
+    enabled: true,
   });
 
   let formatData = [];
