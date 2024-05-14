@@ -65,6 +65,11 @@
       website: "https://spamsui.com/",
       logo: "https://spamsui.com/img/spam-logo.webp",
     },
+    FlowX: {
+      name: "FlowX",
+      website: "https://flowx.finance/",
+      logo: "https://strapi-dev.scand.app/uploads/photo_2023_10_23_09_56_50_7d2b8e58b3.jpg",
+    },
   };
 
   const getPointsAirdrop = async () => {
