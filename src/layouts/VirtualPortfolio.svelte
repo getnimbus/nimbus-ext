@@ -427,59 +427,68 @@
             </div>
           {/if}
 
-          <!-- btn add virtual portfolio -->
-          <div
-            class="relative xl:w-max lg:w-[290px] w-max flex justify-end"
-            on:mouseenter={() => {
-              if ($user && Object.keys($user).length === 0) {
-                showDisableAdd = true;
-              }
-            }}
-            on:mouseleave={() => {
-              if ($user && Object.keys($user).length === 0) {
-                showDisableAdd = false;
-              }
-            }}
-          >
-            {#if $user && Object.keys($user).length === 0}
-              <Button variant="disabled" disabled>
-                <img
-                  src={$isDarkMode ? PlusBlack : Plus}
-                  alt=""
-                  class="w-3 h-3"
-                />
-                <div class={`${$isDarkMode ? "text-gray-400" : "text-white"}`}>
-                  Add virtual portfolio
-                </div>
-              </Button>
-            {:else}
-              <Button
-                variant="tertiary"
-                on:click={() => {
-                  navigateTo(
-                    `/custom-virtual-portfolio?type=${$typeWallet}&chain=${$chain}&address=${$wallet}}`
-                  );
-                }}
-              >
-                <img src={Plus} alt="" class="w-3 h-3" />
-                <div class="text-white">Add virtual portfolio</div>
-              </Button>
-            {/if}
+          <div class="flex items-center gap-3">
+            <!-- btn edit virtual portfolio -->
+            <div class="w-max">
+              <Button variant="no-outlined">Edit</Button>
+            </div>
 
-            {#if showDisableAdd}
-              <div
-                class={`xl:block hidden absolute transform left-1/2 -translate-x-1/2 ${
-                  Object.keys($user).length === 0 ? "-top-8" : "-top-12"
-                }`}
-                style="z-index: 2147483648;"
-              >
-                <div
-                  class="max-w-[360px] text-white bg-black py-1 px-2 text-xs rounded relative w-max normal-case"
+            <!-- btn add virtual portfolio -->
+            <div
+              class="relative xl:w-max lg:w-[290px] w-max flex justify-end"
+              on:mouseenter={() => {
+                if ($user && Object.keys($user).length === 0) {
+                  showDisableAdd = true;
+                }
+              }}
+              on:mouseleave={() => {
+                if ($user && Object.keys($user).length === 0) {
+                  showDisableAdd = false;
+                }
+              }}
+            >
+              {#if $user && Object.keys($user).length === 0}
+                <Button variant="disabled" disabled>
+                  <img
+                    src={$isDarkMode ? PlusBlack : Plus}
+                    alt=""
+                    class="w-3 h-3"
+                  />
+                  <div
+                    class={`${$isDarkMode ? "text-gray-400" : "text-white"}`}
+                  >
+                    Add virtual portfolio
+                  </div>
+                </Button>
+              {:else}
+                <Button
+                  variant="tertiary"
+                  on:click={() => {
+                    navigateTo(
+                      `/custom-virtual-portfolio?type=${$typeWallet}&chain=${$chain}&address=${$wallet}}`
+                    );
+                  }}
                 >
-                  Connect your wallet to add virtual portfolio
+                  <img src={Plus} alt="" class="w-3 h-3" />
+                  <div class="text-white">Add virtual portfolio</div>
+                </Button>
+              {/if}
+
+              {#if showDisableAdd}
+                <div
+                  class={`xl:block hidden absolute transform left-1/2 -translate-x-1/2 ${
+                    Object.keys($user).length === 0 ? "-top-8" : "-top-12"
+                  }`}
+                  style="z-index: 2147483648;"
+                >
+                  <div
+                    class="max-w-[360px] text-white bg-black py-1 px-2 text-xs rounded relative w-max normal-case"
+                  >
+                    Connect your wallet to add virtual portfolio
+                  </div>
                 </div>
-              </div>
-            {/if}
+              {/if}
+            </div>
           </div>
         </div>
       </div>
@@ -498,7 +507,7 @@
     </div>
   </div>
 
-  <div class="bg-white rounded-[20px] xl:p-8 p-4 xl:shadow-md">
+  <!-- <div class="bg-white rounded-[20px] xl:p-8 p-4 xl:shadow-md">
     <div class="border border_0000001a rounded-[20px] p-6 flex flex-col gap-4">
       <FormVirtualPortfolio
         {listVirtualPortfolio}
@@ -507,7 +516,7 @@
         {isLoading}
       />
     </div>
-  </div>
+  </div> -->
 </ErrorBoundary>
 
 <style windi:preflights:global windi:safelist:global>
