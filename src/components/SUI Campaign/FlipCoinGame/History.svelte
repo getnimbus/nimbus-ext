@@ -70,7 +70,7 @@
             {#each flipHistoryData as item}
               <tr>
                 <td class="text-left py-2 text-sm uppercase">
-                  {dayjs(item?.createdAt).utc().format("YYYY-MM-DD hh:mm:ss")}
+                  {dayjs(item?.createdAt).utc().format("YYYY-MM-DD hh:mm:ss A")}
                 </td>
 
                 <td class="text-left py-2 text-sm uppercase">
@@ -128,7 +128,7 @@
               <div
                 class="flex items-center justify-end gap-2 font-medium text-sm text_00000099"
               >
-                {dayjs(item?.createdAt).format("YYYY-MM-DD hh:mm:ss")}
+                {dayjs(item?.createdAt).format("YYYY-MM-DD hh:mm:ss A")}
               </div>
             </div>
 
@@ -172,6 +172,8 @@
                     iconColor={`${$isDarkMode ? "#fff" : "#000"}`}
                     color={`${$isDarkMode ? "#fff" : "#000"}`}
                     isShorten={true}
+                    isLink={true}
+                    link={`https://suiscan.xyz/mainnet/tx/${item?.description}`}
                   />
                 </div>
               </div>
