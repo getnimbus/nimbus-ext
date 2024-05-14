@@ -9,9 +9,11 @@
   import Loading from "~/components/Loading.svelte";
 
   export let handleSubmit = (data, type) => {};
+  export let handleCancel = () => {};
   export let isLoading;
   export let listVirtualPortfolio;
   export let defaultData;
+  export let type;
 
   const MultipleLang = {
     assets: i18n("newtabPage.assets", "Assets"),
@@ -35,7 +37,7 @@
   const getListToken = async () => {
     isLoadingListToken = true;
     try {
-      const response = await coinmarketcap.get(
+      const response: any = await coinmarketcap.get(
         `/generated/core/crypto/cryptos.json`
       );
       if (response) {
@@ -522,19 +524,27 @@
   </div>
 
   <div class="flex justify-end">
-    <div on:click={() => {}}>Cancel</div>
+    <div class="md:w-[120px] w-full">
+      <Button
+        variant="no-outlined"
+        on:click={() => {
+          handleCancel();
+        }}
+      >
+        Cancel
+      </Button>
+    </div>
     <div class="md:w-[120px] w-full">
       {#if remaining !== 100 || virtualPortfolioName.length === 0}
         <Button variant="disabled" disabled>
           <div class={`${$isDarkMode ? "text-gray-400" : "text-white"}`}>
-            {defaultData && Object.keys(defaultData).length !== 0
-              ? "Edit"
-              : "Create"}
+            {type === "edit" ? "Edit" : "Create"}
           </div>
         </Button>
       {:else}
         <Button
           {isLoading}
+          disabled={isLoading}
           on:click={() =>
             handleSubmit(
               {
@@ -547,14 +557,10 @@
                   };
                 }),
               },
-              defaultData && Object.keys(defaultData).length !== 0
-                ? "edit"
-                : "add"
+              type
             )}
         >
-          {defaultData && Object.keys(defaultData).length !== 0
-            ? "Edit"
-            : "Create"}
+          {type === "edit" ? "Edit" : "Create"}
         </Button>
       {/if}
     </div>
