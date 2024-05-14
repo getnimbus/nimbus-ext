@@ -8,8 +8,6 @@
   export let handleRedeemTicket = (value) => {};
   export let selectedTicketReward;
 
-  let openScreenSuccess = false;
-
   import Button from "~/components/Button.svelte";
 
   import goldImg from "~/assets/Gold4.svg";
@@ -90,7 +88,6 @@
             variant="tertiary"
             on:click={() => {
               handleRedeemTicket(ticketData?.body);
-              openScreenSuccess = true;
               selectedTicketReward = ticketData;
             }}
           >
