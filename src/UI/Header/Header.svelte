@@ -859,7 +859,7 @@
           </div>
         {/if}
 
-        <div class="flex flex-col gap-3">
+        <div class="flex flex-col gap-3 overflow-y-auto list-nav">
           {#if $user && Object.keys($user).length !== 0}
             <div
               class={`flex items-center gap-3 text-white px-5 py-3 cursor-pointer
@@ -1592,6 +1592,18 @@
 </div>
 
 <style windi:preflights:global windi:safelist:global>
+  @media screen and (max-width: 500px) {
+    .list-nav {
+      height: 450px;
+    }
+  }
+
+  @media screen and (max-width: 400px) {
+    .list-nav {
+      height: 250px;
+    }
+  }
+
   .search-mobile {
     height: 100vh;
     z-index: 2147483649;
