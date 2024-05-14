@@ -137,7 +137,7 @@
 
   const handleRedeemTicket = async (body) => {
     try {
-      const post = await nimbus.post("/v2/campaign/sui-unlock/rewardss", {
+      const post = await nimbus.post("/v2/campaign/sui-unlock/rewards", {
         reward: body,
       });
       queryClient.invalidateQueries([$userPublicAddress, "rewards"]);
