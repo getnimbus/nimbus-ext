@@ -80,7 +80,6 @@
         >
       {:else}
         <div
-          class="relative"
           use:tooltip={{
             content: `<tooltip-detail text="${textTooltip}" />`,
             allowHTML: true,

@@ -281,7 +281,7 @@
 </script>
 
 <div
-  class={`col-span-2 flex flex-col items-center gap-10 relative rounded-[10px] py-10 px-8 overflow-hidden ${$isDarkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"}`}
+  class={`flex flex-col items-center gap-10 relative rounded-[10px] py-10 px-8 overflow-hidden ${$isDarkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"}`}
 >
   <img
     src={suiBackground}
@@ -324,7 +324,7 @@
           disabled={isLoadingFlip}
         >
           {#if isLoadingFlip}
-            ...Loading
+            ...
           {:else}
             Head
           {/if}
@@ -339,7 +339,7 @@
           disabled={isLoadingFlip}
         >
           {#if isLoadingFlip}
-            ...Loading
+            ...
           {:else}
             Tail
           {/if}
@@ -356,7 +356,7 @@
     {/if}
   </div>
 
-  <div class="text-sm">Note: Max 5 tx/day</div>
+  <div class="text-sm font-medium italic">Max 5 Flips/day</div>
 </div>
 
 <ReactAdapter
@@ -430,7 +430,7 @@
         <div class="text-[34px] text-white font-medium">+1000 GMs</div>
       {:else}
         <div class="text-4xl text-[#FFD569] font-medium">
-          ohh...it's stink stink
+          ohh... it's stink stink
         </div>
         <img src={betterLuck} alt="" class="w-40 h-40 object-contain" />
         <div class="text-[34px] text-white font-medium">Try again...</div>

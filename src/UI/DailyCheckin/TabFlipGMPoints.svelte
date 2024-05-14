@@ -31,9 +31,9 @@
   });
 </script>
 
-<div class="flex flex-col gap-8">
+<div class="flex flex-col gap-3">
   <FlipCoin {dataFlipCheck} {getFlipCheck} />
-  <div class="grid xl:grid-cols-2 gap-8">
+  <div class="grid lg:grid-cols-2 grid-cols-1 gap-6">
     <QnA />
     <History {flipHistoryData} {totalReward} />
   </div>
