@@ -259,6 +259,7 @@
               <!-- {#if $queryReward?.data?.redeemable.length === 0}
                 There are no redeems
               {/if} -->
+              
               {#if $queryReward?.data === undefined}
                 Please connect wallet
               {/if}
