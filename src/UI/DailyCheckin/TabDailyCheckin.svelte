@@ -19,10 +19,10 @@
   } from "~/lib/queryAPI";
   import dayjsUTC from "dayjs/plugin/utc";
   dayjs.extend(dayjsUTC);
-  import { wagmiNimbusDailyCheckinRedeemAbi } from "~/lib/u2u_chain_viem/nimbus-dailyCheckinRedeem-abi";
-  import walletClient from "~/lib/u2u_chain_viem/viem-u2u-walletClient";
-  import publicClient from "~/lib/u2u_chain_viem/viem-u2u-publicClient";
-  import { u2uTestnet } from "~/lib/u2u_chain_viem/u2uTestnet";
+  // import { wagmiNimbusDailyCheckinRedeemAbi } from "~/lib/u2u_chain_viem/nimbus-dailyCheckinRedeem-abi";
+  // import walletClient from "~/lib/u2u_chain_viem/viem-u2u-walletClient";
+  // import publicClient from "~/lib/u2u_chain_viem/viem-u2u-publicClient";
+  // import { u2uTestnet } from "~/lib/u2u_chain_viem/u2uTestnet";
 
   import Button from "~/components/Button.svelte";
   import Loading from "~/components/Loading.svelte";
@@ -538,77 +538,77 @@
     }
   }
 
-  $: queryUserInfo = createQuery({
-    queryKey: ["users-me"],
-    queryFn: () => getUserInfo(),
-    staleTime: Infinity,
-    retry: false,
-    onError(err) {
-      localStorage.removeItem("auth_token");
-      localStorage.removeItem("solana_token");
-      localStorage.removeItem("sui_token");
-      localStorage.removeItem("ton_token");
-      localStorage.removeItem("evm_token");
-    },
-  });
+  // $: queryUserInfo = createQuery({
+  //   queryKey: ["users-me"],
+  //   queryFn: () => getUserInfo(),
+  //   staleTime: Infinity,
+  //   retry: false,
+  //   onError(err) {
+  //     localStorage.removeItem("auth_token");
+  //     localStorage.removeItem("solana_token");
+  //     localStorage.removeItem("sui_token");
+  //     localStorage.removeItem("ton_token");
+  //     localStorage.removeItem("evm_token");
+  //   },
+  // });
 
-  $: {
-    if (
-      !$queryUserInfo.isError &&
-      $queryUserInfo &&
-      $queryUserInfo?.data !== undefined &&
-      !$queryDailyCheckin.isError &&
-      $queryDailyCheckin.data !== undefined
-    ) {
-      checkOwnerIsWinner($queryUserInfo?.data?.publicAddress);
-    }
-  }
+  // $: {
+  //   if (
+  //     !$queryUserInfo.isError &&
+  //     $queryUserInfo &&
+  //     $queryUserInfo?.data !== undefined &&
+  //     !$queryDailyCheckin.isError &&
+  //     $queryDailyCheckin.data !== undefined
+  //   ) {
+  //     checkOwnerIsWinner($queryUserInfo?.data?.publicAddress);
+  //   }
+  // }
 
-  const RedeemPrize = async () => {
-    try {
-      const account = await walletClient.requestAddresses();
+  // const RedeemPrize = async () => {
+  //   try {
+  //     const account = await walletClient.requestAddresses();
 
-      if (account && account.length !== 0) {
-        await walletClient.writeContract({
-          address: "0xC5EFb7bd30b7AA7Fae16B44e34Aee946f1Eb2AFd",
-          account: account[0],
-          chain: u2uTestnet,
-          abi: wagmiNimbusDailyCheckinRedeemAbi,
-          functionName: "redeemPrize",
-        });
+  //     if (account && account.length !== 0) {
+  //       await walletClient.writeContract({
+  //         address: "0xC5EFb7bd30b7AA7Fae16B44e34Aee946f1Eb2AFd",
+  //         account: account[0],
+  //         chain: u2uTestnet,
+  //         abi: wagmiNimbusDailyCheckinRedeemAbi,
+  //         functionName: "redeemPrize",
+  //       });
 
-        toastMsg = "Successfully redeem prize!";
-        isSuccessToast = true;
-        trigger();
+  //       toastMsg = "Successfully redeem prize!";
+  //       isSuccessToast = true;
+  //       trigger();
 
-        isDisabledRedeem = true;
-        checkOwnerIsWinner($queryUserInfo?.data?.publicAddress);
-      }
-    } catch (e) {
-      console.error("Error: ", e);
-      toastMsg = "Something wrong when redeem prize. Please try again!";
-      isSuccessToast = false;
-      trigger();
-      checkOwnerIsWinner($queryUserInfo?.data?.publicAddress);
-    }
-  };
+  //       isDisabledRedeem = true;
+  //       checkOwnerIsWinner($queryUserInfo?.data?.publicAddress);
+  //     }
+  //   } catch (e) {
+  //     console.error("Error: ", e);
+  //     toastMsg = "Something wrong when redeem prize. Please try again!";
+  //     isSuccessToast = false;
+  //     trigger();
+  //     checkOwnerIsWinner($queryUserInfo?.data?.publicAddress);
+  //   }
+  // };
 
-  const checkOwnerIsWinner = async (address: any) => {
-    const isOwnerWinner = await publicClient.readContract({
-      address: "0xC5EFb7bd30b7AA7Fae16B44e34Aee946f1Eb2AFd",
-      abi: wagmiNimbusDailyCheckinRedeemAbi,
-      functionName: "getWinner",
-      args: [address],
-    });
+  // const checkOwnerIsWinner = async (address: any) => {
+  //   const isOwnerWinner = await publicClient.readContract({
+  //     address: "0xC5EFb7bd30b7AA7Fae16B44e34Aee946f1Eb2AFd",
+  //     abi: wagmiNimbusDailyCheckinRedeemAbi,
+  //     functionName: "getWinner",
+  //     args: [address],
+  //   });
 
-    isShowBanner = lastMonthWinners
-      .map((item) => item.owner.toString().toLowerCase())
-      .includes(address.toString().toLowerCase());
+  //   isShowBanner = lastMonthWinners
+  //     .map((item) => item.owner.toString().toLowerCase())
+  //     .includes(address.toString().toLowerCase());
 
-    if (isOwnerWinner.prizeAmount === 0n) {
-      isDisabledRedeem = true;
-    }
-  };
+  //   if (isOwnerWinner.prizeAmount === 0n) {
+  //     isDisabledRedeem = true;
+  //   }
+  // };
 </script>
 
 <div class="flex flex-col gap-4">

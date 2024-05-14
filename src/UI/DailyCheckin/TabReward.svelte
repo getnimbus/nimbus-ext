@@ -11,9 +11,13 @@
   } from "~/lib/queryAPI";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
+  import { triggerFirework } from "~/utils";
+  import { wait } from "~/entries/background/utils";
 
   import Loading from "~/components/Loading.svelte";
   import RedeemCard from "~/components/RedeemCard.svelte";
+  import TicketRewardCard from "~/components/SUI Campaign/TicketRewardCard.svelte";
+  import Image from "~/components/Image.svelte";
 
   import goldImg from "~/assets/Gold4.svg";
 
@@ -30,12 +34,48 @@
 
   const queryClient = useQueryClient();
 
+  let totalPoint = 0;
+
   let selectedType: "redeemGift" | "yourGift" = "redeemGift";
 
   let toastMsg = "";
   let isSuccessToast = false;
   let counter = 3;
   let showToast = false;
+  let openScreenTicketCardSuccess = false;
+
+  let isLoadingRedeem = false;
+  let selectedTicketReward = {};
+
+  const rewardTicket = [
+    {
+      cost: 1000,
+      description: "GOLD TICKET - Nimbus On Sui Ticket",
+      title: "GOLD TICKET",
+      body: "GOLD_TICKET",
+      logo: "https://nimbus-zodiac.s3.ap-southeast-1.amazonaws.com/sui-unlock/gold.png",
+      fromDate: "2024-05-14",
+      toDate: "2024-05-21",
+    },
+    // {
+    //   cost: 1000,
+    //   description: "SILVER TICKET - Nimbus On Sui Ticket",
+    //   title: "SILVER TICKET",
+    //   body: "SILVER_TICKET",
+    //   logo: "https://nimbus-zodiac.s3.ap-southeast-1.amazonaws.com/sui-unlock/silver.png",
+    //   fromDate: "2024-05-21",
+    //   toDate: "2024-05-27",
+    // },
+    {
+      cost: 1000,
+      description: "BRONZE TICKET - Nimbus On Sui Ticket",
+      title: "BRONZE TICKET",
+      body: "BRONZE_TICKET",
+      logo: "https://nimbus-zodiac.s3.ap-southeast-1.amazonaws.com/sui-unlock/bronze.png",
+      fromDate: "2024-05-14",
+      toDate: "2024-05-31",
+    },
+  ];
 
   const trigger = () => {
     showToast = true;
@@ -48,6 +88,13 @@
     showToast = false;
     toastMsg = "";
     isSuccessToast = false;
+  };
+
+  const triggerRedeemSuccess = async () => {
+    openScreenTicketCardSuccess = true;
+    triggerFirework();
+    await wait(2000);
+    openScreenTicketCardSuccess = false;
   };
 
   let socialData = [];
@@ -64,42 +111,6 @@
       socialData = $queryLinkSocial?.data?.data;
     }
   }
-
-  const handleRedeem = async (data) => {
-    const validateAddress = await handleValidateAddress($userPublicAddress);
-    if (
-      validateAddress?.type === "MOVE" ||
-      socialData.find((item) => item.chain === "MOVE")
-    ) {
-      try {
-        if ($queryDailyCheckin?.data?.totalPoint < data.cost) {
-          selectedType = "yourGift";
-          return;
-        }
-
-        await nimbus
-          .post("/v2/reward/redeem", {
-            address: $userPublicAddress,
-            campaignName: data?.campaignName,
-          })
-          .then(() => {
-            queryClient.invalidateQueries([$userPublicAddress, "rewards"]);
-            queryClient.invalidateQueries([
-              $userPublicAddress,
-              "daily-checkin",
-            ]);
-            selectedType = "yourGift";
-          });
-      } catch (e) {
-        console.error(e);
-      }
-    } else {
-      toastMsg =
-        "Please connect your SUI wallet or link you SUI wallet to redeem!";
-      isSuccessToast = false;
-      trigger();
-    }
-  };
 
   $: queryDailyCheckin = createQuery({
     queryKey: ["daily-checkin", $userPublicAddress],
@@ -119,6 +130,12 @@
     },
   });
 
+  $: {
+    if (!$queryDailyCheckin.error && $queryDailyCheckin.data !== undefined) {
+      totalPoint = $queryDailyCheckin?.data?.totalPoint;
+    }
+  }
+
   $: queryReward = createQuery({
     queryKey: [$userPublicAddress, "rewards"],
     queryFn: () => handleGetDataRewards($userPublicAddress),
@@ -136,6 +153,87 @@
       user.update((n) => (n = {}));
     },
   });
+
+  const handleRedeem = async (data) => {
+    const validateAddress = await handleValidateAddress($userPublicAddress);
+    if (
+      validateAddress?.type === "MOVE" ||
+      socialData.find((item) => item.chain === "MOVE")
+    ) {
+      isLoadingRedeem = true;
+      try {
+        if (totalPoint < data.cost) {
+          selectedType = "yourGift";
+          return;
+        }
+
+        const response: any = await nimbus.post("/v2/reward/redeem", {
+          address: $userPublicAddress,
+          campaignName: data?.campaignName,
+        });
+        if (response?.error) {
+          toastMsg = response?.error;
+          isSuccessToast = false;
+          trigger();
+        }
+
+        queryClient.invalidateQueries(["daily-checkin"]);
+        queryClient.invalidateQueries(["rewards"]);
+        selectedTicketReward = data;
+        triggerRedeemSuccess();
+        selectedType = "yourGift";
+      } catch (e) {
+        console.error(e);
+        toastMsg = "Something went wrong while redeeming the ticket";
+        isSuccessToast = false;
+        trigger();
+      } finally {
+        isLoadingRedeem = false;
+      }
+    } else {
+      if (
+        validateAddress?.type === "MOVE" ||
+        socialData.find((item) => item.chain === "MOVE")
+      ) {
+        toastMsg = "Something went wrong while redeeming the ticket";
+      } else {
+        toastMsg =
+          "Please connect your SUI wallet or link you SUI wallet to redeem!";
+      }
+      isSuccessToast = false;
+      trigger();
+    }
+  };
+
+  const handleRedeemTicket = async (data) => {
+    try {
+      isLoadingRedeem = true;
+      const response: any = await nimbus.post(
+        "/v2/campaign/sui-unlock/rewards",
+        {
+          reward: data.body,
+        }
+      );
+      if (response?.error) {
+        toastMsg = response?.error;
+        isSuccessToast = false;
+        trigger();
+      }
+
+      queryClient?.invalidateQueries(["daily-checkin"]);
+      queryClient?.invalidateQueries(["rewards"]);
+      selectedTicketReward = data;
+      triggerRedeemSuccess();
+      selectedType = "yourGift";
+    } catch (error) {
+      console.error(error);
+      toastMsg = "Something went wrong while redeeming the ticket";
+      isSuccessToast = false;
+      trigger();
+    } finally {
+      isLoadingRedeem = false;
+    }
+  };
 </script>
 
 <div class="flex flex-col gap-4">
@@ -153,7 +251,7 @@
     >
       <img src={goldImg} alt="" class="w-8" />
       <div class="text-white md:text-xl text-lg font-medium">
-        {$queryDailyCheckin?.data?.totalPoint || 0}
+        {totalPoint}
       </div>
     </div>
   </div>
@@ -201,9 +299,9 @@
             <div
               class="flex justify-center items-center h-full w-full xl:text-lg text-xl text-gray-400"
             >
-              {#if $queryReward?.data?.redeemable.length === 0}
+              <!-- {#if $queryReward?.data?.redeemable.length === 0}
                 There are no redeems
-              {/if}
+              {/if} -->
               {#if $queryReward?.data === undefined}
                 Please connect wallet
               {/if}
@@ -211,8 +309,23 @@
 
             <div class="grid lg:grid-cols-2 grid-cols-1 gap-10">
               {#each $queryReward?.data?.redeemable || [] as item}
-                <RedeemCard isRedeem redeemData={item} {handleRedeem} />
+                <RedeemCard
+                  isRedeem
+                  redeemData={item}
+                  {handleRedeem}
+                  {isLoadingRedeem}
+                />
               {/each}
+
+              {#if $queryReward?.data !== undefined}
+                {#each rewardTicket as item}
+                  <TicketRewardCard
+                    data={item}
+                    {handleRedeemTicket}
+                    {isLoadingRedeem}
+                  />
+                {/each}
+              {/if}
             </div>
           </div>
         {/if}
@@ -232,7 +345,11 @@
 
             <div class="grid lg:grid-cols-2 grid-cols-1 gap-10">
               {#each $queryReward?.data?.ownRewards || [] as item}
-                <RedeemCard redeemData={item} handleRedeem={() => {}} />
+                <RedeemCard
+                  redeemData={item}
+                  handleRedeem={() => {}}
+                  {isLoadingRedeem}
+                />
               {/each}
             </div>
           </div>
@@ -259,12 +376,13 @@
             fill="currentColor"
             viewBox="0 0 20 20"
             xmlns="http://www.w3.org/2000/svg"
-            ><path
+          >
+            <path
               fill-rule="evenodd"
               d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
               clip-rule="evenodd"
-            /></svg
-          >
+            />
+          </svg>
           <span class="sr-only">Check icon</span>
         {:else}
           <svg
@@ -273,17 +391,41 @@
             fill="currentColor"
             viewBox="0 0 20 20"
             xmlns="http://www.w3.org/2000/svg"
-            ><path
+          >
+            <path
               fill-rule="evenodd"
               d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
               clip-rule="evenodd"
-            /></svg
-          >
+            />
+          </svg>
           <span class="sr-only">Error icon</span>
         {/if}
       </svelte:fragment>
       {toastMsg}
     </Toast>
+  </div>
+{/if}
+
+{#if openScreenTicketCardSuccess}
+  <div
+    class="fixed h-screen w-screen top-0 left-0 z-10 flex items-center justify-center bg-[#000000cc]"
+    on:click={() => {
+      setTimeout(() => {
+        openScreenTicketCardSuccess = false;
+      }, 500);
+    }}
+  >
+    <div class="flex flex-col items-center justify-center gap-10">
+      <div class="xl:text-2xl text-4xl text-white font-medium">
+        Redeem successfully
+      </div>
+      <div class="w-40 h-40">
+        <Image logo={selectedTicketReward?.logo} defaultLogo="" />
+      </div>
+      <div class="xl:text-2xl text-4xl text-white font-medium">
+        You have redeemed the {selectedTicketReward?.title?.toLowerCase() || ""}
+      </div>
+    </div>
   </div>
 {/if}
 

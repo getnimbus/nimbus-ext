@@ -4,6 +4,7 @@
   export let isRedeem = false;
   export let redeemData;
   export let handleRedeem = (value) => {};
+  export let isLoadingRedeem;
 
   import Button from "~/components/Button.svelte";
   import Copy from "~/components/Copy.svelte";
@@ -21,7 +22,7 @@
   <div class="px-[16px] flex items-center h-full gap-[47px]">
     <div
       class={`flex-[0.6] rounded-2xl p-2 flex items-center h-full justify-center ${
-        $isDarkMode ? "bg-gray-200" : "bg-white"
+        $isDarkMode ? "" : "bg-white"
       }`}
     >
       <img src={redeemData?.logo} alt="" class="w-20 h-20 object-contain" />
@@ -76,8 +77,11 @@
             <Button
               variant="tertiary"
               on:click={() => {
-                handleRedeem(redeemData);
+                if (!isLoadingRedeem) {
+                  handleRedeem(redeemData);
+                }
               }}
+              disabled={isLoadingRedeem}
             >
               <div class="flex items-center gap-1">
                 <img src={goldImg} alt="" class="w-[28px] h-[28px]" />
