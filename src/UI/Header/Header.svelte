@@ -727,7 +727,7 @@
             $isDarkMode ? "bg-[#212121]" : "bg-[#525B8C]"
           }`}
         >
-          <img src={Search} alt="" class="xl:w-5 xl:h-5 w-7 h-7" />
+          <img src={Search} alt="" class="xl:w-[19px] xl:h-[19px] w-7 h-7" />
           <div
             on:click={() => {
               showPopoverSearch = true;
