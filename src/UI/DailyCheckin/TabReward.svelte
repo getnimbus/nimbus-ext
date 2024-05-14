@@ -142,6 +142,7 @@
       });
       queryClient.invalidateQueries([$userPublicAddress, "rewards"]);
       queryClient.invalidateQueries([$userPublicAddress, "daily-checkin"]);
+      openScreenTicketCardSuccess = true;
     } catch (error) {
       console.log(error);
       toastMsg = "Something went wrong while redeeming the ticket";
@@ -268,7 +269,7 @@
                   <TicketRewardCard
                     {ticketData}
                     {handleRedeemTicket}
-                    {selectedTicketReward}
+                    bind:selectedTicketReward
                   />
                 {/each}
               {/if}
@@ -362,13 +363,10 @@
         Redeem successfully
       </div>
       <div class="w-40 h-40">
-        <Image
-          logo={selectedTicketReward?.logo}
-          defaultLogo="https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"
-        />
+        <Image logo={selectedTicketReward?.logo} defaultLogo="" />
       </div>
       <div class="xl:text-2xl text-4xl text-white font-medium">
-        You have redeemed the {selectedTicketReward?.title.toLowerCase() || ""}
+        You have redeemed the {selectedTicketReward?.title?.toLowerCase() || ""}
       </div>
     </div>
   </div>
