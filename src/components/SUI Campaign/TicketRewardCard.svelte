@@ -86,9 +86,7 @@
         {:else}
           <Button
             variant="tertiary"
-            on:click={() => {
-              handleRedeemTicket(ticketData?.body);
-            }}
+            on:click={() => handleRedeemTicket(ticketData?.body)}
           >
             <div class="flex items-center gap-1">
               <img src={goldImg} alt="" class="w-[28px] h-[28px]" />

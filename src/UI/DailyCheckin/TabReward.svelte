@@ -137,6 +137,7 @@
       const post = await nimbus.post("/v2/campaign/sui-unlock/rewards", {
         reward: body,
       });
+      queryClient.invalidateQueries([$userPublicAddress, "rewards"]);
     } catch (error) {
       console.log(error);
       toastMsg = "Something went wrong while redeeming the ticket";
