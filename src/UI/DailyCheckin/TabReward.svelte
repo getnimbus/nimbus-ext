@@ -51,15 +51,15 @@
       fromDate: "2024-05-14",
       toDate: "2024-05-21",
     },
-    {
-      cost: 1000,
-      description: "SILVER TICKET - Nimbus On Sui Ticket",
-      title: "SILVER TICKET",
-      body: "SILVER_TICKET",
-      logo: "https://nimbus-zodiac.s3.ap-southeast-1.amazonaws.com/sui-unlock/silver.png",
-      fromDate: "2024-05-21",
-      toDate: "2024-05-27",
-    },
+    // {
+    //   cost: 1000,
+    //   description: "SILVER TICKET - Nimbus On Sui Ticket",
+    //   title: "SILVER TICKET",
+    //   body: "SILVER_TICKET",
+    //   logo: "https://nimbus-zodiac.s3.ap-southeast-1.amazonaws.com/sui-unlock/silver.png",
+    //   fromDate: "2024-05-21",
+    //   toDate: "2024-05-27",
+    // },
     {
       cost: 1000,
       description: "BRONZE TICKET - Nimbus On Sui Ticket",
@@ -137,11 +137,17 @@
 
   const handleRedeemTicket = async (body) => {
     try {
-      const post = await nimbus.post("/v2/campaign/sui-unlock/rewards", {
+      const post = await nimbus.post("/v2/campaign/sui-unlock/rewardss", {
         reward: body,
       });
       queryClient.invalidateQueries([$userPublicAddress, "rewards"]);
       queryClient.invalidateQueries([$userPublicAddress, "daily-checkin"]);
+      openScreenTicketCardSuccess = true;
+      if (post?.error) {
+        toastMsg = post?.error;
+        isSuccessToast = false;
+        trigger();
+      }
     } catch (error) {
       console.log(error);
       toastMsg = "Something went wrong while redeeming the ticket";
@@ -268,7 +274,7 @@
                   <TicketRewardCard
                     {ticketData}
                     {handleRedeemTicket}
-                    {selectedTicketReward}
+                    bind:selectedTicketReward
                   />
                 {/each}
               {/if}
@@ -362,13 +368,10 @@
         Redeem successfully
       </div>
       <div class="w-40 h-40">
-        <Image
-          logo={selectedTicketReward?.logo}
-          defaultLogo="https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"
-        />
+        <Image logo={selectedTicketReward?.logo} defaultLogo="" />
       </div>
       <div class="xl:text-2xl text-4xl text-white font-medium">
-        You have redeemed the {selectedTicketReward?.title.toLowerCase() || ""}
+        You have redeemed the {selectedTicketReward?.title?.toLowerCase() || ""}
       </div>
     </div>
   </div>
