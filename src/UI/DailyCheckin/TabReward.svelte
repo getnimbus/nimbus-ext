@@ -249,7 +249,6 @@
               <!-- {#if $queryReward?.data?.redeemable.length === 0}
                 There are no redeems
               {/if} -->
-              <!-- comment vi ticket unlimited  -->
               {#if $queryReward?.data === undefined}
                 Please connect wallet
               {/if}
