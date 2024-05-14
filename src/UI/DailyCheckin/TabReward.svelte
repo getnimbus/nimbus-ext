@@ -17,6 +17,7 @@
 
   import goldImg from "~/assets/Gold4.svg";
   import TicketRewardCard from "~/components/SUI Campaign/TicketRewardCard.svelte";
+  import Image from "~/components/Image.svelte";
 
   const dailyCheckinRewardsTypePortfolio = [
     {
@@ -37,6 +38,8 @@
   let isSuccessToast = false;
   let counter = 3;
   let showToast = false;
+  let openScreenTicketCardSuccess = false;
+  let selectedTicketReward = {};
 
   const rewardTicket = [
     {
@@ -138,6 +141,7 @@
         reward: body,
       });
       queryClient.invalidateQueries([$userPublicAddress, "rewards"]);
+      queryClient.invalidateQueries([$userPublicAddress, "daily-checkin"]);
     } catch (error) {
       console.log(error);
       toastMsg = "Something went wrong while redeeming the ticket";
@@ -261,7 +265,11 @@
 
               {#if $queryReward?.data !== undefined}
                 {#each rewardTicket as ticketData}
-                  <TicketRewardCard {ticketData} {handleRedeemTicket} />
+                  <TicketRewardCard
+                    {ticketData}
+                    {handleRedeemTicket}
+                    {selectedTicketReward}
+                  />
                 {/each}
               {/if}
             </div>
@@ -310,12 +318,13 @@
             fill="currentColor"
             viewBox="0 0 20 20"
             xmlns="http://www.w3.org/2000/svg"
-            ><path
+          >
+            <path
               fill-rule="evenodd"
               d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
               clip-rule="evenodd"
-            /></svg
-          >
+            />
+          </svg>
           <span class="sr-only">Check icon</span>
         {:else}
           <svg
@@ -324,17 +333,44 @@
             fill="currentColor"
             viewBox="0 0 20 20"
             xmlns="http://www.w3.org/2000/svg"
-            ><path
+          >
+            <path
               fill-rule="evenodd"
               d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
               clip-rule="evenodd"
-            /></svg
-          >
+            />
+          </svg>
           <span class="sr-only">Error icon</span>
         {/if}
       </svelte:fragment>
       {toastMsg}
     </Toast>
+  </div>
+{/if}
+
+{#if openScreenTicketCardSuccess}
+  <div
+    class="fixed h-screen w-screen top-0 left-0 z-10 flex items-center justify-center bg-[#000000cc]"
+    on:click={() => {
+      setTimeout(() => {
+        openScreenTicketCardSuccess = false;
+      }, 500);
+    }}
+  >
+    <div class="flex flex-col items-center justify-center gap-10">
+      <div class="xl:text-2xl text-4xl text-white font-medium">
+        Redeem successfully
+      </div>
+      <div class="w-40 h-40">
+        <Image
+          logo={selectedTicketReward?.logo}
+          defaultLogo="https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"
+        />
+      </div>
+      <div class="xl:text-2xl text-4xl text-white font-medium">
+        You have redeemed the {selectedTicketReward?.title.toLowerCase() || ""}
+      </div>
+    </div>
   </div>
 {/if}
 
