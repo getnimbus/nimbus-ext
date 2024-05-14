@@ -56,6 +56,7 @@
   export let navActive;
   export let handleUpdateNavActive = (value) => {};
   export let handleSignOut = () => {};
+  export let isShowSyncSession;
 
   const linkRedirect = " https://app.getnimbus.io/settings?tab=links";
 
@@ -101,6 +102,7 @@
   const queryClient = useQueryClient();
 
   let isOpenModalSync = false;
+  let isOpenMobileModalSync = false;
   let isCopied = false;
   let timer = null;
   let syncMobileCode = "";
@@ -680,221 +682,242 @@
   }
 </script>
 
-<div class="xl:block hidden">
-  {#if $user && Object.keys($user).length !== 0}
-    <div class="relative">
-      <div
-        class="xl:flex hidden flex-col gap-1 items-center py-1 relative xl:h-[50px] w-[50px]"
-      >
+{#if !isShowSyncSession}
+  <div class="xl:block hidden">
+    {#if $user && Object.keys($user).length !== 0}
+      <div class="relative">
         <div
-          class="xl:w-[40px] xl:h-[40px] w-16 h-16 rounded-full overflow-hidden cursor-pointer mx-auto"
-          on:click={() => (showPopover = !showPopover)}
+          class="xl:flex hidden flex-col gap-1 items-center py-1 relative xl:h-[50px] w-[50px]"
         >
-          <img src={$user?.picture} alt="" class="object-cover w-full h-full" />
-        </div>
-        {#if buyPackage !== "Free"}
           <div
-            class="cursor-pointer flex items-center gap-1 absolute -bottom-1 left-1/2 transform -translate-x-1/2 z-9 rounded px-1 bg-[#ffb800]"
+            class="xl:w-[40px] xl:h-[40px] w-16 h-16 rounded-full overflow-hidden cursor-pointer mx-auto"
+            on:click={() => (showPopover = !showPopover)}
           >
-            <div class="text-white text-xs">
-              {#if buyPackage === "Explorer"}
-                Explorer
-              {/if}
-              {#if buyPackage === "Professional"}
-                Alpha
-              {/if}
-            </div>
-            <svg
-              width="12"
-              height="12"
-              viewBox="0 0 16 16"
-              fill="#fff"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                fill-rule="evenodd"
-                clip-rule="evenodd"
-                d="M14.6629 3.5843C14.7217 3.57771 14.7811 3.58901 14.8339 3.61685C14.8867 3.64495 14.9305 3.68852 14.9599 3.74223C14.9893 3.79594 15.0031 3.85745 14.9994 3.91919L14.4836 12.7921H1.51642L1.00059 3.91919C0.996892 3.85745 1.01055 3.79592 1.0399 3.74216C1.06924 3.68841 1.11299 3.64476 1.16578 3.6166C1.21856 3.58843 1.27808 3.57697 1.33702 3.58362C1.39596 3.59026 1.45175 3.61473 1.49755 3.65401L4.60499 6.30708L7.76082 2.11502C7.79036 2.07895 7.82704 2.04999 7.86833 2.03014C7.90962 2.01028 7.95455 2 8.00001 2C8.04548 2 8.0904 2.01028 8.1317 2.03014C8.17299 2.04999 8.20967 2.07895 8.23921 2.11502L11.395 6.30708L14.5025 3.65401C14.5484 3.61511 14.6041 3.5909 14.6629 3.5843ZM1.55334 13.4273L1.55781 13.5041C1.577 13.827 1.71333 14.1301 1.93906 14.3518C2.1648 14.5735 2.46298 14.6971 2.77297 14.6976H13.2271C13.537 14.6971 13.8352 14.5735 14.061 14.3518C14.2867 14.1301 14.423 13.827 14.4422 13.5041L14.4467 13.4273H1.55334Z"
-                fill="#fff"
-              />
-            </svg>
+            <img
+              src={$user?.picture}
+              alt=""
+              class="object-cover w-full h-full"
+            />
           </div>
-        {/if}
-      </div>
-
-      <div class="xl:hidden block">
-        <div
-          class="text-2xl font-medium text-white"
-          on:click={() => {
-            handleSignOut();
-            showPopover = false;
-            isShowHeaderMobile.update((n) => (n = false));
-          }}
-        >
-          Log out
-        </div>
-      </div>
-
-      {#if showPopover}
-        <div
-          class="select_content absolute top-15 right-0 z-50 flex flex-col gap-1 px-3 xl:py-2 py-3 text-sm transform rounded-lg w-max"
-          style="box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15); z-index: 2147483647;"
-          use:clickOutside
-          on:click_outside={() => (showPopover = false)}
-        >
-          <div
-            class="flex flex-col gap-3 mx-2 pt-1 pb-2 border-b-[1px] border_0000001a"
-          >
-            <div class="text-2xl xl:text-base">
-              GM 👋, {displayName
-                ? displayName
-                : shorterAddress(
-                    localStorage.getItem("public_address") || publicAddress
-                  )}
-            </div>
-            <DarkMode />
-          </div>
-
-          <div
-            on:click={() => {
-              showPopover = false;
-            }}
-          >
+          {#if buyPackage !== "Free"}
             <div
-              class={`flex items-center gap-1 text-2xl font-medium text-yellow-400 cursor-pointer xl:text-base rounded-md transition-all px-2 py-1 ${
-                $isDarkMode
-                  ? navActive === "/upgrade"
-                    ? "bg-[#222222]"
-                    : "hover:bg-[#222222]"
-                  : navActive === "/upgrade"
-                    ? "bg-[#eff0f4]"
-                    : "hover:bg-[#eff0f4]"
-              }`}
-              on:click={() => {
-                navigateTo("/upgrade");
-                handleUpdateNavActive("/upgrade");
-              }}
+              class="cursor-pointer flex items-center gap-1 absolute -bottom-1 left-1/2 transform -translate-x-1/2 z-9 rounded px-1 bg-[#ffb800]"
             >
-              Upgrade
+              <div class="text-white text-xs">
+                {#if buyPackage === "Explorer"}
+                  Explorer
+                {/if}
+                {#if buyPackage === "Professional"}
+                  Alpha
+                {/if}
+              </div>
               <svg
-                width="16"
-                height="16"
+                width="12"
+                height="12"
                 viewBox="0 0 16 16"
-                fill="#ffb800"
+                fill="#fff"
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <path
                   fill-rule="evenodd"
                   clip-rule="evenodd"
                   d="M14.6629 3.5843C14.7217 3.57771 14.7811 3.58901 14.8339 3.61685C14.8867 3.64495 14.9305 3.68852 14.9599 3.74223C14.9893 3.79594 15.0031 3.85745 14.9994 3.91919L14.4836 12.7921H1.51642L1.00059 3.91919C0.996892 3.85745 1.01055 3.79592 1.0399 3.74216C1.06924 3.68841 1.11299 3.64476 1.16578 3.6166C1.21856 3.58843 1.27808 3.57697 1.33702 3.58362C1.39596 3.59026 1.45175 3.61473 1.49755 3.65401L4.60499 6.30708L7.76082 2.11502C7.79036 2.07895 7.82704 2.04999 7.86833 2.03014C7.90962 2.01028 7.95455 2 8.00001 2C8.04548 2 8.0904 2.01028 8.1317 2.03014C8.17299 2.04999 8.20967 2.07895 8.23921 2.11502L11.395 6.30708L14.5025 3.65401C14.5484 3.61511 14.6041 3.5909 14.6629 3.5843ZM1.55334 13.4273L1.55781 13.5041C1.577 13.827 1.71333 14.1301 1.93906 14.3518C2.1648 14.5735 2.46298 14.6971 2.77297 14.6976H13.2271C13.537 14.6971 13.8352 14.5735 14.061 14.3518C14.2867 14.1301 14.423 13.827 14.4422 13.5041L14.4467 13.4273H1.55334Z"
-                  fill="#ffb800"
+                  fill="#fff"
                 />
               </svg>
             </div>
-          </div>
+          {/if}
+        </div>
 
-          <div on:click={() => (showPopover = false)}>
-            <div
-              class={`text-2xl text_00000066 cursor-pointer xl:text-base rounded-md transition-all px-2 py-1 ${
-                $isDarkMode
-                  ? navActive === "/profile"
-                    ? "bg-[#222222]"
-                    : "hover:bg-[#222222]"
-                  : navActive === "/profile"
-                    ? "bg-[#eff0f4]"
-                    : "hover:bg-[#eff0f4]"
-              }`}
-              on:click={() => {
-                navigateTo(`/profile?id=${$userId}`);
-                handleUpdateNavActive("/profile");
-              }}
-            >
-              My Profile
-            </div>
-          </div>
-
+        <div class="xl:hidden block">
           <div
-            class={`hidden text-2xl text_00000066 cursor-pointer xl:block xl:text-base rounded-md transition-all px-2 py-1 ${
-              $isDarkMode ? "hover:bg-[#222222]" : "hover:bg-[#eff0f4]"
-            }`}
-            on:click={() => {
-              isOpenModalSync = true;
-              handleGetCodeSyncMobile();
-              showPopover = false;
-            }}
-          >
-            Sync session
-          </div>
-
-          <div on:click={() => (showPopover = false)}>
-            <div
-              class={`text-2xl text_00000066 cursor-pointer xl:text-base rounded-md transition-all px-2 py-1 ${
-                $isDarkMode
-                  ? navActive === "/invitation"
-                    ? "bg-[#222222]"
-                    : "hover:bg-[#222222]"
-                  : navActive === "/invitation"
-                    ? "bg-[#eff0f4]"
-                    : "hover:bg-[#eff0f4]"
-              }`}
-              on:click={() => {
-                navigateTo("/invitation");
-                handleUpdateNavActive("/invitation");
-              }}
-            >
-              Invite
-            </div>
-          </div>
-
-          <div on:click={() => (showPopover = false)}>
-            <div
-              class={`hidden text-2xl text_00000066 cursor-pointer xl:block xl:text-base rounded-md transition-all px-2 py-1 ${
-                $isDarkMode
-                  ? navActive === "/settings"
-                    ? "bg-[#222222]"
-                    : "hover:bg-[#222222]"
-                  : navActive === "/settings"
-                    ? "bg-[#eff0f4]"
-                    : "hover:bg-[#eff0f4]"
-              }`}
-              on:click={() => {
-                navigateTo("/settings");
-                handleUpdateNavActive("/settings");
-              }}
-            >
-              Settings
-            </div>
-          </div>
-
-          <div
-            class={`text-2xl font-medium text-red-500 cursor-pointer xl:text-base rounded-md transition-all px-2 py-1 ${
-              $isDarkMode ? "hover:bg-[#222222]" : "hover:bg-[#eff0f4]"
-            }`}
+            class="text-2xl font-medium text-white"
             on:click={() => {
               handleSignOut();
               showPopover = false;
+              isShowHeaderMobile.update((n) => (n = false));
             }}
           >
             Log out
           </div>
         </div>
-      {/if}
-    </div>
-  {:else}
-    <Button
-      on:click={() => {
-        triggerConnectWallet.update((n) => (n = true));
-        mixpanel.track("user_connect_wallet");
-        isShowHeaderMobile.update((n) => (n = false));
-      }}
-      variant="tertiary"
-    >
-      <div class="text-sm font-semibold text-white cursor-pointer w-full">
-        Connect Wallet
+
+        {#if showPopover}
+          <div
+            class="select_content absolute top-15 right-0 z-50 flex flex-col gap-1 px-3 xl:py-2 py-3 text-sm transform rounded-lg w-max"
+            style="box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15); z-index: 2147483647;"
+            use:clickOutside
+            on:click_outside={() => (showPopover = false)}
+          >
+            <div
+              class="flex flex-col gap-3 mx-2 pt-1 pb-2 border-b-[1px] border_0000001a"
+            >
+              <div class="text-2xl xl:text-base">
+                GM 👋, {displayName
+                  ? displayName
+                  : shorterAddress(
+                      localStorage.getItem("public_address") || publicAddress
+                    )}
+              </div>
+              <DarkMode />
+            </div>
+
+            <div
+              on:click={() => {
+                showPopover = false;
+              }}
+            >
+              <div
+                class={`flex items-center gap-1 font-medium text-yellow-400 cursor-pointer text-base rounded-md transition-all px-2 py-1 ${
+                  $isDarkMode
+                    ? navActive === "/upgrade"
+                      ? "bg-[#222222]"
+                      : "hover:bg-[#222222]"
+                    : navActive === "/upgrade"
+                      ? "bg-[#eff0f4]"
+                      : "hover:bg-[#eff0f4]"
+                }`}
+                on:click={() => {
+                  navigateTo("/upgrade");
+                  handleUpdateNavActive("/upgrade");
+                }}
+              >
+                Upgrade
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 16 16"
+                  fill="#ffb800"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M14.6629 3.5843C14.7217 3.57771 14.7811 3.58901 14.8339 3.61685C14.8867 3.64495 14.9305 3.68852 14.9599 3.74223C14.9893 3.79594 15.0031 3.85745 14.9994 3.91919L14.4836 12.7921H1.51642L1.00059 3.91919C0.996892 3.85745 1.01055 3.79592 1.0399 3.74216C1.06924 3.68841 1.11299 3.64476 1.16578 3.6166C1.21856 3.58843 1.27808 3.57697 1.33702 3.58362C1.39596 3.59026 1.45175 3.61473 1.49755 3.65401L4.60499 6.30708L7.76082 2.11502C7.79036 2.07895 7.82704 2.04999 7.86833 2.03014C7.90962 2.01028 7.95455 2 8.00001 2C8.04548 2 8.0904 2.01028 8.1317 2.03014C8.17299 2.04999 8.20967 2.07895 8.23921 2.11502L11.395 6.30708L14.5025 3.65401C14.5484 3.61511 14.6041 3.5909 14.6629 3.5843ZM1.55334 13.4273L1.55781 13.5041C1.577 13.827 1.71333 14.1301 1.93906 14.3518C2.1648 14.5735 2.46298 14.6971 2.77297 14.6976H13.2271C13.537 14.6971 13.8352 14.5735 14.061 14.3518C14.2867 14.1301 14.423 13.827 14.4422 13.5041L14.4467 13.4273H1.55334Z"
+                    fill="#ffb800"
+                  />
+                </svg>
+              </div>
+            </div>
+
+            <div on:click={() => (showPopover = false)}>
+              <div
+                class={`text_00000066 cursor-pointer text-base rounded-md transition-all px-2 py-1 ${
+                  $isDarkMode
+                    ? navActive === "/profile"
+                      ? "bg-[#222222]"
+                      : "hover:bg-[#222222]"
+                    : navActive === "/profile"
+                      ? "bg-[#eff0f4]"
+                      : "hover:bg-[#eff0f4]"
+                }`}
+                on:click={() => {
+                  navigateTo(`/profile?id=${$userId}`);
+                  handleUpdateNavActive("/profile");
+                }}
+              >
+                My Profile
+              </div>
+            </div>
+
+            <div on:click={() => (showPopover = false)}>
+              <div
+                class={`text_00000066 cursor-pointer text-base rounded-md transition-all px-2 py-1 ${
+                  $isDarkMode ? "hover:bg-[#222222]" : "hover:bg-[#eff0f4]"
+                }`}
+                on:click={() => {
+                  isOpenModalSync = true;
+                  handleGetCodeSyncMobile();
+                }}
+              >
+                Sync session
+              </div>
+            </div>
+
+            <div on:click={() => (showPopover = false)}>
+              <div
+                class={`text_00000066 cursor-pointer text-base rounded-md transition-all px-2 py-1 ${
+                  $isDarkMode
+                    ? navActive === "/invitation"
+                      ? "bg-[#222222]"
+                      : "hover:bg-[#222222]"
+                    : navActive === "/invitation"
+                      ? "bg-[#eff0f4]"
+                      : "hover:bg-[#eff0f4]"
+                }`}
+                on:click={() => {
+                  navigateTo("/invitation");
+                  handleUpdateNavActive("/invitation");
+                }}
+              >
+                Invite
+              </div>
+            </div>
+
+            <div on:click={() => (showPopover = false)}>
+              <div
+                class={`text_00000066 cursor-pointer text-base rounded-md transition-all px-2 py-1 ${
+                  $isDarkMode
+                    ? navActive === "/settings"
+                      ? "bg-[#222222]"
+                      : "hover:bg-[#222222]"
+                    : navActive === "/settings"
+                      ? "bg-[#eff0f4]"
+                      : "hover:bg-[#eff0f4]"
+                }`}
+                on:click={() => {
+                  navigateTo("/settings");
+                  handleUpdateNavActive("/settings");
+                }}
+              >
+                Settings
+              </div>
+            </div>
+
+            <div
+              class={`font-medium text-red-500 cursor-pointer text-base rounded-md transition-all px-2 py-1 ${
+                $isDarkMode ? "hover:bg-[#222222]" : "hover:bg-[#eff0f4]"
+              }`}
+              on:click={() => {
+                handleSignOut();
+                showPopover = false;
+              }}
+            >
+              Log out
+            </div>
+          </div>
+        {/if}
       </div>
-    </Button>
-  {/if}
-</div>
+    {:else}
+      <Button
+        on:click={() => {
+          triggerConnectWallet.update((n) => (n = true));
+          mixpanel.track("user_connect_wallet");
+          isShowHeaderMobile.update((n) => (n = false));
+        }}
+        variant="tertiary"
+      >
+        <div class="text-sm font-semibold text-white cursor-pointer w-full">
+          Connect Wallet
+        </div>
+      </Button>
+    {/if}
+  </div>
+{/if}
+
+{#if isShowSyncSession}
+  <div class="xl:hidden block">
+    <div
+      class="text-xl font-semibold text-gray-300 cursor-pointer"
+      on:click={() => {
+        isOpenModalSync = true;
+        handleGetCodeSyncMobile();
+      }}
+    >
+      Sync session
+    </div>
+  </div>
+{/if}
 
 <WalletProvider localStorageKey="walletAdapter" {wallets} autoConnect />
 
@@ -909,10 +932,10 @@
     clearInterval(timerCountdown);
   }}
 >
-  <div class="flex flex-col gap-4">
+  <div class="flex flex-col gap-4 xl:py-0 py-6">
     <div class="flex flex-col gap-1 items-start">
-      <div class="xl:title-3 title-1 font-semibold">Sync session</div>
-      <div class="xl:text-sm text-2xl text-gray-500">
+      <div class="title-3 font-semibold">Sync session</div>
+      <div class="text-sm text-gray-500">
         More convenience in managing your portfolio on mobile devices
       </div>
     </div>
@@ -942,7 +965,9 @@
       </div>
     </div>
     <div class="flex justify-center items-center -mt-2">
-      <div class="border rounded-xl overflow-hidden bg-white w-[57%]">
+      <div
+        class="border rounded-xl overflow-hidden bg-white md:w-[57%] w-[77%]"
+      >
         <div class="bg-[#f3f4f6] py-2 px-4">
           <img
             src={Logo}
@@ -982,7 +1007,7 @@
       </div>
     </div>
     <div class="flex flex-col items-center mt-2 gap-4">
-      <div class="w-[57%]">
+      <div class="md:w-[57%] w-[77%]">
         <CopyToClipboard
           text={syncMobileCode}
           let:copy
@@ -1058,16 +1083,16 @@
       </div>
     </div>
     <div class="flex flex-col items-center mt-2 gap-4">
-      <div class="border-t-[1px] relative w-[57%]">
+      <div class="border-t-[1px] relative md:w-[57%] w-[77%]">
         <div
-          class={`absolute xl:top-[-10px] top-[-14px] left-1/2 transform -translate-x-1/2 text-gray-400 text-xs px-2 ${
+          class={`absolute top-[-10px] left-1/2 transform -translate-x-1/2 text-gray-400 text-xs px-2 ${
             $isDarkMode ? "bg-[#0f0f0f]" : "bg-white"
           }`}
         >
           Or open Telegram
         </div>
       </div>
-      <div class="w-[57%]">
+      <div class="md:w-[57%] w-[77%]">
         <a
           href={`https://t.me/GetNimbusBot?start=${syncMobileCode}`}
           target="_blank"
