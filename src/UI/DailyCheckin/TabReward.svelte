@@ -11,13 +11,15 @@
   } from "~/lib/queryAPI";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
+  import { triggerFirework } from "~/utils";
+  import { wait } from "~/entries/background/utils";
 
   import Loading from "~/components/Loading.svelte";
   import RedeemCard from "~/components/RedeemCard.svelte";
-
-  import goldImg from "~/assets/Gold4.svg";
   import TicketRewardCard from "~/components/SUI Campaign/TicketRewardCard.svelte";
   import Image from "~/components/Image.svelte";
+
+  import goldImg from "~/assets/Gold4.svg";
 
   const dailyCheckinRewardsTypePortfolio = [
     {
@@ -32,6 +34,8 @@
 
   const queryClient = useQueryClient();
 
+  let totalPoint = 0;
+
   let selectedType: "redeemGift" | "yourGift" = "redeemGift";
 
   let toastMsg = "";
@@ -39,6 +43,8 @@
   let counter = 3;
   let showToast = false;
   let openScreenTicketCardSuccess = false;
+
+  let isLoadingRedeem = false;
   let selectedTicketReward = {};
 
   const rewardTicket = [
@@ -84,6 +90,13 @@
     isSuccessToast = false;
   };
 
+  const triggerRedeemSuccess = async () => {
+    openScreenTicketCardSuccess = true;
+    triggerFirework();
+    await wait(2000);
+    openScreenTicketCardSuccess = false;
+  };
+
   let socialData = [];
 
   $: queryLinkSocial = createQuery({
@@ -98,63 +111,6 @@
       socialData = $queryLinkSocial?.data?.data;
     }
   }
-
-  const handleRedeem = async (data) => {
-    const validateAddress = await handleValidateAddress($userPublicAddress);
-    if (
-      validateAddress?.type === "MOVE" ||
-      socialData.find((item) => item.chain === "MOVE")
-    ) {
-      try {
-        if ($queryDailyCheckin?.data?.totalPoint < data.cost) {
-          selectedType = "yourGift";
-          return;
-        }
-
-        await nimbus
-          .post("/v2/reward/redeem", {
-            address: $userPublicAddress,
-            campaignName: data?.campaignName,
-          })
-          .then(() => {
-            queryClient.invalidateQueries([$userPublicAddress, "rewards"]);
-            queryClient.invalidateQueries([
-              $userPublicAddress,
-              "daily-checkin",
-            ]);
-            selectedType = "yourGift";
-          });
-      } catch (e) {
-        console.error(e);
-      }
-    } else {
-      toastMsg =
-        "Please connect your SUI wallet or link you SUI wallet to redeem!";
-      isSuccessToast = false;
-      trigger();
-    }
-  };
-
-  const handleRedeemTicket = async (body) => {
-    try {
-      const post = await nimbus.post("/v2/campaign/sui-unlock/rewards", {
-        reward: body,
-      });
-      queryClient.invalidateQueries([$userPublicAddress, "rewards"]);
-      queryClient.invalidateQueries([$userPublicAddress, "daily-checkin"]);
-      openScreenTicketCardSuccess = true;
-      if (post?.error) {
-        toastMsg = post?.error;
-        isSuccessToast = false;
-        trigger();
-      }
-    } catch (error) {
-      console.log(error);
-      toastMsg = "Something went wrong while redeeming the ticket";
-      isSuccessToast = false;
-      trigger();
-    }
-  };
 
   $: queryDailyCheckin = createQuery({
     queryKey: ["daily-checkin", $userPublicAddress],
@@ -174,6 +130,12 @@
     },
   });
 
+  $: {
+    if (!$queryDailyCheckin.error && $queryDailyCheckin.data !== undefined) {
+      totalPoint = $queryDailyCheckin?.data?.totalPoint;
+    }
+  }
+
   $: queryReward = createQuery({
     queryKey: [$userPublicAddress, "rewards"],
     queryFn: () => handleGetDataRewards($userPublicAddress),
@@ -191,6 +153,87 @@
       user.update((n) => (n = {}));
     },
   });
+
+  const handleRedeem = async (data) => {
+    const validateAddress = await handleValidateAddress($userPublicAddress);
+    if (
+      validateAddress?.type === "MOVE" ||
+      socialData.find((item) => item.chain === "MOVE")
+    ) {
+      isLoadingRedeem = true;
+      try {
+        if (totalPoint < data.cost) {
+          selectedType = "yourGift";
+          return;
+        }
+
+        const response: any = await nimbus.post("/v2/reward/redeem", {
+          address: $userPublicAddress,
+          campaignName: data?.campaignName,
+        });
+        if (response?.error) {
+          toastMsg = response?.error;
+          isSuccessToast = false;
+          trigger();
+        }
+
+        queryClient.invalidateQueries(["daily-checkin"]);
+        queryClient.invalidateQueries(["rewards"]);
+        selectedTicketReward = data;
+        triggerRedeemSuccess();
+        selectedType = "yourGift";
+      } catch (e) {
+        console.error(e);
+        toastMsg = "Something went wrong while redeeming the ticket";
+        isSuccessToast = false;
+        trigger();
+      } finally {
+        isLoadingRedeem = false;
+      }
+    } else {
+      if (
+        validateAddress?.type === "MOVE" ||
+        socialData.find((item) => item.chain === "MOVE")
+      ) {
+        toastMsg = "Something went wrong while redeeming the ticket";
+      } else {
+        toastMsg =
+          "Please connect your SUI wallet or link you SUI wallet to redeem!";
+      }
+      isSuccessToast = false;
+      trigger();
+    }
+  };
+
+  const handleRedeemTicket = async (data) => {
+    try {
+      isLoadingRedeem = true;
+      const response: any = await nimbus.post(
+        "/v2/campaign/sui-unlock/rewards",
+        {
+          reward: data.body,
+        }
+      );
+      if (response?.error) {
+        toastMsg = response?.error;
+        isSuccessToast = false;
+        trigger();
+      }
+
+      queryClient?.invalidateQueries(["daily-checkin"]);
+      queryClient?.invalidateQueries(["rewards"]);
+      selectedTicketReward = data;
+      triggerRedeemSuccess();
+      selectedType = "yourGift";
+    } catch (error) {
+      console.error(error);
+      toastMsg = "Something went wrong while redeeming the ticket";
+      isSuccessToast = false;
+      trigger();
+    } finally {
+      isLoadingRedeem = false;
+    }
+  };
 </script>
 
 <div class="flex flex-col gap-4">
@@ -208,7 +251,7 @@
     >
       <img src={goldImg} alt="" class="w-8" />
       <div class="text-white md:text-xl text-lg font-medium">
-        {$queryDailyCheckin?.data?.totalPoint || 0}
+        {totalPoint}
       </div>
     </div>
   </div>
@@ -266,15 +309,20 @@
 
             <div class="grid lg:grid-cols-2 grid-cols-1 gap-10">
               {#each $queryReward?.data?.redeemable || [] as item}
-                <RedeemCard isRedeem redeemData={item} {handleRedeem} />
+                <RedeemCard
+                  isRedeem
+                  redeemData={item}
+                  {handleRedeem}
+                  {isLoadingRedeem}
+                />
               {/each}
 
               {#if $queryReward?.data !== undefined}
-                {#each rewardTicket as ticketData}
+                {#each rewardTicket as item}
                   <TicketRewardCard
-                    {ticketData}
+                    data={item}
                     {handleRedeemTicket}
-                    bind:selectedTicketReward
+                    {isLoadingRedeem}
                   />
                 {/each}
               {/if}
@@ -297,7 +345,11 @@
 
             <div class="grid lg:grid-cols-2 grid-cols-1 gap-10">
               {#each $queryReward?.data?.ownRewards || [] as item}
-                <RedeemCard redeemData={item} handleRedeem={() => {}} />
+                <RedeemCard
+                  redeemData={item}
+                  handleRedeem={() => {}}
+                  {isLoadingRedeem}
+                />
               {/each}
             </div>
           </div>

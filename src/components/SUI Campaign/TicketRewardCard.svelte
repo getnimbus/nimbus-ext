@@ -4,9 +4,9 @@
   import isBetween from "dayjs/plugin/isBetween";
   dayjs.extend(isBetween);
 
-  export let ticketData;
+  export let data;
   export let handleRedeemTicket = (value) => {};
-  export let selectedTicketReward;
+  export let isLoadingRedeem;
 
   import Button from "~/components/Button.svelte";
 
@@ -15,13 +15,7 @@
 
   const checkTicketValidate = () => {
     const today = dayjs().format("YYYY-MM-DD");
-    const boo = dayjs(today).isBetween(
-      ticketData?.fromDate,
-      ticketData?.toDate,
-      "day",
-      "[)"
-    );
-    return boo;
+    return dayjs(today).isBetween(data?.fromDate, data?.toDate, "day", "[)");
   };
 </script>
 
@@ -36,7 +30,7 @@
         $isDarkMode ? "" : "bg-white"
       }`}
     >
-      <img src={ticketData?.logo} alt="" class="w-20 h-20 object-contain" />
+      <img src={data?.logo} alt="" class="w-20 h-20 object-contain" />
     </div>
 
     <div class="flex-1 flex flex-col gap-2">
@@ -47,10 +41,10 @@
         </div>
       </div>
       <div class="lg:text-4xl text-3xl font-normal">
-        {ticketData?.title}
+        {data?.title}
       </div>
       <div class="text-sm font-normal">
-        {ticketData?.description}
+        {data?.description}
       </div>
     </div>
   </div>
@@ -77,7 +71,7 @@
             <div class="flex items-center gap-1">
               <img src={goldImg} alt="" class="w-[28px] h-[28px]" />
               <div class="text-white sm:text-lg text-smxs font-medium">
-                {ticketData?.cost}
+                {data?.cost}
               </div>
             </div>
             <div class="text-white text-smxs">Redeem</div>
@@ -86,14 +80,16 @@
           <Button
             variant="tertiary"
             on:click={() => {
-              handleRedeemTicket(ticketData?.body);
-              selectedTicketReward = ticketData;
+              if (!isLoadingRedeem) {
+                handleRedeemTicket(data);
+              }
             }}
+            disabled={isLoadingRedeem}
           >
             <div class="flex items-center gap-1">
               <img src={goldImg} alt="" class="w-[28px] h-[28px]" />
               <div class="text-white sm:text-lg text-smxs font-medium">
-                {ticketData?.cost}
+                {data?.cost}
               </div>
             </div>
             <div class="text-white text-smxs">Redeem</div>
@@ -104,7 +100,7 @@
   </div>
 </div>
 
-<style>
+<style windi:preflights:global windi:safelist:global>
   @media (max-width: 320) {
     .text-smxs {
       font-size: 14px;
