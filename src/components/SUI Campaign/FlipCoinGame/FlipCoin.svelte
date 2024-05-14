@@ -206,25 +206,27 @@
   };
 
   $: {
-    const checkLinkSuiWallet = $queryLinkSocial?.data?.data.filter(
-      (item) => item?.kind === "wallet" && item?.chain === "MOVE"
-    );
+    if (!$queryLinkSocial.isError && $queryLinkSocial.data !== undefined) {
+      const checkLinkSuiWallet = $queryLinkSocial?.data?.data.filter(
+        (item) => item?.kind === "wallet" && item?.chain === "MOVE"
+      );
 
-    if (
-      checkLinkSuiWallet.length > 0 &&
-      ($suiWalletInstance as WalletState)?.address !== undefined
-    ) {
       if (
-        checkLinkSuiWallet[0]?.uid !==
-        ($suiWalletInstance as WalletState)?.address
+        checkLinkSuiWallet.length > 0 &&
+        ($suiWalletInstance as WalletState)?.address !== undefined
       ) {
-        toastMsg = `Please connect to wallet ${shorterAddress(checkLinkSuiWallet[0]?.uid)} to flip`;
-        isSuccessToast = false;
-        linkedSuiWallet = false;
-        trigger();
-        ($suiWalletInstance as WalletState)?.disconnect();
-      } else {
-        linkedSuiWallet = true;
+        if (
+          checkLinkSuiWallet[0]?.uid !==
+          ($suiWalletInstance as WalletState)?.address
+        ) {
+          toastMsg = `Please connect to wallet ${shorterAddress(checkLinkSuiWallet[0]?.uid)} to flip`;
+          isSuccessToast = false;
+          linkedSuiWallet = false;
+          trigger();
+          ($suiWalletInstance as WalletState)?.disconnect();
+        } else {
+          linkedSuiWallet = true;
+        }
       }
     }
   }
