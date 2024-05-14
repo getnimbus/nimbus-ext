@@ -165,14 +165,14 @@
   <div class="text-xl font-medium">Quests</div>
   <!-- Desktop -->
   <div
-    class={`md:block hidden rounded-[10px] border border_0000000d overflow-hidden ${
+    class={`md:block hidden rounded-[10px] border border_0000000d h-[449px] overflow-y-auto ${
       $isDarkMode ? "bg-[#131313]" : "bg-[#fff]"
     }`}
   >
-    <table class="table-auto w-full h-full">
+    <table class="table-auto w-full">
       <thead>
-        <tr class="bg_f4f5f8">
-          <th class="pl-3 py-3 rounded-tl-[10px] bg_f4f5f8">
+        <tr class="bg_f4f5f8 sticky top-0">
+          <th class="pl-3 py-3 rounded-tl-[10px]">
             <div class="text-left xl:text-xs text-lg uppercase font-medium">
               Task
             </div>
