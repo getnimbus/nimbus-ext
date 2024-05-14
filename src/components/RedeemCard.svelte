@@ -21,7 +21,7 @@
   <div class="px-[16px] flex items-center h-full gap-[47px]">
     <div
       class={`flex-[0.6] rounded-2xl p-2 flex items-center h-full justify-center ${
-        $isDarkMode ? "bg-gray-200" : "bg-white"
+        $isDarkMode ? "" : "bg-white"
       }`}
     >
       <img src={redeemData?.logo} alt="" class="w-20 h-20 object-contain" />
