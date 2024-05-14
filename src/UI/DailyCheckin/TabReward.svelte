@@ -250,7 +250,6 @@
             {/each}
           </AnimateSharedLayout>
         </div>
-
         {#if selectedType === "redeemGift"}
           <div class="flex flex-col gap-4">
             <div
@@ -259,7 +258,6 @@
               <!-- {#if $queryReward?.data?.redeemable.length === 0}
                 There are no redeems
               {/if} -->
-              
               {#if $queryReward?.data === undefined}
                 Please connect wallet
               {/if}
