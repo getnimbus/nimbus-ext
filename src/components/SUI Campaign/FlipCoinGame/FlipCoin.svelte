@@ -10,7 +10,7 @@
   import { SuiConnector } from "nimbus-sui-kit";
   import { suiWalletInstance } from "~/store";
   import { isDarkMode } from "~/store";
-  import { triggerFirework } from "~/utils";
+  import { shorterAddress, triggerFirework } from "~/utils";
   import { nimbus } from "~/lib/network";
   import { getLinkData } from "~/lib/queryAPI";
   import { wait } from "~/entries/background/utils";
@@ -207,7 +207,7 @@
 
   $: {
     const checkLinkSuiWallet = $queryLinkSocial?.data?.data.filter(
-      (item) => item?.chain === "MOVE"
+      (item) => item?.kind === "wallet" && item?.chain === "MOVE"
     );
 
     if (
@@ -218,7 +218,7 @@
         checkLinkSuiWallet[0]?.uid !==
         ($suiWalletInstance as WalletState)?.address
       ) {
-        toastMsg = "Your have to link your account to your Sui wallet first!";
+        toastMsg = `Please connect to wallet ${shorterAddress(checkLinkSuiWallet[0]?.uid)} to flip`;
         isSuccessToast = false;
         linkedSuiWallet = false;
         trigger();
