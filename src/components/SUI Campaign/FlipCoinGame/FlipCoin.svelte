@@ -14,6 +14,7 @@
   import { nimbus } from "~/lib/network";
   import { getLinkData } from "~/lib/queryAPI";
   import { wait } from "~/entries/background/utils";
+  import tooltip from "~/entries/contentScript/views/tooltip";
 
   import ReactAdapter from "~/components/ReactAdapter.svelte";
   import Button from "~/components/Button.svelte";
@@ -349,11 +350,27 @@
       </div>
     {:else}
       <div class="w-max mx-auto">
-        <Button variant="tertiary" on:click={handleStartFlip}>
-          <div class="font-medium sm:text-2xl text-lg py-4 px-5">
-            Flip Now 👑
+        {#if dataFlipCheck.canPlay}
+          <Button variant="tertiary" on:click={handleStartFlip}>
+            <div class="font-medium sm:text-2xl text-lg py-4 px-5">
+              Flip Now 👑
+            </div>
+          </Button>
+        {:else}
+          <div
+            use:tooltip={{
+              content: `<tooltip-detail text="Your flipping capacity has reached its limit! You can only flip 5 times a day." />`,
+              allowHTML: true,
+              placement: "top",
+            }}
+          >
+            <Button disabled>
+              <div class="font-medium sm:text-2xl text-lg py-4 px-5">
+                Flip Now 👑
+              </div>
+            </Button>
           </div>
-        </Button>
+        {/if}
       </div>
     {/if}
   </div>
