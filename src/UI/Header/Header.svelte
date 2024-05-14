@@ -781,53 +781,26 @@
 
         <!-- Change log -->
         <!-- <div class="xl:w-10 xl:h-10 w-12 h-12 relative xl:block hidden">
+          <div
+            class={`rounded-full flex justify-center items-center w-full h-full ${
+              $isDarkMode ? "bg-[#212121]" : "bg-[#525B8C]"
+            }`}
+          >
+            <img src={ChangeLogIcon} alt="" class="w-[26px] h-[26px]" />
+          </div>
+          <button
+            data-featurebase-changelog
+            class="w-full h-full absolute inset-0 z-10"
+          />
+        </div>
+
         <div
-          class={`rounded-full flex justify-center items-center w-full h-full ${
+          class={`cursor-pointer rounded-full flex justify-center items-center xl:w-10 xl:h-10 w-12 h-12 ${
             $isDarkMode ? "bg-[#212121]" : "bg-[#525B8C]"
           }`}
         >
-          <img src={ChangeLogIcon} alt="" class="w-[26px] h-[26px]" />
-        </div>
-        <button
-          data-featurebase-changelog
-          class="w-full h-full absolute inset-0 z-10"
-        />
-      </div> -->
-
-        <!-- Daily Checkin -->
-        <!-- {#if $user && Object.keys($user).length !== 0}
-        <div
-          class="xl:block hidden cursor-pointer"
-          use:tooltip={{
-            content: `<tooltip-detail text="Check in daily, do quest, earn reward!" />`,
-            allowHTML: true,
-            placement: "bottom",
-          }}
-        >
-          <div
-            class={`rounded-full flex justify-center items-center gap-1 px-2 py-1 ${
-              $isDarkMode ? "bg-[#212121]" : "bg-[#525B8C]"
-            }`}
-            on:click={() => {
-              handleUpdateNavActive("/daily-checkin");
-              navigateTo("/daily-checkin");
-            }}
-          >
-            <img src={goldImg} alt="" class="w-[28px] h-[28px]" />
-            <span class="text-yellow-400 font-medium">
-              {$queryUserInfo?.data?.totalPoint}
-            </span>
-          </div>
-        </div>
-      {/if} -->
-
-        <!-- <div
-        class={`cursor-pointer rounded-full flex justify-center items-center xl:w-10 xl:h-10 w-12 h-12 ${
-          $isDarkMode ? "bg-[#212121]" : "bg-[#525B8C]"
-        }`}
-      >
-        <img src={Bell} alt="" class="xl:w-5 xl:h-5 w-7 h-7" />
-      </div> -->
+          <img src={Bell} alt="" class="xl:w-5 xl:h-5 w-7 h-7" />
+        </div> -->
 
         <Auth
           {displayName}
@@ -836,6 +809,7 @@
           {navActive}
           {handleUpdateNavActive}
           {handleSignOut}
+          isShowSyncSession={false}
         />
       </div>
     </div>
@@ -1109,6 +1083,19 @@
       <div class="flex flex-col gap-12 w-full pb-12 mt-2">
         <div class="flex flex-col gap-5 px-5">
           <DarkModeFooter />
+
+          {#if $user && Object.keys($user).length !== 0}
+            <Auth
+              {displayName}
+              {publicAddress}
+              {buyPackage}
+              {navActive}
+              {handleUpdateNavActive}
+              {handleSignOut}
+              isShowSyncSession={true}
+            />
+          {/if}
+
           <div class="w-max">
             {#if Object.keys($user).length === 0}
               <div class="flex flex-col gap-5">
