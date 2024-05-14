@@ -8,8 +8,6 @@
   export let handleRedeemTicket = (value) => {};
   export let selectedTicketReward;
 
-  let openScreenSuccess = false;
-
   import Button from "~/components/Button.svelte";
 
   import goldImg from "~/assets/Gold4.svg";
@@ -74,7 +72,6 @@
     <div class="px-[16px]">
       <div class="flex items-center gap-[40px]">
         <div class="w-[100px] text-base font-normal text-right">Unlimited</div>
-
         {#if !checkTicketValidate()}
           <Button disabled>
             <div class="flex items-center gap-1">
@@ -90,7 +87,6 @@
             variant="tertiary"
             on:click={() => {
               handleRedeemTicket(ticketData?.body);
-              openScreenSuccess = true;
               selectedTicketReward = ticketData;
             }}
           >
