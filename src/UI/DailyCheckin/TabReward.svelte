@@ -16,6 +16,7 @@
   import RedeemCard from "~/components/RedeemCard.svelte";
 
   import goldImg from "~/assets/Gold4.svg";
+  import TicketRewardCard from "~/components/SUI Campaign/TicketRewardCard.svelte";
 
   const dailyCheckinRewardsTypePortfolio = [
     {
@@ -36,6 +37,36 @@
   let isSuccessToast = false;
   let counter = 3;
   let showToast = false;
+
+  const rewardTicket = [
+    {
+      cost: 1000,
+      description: "GOLD TICKET - Nimbus On Sui Ticket",
+      title: "GOLD TICKET",
+      body: "GOLD_TICKET",
+      logo: "https://nimbus-zodiac.s3.ap-southeast-1.amazonaws.com/sui-unlock/gold.png",
+      fromDate: "2024-05-14",
+      toDate: "2024-05-21",
+    },
+    {
+      cost: 1000,
+      description: "SILVER TICKET - Nimbus On Sui Ticket",
+      title: "SILVER TICKET",
+      body: "SILVER_TICKET",
+      logo: "https://nimbus-zodiac.s3.ap-southeast-1.amazonaws.com/sui-unlock/silver.png",
+      fromDate: "2024-05-21",
+      toDate: "2024-05-27",
+    },
+    {
+      cost: 1000,
+      description: "BRONZE TICKET - Nimbus On Sui Ticket",
+      title: "BRONZE TICKET",
+      body: "BRONZE_TICKET",
+      logo: "https://nimbus-zodiac.s3.ap-southeast-1.amazonaws.com/sui-unlock/bronze.png",
+      fromDate: "2024-05-14",
+      toDate: "2024-05-31",
+    },
+  ];
 
   const trigger = () => {
     showToast = true;
@@ -96,6 +127,20 @@
     } else {
       toastMsg =
         "Please connect your SUI wallet or link you SUI wallet to redeem!";
+      isSuccessToast = false;
+      trigger();
+    }
+  };
+
+  const handleRedeemTicket = async (body) => {
+    try {
+      const post = await nimbus.post("/v2/campaign/sui-unlock/rewards", {
+        reward: body,
+      });
+      queryClient.invalidateQueries([$userPublicAddress, "rewards"]);
+    } catch (error) {
+      console.log(error);
+      toastMsg = "Something went wrong while redeeming the ticket";
       isSuccessToast = false;
       trigger();
     }
@@ -201,9 +246,10 @@
             <div
               class="flex justify-center items-center h-full w-full xl:text-lg text-xl text-gray-400"
             >
-              {#if $queryReward?.data?.redeemable.length === 0}
+              <!-- {#if $queryReward?.data?.redeemable.length === 0}
                 There are no redeems
-              {/if}
+              {/if} -->
+              <!-- comment vi ticket unlimited  -->
               {#if $queryReward?.data === undefined}
                 Please connect wallet
               {/if}
@@ -213,6 +259,12 @@
               {#each $queryReward?.data?.redeemable || [] as item}
                 <RedeemCard isRedeem redeemData={item} {handleRedeem} />
               {/each}
+
+              {#if $queryReward?.data !== undefined}
+                {#each rewardTicket as ticketData}
+                  <TicketRewardCard {ticketData} {handleRedeemTicket} />
+                {/each}
+              {/if}
             </div>
           </div>
         {/if}
