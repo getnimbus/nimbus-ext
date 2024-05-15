@@ -34,7 +34,7 @@
   };
 
   const disconnect = (value: any) => {
-    if (value && Object.keys(value).length !== 0) {
+    if (value && Object.keys(value)?.length !== 0) {
       onboard.disconnectWallet({ label: value.label });
     }
   };
@@ -43,7 +43,7 @@
   const connect = async () => {
     try {
       const res = await onboard.connectWallet();
-      if (res && res.length !== 0) {
+      if (res && res?.length !== 0) {
         handleGetNonce(res?.[0]?.provider, res?.[0]?.accounts[0]?.address);
       }
     } catch (e) {

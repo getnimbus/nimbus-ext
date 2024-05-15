@@ -310,7 +310,7 @@
     queryFn: () => getListAddress(),
     staleTime: Infinity,
     retry: false,
-    enabled: $user && Object.keys($user).length !== 0,
+    enabled: $user && Object.keys($user)?.length !== 0,
   });
 
   $: {
@@ -617,7 +617,7 @@
   }
 
   $: {
-    if (listAddress.length === 0) {
+    if (listAddress && listAddress?.length === 0) {
       wallet.update((n) => (n = ""));
       chain.update((n) => (n = ""));
       typeWallet.update((n) => (n = ""));
@@ -686,7 +686,7 @@
   }
 
   $: {
-    if ($user && Object.keys($user).length === 0) {
+    if ($user && Object.keys($user)?.length === 0) {
       tooltipDisableAddBtn = "Connect wallet to add account";
     }
     if (isDisabled) {
@@ -733,7 +733,7 @@
     queryKey: ["list-bundle"],
     queryFn: () => getListBundle(),
     staleTime: Infinity,
-    enabled: $user && Object.keys($user).length !== 0,
+    enabled: $user && Object.keys($user)?.length !== 0,
   });
 
   $: {
@@ -748,7 +748,7 @@
           addresses: item?.accounts?.map((eachAccount) => eachAccount.address),
         };
       });
-      if (listBundle.length === listAddressWithoutBundle.length) {
+      if (listBundle?.length === listAddressWithoutBundle?.length) {
         checkAll = true;
       }
     }
@@ -765,7 +765,7 @@
 
   // handle submit (create and edit) bundle
   const onSubmitBundle = async () => {
-    if (selectedAddresses.length > 100) {
+    if (selectedAddresses && selectedAddresses?.length > 100) {
       toastMsg =
         "You can create your bundle with maximum is 100 addresses. Please try again!";
       isSuccess = false;
@@ -774,7 +774,7 @@
       return;
     }
 
-    if (selectedAddresses.length === 0) {
+    if (selectedAddresses && selectedAddresses?.length === 0) {
       toastMsg = "Please select addresses to bundle!";
       isSuccess = false;
       trigger();
@@ -785,7 +785,7 @@
     if (
       listBundle.find((item) => item.name === nameBundle) &&
       selectedBundle &&
-      Object.keys(selectedBundle).length === 0
+      Object.keys(selectedBundle)?.length === 0
     ) {
       toastMsg = "Bundle already existed!";
       isSuccess = false;
@@ -801,7 +801,7 @@
         addresses: selectedAddresses,
       };
 
-      if (selectedBundle && Object.keys(selectedBundle).length !== 0) {
+      if (selectedBundle && Object.keys(selectedBundle)?.length !== 0) {
         await nimbus.put(
           `/address/personalize/bundle?name=${selectedBundle?.name}`,
           formData
@@ -820,7 +820,7 @@
         queryClient.refetchQueries(["list-bundle"]);
         queryClient.invalidateQueries(["list-address"]);
 
-        listBundle = response?.data.map((item) => {
+        listBundle = response?.data?.map((item) => {
           return {
             name: item?.name,
             addresses: item?.accounts?.map(
@@ -829,9 +829,9 @@
           };
         });
 
-        selectedBundle = listBundle[listBundle.length - 1];
-        selectedAddresses = listBundle[listBundle.length - 1].addresses;
-        nameBundle = listBundle[listBundle.length - 1].name;
+        selectedBundle = listBundle[listBundle?.length - 1];
+        selectedAddresses = listBundle[listBundle?.length - 1].addresses;
+        nameBundle = listBundle[listBundle?.length - 1].name;
 
         toastMsg = "Successfully create your bundle!";
       }
@@ -843,7 +843,7 @@
       isLoadingBundle = false;
     } catch (e) {
       toastMsg = `Something wrong when ${
-        selectedBundle && Object.keys(selectedBundle).length !== 0
+        selectedBundle && Object.keys(selectedBundle)?.length !== 0
           ? "edit"
           : "create"
       } your bundle. Please try again!`;
@@ -900,7 +900,7 @@
 </script>
 
 <div class="flex flex-col gap-4">
-  {#if (listAddress && listAddress.length === 0) || $query.isError}
+  {#if (listAddress && listAddress?.length === 0) || $query.isError}
     <div class="flex md:flex-row flex-col items-start justify-between">
       <div class="flex flex-col gap-1">
         <div class="xl:title-3 title-2">
@@ -911,7 +911,7 @@
         </div>
       </div>
       <div class="relative xl:w-max w-[200px]">
-        {#if $user && Object.keys($user).length !== 0}
+        {#if $user && Object.keys($user)?.length !== 0}
           <Button variant="tertiary" on:click={() => (isOpenAddModal = true)}>
             <img src={Plus} alt="" class="w-3 h-3" />
             <div class="text-white">
@@ -965,7 +965,7 @@
         <div
           class="flex lg:flex-row flex-col lg:items-center items-start justify-between lg:gap-10 gap-5"
         >
-          {#if listBundle && listBundle.length === 0}
+          {#if listBundle && listBundle?.length === 0}
             <div class="text-base">
               Create your bundle with up to 7 addresses per bundle!
             </div>
@@ -1072,7 +1072,7 @@
           <div
             class="flex md:flex-row flex-col md:items-center items-start justify-end flex-1 gap-4"
           >
-            {#if listBundle && listBundle.length !== 0 && selectedBundle && Object.keys(selectedBundle).length !== 0 && selectedBundle?.name !== "Your wallets"}
+            {#if listBundle && listBundle?.length !== 0 && selectedBundle && Object.keys(selectedBundle)?.length !== 0 && selectedBundle?.name !== "Your wallets"}
               <div
                 class="font-semibold text-red-500 cursor-pointer w-max xl:text-base text-lg"
                 on:click={() => (isOpenConfirmDeleteBundles = true)}
@@ -1088,7 +1088,7 @@
                 on:mouseenter={() => {
                   if (
                     isDisabled ||
-                    ($user && Object.keys($user).length === 0)
+                    ($user && Object.keys($user)?.length === 0)
                   ) {
                     showDisableAddBundle = true;
                   }
@@ -1096,13 +1096,13 @@
                 on:mouseleave={() => {
                   if (
                     isDisabled ||
-                    ($user && Object.keys($user).length === 0)
+                    ($user && Object.keys($user)?.length === 0)
                   ) {
                     showDisableAddBundle = false;
                   }
                 }}
               >
-                {#if isDisabled || ($user && Object.keys($user).length === 0)}
+                {#if isDisabled || ($user && Object.keys($user)?.length === 0)}
                   <Button variant="disabled" disabled>
                     <img
                       src={$isDarkMode ? PlusBlack : Plus}
@@ -1145,7 +1145,7 @@
                 on:mouseenter={() => {
                   if (
                     isDisabled ||
-                    ($user && Object.keys($user).length === 0)
+                    ($user && Object.keys($user)?.length === 0)
                   ) {
                     showDisableAddWallet = true;
                   }
@@ -1153,13 +1153,13 @@
                 on:mouseleave={() => {
                   if (
                     isDisabled ||
-                    ($user && Object.keys($user).length === 0)
+                    ($user && Object.keys($user)?.length === 0)
                   ) {
                     showDisableAddWallet = false;
                   }
                 }}
               >
-                {#if isDisabled || ($user && Object.keys($user).length === 0)}
+                {#if isDisabled || ($user && Object.keys($user)?.length === 0)}
                   <div>
                     {#if localStorage.getItem("isGetUserEmailYet") !== null && localStorage.getItem("isGetUserEmailYet") === "false"}
                       <Button
@@ -1223,7 +1223,7 @@
   {/if}
 
   <div class="border-t-[1.5px] border_0000000d pt-4">
-    {#if isAddBundle || (selectedBundle && selectedBundle !== null && Object.keys(selectedBundle).length !== 0)}
+    {#if isAddBundle || (selectedBundle && selectedBundle !== null && Object.keys(selectedBundle)?.length !== 0)}
       <form
         on:submit|preventDefault={onSubmitBundle}
         class="flex flex-col gap-4"
@@ -1309,7 +1309,7 @@
               </tbody>
             {:else}
               <tbody>
-                {#if listAddress && listAddress.length === 0}
+                {#if listAddress && listAddress?.length === 0}
                   <tr>
                     <td colspan="3">
                       <div
@@ -1495,7 +1495,7 @@
               isLoading={isLoadingBundle}
               disabled={isDisabled}
             >
-              {#if selectedBundle && Object.keys(selectedBundle).length !== 0}
+              {#if selectedBundle && Object.keys(selectedBundle)?.length !== 0}
                 Save
               {:else}
                 {MultipleLang.content.modal_add}
@@ -1563,7 +1563,7 @@
             </tbody>
           {:else if isDisabled}
             <tbody>
-              {#if (listAddressWithoutBundle && listAddressWithoutBundle.length === 0) || $query.isError}
+              {#if (listAddressWithoutBundle && listAddressWithoutBundle?.length === 0) || $query.isError}
                 <tr>
                   <td colspan="3">
                     <div
@@ -1677,7 +1677,7 @@
                 debounceSort(e.detail.items);
               }}
             >
-              {#if (listAddressWithoutBundle && listAddressWithoutBundle.length === 0) || $query.isError}
+              {#if (listAddressWithoutBundle && listAddressWithoutBundle?.length === 0) || $query.isError}
                 <tr>
                   <td colspan="3">
                     <div
@@ -1788,7 +1788,7 @@
           </div>
         {:else}
           <div>
-            {#if (listAddressWithoutBundle && listAddressWithoutBundle.length === 0) || $query.isError}
+            {#if (listAddressWithoutBundle && listAddressWithoutBundle?.length === 0) || $query.isError}
               <div
                 class="flex items-center justify-center h-full px-3 py-4 text-base"
               >

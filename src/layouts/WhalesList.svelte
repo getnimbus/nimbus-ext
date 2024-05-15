@@ -9,6 +9,8 @@
   import { isDarkMode, selectedPackage, wallet, user } from "~/store";
   import { filterDuplicates } from "~/utils";
   import * as browser from "webextension-polyfill";
+  import { detectedGeneration } from "~/lib/chains";
+  import { getListAddress } from "~/lib/queryAPI";
 
   import Loading from "~/components/Loading.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
@@ -16,8 +18,6 @@
   import PublicPortfolioMobileItem from "~/UI/WhalesList/PublicPortfolioMobileItem.svelte";
   import Button from "~/components/Button.svelte";
   import Tooltip from "~/components/Tooltip.svelte";
-  import { detectedGeneration } from "~/lib/chains";
-  import { getListAddress } from "~/lib/queryAPI";
 
   const MultipleLang = {
     whale: i18n("newtabPage.whale", "Whale 🐳"),
@@ -97,7 +97,7 @@
     queryFn: () => getListAddress(),
     staleTime: Infinity,
     retry: false,
-    enabled: $user && Object.keys($user).length !== 0,
+    enabled: $user && Object.keys($user)?.length !== 0,
   });
 
   $: {
@@ -111,7 +111,7 @@
   }
 
   const formatDataListAddress = async (data) => {
-    const structWalletData = data.map((item) => {
+    listAddress = data?.map((item) => {
       return {
         id: item.id,
         type: item.type,
@@ -133,8 +133,6 @@
           }) || [],
       };
     });
-
-    listAddress = structWalletData;
   };
 
   const handleSetWallet = async () => {
@@ -142,12 +140,14 @@
     if (selectedWalletRes?.selectedWallet !== null) {
       wallet.update((n) => (n = selectedWalletRes.selectedWallet));
     } else {
-      wallet.update(
-        (n) =>
-          (n =
-            listAddress.find((item) => item.label === "Your wallets")?.value ||
-            listAddress[0]?.value)
-      );
+      if (listAddress && listAddress?.length !== 0) {
+        wallet.update(
+          (n) =>
+            (n =
+              listAddress?.find((item) => item.label === "Your wallets")
+                ?.value || listAddress[0]?.value)
+        );
+      }
     }
   };
 

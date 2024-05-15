@@ -9,6 +9,7 @@
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
   import { getListAddress, getUserInfo } from "~/lib/queryAPI";
+  import { detectedGeneration } from "~/lib/chains";
 
   import Icon from "~/UI/Option/Icon.svelte";
   import TabQuests from "~/UI/DailyCheckin/TabQuests.svelte";
@@ -23,7 +24,6 @@
 
   import goldImg from "~/assets/Gold4.svg";
   import wheelIcon from "~/assets/wheel-icon.svg";
-  import { detectedGeneration } from "~/lib/chains";
 
   export let currentRoute;
 
@@ -98,21 +98,21 @@
     queryFn: () => getListAddress(),
     staleTime: Infinity,
     retry: false,
-    enabled: $user && Object.keys($user).length !== 0,
+    enabled: $user && Object.keys($user)?.length !== 0,
   });
 
   $: {
     if (
       !$query.isError &&
       $query.data !== undefined &&
-      $query.data.length !== 0
+      $query.data?.length !== 0
     ) {
       formatDataListAddress($query.data);
     }
   }
 
   const formatDataListAddress = async (data) => {
-    const structWalletData = data.map((item) => {
+    listAddress = data?.map((item) => {
       return {
         id: item.id,
         type: item.type,
@@ -134,14 +134,21 @@
           }) || [],
       };
     });
-
-    listAddress = structWalletData;
   };
 
   const handleSetWallet = async () => {
     const selectedWalletRes = await browser.storage.sync.get("selectedWallet");
     if (selectedWalletRes?.selectedWallet !== null) {
       wallet.update((n) => (n = selectedWalletRes.selectedWallet));
+    } else {
+      if (listAddress && listAddress?.length !== 0) {
+        wallet.update(
+          (n) =>
+            (n =
+              listAddress?.find((item) => item.label === "Your wallets")
+                ?.value || listAddress[0]?.value)
+        );
+      }
     }
   };
 

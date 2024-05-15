@@ -140,7 +140,7 @@
     queryFn: () => getListAddress(),
     staleTime: Infinity,
     retry: false,
-    enabled: $user && Object.keys($user).length !== 0,
+    enabled: $user && Object.keys($user)?.length !== 0,
   });
 
   $: {
@@ -179,7 +179,7 @@
     });
 
     listAddress = structWalletData;
-    if (listAddress.length === blacklistAddress.length) {
+    if (listAddress?.length === blacklistAddress?.length) {
       checkAll = true;
     }
   };
@@ -218,7 +218,7 @@
       return;
     }
 
-    if (summary && selectedSummary.length === 0) {
+    if (summary && selectedSummary?.length === 0) {
       toastMsg =
         "Please select at least one frequency of portfolio summary to receive notification";
       isSuccess = false;
@@ -246,7 +246,7 @@
       },
       portfolioSummary: {
         enabled: summary,
-        value: selectedSummary.length !== 0 ? selectedSummary : null,
+        value: selectedSummary?.length !== 0 ? selectedSummary : null,
         blacklist: listAddress
           .map((item) => item.address)
           .filter((element) => !blacklistAddress.includes(element)),
@@ -612,7 +612,7 @@
                 </tbody>
               {:else}
                 <tbody>
-                  {#if listAddress && listAddress.length === 0}
+                  {#if listAddress && listAddress?.length === 0}
                     <tr>
                       <td colspan="2">
                         <div
@@ -695,7 +695,7 @@
                 <div
                   class="flex flex-col md:flex-row md:justify-between justify-start gap-2"
                   style={`${
-                    listAddress.length - 1 === index ? "border: none;" : ""
+                    listAddress?.length - 1 === index ? "border: none;" : ""
                   }`}
                 >
                   <div class="flex items-center gap-4 text-base text-left">

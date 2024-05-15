@@ -204,7 +204,7 @@
                   </div>
                 </div>
 
-                {#if Object.keys($user).length !== 0}
+                {#if $user && Object.keys($user)?.length !== 0}
                   <div class="w-max flex items-center min-h-[30px]">
                     {#if selectedTypePackage === "month"}
                       <div class="font-medium text-lg">
@@ -287,7 +287,7 @@
                   </div>
                 </div>
 
-                {#if Object.keys($user).length !== 0}
+                {#if $user && Object.keys($user)?.length !== 0}
                   <div class="w-max flex items-center min-h-[30px]">
                     {#if selectedTypePackage === "month"}
                       <div class="font-medium text-lg">
