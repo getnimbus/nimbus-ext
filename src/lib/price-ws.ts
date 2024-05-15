@@ -1,3 +1,4 @@
+import { wait } from "~/entries/background/utils";
 import { realtimePrice } from "~/store";
 
 export let socket: null | WebSocket;
@@ -39,7 +40,7 @@ export const decodeEvent = (ev: MessageEvent) => {
 
 const cached = {};
 
-export const priceSubscribe = (
+export const priceSubscribe = async (
   cmc_id: number[] | string[],
   chain: string,
 ) => {
@@ -50,6 +51,7 @@ export const priceSubscribe = (
     } else {
       if (!isReady) {
         console.log("Delay Subscribe");
+        await wait(1000); // Cooldown recurship 
         cbList.push(() => priceSubscribe(cmc_id, chain));
         return;
       }

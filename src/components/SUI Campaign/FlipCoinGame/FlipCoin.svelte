@@ -219,9 +219,10 @@
 
   $: {
     if (!$queryLinkSocial.isError && $queryLinkSocial.data !== undefined) {
-      selectedDataSUILink = $queryLinkSocial?.data?.data.find(
-        (item) => item?.kind === "wallet" && item?.chain === "MOVE"
-      );
+      selectedDataSUILink =
+        $queryLinkSocial?.data?.data.find(
+          (item) => item?.kind === "wallet" && item?.chain === "MOVE"
+        ) || {};
 
       if (
         selectedDataSUILink &&
@@ -375,60 +376,77 @@
   </div>
 
   <div class="relative z-2 w-full">
-    {#if startFlip && dataFlipCheck?.canPlay && linkedSuiWallet}
-      <div class="flex justify-center items-center gap-4">
-        <button
-          class="rounded-[12px] text-white bg-[#FFB800] w-full py-4 px-5 font-medium sm:text-2xl text-lg max-w-[140px]"
-          on:click={() => {
-            if (!isLoadingFlip) {
-              triggerFlipResult(1);
-            }
-          }}
-          disabled={isLoadingFlip}
+    {#if selectedDataSUILink && Object.keys(selectedDataSUILink).length === 0}
+      <div
+        class="flex justify-center items-center gap-3 text-white bg-[#1e96fc] py-1 px-2 rounded-[10px] cursor-pointer xl:w-[280px] w-max mx-auto"
+        on:click={handleSUIAuth}
+      >
+        Connect SUI Wallet
+        <div
+          class="flex items-center gap-1 text-sm font-medium bg-[#27326F] py-1 px-2 text-white rounded-[10px]"
         >
-          {#if isLoadingFlip}
-            ...
-          {:else}
-            Head
-          {/if}
-        </button>
-        <button
-          class="rounded-[12px] text-white bg-[#FFB800] w-full py-4 px-5 font-medium sm:text-2xl text-lg max-w-[140px]"
-          on:click={() => {
-            if (!isLoadingFlip) {
-              triggerFlipResult(0);
-            }
-          }}
-          disabled={isLoadingFlip}
-        >
-          {#if isLoadingFlip}
-            ...
-          {:else}
-            Tail
-          {/if}
-        </button>
+          1000
+          <img src={gmPoints} alt="" class="w-6 h-6" />
+        </div>
       </div>
     {:else}
-      <div class="w-max mx-auto">
-        {#if dataFlipCheck.canPlay}
-          <Button variant="tertiary" on:click={handleStartFlip}>
-            <div class="font-medium sm:text-2xl text-lg py-4 px-5">
-              Flip Now 👑
-            </div>
-          </Button>
+      <div>
+        {#if startFlip && dataFlipCheck?.canPlay && linkedSuiWallet}
+          <div class="flex justify-center items-center gap-4">
+            <button
+              class="rounded-[12px] text-white bg-[#FFB800] w-full py-4 px-5 font-medium sm:text-2xl text-lg max-w-[140px]"
+              on:click={() => {
+                if (!isLoadingFlip) {
+                  triggerFlipResult(1);
+                }
+              }}
+              disabled={isLoadingFlip}
+            >
+              {#if isLoadingFlip}
+                ...
+              {:else}
+                Head
+              {/if}
+            </button>
+            <button
+              class="rounded-[12px] text-white bg-[#FFB800] w-full py-4 px-5 font-medium sm:text-2xl text-lg max-w-[140px]"
+              on:click={() => {
+                if (!isLoadingFlip) {
+                  triggerFlipResult(0);
+                }
+              }}
+              disabled={isLoadingFlip}
+            >
+              {#if isLoadingFlip}
+                ...
+              {:else}
+                Tail
+              {/if}
+            </button>
+          </div>
         {:else}
-          <div
-            use:tooltip={{
-              content: `<tooltip-detail text="Your flipping capacity has reached its limit! You can only flip 5 times a day." />`,
-              allowHTML: true,
-              placement: "top",
-            }}
-          >
-            <Button disabled>
-              <div class="font-medium sm:text-2xl text-lg py-4 px-5">
-                Flip Now 👑
+          <div class="w-max mx-auto">
+            {#if dataFlipCheck.canPlay}
+              <Button variant="tertiary" on:click={handleStartFlip}>
+                <div class="font-medium sm:text-2xl text-lg py-4 px-5">
+                  Flip Now 👑
+                </div>
+              </Button>
+            {:else}
+              <div
+                use:tooltip={{
+                  content: `<tooltip-detail text="Your flipping capacity has reached its limit! You can only flip 5 times a day." />`,
+                  allowHTML: true,
+                  placement: "top",
+                }}
+              >
+                <Button disabled>
+                  <div class="font-medium sm:text-2xl text-lg py-4 px-5">
+                    Flip Now 👑
+                  </div>
+                </Button>
               </div>
-            </Button>
+            {/if}
           </div>
         {/if}
       </div>
