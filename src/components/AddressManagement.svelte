@@ -235,7 +235,7 @@
       // localStorage.removeItem("evm_token");
       // localStorage.removeItem("sui_token");
       // localStorage.removeItem("ton_token");
-      user.update((n) => (n = {}));
+      // user.update((n) => (n = {}));
     },
     onSuccess(data) {
       if (
