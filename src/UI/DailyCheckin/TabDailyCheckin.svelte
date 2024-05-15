@@ -894,7 +894,7 @@
                               {quest?.title}
                             </div>
                             <div class="text-sm text-gray-500">
-                              {quest?.description}
+                              {@html quest?.description}
                             </div>
                           </div>
                           <div

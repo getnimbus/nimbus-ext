@@ -224,7 +224,6 @@
       queryClient?.invalidateQueries([$userPublicAddress, "rewards"]);
       selectedTicketReward = data;
       response?.error === undefined && triggerRedeemSuccess();
-      selectedType = "yourGift";
     } catch (error) {
       console.error(error);
       toastMsg = "Something went wrong while redeeming the ticket";
