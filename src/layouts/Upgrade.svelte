@@ -148,7 +148,7 @@
       </div>
     </div>
 
-    {#if selectedPackage && Object.keys(selectedPackage).length !== 0}
+    {#if selectedPackage && Object.keys(selectedPackage)?.length !== 0}
       <div class="flex flex-col justify-center min-h-[70vh]">
         <div class="flex flex-col items-center gap-1">
           <div class="flex flex-wrap items-center gap-1 text-lg">

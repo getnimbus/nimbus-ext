@@ -10,8 +10,8 @@
   import TabReports from "~/UI/Option/TabReports.svelte";
   import TabAlerts from "~/UI/Option/TabAlerts.svelte";
   import TabLinks from "~/UI/Option/TabLinks.svelte";
-  import TabSettings from "~/UI/Option/TabSettings.svelte";
-  import TabNft from "~/UI/Option/TabNFT.svelte";
+  // import TabSettings from "~/UI/Option/TabSettings.svelte";
+  // import TabNft from "~/UI/Option/TabNFT.svelte";
 
   import Logo from "~/assets/logo-1.svg";
   import LogoWhite from "~/assets/logo-white.svg";

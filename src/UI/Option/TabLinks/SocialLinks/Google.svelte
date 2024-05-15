@@ -59,8 +59,8 @@
     staleTime: Infinity,
     enabled:
       $user &&
-      Object.keys($user).length !== 0 &&
-      $userPublicAddress.length !== 0,
+      Object.keys($user)?.length !== 0 &&
+      $userPublicAddress?.length !== 0,
   });
 
   $: {
@@ -108,7 +108,7 @@
         displayName,
       };
 
-      if (data && Object.keys(data).length === 0) {
+      if (data && Object.keys(data)?.length === 0) {
         params = {
           ...params,
           userPublicAddress: $userPublicAddress,
@@ -201,7 +201,7 @@
   </div>
 
   <div class="flex flex-col gap-3">
-    {#if data && Object.keys(data).length !== 0}
+    {#if data && Object.keys(data)?.length !== 0}
       <div class="xl:text-base text-lg text-gray-400">{data?.info}</div>
       <div class="flex items-center justify-start gap-2">
         <input

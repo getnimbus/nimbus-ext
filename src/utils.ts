@@ -785,7 +785,7 @@ export const triggerFirework = () => {
   });
 };
 
-export const drivePortfolio = () =>
+export const drivePortfolio: any = () =>
   driver({
     showProgress: true,
     overlayColor: "#27326f",

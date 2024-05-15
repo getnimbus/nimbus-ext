@@ -72,20 +72,20 @@
     isSuccess = false;
   };
 
-  const handleDataReportToken = async () => {
-    const response = await nimbus.get("/holding-nft/trash?type=nft");
+  const handleDataReportNft = async () => {
+    const response: any = await nimbus.get("/holding-nft/trash?type=nft");
     return response.data;
   };
 
   $: query = createQuery({
     queryKey: ["nft-report"],
-    queryFn: () => handleDataReportToken(),
+    queryFn: () => handleDataReportNft(),
     staleTime: Infinity,
     retry: false,
-    enabled: $user && Object.keys($user).length !== 0,
+    enabled: $user && Object.keys($user)?.length !== 0,
   });
 
-  const handleDeleteReportToken = async () => {
+  const handleDeleteReportNft = async () => {
     isLoadingDelete = true;
     try {
       await nimbus.delete("/holding-nft/trash/revert", selectedItemDelete);
@@ -163,7 +163,7 @@
       </tbody>
     {:else}
       <tbody>
-        {#if ($query.data && $query.data.length === 0) || $query.isError}
+        {#if ($query.data && $query.data?.length === 0) || $query.isError}
           <tr>
             <td colspan="4">
               <div
@@ -253,7 +253,7 @@
     </div>
   {:else}
     <div class="flex flex-col">
-      {#if ($query.data && $query.data.length === 0) || $query.isError}
+      {#if ($query.data && $query.data?.length === 0) || $query.isError}
         <div
           class="flex items-center justify-center h-full px-3 py-4 text-base"
         >
@@ -347,7 +347,7 @@
           isLoading={isLoadingDelete}
           disabled={isLoadingDelete}
           variant="delete"
-          on:click={handleDeleteReportToken}
+          on:click={handleDeleteReportNft}
         >
           {MultipleLang.content.modal_delete}
         </Button>
