@@ -13,7 +13,7 @@ mixpanel.init("d56364b743cd70634fe5bea51e1d7e1c", {
 WebApp.ready();
 
 Sentry.init({
-  dsn: "https://eaa14b85aa9332aadeacfb759857a387@o4505729367801856.ingest.sentry.io/4505729426391040",
+  dsn: "https://o4505729367801856.ingest.us.sentry.io/4506455493246976",
   integrations: [new Sentry.BrowserTracing()],
   // debug: true,
   release: "v1.0.0", // TODO: Update version here

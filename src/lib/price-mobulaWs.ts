@@ -1,4 +1,3 @@
-import { wait } from "~/entries/background/utils";
 import { realtimePrice } from "~/store";
 
 type iFN = () => void;
@@ -112,7 +111,7 @@ export const handleFormatBlockChainId = (chain: string) => {
   }
 };
 
-export const priceMobulaSubscribe = async (
+export const priceMobulaSubscribe = (
   data: string[] | number[],
   chain: string
 ) => {
@@ -123,7 +122,6 @@ export const priceMobulaSubscribe = async (
     } else {
       if (!isMobulaReady) {
         console.log("Delay Mobula Subscribe");
-        await wait(1000); // Cooldown recurship 
         cbMobulaList.push(() => priceMobulaSubscribe(data, chain));
         return;
       }
