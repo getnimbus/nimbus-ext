@@ -589,7 +589,6 @@
           on:click={() => {
             handleUpdateNavActive("/analytic");
             queryClient?.invalidateQueries(["users-me"]);
-            console.log("HELLO WORLD: ", $wallet);
             if ($wallet) {
               navigateTo(
                 `/analytic?type=${$typeWallet}&chain=${$chain}&address=${$wallet}`
