@@ -63,14 +63,16 @@
     $isDarkMode ? "bg-[#212121]" : "bg-white"
   }`}
 >
-  <div class="px-[16px] flex items-center h-full gap-[47px]">
+  <div class="px-[16px] flex items-center h-full gap-[47px] gap-320-sx">
     <div
       class={`flex-[0.6] relative rounded-2xl p-2 flex items-center h-full justify-center ${
         $isDarkMode ? "" : "bg-white"
       }`}
     >
       <img src={data?.logo} alt="" class="w-20 h-20 object-contain" />
-      <div class="absolute -bottom-2 italic text-sm">
+      <div
+        class="absolute -bottom-2 w-full text-center whitespace-nowrap left-timee italic text-sm"
+      >
         {timeCountDown}
       </div>
     </div>
@@ -106,7 +108,9 @@
     </div>
 
     <div class="px-[16px]">
-      <div class="flex items-center gap-[100px]">
+      <div
+        class="flex items-center md:justify-start justify-between md:gap-[100px] gap-[40px]"
+      >
         <div class="w-[100px] text-base font-normal text-right">Unlimited</div>
         {#if checkTicketValidate() && totalPoint >= 1000}
           <Button
@@ -165,6 +169,11 @@
     .text-smxs {
       font-size: 14px;
       line-height: 20px;
+    }
+
+    .gap-320-sx {
+      grid-gap: 10px !important;
+      gap: 10px !important;
     }
   }
 </style>
