@@ -103,14 +103,6 @@
     queryFn: () => getListAddress(),
     staleTime: Infinity,
     enabled: $user && Object.keys($user).length !== 0,
-    onError(err) {
-      // localStorage.removeItem("auth_token");
-      // localStorage.removeItem("solana_token");
-      // localStorage.removeItem("sui_token");
-      // localStorage.removeItem("ton_token");
-      // localStorage.removeItem("evm_token");
-      // user.update((n) => (n = {}));
-    },
   });
 
   $: {
@@ -624,6 +616,7 @@
           on:click={() => {
             handleUpdateNavActive("/analytic");
             queryClient?.invalidateQueries(["users-me"]);
+            console.log("HELLO WORLD: ", $wallet);
             if ($wallet) {
               navigateTo(
                 `/analytic?type=${$typeWallet}&chain=${$chain}&address=${$wallet}`

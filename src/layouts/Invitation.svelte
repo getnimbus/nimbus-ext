@@ -46,18 +46,6 @@
     queryKey: ["referrals-invitation"],
     queryFn: () => getReferralInvitation(),
     staleTime: Infinity,
-    onError(err) {
-      // localStorage.removeItem("auth_token");
-      // localStorage.removeItem("solana_token");
-      // localStorage.removeItem("sui_token");
-      // localStorage.removeItem("ton_token");
-      // localStorage.removeItem("evm_token");
-      // user.update((n) => (n = {}));
-      // wallet.update((n) => (n = ""));
-      // chain.update((n) => (n = ""));
-      // typeWallet.update((n) => (n = ""));
-      // queryClient.invalidateQueries(["list-address"]);
-    },
   });
 
   $: {
