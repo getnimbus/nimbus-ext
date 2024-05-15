@@ -832,7 +832,9 @@
           </div>
         {/if}
 
-        <div class="flex flex-col gap-3 overflow-y-auto list-nav">
+        <div
+          class="flex flex-col gap-3 overflow-y-auto list-nav customScrollDiv"
+        >
           {#if $user && Object.keys($user).length !== 0}
             <div
               class={`flex items-center gap-3 text-white px-5 py-3 cursor-pointer
@@ -1565,6 +1567,15 @@
 </div>
 
 <style windi:preflights:global windi:safelist:global>
+  .customScrollDiv::-webkit-scrollbar {
+    width: 3px;
+    background: #27326f;
+  }
+
+  .customScrollDiv::-webkit-scrollbar-thumb {
+    background: gray;
+  }
+
   @media screen and (max-width: 500px) {
     .list-nav {
       height: 450px;
