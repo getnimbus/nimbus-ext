@@ -20,6 +20,7 @@
   import Image from "~/components/Image.svelte";
 
   import goldImg from "~/assets/Gold4.svg";
+  import MintNft from "../Recap/MintNFT.svelte";
 
   const dailyCheckinRewardsTypePortfolio = [
     {
