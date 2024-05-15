@@ -39,7 +39,7 @@ export const getVirtualPortfolioList = async (address: string) => {
   const response = await nimbus.get(
     `/address/${address}/personalize/virtual-portfolio`
   );
-  return response?.data;
+  return response;
 };
 
 export const getListAddress = async () => {

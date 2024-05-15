@@ -69,16 +69,16 @@
 
           listToken = listToken.map((item) => {
             const selectedToken = defaultData.coins.find(
-              (data) => data.coin === item.id
+              (data) => data.coinId === item.id
             );
             return {
               ...item,
-              percent: selectedToken ? selectedToken?.percent : 0,
+              percent: selectedToken !== undefined ? selectedToken.percent : 0,
             };
           });
 
           selectedTokenList = listToken.filter((item) => {
-            return defaultData.coins.some((data) => data.coin === item.id);
+            return defaultData.coins.some((data) => data.coinId === item.id);
           });
         }
       }

@@ -6,6 +6,8 @@
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
   import { getVirtualPortfolioList } from "~/lib/queryAPI";
+  import { Toast } from "flowbite-svelte";
+  import { blur } from "svelte/transition";
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import Button from "~/components/Button.svelte";
@@ -17,9 +19,27 @@
   import Plus from "~/assets/plus.svg";
 
   let listVirtualPortfolio = [];
-  let selectedVirtualPortfolio = {};
+  let selectedVirtualPortfolio: any = {};
 
   const queryClient = useQueryClient();
+
+  let toastMsg = "";
+  let isSuccessToast = false;
+  let counter = 5;
+  let showToast = false;
+
+  const trigger = () => {
+    showToast = true;
+    counter = 5;
+    timeout();
+  };
+
+  const timeout = () => {
+    if (--counter > 0) return setTimeout(timeout, 1000);
+    showToast = false;
+    toastMsg = "";
+    isSuccessToast = false;
+  };
 
   onMount(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -54,13 +74,14 @@
             coins: $queryAddressVirtualPortfolio?.data?.data[item]?.tokens?.map(
               (coin) => {
                 return {
-                  coin: Number(coin?.coinId),
+                  ...coin,
                   percent: Number(coin?.percent),
                 };
               }
             ),
           };
         });
+      selectedVirtualPortfolio = listVirtualPortfolio[0];
     }
   }
 
@@ -102,19 +123,58 @@
   let type = "";
   let isLoading = false;
 
-  const handleSubmit = (data: any) => {
+  const handleSubmit = async (data: any) => {
     try {
-      console.log("HELLO WORLD: ", data);
-
+      isLoading = true;
       if (type === "add") {
+        const responseAdd = await nimbus.post(
+          `/address/${$wallet}/personalize/virtual-portfolio`,
+          data
+        );
+        if (responseAdd && responseAdd?.error) {
+          toastMsg = `Something wrong when add ${data?.portfolioName} virtual portfolio. Please try again!`;
+          isSuccessToast = false;
+          trigger();
+          return;
+        }
+
+        toastMsg = `Successfully add ${data?.portfolioName} virtual portfolio`;
+        isSuccessToast = true;
+        trigger();
       }
       if (type === "edit") {
+        const responseEdit = await nimbus.put(
+          `/address/${$wallet}/personalize/virtual-portfolio?portfolioName=${data?.portfolioName}`,
+          data
+        );
+
+        if (responseEdit && responseEdit?.error) {
+          toastMsg = `Something wrong when edit ${data?.portfolioName} virtual portfolio. Please try again!`;
+          isSuccessToast = false;
+          trigger();
+          return;
+        }
+
+        toastMsg = `Successfully edit ${data?.portfolioName} virtual portfolio`;
+        isSuccessToast = true;
+        trigger();
       }
 
       queryClient.invalidateQueries(["list-virtual-portfolio-address"]);
-      type = "";
     } catch (e) {
       console.error(e);
+      if (type === "edit") {
+        toastMsg = `Something wrong when edit ${data?.portfolioName} virtual portfolio. Please try again!`;
+        isSuccessToast = false;
+        trigger();
+      } else {
+        toastMsg = `Something wrong when add ${data?.portfolioName} virtual portfolio. Please try again!`;
+        isSuccessToast = false;
+        trigger();
+      }
+    } finally {
+      isLoading = false;
+      type = "";
     }
   };
 
@@ -160,18 +220,18 @@
                 <div class="flex items-center gap-5">
                   {#if listVirtualPortfolio.length > 5}
                     <AnimateSharedLayout>
-                      {#each listVirtualPortfolio as item, index}
+                      {#each listVirtualPortfolio as item}
                         <div
-                          id={item.value}
+                          id={item.portfolioName}
                           class="relative xl:text-base text-2xl text-white py-1 px-2 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline"
-                          class:hover:no-underline={item.value ===
-                            selectedVirtualPortfolio?.value}
+                          class:hover:no-underline={item.portfolioName ===
+                            selectedVirtualPortfolio?.portfolioName}
                           on:click={() => {
-                            selectedVirtualPortfolio = {};
+                            selectedVirtualPortfolio = item;
                           }}
                         >
-                          {item.value}
-                          {#if item.value === selectedVirtualPortfolio?.value}
+                          {item.portfolioName}
+                          {#if item.portfolioName === selectedVirtualPortfolio?.portfolioName}
                             <Motion
                               let:motion
                               layoutId="active-pill"
@@ -310,16 +370,16 @@
                     <AnimateSharedLayout>
                       {#each listVirtualPortfolio as item}
                         <div
-                          id={item.value}
+                          id={item.portfolioName}
                           class="relative xl:text-base text-2xl text-white py-1 xl:pl-2 xl:pr-3 px-3 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline"
-                          class:hover:no-underline={item.value ===
-                            selectedVirtualPortfolio?.value}
+                          class:hover:no-underline={item.portfolioName ===
+                            selectedVirtualPortfolio?.portfolioName}
                           on:click={() => {
-                            selectedVirtualPortfolio = {};
+                            selectedVirtualPortfolio = item;
                           }}
                         >
-                          {item.value}
-                          {#if item.value === selectedVirtualPortfolio?.value}
+                          {item.portfolioName}
+                          {#if item.portfolioName === selectedVirtualPortfolio?.portfolioName}
                             <Motion
                               let:motion
                               layoutId="active-pill"
@@ -457,7 +517,7 @@
                   }
                 }}
               >
-                {#if $user && Object.keys($user).length === 0}
+                {#if $user && Object.keys($user).length === 0 && selectedVirtualPortfolio && Object.keys(selectedVirtualPortfolio).length === 0}
                   <Button variant="disabled" disabled>Edit</Button>
                 {:else}
                   <Button
@@ -473,7 +533,9 @@
                 {#if showDisableAdd}
                   <div
                     class={`xl:block hidden absolute transform left-1/2 -translate-x-1/2 ${
-                      Object.keys($user).length === 0 ? "-top-8" : "-top-12"
+                      $user && Object.keys($user).length === 0
+                        ? "-top-8"
+                        : "-top-12"
                     }`}
                     style="z-index: 2147483648;"
                   >
@@ -520,7 +582,9 @@
                 {#if showDisableAdd}
                   <div
                     class={`xl:block hidden absolute transform left-1/2 -translate-x-1/2 ${
-                      Object.keys($user).length === 0 ? "-top-8" : "-top-12"
+                      $user && Object.keys($user).length === 0
+                        ? "-top-8"
+                        : "-top-12"
                     }`}
                     style="z-index: 2147483648;"
                   >
@@ -568,6 +632,51 @@
     {/if}
   </div>
 </ErrorBoundary>
+
+{#if showToast}
+  <div class="fixed top-3 right-3 w-full" style="z-index: 2147483648;">
+    <Toast
+      transition={blur}
+      params={{ amount: 10 }}
+      position="top-right"
+      color={isSuccessToast ? "green" : "red"}
+      bind:open={showToast}
+    >
+      <svelte:fragment slot="icon">
+        {#if isSuccessToast}
+          <svg
+            aria-hidden="true"
+            class="w-5 h-5"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+            ><path
+              fill-rule="evenodd"
+              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+              clip-rule="evenodd"
+            /></svg
+          >
+          <span class="sr-only">Check icon</span>
+        {:else}
+          <svg
+            aria-hidden="true"
+            class="w-5 h-5"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+            ><path
+              fill-rule="evenodd"
+              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+              clip-rule="evenodd"
+            /></svg
+          >
+          <span class="sr-only">Error icon</span>
+        {/if}
+      </svelte:fragment>
+      {toastMsg}
+    </Toast>
+  </div>
+{/if}
 
 <style windi:preflights:global windi:safelist:global>
   .header-container {
