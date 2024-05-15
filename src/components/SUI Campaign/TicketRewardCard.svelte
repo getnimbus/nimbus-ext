@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { isDarkMode } from "~/store";
+  import { isDarkMode, user } from "~/store";
   import dayjs from "dayjs";
   import isBetween from "dayjs/plugin/isBetween";
   dayjs.extend(isBetween);
@@ -18,6 +18,8 @@
     const today = dayjs().format("YYYY-MM-DD");
     return dayjs(today).isBetween(data?.fromDate, data?.toDate, "day", "[)");
   };
+
+  let showDisabled = false;
 </script>
 
 <div
@@ -86,15 +88,37 @@
             <div class="text-white text-smxs">Redeem</div>
           </Button>
         {:else}
-          <Button disabled>
-            <div class="flex items-center gap-1">
-              <img src={goldImg} alt="" class="w-[28px] h-[28px]" />
-              <div class="text-white sm:text-lg text-smxs font-medium">
-                {data?.cost}
+          <div
+            class="relative"
+            on:mouseenter={() => {
+              showDisabled = true;
+            }}
+            on:mouseleave={() => {
+              showDisabled = false;
+            }}
+          >
+            <Button disabled>
+              <div class="flex items-center gap-1">
+                <img src={goldImg} alt="" class="w-[28px] h-[28px]" />
+                <div class="text-white sm:text-lg text-smxs font-medium">
+                  {data?.cost}
+                </div>
               </div>
-            </div>
-            <div class="text-white text-smxs">Redeem</div>
-          </Button>
+              <div class="text-white text-smxs">Redeem</div>
+            </Button>
+            {#if showDisabled}
+              <div
+                class="absolute transform left-1/2 -translate-x-1/2 -top-8"
+                style="z-index: 2147483648;"
+              >
+                <div
+                  class="max-w-[360px] text-white bg-black py-1 px-2 text-xs rounded relative w-max normal-case"
+                >
+                  You are not enough GM Points to Redeem
+                </div>
+              </div>
+            {/if}
+          </div>
         {/if}
       </div>
     </div>
