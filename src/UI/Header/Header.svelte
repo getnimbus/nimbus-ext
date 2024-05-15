@@ -519,7 +519,7 @@
         alt="logo"
         loading="lazy"
         decoding="async"
-        class="xl:-ml-10 -ml-4 w-[177px] h-[60px] cursor-pointer"
+        class="-ml-7 w-[177px] h-[60px] cursor-pointer"
         on:click={() => {
           handleUpdateNavActive("/portfolio");
           if ($user && Object.keys($user)?.length === 0) {
