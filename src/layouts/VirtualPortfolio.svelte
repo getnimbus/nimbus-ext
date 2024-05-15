@@ -9,6 +9,7 @@
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
 
+  import AppOverlay from "~/components/Overlay.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import Button from "~/components/Button.svelte";
   import Select from "~/components/Select.svelte";
@@ -195,7 +196,11 @@
     }
   };
 
+  let isOpenConfirmDelete = false;
+  let isLoadingDelete = false;
+
   const handleDeleteVirtualPortfolio = async () => {
+    isLoadingDelete = true;
     try {
       const response = await nimbus.delete(
         `/address/${$wallet}/personalize/virtual-portfolio?portfolioName=${selectedVirtualPortfolio?.portfolioName}`,
@@ -217,6 +222,8 @@
       toastMsg = `Something wrong when delete ${selectedVirtualPortfolio?.portfolioName} virtual portfolio. Please try again!`;
       isSuccessToast = false;
       trigger();
+    } finally {
+      isLoadingDelete = false;
     }
   };
 
@@ -565,7 +572,7 @@
                   <Button
                     variant="delete"
                     on:click={() => {
-                      handleDeleteVirtualPortfolio();
+                      isOpenConfirmDelete = true;
                     }}>Delete</Button
                   >
                 {/if}
@@ -762,6 +769,47 @@
     </Toast>
   </div>
 {/if}
+
+<!-- Modal confirm delete virtual portfolio -->
+<AppOverlay
+  clickOutSideToClose
+  isOpen={isOpenConfirmDelete}
+  on:close={() => (isOpenConfirmDelete = false)}
+>
+  <div class="flex flex-col gap-4 xl:mt-0 mt-4">
+    <div class="flex flex-col items-start gap-1">
+      <div class="font-semibold title-3">Are you sure?</div>
+      <div class="text-gray-500 text-sm">
+        Do you really want to delete this virtual portfolio? This process cannot
+        revert
+      </div>
+    </div>
+    <div class="flex justify-end gap-2">
+      <div class="w-[120px]">
+        <Button
+          variant="secondary"
+          on:click={() => {
+            isOpenConfirmDelete = false;
+          }}
+        >
+          Cancel
+        </Button>
+      </div>
+      <div class="w-[120px]">
+        <Button
+          variant="delete"
+          isLoading={isLoadingDelete}
+          disabled={isLoadingDelete}
+          on:click={() => {
+            handleDeleteVirtualPortfolio();
+          }}
+        >
+          Delete
+        </Button>
+      </div>
+    </div>
+  </div>
+</AppOverlay>
 
 <style windi:preflights:global windi:safelist:global>
   .header-container {
