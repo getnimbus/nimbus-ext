@@ -79,6 +79,8 @@
                 };
               }
             ),
+            updatedTime:
+              $queryAddressVirtualPortfolio?.data?.data[item]?.updatedTime,
           };
         });
 
@@ -481,18 +483,18 @@
                   bind:this={scrollContainer}
                   on:scroll={handleScroll}
                 >
-                  {#each listVirtualPortfolio as item, index}
+                  {#each listVirtualPortfolio as item}
                     <div
-                      id={item.value}
+                      id={item.portfolioName}
                       class={`w-max flex-shrink-0 relative text-xl text-white py-1 px-3 flex items-center gap-2 rounded-[100px] ${$user && Object.keys($user).length === 0 ? "opacity-50" : "opacity-100"}`}
-                      class:hover:no-underline={item.value ===
-                        selectedVirtualPortfolio?.value}
+                      class:hover:no-underline={item.portfolioName ===
+                        selectedVirtualPortfolio?.portfolioName}
                       on:click={() => {
-                        selectedVirtualPortfolio = {};
+                        selectedVirtualPortfolio = item;
                       }}
                     >
-                      {item.label}
-                      {#if item.value === selectedVirtualPortfolio?.value}
+                      {item.portfolioName}
+                      {#if item.portfolioName === selectedVirtualPortfolio?.portfolioName}
                         <Motion
                           let:motion
                           layoutId="active-pill"

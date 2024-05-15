@@ -65,7 +65,7 @@
         if (defaultData && Object.keys(defaultData).length !== 0) {
           virtualPortfolioName = defaultData.portfolioName;
 
-          time = defaultData.updatedTime;
+          time = dayjs(defaultData.updatedTime).toDate();
 
           listToken = listToken.map((item) => {
             const selectedToken = defaultData.coins.find(
@@ -165,17 +165,17 @@
       }`}
     >
       <div class="xl:text-base text-2xl font-medium">
-        {#if defaultData && Object.keys(defaultData).length !== 0}
+        {#if type === "edit"}
           Initial Time
         {:else}
           Update Time
         {/if}
       </div>
-      {#if defaultData && Object.keys(defaultData).length !== 0}
+      {#if type === "edit"}
         <DateInput
           value={time}
           format="yyyy-MM-dd"
-          min={defaultData.updatedTime}
+          min={dayjs(defaultData.updatedTime).toDate()}
           max={new Date()}
         />
       {:else}
@@ -555,10 +555,18 @@
     background: #212121;
   }
 
-  :root {
+  /* :root {
     --date-input-width: 100%;
     --date-picker-background: white;
     --date-picker-foreground: #5e656b;
+    --date-picker-selected-color: black;
+    --date-picker-highlight-border: transparent;
+  } */
+
+  :root {
+    --date-input-width: 100%;
+    --date-picker-background: #222222;
+    --date-picker-foreground: #fff;
     --date-picker-selected-color: black;
     --date-picker-highlight-border: transparent;
   }
