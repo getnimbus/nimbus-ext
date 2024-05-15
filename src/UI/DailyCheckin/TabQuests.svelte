@@ -162,7 +162,7 @@
         <div
           class="grid grid-cols-4-1900px lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-6 w-full"
         >
-          {#each partnersDataList.filter((item) => item.status === "ACTIVE" && item.id === "sui-unlock-flowx") as data}
+          {#each partnersDataList.filter((item) => item.status === "ACTIVE" || item.id === "sui-unlock-flowx") as data}
             <PartnerQuestCard {data} {handleUpdatePartnerQuestsId} />
           {/each}
         </div>
