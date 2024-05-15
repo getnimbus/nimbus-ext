@@ -121,12 +121,12 @@
       Object.keys($user).length !== 0 &&
       $userPublicAddress.length !== 0,
     onError(err) {
-      localStorage.removeItem("auth_token");
-      localStorage.removeItem("solana_token");
-      localStorage.removeItem("sui_token");
-      localStorage.removeItem("ton_token");
-      localStorage.removeItem("evm_token");
-      user.update((n) => (n = {}));
+      // localStorage.removeItem("auth_token");
+      // localStorage.removeItem("solana_token");
+      // localStorage.removeItem("sui_token");
+      // localStorage.removeItem("ton_token");
+      // localStorage.removeItem("evm_token");
+      // user.update((n) => (n = {}));
     },
   });
 
@@ -145,12 +145,12 @@
       Object.keys($user).length !== 0 &&
       $userPublicAddress.length !== 0,
     onError(err) {
-      localStorage.removeItem("auth_token");
-      localStorage.removeItem("solana_token");
-      localStorage.removeItem("sui_token");
-      localStorage.removeItem("ton_token");
-      localStorage.removeItem("evm_token");
-      user.update((n) => (n = {}));
+      // localStorage.removeItem("auth_token");
+      // localStorage.removeItem("solana_token");
+      // localStorage.removeItem("sui_token");
+      // localStorage.removeItem("ton_token");
+      // localStorage.removeItem("evm_token");
+      // user.update((n) => (n = {}));
     },
   });
 
