@@ -507,7 +507,7 @@
 
   <div class="flex items-center justify-end gap-6">
     <div
-      class="text-[#27326f] font-medium cursor-pointer"
+      class="font-medium cursor-pointer"
       on:click={() => {
         handleCancel();
       }}
