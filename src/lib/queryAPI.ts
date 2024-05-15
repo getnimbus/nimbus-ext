@@ -26,7 +26,13 @@ export const getLinkData = async () => {
 };
 
 export const handleValidateAddress = async (address: string) => {
-  const response: any = await nimbus.get(`/v2/address/${address}/validate`);
+  const response: any = await nimbus.get(`/v2/address/${address}/validate`).catch((e) => {
+    console.error(e)
+    return {
+      address: "",
+      type: "",
+    }
+  });
   return (
     response?.data || {
       address: "",
