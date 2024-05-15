@@ -188,14 +188,14 @@
 
   <div class="flex xl:flex-row flex-col justify-between gap-6">
     <div
-      class={`flex-1 flex flex-col gap-4 input-2 p-4 relative border border_0000001a ${
+      class={`flex-1 w-full flex flex-col gap-4 input-2 p-4 relative border border_0000001a ${
         $isDarkMode ? "bg-[#222222]" : "bg-[#fff]"
       }`}
     >
       <div class="flex md:flex-row flex-col justify-between md:items-end gap-4">
-        <div class="flex flex-col">
+        <div class="flex flex-col gap-1">
           <div class="xl:text-xl text-2xl font-medium">1. Choose coins</div>
-          <div class="xl:text-base text-lg font-normal text-gray-500">
+          <div class="text-base font-normal text-gray-500">
             Choose one or more to start
           </div>
         </div>
@@ -206,7 +206,7 @@
           }}
           placeholder={"Find by token name"}
           type="text"
-          class={`py-1 px-[6px] rounded-[3px] focus:outline-none focus:ring-0 xl:text-base text-lg font-normal ${
+          class={`py-1 px-[6px] rounded-[3px] focus:outline-none focus:ring-0 text-base font-normal ${
             virtualPortfolioName && !$isDarkMode
               ? "bg-[#F0F2F7]"
               : "bg-transparent"
@@ -336,14 +336,14 @@
     </div>
 
     <div
-      class={`flex-1 flex flex-col gap-4 input-2 p-4 relative border border_0000001a ${
+      class={`flex-1 w-full flex flex-col gap-4 input-2 p-4 relative border border_0000001a ${
         $isDarkMode ? "bg-[#222222]" : "bg-[#fff]"
       }`}
     >
       <div class="flex justify-between items-end">
-        <div class="flex flex-col">
+        <div class="flex flex-col gap-1">
           <div class="xl:text-xl text-2xl font-medium">2. Coin Allocation</div>
-          <div class="xl:text-base text-lg font-normal text-gray-500">
+          <div class="text-base font-normal text-gray-500">
             Remaining: <span
               class={`${remaining === 100 ? "text-gray-500" : "text-red-500"}`}
               >{remaining}%</span
@@ -352,7 +352,7 @@
         </div>
         {#if selectedTokenList && selectedTokenList.length !== 0}
           <div
-            class="xl:text-base text-lg text-red-500 cursor-pointer"
+            class="text-base text-red-500 cursor-pointer"
             on:click={() => {
               selectedTokenList = [];
               remaining = 0;
@@ -505,16 +505,14 @@
     </div>
   </div>
 
-  <div class="flex justify-end gap-4">
-    <div class="md:w-[120px] w-full">
-      <Button
-        variant="no-outlined"
-        on:click={() => {
-          handleCancel();
-        }}
-      >
-        Cancel
-      </Button>
+  <div class="flex items-center justify-end gap-6">
+    <div
+      class="text-[#27326f] font-medium cursor-pointer"
+      on:click={() => {
+        handleCancel();
+      }}
+    >
+      Cancel
     </div>
     <div class="md:w-[120px] w-full">
       {#if remaining !== 100 || virtualPortfolioName.length === 0}
