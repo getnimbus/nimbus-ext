@@ -304,6 +304,7 @@
                     data={item}
                     {handleRedeemTicket}
                     {isLoadingRedeem}
+                    {totalPoint}
                   />
                 {/each}
               {/if}
