@@ -269,13 +269,15 @@
     }
   }
 
-  $: defaultDataCheckinHistory = dataCheckinHistory.map((item) => {
-    return {
-      ...item,
-      type: nameTypeCheckin(item.type),
-      point: item.point,
-    };
-  });
+  $: defaultDataCheckinHistory = dataCheckinHistory
+    .filter((item) => item.type !== "QUEST_VERIFIED")
+    .map((item) => {
+      return {
+        ...item,
+        type: nameTypeCheckin(item.type),
+        point: item.point,
+      };
+    });
 
   const toggleSortType = () => {
     switch (sortTypeHistory) {

@@ -248,7 +248,7 @@
               }`}
             >
               <div
-                class={`text-left text-base font-medium ${$isDarkMode ? "text-white" : "text-black"}`}
+                class={`text-left text-base font-medium ${data.type === "ONCHAIN" ? "text-[#ffb800]" : ""}`}
               >
                 {data?.title}
               </div>
@@ -377,7 +377,9 @@
         <div class="flex flex-col gap-1 justify-between items-start">
           <div class="text-right text-sm uppercase font-medium">Task</div>
           <div class="flex flex-col gap-1 items-start justify-end font-medium">
-            <div class="text-base text_00000099">
+            <div
+              class={`text-base ${data.type === "ONCHAIN" ? "text-[#ffb800]" : ""}`}
+            >
               {data?.title}
             </div>
             <div class="text-left text-sm">
