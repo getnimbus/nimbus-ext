@@ -81,7 +81,7 @@
   }
 
   $: {
-    if ($userPublicAddress && Object.keys($userPublicAddress).length !== 0) {
+    if ($userPublicAddress && Object.keys($userPublicAddress)?.length !== 0) {
       handleCheckChain($userPublicAddress);
     }
   }
@@ -170,7 +170,7 @@
           {/if}
         {/each}
 
-        {#if data && data.length === 0}
+        {#if data && data?.length === 0}
           <Google
             data={{}}
             {selectedDisplayName}
@@ -193,7 +193,7 @@
           />
         {/if}
 
-        {#if dataSocials && dataSocials.length === 1 && dataSocials.find((item) => item.type === "google")}
+        {#if dataSocials && dataSocials?.length === 1 && dataSocials.find((item) => item.type === "google")}
           <Discord
             data={{}}
             {selectedDisplayName}
@@ -211,7 +211,7 @@
           />
         {/if}
 
-        {#if dataSocials && dataSocials.length === 1 && dataSocials.find((item) => item.type === "discord")}
+        {#if dataSocials && dataSocials?.length === 1 && dataSocials.find((item) => item.type === "discord")}
           <Google
             data={{}}
             {selectedDisplayName}
@@ -229,7 +229,7 @@
           />
         {/if}
 
-        {#if dataSocials && dataSocials.length === 1 && dataSocials.find((item) => item.type === "twitter")}
+        {#if dataSocials && dataSocials?.length === 1 && dataSocials.find((item) => item.type === "twitter")}
           <Google
             data={{}}
             {selectedDisplayName}
@@ -247,7 +247,7 @@
           />
         {/if}
 
-        {#if dataSocials && dataSocials.length === 1 && dataSocials.find((item) => item.type === "telegram")}
+        {#if dataSocials && dataSocials?.length === 1 && dataSocials.find((item) => item.type === "telegram")}
           <Google
             data={{}}
             {selectedDisplayName}
@@ -265,7 +265,7 @@
           /> -->
         {/if}
 
-        {#if dataSocials && dataSocials.length === 2 && dataSocials.find((item) => item.type === "discord") && dataSocials.find((item) => item.type === "google")}
+        {#if dataSocials && dataSocials?.length === 2 && dataSocials.find((item) => item.type === "discord") && dataSocials.find((item) => item.type === "google")}
           <!-- <Twitter
             data={{}}
             {selectedDisplayName}
@@ -278,7 +278,7 @@
           />
         {/if}
 
-        {#if dataSocials && dataSocials.length === 2 && dataSocials.find((item) => item.type === "discord") && dataSocials.find((item) => item.type === "twitter")}
+        {#if dataSocials && dataSocials?.length === 2 && dataSocials.find((item) => item.type === "discord") && dataSocials.find((item) => item.type === "twitter")}
           <Google
             data={{}}
             {selectedDisplayName}
@@ -291,7 +291,7 @@
           />
         {/if}
 
-        {#if dataSocials && dataSocials.length === 2 && dataSocials.find((item) => item.type === "discord") && dataSocials.find((item) => item.type === "telegram")}
+        {#if dataSocials && dataSocials?.length === 2 && dataSocials.find((item) => item.type === "discord") && dataSocials.find((item) => item.type === "telegram")}
           <Google
             data={{}}
             {selectedDisplayName}
@@ -304,7 +304,7 @@
           /> -->
         {/if}
 
-        {#if dataSocials && dataSocials.length === 2 && dataSocials.find((item) => item.type === "google") && dataSocials.find((item) => item.type === "twitter")}
+        {#if dataSocials && dataSocials?.length === 2 && dataSocials.find((item) => item.type === "google") && dataSocials.find((item) => item.type === "twitter")}
           <Discord
             data={{}}
             {selectedDisplayName}
@@ -317,7 +317,7 @@
           />
         {/if}
 
-        {#if dataSocials && dataSocials.length === 2 && dataSocials.find((item) => item.type === "google") && dataSocials.find((item) => item.type === "telegram")}
+        {#if dataSocials && dataSocials?.length === 2 && dataSocials.find((item) => item.type === "google") && dataSocials.find((item) => item.type === "telegram")}
           <Discord
             data={{}}
             {selectedDisplayName}
@@ -330,7 +330,7 @@
           /> -->
         {/if}
 
-        {#if dataSocials && dataSocials.length === 2 && dataSocials.find((item) => item.type === "twitter") && dataSocials.find((item) => item.type === "telegram")}
+        {#if dataSocials && dataSocials?.length === 2 && dataSocials.find((item) => item.type === "twitter") && dataSocials.find((item) => item.type === "telegram")}
           <Google
             data={{}}
             {selectedDisplayName}
@@ -343,7 +343,7 @@
           />
         {/if}
 
-        {#if dataSocials && dataSocials.length === 3 && dataSocials.find((item) => item.type === "discord") && dataSocials.find((item) => item.type === "twitter") && dataSocials.find((item) => item.type === "telegram")}
+        {#if dataSocials && dataSocials?.length === 3 && dataSocials.find((item) => item.type === "discord") && dataSocials.find((item) => item.type === "twitter") && dataSocials.find((item) => item.type === "telegram")}
           <Google
             data={{}}
             {selectedDisplayName}
@@ -351,7 +351,7 @@
           />
         {/if}
 
-        {#if dataSocials && dataSocials.length === 3 && dataSocials.find((item) => item.type === "google") && dataSocials.find((item) => item.type === "twitter") && dataSocials.find((item) => item.type === "telegram")}
+        {#if dataSocials && dataSocials?.length === 3 && dataSocials.find((item) => item.type === "google") && dataSocials.find((item) => item.type === "twitter") && dataSocials.find((item) => item.type === "telegram")}
           <Discord
             data={{}}
             {selectedDisplayName}
@@ -359,7 +359,7 @@
           />
         {/if}
 
-        {#if dataSocials && dataSocials.length === 3 && dataSocials.find((item) => item.type === "discord") && dataSocials.find((item) => item.type === "google") && dataSocials.find((item) => item.type === "telegram")}
+        {#if dataSocials && dataSocials?.length === 3 && dataSocials.find((item) => item.type === "discord") && dataSocials.find((item) => item.type === "google") && dataSocials.find((item) => item.type === "telegram")}
           <!-- <Twitter
             data={{}}
             {selectedDisplayName}
@@ -367,7 +367,7 @@
           /> -->
         {/if}
 
-        {#if dataSocials && dataSocials.length === 3 && dataSocials.find((item) => item.type === "discord") && dataSocials.find((item) => item.type === "google") && dataSocials.find((item) => item.type === "twitter")}
+        {#if dataSocials && dataSocials?.length === 3 && dataSocials.find((item) => item.type === "discord") && dataSocials.find((item) => item.type === "google") && dataSocials.find((item) => item.type === "twitter")}
           <Telegram
             data={{}}
             {selectedDisplayName}

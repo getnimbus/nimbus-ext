@@ -81,7 +81,7 @@
   };
 
   const handleDataReportToken = async () => {
-    const response = await nimbus.get("/holding/trash?type=token");
+    const response: any = await nimbus.get("/holding/trash?type=token");
     return response.data;
   };
 
@@ -90,7 +90,7 @@
     queryFn: () => handleDataReportToken(),
     staleTime: Infinity,
     retry: false,
-    enabled: $user && Object.keys($user).length !== 0,
+    enabled: $user && Object.keys($user)?.length !== 0,
   });
 
   const handleDeleteReportToken = async () => {
@@ -171,7 +171,7 @@
       </tbody>
     {:else}
       <tbody>
-        {#if ($query.data && $query.data.length === 0) || $query.isError}
+        {#if ($query.data && $query.data?.length === 0) || $query.isError}
           <tr>
             <td colspan="4">
               <div
@@ -210,11 +210,11 @@
                       {#if item.contractName === undefined}
                         N/A
                       {:else}
-                        {item.contractName.length > 20
+                        {item.contractName?.length > 20
                           ? shorterName(item.contractName, 20)
                           : item.contractName}
                       {/if}
-                      {#if isShowTooltipName && selectedItemIndex === index && item.contractName.length > 20}
+                      {#if isShowTooltipName && selectedItemIndex === index && item.contractName?.length > 20}
                         <div
                           class="absolute left-0 -top-8"
                           style="z-index: 2147483648;"
@@ -239,7 +239,7 @@
                       {:else}
                         {shorterName(item.contractTickerSymbol, 20)}
                       {/if}
-                      {#if isShowTooltipSymbol && selectedItemIndex === index && item.contractTickerSymbol.length > 20}
+                      {#if isShowTooltipSymbol && selectedItemIndex === index && item.contractTickerSymbol?.length > 20}
                         <div
                           class="absolute left-0 -top-8"
                           style="z-index: 2147483648;"
@@ -317,7 +317,7 @@
     </div>
   {:else}
     <div class="flex flex-col">
-      {#if ($query.data && $query.data.length === 0) || $query.isError}
+      {#if ($query.data && $query.data?.length === 0) || $query.isError}
         <div
           class="flex items-center justify-center h-full px-3 py-4 text-base"
         >
@@ -349,11 +349,11 @@
                       {#if item.contractName === undefined}
                         N/A
                       {:else}
-                        {item.contractName.length > 20
+                        {item.contractName?.length > 20
                           ? shorterName(item.contractName, 20)
                           : item.contractName}
                       {/if}
-                      {#if isShowTooltipName && selectedItemIndex === index && item.contractName.length > 20}
+                      {#if isShowTooltipName && selectedItemIndex === index && item.contractName?.length > 20}
                         <div
                           class="absolute left-0 -top-8"
                           style="z-index: 2147483648;"
@@ -378,7 +378,7 @@
                       {:else}
                         {shorterName(item.contractTickerSymbol, 20)}
                       {/if}
-                      {#if isShowTooltipSymbol && selectedItemIndex === index && item.contractTickerSymbol.length > 20}
+                      {#if isShowTooltipSymbol && selectedItemIndex === index && item.contractTickerSymbol?.length > 20}
                         <div
                           class="absolute left-0 -top-8"
                           style="z-index: 2147483648;"
