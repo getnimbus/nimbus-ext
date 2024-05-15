@@ -89,7 +89,7 @@
   ];
 
   let show = false;
-  let counter = 3;
+  let counter = 5;
   let toastMsg = "";
   let isSuccess = false;
 
@@ -124,7 +124,7 @@
 
   const trigger = () => {
     show = true;
-    counter = 3;
+    counter = 5;
     timeout();
   };
 
