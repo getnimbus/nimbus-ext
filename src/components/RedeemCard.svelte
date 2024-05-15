@@ -12,6 +12,8 @@
   import goldImg from "~/assets/Gold4.svg";
 
   import Crown from "~/assets/crown.svg";
+
+  $: console.log(": sada", redeemData);
 </script>
 
 <div
@@ -104,7 +106,15 @@
           class="flex items-center justify-between p-[12px] bg-[#EEEEEE] rounded-[12px]"
         >
           <div class="text-[#131313] text-sm">Your gift code</div>
-          {#if redeemData?.code}
+          {#if redeemData?.campaignName === "sui-unlock"}
+            <Copy
+              address={redeemData?.id || "N/A"}
+              iconColor="#000"
+              iconSize={20}
+              color="#000"
+              isShorten
+            />
+          {:else if redeemData?.code}
             <Copy
               address={redeemData?.code || "N/A"}
               iconColor="#000"
