@@ -403,13 +403,13 @@
       </div>
     </div>
 
-    {#if $queryHoldingToken.isFetching && $queryListToken.isFetching}
+    {#if $queryHoldingToken.isFetching || $queryListToken.isFetching}
       <div class="flex items-center justify-center h-[465px]">
         <LoadingPremium />
       </div>
     {:else}
       <div>
-        {#if $queryHoldingToken.isError}
+        {#if listToken && listToken?.length === 0 && dataTokenHolding && dataTokenHolding?.length === 0}
           <div
             class="flex justify-center items-center p-[6px] text-lg text-gray-400"
           >
