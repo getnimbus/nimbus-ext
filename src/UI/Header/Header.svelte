@@ -103,14 +103,6 @@
     queryFn: () => getListAddress(),
     staleTime: Infinity,
     enabled: $user && Object.keys($user).length !== 0,
-    onError(err) {
-      // localStorage.removeItem("auth_token");
-      // localStorage.removeItem("solana_token");
-      // localStorage.removeItem("sui_token");
-      // localStorage.removeItem("ton_token");
-      // localStorage.removeItem("evm_token");
-      // user.update((n) => (n = {}));
-    },
   });
 
   $: {
@@ -597,6 +589,7 @@
           on:click={() => {
             handleUpdateNavActive("/analytic");
             queryClient?.invalidateQueries(["users-me"]);
+            console.log("HELLO WORLD: ", $wallet);
             if ($wallet) {
               navigateTo(
                 `/analytic?type=${$typeWallet}&chain=${$chain}&address=${$wallet}`
@@ -825,7 +818,9 @@
           </div>
         {/if}
 
-        <div class="flex flex-col gap-3 overflow-y-auto list-nav">
+        <div
+          class="flex flex-col gap-3 overflow-y-auto list-nav customScrollDiv"
+        >
           {#if $user && Object.keys($user).length !== 0}
             <div
               class={`flex items-center gap-3 text-white px-5 py-3 cursor-pointer
@@ -1098,7 +1093,7 @@
           </div>
         </div>
 
-        <div class="w-full flex justify-center gap-10 text-white">
+        <div class="w-full flex justify-center gap-10 text-white hide-social">
           <a
             href="https://github.com/getnimbus"
             target="_blank"
@@ -1558,15 +1553,33 @@
 </div>
 
 <style windi:preflights:global windi:safelist:global>
-  @media screen and (max-width: 500px) {
-    .list-nav {
-      height: 450px;
-    }
+  .customScrollDiv::-webkit-scrollbar {
+    width: 3px;
+    background: #27326f;
   }
 
-  @media screen and (max-width: 400px) {
+  .customScrollDiv::-webkit-scrollbar-thumb {
+    background: gray;
+  }
+
+  @media screen and (max-width: 500px) {
+    @media screen and (max-height: 670px) {
+      .list-nav {
+        height: 35vh !important;
+      }
+      .hide-social {
+        display: none !important;
+      }
+      /* hide social */
+    }
+    /* @media screen and (max-height: 470px) {
+      .list-nav {
+        height: 40vh;
+      }
+    } */
+
     .list-nav {
-      height: 250px;
+      height: 50vh;
     }
   }
 
