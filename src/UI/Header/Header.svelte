@@ -819,7 +819,7 @@
     </div>
 
     <div class="flex flex-col gap-4 justify-between h-full">
-      <div class="flex flex-col h-full border border-red-500 gap-4">
+      <div class="flex flex-col gap-4">
         {#if $user && Object.keys($user).length !== 0}
           <div class="flex justify-between items-center px-4 text-white">
             <div class="text-xl">
@@ -833,7 +833,7 @@
         {/if}
 
         <div
-          class="flex flex-col gap-3 overflow-y-auto list-nav customScrollDiv border border-green-500"
+          class="flex flex-col gap-3 overflow-y-auto list-nav customScrollDiv"
         >
           {#if $user && Object.keys($user).length !== 0}
             <div
@@ -1107,7 +1107,7 @@
           </div>
         </div>
 
-        <div class="w-full flex justify-center gap-10 text-white">
+        <div class="w-full flex justify-center gap-10 text-white hide-social">
           <a
             href="https://github.com/getnimbus"
             target="_blank"
@@ -1577,14 +1577,23 @@
   }
 
   @media screen and (max-width: 500px) {
-    .list-nav {
-      height: 100%;
+    @media screen and (max-height: 670px) {
+      .list-nav {
+        height: 35vh !important;
+      }
+      .hide-social {
+        display: none !important;
+      }
+      /* hide social */
     }
-  }
+    /* @media screen and (max-height: 470px) {
+      .list-nav {
+        height: 40vh;
+      }
+    } */
 
-  @media screen and (max-width: 400px) {
     .list-nav {
-      height: 100%;
+      height: 50vh;
     }
   }
 
