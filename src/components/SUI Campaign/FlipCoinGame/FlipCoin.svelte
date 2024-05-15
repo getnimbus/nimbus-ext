@@ -61,13 +61,13 @@
 
   let toastMsg = "";
   let isSuccessToast = false;
-  let counter = 3;
+  let counter = 5;
   let showToast = false;
   let isLoadingFlip = false;
 
   const trigger = () => {
     showToast = true;
-    counter = 3;
+    counter = 5;
     timeout();
   };
 

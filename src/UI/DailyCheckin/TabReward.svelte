@@ -40,7 +40,7 @@
 
   let toastMsg = "";
   let isSuccessToast = false;
-  let counter = 3;
+  let counter = 5;
   let showToast = false;
   let openScreenTicketCardSuccess = false;
 
@@ -79,7 +79,7 @@
 
   const trigger = () => {
     showToast = true;
-    counter = 3;
+    counter = 5;
     timeout();
   };
 
@@ -221,9 +221,9 @@
       }
 
       queryClient?.invalidateQueries(["daily-checkin"]);
-      queryClient?.invalidateQueries(["rewards"]);
+      queryClient?.invalidateQueries([$userPublicAddress, "rewards"]);
       selectedTicketReward = data;
-      triggerRedeemSuccess();
+      response?.error === undefined && triggerRedeemSuccess();
       selectedType = "yourGift";
     } catch (error) {
       console.error(error);

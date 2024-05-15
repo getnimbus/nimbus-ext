@@ -31,7 +31,13 @@
     <div class="flex-1 flex flex-col gap-2">
       <div class="flex items-center gap-2">
         <img src={Crown} alt="" class="w-[26px] h-[26px]" />
-        <div class="text-[#FFB800] text-lg font-medium uppercase">Premium</div>
+        <div class="text-[#FFB800] text-lg font-medium uppercase">
+          {#if redeemData?.campaignName === "sui-unlock"}
+            NIMBUS ON SUI
+          {:else}
+            Premium
+          {/if}
+        </div>
       </div>
       <div class="lg:text-4xl text-3xl font-normal">
         {redeemData?.title}
@@ -98,7 +104,15 @@
           class="flex items-center justify-between p-[12px] bg-[#EEEEEE] rounded-[12px]"
         >
           <div class="text-[#131313] text-sm">Your gift code</div>
-          {#if redeemData?.code}
+          {#if redeemData?.campaignName === "sui-unlock"}
+            <Copy
+              address={redeemData?.id || "N/A"}
+              iconColor="#000"
+              iconSize={20}
+              color="#000"
+              isShorten
+            />
+          {:else if redeemData?.code}
             <Copy
               address={redeemData?.code || "N/A"}
               iconColor="#000"

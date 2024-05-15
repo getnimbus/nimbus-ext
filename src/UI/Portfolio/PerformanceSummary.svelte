@@ -19,7 +19,7 @@
   let toastMsg = "";
   let isSuccessToast = false;
   let showToast = false;
-  let counter = 3;
+  let counter = 5;
 
   const timeout = () => {
     if (--counter > 0) return setTimeout(timeout, 1000);
@@ -30,7 +30,7 @@
 
   const trigger = () => {
     showToast = true;
-    counter = 3;
+    counter = 5;
     timeout();
   };
 

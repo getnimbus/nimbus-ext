@@ -124,7 +124,7 @@
 
   let toastMsg = "";
   let isSuccessToast: boolean = false;
-  let counter = 3;
+  let counter = 5;
   let showToast: boolean = false;
 
   let isDisabledRedeem: boolean = false;
@@ -133,7 +133,7 @@
 
   const trigger = () => {
     showToast = true;
-    counter = 3;
+    counter = 5;
     timeout();
   };
 
