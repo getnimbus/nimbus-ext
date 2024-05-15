@@ -7,6 +7,7 @@
   export let data;
   export let handleRedeemTicket = (value) => {};
   export let isLoadingRedeem;
+  export let totalPoint;
 
   import Button from "~/components/Button.svelte";
 
@@ -66,17 +67,7 @@
     <div class="px-[16px]">
       <div class="flex items-center gap-[40px]">
         <div class="w-[100px] text-base font-normal text-right">Unlimited</div>
-        {#if !checkTicketValidate()}
-          <Button disabled>
-            <div class="flex items-center gap-1">
-              <img src={goldImg} alt="" class="w-[28px] h-[28px]" />
-              <div class="text-white sm:text-lg text-smxs font-medium">
-                {data?.cost}
-              </div>
-            </div>
-            <div class="text-white text-smxs">Redeem</div>
-          </Button>
-        {:else}
+        {#if checkTicketValidate() && totalPoint >= 1000}
           <Button
             variant="tertiary"
             on:click={() => {
@@ -86,6 +77,16 @@
             }}
             disabled={isLoadingRedeem}
           >
+            <div class="flex items-center gap-1">
+              <img src={goldImg} alt="" class="w-[28px] h-[28px]" />
+              <div class="text-white sm:text-lg text-smxs font-medium">
+                {data?.cost}
+              </div>
+            </div>
+            <div class="text-white text-smxs">Redeem</div>
+          </Button>
+        {:else}
+          <Button disabled>
             <div class="flex items-center gap-1">
               <img src={goldImg} alt="" class="w-[28px] h-[28px]" />
               <div class="text-white sm:text-lg text-smxs font-medium">
