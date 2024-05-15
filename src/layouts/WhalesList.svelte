@@ -6,8 +6,9 @@
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { navigateTo } from "svelte-router-spa";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
-  import { isDarkMode, selectedPackage } from "~/store";
+  import { isDarkMode, selectedPackage, wallet, user } from "~/store";
   import { filterDuplicates } from "~/utils";
+  import * as browser from "webextension-polyfill";
 
   import Loading from "~/components/Loading.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
@@ -15,6 +16,8 @@
   import PublicPortfolioMobileItem from "~/UI/WhalesList/PublicPortfolioMobileItem.svelte";
   import Button from "~/components/Button.svelte";
   import Tooltip from "~/components/Tooltip.svelte";
+  import { detectedGeneration } from "~/lib/chains";
+  import { getListAddress } from "~/lib/queryAPI";
 
   const MultipleLang = {
     whale: i18n("newtabPage.whale", "Whale 🐳"),
@@ -82,9 +85,71 @@
     staleTime: Infinity,
   });
 
+  let listAddress = [];
+
   onMount(() => {
     mixpanel.track("market_page");
+    handleSetWallet();
   });
+
+  $: query = createQuery({
+    queryKey: ["list-address"],
+    queryFn: () => getListAddress(),
+    staleTime: Infinity,
+    retry: false,
+    enabled: $user && Object.keys($user).length !== 0,
+  });
+
+  $: {
+    if (
+      !$query.isError &&
+      $query.data !== undefined &&
+      $query.data.length !== 0
+    ) {
+      formatDataListAddress($query.data);
+    }
+  }
+
+  const formatDataListAddress = async (data) => {
+    const structWalletData = data.map((item) => {
+      return {
+        id: item.id,
+        type: item.type,
+        label: item.label,
+        value: item.type === "CEX" ? item.id : item.accountId,
+        logo: item.type === "CEX" ? item.logo : detectedGeneration(item.type),
+        accounts:
+          item?.accounts?.map((account) => {
+            return {
+              id: account?.id,
+              type: account?.type,
+              label: account?.label,
+              value: account?.type === "CEX" ? account?.id : account?.accountId,
+              logo:
+                account?.type === "CEX"
+                  ? account?.logo
+                  : detectedGeneration(account?.type),
+            };
+          }) || [],
+      };
+    });
+
+    listAddress = structWalletData;
+  };
+
+  const handleSetWallet = async () => {
+    const selectedWalletRes = await browser.storage.sync.get("selectedWallet");
+    if (selectedWalletRes?.selectedWallet !== null) {
+      wallet.update((n) => (n = selectedWalletRes.selectedWallet));
+    } else {
+      wallet.update(
+        (n) =>
+          (n =
+            listAddress.find((item) => item.label === "Your wallets")?.value ||
+            listAddress[0]?.value)
+      );
+    }
+  };
 
   const toggleSortWhalesList = (key, sortType) => {
     let sortingType = "default";
