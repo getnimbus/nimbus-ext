@@ -2,13 +2,13 @@
   import { onMount } from "svelte";
   import * as browser from "webextension-polyfill";
   import { i18n } from "~/lib/i18n";
-  import { isDarkMode } from "~/store";
+  import { isDarkMode, wallet, user } from "~/store";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
   import { nimbus } from "~/lib/network";
   import mixpanel from "mixpanel-browser";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
-  import { getUserInfo } from "~/lib/queryAPI";
+  import { getListAddress, getUserInfo } from "~/lib/queryAPI";
 
   import Icon from "~/UI/Option/Icon.svelte";
   import TabQuests from "~/UI/DailyCheckin/TabQuests.svelte";
@@ -23,6 +23,7 @@
 
   import goldImg from "~/assets/Gold4.svg";
   import wheelIcon from "~/assets/wheel-icon.svg";
+  import { detectedGeneration } from "~/lib/chains";
 
   export let currentRoute;
 
@@ -90,6 +91,60 @@
     });
   }
 
+  let listAddress = [];
+
+  $: query = createQuery({
+    queryKey: ["list-address"],
+    queryFn: () => getListAddress(),
+    staleTime: Infinity,
+    retry: false,
+    enabled: $user && Object.keys($user).length !== 0,
+  });
+
+  $: {
+    if (
+      !$query.isError &&
+      $query.data !== undefined &&
+      $query.data.length !== 0
+    ) {
+      formatDataListAddress($query.data);
+    }
+  }
+
+  const formatDataListAddress = async (data) => {
+    const structWalletData = data.map((item) => {
+      return {
+        id: item.id,
+        type: item.type,
+        label: item.label,
+        value: item.type === "CEX" ? item.id : item.accountId,
+        logo: item.type === "CEX" ? item.logo : detectedGeneration(item.type),
+        accounts:
+          item?.accounts?.map((account) => {
+            return {
+              id: account?.id,
+              type: account?.type,
+              label: account?.label,
+              value: account?.type === "CEX" ? account?.id : account?.accountId,
+              logo:
+                account?.type === "CEX"
+                  ? account?.logo
+                  : detectedGeneration(account?.type),
+            };
+          }) || [],
+      };
+    });
+
+    listAddress = structWalletData;
+  };
+
+  const handleSetWallet = async () => {
+    const selectedWalletRes = await browser.storage.sync.get("selectedWallet");
+    if (selectedWalletRes?.selectedWallet !== null) {
+      wallet.update((n) => (n = selectedWalletRes.selectedWallet));
+    }
+  };
+
   onMount(() => {
     mixpanel.track("checkin_page");
     const urlParams = new URLSearchParams(window.location.search);
@@ -106,6 +161,8 @@
     isSkipToMainPage = Boolean(
       localStorage.getItem("isSkipInviteCodeCampaign")
     );
+
+    handleSetWallet();
   });
 
   const handleUpdateParamsPartnerSelected = (tab, partnerId) => {

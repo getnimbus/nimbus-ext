@@ -232,14 +232,6 @@
       selectedAddress?.length !== 0 &&
       Object.keys($user).length !== 0 &&
       !$queryValidate.isFetching,
-    onError(err) {
-      // localStorage.removeItem("auth_token");
-      // localStorage.removeItem("solana_token");
-      // localStorage.removeItem("sui_token");
-      // localStorage.removeItem("ton_token");
-      // localStorage.removeItem("evm_token");
-      // user.update((n) => (n = {}));
-    },
   });
 
   $: {
@@ -254,14 +246,6 @@
     queryFn: () => getListAddress(),
     staleTime: Infinity,
     enabled: $user && Object.keys($user).length !== 0,
-    onError(err) {
-      // localStorage.removeItem("auth_token");
-      // localStorage.removeItem("solana_token");
-      // localStorage.removeItem("sui_token");
-      // localStorage.removeItem("ton_token");
-      // localStorage.removeItem("evm_token");
-      // user.update((n) => (n = {}));
-    },
   });
 
   $: {
