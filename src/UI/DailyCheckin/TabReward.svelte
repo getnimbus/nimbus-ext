@@ -181,7 +181,6 @@
         queryClient.invalidateQueries(["rewards"]);
         selectedTicketReward = data;
         triggerRedeemSuccess();
-        selectedType = "yourGift";
       } catch (e) {
         console.error(e);
         toastMsg = "Something went wrong while redeeming the ticket";
