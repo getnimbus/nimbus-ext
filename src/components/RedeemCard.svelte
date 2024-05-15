@@ -31,7 +31,13 @@
     <div class="flex-1 flex flex-col gap-2">
       <div class="flex items-center gap-2">
         <img src={Crown} alt="" class="w-[26px] h-[26px]" />
-        <div class="text-[#FFB800] text-lg font-medium uppercase">Premium</div>
+        <div class="text-[#FFB800] text-lg font-medium uppercase">
+          {#if redeemData?.campaignName === "sui-unlock"}
+            NIMBUS ON SUI
+          {:else}
+            Premium
+          {/if}
+        </div>
       </div>
       <div class="lg:text-4xl text-3xl font-normal">
         {redeemData?.title}

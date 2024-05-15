@@ -221,7 +221,7 @@
       }
 
       queryClient?.invalidateQueries(["daily-checkin"]);
-      queryClient?.invalidateQueries(["rewards"]);
+      queryClient?.invalidateQueries([$userPublicAddress, "rewards"]);
       selectedTicketReward = data;
       triggerRedeemSuccess();
       selectedType = "yourGift";
