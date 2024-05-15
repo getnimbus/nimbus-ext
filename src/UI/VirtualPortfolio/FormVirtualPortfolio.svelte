@@ -161,7 +161,9 @@
 
     <div
       class={`flex-1 flex flex-col gap-2 input-2 w-full p-4 border border_0000001a ${
-        $isDarkMode ? "bg-[#222222]" : "bg-[#fff]"
+        $isDarkMode
+          ? "bg-[#222222] dark-date-picker"
+          : "bg-[#fff] light-date-picker"
       }`}
     >
       <div class="xl:text-base text-2xl font-medium">
@@ -555,15 +557,15 @@
     background: #212121;
   }
 
-  /* :root {
+  .light-date-picker {
     --date-input-width: 100%;
     --date-picker-background: white;
     --date-picker-foreground: #5e656b;
     --date-picker-selected-color: black;
     --date-picker-highlight-border: transparent;
-  } */
+  }
 
-  :root {
+  .dark-date-picker {
     --date-input-width: 100%;
     --date-picker-background: #222222;
     --date-picker-foreground: #fff;
