@@ -11,6 +11,7 @@
   import { i18n } from "~/lib/i18n";
   import { detectedGeneration } from "~/lib/chains";
   import mixpanel from "mixpanel-browser";
+  import { getListAddress } from "~/lib/queryAPI";
 
   import Tooltip from "~/components/Tooltip.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
@@ -19,7 +20,6 @@
   import Copy from "~/components/Copy.svelte";
 
   import FollowWhale from "~/assets/whale-tracking.gif";
-  import { getListAddress } from "~/lib/queryAPI";
 
   const MultipleLang = {
     content: {

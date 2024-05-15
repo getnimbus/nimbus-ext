@@ -284,7 +284,7 @@
       (item) => item.type !== "BUNDLE"
     );
 
-    const selectYourBundle = structWalletData.find(
+    const selectYourBundle = structWalletData?.find(
       (item) => item.type === "BUNDLE" && item.label === "Your wallets"
     );
     selectYourWalletsBundle = selectYourBundle?.accounts?.map(
@@ -783,7 +783,7 @@
     }
 
     if (
-      listBundle.find((item) => item.name === nameBundle) &&
+      listBundle?.find((item) => item.name === nameBundle) &&
       selectedBundle &&
       Object.keys(selectedBundle)?.length === 0
     ) {

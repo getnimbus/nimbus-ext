@@ -845,7 +845,7 @@
 
   $: {
     if (!localStorage.getItem("view-portfolio-tour") && isPortfolioReady) {
-      drivePortfolio().drive();
+      drivePortfolio()?.drive();
       localStorage.setItem("view-portfolio-tour", "true");
     }
   }
