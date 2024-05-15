@@ -81,11 +81,26 @@
             ),
           };
         });
-      selectedVirtualPortfolio = listVirtualPortfolio[0];
+
+      if (
+        listVirtualPortfolio &&
+        listVirtualPortfolio.length !== 0 &&
+        listVirtualPortfolio.length === 1
+      ) {
+        selectedVirtualPortfolio = listVirtualPortfolio[0];
+      }
+      if (
+        listVirtualPortfolio &&
+        listVirtualPortfolio.length !== 0 &&
+        listVirtualPortfolio.length > 1
+      ) {
+        selectedVirtualPortfolio =
+          listVirtualPortfolio[listVirtualPortfolio.length - 1];
+      }
     }
   }
 
-  let showDisableAdd = false;
+  let showDisable = false;
   let showDisabledSelect = false;
   let indexSelected = 0;
 
@@ -175,6 +190,31 @@
     } finally {
       isLoading = false;
       type = "";
+    }
+  };
+
+  const handleDeleteVirtualPortfolio = async () => {
+    try {
+      const response = await nimbus.delete(
+        `/address/${$wallet}/personalize/virtual-portfolio?portfolioName=${selectedVirtualPortfolio?.portfolioName}`,
+        {}
+      );
+      if (response && response?.error) {
+        toastMsg = `Something wrong when delete ${selectedVirtualPortfolio?.portfolioName} virtual portfolio. Please try again!`;
+        isSuccessToast = false;
+        trigger();
+        return;
+      }
+
+      toastMsg = `Successfully delete ${selectedVirtualPortfolio?.portfolioName} virtual portfolio`;
+      isSuccessToast = true;
+      trigger();
+      queryClient.invalidateQueries(["list-virtual-portfolio-address"]);
+    } catch (e) {
+      console.error(e);
+      toastMsg = `Something wrong when delete ${selectedVirtualPortfolio?.portfolioName} virtual portfolio. Please try again!`;
+      isSuccessToast = false;
+      trigger();
     }
   };
 
@@ -503,17 +543,60 @@
             {/if}
 
             <div class="flex items-center gap-3">
+              <!-- btn delete virtual portfolio -->
+              <div
+                class="relative w-max"
+                on:mouseenter={() => {
+                  if ($user && Object.keys($user).length === 0) {
+                    showDisable = true;
+                  }
+                }}
+                on:mouseleave={() => {
+                  if ($user && Object.keys($user).length === 0) {
+                    showDisable = false;
+                  }
+                }}
+              >
+                {#if $user && Object.keys($user).length === 0 && selectedVirtualPortfolio && Object.keys(selectedVirtualPortfolio).length === 0}
+                  <Button variant="disabled" disabled>Delete</Button>
+                {:else}
+                  <Button
+                    variant="delete"
+                    on:click={() => {
+                      handleDeleteVirtualPortfolio();
+                    }}>Delete</Button
+                  >
+                {/if}
+
+                {#if showDisable}
+                  <div
+                    class={`xl:block hidden absolute transform left-1/2 -translate-x-1/2 ${
+                      $user && Object.keys($user).length === 0
+                        ? "-top-8"
+                        : "-top-12"
+                    }`}
+                    style="z-index: 2147483648;"
+                  >
+                    <div
+                      class="max-w-[360px] text-white bg-black py-1 px-2 text-xs rounded relative w-max normal-case"
+                    >
+                      Connect your wallet to add virtual portfolio
+                    </div>
+                  </div>
+                {/if}
+              </div>
+
               <!-- btn edit virtual portfolio -->
               <div
                 class="relative w-max"
                 on:mouseenter={() => {
                   if ($user && Object.keys($user).length === 0) {
-                    showDisableAdd = true;
+                    showDisable = true;
                   }
                 }}
                 on:mouseleave={() => {
                   if ($user && Object.keys($user).length === 0) {
-                    showDisableAdd = false;
+                    showDisable = false;
                   }
                 }}
               >
@@ -530,7 +613,7 @@
                   </Button>
                 {/if}
 
-                {#if showDisableAdd}
+                {#if showDisable}
                   <div
                     class={`xl:block hidden absolute transform left-1/2 -translate-x-1/2 ${
                       $user && Object.keys($user).length === 0
@@ -553,12 +636,12 @@
                 class="relative w-max"
                 on:mouseenter={() => {
                   if ($user && Object.keys($user).length === 0) {
-                    showDisableAdd = true;
+                    showDisable = true;
                   }
                 }}
                 on:mouseleave={() => {
                   if ($user && Object.keys($user).length === 0) {
-                    showDisableAdd = false;
+                    showDisable = false;
                   }
                 }}
               >
@@ -579,7 +662,7 @@
                   </Button>
                 {/if}
 
-                {#if showDisableAdd}
+                {#if showDisable}
                   <div
                     class={`xl:block hidden absolute transform left-1/2 -translate-x-1/2 ${
                       $user && Object.keys($user).length === 0
@@ -607,22 +690,22 @@
     class="xl:min-h-screen max-w-[2000px] m-auto xl:w-[90%] w-[90%] xl:-mt-26 -mt-34"
   >
     {#if type}
-      <div class="bg-white rounded-[20px] xl:p-8 p-4 xl:shadow-md">
-        <div
-          class="border border_0000001a rounded-[20px] p-6 flex flex-col gap-4"
-        >
-          <FormVirtualPortfolio
-            {listVirtualPortfolio}
-            defaultData={selectedVirtualPortfolio}
-            {handleSubmit}
-            {handleCancel}
-            {isLoading}
-            {type}
-          />
-        </div>
+      <div
+        class="virtual_portfolio_container rounded-[20px] xl:p-8 p-4 xl:shadow-md"
+      >
+        <FormVirtualPortfolio
+          {listVirtualPortfolio}
+          defaultData={selectedVirtualPortfolio}
+          {handleSubmit}
+          {handleCancel}
+          {isLoading}
+          {type}
+        />
       </div>
     {:else}
-      <div class="bg-white rounded-[20px] xl:p-8 p-4 xl:shadow-md">
+      <div
+        class="virtual_portfolio_container rounded-[20px] xl:p-8 p-4 xl:shadow-md"
+      >
         <div
           class="border border_0000001a rounded-[20px] p-6 flex flex-col gap-4"
         >
@@ -687,5 +770,14 @@
     background-position: top right;
     padding-bottom: 144px;
     padding-top: 24px;
+  }
+
+  :global(body) .virtual_portfolio_container {
+    background: #fff;
+    box-shadow: 0px 0px 40px 0px rgba(0, 0, 0, 0.1);
+  }
+  :global(body.dark) .virtual_portfolio_container {
+    background: #0f0f0f;
+    box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 1);
   }
 </style>

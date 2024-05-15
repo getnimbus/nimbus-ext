@@ -131,14 +131,14 @@
   );
 </script>
 
-<div class="flex flex-col gap-5">
-  <div class="flex lg:flex-row flex-col justify-between gap-4">
-    <div class="flex-1 flex flex-col gap-1 input-2 w-full p-4">
-      <div
-        class={`xl:text-base text-2xl font-medium ${
-          $isDarkMode ? "text-gray-400" : "text-[#666666]"
-        }`}
-      >
+<div class="flex flex-col gap-6">
+  <div class="flex lg:flex-row flex-col justify-between gap-6">
+    <div
+      class={`flex-1 flex flex-col gap-2 input-2 w-full p-4 border border_0000001a ${
+        $isDarkMode ? "bg-[#222222]" : "bg-[#fff]"
+      }`}
+    >
+      <div class="xl:text-base text-2xl font-medium">
         Virtual portfolio name
       </div>
       <input
@@ -159,8 +159,12 @@
       />
     </div>
 
-    <div class="flex-1 flex flex-col gap-1 input-2 w-full p-4">
-      <div class="xl:text-base text-2xl text-[#666666] font-medium">
+    <div
+      class={`flex-1 flex flex-col gap-2 input-2 w-full p-4 border border_0000001a ${
+        $isDarkMode ? "bg-[#222222]" : "bg-[#fff]"
+      }`}
+    >
+      <div class="xl:text-base text-2xl font-medium">
         {#if defaultData && Object.keys(defaultData).length !== 0}
           Initial Time
         {:else}
@@ -180,9 +184,11 @@
     </div>
   </div>
 
-  <div class="flex xl:flex-row flex-col justify-between gap-4">
+  <div class="flex xl:flex-row flex-col justify-between gap-6">
     <div
-      class="flex-1 border border_0000001a rounded-[20px] p-4 flex flex-col gap-2 relative"
+      class={`flex-1 flex flex-col gap-4 input-2 p-4 relative border border_0000001a ${
+        $isDarkMode ? "bg-[#222222]" : "bg-[#fff]"
+      }`}
     >
       <div class="flex md:flex-row flex-col justify-between md:items-end gap-4">
         <div class="flex flex-col">
@@ -191,27 +197,22 @@
             Choose one or more to start
           </div>
         </div>
-        <div
-          class={`border focus:outline-none md:w-max w-full py-[6px] px-3 rounded-lg ${
-            searchValue && !$isDarkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
+        <input
+          bind:value={searchValue}
+          on:change={(event) => {
+            searchValue = event?.target.value;
+          }}
+          placeholder={"Find by token name"}
+          type="text"
+          class={`py-1 px-[6px] rounded-[3px] focus:outline-none focus:ring-0 xl:text-base text-lg font-normal ${
+            virtualPortfolioName && !$isDarkMode
+              ? "bg-[#F0F2F7]"
+              : "bg-transparent"
+          } ${
+            $isDarkMode ? "text-white" : "text-[#5E656B] placeholder-[#5E656B]"
           }`}
-        >
-          <input
-            bind:value={searchValue}
-            on:change={(event) => {
-              searchValue = event?.target.value;
-            }}
-            placeholder={"Find by token name"}
-            type="text"
-            class={`w-full p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal ${
-              searchValue && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
-            } ${
-              $isDarkMode
-                ? "text-white"
-                : "text-[#5E656B] placeholder-[#5E656B]"
-            }`}
-          />
-        </div>
+          style="border: 1px solid rgba(103, 113, 137, 0.3)"
+        />
       </div>
 
       <div
@@ -333,7 +334,9 @@
     </div>
 
     <div
-      class="flex-1 border border_0000001a rounded-[20px] p-4 flex flex-col gap-2 relative"
+      class={`flex-1 flex flex-col gap-4 input-2 p-4 relative border border_0000001a ${
+        $isDarkMode ? "bg-[#222222]" : "bg-[#fff]"
+      }`}
     >
       <div class="flex justify-between items-end">
         <div class="flex flex-col">
@@ -453,9 +456,9 @@
                       return item;
                     });
                   }}
-                  class={`w-max border-none focus:outline-none focus:ring-0 xl:text-xl text-3xl font-normal text-center ${
+                  class={`w-max border-none focus:outline-none focus:ring-0 xl:text-xl text-3xl font-normal text-center  ${
                     $isDarkMode
-                      ? "text-white"
+                      ? "text-white bg-transparent"
                       : "text-[#5E656B] placeholder-[#5E656B]"
                   }`}
                 />
@@ -500,7 +503,7 @@
     </div>
   </div>
 
-  <div class="flex justify-end">
+  <div class="flex justify-end gap-4">
     <div class="md:w-[120px] w-full">
       <Button
         variant="no-outlined"
