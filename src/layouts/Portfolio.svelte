@@ -1027,9 +1027,7 @@
       class="cursor-pointer w-max"
       on:click={() => {
         if ($wallet) {
-          navigateTo(
-            `/virtual-portfolio?type=${$typeWallet}&chain=${$chain}&address=${$wallet}`
-          );
+          navigateTo(`/virtual-portfolio?address=${$wallet}`);
         } else {
           navigateTo("/");
         }

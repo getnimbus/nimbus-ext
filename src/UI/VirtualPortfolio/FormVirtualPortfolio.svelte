@@ -27,7 +27,7 @@
   let listToken = [];
 
   let selectedTokenList = [];
-  let selectedTokenRemove = {};
+  let selectedTokenRemove: any = {};
 
   // get list all token
   $: queryListToken = createQuery({
@@ -49,59 +49,39 @@
         name: item?.name,
         symbol: item?.symbol,
         logo: item?.large,
+        percent: 0,
       };
     });
   };
 
   $: {
-    if (type === "edit") {
-      if (defaultData && Object.keys(defaultData).length !== 0) {
-        virtualPortfolioName = defaultData.portfolioName;
+    if (
+      listToken &&
+      listToken.length !== 0 &&
+      listVirtualPortfolio &&
+      listVirtualPortfolio.length !== 0
+    ) {
+      if (type === "edit") {
+        if (defaultData && Object.keys(defaultData).length !== 0) {
+          virtualPortfolioName = defaultData.portfolioName;
 
-        time = defaultData.updatedTime;
+          time = defaultData.updatedTime;
 
-        listToken = listToken.map((item) => {
-          const selectedToken = defaultData.coins.find(
-            (data) => data.coin === item.id
-          );
-          return {
-            ...item,
-            percent: selectedToken ? selectedToken?.percent : 0,
-          };
-        });
+          listToken = listToken.map((item) => {
+            const selectedToken = defaultData.coins.find(
+              (data) => data.coin === item.id
+            );
+            return {
+              ...item,
+              percent: selectedToken ? selectedToken?.percent : 0,
+            };
+          });
 
-        selectedTokenList = listToken.filter((item) => {
-          return defaultData.coins.some((data) => data.coin === item.id);
-        });
+          selectedTokenList = listToken.filter((item) => {
+            return defaultData.coins.some((data) => data.coin === item.id);
+          });
+        }
       }
-    } else {
-      time = new Date();
-      virtualPortfolioName = "";
-      searchValue = "";
-      selectedTokenList = [];
-      remaining = 0;
-      selectedTokenRemove = {};
-      listToken = listToken.map((item) => {
-        return {
-          ...item,
-          percent: 0,
-        };
-      });
-    }
-  }
-
-  $: {
-    if (listVirtualPortfolio.length === 0) {
-      virtualPortfolioName = "";
-      searchValue = "";
-      selectedTokenList = [];
-      remaining = 0;
-      listToken = listToken.map((item) => {
-        return {
-          ...item,
-          percent: 0,
-        };
-      });
     }
   }
 
@@ -121,7 +101,7 @@
           percent:
             selectedTokenRemove &&
             Object.keys(selectedTokenRemove).length !== 0 &&
-            selectedTokenRemove.id === item.id
+            selectedTokenRemove?.id === item.id
               ? 0
               : item.percent,
         };
@@ -133,7 +113,7 @@
           percent:
             selectedTokenRemove &&
             Object.keys(selectedTokenRemove).length !== 0 &&
-            selectedTokenRemove.id === item.id
+            selectedTokenRemove?.id === item.id
               ? 0
               : item.percent,
         };
@@ -172,7 +152,7 @@
           $isDarkMode ? "text-white" : "text-[#5E656B] placeholder-[#5E656B]"
         }`}
         style="border: 1px solid rgba(103, 113, 137, 0.3)"
-        bind:value={virtualPortfolioName}
+        value={virtualPortfolioName}
         on:change={(event) => {
           virtualPortfolioName = event?.target.value;
         }}
@@ -388,7 +368,7 @@
       <div
         class="border border_0000000d rounded-[10px] overflow-y-auto h-[550px]"
       >
-        {#each selectedTokenList as data (data.id)}
+        {#each selectedTokenList as data}
           <div id={data.id} class="grid grid-cols-2 gap-2 my-2 mx-2">
             <div
               class="py-2 pl-2 col-span-1 border border_0000000d rounded-[10px]"
@@ -421,6 +401,7 @@
                 </div>
               </div>
             </div>
+
             <div class="col-span-1 flex items-center gap-6">
               <div
                 class="flex-1 border border_0000000d rounded-[10px] h-full flex justify-between items-center px-2"
@@ -445,39 +426,32 @@
                     -
                   </div>
                 </div>
+
                 <input
                   type="number"
                   min="0"
                   max="100"
-                  bind:value={data.percent}
+                  step="0.01"
+                  value={data.percent}
                   on:change={(event) => {
-                    // if (event?.target?.value) {
-                    //   let number = 0;
-                    //   if (
-                    //     parseInt(event?.target?.value) <
-                    //     parseInt(event?.target?.min)
-                    //   ) {
-                    //     event?.target?.value = event?.target?.min;
-                    //     number = event?.target?.min;
-                    //   } else if (
-                    //     parseInt(event?.target?.value) >
-                    //     parseInt(event?.target?.max)
-                    //   ) {
-                    //     event?.target?.value = event?.target?.max;
-                    //     number = event?.target?.max;
-                    //   } else {
-                    //     number = event?.target?.value;
-                    //   }
-                    //   selectedTokenList = selectedTokenList.map((item) => {
-                    //     if (item.id === data.id) {
-                    //       return {
-                    //         ...data,
-                    //         percent: Number(number),
-                    //       };
-                    //     }
-                    //     return item;
-                    //   });
-                    // }
+                    let value = parseFloat(event?.target?.value);
+
+                    if (isNaN(value) || value < 0) {
+                      value = 0;
+                    }
+                    if (value > 100) {
+                      value = 100;
+                    }
+
+                    selectedTokenList = selectedTokenList.map((item) => {
+                      if (item.id === data.id) {
+                        return {
+                          ...item,
+                          percent: value,
+                        };
+                      }
+                      return item;
+                    });
                   }}
                   class={`w-max border-none focus:outline-none focus:ring-0 xl:text-xl text-3xl font-normal text-center ${
                     $isDarkMode
@@ -485,6 +459,7 @@
                       : "text-[#5E656B] placeholder-[#5E656B]"
                   }`}
                 />
+
                 <div
                   class="flex-1 flex justify-center items-center xl:text-3xl text-5xl text-gray-500"
                 >
@@ -506,6 +481,7 @@
                   </div>
                 </div>
               </div>
+
               <div
                 class="xl:text-3xl text-5xl text-gray-500 cursor-pointer text-center"
                 on:click={() => {

@@ -2,9 +2,10 @@
   import { onMount } from "svelte";
   import { navigateTo } from "svelte-router-spa";
   import { nimbus } from "~/lib/network";
-  import { wallet, chain, typeWallet, user, isDarkMode } from "~/store";
+  import { wallet, user } from "~/store";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
-  import { createQuery } from "@tanstack/svelte-query";
+  import { createQuery, useQueryClient } from "@tanstack/svelte-query";
+  import { getVirtualPortfolioList } from "~/lib/queryAPI";
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import Button from "~/components/Button.svelte";
@@ -18,6 +19,8 @@
   let listVirtualPortfolio = [];
   let selectedVirtualPortfolio = {};
 
+  const queryClient = useQueryClient();
+
   onMount(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const addressParams = urlParams.get("address");
@@ -27,16 +30,9 @@
     }
   });
 
-  const virtualPortfolioList = async (address: string) => {
-    const response = await nimbus.get(
-      `/address/${address}/personalize/virtual-portfolio`
-    );
-    return response;
-  };
-
   $: queryAddressVirtualPortfolio = createQuery({
     queryKey: ["list-virtual-portfolio-address", $wallet],
-    queryFn: () => virtualPortfolioList($wallet),
+    queryFn: () => getVirtualPortfolioList($wallet),
     staleTime: Infinity,
     retry: false,
     enabled: Boolean($wallet && $wallet.length !== 0),
@@ -103,14 +99,23 @@
     }
   };
 
-  $: console.log("selectedVirtualPortfolio: ", selectedVirtualPortfolio);
-
   let type = "";
   let isLoading = false;
 
   const handleSubmit = (data: any) => {
-    console.log("HELLO WORLD: ", data);
-    type = "";
+    try {
+      console.log("HELLO WORLD: ", data);
+
+      if (type === "add") {
+      }
+      if (type === "edit") {
+      }
+
+      queryClient.invalidateQueries(["list-virtual-portfolio-address"]);
+      type = "";
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   const handleCancel = () => {
