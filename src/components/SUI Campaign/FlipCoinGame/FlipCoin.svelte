@@ -8,7 +8,7 @@
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
   import type { WalletState } from "nimbus-sui-kit";
   import { SuiConnector } from "nimbus-sui-kit";
-  import { suiWalletInstance } from "~/store";
+  import { suiWalletInstance, userPublicAddress } from "~/store";
   import { isDarkMode } from "~/store";
   import { shorterAddress, triggerFirework } from "~/utils";
   import { nimbus } from "~/lib/network";
@@ -206,21 +206,33 @@
     }
   };
 
+  let selectedDataSUILink: any = {};
+  let openScreenBonusScore = false;
+  let bonusScore = 0;
+
+  const triggerBonusScore = async () => {
+    openScreenBonusScore = true;
+    triggerFirework();
+    await wait(2000);
+    openScreenBonusScore = false;
+  };
+
   $: {
     if (!$queryLinkSocial.isError && $queryLinkSocial.data !== undefined) {
-      const checkLinkSuiWallet = $queryLinkSocial?.data?.data.filter(
+      selectedDataSUILink = $queryLinkSocial?.data?.data.find(
         (item) => item?.kind === "wallet" && item?.chain === "MOVE"
       );
 
       if (
-        checkLinkSuiWallet.length > 0 &&
+        selectedDataSUILink &&
+        Object.keys(selectedDataSUILink).length !== 0 &&
         ($suiWalletInstance as WalletState)?.address !== undefined
       ) {
         if (
-          checkLinkSuiWallet[0]?.uid !==
+          selectedDataSUILink?.uid !==
           ($suiWalletInstance as WalletState)?.address
         ) {
-          toastMsg = `Please connect to wallet ${shorterAddress(checkLinkSuiWallet[0]?.uid)} to flip`;
+          toastMsg = `Please connect to wallet ${shorterAddress(selectedDataSUILink?.uid)} to flip`;
           isSuccessToast = false;
           linkedSuiWallet = false;
           trigger();
@@ -259,7 +271,18 @@
       if (res && res.data) {
         const signature = await handleSignAddressMessage(res?.data?.nonce);
         if (signature) {
-          startFlip = true;
+          const payload = {
+            signature: signature.signature,
+            publicAddress: address?.toLowerCase(),
+          };
+          if (
+            selectedDataSUILink &&
+            Object.keys(selectedDataSUILink).length === 0
+          ) {
+            handleUpdatePublicAddress(payload);
+          } else {
+            startFlip = true;
+          }
         }
       }
     } catch (e) {
@@ -280,6 +303,43 @@
       ),
     });
     return msg;
+  };
+
+  const handleUpdatePublicAddress = async (payload) => {
+    try {
+      const params: any = {
+        id: $userPublicAddress,
+        kind: "wallet",
+        type: null,
+        userPublicAddress: payload?.publicAddress,
+        signature: payload?.signature,
+      };
+      const res: any = await nimbus.post("/accounts/link", params);
+      if (res && res?.error) {
+        toastMsg = res?.error;
+        isSuccessToast = false;
+        trigger();
+        return;
+      }
+
+      queryClient?.invalidateQueries(["link-socials"]);
+      queryClient?.invalidateQueries(["daily-checkin"]);
+
+      triggerBonusScore();
+      bonusScore = 1000;
+
+      toastMsg = "Your are successfully connect your Sui wallet!";
+      isSuccessToast = true;
+      trigger();
+
+      startFlip = true;
+    } catch (e) {
+      console.log(e);
+      toastMsg =
+        "Something wrong when connect your Sui wallet. Please try again!";
+      isSuccessToast = true;
+      trigger();
+    }
   };
 </script>
 
@@ -454,6 +514,28 @@
         <img src={betterLuck} alt="" class="w-40 h-40 object-contain" />
         <div class="text-[34px] text-white font-medium">Try again...</div>
       {/if}
+    </div>
+  </div>
+{/if}
+
+{#if openScreenBonusScore}
+  <div
+    class="fixed h-screen w-screen top-0 left-0 flex items-center justify-center bg-[#000000cc]"
+    style="z-index: 2147483648;"
+    on:click={() => {
+      setTimeout(() => {
+        openScreenBonusScore = false;
+      }, 500);
+    }}
+  >
+    <div class="flex flex-col items-center justify-center gap-10">
+      <div class="xl:text-2xl text-4xl text-white font-medium">
+        Congratulation!!!
+      </div>
+      <img src={goldImg} alt="" class="w-40 h-40" />
+      <div class="xl:text-2xl text-4xl text-white font-medium">
+        You have received {bonusScore} Bonus GM Points
+      </div>
     </div>
   </div>
 {/if}
