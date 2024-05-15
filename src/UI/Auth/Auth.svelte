@@ -283,9 +283,9 @@
       const res: any = await nimbus.get(`/auth/discord/redirect?code=${code}`);
       if (res && res?.data) {
         handleLinkDiscord(
-          res?.data.userInfo.id,
-          res?.data.userInfo.email,
-          res?.data.userInfo.global_name
+          res?.data?.userInfo?.id,
+          res?.data?.userInfo?.email || null,
+          res?.data?.userInfo?.global_name || ""
         );
       }
     } catch (e) {
@@ -451,10 +451,10 @@
       const res: any = await nimbus.get(`/auth/discord/redirect?code=${code}`);
       if (res && res?.data) {
         handleGetDiscordToken(
-          res?.data.userInfo.id,
-          res?.data.userInfo.username,
-          res?.data.userInfo.global_name,
-          res?.data.userInfo.email
+          res?.data?.userInfo?.id,
+          res?.data?.userInfo?.username,
+          res?.data?.userInfo?.global_name || "",
+          res?.data?.userInfo?.email || null
         );
       }
     } catch (e) {
