@@ -12,8 +12,6 @@
   import goldImg from "~/assets/Gold4.svg";
 
   import Crown from "~/assets/crown.svg";
-
-  $: console.log(": sada", redeemData);
 </script>
 
 <div
