@@ -26,7 +26,7 @@
   let partnersDataList = [];
 
   $: queryDailyCheckin = createQuery({
-    queryKey: ["daily-checkin", $userPublicAddress],
+    queryKey: [$userPublicAddress, "daily-checkin"],
     queryFn: () => handleGetDataDailyCheckin(),
     staleTime: Infinity,
     enabled: $userPublicAddress.length !== 0,
