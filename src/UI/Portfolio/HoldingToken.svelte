@@ -326,6 +326,7 @@
           ...result,
           txHash: txid,
           chain: result?.to_token_chain,
+          connectedAddress: result?.connectedAddress,
         });
         toastMsg = `Swap token successful. Tx id is ${shorterAddress(txid)}`;
         isSuccessToast = true;
@@ -376,11 +377,14 @@
 
   const handleSwapBonus = async (data) => {
     try {
-      const response = await nimbus.post(`/swap/${$userPublicAddress}/bonus`, {
-        point: data?.point,
-        txHash: data?.txHash,
-        chain: data?.chain,
-      });
+      const response = await nimbus.post(
+        `/swap/${data?.connectedAddress}/bonus`,
+        {
+          point: data?.point,
+          txHash: data?.txHash,
+          chain: data?.chain,
+        }
+      );
       if (response && response?.data) {
         mixpanel.track("user_swap_completed");
         updateBalanceToken(data);

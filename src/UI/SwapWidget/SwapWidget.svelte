@@ -158,11 +158,14 @@
 
   const handleSwapBonus = async (data) => {
     try {
-      const response = await nimbus.post(`/swap/${data?.address}/bonus`, {
-        point: data?.point,
-        txHash: data?.txHash,
-        chain: handleFormatIdBlockChain(data?.to_token_chain),
-      });
+      const response = await nimbus.post(
+        `/swap/${data?.connectedAddress}/bonus`,
+        {
+          point: data?.point,
+          txHash: data?.txHash,
+          chain: handleFormatIdBlockChain(data?.to_token_chain),
+        }
+      );
       if (response && response?.data) {
         mixpanel.track("user_swap_completed");
         updateBalanceToken(data);
