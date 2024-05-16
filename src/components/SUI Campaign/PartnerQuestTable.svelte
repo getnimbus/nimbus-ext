@@ -183,7 +183,7 @@
 
 <!-- Desktop -->
 <div
-  class={`md:block hidden rounded-[10px] border border_0000000d overflow-hidden ${
+  class={`lg:block hidden rounded-[10px] border border_0000000d overflow-hidden ${
     $isDarkMode ? "bg-[#131313]" : "bg-[#fff]"
   }`}
 >
@@ -301,34 +301,8 @@
                     <Button disabled>Done!</Button>
                   </div>
                 {:else}
-                  <div class="w-[50px] xl:h-[33px] h-[43px]">
-                    <Button
-                      on:click={() => {
-                        if (
-                          data?.type === "DISCORD" &&
-                          userLinkData &&
-                          userLinkData?.length !== 0 &&
-                          !userLinkData.find((item) => item.type === "discord")
-                        ) {
-                          window.location.assign(
-                            "https://discord.com/oauth2/authorize?client_id=1236967408204517396&response_type=code&redirect_uri=https%3A%2F%2Fapp.getnimbus.io&scope=identify+guilds+guilds.members.read"
-                          );
-                        } else {
-                          window.open(data?.url, "_blank");
-                          selectedQuestId = data?.id;
-                          startPlay = true;
-                          clearInterval(countdownInterval);
-                          startCountdown();
-                        }
-                      }}
-                    >
-                      <img src={playIcon} alt="" class="w-4 h-4" />
-                    </Button>
-                  </div>
-                  <div class="w-[90px] xl:h-[33px] h-[43px]">
-                    {#if countdown > 0 && countdown < 10 && selectedQuestId === data?.id}
-                      <Button disabled>{countdown}s</Button>
-                    {:else}
+                  <div class="flex justify-end items-center gap-2">
+                    {#if data?.type === "ONCHAIN"}
                       <Button
                         variant="tertiary"
                         on:click={() => {
@@ -345,6 +319,57 @@
                           Check
                         {/if}
                       </Button>
+                    {:else}
+                      <div class="w-[50px] xl:h-[33px] h-[43px]">
+                        <Button
+                          on:click={() => {
+                            if (
+                              data?.type === "DISCORD" &&
+                              userLinkData &&
+                              userLinkData?.length !== 0 &&
+                              !userLinkData.find(
+                                (item) => item.type === "discord"
+                              )
+                            ) {
+                              window.location.assign(
+                                "https://discord.com/oauth2/authorize?client_id=1236967408204517396&response_type=code&redirect_uri=https%3A%2F%2Fapp.getnimbus.io&scope=identify+guilds+guilds.members.read"
+                              );
+                            } else {
+                              window.open(data?.url, "_blank");
+                              selectedQuestId = data?.id;
+                              startPlay = true;
+                              clearInterval(countdownInterval);
+                              startCountdown();
+                            }
+                          }}
+                        >
+                          <img src={playIcon} alt="" class="w-4 h-4" />
+                        </Button>
+                      </div>
+                      <div class="w-[90px] xl:h-[33px] h-[43px]">
+                        {#if countdown > 0 && countdown < 10 && selectedQuestId === data?.id}
+                          <Button disabled>{countdown}s</Button>
+                        {:else}
+                          <Button
+                            variant="tertiary"
+                            on:click={() => {
+                              if (
+                                checkUserVerifyQuest(data, listQuestVerified)
+                              ) {
+                                handleClaimReward(data);
+                              } else {
+                                handleVerifyQuest(data);
+                              }
+                            }}
+                          >
+                            {#if checkUserVerifyQuest(data, listQuestVerified)}
+                              Claim
+                            {:else}
+                              Check
+                            {/if}
+                          </Button>
+                        {/if}
+                      </div>
                     {/if}
                   </div>
                 {/if}
@@ -359,7 +384,7 @@
 
 <!-- Tablet/Mobile -->
 <div
-  class={`md:hidden block rounded-[10px] p-2 overflow-hidden w-full ${
+  class={`lg:hidden block rounded-[10px] p-2 overflow-hidden w-full ${
     $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
   }`}
 >
@@ -417,50 +442,73 @@
                 <Button disabled>Done!</Button>
               </div>
             {:else}
-              <div class="w-[50px] h-[44px]">
-                <Button
-                  on:click={() => {
-                    if (
-                      data?.type === "DISCORD" &&
-                      userLinkData &&
-                      userLinkData?.length !== 0 &&
-                      !userLinkData.find((item) => item.type === "discord")
-                    ) {
-                      window.location.assign(
-                        "https://discord.com/oauth2/authorize?client_id=1236967408204517396&response_type=code&redirect_uri=https%3A%2F%2Fapp.getnimbus.io&scope=identify+guilds+guilds.members.read"
-                      );
-                    } else {
-                      window.open(data?.url, "_blank");
-                      selectedQuestId = data?.id;
-                      startPlay = true;
-                      clearInterval(countdownInterval);
-                      startCountdown();
-                    }
-                  }}
-                >
-                  <img src={playIcon} alt="" class="w-4 h-4" />
-                </Button>
-              </div>
-              <div class="w-[90px] h-[44px]">
-                {#if countdown > 0 && countdown < 10 && selectedQuestId === data?.id}
-                  <Button disabled>{countdown}s</Button>
+              <div class="flex items-center justify-end gap-2">
+                {#if data?.type === "ONCHAIN"}
+                  <div class="w-[90px] h-[44px]">
+                    <Button
+                      variant="tertiary"
+                      on:click={() => {
+                        if (checkUserVerifyQuest(data, listQuestVerified)) {
+                          handleClaimReward(data);
+                        } else {
+                          handleVerifyQuest(data);
+                        }
+                      }}
+                    >
+                      {#if checkUserVerifyQuest(data, listQuestVerified)}
+                        Claim
+                      {:else}
+                        Check
+                      {/if}
+                    </Button>
+                  </div>
                 {:else}
-                  <Button
-                    variant="tertiary"
-                    on:click={() => {
-                      if (checkUserVerifyQuest(data, listQuestVerified)) {
-                        handleClaimReward(data);
-                      } else {
-                        handleVerifyQuest(data);
-                      }
-                    }}
-                  >
-                    {#if checkUserVerifyQuest(data, listQuestVerified)}
-                      Claim
+                  <div class="w-[50px] h-[44px]">
+                    <Button
+                      on:click={() => {
+                        if (
+                          data?.type === "DISCORD" &&
+                          userLinkData &&
+                          userLinkData?.length !== 0 &&
+                          !userLinkData.find((item) => item.type === "discord")
+                        ) {
+                          window.location.assign(
+                            "https://discord.com/oauth2/authorize?client_id=1236967408204517396&response_type=code&redirect_uri=https%3A%2F%2Fapp.getnimbus.io&scope=identify+guilds+guilds.members.read"
+                          );
+                        } else {
+                          window.open(data?.url, "_blank");
+                          selectedQuestId = data?.id;
+                          startPlay = true;
+                          clearInterval(countdownInterval);
+                          startCountdown();
+                        }
+                      }}
+                    >
+                      <img src={playIcon} alt="" class="w-4 h-4" />
+                    </Button>
+                  </div>
+                  <div class="w-[90px] h-[44px]">
+                    {#if countdown > 0 && countdown < 10 && selectedQuestId === data?.id}
+                      <Button disabled>{countdown}s</Button>
                     {:else}
-                      Check
+                      <Button
+                        variant="tertiary"
+                        on:click={() => {
+                          if (checkUserVerifyQuest(data, listQuestVerified)) {
+                            handleClaimReward(data);
+                          } else {
+                            handleVerifyQuest(data);
+                          }
+                        }}
+                      >
+                        {#if checkUserVerifyQuest(data, listQuestVerified)}
+                          Claim
+                        {:else}
+                          Check
+                        {/if}
+                      </Button>
                     {/if}
-                  </Button>
+                  </div>
                 {/if}
               </div>
             {/if}
