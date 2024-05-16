@@ -309,7 +309,7 @@
       integratedTargetId: `swap-${address}`,
       endpoint:
         import.meta.env.VITE_PUBLIC_JUPSWAP_RPC_URL ||
-        "https://rpc.shyft.to/?api_key=gsusEvomKHQwwltu",
+        "https://swr.xnftdata.com/rpc-proxy/",
       strictTokenList: false,
       defaultExplorer: "Solscan",
       formProps: {
