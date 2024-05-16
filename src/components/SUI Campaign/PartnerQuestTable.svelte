@@ -519,6 +519,11 @@
   {/if}
 </div>
 
+<div class="text-sm font-medium italic -mt-1">
+  Note: On-chain task might take 1 - 2 minutes to verify, if you get failed to
+  verify, please try again in 2 minutes
+</div>
+
 {#if openScreenBonusScore}
   <div
     class="fixed h-screen w-screen top-0 left-0 flex items-center justify-center bg-[#000000cc]"
