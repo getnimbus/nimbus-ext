@@ -6,7 +6,6 @@
   import { nimbus } from "~/lib/network";
   import mixpanel from "mixpanel-browser";
   import { useQueryClient } from "@tanstack/svelte-query";
-  import { handleFormatIdBlockChain } from "~/utils";
 
   export let chain;
   export let address;
@@ -52,6 +51,47 @@
         return 1088;
       default:
         return -1;
+    }
+  };
+
+  const handleFormatIdBlockChain = (id: number) => {
+    switch (id) {
+      case 1:
+        return "ETH";
+      case 42161:
+        return "ARB";
+      case 10:
+        return "OP";
+      case 137:
+        return "MATIC";
+      case 56:
+        return "BNB";
+      case 324:
+        return "ZKSYNC";
+      case 8453:
+        return "BASE";
+      case 43114:
+        return "AVAX";
+      case 1101:
+        return "POLYGON_ZKEVM";
+      case 59144:
+        return "LINEA";
+      case 100:
+        return "XDAI";
+      case 250:
+        return "FANTOM";
+      case 1285:
+        return "MOVR";
+      case 1284:
+        return "GLMR";
+      case 1313161554:
+        return "AURORA";
+      case 1151111081099710:
+        return "SOL";
+      case 1088:
+        return "METIS";
+      default:
+        return "";
     }
   };
 
@@ -121,6 +161,7 @@
       const response = await nimbus.post(`/swap/${data?.address}/bonus`, {
         point: data?.point,
         txHash: data?.txHash,
+        chain: handleFormatIdBlockChain(data?.to_token_chain),
       });
       if (response && response?.data) {
         mixpanel.track("user_swap_completed");
