@@ -23,11 +23,11 @@
 
   const dailyCheckinRewardsTypePortfolio = [
     {
-      label: "Redeem Gift",
+      label: "Store",
       value: "redeemGift",
     },
     {
-      label: "Your gift",
+      label: "Inventory",
       value: "yourGift",
     },
   ];
