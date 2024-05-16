@@ -130,7 +130,7 @@
   const handleVerifyQuest = async (data) => {
     try {
       isLoading = true;
-      if (data?.id !== selectedQuestId) {
+      if (data?.id !== selectedQuestId && data?.type !== "ONCHAIN") {
         toastMsg = "Please Play the quest before Check!";
         isSuccessToast = false;
         trigger();
@@ -343,27 +343,33 @@
                       <Button disabled>{countdown}s</Button>
                     {:else}
                       <Button
-                        variant={isLoading ? "disabled" : "tertiary"}
-                        disabled={isLoading}
+                        variant={isLoading && selectedQuestId === data?.id
+                          ? "disabled"
+                          : "tertiary"}
+                        disabled={isLoading && selectedQuestId === data?.id}
                         on:click={() => {
                           if (!isLoading) {
                             if (checkUserVerifyQuest(data, listQuestVerified)) {
                               handleClaimReward(data);
                             } else {
+                              if (data?.type === "ONCHAIN") {
+                                selectedQuestId = data?.id;
+                              }
                               handleVerifyQuest(data);
                             }
                           }
                         }}
                       >
-                        {#if isLoading}
+                        {#if isLoading && selectedQuestId === data?.id}
                           <Loading size={20} />
-                        {/if}
-                        {#if !isLoading}
-                          {#if checkUserVerifyQuest(data, listQuestVerified)}
-                            Claim
-                          {:else}
-                            Check
-                          {/if}
+                        {:else}
+                          <div>
+                            {#if checkUserVerifyQuest(data, listQuestVerified)}
+                              Claim
+                            {:else}
+                              Check
+                            {/if}
+                          </div>
                         {/if}
                       </Button>
                     {/if}
@@ -469,27 +475,33 @@
                   <Button disabled>{countdown}s</Button>
                 {:else}
                   <Button
-                    variant={isLoading ? "disabled" : "tertiary"}
-                    disabled={isLoading}
+                    variant={isLoading && selectedQuestId === data?.id
+                      ? "disabled"
+                      : "tertiary"}
+                    disabled={isLoading && selectedQuestId === data?.id}
                     on:click={() => {
                       if (!isLoading) {
                         if (checkUserVerifyQuest(data, listQuestVerified)) {
                           handleClaimReward(data);
                         } else {
+                          if (data?.type === "ONCHAIN") {
+                            selectedQuestId = data?.id;
+                          }
                           handleVerifyQuest(data);
                         }
                       }
                     }}
                   >
-                    {#if isLoading}
+                    {#if isLoading && selectedQuestId === data?.id}
                       <Loading size={20} />
-                    {/if}
-                    {#if !isLoading}
-                      {#if checkUserVerifyQuest(data, listQuestVerified)}
-                        Claim
-                      {:else}
-                        Check
-                      {/if}
+                    {:else}
+                      <div>
+                        {#if checkUserVerifyQuest(data, listQuestVerified)}
+                          Claim
+                        {:else}
+                          Check
+                        {/if}
+                      </div>
                     {/if}
                   </Button>
                 {/if}
