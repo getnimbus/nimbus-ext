@@ -18,6 +18,7 @@
 
   import ReactAdapter from "~/components/ReactAdapter.svelte";
   import Button from "~/components/Button.svelte";
+  import Loading from "~/components/Loading.svelte";
 
   import suiBackground from "~/assets/campaign/flipCoin/sui-background-img.png";
   import betterLuck from "~/assets/campaign/flipCoin/better-luck.png";
@@ -403,7 +404,7 @@
               disabled={isLoadingFlip}
             >
               {#if isLoadingFlip}
-                ...
+                <Loading size={20} />
               {:else}
                 Head
               {/if}
@@ -418,7 +419,7 @@
               disabled={isLoadingFlip}
             >
               {#if isLoadingFlip}
-                ...
+                <Loading size={20} />
               {:else}
                 Tail
               {/if}

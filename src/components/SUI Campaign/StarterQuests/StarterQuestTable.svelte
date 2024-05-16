@@ -9,6 +9,7 @@
   import { getLinkData } from "~/lib/queryAPI";
 
   import Button from "~/components/Button.svelte";
+  import Loading from "~/components/Loading.svelte";
 
   import goldImg from "~/assets/Gold4.svg";
   import playIcon from "~/assets/play-icon.svg";
@@ -97,12 +98,16 @@
     }, 1000);
   };
 
+  let isLoading = false;
+
   const handleVerifyQuest = async (data) => {
     try {
+      isLoading = true;
       if (data?.id !== selectedQuestId) {
         toastMsg = "Please Play the quest before Check!";
         isSuccessToast = false;
         trigger();
+        isLoading = false;
         return;
       }
 
@@ -128,16 +133,20 @@
       isSuccessToast = false;
       trigger();
       console.error(e);
+    } finally {
+      isLoading = false;
     }
   };
 
   const handleClaimReward = async (data) => {
     try {
+      isLoading = true;
       const response: any = await nimbus.get(`/v2/quest/${data?.id}/claim`);
       if (response && !response?.data?.success) {
         toastMsg = response?.data?.message;
         isSuccessToast = false;
         trigger();
+        isLoading = false;
         return;
       }
 
@@ -153,6 +162,8 @@
       isSuccessToast = false;
       trigger();
       console.error(e);
+    } finally {
+      isLoading = false;
     }
   };
 </script>
@@ -291,19 +302,29 @@
                         <Button disabled>{countdown}s</Button>
                       {:else}
                         <Button
-                          variant="tertiary"
+                          variant={isLoading ? "disabled" : "tertiary"}
+                          disabled={isLoading}
                           on:click={() => {
-                            if (checkUserVerifyQuest(data, listQuestVerified)) {
-                              handleClaimReward(data);
-                            } else {
-                              handleVerifyQuest(data);
+                            if (!isLoading) {
+                              if (
+                                checkUserVerifyQuest(data, listQuestVerified)
+                              ) {
+                                handleClaimReward(data);
+                              } else {
+                                handleVerifyQuest(data);
+                              }
                             }
                           }}
                         >
-                          {#if checkUserVerifyQuest(data, listQuestVerified)}
-                            Claim
-                          {:else}
-                            Check
+                          {#if isLoading}
+                            <Loading size={20} />
+                          {/if}
+                          {#if !isLoading}
+                            {#if checkUserVerifyQuest(data, listQuestVerified)}
+                              Claim
+                            {:else}
+                              Check
+                            {/if}
                           {/if}
                         </Button>
                       {/if}
@@ -400,19 +421,27 @@
                     <Button disabled>{countdown}s</Button>
                   {:else}
                     <Button
-                      variant="tertiary"
+                      variant={isLoading ? "disabled" : "tertiary"}
+                      disabled={isLoading}
                       on:click={() => {
-                        if (checkUserVerifyQuest(data, listQuestVerified)) {
-                          handleClaimReward(data);
-                        } else {
-                          handleVerifyQuest(data);
+                        if (!isLoading) {
+                          if (checkUserVerifyQuest(data, listQuestVerified)) {
+                            handleClaimReward(data);
+                          } else {
+                            handleVerifyQuest(data);
+                          }
                         }
                       }}
                     >
-                      {#if checkUserVerifyQuest(data, listQuestVerified)}
-                        Claim
-                      {:else}
-                        Check
+                      {#if isLoading}
+                        <Loading size={20} />
+                      {/if}
+                      {#if !isLoading}
+                        {#if checkUserVerifyQuest(data, listQuestVerified)}
+                          Claim
+                        {:else}
+                          Check
+                        {/if}
                       {/if}
                     </Button>
                   {/if}
