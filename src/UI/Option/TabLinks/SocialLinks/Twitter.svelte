@@ -53,7 +53,7 @@
   };
 
   $: queryDailyCheckin = createQuery({
-    queryKey: ["daily-checkin", $userPublicAddress],
+    queryKey: [$userPublicAddress, "daily-checkin"],
     queryFn: () => handleGetDataDailyCheckin(),
     staleTime: Infinity,
     enabled:
@@ -150,8 +150,8 @@
       if (res?.data?.bonus !== undefined) {
         triggerBonusScore();
         bonusScore = res?.data?.bonus;
-        queryClient.invalidateQueries([$userPublicAddress, "daily-checkin"]);
-        queryClient.invalidateQueries(["users-me"]);
+        queryClient?.invalidateQueries(["daily-checkin"]);
+        queryClient?.invalidateQueries(["users-me"]);
       }
     } catch (e) {
       console.error(e);
