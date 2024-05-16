@@ -193,8 +193,8 @@
           bonusScore = response?.data?.bonus;
           isTriggerBonusScore = true;
         }
-        queryClient.invalidateQueries([$userPublicAddress, "daily-checkin"]);
-        queryClient.invalidateQueries(["users-me"]);
+        queryClient?.invalidateQueries(["daily-checkin"]);
+        queryClient?.invalidateQueries(["users-me"]);
       }
     } catch (error) {
       console.error("this err : ", error);
@@ -224,7 +224,7 @@
   });
 
   $: queryDailyCheckin = createQuery({
-    queryKey: ["daily-checkin", $userPublicAddress],
+    queryKey: [$userPublicAddress, "daily-checkin"],
     queryFn: () => handleGetDataDailyCheckin(),
     staleTime: Infinity,
     enabled: $userPublicAddress.length !== 0,
@@ -521,10 +521,10 @@
     triggerBonusScore();
     bonusScore = bonus;
     isTriggerBonusScore = true;
-    queryClient.invalidateQueries(["daily-checkin"]);
-    queryClient.invalidateQueries(["rewards"]);
-    queryClient.invalidateQueries(["list-quest"]);
-    queryClient.invalidateQueries(["users-me"]);
+    queryClient?.invalidateQueries(["daily-checkin"]);
+    queryClient?.invalidateQueries(["rewards"]);
+    queryClient?.invalidateQueries(["list-quest"]);
+    queryClient?.invalidateQueries(["users-me"]);
   };
 
   $: {

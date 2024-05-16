@@ -113,7 +113,7 @@
   }
 
   $: queryDailyCheckin = createQuery({
-    queryKey: ["daily-checkin", $userPublicAddress],
+    queryKey: [$userPublicAddress, "daily-checkin"],
     queryFn: () => handleGetDataDailyCheckin(),
     staleTime: Infinity,
     enabled:
@@ -161,8 +161,8 @@
           trigger();
         }
 
-        queryClient.invalidateQueries(["daily-checkin"]);
-        queryClient.invalidateQueries(["rewards"]);
+        queryClient?.invalidateQueries(["daily-checkin"]);
+        queryClient?.invalidateQueries(["rewards"]);
         selectedTicketReward = data;
         triggerRedeemSuccess();
       } catch (e) {
