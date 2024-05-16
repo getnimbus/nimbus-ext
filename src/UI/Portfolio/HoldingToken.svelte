@@ -382,7 +382,7 @@
         {
           point: data?.point,
           txHash: data?.txHash,
-          chain: data?.chain,
+          chain: "SOL",
         }
       );
       if (response && response?.data) {
