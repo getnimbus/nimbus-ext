@@ -10,8 +10,9 @@
   import Copy from "~/components/Copy.svelte";
 
   import goldImg from "~/assets/Gold4.svg";
-
   import Crown from "~/assets/crown.svg";
+
+  let showDisabled = false;
 </script>
 
 <div
@@ -19,7 +20,7 @@
     $isDarkMode ? "bg-[#212121]" : "bg-white"
   }`}
 >
-  <div class="px-[16px] flex items-center h-full gap-[47px]">
+  <div class="px-[16px] flex items-center h-full gap-[47px] gap-320-sx">
     <div
       class={`flex-[0.6] rounded-2xl p-2 flex items-center h-full justify-center ${
         $isDarkMode ? "" : "bg-white"
@@ -31,13 +32,7 @@
     <div class="flex-1 flex flex-col gap-2">
       <div class="flex items-center gap-2">
         <img src={Crown} alt="" class="w-[26px] h-[26px]" />
-        <div class="text-[#FFB800] text-lg font-medium uppercase">
-          {#if redeemData?.campaignName === "sui-unlock"}
-            NIMBUS ON SUI
-          {:else}
-            Premium
-          {/if}
-        </div>
+        <div class="text-[#FFB800] text-lg font-medium uppercase">Premium</div>
       </div>
       <div class="lg:text-4xl text-3xl font-normal">
         {redeemData?.title}
@@ -65,20 +60,37 @@
     <div class="px-[16px]">
       {#if isRedeem}
         <div class="flex items-center gap-[40px]">
-          <div class="w-[100px] text-base font-normal text-right">
+          <div class="w-[150px] text-base font-normal text-right">
             {redeemData?.remains} left
           </div>
-
           {#if redeemData?.remains === 0}
-            <Button disabled>
-              <div class="flex items-center gap-1">
-                <img src={goldImg} alt="" class="w-[28px] h-[28px]" />
-                <div class="text-white sm:text-lg text-smxs font-medium">
-                  {redeemData?.cost}
+            <div
+              class="relative"
+              on:mouseenter={() => (showDisabled = true)}
+              on:mouseleave={() => (showDisabled = false)}
+            >
+              <Button disabled>
+                <div class="flex items-center gap-1">
+                  <img src={goldImg} alt="" class="w-[28px] h-[28px]" />
+                  <div class="text-white sm:text-lg text-smxs font-medium">
+                    {redeemData?.cost}
+                  </div>
                 </div>
-              </div>
-              <div class="text-white text-smxs">Redeem</div>
-            </Button>
+                <div class="text-white text-smxs">Redeem</div>
+              </Button>
+              {#if showDisabled}
+                <div
+                  class="absolute transform left-1/2 -translate-x-1/2 -top-8"
+                  style="z-index: 2147483648;"
+                >
+                  <div
+                    class="max-w-[360px] text-white bg-black py-1 px-2 text-xs rounded relative w-max normal-case"
+                  >
+                    There are not available now
+                  </div>
+                </div>
+              {/if}
+            </div>
           {:else}
             <Button
               variant="tertiary"
@@ -104,15 +116,7 @@
           class="flex items-center justify-between p-[12px] bg-[#EEEEEE] rounded-[12px]"
         >
           <div class="text-[#131313] text-sm">Your gift code</div>
-          {#if redeemData?.campaignName === "sui-unlock"}
-            <Copy
-              address={redeemData?.id || "N/A"}
-              iconColor="#000"
-              iconSize={20}
-              color="#000"
-              isShorten
-            />
-          {:else if redeemData?.code}
+          {#if redeemData?.code}
             <Copy
               address={redeemData?.code || "N/A"}
               iconColor="#000"
@@ -129,11 +133,16 @@
   </div>
 </div>
 
-<style>
+<style windi:preflights:global windi:safelist:global>
   @media (max-width: 320) {
     .text-smxs {
       font-size: 14px;
       line-height: 20px;
+    }
+
+    .gap-320-sx {
+      grid-gap: 10px !important;
+      gap: 10px !important;
     }
   }
 </style>

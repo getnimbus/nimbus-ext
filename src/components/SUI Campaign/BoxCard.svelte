@@ -1,13 +1,9 @@
 <script lang="ts">
-  import { isDarkMode, user } from "~/store";
-  import dayjs from "dayjs";
-  import isBetween from "dayjs/plugin/isBetween";
-  import duration from "dayjs/plugin/duration";
-  dayjs.extend(isBetween);
-  dayjs.extend(duration);
+  import { isDarkMode } from "~/store";
 
+  export let isRedeem = false;
   export let data;
-  export let handleRedeemTicket = (value) => {};
+  export let handleRedeemBox = (value) => {};
   export let isLoadingRedeem;
   export let totalPoint;
 
@@ -15,47 +11,8 @@
 
   import goldImg from "~/assets/Gold4.svg";
   import Crown from "~/assets/crown.svg";
-  import { onDestroy, onMount } from "svelte";
 
-  let timeCountDown = "";
   let showDisabled = false;
-  let intervalId = null;
-  let interval: ReturnType<typeof setInterval>;
-
-  const checkTicketValidate = () => {
-    const today = dayjs().format("YYYY-MM-DD");
-    return dayjs(today).isBetween(data?.fromDate, data?.toDate, "day", "[)");
-  };
-
-  const updateCountdown = () => {
-    const now = dayjs();
-    const targetDate = dayjs(data?.toDate);
-    let days = 0;
-    let hours = 0;
-    let minutes = 0;
-    let seconds = 0;
-    if (now.isAfter(targetDate)) {
-      clearInterval(interval);
-    } else {
-      const duration = dayjs.duration(targetDate.diff(now));
-      days = duration.days();
-      hours = duration.hours();
-      minutes = duration.minutes();
-      seconds = duration.seconds();
-      timeCountDown =
-        days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
-    }
-  };
-
-  onMount(() => {
-    updateCountdown(); // Initial update
-    interval = setInterval(updateCountdown, 1000);
-  });
-
-  onDestroy(() => {
-    clearInterval(intervalId);
-    clearInterval(interval);
-  });
 </script>
 
 <div
@@ -73,7 +30,7 @@
       <div
         class="absolute -bottom-2 w-full text-center whitespace-nowrap left-timee italic text-sm"
       >
-        {timeCountDown}
+        499 lefts
       </div>
     </div>
 
@@ -111,13 +68,15 @@
       <div
         class="flex items-center md:justify-start justify-between md:gap-[100px] gap-[40px]"
       >
-        <div class="w-[100px] text-base font-normal text-right">Unlimited</div>
-        {#if checkTicketValidate() && totalPoint >= 1000}
+        <div class="w-[150px] text-base font-normal text-right">
+          500 boxs <br />/per-week
+        </div>
+        {#if totalPoint >= 1000}
           <Button
             variant="tertiary"
             on:click={() => {
               if (!isLoadingRedeem) {
-                handleRedeemTicket(data);
+                handleRedeemBox(data);
               }
             }}
             disabled={isLoadingRedeem}
