@@ -19,7 +19,7 @@
     $isDarkMode ? "bg-[#212121]" : "bg-white"
   }`}
 >
-  <div class="px-[16px] flex items-center h-full gap-[47px]">
+  <div class="px-[16px] flex items-center h-full gap-[47px] gap-320-sx">
     <div
       class={`flex-[0.6] rounded-2xl p-2 flex items-center h-full justify-center ${
         $isDarkMode ? "" : "bg-white"
@@ -31,13 +31,7 @@
     <div class="flex-1 flex flex-col gap-2">
       <div class="flex items-center gap-2">
         <img src={Crown} alt="" class="w-[26px] h-[26px]" />
-        <div class="text-[#FFB800] text-lg font-medium uppercase">
-          {#if redeemData?.campaignName === "sui-unlock"}
-            NIMBUS ON SUI
-          {:else}
-            Premium
-          {/if}
-        </div>
+        <div class="text-[#FFB800] text-lg font-medium uppercase">Premium</div>
       </div>
       <div class="lg:text-4xl text-3xl font-normal">
         {redeemData?.title}
@@ -65,7 +59,7 @@
     <div class="px-[16px]">
       {#if isRedeem}
         <div class="flex items-center gap-[40px]">
-          <div class="w-[100px] text-base font-normal text-right">
+          <div class="w-[150px] text-base font-normal text-right">
             {redeemData?.remains} left
           </div>
 
@@ -104,15 +98,7 @@
           class="flex items-center justify-between p-[12px] bg-[#EEEEEE] rounded-[12px]"
         >
           <div class="text-[#131313] text-sm">Your gift code</div>
-          {#if redeemData?.campaignName === "sui-unlock"}
-            <Copy
-              address={redeemData?.id || "N/A"}
-              iconColor="#000"
-              iconSize={20}
-              color="#000"
-              isShorten
-            />
-          {:else if redeemData?.code}
+          {#if redeemData?.code}
             <Copy
               address={redeemData?.code || "N/A"}
               iconColor="#000"
@@ -129,11 +115,16 @@
   </div>
 </div>
 
-<style>
+<style windi:preflights:global windi:safelist:global>
   @media (max-width: 320) {
     .text-smxs {
       font-size: 14px;
       line-height: 20px;
+    }
+
+    .gap-320-sx {
+      grid-gap: 10px !important;
+      gap: 10px !important;
     }
   }
 </style>

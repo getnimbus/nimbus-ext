@@ -16,7 +16,8 @@
 
   import Loading from "~/components/Loading.svelte";
   import RedeemCard from "~/components/RedeemCard.svelte";
-  import TicketRewardCard from "~/components/SUI Campaign/TicketRewardCard.svelte";
+  import TicketCard from "~/components/SUI Campaign/TicketCard.svelte";
+  import BoxCard from "~/components/SUI Campaign/BoxCard.svelte";
   import Image from "~/components/Image.svelte";
 
   import goldImg from "~/assets/Gold4.svg";
@@ -46,6 +47,23 @@
 
   let isLoadingRedeem = false;
   let selectedTicketReward = {};
+
+  const rewardBox = [
+    // {
+    //   cost: 1200,
+    //   description: "Nimbus on SUI loot boxes",
+    //   title: "Paper Box",
+    //   body: "PAPER_BOX",
+    //   logo: "https://nimbus-zodiac.s3.ap-southeast-1.amazonaws.com/sui-unlock/closed-box.png",
+    // },
+    // {
+    //   cost: 1200,
+    //   description: "FlowX on SUI loot boxes",
+    //   title: "FlowX Box",
+    //   body: "FLOWX_BOX",
+    //   logo: "https://nimbus-zodiac.s3.ap-southeast-1.amazonaws.com/sui-unlock/closed-box.png",
+    // },
+  ];
 
   const rewardTicket = [
     {
@@ -216,6 +234,8 @@
       isLoadingRedeem = false;
     }
   };
+
+  const handleRedeemBox = async (data) => {};
 </script>
 
 <div class="flex flex-col gap-4">
@@ -300,10 +320,20 @@
               {/each}
 
               {#if $queryReward?.data !== undefined}
-                {#each rewardTicket as item}
-                  <TicketRewardCard
+                {#each rewardTicket || [] as item}
+                  <TicketCard
+                    isRedeem
                     data={item}
                     {handleRedeemTicket}
+                    {isLoadingRedeem}
+                    {totalPoint}
+                  />
+                {/each}
+
+                {#each rewardBox || [] as item}
+                  <BoxCard
+                    data={item}
+                    {handleRedeemBox}
                     {isLoadingRedeem}
                     {totalPoint}
                   />
@@ -327,11 +357,20 @@
             </div>
 
             <div class="grid lg:grid-cols-2 grid-cols-1 gap-10">
-              {#each $queryReward?.data?.ownRewards || [] as item}
+              {#each $queryReward?.data?.ownRewards.filter((item) => item?.campaignName !== "sui-unlock") || [] as item}
                 <RedeemCard
                   redeemData={item}
                   handleRedeem={() => {}}
                   {isLoadingRedeem}
+                />
+              {/each}
+
+              {#each $queryReward?.data?.ownRewards.filter((item) => item?.campaignName === "sui-unlock") || [] as item}
+                <TicketCard
+                  data={item}
+                  handleRedeemTicket={() => {}}
+                  {isLoadingRedeem}
+                  {totalPoint}
                 />
               {/each}
             </div>
