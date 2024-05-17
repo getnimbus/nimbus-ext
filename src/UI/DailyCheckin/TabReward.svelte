@@ -203,7 +203,7 @@
         trigger();
       }
 
-      queryClient?.invalidateQueries(["daily-checkin"]);
+      queryClient?.invalidateQueries([$userPublicAddress, "daily-checkin"]);
       queryClient?.invalidateQueries([$userPublicAddress, "rewards"]);
       selectedTicketReward = data;
       response?.error === undefined && triggerRedeemSuccess();
