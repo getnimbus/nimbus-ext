@@ -113,7 +113,7 @@
   }
 
   $: queryDailyCheckin = createQuery({
-    queryKey: ["daily-checkin", $userPublicAddress],
+    queryKey: [$userPublicAddress, "daily-checkin"],
     queryFn: () => handleGetDataDailyCheckin(),
     staleTime: Infinity,
     enabled:
@@ -161,8 +161,8 @@
           trigger();
         }
 
-        queryClient?.invalidateQueries(["daily-checkin", $userPublicAddress]);
-        queryClient?.invalidateQueries(["rewards", $userPublicAddress]);
+        queryClient?.invalidateQueries([$userPublicAddress, "daily-checkin"]);
+        queryClient?.invalidateQueries([$userPublicAddress, "rewards"]);
         selectedTicketReward = data;
         triggerRedeemSuccess();
       } catch (e) {
@@ -203,8 +203,8 @@
         trigger();
       }
 
-      queryClient?.invalidateQueries(["daily-checkin", $userPublicAddress]);
-      queryClient?.invalidateQueries(["rewards", $userPublicAddress]);
+      queryClient?.invalidateQueries([$userPublicAddress, "daily-checkin"]);
+      queryClient?.invalidateQueries([$userPublicAddress, "rewards"]);
       selectedTicketReward = data;
       response?.error === undefined && triggerRedeemSuccess();
     } catch (error) {

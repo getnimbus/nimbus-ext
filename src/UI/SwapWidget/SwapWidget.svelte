@@ -170,8 +170,8 @@
         mixpanel.track("user_swap_completed");
         updateBalanceToken(data);
         getHoldingToken($wallet, chain);
-        queryClient?.invalidateQueries(["token-holding"]);
-        queryClient?.invalidateQueries(["daily-checkin"]);
+        // queryClient?.invalidateQueries(["token-holding"]);
+        queryClient?.invalidateQueries([$userPublicAddress, "daily-checkin"]);
         triggerFireworkBonus(response?.data?.point);
       }
     } catch (e) {

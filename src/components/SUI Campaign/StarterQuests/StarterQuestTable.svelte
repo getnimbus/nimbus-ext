@@ -2,7 +2,7 @@
   import { nimbus } from "~/lib/network";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
-  import { isDarkMode } from "~/store";
+  import { isDarkMode, userPublicAddress } from "~/store";
   import { triggerFirework } from "~/utils";
   import { wait } from "~/entries/background/utils";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
@@ -154,7 +154,7 @@
       triggerBonusScore();
       bonusScore = data?.point;
       queryClient?.invalidateQueries(["users-me"]);
-      queryClient?.invalidateQueries(["daily-checkin"]);
+      queryClient?.invalidateQueries([$userPublicAddress, "daily-checkin"]);
       queryClient?.invalidateQueries(["partners-detail-campaign"]);
       queryClient?.invalidateQueries(["quests-campaign"]);
     } catch (e) {
