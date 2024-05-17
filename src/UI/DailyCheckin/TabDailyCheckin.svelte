@@ -195,7 +195,7 @@
           bonusScore = response?.data?.bonus;
           isTriggerBonusScore = true;
         }
-        queryClient?.invalidateQueries(["daily-checkin"]);
+        queryClient?.invalidateQueries([$userPublicAddress, "daily-checkin"]);
         queryClient?.invalidateQueries(["users-me"]);
       }
     } catch (error) {
@@ -523,8 +523,8 @@
     triggerBonusScore();
     bonusScore = bonus;
     isTriggerBonusScore = true;
-    queryClient?.invalidateQueries(["daily-checkin"]);
-    queryClient?.invalidateQueries(["rewards"]);
+    queryClient?.invalidateQueries([$userPublicAddress, "daily-checkin"]);
+    queryClient?.invalidateQueries([$userPublicAddress, "rewards"]);
     queryClient?.invalidateQueries(["list-quest"]);
     queryClient?.invalidateQueries(["users-me"]);
   };

@@ -179,7 +179,7 @@
         }
 
         getFlipCheck();
-        queryClient?.invalidateQueries(["daily-checkin"]);
+        queryClient?.invalidateQueries([$userPublicAddress, "daily-checkin"]);
 
         isLoadingFlip = false;
       } catch (error) {
@@ -325,7 +325,7 @@
       }
 
       queryClient?.invalidateQueries(["link-socials"]);
-      queryClient?.invalidateQueries(["daily-checkin"]);
+      queryClient?.invalidateQueries([$userPublicAddress, "daily-checkin"]);
 
       triggerBonusScore();
       bonusScore = 1000;
@@ -395,7 +395,7 @@
         {#if startFlip && dataFlipCheck?.canPlay && linkedSuiWallet}
           <div class="flex justify-center items-center gap-4">
             <button
-              class="rounded-[12px] text-white bg-[#FFB800] w-full py-4 px-5 font-medium sm:text-2xl text-lg max-w-[140px]"
+              class="rounded-[12px] text-white bg-[#FFB800] w-full py-4 px-5 font-medium sm:text-2xl text-lg max-w-[140px] flex items-center justify-center"
               on:click={() => {
                 if (!isLoadingFlip) {
                   triggerFlipResult(1);
@@ -410,7 +410,7 @@
               {/if}
             </button>
             <button
-              class="rounded-[12px] text-white bg-[#FFB800] w-full py-4 px-5 font-medium sm:text-2xl text-lg max-w-[140px]"
+              class="rounded-[12px] text-white bg-[#FFB800] w-full py-4 px-5 font-medium sm:text-2xl text-lg max-w-[140px] flex items-center justify-center"
               on:click={() => {
                 if (!isLoadingFlip) {
                   triggerFlipResult(0);
