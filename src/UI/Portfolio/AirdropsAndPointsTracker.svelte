@@ -2,7 +2,7 @@
   import { flatten } from "lodash";
   import { createQuery } from "@tanstack/svelte-query";
   import { nimbus } from "~/lib/network";
-  import { isDarkMode, user, wallet, totalAirdrops } from "~/store";
+  import { isDarkMode, wallet, totalAirdrops } from "~/store";
 
   import TooltipTitle from "~/components/TooltipTitle.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
@@ -69,6 +69,11 @@
       name: "FlowX",
       website: "https://flowx.finance/",
       logo: "https://strapi-dev.scand.app/uploads/photo_2023_10_23_09_56_50_7d2b8e58b3.jpg",
+    },
+    Suilend: {
+      name: "Suilend",
+      website: "https://www.suilend.fi/",
+      logo: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y+mAAAA1VBMVEUCChkBCRYABhIAAAAAABwAADkzWapvk+WPsv+cvv+Qtv96pP9Rf+UbSaoADjgAAA4+ZsGiwv/J3f/Y5f/b5//F2P+xzP9Ri/8WTsIACUfh6//l7v/o8P9flP8lcP8hZfbe6f/r8v/t8/81YMAAKXEFFTTw9f9sj9sAACZQcbry9/9Ye8jj7f89Y7dWfdMAGVJJZ6UAGVxPeNSAnuIeQo5ZdrVsl/c/W5kONHq91f8AADQAABYsSYUYPId0k9iQr/JkiuEAIl4DIlM+X6kkTqgfXuUAFUYAxKikAAABfUlEQVR4AY2SBY5rMQxFX3LL3DgPU0jy+8tMwwz7X9JMUUVpLLSO2df5uzF2BXAAsRgAfp6DeCKZSmeyuXwBJ/nFYqksSJJwvYwfOEcUYZYiVVGRFF6mWqvjMC/M6IqxtqLIzfxr/D+ciyGlK7bZtCYSrTbAD6uiQ5Vmt9u1FeqBOzicmBe8vu2uYJQEY2gMhoMRdoljMt2VGXdSZJh6gkQ5saWYRevEZmUGByVX91VfevMNRXpXdQFeSMuKtUbRcg1ZrLyBhm6A2zv16zSNTt/zFXzIaNNczSrmwKMw6yp9L1xPjCWp1QW0N+IY603/vvfA1vDJk32ltBjCwbNqbvq/7MZNlAXR3WuM87i33Uou9pu+DV6H89Vxhtuq6u69uL88ADgMH6JiV8zIFo6+zYGeq41t/rIoXeAHDHz0mb2jfsWu5i6/4ZB91fyUJ2SkKpU+ZRpHRXks8DOeK0hK8qb3ONXedz6XSpfT2cEE/JI0i/H4A47R4cScOX+1H/ovLHjBsaBsAAAAAElFTkSuQmCC",
     },
   };
 
