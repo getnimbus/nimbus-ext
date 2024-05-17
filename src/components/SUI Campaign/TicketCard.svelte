@@ -19,8 +19,8 @@
   export let isLoadingRedeem;
   export let totalPoint;
 
-  let timeCountDown = "";
   let showDisabled = false;
+  let timeCountDown = "";
   let intervalId = null;
   let interval: ReturnType<typeof setInterval>;
 
@@ -158,7 +158,12 @@
                   <div
                     class="max-w-[360px] text-white bg-black py-1 px-2 text-xs rounded relative w-max normal-case"
                   >
-                    You are not enough GM Points to Redeem
+                    {#if totalPoint < 1000}
+                      You are not enough GM Points to Redeem
+                    {/if}
+                    {#if !checkTicketValidate()}
+                      There are not available now
+                    {/if}
                   </div>
                 </div>
               {/if}
