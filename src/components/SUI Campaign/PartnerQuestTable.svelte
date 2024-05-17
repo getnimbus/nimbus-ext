@@ -2,7 +2,7 @@
   import { nimbus } from "~/lib/network";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
-  import { isDarkMode } from "~/store";
+  import { isDarkMode, userPublicAddress } from "~/store";
   import { triggerFirework } from "~/utils";
   import { wait } from "~/entries/background/utils";
   import { getLinkData, getCampaignPartnerDetail } from "~/lib/queryAPI";
@@ -178,7 +178,7 @@
       triggerBonusScore();
       bonusScore = data?.point;
       queryClient?.invalidateQueries(["users-me"]);
-      queryClient?.invalidateQueries(["daily-checkin"]);
+      queryClient?.invalidateQueries([$userPublicAddress, "daily-checkin"]);
       queryClient?.invalidateQueries(["partners-detail-campaign"]);
       queryClient?.invalidateQueries(["quests-campaign"]);
     } catch (e) {
@@ -259,7 +259,7 @@
               }`}
             >
               <div
-                class={`text-left text-base font-medium ${data.type === "ONCHAIN" ? "text-[#ffb800]" : ""}`}
+                class={`text-left text-base font-medium ${data.type === "ONCHAIN" ? "text-[#ffb800]" : $isDarkMode ? "text-white" : "text-black"}`}
               >
                 {data?.title}
               </div>
@@ -405,7 +405,7 @@
           <div class="text-right text-sm uppercase font-medium">Task</div>
           <div class="flex flex-col gap-1 items-start justify-end font-medium">
             <div
-              class={`text-base ${data.type === "ONCHAIN" ? "text-[#ffb800]" : ""}`}
+              class={`text-base ${data.type === "ONCHAIN" ? "text-[#ffb800]" : $isDarkMode ? "text-white" : "text-black"}`}
             >
               {data?.title}
             </div>

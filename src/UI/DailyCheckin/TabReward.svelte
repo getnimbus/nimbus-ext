@@ -129,7 +129,7 @@
   }
 
   $: queryReward = createQuery({
-    queryKey: [$userPublicAddress, "rewards"],
+    queryKey: ["rewards", $userPublicAddress],
     queryFn: () => handleGetDataRewards($userPublicAddress),
     staleTime: Infinity,
     enabled:
@@ -161,8 +161,8 @@
           trigger();
         }
 
-        queryClient?.invalidateQueries(["daily-checkin"]);
-        queryClient?.invalidateQueries(["rewards"]);
+        queryClient?.invalidateQueries([$userPublicAddress, "daily-checkin"]);
+        queryClient?.invalidateQueries([$userPublicAddress, "rewards"]);
         selectedTicketReward = data;
         triggerRedeemSuccess();
       } catch (e) {
@@ -203,7 +203,7 @@
         trigger();
       }
 
-      queryClient?.invalidateQueries(["daily-checkin"]);
+      queryClient?.invalidateQueries([$userPublicAddress, "daily-checkin"]);
       queryClient?.invalidateQueries([$userPublicAddress, "rewards"]);
       selectedTicketReward = data;
       response?.error === undefined && triggerRedeemSuccess();

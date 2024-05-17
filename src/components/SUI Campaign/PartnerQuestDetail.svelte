@@ -60,14 +60,19 @@
   }
 
   $: queryAllPositions = createQueries(
-    positionListQueries.map((item) => {
-      return {
-        queryKey: ["positions", selectedPartnersData, item],
-        queryFn: () => getPositions(queryPositionAddress, item),
-        staleTime: Infinity,
-        enabled: Boolean(selectedPartnersData),
-      };
-    })
+    positionListQueries
+      .filter(
+        (item) =>
+          item?.toLowerCase() === selectedPartnersData?.title.toLowerCase()
+      )
+      .map((item) => {
+        return {
+          queryKey: ["positions", selectedPartnersData, item],
+          queryFn: () => getPositions(queryPositionAddress, item),
+          staleTime: Infinity,
+          enabled: Boolean(selectedPartnersData),
+        };
+      })
   );
 
   $: positionsData =
@@ -287,31 +292,33 @@
       <PartnerQuestTable {dataQuestsBoard} {id} />
     </div>
 
-    <div class="flex flex-col gap-4">
-      <div class="border-b-[1.5px] border_0000000d pb-2">
-        <div class="xl:title-3 title-2">DeFi</div>
-      </div>
+    {#if selectedPartnersData && selectedPartnersData?.id !== "sui-unlock-walless"}
+      <div class="flex flex-col gap-4">
+        <div class="border-b-[1.5px] border_0000000d pb-2">
+          <div class="xl:title-3 title-2">DeFi</div>
+        </div>
 
-      {#if $queryAllPositions.some((item) => item.isFetching === true)}
-        <div class="flex justify-center items-center min-h-[300px]">
-          <Loading />
-        </div>
-      {:else}
-        <div class="flex flex-col gap-6">
-          {#if positionListData && positionListData.length === 0}
-            <div
-              class="flex justify-center items-center min-h-[300px] py-4 px-3 text-lg text-gray-400"
-            >
-              Empty
-            </div>
-          {:else}
-            {#each positionListData as item}
-              <Positions data={item} />
-            {/each}
-          {/if}
-        </div>
-      {/if}
-    </div>
+        {#if $queryAllPositions.some((item) => item.isFetching === true)}
+          <div class="flex justify-center items-center min-h-[300px]">
+            <Loading />
+          </div>
+        {:else}
+          <div class="flex flex-col gap-6">
+            {#if positionListData && positionListData.length === 0}
+              <div
+                class="flex justify-center items-center min-h-[300px] py-4 px-3 text-lg text-gray-400"
+              >
+                Empty
+              </div>
+            {:else}
+              {#each positionListData as item}
+                <Positions data={item} />
+              {/each}
+            {/if}
+          </div>
+        {/if}
+      </div>
+    {/if}
   </div>
 </div>
 

@@ -148,7 +148,7 @@
       triggerBonusScore();
       bonusScore = 1000;
       queryClient?.invalidateQueries(["link-socials"]);
-      queryClient?.invalidateQueries(["daily-checkin"]);
+      queryClient?.invalidateQueries([$userPublicAddress, "daily-checkin"]);
       toastMsg = "Your are successfully connect your SUI wallet!";
       isSuccessToast = true;
       trigger();

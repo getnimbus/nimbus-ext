@@ -2,7 +2,7 @@
   import { onMount } from "svelte";
   import * as browser from "webextension-polyfill";
   import { i18n } from "~/lib/i18n";
-  import { isDarkMode, wallet, user } from "~/store";
+  import { isDarkMode, wallet, user, userPublicAddress } from "~/store";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
   import { nimbus } from "~/lib/network";
   import mixpanel from "mixpanel-browser";
@@ -249,7 +249,7 @@
         return;
       }
 
-      queryClient?.invalidateQueries(["daily-checkin"]);
+      queryClient?.invalidateQueries([$userPublicAddress, "daily-checkin"]);
 
       toastMsg = "Successfully submit your invitation code!";
       isSuccessToast = true;
