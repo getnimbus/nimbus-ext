@@ -12,6 +12,7 @@
   import Button from "~/components/Button.svelte";
 
   import Coinbase from "~/assets/coinbase.png";
+  import { wait } from "~/entries/background/utils";
 
   let toastMsg = "";
   let isSuccessToast = false;
@@ -121,6 +122,7 @@
       );
       if (response && response?.data) {
         window.open(response?.data?.hosted_url, "_blank");
+        await wait(4000);
         navigateTo(
           `/payments/success?paymentId=${response?.data?.paymentLinkId}`
         );

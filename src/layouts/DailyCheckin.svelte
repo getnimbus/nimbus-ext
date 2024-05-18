@@ -138,7 +138,11 @@
 
   const handleSetWallet = async () => {
     const selectedWalletRes = await browser.storage.sync.get("selectedWallet");
-    if (selectedWalletRes?.selectedWallet !== null) {
+    if (
+      selectedWalletRes?.selectedWallet !== null &&
+      $user &&
+      Object.keys($user).length !== 0
+    ) {
       wallet.update((n) => (n = selectedWalletRes.selectedWallet));
     } else {
       if (listAddress && listAddress?.length !== 0) {

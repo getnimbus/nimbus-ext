@@ -230,6 +230,10 @@
         Object.keys(selectedDataSUILink).length !== 0 &&
         ($suiWalletInstance as WalletState)?.address !== undefined
       ) {
+        console.log({
+          HELLO: selectedDataSUILink,
+          HI: ($suiWalletInstance as WalletState)?.address,
+        });
         if (
           selectedDataSUILink?.uid !==
           ($suiWalletInstance as WalletState)?.address
