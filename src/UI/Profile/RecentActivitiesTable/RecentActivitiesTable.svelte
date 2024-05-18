@@ -90,29 +90,23 @@
           <th
             class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8 w-[200px]"
           >
-            <div class="text-left xl:text-xs text-xl uppercase font-medium">
-              From
-            </div>
+            <div class="text-left text-xs uppercase font-medium">From</div>
           </th>
           <th
             class="py-3 xl:static xl:bg-transparent sticky left-[200px] z-10 bg_f4f5f8 w-[200px]"
           >
-            <div class="text-left xl:text-xs text-xl uppercase font-medium">
-              To
-            </div>
+            <div class="text-left text-xs uppercase font-medium">To</div>
           </th>
           <th class="py-3">
-            <div class="text-right xl:text-xs text-xl uppercase font-medium">
+            <div class="text-right text-xs uppercase font-medium">
               Trade size
             </div>
           </th>
           <th class="py-3">
-            <div class="text-right xl:text-xs text-xl uppercase font-medium">
-              Fee
-            </div>
+            <div class="text-right text-xs uppercase font-medium">Fee</div>
           </th>
           <th class="py-3 pr-3 rounded-tr-[10px]">
-            <div class="text-right xl:text-xs text-xl uppercase font-medium">
+            <div class="text-right text-xs uppercase font-medium">
               Transaction
             </div>
           </th>

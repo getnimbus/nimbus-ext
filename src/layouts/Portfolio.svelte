@@ -863,7 +863,7 @@
       >
         <img src={Reload} alt="" class="w-4 h-4 xl:w-3 xl:h-3" />
       </div>
-      <div class="text-lg font-medium text-white xl:text-xs">
+      <div class="font-medium text-white xl:text-xs text-lg">
         {#if loading}
           {MultipleLang.updating_data}
         {:else}
