@@ -230,17 +230,13 @@
         Object.keys(selectedDataSUILink).length !== 0 &&
         ($suiWalletInstance as WalletState)?.address !== undefined
       ) {
-        console.log({
-          HELLO: selectedDataSUILink,
-          HI: ($suiWalletInstance as WalletState)?.address,
-        });
         if (
           selectedDataSUILink?.uid !==
           ($suiWalletInstance as WalletState)?.address
         ) {
+          linkedSuiWallet = false;
           toastMsg = `Please connect to wallet ${shorterAddress(selectedDataSUILink?.uid)} to flip`;
           isSuccessToast = false;
-          linkedSuiWallet = false;
           trigger();
           ($suiWalletInstance as WalletState)?.disconnect();
         } else {
