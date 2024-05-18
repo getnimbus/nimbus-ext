@@ -319,21 +319,23 @@
               <tr class="bg_f4f5f8 sticky top-0">
                 <th class="pl-3 py-3 w-1/3 rounded-tl-[10px]">
                   <div
-                    class="text-left xl:text-xs text-lg uppercase font-medium"
+                    class="text-left xl:text-xs text-sm uppercase font-medium"
                   >
                     Code
                   </div>
                 </th>
+
                 <th class="py-3 w-1/3">
                   <div
-                    class="flex items-center justify-center xl:gap-2 gap-4 text-center xl:text-xs uppercase font-medium"
+                    class="text-center xl:text-xs text-sm uppercase font-medium"
                   >
                     Time
                   </div>
                 </th>
+
                 <th class="pr-3 py-3 w-1/3 rounded-tr-[10px]">
                   <div
-                    class="flex gap-1 justify-end items-center text-right xl:text-xs uppercase font-medium relative"
+                    class="text-right xl:text-xs text-sm uppercase font-medium"
                   >
                     Reward
                   </div>

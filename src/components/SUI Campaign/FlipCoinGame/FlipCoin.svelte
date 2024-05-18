@@ -234,9 +234,9 @@
           selectedDataSUILink?.uid !==
           ($suiWalletInstance as WalletState)?.address
         ) {
+          linkedSuiWallet = false;
           toastMsg = `Please connect to wallet ${shorterAddress(selectedDataSUILink?.uid)} to flip`;
           isSuccessToast = false;
-          linkedSuiWallet = false;
           trigger();
           ($suiWalletInstance as WalletState)?.disconnect();
         } else {

@@ -1158,37 +1158,27 @@
                         <th
                           class="py-3 xl:static xl:bg-transparent sticky left-10 z-10 bg_f4f5f8 xl:w-[230px] w-[280px]"
                         >
-                          <div
-                            class="text-left xl:text-xs text-xl uppercase font-medium"
-                          >
+                          <div class="text-left text-xs uppercase font-medium">
                             {MultipleLang.assets}
                           </div>
                         </th>
                         <th class="py-3">
-                          <div
-                            class="text-right xl:text-xs text-xl uppercase font-medium"
-                          >
+                          <div class="text-right text-xs uppercase font-medium">
                             {MultipleLang.price}
                           </div>
                         </th>
                         <th class="py-3">
-                          <div
-                            class="text-right xl:text-xs text-xl uppercase font-medium"
-                          >
+                          <div class="text-right text-xs uppercase font-medium">
                             {MultipleLang.amount}
                           </div>
                         </th>
                         <th class="py-3">
-                          <div
-                            class="text-right xl:text-xs text-xl uppercase font-medium"
-                          >
+                          <div class="text-right text-xs uppercase font-medium">
                             {MultipleLang.value}
                           </div>
                         </th>
                         <th class="py-3">
-                          <div
-                            class="text-right xl:text-xs text-xl uppercase font-medium"
-                          >
+                          <div class="text-right text-xs uppercase font-medium">
                             <TooltipTitle
                               tooltipText="Ratio based on total token holding"
                             >
@@ -1198,7 +1188,7 @@
                         </th>
                         <th class="py-3 pr-3 rounded-tr-[10px]">
                           <div
-                            class="text-right xl:text-xs text-xl uppercase font-medium flex items-center justify-end gap-2"
+                            class="text-right text-xs uppercase font-medium flex items-center justify-end gap-2"
                           >
                             Tag
                             <div

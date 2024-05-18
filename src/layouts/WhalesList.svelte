@@ -137,7 +137,11 @@
 
   const handleSetWallet = async () => {
     const selectedWalletRes = await browser.storage.sync.get("selectedWallet");
-    if (selectedWalletRes?.selectedWallet !== null) {
+    if (
+      selectedWalletRes?.selectedWallet !== null &&
+      $user &&
+      Object.keys($user).length !== 0
+    ) {
       wallet.update((n) => (n = selectedWalletRes.selectedWallet));
     } else {
       if (listAddress && listAddress?.length !== 0) {
@@ -463,13 +467,11 @@
             <th
               class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8"
             >
-              <div class="text-left xl:text-xs text-lg uppercase font-medium">
-                Address
-              </div>
+              <div class="text-left text-xs uppercase font-medium">Address</div>
             </th>
             <th class="py-3">
               <div
-                class="flex items-center justify-end xl:gap-2 gap-4 text-right xl:text-xs text-lg uppercase font-medium"
+                class="flex items-center justify-end xl:gap-2 gap-4 text-right text-xs uppercase font-medium"
               >
                 ETH Balance
                 <div
@@ -487,7 +489,7 @@
             </th>
             <th class="py-3">
               <div
-                class="flex items-center justify-end xl:gap-2 gap-4 text-right xl:text-xs . uppercase font-medium"
+                class="flex items-center justify-end xl:gap-2 gap-4 text-right text-xs uppercase font-medium"
               >
                 1D Pnl
                 <div
@@ -505,7 +507,7 @@
             </th>
             <th class="py-3">
               <div
-                class="flex items-center justify-end xl:gap-2 gap-4 text-right xl:text-xs uppercase font-medium"
+                class="flex items-center justify-end xl:gap-2 gap-4 text-right text-xs uppercase font-medium"
               >
                 7D Pnl
                 <div
@@ -523,7 +525,7 @@
             </th>
             <th class="py-3">
               <div
-                class="flex items-center justify-end xl:gap-2 gap-4 text-right xl:text-xs uppercase font-medium"
+                class="flex items-center justify-end xl:gap-2 gap-4 text-right text-xs uppercase font-medium"
               >
                 30D Pnl
                 <div
@@ -541,10 +543,9 @@
             </th>
             <th class="py-3">
               <div
-                class="flex items-center justify-end xl:gap-2 gap-4 text-right xl:text-xs uppercase font-medium"
+                class="flex items-center justify-end xl:gap-2 gap-4 text-right text-xs uppercase font-medium"
               >
                 Realized Profit
-
                 <div
                   on:click={() => {
                     toggleSortWhalesList(
@@ -560,7 +561,7 @@
             </th>
             <th class="py-3">
               <div
-                class="flex items-center justify-end xl:gap-2 gap-4 text-right xl:text-xs uppercase font-medium"
+                class="flex items-center justify-end xl:gap-2 gap-4 text-right text-xs uppercase font-medium"
               >
                 30D TXs
                 <div
@@ -578,7 +579,7 @@
             </th>
             <th class="py-3">
               <div
-                class="flex items-center justify-end xl:gap-1 gap-4 text-right xl:text-xs uppercase font-medium relative"
+                class="flex items-center justify-end xl:gap-1 gap-4 text-right text-xs uppercase font-medium relative"
               >
                 AHT
                 <div
@@ -623,7 +624,7 @@
             </th>
             <th class="py-3">
               <div
-                class="flex items-center justify-end xl:gap-2 gap-4 text-right xl:text-xs uppercase font-medium"
+                class="flex items-center justify-end xl:gap-2 gap-4 text-right text-xs uppercase font-medium"
               >
                 Last Time
                 <div
@@ -641,7 +642,7 @@
             </th>
             <th class="pr-3 py-3 rounded-tr-[10px]">
               <div
-                class="flex gap-1 justify-end items-center text-right xl:text-xs uppercase font-medium relative"
+                class="flex items-center justify-end xl:gap-2 gap-4 text-right text-xs uppercase font-medium relative"
               >
                 RPT
                 <div

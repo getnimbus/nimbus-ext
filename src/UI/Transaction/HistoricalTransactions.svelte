@@ -45,29 +45,21 @@
         <th
           class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky top-0 left-0 z-9 bg_f4f5f8"
         >
-          <div class="text-xl font-medium text-left uppercase xl:text-xs">
-            Transaction
-          </div>
+          <div class="font-medium text-left text-xs uppercase">Transaction</div>
         </th>
         <th class="py-3">
-          <div class="text-xl font-medium text-left uppercase xl:text-xs">
-            From
-          </div>
+          <div class="font-medium text-left text-xs uppercase">From</div>
         </th>
         <th class="py-3">
-          <div class="text-xl font-medium text-left uppercase xl:text-xs">
-            To
-          </div>
+          <div class="font-medium text-left text-xs uppercase">To</div>
         </th>
         <th class="py-3">
-          <div
-            class="text-left xl:text-xs text-xl uppercase font-medium min-w-[100px]"
-          >
+          <div class="text-left text-xs uppercase font-medium min-w-[100px]">
             Type
           </div>
         </th>
         <th class="pr-3 py-3 rounded-tr-[10px]">
-          <div class="text-xl font-medium text-left uppercase xl:text-xs">
+          <div class="font-medium text-left text-xs uppercase">
             Token change
           </div>
         </th>
