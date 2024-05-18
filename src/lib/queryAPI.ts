@@ -41,9 +41,14 @@ export const handleValidateAddress = async (address: string) => {
   );
 };
 
-export const getVirtualPortfolioList = async (address: string) => {
+export const getVirtualPortfolioProfile = async (address: string) => {
+  const response: any = await nimbus.get(`/address/${address}/personalize/virtual-portfolio-profile`);
+  return response;
+}
+
+export const getVirtualPortfolio = async (address: string, portfolioProfileId: string) => {
   const response = await nimbus.get(
-    `/address/${address}/personalize/virtual-portfolio`
+    `/address/${address}/personalize/virtual-portfolio?portfolioProfileId=${portfolioProfileId}`
   );
   return response;
 };
