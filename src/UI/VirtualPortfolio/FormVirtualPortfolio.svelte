@@ -175,13 +175,14 @@
       </div>
       {#if type === "edit"}
         <DateInput
-          value={time}
+          bind:value={time}
           format="yyyy-MM-dd"
           min={dayjs(defaultData.updatedTime).toDate()}
           max={new Date()}
         />
-      {:else}
-        <DateInput value={time} format="yyyy-MM-dd" max={new Date()} />
+      {/if}
+      {#if type === "add"}
+        <DateInput bind:value={time} format="yyyy-MM-dd" max={new Date()} />
       {/if}
     </div>
   </div>
@@ -525,7 +526,7 @@
         <Button
           {isLoading}
           disabled={isLoading}
-          on:click={() =>
+          on:click={() => {
             handleSubmit(
               {
                 initialTime: dayjs(time).format("YYYY-MM-DD"),
@@ -538,7 +539,8 @@
                 }),
               },
               type
-            )}
+            );
+          }}
         >
           {type === "edit" ? "Edit" : "Create"}
         </Button>

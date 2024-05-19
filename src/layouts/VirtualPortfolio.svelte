@@ -11,6 +11,7 @@
   } from "~/lib/queryAPI";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
+  import * as browser from "webextension-polyfill";
 
   import AppOverlay from "~/components/Overlay.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
@@ -69,45 +70,81 @@
 
   $: {
     if (
-      !$queryVirtualPortfolioProfile.isError &&
-      $queryVirtualPortfolioProfile.data !== undefined &&
+      !$queryVirtualPortfolioProfile?.isError &&
+      $queryVirtualPortfolioProfile?.data !== undefined &&
       $queryVirtualPortfolioProfile?.data?.data.length !== 0
     ) {
-      listVirtualPortfolio = $queryVirtualPortfolioProfile?.data?.data;
-      if (
-        $queryVirtualPortfolioProfile?.data?.data &&
-        $queryVirtualPortfolioProfile?.data?.data.length !== 0 &&
-        $queryVirtualPortfolioProfile?.data?.data.length === 1
-      ) {
-        selectedVirtualPortfolio = $queryVirtualPortfolioProfile?.data?.data[0];
-        virtualPortfolioId = selectedVirtualPortfolio.id;
-
-        window.history.replaceState(
-          null,
-          "",
-          window.location.pathname +
-            `?address=${$wallet}&virtualPortfolioId=${virtualPortfolioId}`
-        );
-      }
-      if (
-        $queryVirtualPortfolioProfile?.data?.data &&
-        $queryVirtualPortfolioProfile?.data?.data.length !== 0 &&
-        $queryVirtualPortfolioProfile?.data?.data.length > 1
-      ) {
-        selectedVirtualPortfolio =
-          $queryVirtualPortfolioProfile?.data?.data[
-            $queryVirtualPortfolioProfile?.data?.data.length - 1
-          ];
-        virtualPortfolioId = selectedVirtualPortfolio.id;
-        window.history.replaceState(
-          null,
-          "",
-          window.location.pathname +
-            `?address=${$wallet}&virtualPortfolioId=${virtualPortfolioId}`
-        );
-      }
+      handleFormatListVirtualPortfolio(
+        $queryVirtualPortfolioProfile?.data?.data
+      );
     }
   }
+
+  const handleFormatListVirtualPortfolio = async (data: any) => {
+    listVirtualPortfolio = data;
+    const selectedVirtualPortfolioIdRes = await browser.storage.sync.get(
+      "selectedVirtualPortfolioId"
+    );
+    if (selectedVirtualPortfolioIdRes?.selectedVirtualPortfolioId !== null) {
+      virtualPortfolioId =
+        selectedVirtualPortfolioIdRes.selectedVirtualPortfolioId;
+
+      selectedVirtualPortfolio = data.find(
+        (item) =>
+          item.id === selectedVirtualPortfolioIdRes.selectedVirtualPortfolioId
+      );
+
+      window.history.replaceState(
+        null,
+        "",
+        window.location.pathname +
+          `?address=${$wallet}&virtualPortfolioId=${selectedVirtualPortfolioIdRes.selectedVirtualPortfolioId}`
+      );
+    } else {
+      virtualPortfolioId = data[0].id;
+      selectedVirtualPortfolio = data.find((item) => item.id === data[0].id);
+      window.history.replaceState(
+        null,
+        "",
+        window.location.pathname +
+          `?address=${$wallet}&virtualPortfolioId=${data[0].id}`
+      );
+    }
+  };
+
+  $: {
+    if (selectedVirtualPortfolio) {
+      handleUpdateParams();
+    }
+  }
+
+  const handleUpdateParams = () => {
+    browser.storage.sync.set({
+      selectedVirtualPortfolioId: selectedVirtualPortfolio.id,
+    });
+    if (
+      listVirtualPortfolio.length !== 0 &&
+      listVirtualPortfolio.length === 1
+    ) {
+      virtualPortfolioId = selectedVirtualPortfolio.id;
+      window.history.replaceState(
+        null,
+        "",
+        window.location.pathname +
+          `?address=${$wallet}&virtualPortfolioId=${virtualPortfolioId}`
+      );
+    }
+
+    if (listVirtualPortfolio.length !== 0 && listVirtualPortfolio.length > 1) {
+      virtualPortfolioId = selectedVirtualPortfolio.id;
+      window.history.replaceState(
+        null,
+        "",
+        window.location.pathname +
+          `?address=${$wallet}&virtualPortfolioId=${virtualPortfolioId}`
+      );
+    }
+  };
 
   $: queryVirtualPortfolio = createQuery({
     queryKey: ["virtual-portfolio", $wallet, virtualPortfolioId],
@@ -162,7 +199,7 @@
                 };
               }
             ),
-            updatedTime: selectedPortfolioProfile?.updatedTime,
+            updatedTime: selectedVirtualPortfolio?.updatedAt,
           };
         });
 
@@ -239,7 +276,6 @@
           `/address/${$wallet}/personalize/virtual-portfolio?portfolioName=${data?.portfolioName}&portfolioProfileId=${virtualPortfolioId}`,
           data
         );
-
         if (responseEdit && responseEdit?.error) {
           toastMsg = `Something wrong when edit ${data?.portfolioName} virtual portfolio. Please try again!`;
           isSuccessToast = false;
@@ -258,13 +294,12 @@
       console.error(e);
       if (type === "edit") {
         toastMsg = `Something wrong when edit ${data?.portfolioName} virtual portfolio. Please try again!`;
-        isSuccessToast = false;
-        trigger();
-      } else {
-        toastMsg = `Something wrong when add ${data?.portfolioName} virtual portfolio. Please try again!`;
-        isSuccessToast = false;
-        trigger();
       }
+      if (type === "add") {
+        toastMsg = `Something wrong when add ${data?.portfolioName} virtual portfolio. Please try again!`;
+      }
+      isSuccessToast = false;
+      trigger();
     } finally {
       isLoading = false;
       type = "";
@@ -317,15 +352,27 @@
       <div class="flex flex-col max-w-[2000px] m-auto xl:w-[82%] w-[90%]">
         <div class="flex flex-col mb-5 gap-7">
           <div class="flex items-center justify-between">
-            <div
-              class="flex items-center gap-1 text-white cursor-pointer"
-              on:click={() => {
-                navigateTo("/");
-              }}
-            >
-              <img src={LeftArrow} alt="" class="xl:w-5 xl:h-5 w-7 h-7" />
-              <div class="xl:text-sm text-2xl font-medium">Portfolio</div>
-            </div>
+            {#if type === ""}
+              <div
+                class="flex items-center gap-1 text-white cursor-pointer"
+                on:click={() => {
+                  navigateTo("/");
+                }}
+              >
+                <img src={LeftArrow} alt="" class="xl:w-5 xl:h-5 w-7 h-7" />
+                <div class="xl:text-sm text-2xl font-medium">Portfolio</div>
+              </div>
+            {:else}
+              <div
+                class="flex items-center gap-1 text-white cursor-pointer"
+                on:click={() => {
+                  handleCancel();
+                }}
+              >
+                <img src={LeftArrow} alt="" class="xl:w-5 xl:h-5 w-7 h-7" />
+                <div class="xl:text-sm text-2xl font-medium">Back</div>
+              </div>
+            {/if}
           </div>
 
           <div class="flex flex-col gap-3">
@@ -357,7 +404,6 @@
                               selectedVirtualPortfolio?.name}
                             on:click={() => {
                               selectedVirtualPortfolio = item;
-                              virtualPortfolioId = item?.id;
                             }}
                           >
                             {item.name}
@@ -507,7 +553,6 @@
                               selectedVirtualPortfolio?.name}
                             on:click={() => {
                               selectedVirtualPortfolio = item;
-                              virtualPortfolioId = item?.id;
                             }}
                           >
                             {item.name}
@@ -581,7 +626,6 @@
                           selectedVirtualPortfolio?.name}
                         on:click={() => {
                           selectedVirtualPortfolio = item;
-                          virtualPortfolioId = item?.id;
                         }}
                       >
                         {item.name}
@@ -636,7 +680,7 @@
               {/if}
 
               <div class="flex items-center gap-3">
-                {#if listVirtualPortfolio && listVirtualPortfolio?.length !== 0 && virtualPortfolioId.length !== 0}
+                {#if listVirtualPortfolio && listVirtualPortfolio?.length !== 0 && virtualPortfolioId && virtualPortfolioId?.length !== 0}
                   <!-- btn delete virtual portfolio -->
                   <div
                     class="relative w-max"
