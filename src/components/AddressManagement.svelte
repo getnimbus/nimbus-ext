@@ -432,7 +432,10 @@
     // check type wallet
     const selectedTypeWalletRes =
       await browser.storage.sync.get("typeWalletAddress");
-    if (selectedTypeWalletRes?.typeWalletAddress !== null) {
+    if (
+      selectedTypeWalletRes?.typeWalletAddress !== null &&
+      selectedTypeWalletRes?.typeWalletAddress !== "undefined"
+    ) {
       typeWallet.update((n) => (n = selectedTypeWalletRes.typeWalletAddress));
     } else {
       typeWallet.update((n) => (n = listAddress[0]?.type));
@@ -440,7 +443,10 @@
 
     // check chain wallet
     const selectedChainRes = await browser.storage.sync.get("selectedChain");
-    if (selectedChainRes?.selectedChain !== null) {
+    if (
+      selectedChainRes?.selectedChain !== null &&
+      selectedChainRes?.selectedChain !== "undefined"
+    ) {
       chain.update((n) => (n = selectedChainRes.selectedChain));
     } else {
       chain.update((n) => (n = "ALL"));
@@ -448,7 +454,10 @@
 
     // check wallet
     const selectedWalletRes = await browser.storage.sync.get("selectedWallet");
-    if (selectedWalletRes?.selectedWallet !== null) {
+    if (
+      selectedWalletRes?.selectedWallet !== null &&
+      selectedWalletRes?.selectedWallet !== "undefined"
+    ) {
       wallet.update((n) => (n = selectedWalletRes.selectedWallet));
     } else {
       wallet.update(
