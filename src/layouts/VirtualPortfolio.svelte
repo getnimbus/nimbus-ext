@@ -85,7 +85,10 @@
     const selectedVirtualPortfolioIdRes = await browser.storage.sync.get(
       "selectedVirtualPortfolioId"
     );
-    if (selectedVirtualPortfolioIdRes?.selectedVirtualPortfolioId !== null) {
+    if (
+      selectedVirtualPortfolioIdRes?.selectedVirtualPortfolioId !== null &&
+      selectedVirtualPortfolioIdRes?.selectedVirtualPortfolioId !== "undefined"
+    ) {
       virtualPortfolioId =
         selectedVirtualPortfolioIdRes.selectedVirtualPortfolioId;
 
