@@ -190,7 +190,7 @@
         <DateInput
           bind:value={time}
           format="yyyy-MM-dd"
-          min={dayjs(defaultData.updatedTime).toDate()}
+          min={time}
           max={new Date()}
         />
       {/if}
