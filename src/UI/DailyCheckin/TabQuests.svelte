@@ -66,7 +66,9 @@
     }
   }
 
-  $: twitterUsername = socialData.find((item) => item.type === "twitter")?.name;
+  $: twitterUsername = socialData.find(
+    (item) => item?.type === "twitter"
+  )?.name;
 
   $: queryPositionAddress =
     socialData.find((item) => item.chain === "MOVE")?.uid || $userPublicAddress;

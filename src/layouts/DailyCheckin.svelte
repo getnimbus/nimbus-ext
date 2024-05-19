@@ -115,10 +115,10 @@
     listAddress = data?.map((item) => {
       return {
         id: item.id,
-        type: item.type,
+        type: item?.type,
         label: item.label,
-        value: item.type === "CEX" ? item.id : item.accountId,
-        logo: item.type === "CEX" ? item.logo : detectedGeneration(item.type),
+        value: item?.type === "CEX" ? item.id : item.accountId,
+        logo: item?.type === "CEX" ? item.logo : detectedGeneration(item?.type),
         accounts:
           item?.accounts?.map((account) => {
             return {
@@ -236,7 +236,7 @@
 
   const onSubmitInviteCode = async (e) => {
     isLoadingSubmitInviteCode = true;
-    const formData = new FormData(e.target);
+    const formData = new FormData(e?.target);
     const data: any = {};
     for (let field of formData) {
       const [key, value] = field;
@@ -276,7 +276,7 @@
 
 <ErrorBoundary>
   <div class="xl:min-h-screen relative z-9">
-    {#if socialData && socialData.find((item) => item.type === "twitter")}
+    {#if socialData && socialData.find((item) => item?.type === "twitter")}
       {#if isSkipToMainPage || allowSuiCamp}
         <div
           class="max-w-[2000px] m-auto xl:w-[90%] w-[90%] py-8 grid xl:grid-cols-6 grid-cols-1 gap-6 relative z-2"
@@ -297,7 +297,7 @@
                   }`}
                 >
                   <Icon
-                    type={item.type}
+                    type={item?.type}
                     active={activeTabValue === item.value ? true : false}
                   />
                   <div class="xl:text-base text-lg">{item.label}</div>

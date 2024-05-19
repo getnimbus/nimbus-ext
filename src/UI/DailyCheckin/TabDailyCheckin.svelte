@@ -248,7 +248,9 @@
         ?.filter((item) => item.status === "ACTIVE")
         ?.map((item) => {
           const selectedLogs = dataCheckinHistory
-            .filter((log) => log.type === "QUEST" && log.note !== "id-generate")
+            .filter(
+              (log) => log?.type === "QUEST" && log.note !== "id-generate"
+            )
             .find((log) => log.note === item.id);
 
           return {
@@ -272,11 +274,11 @@
   }
 
   $: defaultDataCheckinHistory = dataCheckinHistory
-    .filter((item) => item.type !== "QUEST_VERIFIED")
+    .filter((item) => item?.type !== "QUEST_VERIFIED")
     .map((item) => {
       return {
         ...item,
-        type: nameTypeCheckin(item.type),
+        type: nameTypeCheckin(item?.type),
         point: item.point,
       };
     });
@@ -298,10 +300,10 @@
 
     if (sortTypeHistory === "asc") {
       defaultDataCheckinHistory = defaultDataCheckinHistory.sort((a, b) => {
-        if (a.type > b.type) {
+        if (a?.type > b?.type) {
           return 1;
         }
-        if (a.type < b.type) {
+        if (a?.type < b?.type) {
           return -1;
         }
         return 0;
@@ -309,10 +311,10 @@
     }
     if (sortTypeHistory === "desc") {
       defaultDataCheckinHistory = defaultDataCheckinHistory.sort((a, b) => {
-        if (a.type < b.type) {
+        if (a?.type < b?.type) {
           return 1;
         }
-        if (a.type > b.type) {
+        if (a?.type > b?.type) {
           return -1;
         }
         return 0;
@@ -322,7 +324,7 @@
       defaultDataCheckinHistory = dataCheckinHistory.map((item) => {
         return {
           ...item,
-          type: nameTypeCheckin(item.type),
+          type: nameTypeCheckin(item?.type),
         };
       });
     }
@@ -369,7 +371,7 @@
       defaultDataCheckinHistory = dataCheckinHistory.map((item) => {
         return {
           ...item,
-          type: nameTypeCheckin(item.type),
+          type: nameTypeCheckin(item?.type),
           point: item.point,
         };
       });
