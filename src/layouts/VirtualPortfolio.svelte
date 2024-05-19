@@ -537,92 +537,26 @@
               {/if}
 
               <div class="flex md:flex-row flex-col items-center gap-3">
-                {#if listVirtualPortfolio && listVirtualPortfolio?.length !== 0 && virtualPortfolioId && virtualPortfolioId?.length !== 0}
+                {#if $user && Object.keys($user).length !== 0 && listVirtualPortfolio && listVirtualPortfolio?.length !== 0 && virtualPortfolioId && virtualPortfolioId?.length !== 0}
                   <div class="flex items-center gap-3 md:w-max w-full">
-                    <!-- btn delete virtual portfolio -->
-                    <div
-                      class="relative w-max"
-                      on:mouseenter={() => {
-                        if ($user && Object.keys($user).length === 0) {
-                          showDisable = true;
-                        }
-                      }}
-                      on:mouseleave={() => {
-                        if ($user && Object.keys($user).length === 0) {
-                          showDisable = false;
-                        }
-                      }}
-                    >
-                      {#if $user && Object.keys($user).length === 0 && selectedVirtualPortfolio && Object.keys(selectedVirtualPortfolio).length === 0}
-                        <Button variant="disabled" disabled>Delete</Button>
-                      {:else}
-                        <Button
-                          variant="delete"
-                          on:click={() => {
-                            isOpenConfirmDelete = true;
-                          }}>Delete</Button
-                        >
-                      {/if}
-                      {#if showDisable}
-                        <div
-                          class={`xl:block hidden absolute transform left-1/2 -translate-x-1/2 ${
-                            $user && Object.keys($user).length === 0
-                              ? "-top-8"
-                              : "-top-12"
-                          }`}
-                          style="z-index: 2147483648;"
-                        >
-                          <div
-                            class="max-w-[360px] text-white bg-black py-1 px-2 text-xs rounded relative w-max normal-case"
-                          >
-                            Connect your wallet to add virtual portfolio
-                          </div>
-                        </div>
-                      {/if}
+                    <div class=" w-max">
+                      <Button
+                        variant="delete"
+                        on:click={() => {
+                          isOpenConfirmDelete = true;
+                        }}>Delete</Button
+                      >
                     </div>
 
-                    <!-- btn edit virtual portfolio -->
-                    <div
-                      class="relative w-max"
-                      on:mouseenter={() => {
-                        if ($user && Object.keys($user).length === 0) {
-                          showDisable = true;
-                        }
-                      }}
-                      on:mouseleave={() => {
-                        if ($user && Object.keys($user).length === 0) {
-                          showDisable = false;
-                        }
-                      }}
-                    >
-                      {#if $user && Object.keys($user).length === 0 && selectedVirtualPortfolio && Object.keys(selectedVirtualPortfolio).length === 0}
-                        <Button variant="disabled" disabled>Edit</Button>
-                      {:else}
-                        <Button
-                          variant="no-outlined"
-                          on:click={() => {
-                            type = "edit";
-                          }}
-                        >
-                          Edit
-                        </Button>
-                      {/if}
-                      {#if showDisable}
-                        <div
-                          class={`xl:block hidden absolute transform left-1/2 -translate-x-1/2 ${
-                            $user && Object.keys($user).length === 0
-                              ? "-top-8"
-                              : "-top-12"
-                          }`}
-                          style="z-index: 2147483648;"
-                        >
-                          <div
-                            class="max-w-[360px] text-white bg-black py-1 px-2 text-xs rounded relative w-max normal-case"
-                          >
-                            Connect your wallet to add virtual portfolio
-                          </div>
-                        </div>
-                      {/if}
+                    <div class=" w-max">
+                      <Button
+                        variant="no-outlined"
+                        on:click={() => {
+                          type = "edit";
+                        }}
+                      >
+                        Edit
+                      </Button>
                     </div>
                   </div>
                 {/if}
