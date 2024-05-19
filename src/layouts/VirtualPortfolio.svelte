@@ -2,7 +2,7 @@
   import { onMount } from "svelte";
   import { navigateTo } from "svelte-router-spa";
   import { nimbus } from "~/lib/network";
-  import { wallet, user } from "~/store";
+  import { wallet, user, isDarkMode } from "~/store";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
   import {
@@ -845,11 +845,41 @@
         <div
           class="virtual_portfolio_container rounded-[20px] xl:p-8 p-4 xl:shadow-md"
         >
-          <div
-            class="border border_0000001a rounded-[20px] p-6 flex flex-col gap-4"
-          >
-            hello
-          </div>
+          {#if selectedVirtualPortfolio && Object.keys(selectedVirtualPortfolio).length !== 0 && selectedVirtualPortfolio?.status === "PUBLIC"}
+            <div class="flex flex-col gap-6">
+              <div class="grid xl:grid-cols-2 grid-cols-1 gap-6">
+                <div
+                  class="border border_0000001a rounded-[20px] p-6 flex flex-col gap-4"
+                >
+                  Allocation
+                </div>
+
+                <div
+                  class="border border_0000001a rounded-[20px] p-6 flex flex-col gap-4"
+                >
+                  Performance
+                </div>
+              </div>
+
+              <div
+                class="border border_0000001a rounded-[20px] p-6 flex flex-col gap-4"
+              >
+                Holding
+              </div>
+            </div>
+          {:else}
+            <div
+              class="border border_0000001a rounded-[20px] px-6 py-12 flex items-center gap-2 justify-center"
+            >
+              You can not access this private virtual portfolio from user <Copy
+                address={$wallet}
+                iconColor={$isDarkMode ? "#fff" : "#000"}
+                color={$isDarkMode ? "#fff" : "#000"}
+                isShorten
+                iconSize={20}
+              />
+            </div>
+          {/if}
         </div>
       {/if}
     </div>
