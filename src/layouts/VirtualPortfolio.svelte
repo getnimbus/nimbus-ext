@@ -272,13 +272,20 @@
   let type = "";
   let isLoading = false;
 
-  const handleSubmit = async (data: any) => {
+  const handleSubmit = async (
+    data: any,
+    type: string,
+    virtualPortfolioNetworth: any
+  ) => {
     try {
       isLoading = true;
       if (type === "add") {
         const responseAdd = await nimbus.post(
           `/address/${$wallet}/personalize/virtual-portfolio`,
-          data
+          {
+            ...data,
+            virtualPortfolioNetworth,
+          }
         );
         if (responseAdd && responseAdd?.error) {
           toastMsg = `Something wrong when add ${data?.portfolioName} virtual portfolio. Please try again!`;
@@ -375,6 +382,8 @@
   const handleCancel = () => {
     type = "";
   };
+
+  $: console.log("HELLO WORLD: ", dataVirtualPortfolio);
 </script>
 
 <ErrorBoundary>

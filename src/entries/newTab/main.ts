@@ -5,7 +5,7 @@ import * as browser from "webextension-polyfill";
 import * as Sentry from "@sentry/svelte";
 
 Sentry.init({
-  dsn: "https://314310ebdb5bff4a14a386f1eb6d47b2@o4505729367801856.ingest.us.sentry.io/4506455493246976",
+  // dsn: "https://314310ebdb5bff4a14a386f1eb6d47b2@o4505729367801856.ingest.us.sentry.io/4506455493246976",
   integrations: [Sentry.browserTracingIntegration()],
   release: "nimbus",
   // Set tracesSampleRate to 1.0 to capture 100%

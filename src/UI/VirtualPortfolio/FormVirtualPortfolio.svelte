@@ -5,11 +5,14 @@
   import { isDarkMode } from "~/store";
   import { handleMarketTokens } from "~/lib/queryAPI";
   import { createQuery } from "@tanstack/svelte-query";
+  import { isNaN } from "lodash";
+  import { Toast } from "flowbite-svelte";
+  import { blur } from "svelte/transition";
 
   import Button from "~/components/Button.svelte";
   import Loading from "~/components/Loading.svelte";
 
-  export let handleSubmit = (data, type) => {};
+  export let handleSubmit = (data, type, virtualPortfolioNetworth) => {};
   export let handleCancel = () => {};
   export let isLoading;
   export let listVirtualPortfolio;
@@ -21,8 +24,27 @@
     empty: i18n("newtabPage.empty", "Empty"),
   };
 
+  let toastMsg = "";
+  let isSuccessToast = false;
+  let counter = 5;
+  let showToast = false;
+
+  const trigger = () => {
+    showToast = true;
+    counter = 5;
+    timeout();
+  };
+
+  const timeout = () => {
+    if (--counter > 0) return setTimeout(timeout, 1000);
+    showToast = false;
+    toastMsg = "";
+    isSuccessToast = false;
+  };
+
   let searchValue = "";
   let virtualPortfolioName = "";
+  let virtualPortfolioNetworth = 0;
   let time = new Date();
   let listToken = [];
 
@@ -70,6 +92,8 @@
           }
 
           virtualPortfolioName = defaultData.portfolioName;
+
+          virtualPortfolioNetworth = defaultData?.netWorth;
 
           time = dayjs(defaultData.updatedTime).toDate();
 
@@ -145,18 +169,16 @@
   </label>
 </div>
 <div class="flex flex-col gap-6">
-  <div class="flex lg:flex-row flex-col justify-between gap-6">
+  <div class="flex xl:flex-row flex-col gap-6">
     <div
       class={`flex-1 flex flex-col gap-2 input-2 w-full p-4 border border_0000001a ${
         $isDarkMode ? "bg-[#222222]" : "bg-[#fff]"
       }`}
     >
-      <div class="xl:text-base text-2xl font-medium">
-        Virtual portfolio name
-      </div>
+      <div class="xl:text-base text-2xl font-medium">Portfolio name</div>
       <input
         type="text"
-        placeholder="Your virtual portfolio name"
+        placeholder="Your portfolio name"
         class={`py-1 px-[6px] rounded-[3px] focus:outline-none focus:ring-0 xl:text-base text-lg font-normal ${
           virtualPortfolioName && !$isDarkMode
             ? "bg-[#F0F2F7]"
@@ -170,6 +192,51 @@
           virtualPortfolioName = event?.target.value;
         }}
       />
+    </div>
+
+    <div
+      class={`flex-1 flex flex-col gap-2 input-2 w-full p-4 border border_0000001a ${
+        $isDarkMode ? "bg-[#222222]" : "bg-[#fff]"
+      }`}
+    >
+      <div class="xl:text-base text-2xl font-medium">Portfolio networth</div>
+      <div
+        class={`py-1 px-[6px] rounded-[3px] xl:text-base text-lg font-normal ${
+          virtualPortfolioNetworth && !$isDarkMode
+            ? "bg-[#F0F2F7]"
+            : "bg-transparent"
+        } ${
+          $isDarkMode ? "text-white" : "text-[#5E656B] placeholder-[#5E656B]"
+        }`}
+        style="border: 1px solid rgba(103, 113, 137, 0.3)"
+      >
+        $
+        <input
+          type="number"
+          min="100"
+          step="0.01"
+          placeholder="0"
+          disabled={type === "edit"}
+          class={`p-0 border-none focus:outline-none focus:ring-0 ${
+            virtualPortfolioNetworth && !$isDarkMode
+              ? "bg-[#F0F2F7]"
+              : "bg-transparent"
+          }`}
+          value={virtualPortfolioNetworth}
+          on:change={(event) => {
+            let value = parseFloat(event?.target?.value);
+
+            if (isNaN(value)) {
+              value = 0;
+            }
+            if (value < 0) {
+              value = 0;
+            }
+
+            virtualPortfolioNetworth = value;
+          }}
+        />
+      </div>
     </div>
 
     <div
@@ -456,6 +523,9 @@
                     if (isNaN(value) || value < 0) {
                       value = 0;
                     }
+                    if (value < 0) {
+                      value = 0;
+                    }
                     if (value > 100) {
                       value = 100;
                     }
@@ -527,7 +597,7 @@
       Cancel
     </div>
     <div class="md:w-[120px] w-full">
-      {#if remaining !== 100 || virtualPortfolioName.length === 0}
+      {#if remaining !== 100 || virtualPortfolioName.length === 0 || virtualPortfolioNetworth === 0 || virtualPortfolioNetworth < 100}
         <Button variant="disabled" disabled>
           <div class={`${$isDarkMode ? "text-gray-400" : "text-white"}`}>
             {type === "edit" ? "Edit" : "Create"}
@@ -538,6 +608,27 @@
           {isLoading}
           disabled={isLoading}
           on:click={() => {
+            if (Number(virtualPortfolioNetworth) < 100) {
+              toastMsg = `Your virtual portfolio networth is lower than $100. Please try again!`;
+              isSuccessToast = false;
+              trigger();
+              return;
+            }
+
+            if (virtualPortfolioName.length === 0) {
+              toastMsg = `Missing virtual portfolio name. Please try again!`;
+              isSuccessToast = false;
+              trigger();
+              return;
+            }
+
+            if (selectedTokenList.find((item) => item.percent === 0)) {
+              toastMsg = `One of all token you have been selected and percent input is not valid. Please try again!`;
+              isSuccessToast = false;
+              trigger();
+              return;
+            }
+
             handleSubmit(
               {
                 initialTime: dayjs(time).format("YYYY-MM-DD"),
@@ -550,7 +641,8 @@
                 }),
                 status: checkedStatus ? "PUBLIC" : "PRIVATE",
               },
-              type
+              type,
+              Number(virtualPortfolioNetworth)
             );
           }}
         >
@@ -560,6 +652,51 @@
     </div>
   </div>
 </div>
+
+{#if showToast}
+  <div class="fixed top-3 right-3 w-full" style="z-index: 2147483648;">
+    <Toast
+      transition={blur}
+      params={{ amount: 10 }}
+      position="top-right"
+      color={isSuccessToast ? "green" : "red"}
+      bind:open={showToast}
+    >
+      <svelte:fragment slot="icon">
+        {#if isSuccessToast}
+          <svg
+            aria-hidden="true"
+            class="w-5 h-5"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+            ><path
+              fill-rule="evenodd"
+              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+              clip-rule="evenodd"
+            /></svg
+          >
+          <span class="sr-only">Check icon</span>
+        {:else}
+          <svg
+            aria-hidden="true"
+            class="w-5 h-5"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+            ><path
+              fill-rule="evenodd"
+              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+              clip-rule="evenodd"
+            /></svg
+          >
+          <span class="sr-only">Error icon</span>
+        {/if}
+      </svelte:fragment>
+      {toastMsg}
+    </Toast>
+  </div>
+{/if}
 
 <style windi:preflights:global windi:safelist:global>
   :global(body) .bg_fafafbff {
