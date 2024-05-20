@@ -119,7 +119,7 @@
           <div class="w-[150px] text-base font-normal text-right">
             Unlimited
           </div>
-          {#if checkTicketValidate() && totalPoint >= 1000 && data.body !== "GOLD_TICKET"}
+          {#if checkTicketValidate() && totalPoint >= 1000}
             <Button
               variant="tertiary"
               on:click={() => {
