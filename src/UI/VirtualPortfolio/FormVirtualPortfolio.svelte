@@ -221,9 +221,7 @@
           placeholder={"Find by token name"}
           type="text"
           class={`py-1 px-[6px] rounded-[3px] focus:outline-none focus:ring-0 text-base font-normal ${
-            virtualPortfolioName && !$isDarkMode
-              ? "bg-[#F0F2F7]"
-              : "bg-transparent"
+            searchValue && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
           } ${
             $isDarkMode ? "text-white" : "text-[#5E656B] placeholder-[#5E656B]"
           }`}

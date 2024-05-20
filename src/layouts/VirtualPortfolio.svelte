@@ -49,24 +49,33 @@
   let virtualPortfolioId = "";
   let dataVirtualPortfolio = {};
 
-  onMount(() => {
+  const initialUpdateStateFromParams = () => {
     const urlParams = new URLSearchParams(window.location.search);
     const addressParams = urlParams.get("address");
     const chainParams = urlParams.get("chain");
     const typeParams = urlParams.get("type");
     const virtualPortfolioIdParams = urlParams.get("virtualPortfolioId");
 
-    if (
-      addressParams &&
-      chainParams &&
-      typeParams &&
-      virtualPortfolioIdParams
-    ) {
-      chain.update((n) => (n = chainParams));
-      typeWallet.update((n) => (n = typeParams));
+    if (addressParams) {
       wallet.update((n) => (n = addressParams));
+    }
+
+    if (chainParams) {
+      chain.update((n) => (n = chainParams));
+    }
+
+    if (typeParams) {
+      typeWallet.update((n) => (n = typeParams));
+    }
+
+    if (virtualPortfolioIdParams) {
       virtualPortfolioId = virtualPortfolioIdParams;
     }
+  };
+
+  onMount(() => {
+    initialUpdateStateFromParams();
+    handleSelected();
   });
 
   $: queryVirtualPortfolioProfile = createQuery({
@@ -80,98 +89,143 @@
   $: {
     if (
       !$queryVirtualPortfolioProfile?.isError &&
-      $queryVirtualPortfolioProfile?.data !== undefined &&
-      $queryVirtualPortfolioProfile?.data?.data.length !== 0
+      $queryVirtualPortfolioProfile?.data !== undefined
     ) {
       handleFormatListVirtualPortfolio(
-        $queryVirtualPortfolioProfile?.data?.data
+        $queryVirtualPortfolioProfile?.data?.data || []
       );
     }
   }
 
-  const handleFormatListVirtualPortfolio = async (data: any) => {
-    listVirtualPortfolio = data;
+  const handleSelected = async () => {
     const selectedVirtualPortfolioIdRes = await browser.storage.sync.get(
       "selectedVirtualPortfolioId"
     );
 
     if (
       selectedVirtualPortfolioIdRes?.selectedVirtualPortfolioId !== null &&
-      selectedVirtualPortfolioIdRes?.selectedVirtualPortfolioId !== "undefined"
+      selectedVirtualPortfolioIdRes?.selectedVirtualPortfolioId !==
+        "undefined" &&
+      listVirtualPortfolio &&
+      listVirtualPortfolio.length !== 0
     ) {
-      selectedVirtualPortfolio = data.find(
+      selectedVirtualPortfolio = listVirtualPortfolio.find(
         (item) =>
           item.id === selectedVirtualPortfolioIdRes.selectedVirtualPortfolioId
       );
-
       virtualPortfolioId =
         selectedVirtualPortfolioIdRes.selectedVirtualPortfolioId;
-
       window.history.replaceState(
         null,
         "",
         window.location.pathname +
-          `?type=${$typeWallet}&chain=${$chain}&address=${$wallet}&virtualPortfolioId=${selectedVirtualPortfolioIdRes.selectedVirtualPortfolioId}`
+          `?type=${$typeWallet}&chain=${$chain}&address=${$wallet}&virtualPortfolioId=${virtualPortfolioId}`
       );
-    } else {
-      if (virtualPortfolioId) {
-        selectedVirtualPortfolio = data.find(
-          (item) => item.id === virtualPortfolioId
+    }
+  };
+
+  const handleFormatListVirtualPortfolio = async (data: any) => {
+    if (data && data.length !== 0) {
+      listVirtualPortfolio = data;
+
+      if (listVirtualPortfolio && listVirtualPortfolio.length === 1) {
+        virtualPortfolioId = listVirtualPortfolio[0].id;
+        selectedVirtualPortfolio = listVirtualPortfolio.find(
+          (item) => item.id === listVirtualPortfolio[0].id
         );
         window.history.replaceState(
           null,
           "",
           window.location.pathname +
-            `?type=${$typeWallet}&chain=${$chain}&address=${$wallet}&virtualPortfolioId=${virtualPortfolioId}`
+            `?type=${$typeWallet}&chain=${$chain}&address=${$wallet}&virtualPortfolioId=${listVirtualPortfolio[0].id}`
         );
       } else {
-        selectedVirtualPortfolio = data.find((item) => item.id === data[0].id);
-
-        virtualPortfolioId = data[0].id;
-
+        virtualPortfolioId =
+          listVirtualPortfolio[listVirtualPortfolio.length - 1].id;
+        selectedVirtualPortfolio = listVirtualPortfolio.find(
+          (item) =>
+            item.id === listVirtualPortfolio[listVirtualPortfolio.length - 1].id
+        );
         window.history.replaceState(
           null,
           "",
           window.location.pathname +
-            `?type=${$typeWallet}&chain=${$chain}&address=${$wallet}&virtualPortfolioId=${data[0].id}`
+            `?type=${$typeWallet}&chain=${$chain}&address=${$wallet}&virtualPortfolioId=${listVirtualPortfolio[listVirtualPortfolio.length - 1].id}`
         );
       }
+    } else {
+      listVirtualPortfolio = [];
+      virtualPortfolioId = "";
+      selectedVirtualPortfolio = {};
+      browser.storage.sync.set({
+        selectedVirtualPortfolioId: "undefined",
+      });
+      window.history.replaceState(
+        null,
+        "",
+        window.location.pathname +
+          `?type=${$typeWallet}&chain=${$chain}&address=${$wallet}`
+      );
     }
   };
 
   $: {
-    if (selectedVirtualPortfolio) {
+    if (
+      selectedVirtualPortfolio &&
+      Object.keys(selectedVirtualPortfolio).length !== 0
+    ) {
+      browser.storage.sync.set({
+        selectedVirtualPortfolioId: selectedVirtualPortfolio.id,
+      });
       handleUpdateParams();
     }
   }
 
   const handleUpdateParams = () => {
-    browser.storage.sync.set({
-      selectedVirtualPortfolioId: selectedVirtualPortfolio.id,
-    });
+    virtualPortfolioId = selectedVirtualPortfolio.id;
+    window.history.replaceState(
+      null,
+      "",
+      window.location.pathname +
+        `?type=${$typeWallet}&chain=${$chain}&address=${$wallet}&virtualPortfolioId=${virtualPortfolioId}`
+    );
+  };
 
-    if (
-      listVirtualPortfolio.length !== 0 &&
-      listVirtualPortfolio.length === 1
-    ) {
-      virtualPortfolioId = selectedVirtualPortfolio.id;
-      window.history.replaceState(
-        null,
-        "",
-        window.location.pathname +
-          `?type=${$typeWallet}&chain=${$chain}&address=${$wallet}&virtualPortfolioId=${virtualPortfolioId}`
-      );
-    }
+  const formatDataVirtualPortfolio = (data: any) => {
+    const selectedPortfolioProfile = listVirtualPortfolio.find(
+      (item) => item?.id === virtualPortfolioId
+    );
 
-    if (listVirtualPortfolio.length !== 0 && listVirtualPortfolio.length > 1) {
-      virtualPortfolioId = selectedVirtualPortfolio.id;
-      window.history.replaceState(
-        null,
-        "",
-        window.location.pathname +
-          `?type=${$typeWallet}&chain=${$chain}&address=${$wallet}&virtualPortfolioId=${virtualPortfolioId}`
-      );
-    }
+    const virtualPortfolioNameList = data && Object.getOwnPropertyNames(data);
+
+    const formatDataVirtualPortfolio =
+      virtualPortfolioNameList &&
+      virtualPortfolioNameList?.map((item) => {
+        return {
+          portfolioName: selectedPortfolioProfile?.name,
+          coins: data[item]?.tokens?.map((coin) => {
+            return {
+              ...coin,
+              percent: Number(coin?.percent),
+            };
+          }),
+          history: data[item]?.history.map((coin) => {
+            return {
+              ...coin,
+              percent: Number(coin?.percent),
+            };
+          }),
+          updatedTime: selectedVirtualPortfolio?.updatedAt,
+        };
+      });
+
+    dataVirtualPortfolio = virtualPortfolioNameList.reduce(
+      (acc, key, index) => {
+        acc[key] = formatDataVirtualPortfolio[index];
+        return acc;
+      },
+      {}
+    );
   };
 
   $: queryVirtualPortfolio = createQuery({
@@ -198,46 +252,7 @@
       $queryVirtualPortfolioProfile.data !== undefined &&
       $queryVirtualPortfolioProfile?.data?.data.length !== 0
     ) {
-      const selectedPortfolioProfile = listVirtualPortfolio.find(
-        (item) => item?.id === virtualPortfolioId
-      );
-
-      const virtualPortfolioNameList =
-        $queryVirtualPortfolio?.data?.data &&
-        Object.getOwnPropertyNames($queryVirtualPortfolio?.data?.data);
-
-      const formatDataVirtualPortfolio =
-        virtualPortfolioNameList &&
-        virtualPortfolioNameList?.map((item) => {
-          return {
-            portfolioName: selectedPortfolioProfile?.name,
-            coins: $queryVirtualPortfolio?.data?.data[item]?.tokens?.map(
-              (coin) => {
-                return {
-                  ...coin,
-                  percent: Number(coin?.percent),
-                };
-              }
-            ),
-            history: $queryVirtualPortfolio?.data?.data[item]?.history.map(
-              (coin) => {
-                return {
-                  ...coin,
-                  percent: Number(coin?.percent),
-                };
-              }
-            ),
-            updatedTime: selectedVirtualPortfolio?.updatedAt,
-          };
-        });
-
-      dataVirtualPortfolio = virtualPortfolioNameList.reduce(
-        (acc, key, index) => {
-          acc[key] = formatDataVirtualPortfolio[index];
-          return acc;
-        },
-        {}
-      );
+      formatDataVirtualPortfolio($queryVirtualPortfolio?.data?.data);
     }
   }
 
@@ -334,6 +349,18 @@
       trigger();
       queryClient.invalidateQueries(["virtual-portfolio-profile"]);
       queryClient.invalidateQueries(["virtual-portfolio"]);
+
+      virtualPortfolioId = "";
+      selectedVirtualPortfolio = {};
+      browser.storage.sync.set({
+        selectedVirtualPortfolioId: "undefined",
+      });
+      window.history.replaceState(
+        null,
+        "",
+        window.location.pathname +
+          `?type=${$typeWallet}&chain=${$chain}&address=${$wallet}`
+      );
     } catch (e) {
       console.error(e);
       toastMsg = `Something wrong when delete ${selectedVirtualPortfolio?.name} virtual portfolio. Please try again!`;
@@ -641,13 +668,17 @@
             <div
               class="border border_0000001a rounded-[20px] px-6 py-12 flex items-center gap-2 justify-center"
             >
-              You can not access this private virtual portfolio from user <Copy
-                address={$wallet}
-                iconColor={$isDarkMode ? "#fff" : "#000"}
-                color={$isDarkMode ? "#fff" : "#000"}
-                isShorten
-                iconSize={20}
-              />
+              {#if virtualPortfolioId && selectedVirtualPortfolio && Object.keys(selectedVirtualPortfolio).length !== 0}
+                You can not access this private virtual portfolio from user <Copy
+                  address={$wallet}
+                  iconColor={$isDarkMode ? "#fff" : "#000"}
+                  color={$isDarkMode ? "#fff" : "#000"}
+                  isShorten
+                  iconSize={20}
+                />
+              {:else}
+                Empty
+              {/if}
             </div>
           {/if}
         </div>
