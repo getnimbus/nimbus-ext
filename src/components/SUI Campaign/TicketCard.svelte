@@ -72,11 +72,13 @@
       }`}
     >
       <img src={data?.logo} alt="" class="w-20 h-20 object-contain" />
-      <div
-        class="absolute -bottom-2 w-full text-center whitespace-nowrap left-timee italic text-sm"
-      >
-        {timeCountDown}
-      </div>
+      {#if isRedeem}
+        <div
+          class="absolute -bottom-2 w-full text-center whitespace-nowrap left-timee italic text-sm"
+        >
+          {timeCountDown}
+        </div>
+      {/if}
     </div>
 
     <div class="flex-1 flex flex-col gap-2">
@@ -117,7 +119,7 @@
           <div class="w-[150px] text-base font-normal text-right">
             Unlimited
           </div>
-          {#if checkTicketValidate() && totalPoint >= 1000}
+          {#if checkTicketValidate() && totalPoint >= 1000 && data.body !== "GOLD_TICKET"}
             <Button
               variant="tertiary"
               on:click={() => {
@@ -160,8 +162,7 @@
                   >
                     {#if totalPoint < 1000}
                       You are not enough GM Points to Redeem
-                    {/if}
-                    {#if !checkTicketValidate()}
+                    {:else}
                       There are not available now
                     {/if}
                   </div>
