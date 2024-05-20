@@ -234,8 +234,6 @@
       isLoadingRedeem = false;
     }
   };
-
-  $: console.log("HELLO WORLD: ", $queryReward?.data?.ownRewards);
 </script>
 
 <div class="flex flex-col gap-4">
