@@ -49,20 +49,20 @@
   let selectedTicketReward = {};
 
   const rewardBox = [
-    // {
-    //   cost: 1200,
-    //   description: "Nimbus on SUI loot boxes",
-    //   title: "Paper Box",
-    //   body: "PAPER_BOX",
-    //   logo: "https://nimbus-zodiac.s3.ap-southeast-1.amazonaws.com/sui-unlock/closed-box.png",
-    // },
-    // {
-    //   cost: 1200,
-    //   description: "FlowX on SUI loot boxes",
-    //   title: "FlowX Box",
-    //   body: "FLOWX_BOX",
-    //   logo: "https://nimbus-zodiac.s3.ap-southeast-1.amazonaws.com/sui-unlock/closed-box.png",
-    // },
+    {
+      cost: 1200,
+      description: "Nimbus on SUI loot boxes",
+      title: "Paper Box",
+      body: "PAPER_BOX",
+      logo: "https://nimbus-zodiac.s3.ap-southeast-1.amazonaws.com/sui-unlock/closed-box.png",
+    },
+    {
+      cost: 1200,
+      description: "FlowX on SUI loot boxes",
+      title: "FlowX Box",
+      body: "FLOWX_BOX",
+      logo: "https://nimbus-zodiac.s3.ap-southeast-1.amazonaws.com/sui-unlock/closed_flowx.png",
+    },
   ];
 
   const rewardTicket = [
@@ -206,7 +206,7 @@
     }
   };
 
-  const handleRedeemTicket = async (data) => {
+  const handleRedeemCampaign = async (data) => {
     try {
       isLoadingRedeem = true;
       const response: any = await nimbus.post(
@@ -235,7 +235,7 @@
     }
   };
 
-  const handleRedeemBox = async (data) => {};
+  $: console.log("HELLO WORLD: ", $queryReward?.data?.ownRewards);
 </script>
 
 <div class="flex flex-col gap-4">
@@ -324,7 +324,7 @@
                   <TicketCard
                     isRedeem
                     data={item}
-                    {handleRedeemTicket}
+                    handleRedeemTicket={handleRedeemCampaign}
                     {isLoadingRedeem}
                     {totalPoint}
                   />
@@ -332,8 +332,9 @@
 
                 {#each rewardBox || [] as item}
                   <BoxCard
+                    isRedeem
                     data={item}
-                    {handleRedeemBox}
+                    handleRedeemBox={handleRedeemCampaign}
                     {isLoadingRedeem}
                     {totalPoint}
                   />
@@ -365,10 +366,20 @@
                 />
               {/each}
 
-              {#each $queryReward?.data?.ownRewards.filter((item) => item?.campaignName === "sui-unlock") || [] as item}
+              {#each $queryReward?.data?.ownRewards.filter((item) => item?.campaignName === "sui-unlock" && item.title !== "FLOWX_BOX" && item.title !== "PAPER_BOX") || [] as item}
                 <TicketCard
                   data={item}
                   handleRedeemTicket={() => {}}
+                  {isLoadingRedeem}
+                  {totalPoint}
+                />
+              {/each}
+
+              {#each $queryReward?.data?.ownRewards.filter((item) => item?.campaignName === "sui-unlock" && (item.title === "FLOWX_BOX" || item.title === "PAPER_BOX")) || [] as item}
+                <BoxCard
+                  isClaimable
+                  data={item}
+                  handleRedeemBox={() => {}}
                   {isLoadingRedeem}
                   {totalPoint}
                 />
