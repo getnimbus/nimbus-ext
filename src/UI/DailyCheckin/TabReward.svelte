@@ -20,6 +20,8 @@
   import TicketCard from "~/components/SUI Campaign/TicketCard.svelte";
   import BoxCard from "~/components/SUI Campaign/BoxCard.svelte";
   import Image from "~/components/Image.svelte";
+  import AppOverlay from "~/components/Overlay.svelte";
+  import Button from "~/components/Button.svelte";
 
   import goldImg from "~/assets/Gold4.svg";
 
@@ -286,6 +288,14 @@
       isLoadingRedeem = false;
     }
   };
+
+  let openScreenClaimSuccess = false;
+  let resClaim: any = {};
+
+  const triggerClaimSuccess = (data) => {
+    resClaim = data;
+    openScreenClaimSuccess = true;
+  };
 </script>
 
 <div class="flex flex-col gap-4">
@@ -387,7 +397,7 @@
                     handleRedeemBox={handleRedeemCampaign}
                     {isLoadingRedeem}
                     {totalPoint}
-                    {handleSelectTabFlip}
+                    {triggerClaimSuccess}
                   />
                 {/each}
               {/if}
@@ -433,7 +443,7 @@
                   handleRedeemBox={() => {}}
                   {isLoadingRedeem}
                   {totalPoint}
-                  {handleSelectTabFlip}
+                  {triggerClaimSuccess}
                 />
               {/each}
             </div>
@@ -546,6 +556,48 @@
     </div>
   </div>
 {/if}
+
+<AppOverlay
+  clickOutSideToClose
+  isOpen={openScreenClaimSuccess}
+  on:close={() => (openScreenClaimSuccess = false)}
+>
+  <div class="flex flex-col gap-4 xl:mt-0 mt-4">
+    <div class="flex flex-col items-center gap-1">
+      <div class="font-semibold title-3">
+        You have claimed {resClaim?.amount + " " + resClaim?.token} successfully!
+      </div>
+    </div>
+    <div class="flex justify-center">
+      <div class="min-w-[120px]">
+        {#if resClaim?.partner === "FlowX"}
+          <a href={resClaim?.link} target="_blank">
+            <Button
+              variant="tertiary"
+              on:click={() => {
+                openScreenClaimSuccess = false;
+                resClaim = {};
+              }}
+            >
+              Stake it with FlowX for more GM and APY %
+            </Button>
+          </a>
+        {/if}
+
+        {#if resClaim?.partner === "Nimbus"}
+          <Button
+            variant="tertiary"
+            on:click={() => {
+              handleSelectTabFlip();
+              openScreenClaimSuccess = false;
+              resClaim = {};
+            }}>FLIP IT</Button
+          >
+        {/if}
+      </div>
+    </div>
+  </div>
+</AppOverlay>
 
 <style windi:preflights:global windi:safelist:global>
 </style>

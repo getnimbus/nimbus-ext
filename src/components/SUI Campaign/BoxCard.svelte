@@ -14,10 +14,9 @@
   export let handleRedeemBox = (value) => {};
   export let isLoadingRedeem;
   export let totalPoint;
-  export let handleSelectTabFlip = () => {};
+  export let triggerClaimSuccess = (data) => {};
 
   import Copy from "~/components/Copy.svelte";
-  import AppOverlay from "~/components/Overlay.svelte";
   import ReactAdapter from "~/components/ReactAdapter.svelte";
   import Button from "~/components/Button.svelte";
 
@@ -74,9 +73,6 @@
     onConnectError,
   };
 
-  let openScreenClaimSuccess = false;
-  let resClaim: any = {};
-
   let showDisabled = false;
   let isLoadingClaim = false;
   let isClickClaim = false;
@@ -111,11 +107,13 @@
             return;
           }
 
-          resClaim = res?.data;
-          openScreenClaimSuccess = true;
+          triggerClaimSuccess(res?.data);
           isLoadingClaim = false;
           isClickClaim = false;
           triggerFirework();
+
+          queryClient?.invalidateQueries([$userPublicAddress, "daily-checkin"]);
+          queryClient?.invalidateQueries([$userPublicAddress, "rewards"]);
         }
       } catch (e) {
         console.error(e);
@@ -147,11 +145,6 @@
     return await ($suiWalletInstance as WalletState).signPersonalMessage({
       message: new TextEncoder().encode(msg),
     });
-  };
-
-  const triggerReloadApi = () => {
-    queryClient?.invalidateQueries([$userPublicAddress, "daily-checkin"]);
-    queryClient?.invalidateQueries([$userPublicAddress, "rewards"]);
   };
 </script>
 
@@ -393,52 +386,6 @@
     </Toast>
   </div>
 {/if}
-
-<AppOverlay
-  clickOutSideToClose
-  isOpen={openScreenClaimSuccess}
-  on:close={() => (openScreenClaimSuccess = false)}
->
-  <div class="flex flex-col gap-4 xl:mt-0 mt-4">
-    <div class="flex flex-col items-center gap-1">
-      <div class="font-semibold title-3">
-        You have {#if resClaim?.partner === "FlowX"}
-          claimed {resClaim?.amount + " " + resClaim?.token}
-        {/if}
-        {#if resClaim?.partner === "Nimbus"}
-          received Premium Code {resClaim?.code}
-        {/if}
-        successfully!
-      </div>
-    </div>
-    <div class="flex justify-center">
-      <div class="min-w-[120px]">
-        {#if resClaim?.partner === "FlowX"}
-          <a href={resClaim?.link} target="_blank">
-            <Button
-              variant="tertiary"
-              on:click={() => {
-                triggerReloadApi();
-              }}
-            >
-              Stake it with FlowX for more GM and APY %
-            </Button>
-          </a>
-        {/if}
-
-        {#if resClaim?.partner === "Nimbus"}
-          <Button
-            variant="tertiary"
-            on:click={() => {
-              handleSelectTabFlip();
-              triggerReloadApi();
-            }}>FLIP IT</Button
-          >
-        {/if}
-      </div>
-    </div>
-  </div>
-</AppOverlay>
 
 <style windi:preflights:global windi:safelist:global>
   @media (max-width: 320) {
