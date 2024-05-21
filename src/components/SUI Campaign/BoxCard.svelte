@@ -7,6 +7,7 @@
   import { SuiConnector } from "nimbus-sui-kit";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
+  import { triggerFirework } from "~/utils";
 
   export let isClaimable = false;
   export let isRedeem = false;
@@ -14,6 +15,7 @@
   export let handleRedeemBox = (value) => {};
   export let isLoadingRedeem;
   export let totalPoint;
+  export let handleSelectTabFlip = () => {};
 
   import Copy from "~/components/Copy.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
@@ -31,6 +33,7 @@
   let showToast = false;
 
   let openScreenClaimSuccess = false;
+  let resClaim = {};
 
   const trigger = () => {
     showToast = true;
@@ -94,17 +97,20 @@
 
   let showDisabled = false;
   let isLoadingClaim = false;
+  let isClickClaim = false;
 
   const handleClaim = async () => {
     if (
       ($suiWalletInstance as WalletState) &&
-      ($suiWalletInstance as WalletState).connected
+      ($suiWalletInstance as WalletState).connected &&
+      isClickClaim
     ) {
       isLoadingClaim = true;
       try {
         const { signature } = await handleSignAddressMessage(
           `I am confirming that I want to claim the reward with id ${data.id} to address ${$suiWalletInstance.account?.address}`
         );
+
         if (signature) {
           const res = await nimbus.post(`/v2/rewards/${data.id}/token-claim`, {
             publicAddress: $suiWalletInstance.account?.address,
@@ -120,9 +126,12 @@
             return;
           }
 
+          resClaim = res?.data;
           queryClient?.invalidateQueries([$userPublicAddress, "daily-checkin"]);
           queryClient?.invalidateQueries([$userPublicAddress, "rewards"]);
           handleTriggerModalClaimSuccess();
+          isLoadingClaim = false;
+          isClickClaim = false;
         }
       } catch (e) {
         console.error(e);
@@ -132,14 +141,8 @@
         ) {
           ($suiWalletInstance as WalletState).disconnect();
         }
-      } finally {
         isLoadingClaim = false;
-        if (
-          ($suiWalletInstance as WalletState) &&
-          ($suiWalletInstance as WalletState).connected
-        ) {
-          ($suiWalletInstance as WalletState).disconnect();
-        }
+        isClickClaim = false;
       }
     } else {
       ($suiWalletInstance as WalletState).toggleSelect();
@@ -149,7 +152,8 @@
   $: {
     if (
       ($suiWalletInstance as WalletState) &&
-      ($suiWalletInstance as WalletState).connected
+      ($suiWalletInstance as WalletState).connected &&
+      isClickClaim
     ) {
       handleClaim();
     }
@@ -162,6 +166,7 @@
   };
 
   const handleTriggerModalClaimSuccess = () => {
+    triggerFirework();
     openScreenClaimSuccess = true;
   };
 </script>
@@ -230,12 +235,12 @@
 
         {#if isClaimable}
           <div class="w-full flex justify-end">
-            <div class="w-[150px]">
+            <div class="w-[220px]">
               <Button
                 variant="tertiary"
                 on:click={() => {
                   if (!isLoadingClaim) {
-                    handleClaim();
+                    isClickClaim = true;
                   }
                 }}
                 disabled={isLoadingClaim}
@@ -384,13 +389,26 @@
   on:close={() => (openScreenClaimSuccess = false)}
 >
   <div class="flex flex-col gap-4 xl:mt-0 mt-4">
-    <div class="flex flex-col items-start gap-1">
-      <div class="font-semibold title-3">title</div>
-      <div class="text-gray-500 text-sm">subtitle</div>
+    <div class="flex flex-col items-center gap-1">
+      <div class="font-semibold title-3">
+        You have claimed {resClaim?.amount + " " + resClaim?.token} successfully!
+      </div>
     </div>
-    <div class="flex justify-end gap-2">
-      <div class="w-[120px]">
-        <Button variant="delete" on:click={() => {}}>HELLO</Button>
+    <div class="flex justify-center">
+      <div class="min-w-[120px]">
+        {#if Number(resClaim?.amount) >= 10 && resClaim?.partner === "flowx"}
+          <Button variant="tertiary">
+            stake it with FlowX for more GM and APY %
+          </Button>
+        {/if}
+        {#if Number(resClaim?.amount) < 10 && resClaim?.partner === "nimbus"}
+          <Button
+            variant="tertiary"
+            on:click={() => {
+              handleSelectTabFlip();
+            }}>FLIP IT</Button
+          >
+        {/if}
       </div>
     </div>
   </div>

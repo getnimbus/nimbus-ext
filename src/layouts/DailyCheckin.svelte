@@ -12,9 +12,9 @@
   import { detectedGeneration } from "~/lib/chains";
 
   import Icon from "~/UI/Option/Icon.svelte";
+  import TabLeaderBoard from "~/UI/DailyCheckin/TabLeaderBoard.svelte";
   import TabQuests from "~/UI/DailyCheckin/TabQuests.svelte";
   import TabDailyCheckin from "~/UI/DailyCheckin/TabDailyCheckin.svelte";
-  import TabLeaderBoard from "~/UI/DailyCheckin/TabLeaderBoard.svelte";
   import TabReward from "~/UI/DailyCheckin/TabReward.svelte";
   import TabFlipGmPoints from "~/UI/DailyCheckin/TabFlipGMPoints.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
@@ -272,6 +272,15 @@
       isLoadingSubmitInviteCode = false;
     }
   };
+
+  const handleSelectTabFlip = () => {
+    activeTabValue = "flip";
+    window.history.replaceState(
+      null,
+      "",
+      window.location.pathname + "?tab=flip"
+    );
+  };
 </script>
 
 <ErrorBoundary>
@@ -317,7 +326,7 @@
               <!-- {:else if activeTabValue === "leaderboard"}
               <TabLeaderBoard /> -->
             {:else if activeTabValue === "rewards"}
-              <TabReward />
+              <TabReward {handleSelectTabFlip} />
             {:else if activeTabValue === "flip"}
               <TabFlipGmPoints />
             {/if}

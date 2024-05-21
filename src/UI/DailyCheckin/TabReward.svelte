@@ -22,6 +22,8 @@
 
   import goldImg from "~/assets/Gold4.svg";
 
+  export let handleSelectTabFlip = () => {};
+
   const dailyCheckinRewardsTypePortfolio = [
     {
       label: "Store",
@@ -326,6 +328,7 @@
                     handleRedeemBox={handleRedeemCampaign}
                     {isLoadingRedeem}
                     {totalPoint}
+                    {handleSelectTabFlip}
                   />
                 {/each}
               {/if}
@@ -371,6 +374,7 @@
                   handleRedeemBox={() => {}}
                   {isLoadingRedeem}
                   {totalPoint}
+                  {handleSelectTabFlip}
                 />
               {/each}
             </div>
