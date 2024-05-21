@@ -77,6 +77,15 @@
     },
     {
       cost: 1000,
+      description: "SILVER TICKET - Nimbus On Sui Ticket",
+      title: "SILVER TICKET",
+      body: "SILVER_TICKET",
+      logo: "https://nimbus-zodiac.s3.ap-southeast-1.amazonaws.com/sui-unlock/silver.png",
+      fromDate: "2024-05-21",
+      toDate: "2024-05-27",
+    },
+    {
+      cost: 1000,
       description: "BRONZE TICKET - Nimbus On Sui Ticket",
       title: "BRONZE TICKET",
       body: "BRONZE_TICKET",
