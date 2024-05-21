@@ -2,6 +2,7 @@
   import { isDarkMode } from "~/store";
   import { getCampaignPartnerDetail } from "~/lib/queryAPI";
   import { createQuery } from "@tanstack/svelte-query";
+  import { colorPairs } from "~/utils";
 
   import SUILogo from "~/assets/chains/sui.png";
   import gmPoint from "~/assets/Gold4.svg";
@@ -30,6 +31,30 @@
       );
     }
   }
+
+  const tagColor = (type: string) => {
+    let colorData = colorPairs[0];
+    switch (type) {
+      case "new":
+        colorData = colorPairs[1];
+        break;
+      case "social":
+        colorData = colorPairs[2];
+        break;
+      case "onchain":
+        colorData = colorPairs[3];
+        break;
+    }
+    return colorData;
+  };
+
+  $: formatDataTags = data?.tags.map((item) => {
+    return {
+      label: item,
+      textColor: tagColor(item.toLowerCase()).textColor,
+      backgroundColor: tagColor(item.toLowerCase()).backgroundColor,
+    };
+  });
 </script>
 
 <div
@@ -45,11 +70,12 @@
 >
   <div class="flex flex-col gap-6 w-full">
     <div class="flex flex-wrap items-center gap-2">
-      {#each data?.tags || [] as tag}
+      {#each formatDataTags || [] as item}
         <div
-          class="text-sm bg-[#CBFDE1] text-[#49A37B] rounded-[30px] px-2 py-1"
+          class="text-sm rounded-[30px] px-2 py-1"
+          style="background-color: {item?.backgroundColor}; color: {item?.textColor};"
         >
-          {tag}
+          {item?.label}
         </div>
       {/each}
     </div>
