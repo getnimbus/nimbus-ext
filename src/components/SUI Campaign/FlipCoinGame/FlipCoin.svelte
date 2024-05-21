@@ -66,6 +66,8 @@
   let showToast = false;
   let isLoadingFlip = false;
 
+  let flipCount = dataFlipCheck.playNum;
+
   const trigger = () => {
     showToast = true;
     counter = 5;
@@ -96,8 +98,7 @@
   const getRound = async () => {
     const round = await client
       .getObject({
-        // id: "0xb440cf576ccf24b5c9b81a80a146eeaae9c7f09a87983769ec2d34212a434815", // devnet
-        id: "0xfc94a9e689692098ad6c81cfe12b6ece40f3b8a354dd79a1a4ba47110408efcd", // mainnet
+        id: "0xfc94a9e689692098ad6c81cfe12b6ece40f3b8a354dd79a1a4ba47110408efcd",
         options: {
           showContent: true,
         },
@@ -178,6 +179,8 @@
           openScreenResult = true;
         }
 
+        flipCount = flipCount + 1;
+
         getFlipCheck();
         queryClient?.invalidateQueries([$userPublicAddress, "daily-checkin"]);
 
@@ -234,9 +237,9 @@
           selectedDataSUILink?.uid !==
           ($suiWalletInstance as WalletState)?.address
         ) {
+          linkedSuiWallet = false;
           toastMsg = `Please connect to wallet ${shorterAddress(selectedDataSUILink?.uid)} to flip`;
           isSuccessToast = false;
-          linkedSuiWallet = false;
           trigger();
           ($suiWalletInstance as WalletState)?.disconnect();
         } else {

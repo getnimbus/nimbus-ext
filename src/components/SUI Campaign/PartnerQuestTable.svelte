@@ -202,33 +202,19 @@
     <thead>
       <tr class="bg_f4f5f8">
         <th class="pl-3 py-3 rounded-tl-[10px] bg_f4f5f8">
-          <div class="text-left xl:text-xs text-lg uppercase font-medium">
-            Task
-          </div>
+          <div class="text-left text-xs uppercase font-medium">Task</div>
         </th>
 
         <th class="py-3">
-          <div
-            class="flex items-center justify-start xl:gap-2 gap-4 text-right xl:text-xs uppercase font-medium"
-          >
-            GM Points
-          </div>
+          <div class="text-left text-xs uppercase font-medium">GM Points</div>
         </th>
 
         <th class="py-3">
-          <div
-            class="flex items-center justify-start xl:gap-2 gap-4 text-right xl:text-xs uppercase font-medium"
-          >
-            Repetition
-          </div>
+          <div class="text-left text-xs uppercase font-medium">Repetition</div>
         </th>
 
         <th class="pr-3 py-3 rounded-tr-[10px]">
-          <div
-            class="flex gap-1 justify-end items-center text-right xl:text-xs uppercase font-medium relative"
-          >
-            Status
-          </div>
+          <div class="text-right text-xs uppercase font-medium">Status</div>
         </th>
       </tr>
     </thead>

@@ -425,33 +425,31 @@
       class={`bg_f4f5f8 grid ${listSupported.includes($typeWallet) && $typeWallet === "BUNDLE" ? "grid-cols-8" : "grid-cols-7"}`}
     >
       <div class="col-spans-3 pl-3 py-3 rounded-tl-[10px]">
-        <div class="text-left xl:text-xs text-xl uppercase font-medium">
+        <div class="text-left text-xs uppercase font-medium">
           {MultipleLang.assets}
         </div>
       </div>
 
       <div class="py-3">
-        <div class="text-right xl:text-xs text-xl uppercase font-medium">
+        <div class="text-right text-xs uppercase font-medium">
           {MultipleLang.price}
         </div>
       </div>
 
       <div class="py-3">
-        <div class="text-right xl:text-xs text-xl uppercase font-medium">
+        <div class="text-right text-xs uppercase font-medium">
           {MultipleLang.amount}
         </div>
       </div>
 
       <div class="py-3">
-        <div class="text-right xl:text-xs text-xl uppercase font-medium">
+        <div class="text-right text-xs uppercase font-medium">
           {MultipleLang.value}
         </div>
       </div>
 
       <div class="py-3 pr-3">
-        <div class="text-right xl:text-xs text-xl uppercase font-medium">
-          PnL
-        </div>
+        <div class="text-right text-xs uppercase font-medium">PnL</div>
       </div>
 
       {#if listSupported.includes($typeWallet) && $typeWallet === "BUNDLE"}
@@ -543,33 +541,31 @@
       >
         {#if index === 0}
           <div class="bg_f4f5f8 col-spans-3 pl-3 py-3 rounded-tl-[10px]">
-            <div class="text-left xl:text-xs text-xl uppercase font-medium">
+            <div class="text-left text-xs uppercase font-medium">
               {MultipleLang.assets}
             </div>
           </div>
 
           <div class="bg_f4f5f8 py-3">
-            <div class="text-right xl:text-xs text-xl uppercase font-medium">
+            <div class="text-right text-xs uppercase font-medium">
               {MultipleLang.price}
             </div>
           </div>
 
           <div class="bg_f4f5f8 py-3">
-            <div class="text-right xl:text-xs text-xl uppercase font-medium">
+            <div class="text-right text-xs uppercase font-medium">
               {MultipleLang.amount}
             </div>
           </div>
 
           <div class="bg_f4f5f8 py-3">
-            <div class="text-right xl:text-xs text-xl uppercase font-medium">
+            <div class="text-right text-xs uppercase font-medium">
               {MultipleLang.value}
             </div>
           </div>
 
           <div class="bg_f4f5f8 py-3 pr-3">
-            <div class="text-right xl:text-xs text-xl uppercase font-medium">
-              PnL
-            </div>
+            <div class="text-right text-xs uppercase font-medium">PnL</div>
           </div>
 
           {#if listSupported.includes($typeWallet) && $typeWallet === "BUNDLE"}

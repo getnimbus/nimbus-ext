@@ -1,24 +1,25 @@
 <script lang="ts">
-  import { isDarkMode, user } from "~/store";
+  import { onDestroy, onMount } from "svelte";
+  import { isDarkMode } from "~/store";
   import dayjs from "dayjs";
   import isBetween from "dayjs/plugin/isBetween";
   import duration from "dayjs/plugin/duration";
   dayjs.extend(isBetween);
   dayjs.extend(duration);
 
+  import Button from "~/components/Button.svelte";
+
+  import goldImg from "~/assets/Gold4.svg";
+  import Crown from "~/assets/crown.svg";
+
+  export let isRedeem = false;
   export let data;
   export let handleRedeemTicket = (value) => {};
   export let isLoadingRedeem;
   export let totalPoint;
 
-  import Button from "~/components/Button.svelte";
-
-  import goldImg from "~/assets/Gold4.svg";
-  import Crown from "~/assets/crown.svg";
-  import { onDestroy, onMount } from "svelte";
-
-  let timeCountDown = "";
   let showDisabled = false;
+  let timeCountDown = "";
   let intervalId = null;
   let interval: ReturnType<typeof setInterval>;
 
@@ -70,11 +71,13 @@
       }`}
     >
       <img src={data?.logo} alt="" class="w-20 h-20 object-contain" />
-      <div
-        class="absolute -bottom-2 w-full text-center whitespace-nowrap left-timee italic text-sm"
-      >
-        {timeCountDown}
-      </div>
+      {#if isRedeem}
+        <div
+          class="absolute -bottom-2 w-full text-center whitespace-nowrap left-timee italic text-sm"
+        >
+          {timeCountDown}
+        </div>
+      {/if}
     </div>
 
     <div class="flex-1 flex flex-col gap-2">
@@ -108,35 +111,27 @@
     </div>
 
     <div class="px-[16px]">
-      <div
-        class="flex items-center md:justify-start justify-between md:gap-[100px] gap-[40px]"
-      >
-        <div class="w-[100px] text-base font-normal text-right">Unlimited</div>
-        {#if checkTicketValidate() && totalPoint >= 1000}
-          <Button
-            variant="tertiary"
-            on:click={() => {
-              if (!isLoadingRedeem) {
-                handleRedeemTicket(data);
-              }
-            }}
-            disabled={isLoadingRedeem}
-          >
-            <div class="flex items-center gap-1">
-              <img src={goldImg} alt="" class="w-[28px] h-[28px]" />
-              <div class="text-white sm:text-lg text-smxs font-medium">
-                {data?.cost}
-              </div>
-            </div>
-            <div class="text-white text-smxs">Redeem</div>
-          </Button>
-        {:else}
-          <div
-            class="relative"
-            on:mouseenter={() => (showDisabled = true)}
-            on:mouseleave={() => (showDisabled = false)}
-          >
-            <Button disabled>
+      {#if isRedeem}
+        <div
+          class="flex items-center md:justify-start justify-between md:gap-[100px] gap-[40px]"
+        >
+          <div class="w-[150px] text-base font-normal text-right">
+            {#if checkTicketValidate()}
+              Unlimited
+            {:else}
+              Out of stock
+            {/if}
+          </div>
+          {#if checkTicketValidate() && totalPoint >= 1000}
+            <Button
+              variant="tertiary"
+              on:click={() => {
+                if (!isLoadingRedeem) {
+                  handleRedeemTicket(data);
+                }
+              }}
+              disabled={isLoadingRedeem}
+            >
               <div class="flex items-center gap-1">
                 <img src={goldImg} alt="" class="w-[28px] h-[28px]" />
                 <div class="text-white sm:text-lg text-smxs font-medium">
@@ -145,21 +140,47 @@
               </div>
               <div class="text-white text-smxs">Redeem</div>
             </Button>
-            {#if showDisabled}
-              <div
-                class="absolute transform left-1/2 -translate-x-1/2 -top-8"
-                style="z-index: 2147483648;"
-              >
-                <div
-                  class="max-w-[360px] text-white bg-black py-1 px-2 text-xs rounded relative w-max normal-case"
-                >
-                  You are not enough GM Points to Redeem
+          {:else}
+            <div
+              class="relative"
+              on:mouseenter={() => (showDisabled = true)}
+              on:mouseleave={() => (showDisabled = false)}
+            >
+              <Button disabled>
+                <div class="flex items-center gap-1">
+                  <img src={goldImg} alt="" class="w-[28px] h-[28px]" />
+                  <div class="text-white sm:text-lg text-smxs font-medium">
+                    {data?.cost}
+                  </div>
                 </div>
-              </div>
-            {/if}
-          </div>
-        {/if}
-      </div>
+                <div class="text-white text-smxs">Redeem</div>
+              </Button>
+              {#if showDisabled}
+                <div
+                  class="absolute transform left-1/2 -translate-x-1/2 -top-8"
+                  style="z-index: 2147483648;"
+                >
+                  <div
+                    class="max-w-[360px] text-white bg-black py-1 px-2 text-xs rounded relative w-max normal-case"
+                  >
+                    {#if totalPoint < 1000}
+                      You are not enough GM Points to Redeem
+                    {:else}
+                      There are not available now
+                    {/if}
+                  </div>
+                </div>
+              {/if}
+            </div>
+          {/if}
+        </div>
+      {:else}
+        <div
+          class="flex items-center justify-between p-[12px] bg-[#EEEEEE] rounded-[12px]"
+        >
+          <div class="text-[#131313] text-sm">Owned</div>
+        </div>
+      {/if}
     </div>
   </div>
 </div>

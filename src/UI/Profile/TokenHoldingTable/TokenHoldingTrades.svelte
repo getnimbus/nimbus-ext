@@ -260,27 +260,19 @@
     {#if ((holdingTokenData && holdingTokenData.length === 0) || (formatData && formatData.length === 0)) && !isLoading}
       <div class="bg_f4f5f8 grid grid-cols-7 sticky top-0 z-9">
         <div class="col-spans-2 pl-3 py-3 rounded-tl-[10px]">
-          <div class="text-left xl:text-xs text-xl uppercase font-medium">
-            Assets
-          </div>
+          <div class="text-left text-xs uppercase font-medium">Assets</div>
         </div>
 
         <div class="py-3">
-          <div class="text-right xl:text-xs text-xl uppercase font-medium">
-            Price
-          </div>
+          <div class="text-right text-xs uppercase font-medium">Price</div>
         </div>
 
         <div class="py-3">
-          <div class="text-right xl:text-xs text-xl uppercase font-medium">
-            Amount
-          </div>
+          <div class="text-right text-xs uppercase font-medium">Amount</div>
         </div>
 
         <div class="py-3">
-          <div class="text-right xl:text-xs text-xl uppercase font-medium">
-            Avg Cost
-          </div>
+          <div class="text-right text-xs uppercase font-medium">Avg Cost</div>
         </div>
 
         <div class="py-3 flex items-center justify-end">
@@ -288,9 +280,7 @@
             class="flex items-center gap-2 cursor-pointer w-max"
             on:click={toggleSortPnl}
           >
-            <div class="text-right xl:text-xs text-xl uppercase font-medium">
-              Pnl
-            </div>
+            <div class="text-right text-xs uppercase font-medium">Pnl</div>
             <div>
               {@html sortIcon(sortTypePnl)}
             </div>
@@ -302,7 +292,7 @@
             class="flex items-center gap-2 cursor-pointer w-max"
             on:click={toggleSortLastActivity}
           >
-            <div class="text-right xl:text-xs text-xl uppercase font-medium">
+            <div class="text-right text-xs uppercase font-medium">
               Last activity
             </div>
             <div>
@@ -344,25 +334,19 @@
         >
           {#if index === 0}
             <div class="bg_f4f5f8 col-spans-2 pl-3 py-3 rounded-tl-[10px]">
-              <div class="text-left xl:text-xs text-xl uppercase font-medium">
-                Assets
-              </div>
+              <div class="text-left text-xs uppercase font-medium">Assets</div>
             </div>
 
             <div class="bg_f4f5f8 py-3">
-              <div class="text-right xl:text-xs text-xl uppercase font-medium">
-                Price
-              </div>
+              <div class="text-right text-xs uppercase font-medium">Price</div>
             </div>
 
             <div class="bg_f4f5f8 py-3">
-              <div class="text-right xl:text-xs text-xl uppercase font-medium">
-                Amount
-              </div>
+              <div class="text-right text-xs uppercase font-medium">Amount</div>
             </div>
 
             <div class="bg_f4f5f8 py-3">
-              <div class="text-right xl:text-xs text-xl uppercase font-medium">
+              <div class="text-right text-xs uppercase font-medium">
                 Avg Cost
               </div>
             </div>
@@ -372,11 +356,7 @@
                 class="flex items-center gap-2 cursor-pointer w-max"
                 on:click={toggleSortPnl}
               >
-                <div
-                  class="text-right xl:text-xs text-xl uppercase font-medium"
-                >
-                  Pnl
-                </div>
+                <div class="text-right text-xs uppercase font-medium">Pnl</div>
                 <div>
                   {@html sortIcon(sortTypePnl)}
                 </div>
@@ -390,9 +370,7 @@
                 class="flex items-center gap-2 cursor-pointer w-max"
                 on:click={toggleSortLastActivity}
               >
-                <div
-                  class="text-right xl:text-xs text-xl uppercase font-medium"
-                >
+                <div class="text-right text-xs uppercase font-medium">
                   Last activity
                 </div>
                 <div>

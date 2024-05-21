@@ -387,12 +387,12 @@
                         />
                         <div class="flex flex-col">
                           <div
-                            class="text-sm xl:text-xs font-medium text_00000099"
+                            class="xl:text-xs text-sm font-medium text_00000099"
                           >
                             {item.label}
                           </div>
                           <div
-                            class={`text-base xl:text-sm ${
+                            class={`xl:text-sm text-base ${
                               $isDarkMode ? "text-white" : "text-black"
                             }`}
                           >

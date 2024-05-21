@@ -527,6 +527,14 @@
     }
   };
 
+  const wallets$ = onboard.state.select("wallets");
+
+  const disconnect = (value: any) => {
+    if (value && Object.keys(value).length !== 0) {
+      onboard.disconnectWallet({ label: value.label });
+    }
+  };
+
   const handleGetNonce = async (provider, address) => {
     try {
       const res: any = await nimbus.post("/users/nonce", {
@@ -547,6 +555,7 @@
         }
       }
     } catch (e) {
+      disconnect($wallets$?.[0]);
       console.error("error: ", e);
     }
   };
@@ -631,6 +640,7 @@
         }
       }
     } catch (e) {
+      $walletStore.disconnect();
       console.error("error: ", e);
     }
   };
@@ -661,8 +671,6 @@
       }
     } catch (e) {
       console.error("error: ", e);
-    } finally {
-      $walletStore.disconnect();
     }
   };
 

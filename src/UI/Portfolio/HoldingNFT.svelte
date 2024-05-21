@@ -199,19 +199,19 @@
   {#if data && data.length === 0 && !isLoading}
     <div class="bg_f4f5f8 grid grid-cols-8">
       <div class="col-spans-2 pl-3 py-3 rounded-tl-[10px]">
-        <div class="text-left xl:text-xs text-xl uppercase font-medium">
+        <div class="text-left text-xs uppercase font-medium">
           {MultipleLang.collection}
         </div>
       </div>
 
       <div class="col-spans-2 py-3">
-        <div class="text-left xl:text-xs text-xl uppercase font-medium">
+        <div class="text-left text-xs uppercase font-medium">
           {MultipleLang.Balance}
         </div>
       </div>
 
       <div class="py-3">
-        <div class="text-right xl:text-xs text-xl uppercase font-medium">
+        <div class="text-right text-xs uppercase font-medium">
           <TooltipTitle
             tooltipText={false
               ? "The Floor price from Magic Eden marketplace. "
@@ -224,19 +224,17 @@
       </div>
 
       <div class="py-3">
-        <div class="text-right xl:text-xs text-xl uppercase font-medium">
-          Cost
-        </div>
+        <div class="text-right text-xs uppercase font-medium">Cost</div>
       </div>
 
       <div class="py-3">
-        <div class="text-right xl:text-xs text-xl uppercase font-medium">
+        <div class="text-right text-xs uppercase font-medium">
           {MultipleLang.current_value}
         </div>
       </div>
 
       <div class="py-3 pr-3 rounded-tr-[10px]">
-        <div class="text-right xl:text-xs text-xl uppercase font-medium">
+        <div class="text-right text-xs uppercase font-medium">
           <TooltipTitle
             tooltipText="Price NFTs now - Price NFTs at time you spent"
           >
@@ -304,19 +302,19 @@
       >
         {#if index === 0}
           <div class="bg_f4f5f8 col-spans-2 pl-3 py-3 rounded-tl-[10px]">
-            <div class="text-left xl:text-xs text-xl uppercase font-medium">
+            <div class="text-left text-xs uppercase font-medium">
               {MultipleLang.collection}
             </div>
           </div>
 
           <div class="bg_f4f5f8 col-spans-2 py-3">
-            <div class="text-left xl:text-xs text-xl uppercase font-medium">
+            <div class="text-left text-xs uppercase font-medium">
               {MultipleLang.Balance}
             </div>
           </div>
 
           <div class="bg_f4f5f8 py-3">
-            <div class="text-right xl:text-xs text-xl uppercase font-medium">
+            <div class="text-right text-xs uppercase font-medium">
               <TooltipTitle
                 tooltipText={false
                   ? "The Floor price from Magic Eden marketplace. "
@@ -329,19 +327,17 @@
           </div>
 
           <div class="bg_f4f5f8 py-3">
-            <div class="text-right xl:text-xs text-xl uppercase font-medium">
-              Cost
-            </div>
+            <div class="text-right text-xs uppercase font-medium">Cost</div>
           </div>
 
           <div class="bg_f4f5f8 py-3">
-            <div class="text-right xl:text-xs text-xl uppercase font-medium">
+            <div class="text-right text-xs uppercase font-medium">
               {MultipleLang.current_value}
             </div>
           </div>
 
           <div class="bg_f4f5f8 py-3 pr-3 rounded-tr-[10px]">
-            <div class="text-right xl:text-xs text-xl uppercase font-medium">
+            <div class="text-right text-xs uppercase font-medium">
               <TooltipTitle
                 tooltipText="Price NFTs now - Price NFTs at time you spent"
               >

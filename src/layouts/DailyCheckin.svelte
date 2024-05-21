@@ -12,9 +12,9 @@
   import { detectedGeneration } from "~/lib/chains";
 
   import Icon from "~/UI/Option/Icon.svelte";
+  import TabLeaderBoard from "~/UI/DailyCheckin/TabLeaderBoard.svelte";
   import TabQuests from "~/UI/DailyCheckin/TabQuests.svelte";
   import TabDailyCheckin from "~/UI/DailyCheckin/TabDailyCheckin.svelte";
-  import TabLeaderBoard from "~/UI/DailyCheckin/TabLeaderBoard.svelte";
   import TabReward from "~/UI/DailyCheckin/TabReward.svelte";
   import TabFlipGmPoints from "~/UI/DailyCheckin/TabFlipGMPoints.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
@@ -115,10 +115,10 @@
     listAddress = data?.map((item) => {
       return {
         id: item.id,
-        type: item.type,
+        type: item?.type,
         label: item.label,
-        value: item.type === "CEX" ? item.id : item.accountId,
-        logo: item.type === "CEX" ? item.logo : detectedGeneration(item.type),
+        value: item?.type === "CEX" ? item.id : item.accountId,
+        logo: item?.type === "CEX" ? item.logo : detectedGeneration(item?.type),
         accounts:
           item?.accounts?.map((account) => {
             return {
@@ -138,7 +138,11 @@
 
   const handleSetWallet = async () => {
     const selectedWalletRes = await browser.storage.sync.get("selectedWallet");
-    if (selectedWalletRes?.selectedWallet !== null) {
+    if (
+      selectedWalletRes?.selectedWallet !== null &&
+      $user &&
+      Object.keys($user).length !== 0
+    ) {
       wallet.update((n) => (n = selectedWalletRes.selectedWallet));
     } else {
       if (listAddress && listAddress?.length !== 0) {
@@ -232,7 +236,7 @@
 
   const onSubmitInviteCode = async (e) => {
     isLoadingSubmitInviteCode = true;
-    const formData = new FormData(e.target);
+    const formData = new FormData(e?.target);
     const data: any = {};
     for (let field of formData) {
       const [key, value] = field;
@@ -268,11 +272,20 @@
       isLoadingSubmitInviteCode = false;
     }
   };
+
+  const handleSelectTabFlip = () => {
+    activeTabValue = "flip";
+    window.history.replaceState(
+      null,
+      "",
+      window.location.pathname + "?tab=flip"
+    );
+  };
 </script>
 
 <ErrorBoundary>
   <div class="xl:min-h-screen relative z-9">
-    {#if socialData && socialData.find((item) => item.type === "twitter")}
+    {#if socialData && socialData.find((item) => item?.type === "twitter")}
       {#if isSkipToMainPage || allowSuiCamp}
         <div
           class="max-w-[2000px] m-auto xl:w-[90%] w-[90%] py-8 grid xl:grid-cols-6 grid-cols-1 gap-6 relative z-2"
@@ -293,7 +306,7 @@
                   }`}
                 >
                   <Icon
-                    type={item.type}
+                    type={item?.type}
                     active={activeTabValue === item.value ? true : false}
                   />
                   <div class="xl:text-base text-lg">{item.label}</div>
@@ -313,7 +326,7 @@
               <!-- {:else if activeTabValue === "leaderboard"}
               <TabLeaderBoard /> -->
             {:else if activeTabValue === "rewards"}
-              <TabReward />
+              <TabReward {handleSelectTabFlip} />
             {:else if activeTabValue === "flip"}
               <TabFlipGmPoints />
             {/if}

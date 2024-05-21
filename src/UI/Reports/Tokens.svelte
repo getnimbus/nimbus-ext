@@ -124,25 +124,25 @@
     <thead>
       <tr class="bg_f4f5f8">
         <th class="py-3 pl-3">
-          <div class="text-xl font-semibold uppercase xl:text-xs text-left">
+          <div class="font-medium uppercase text-xs text-left">
             {MultipleLang.content.assets_header_table}
           </div>
         </th>
 
         <th class="py-3">
-          <div class="text-xl font-semibold uppercase xl:text-xs text-left">
+          <div class="font-medium uppercase text-xs text-left">
             {MultipleLang.content.contract_address_header_table}
           </div>
         </th>
 
         <th class="py-3">
-          <div class="text-xl font-semibold text-right uppercase xl:text-xs">
+          <div class="font-medium text-right uppercase text-xs">
             {MultipleLang.content.chain_header_table}
           </div>
         </th>
 
         <th class="py-3 pr-3">
-          <div class="text-xl font-semibold text-right uppercase xl:text-xs">
+          <div class="font-medium text-right uppercase text-xs">
             {MultipleLang.content.action_header_table}
           </div>
         </th>
