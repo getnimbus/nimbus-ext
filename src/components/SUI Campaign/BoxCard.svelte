@@ -1,13 +1,11 @@
 <script lang="ts">
   import { isDarkMode, suiWalletInstance, userPublicAddress } from "~/store";
-  import { createQuery, useQueryClient } from "@tanstack/svelte-query";
-  import { getLinkData } from "~/lib/queryAPI";
+  import { useQueryClient } from "@tanstack/svelte-query";
   import { nimbus } from "~/lib/network";
   import type { WalletState } from "nimbus-sui-kit";
   import { SuiConnector } from "nimbus-sui-kit";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
-  import { triggerFirework } from "~/utils";
 
   export let isClaimable = false;
   export let isRedeem = false;
@@ -31,9 +29,6 @@
   let isSuccessToast = false;
   let counter = 5;
   let showToast = false;
-
-  let openScreenClaimSuccess = false;
-  let resClaim = {};
 
   const trigger = () => {
     showToast = true;
@@ -78,22 +73,8 @@
     onConnectError,
   };
 
-  let selectedDataSUILink: any = {};
-
-  $: queryLinkSocial = createQuery({
-    queryKey: ["link-socials"],
-    queryFn: () => getLinkData(),
-    staleTime: Infinity,
-    retry: false,
-  });
-
-  $: {
-    if (!$queryLinkSocial.isError && $queryLinkSocial.data !== undefined) {
-      selectedDataSUILink = $queryLinkSocial?.data?.data?.find(
-        (item) => item.kind === "wallet" && item.chain === "MOVE"
-      );
-    }
-  }
+  let openScreenClaimSuccess = false;
+  let resClaim = {};
 
   let showDisabled = false;
   let isLoadingClaim = false;
@@ -127,14 +108,18 @@
           }
 
           resClaim = res?.data;
-          queryClient?.invalidateQueries([$userPublicAddress, "daily-checkin"]);
-          queryClient?.invalidateQueries([$userPublicAddress, "rewards"]);
-          handleTriggerModalClaimSuccess();
+          openScreenClaimSuccess = true;
           isLoadingClaim = false;
           isClickClaim = false;
+
+          triggerReloadApi();
         }
       } catch (e) {
         console.error(e);
+        toastMsg =
+          "Something went wrong while claiming prize. Please try again!";
+        isSuccessToast = false;
+        trigger();
         if (
           ($suiWalletInstance as WalletState) &&
           ($suiWalletInstance as WalletState).connected
@@ -165,9 +150,9 @@
     });
   };
 
-  const handleTriggerModalClaimSuccess = () => {
-    triggerFirework();
-    openScreenClaimSuccess = true;
+  const triggerReloadApi = () => {
+    queryClient?.invalidateQueries([$userPublicAddress, "daily-checkin"]);
+    queryClient?.invalidateQueries([$userPublicAddress, "rewards"]);
   };
 </script>
 
@@ -188,7 +173,15 @@
         <div
           class="absolute -bottom-2 w-full text-center whitespace-nowrap left-timee italic text-sm"
         >
-          499 lefts
+          {Number(data.cap) - Number(data.sold)} lefts
+        </div>
+      {/if}
+
+      {#if data?.code === "wUSDC" || data?.code === "FLX"}
+        <div
+          class="absolute -bottom-2 w-full text-center whitespace-nowrap left-timee italic text-sm"
+        >
+          {data?.value + " " + data?.code}
         </div>
       {/if}
     </div>
@@ -200,12 +193,20 @@
           NIMBUS ON SUI
         </div>
       </div>
+
       <div class="lg:text-4xl text-3xl font-normal">
-        {data?.title}
+        {#if isRedeem}
+          {data.title}
+        {:else}
+          {data?.code}
+        {/if}
       </div>
-      <div class="text-sm font-normal">
-        {data?.description}
-      </div>
+
+      {#if data?.code !== "PREMIUM_CODE"}
+        <div class="text-sm font-normal">
+          {data?.description}
+        </div>
+      {/if}
     </div>
   </div>
 
@@ -229,11 +230,11 @@
       >
         {#if !isClaimable && isRedeem}
           <div class="w-[150px] text-base font-normal text-right">
-            500 boxs <br />/per-week
+            {data.cap} boxs <br />/per-week
           </div>
         {/if}
 
-        {#if isClaimable}
+        {#if isClaimable && (data.code === "wUSDC" || data.code === "FLX")}
           <div class="w-full flex justify-end">
             <div class="w-[220px]">
               <Button
@@ -241,6 +242,7 @@
                 on:click={() => {
                   if (!isLoadingClaim) {
                     isClickClaim = true;
+                    handleClaim();
                   }
                 }}
                 disabled={isLoadingClaim}
@@ -249,7 +251,7 @@
               </Button>
             </div>
           </div>
-        {:else if !isClaimable && totalPoint >= 1000 && isRedeem}
+        {:else if !isClaimable && totalPoint >= 1000 && isRedeem && Number(data.cap) - Number(data.sold) > 0}
           <Button
             variant="tertiary"
             on:click={() => {
@@ -269,23 +271,33 @@
           </Button>
         {:else}
           <div class="w-full">
-            {#if !isClaimable}
+            {#if !isClaimable && (data?.code === "wUSDC" || data?.code === "FLX" || data?.code === "PREMIUM_CODE")}
               <div
                 class="flex items-center justify-between p-[12px] bg-[#EEEEEE] rounded-[12px] w-full"
               >
-                <div class="text-[#131313] text-sm">Your Trx hash</div>
-                {#if data?.tx_hash}
+                {#if data?.code === "wUSDC" || data?.code === "FLX"}
+                  <div class="text-[#131313] text-sm">Your Trx hash</div>
                   <Copy
-                    address={data?.tx_hash}
+                    address={data?.tx}
                     iconColor="#000"
                     iconSize={20}
                     color="#000"
                     isShorten
                     isLink
-                    link={`https://suiscan.xyz/testnet/tx/${data?.tx_hash}`}
+                    link={`https://suiscan.xyz/testnet/tx/${data?.tx}`}
+                    textTooltip="Copy tx link"
                   />
-                {:else}
-                  <div class="text-black">N/A</div>
+                {/if}
+
+                {#if data?.code === "PREMIUM_CODE"}
+                  <div class="text-[#131313] text-sm">Your Premium Code</div>
+                  <Copy
+                    address={data?.value}
+                    iconColor="#000"
+                    iconSize={20}
+                    color="#000"
+                    textTooltip="Copy Premium Code"
+                  />
                 {/if}
               </div>
             {:else}
@@ -396,16 +408,25 @@
     </div>
     <div class="flex justify-center">
       <div class="min-w-[120px]">
-        {#if Number(resClaim?.amount) >= 10 && resClaim?.partner === "flowx"}
-          <Button variant="tertiary">
-            stake it with FlowX for more GM and APY %
-          </Button>
+        {#if resClaim?.partner === "FlowX"}
+          <a href={resClaim?.link} target="_blank">
+            <Button
+              variant="tertiary"
+              on:click={() => {
+                triggerReloadApi();
+              }}
+            >
+              Stake it with FlowX for more GM and APY %
+            </Button>
+          </a>
         {/if}
-        {#if Number(resClaim?.amount) < 10 && resClaim?.partner === "nimbus"}
+
+        {#if resClaim?.partner === "Nimbus"}
           <Button
             variant="tertiary"
             on:click={() => {
               handleSelectTabFlip();
+              triggerReloadApi();
             }}>FLIP IT</Button
           >
         {/if}
