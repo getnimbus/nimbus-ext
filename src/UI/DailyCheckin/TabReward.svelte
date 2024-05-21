@@ -366,7 +366,7 @@
 
               {#each $queryReward?.data?.ownRewards.filter((item) => item?.campaignName === "sui-unlock" && (item.title === "FLOWX_BOX" || item.title === "PAPER_BOX")) || [] as item}
                 <BoxCard
-                  isClaimable
+                  isClaimable={item.isClaimable}
                   data={item}
                   handleRedeemBox={() => {}}
                   {isLoadingRedeem}

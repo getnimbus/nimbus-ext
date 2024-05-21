@@ -1,16 +1,12 @@
 <script lang="ts">
-  import { isDarkMode, suiWalletInstance } from "~/store";
-  import { TransactionBlock } from "@mysten/sui.js/transactions";
-  import { getFullnodeUrl, SuiClient } from "@mysten/sui.js/client";
-  import { createQuery } from "@tanstack/svelte-query";
+  import { isDarkMode, suiWalletInstance, userPublicAddress } from "~/store";
+  import { createQuery, useQueryClient } from "@tanstack/svelte-query";
   import { getLinkData } from "~/lib/queryAPI";
   import { nimbus } from "~/lib/network";
   import type { WalletState } from "nimbus-sui-kit";
   import { SuiConnector } from "nimbus-sui-kit";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
-  import { triggerFirework } from "~/utils";
-  import { wait } from "~/entries/background/utils";
 
   export let isClaimable = false;
   export let isRedeem = false;
@@ -19,11 +15,15 @@
   export let isLoadingRedeem;
   export let totalPoint;
 
+  import Copy from "~/components/Copy.svelte";
+  import AppOverlay from "~/components/Overlay.svelte";
   import ReactAdapter from "~/components/ReactAdapter.svelte";
   import Button from "~/components/Button.svelte";
 
   import goldImg from "~/assets/Gold4.svg";
   import Crown from "~/assets/crown.svg";
+
+  const queryClient = useQueryClient();
 
   let toastMsg = "";
   let isSuccessToast = false;
@@ -43,13 +43,6 @@
     showToast = false;
     toastMsg = "";
     isSuccessToast = false;
-  };
-
-  const triggerRedeemSuccess = async () => {
-    openScreenClaimSuccess = true;
-    triggerFirework();
-    await wait(2000);
-    openScreenClaimSuccess = false;
   };
 
   const chains = [
@@ -99,17 +92,6 @@
     }
   }
 
-  const client = new SuiClient({ url: getFullnodeUrl("testnet") });
-
-  const base64ToBytes = (base64: string) => {
-    const binaryString = atob(base64);
-    const bytes = new Uint8Array(binaryString.length);
-    for (var i = 0; i < binaryString.length; i++) {
-      bytes[i] = binaryString.charCodeAt(i);
-    }
-    return bytes;
-  };
-
   let showDisabled = false;
   let isLoadingClaim = false;
 
@@ -120,62 +102,47 @@
     ) {
       isLoadingClaim = true;
       try {
-        const res = await nimbus.post(`/v2/rewards/${data.id}/token-claim`, {
-          publicAddress: $suiWalletInstance.account?.address,
-        });
-
-        if (res && res?.data?.tx) {
-          triggerRedeemSuccess();
-          return;
-        }
-
-        if (res && !res?.data?.payload) {
-          toastMsg =
-            "Something went wrong while claiming prize. Please try again!";
-          isSuccessToast = false;
-          trigger();
-          return;
-        }
-
-        const sponsoredTxb = TransactionBlock.fromKind(
-          base64ToBytes(res?.data?.payload)
+        const { signature } = await handleSignAddressMessage(
+          `I am confirming that I want to claim the reward with id ${data.id} to address ${$suiWalletInstance.account?.address}`
         );
-
-        sponsoredTxb.setSender(
-          "0x466c3adcfc05d5a356965ecc426efb367006d9e058db0a3597893f6007978fbc"
-        );
-
-        sponsoredTxb.setGasOwner($suiWalletInstance.account?.address);
-
-        const { signature } = await (
-          $suiWalletInstance as WalletState
-        ).signTransactionBlock({
-          transactionBlock: sponsoredTxb,
-        });
-
         if (signature) {
-          await nimbus.post(`/v2/rewards/:id/token-claim`, {
+          const res = await nimbus.post(`/v2/rewards/${data.id}/token-claim`, {
             publicAddress: $suiWalletInstance.account?.address,
             signature,
           });
 
-          triggerRedeemSuccess();
+          if (res && res?.error) {
+            toastMsg =
+              res?.error ||
+              "Something went wrong while claiming prize. Please try again!";
+            isSuccessToast = false;
+            trigger();
+            return;
+          }
+
+          queryClient?.invalidateQueries([$userPublicAddress, "daily-checkin"]);
+          queryClient?.invalidateQueries([$userPublicAddress, "rewards"]);
+          handleTriggerModalClaimSuccess();
         }
       } catch (e) {
         console.error(e);
+        if (
+          ($suiWalletInstance as WalletState) &&
+          ($suiWalletInstance as WalletState).connected
+        ) {
+          ($suiWalletInstance as WalletState).disconnect();
+        }
       } finally {
         isLoadingClaim = false;
+        if (
+          ($suiWalletInstance as WalletState) &&
+          ($suiWalletInstance as WalletState).connected
+        ) {
+          ($suiWalletInstance as WalletState).disconnect();
+        }
       }
     } else {
-      handleSUIAuth();
-    }
-  };
-
-  const handleSUIAuth = async () => {
-    try {
       ($suiWalletInstance as WalletState).toggleSelect();
-    } catch (e) {
-      console.log("error: ", e);
     }
   };
 
@@ -184,41 +151,18 @@
       ($suiWalletInstance as WalletState) &&
       ($suiWalletInstance as WalletState).connected
     ) {
-      handleGetNonce(($suiWalletInstance as WalletState)?.account?.address);
+      handleClaim();
     }
   }
 
-  const handleGetNonce = async (address: string) => {
-    try {
-      const res: any = await nimbus.post("/users/nonce?verified=true", {
-        publicAddress: address,
-        referrer: undefined,
-      });
-
-      if (res && res.data) {
-        const signature = await handleSignAddressMessage(res?.data?.nonce);
-        if (signature) {
-          handleClaim();
-        }
-      }
-    } catch (e) {
-      console.error("error: ", e);
-      if (
-        ($suiWalletInstance as WalletState) &&
-        ($suiWalletInstance as WalletState).connected
-      ) {
-        ($suiWalletInstance as WalletState).disconnect();
-      }
-    }
+  const handleSignAddressMessage = async (msg: string) => {
+    return await ($suiWalletInstance as WalletState).signPersonalMessage({
+      message: new TextEncoder().encode(msg),
+    });
   };
 
-  const handleSignAddressMessage = async (nonce: string) => {
-    const msg = await ($suiWalletInstance as WalletState).signPersonalMessage({
-      message: new TextEncoder().encode(
-        `I am signing my one-time nonce: ${nonce}`
-      ),
-    });
-    return msg;
+  const handleTriggerModalClaimSuccess = () => {
+    openScreenClaimSuccess = true;
   };
 </script>
 
@@ -233,8 +177,9 @@
         $isDarkMode ? "" : "bg-white"
       }`}
     >
-      <img src={data?.logo} alt="" class="w-20 h-20 object-contain" />
-      {#if !isClaimable}
+      <img src={data.logo} alt="" class="w-20 h-20 object-contain" />
+
+      {#if !isClaimable && isRedeem}
         <div
           class="absolute -bottom-2 w-full text-center whitespace-nowrap left-timee italic text-sm"
         >
@@ -277,25 +222,29 @@
       <div
         class="flex items-center md:justify-start justify-between md:gap-[100px] gap-[40px]"
       >
-        <div class="w-[150px] text-base font-normal text-right">
-          {#if !isClaimable}
+        {#if !isClaimable && isRedeem}
+          <div class="w-[150px] text-base font-normal text-right">
             500 boxs <br />/per-week
-          {/if}
-        </div>
+          </div>
+        {/if}
 
         {#if isClaimable}
-          <Button
-            variant="tertiary"
-            on:click={() => {
-              if (!isLoadingClaim) {
-                handleClaim();
-              }
-            }}
-            disabled={isLoadingClaim}
-          >
-            <div class="text-white text-smxs">Claim</div>
-          </Button>
-        {:else if totalPoint >= 1000 || isRedeem}
+          <div class="w-full flex justify-end">
+            <div class="w-[150px]">
+              <Button
+                variant="tertiary"
+                on:click={() => {
+                  if (!isLoadingClaim) {
+                    handleClaim();
+                  }
+                }}
+                disabled={isLoadingClaim}
+              >
+                <div class="text-white text-smxs">Claim</div>
+              </Button>
+            </div>
+          </div>
+        {:else if !isClaimable && totalPoint >= 1000 && isRedeem}
           <Button
             variant="tertiary"
             on:click={() => {
@@ -314,30 +263,57 @@
             <div class="text-white text-smxs">Redeem</div>
           </Button>
         {:else}
-          <div
-            class="relative"
-            on:mouseenter={() => (showDisabled = true)}
-            on:mouseleave={() => (showDisabled = false)}
-          >
-            <Button disabled>
-              <div class="flex items-center gap-1">
-                <img src={goldImg} alt="" class="w-[28px] h-[28px]" />
-                <div class="text-white sm:text-lg text-smxs font-medium">
-                  {data?.cost}
-                </div>
-              </div>
-              <div class="text-white text-smxs">Redeem</div>
-            </Button>
-            {#if showDisabled}
+          <div class="w-full">
+            {#if !isClaimable}
               <div
-                class="absolute transform left-1/2 -translate-x-1/2 -top-8"
-                style="z-index: 2147483648;"
+                class="flex items-center justify-between p-[12px] bg-[#EEEEEE] rounded-[12px] w-full"
               >
-                <div
-                  class="max-w-[360px] text-white bg-black py-1 px-2 text-xs rounded relative w-max normal-case"
-                >
-                  You are not enough GM Points to Redeem
-                </div>
+                <div class="text-[#131313] text-sm">Your Trx hash</div>
+                {#if data?.tx_hash}
+                  <Copy
+                    address={data?.tx_hash}
+                    iconColor="#000"
+                    iconSize={20}
+                    color="#000"
+                    isShorten
+                    isLink
+                    link={`https://suiscan.xyz/testnet/tx/${data?.tx_hash}`}
+                  />
+                {:else}
+                  <div class="text-black">N/A</div>
+                {/if}
+              </div>
+            {:else}
+              <div
+                class="relative"
+                on:mouseenter={() => (showDisabled = true)}
+                on:mouseleave={() => (showDisabled = false)}
+              >
+                <Button disabled>
+                  <div class="flex items-center gap-1">
+                    <img src={goldImg} alt="" class="w-[28px] h-[28px]" />
+                    <div class="text-white sm:text-lg text-smxs font-medium">
+                      {data?.cost}
+                    </div>
+                  </div>
+                  <div class="text-white text-smxs">Redeem</div>
+                </Button>
+                {#if showDisabled}
+                  <div
+                    class="absolute transform left-1/2 -translate-x-1/2 -top-8"
+                    style="z-index: 2147483648;"
+                  >
+                    <div
+                      class="max-w-[360px] text-white bg-black py-1 px-2 text-xs rounded relative w-max normal-case"
+                    >
+                      {#if totalPoint < 1000}
+                        You are not enough GM Points to Redeem
+                      {:else}
+                        There are not available now
+                      {/if}
+                    </div>
+                  </div>
+                {/if}
               </div>
             {/if}
           </div>
@@ -402,31 +378,23 @@
   </div>
 {/if}
 
-{#if openScreenClaimSuccess}
-  <div
-    class="fixed h-screen w-screen top-0 left-0 z-10 flex items-center justify-center bg-[#000000cc]"
-    on:click={() => {
-      setTimeout(() => {
-        openScreenClaimSuccess = false;
-      }, 500);
-    }}
-  >
-    <div class="flex flex-col items-center justify-center gap-10">
-      <div class="xl:text-2xl text-4xl text-white font-medium">
-        Claim successfully
+<AppOverlay
+  clickOutSideToClose
+  isOpen={openScreenClaimSuccess}
+  on:close={() => (openScreenClaimSuccess = false)}
+>
+  <div class="flex flex-col gap-4 xl:mt-0 mt-4">
+    <div class="flex flex-col items-start gap-1">
+      <div class="font-semibold title-3">title</div>
+      <div class="text-gray-500 text-sm">subtitle</div>
+    </div>
+    <div class="flex justify-end gap-2">
+      <div class="w-[120px]">
+        <Button variant="delete" on:click={() => {}}>HELLO</Button>
       </div>
-
-      <!-- Todo update navigate base on state response -->
-
-      <!-- <div class="w-40 h-40">
-        <Image logo={selectedTicketReward?.logo} defaultLogo="" />
-      </div>
-      <div class="xl:text-2xl text-4xl text-white font-medium">
-        You have redeemed the {selectedTicketReward?.title?.toLowerCase() || ""}
-      </div> -->
     </div>
   </div>
-{/if}
+</AppOverlay>
 
 <style windi:preflights:global windi:safelist:global>
   @media (max-width: 320) {
