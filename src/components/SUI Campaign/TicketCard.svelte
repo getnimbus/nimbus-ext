@@ -118,13 +118,14 @@
         <div
           class="flex items-center md:justify-start justify-between md:gap-[100px] gap-[40px]"
         >
-          <div class="w-[150px] text-base font-normal text-right">
+          <div class="w-[220px] text-base font-normal text-left">
             {#if checkTicketValidate()}
               Unlimited
             {:else}
               Out of stock
             {/if}
           </div>
+
           {#if checkTicketValidate() && totalPoint >= 1000}
             <Button
               variant="tertiary"
@@ -145,7 +146,7 @@
             </Button>
           {:else}
             <div
-              class="relative"
+              class="relative w-full"
               on:mouseenter={() => (showDisabled = true)}
               on:mouseleave={() => (showDisabled = false)}
             >

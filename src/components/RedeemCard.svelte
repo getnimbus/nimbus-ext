@@ -66,12 +66,13 @@
     <div class="px-[16px]">
       {#if isRedeem}
         <div class="flex items-center gap-[40px]">
-          <div class="w-[150px] text-base font-normal text-right">
+          <div class="w-[220px] text-base font-normal text-left">
             {redeemData?.remains} left
           </div>
+
           {#if redeemData?.remains === 0}
             <div
-              class="relative"
+              class="relative w-full"
               on:mouseenter={() => (showDisabled = true)}
               on:mouseleave={() => (showDisabled = false)}
             >

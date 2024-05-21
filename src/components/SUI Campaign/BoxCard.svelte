@@ -221,14 +221,14 @@
         class="flex items-center md:justify-start justify-between md:gap-[100px] gap-[40px]"
       >
         {#if !isClaimable && isRedeem}
-          <div class="w-[150px] text-base font-normal text-right">
+          <div class="w-[220px] text-base font-normal text-left">
             {data.cap} boxs <br />/per-week
           </div>
         {/if}
 
         {#if isClaimable && (data.code === "wUSDC" || data.code === "FLX")}
           <div class="w-full flex justify-end">
-            <div class="w-[220px]">
+            <div class="w-[197.95px] h-[45px]">
               <Button
                 variant="tertiary"
                 on:click={() => {
@@ -294,7 +294,7 @@
               </div>
             {:else}
               <div
-                class="relative"
+                class="relative w-full"
                 on:mouseenter={() => (showDisabled = true)}
                 on:mouseleave={() => (showDisabled = false)}
               >
