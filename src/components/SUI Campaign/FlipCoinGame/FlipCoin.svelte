@@ -66,6 +66,8 @@
   let showToast = false;
   let isLoadingFlip = false;
 
+  let flipCount = dataFlipCheck.playNum;
+
   const trigger = () => {
     showToast = true;
     counter = 5;
@@ -177,6 +179,8 @@
           isUserWin = false;
           openScreenResult = true;
         }
+
+        flipCount = flipCount + 1;
 
         getFlipCheck();
         queryClient?.invalidateQueries([$userPublicAddress, "daily-checkin"]);
