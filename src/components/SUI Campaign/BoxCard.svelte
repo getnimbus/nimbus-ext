@@ -6,6 +6,7 @@
   import { SuiConnector } from "nimbus-sui-kit";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
+  import { triggerFirework } from "~/utils";
 
   export let isClaimable = false;
   export let isRedeem = false;
@@ -74,7 +75,7 @@
   };
 
   let openScreenClaimSuccess = false;
-  let resClaim = {};
+  let resClaim: any = {};
 
   let showDisabled = false;
   let isLoadingClaim = false;
@@ -93,10 +94,13 @@
         );
 
         if (signature) {
-          const res = await nimbus.post(`/v2/rewards/${data.id}/token-claim`, {
-            publicAddress: $suiWalletInstance.account?.address,
-            signature,
-          });
+          const res: any = await nimbus.post(
+            `/v2/rewards/${data.id}/token-claim`,
+            {
+              publicAddress: $suiWalletInstance.account?.address,
+              signature,
+            }
+          );
 
           if (res && res?.error) {
             toastMsg =
@@ -111,15 +115,10 @@
           openScreenClaimSuccess = true;
           isLoadingClaim = false;
           isClickClaim = false;
-
-          triggerReloadApi();
+          triggerFirework();
         }
       } catch (e) {
         console.error(e);
-        toastMsg =
-          "Something went wrong while claiming prize. Please try again!";
-        isSuccessToast = false;
-        trigger();
         if (
           ($suiWalletInstance as WalletState) &&
           ($suiWalletInstance as WalletState).connected
@@ -403,7 +402,13 @@
   <div class="flex flex-col gap-4 xl:mt-0 mt-4">
     <div class="flex flex-col items-center gap-1">
       <div class="font-semibold title-3">
-        You have claimed {resClaim?.amount + " " + resClaim?.token} successfully!
+        You have {#if resClaim?.partner === "FlowX"}
+          claimed {resClaim?.amount + " " + resClaim?.token}
+        {/if}
+        {#if resClaim?.partner === "Nimbus"}
+          received Premium Code {resClaim?.code}
+        {/if}
+        successfully!
       </div>
     </div>
     <div class="flex justify-center">
