@@ -194,11 +194,9 @@
         {/if}
       </div>
 
-      {#if data?.code !== "PREMIUM_CODE"}
-        <div class="text-sm font-normal">
-          {data?.description}
-        </div>
-      {/if}
+      <div class="text-sm font-normal">
+        {data?.description}
+      </div>
     </div>
   </div>
 
