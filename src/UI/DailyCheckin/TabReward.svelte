@@ -535,13 +535,17 @@
   >
     <div class="flex flex-col items-center justify-center gap-10">
       <div class="xl:text-2xl text-4xl text-white font-medium">
-        Congratulations
+        Congratulations!
       </div>
 
       {#if resRedeem?.code === "GM_POINTS"}
         <img src={goldImg} alt="" class="w-40 h-40" />
         <div class="xl:text-2xl text-4xl text-white font-medium">
           You have received {Number(resRedeem?.value || 0)} GM Points
+        </div>
+      {:else if resRedeem?.code === "PREMIUM_CODE"}
+        <div class="xl:text-2xl text-4xl text-white font-medium">
+          You have received Nimbus Premium Code {resRedeem?.value}
         </div>
       {:else}
         <div class="w-40 h-40">

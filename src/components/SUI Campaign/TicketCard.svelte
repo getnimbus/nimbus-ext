@@ -7,7 +7,6 @@
   dayjs.extend(isBetween);
   dayjs.extend(duration);
 
-  import Copy from "~/components/Copy.svelte";
   import Button from "~/components/Button.svelte";
 
   import goldImg from "~/assets/Gold4.svg";
@@ -179,18 +178,7 @@
         <div
           class="flex items-center justify-between p-[12px] bg-[#EEEEEE] rounded-[12px]"
         >
-          <div class="text-[#131313] text-sm">Your gift code</div>
-          {#if data?.id}
-            <Copy
-              address={data?.id || "N/A"}
-              iconColor="#000"
-              iconSize={20}
-              color="#000"
-              isShorten
-            />
-          {:else}
-            <div class="text-black">N/A</div>
-          {/if}
+          <div class="text-[#131313] text-sm">Owned</div>
         </div>
       {/if}
     </div>
