@@ -3,11 +3,9 @@
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { nimbus } from "~/lib/network";
   import { isDarkMode, user, userPublicAddress } from "~/store";
-  import { triggerFirework } from "~/utils";
+  import { triggerFirework, triggerToast } from "~/utils";
   import dayjs from "dayjs";
   import { wait } from "~/entries/background/utils";
-  import { Toast } from "flowbite-svelte";
-  import { blur } from "svelte/transition";
   import { driver } from "driver.js";
   import "driver.js/dist/driver.css";
   import mixpanel from "mixpanel-browser";
@@ -122,27 +120,9 @@
   let isDisabledReceiveQuest = false;
   let selectedQuestId = "";
 
-  let toastMsg = "";
-  let isSuccessToast: boolean = false;
-  let counter = 5;
-  let showToast: boolean = false;
-
   let isDisabledRedeem: boolean = false;
   let isShowBanner: boolean = false;
   let lastMonthWinners = [];
-
-  const trigger = () => {
-    showToast = true;
-    counter = 5;
-    timeout();
-  };
-
-  const timeout = () => {
-    if (--counter > 0) return setTimeout(timeout, 1000);
-    showToast = false;
-    toastMsg = "";
-    isSuccessToast = false;
-  };
 
   const queryClient = useQueryClient();
 
@@ -437,14 +417,12 @@
       if (type.includes("retweet-on-twitter")) {
         window.open(link, "_blank");
         await wait(5000);
-        const res = await nimbus.post(
+        const res: any = await nimbus.post(
           `/v2/checkin/quest/retweet-on-twitter`,
           {}
         );
         if (res && res?.data === null) {
-          toastMsg = "You already retweet us on Twitter";
-          isSuccessToast = false;
-          trigger();
+          triggerToast("You already retweet us on Twitter", "fail");
         }
         if (res?.data?.bonus !== undefined) {
           handleTrigger(res?.data?.bonus);
@@ -453,11 +431,12 @@
       if (type.includes("retweet-founder")) {
         window.open(link, "_blank");
         await wait(5000);
-        const res = await nimbus.post(`/v2/checkin/quest/retweet-founder`, {});
+        const res: any = await nimbus.post(
+          `/v2/checkin/quest/retweet-founder`,
+          {}
+        );
         if (res && res?.data === null) {
-          toastMsg = "You already retweet us on Twitter";
-          isSuccessToast = false;
-          trigger();
+          triggerToast("You already retweet us on Twitter", "fail");
         }
         if (res?.data?.bonus !== undefined) {
           handleTrigger(res?.data?.bonus);
@@ -466,28 +445,24 @@
       if (type === "solana-recap-2023") {
         window.open(link, "_blank");
         await wait(5000);
-        const res = await nimbus.post(
+        const res: any = await nimbus.post(
           `/v2/checkin/quest/solana-recap-2023`,
           {}
         );
         if (res && res?.data === null) {
-          toastMsg = "You already post on Twitter";
-          isSuccessToast = false;
-          trigger();
+          triggerToast("You already post on Twitter", "fail");
         }
         if (res?.data?.bonus !== undefined) {
           handleTrigger(res?.data?.bonus);
         }
       }
       if (type === "new-user-tutorial") {
-        const res = await nimbus.post(
+        const res: any = await nimbus.post(
           `/v2/checkin/quest/new-user-tutorial`,
           {}
         );
         if (res && res?.data === null) {
-          toastMsg = "You are already finished this quest";
-          isSuccessToast = false;
-          trigger();
+          triggerToast("You are already finished this quest", "fail");
         }
         if (res?.data?.bonus !== undefined) {
           handleTrigger(res?.data?.bonus);
@@ -496,11 +471,12 @@
       if (type === "sync-telegram") {
         window.open(link, "_blank");
         await wait(6000);
-        const res = await nimbus.post(`/v2/checkin/quest/sync-telegram`, {});
+        const res: any = await nimbus.post(
+          `/v2/checkin/quest/sync-telegram`,
+          {}
+        );
         if (res && res?.data === null) {
-          toastMsg = "You are not sync Telegram";
-          isSuccessToast = false;
-          trigger();
+          triggerToast("You are not sync Telegram", "fail");
         }
         if (res?.data?.bonus !== undefined) {
           handleTrigger(res?.data?.bonus);
@@ -509,14 +485,12 @@
       if (type === "first-share-on-twitter") {
         window.open(link, "_blank");
         await wait(5000);
-        const res = await nimbus.post(
+        const res: any = await nimbus.post(
           `/v2/checkin/quest/first-share-on-twitter`,
           {}
         );
         if (res && res?.data === null) {
-          toastMsg = "You already post us on Twitter";
-          isSuccessToast = false;
-          trigger();
+          triggerToast("You already post us on Twitter", "fail");
         }
         if (res?.data?.bonus !== undefined) {
           handleTrigger(res?.data?.bonus);
@@ -585,18 +559,13 @@
   //         functionName: "redeemPrize",
   //       });
 
-  //       toastMsg = "Successfully redeem prize!";
-  //       isSuccessToast = true;
-  //       trigger();
-
+  //       triggerToast("Successfully redeem prize!", "success");
   //       isDisabledRedeem = true;
   //       checkOwnerIsWinner($queryUserInfo?.data?.publicAddress);
   //     }
   //   } catch (e) {
   //     console.error("Error: ", e);
-  //     toastMsg = "Something wrong when redeem prize. Please try again!";
-  //     isSuccessToast = false;
-  //     trigger();
+  //     triggerToast("Something wrong when redeem prize. Please try again!", "fail");
   //     checkOwnerIsWinner($queryUserInfo?.data?.publicAddress);
   //   }
   // };
@@ -1187,51 +1156,6 @@
         You have received {bonusScore} Bonus GM Points
       </div>
     </div>
-  </div>
-{/if}
-
-{#if showToast}
-  <div class="fixed top-3 right-3 w-full" style="z-index: 2147483648;">
-    <Toast
-      transition={blur}
-      params={{ amount: 10 }}
-      position="top-right"
-      color={isSuccessToast ? "green" : "red"}
-      bind:open={showToast}
-    >
-      <svelte:fragment slot="icon">
-        {#if isSuccessToast}
-          <svg
-            aria-hidden="true"
-            class="w-5 h-5"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-            xmlns="http://www.w3.org/2000/svg"
-            ><path
-              fill-rule="evenodd"
-              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-              clip-rule="evenodd"
-            /></svg
-          >
-          <span class="sr-only">Check icon</span>
-        {:else}
-          <svg
-            aria-hidden="true"
-            class="w-5 h-5"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-            xmlns="http://www.w3.org/2000/svg"
-            ><path
-              fill-rule="evenodd"
-              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-              clip-rule="evenodd"
-            /></svg
-          >
-          <span class="sr-only">Error icon</span>
-        {/if}
-      </svelte:fragment>
-      {toastMsg}
-    </Toast>
   </div>
 {/if}
 
