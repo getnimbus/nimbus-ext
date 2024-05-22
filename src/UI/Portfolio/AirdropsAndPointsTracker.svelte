@@ -223,7 +223,6 @@
         (prev, item) => prev + Number(item?.listing_value),
         0
       );
-
       totalEstimateValuePoints = pointsData.reduce(
         (prev, item) => prev + Number(item?.value),
         0
