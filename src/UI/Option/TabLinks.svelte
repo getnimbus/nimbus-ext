@@ -384,10 +384,10 @@
 
       <div class="flex flex-col gap-4">
         {#if chain === ""}
-          {#if userLinkWalletData.find((item) => item.chain === "EVM")}
+          {#if userLinkWalletData?.find((item) => item.chain === "EVM")}
             <ConnectedBtn
               logo={EvmLogo}
-              address={userLinkWalletData.find((item) => item.chain === "EVM")
+              address={userLinkWalletData?.find((item) => item.chain === "EVM")
                 ?.uid}
             />
           {:else}
@@ -397,10 +397,10 @@
             />
           {/if}
 
-          {#if userLinkWalletData.find((item) => item.chain === "SOL")}
+          {#if userLinkWalletData?.find((item) => item.chain === "SOL")}
             <ConnectedBtn
               logo={SolanaLogo}
-              address={userLinkWalletData.find((item) => item.chain === "SOL")
+              address={userLinkWalletData?.find((item) => item.chain === "SOL")
                 ?.uid}
             />
           {:else}
@@ -410,10 +410,10 @@
             />
           {/if}
 
-          {#if userLinkWalletData.find((item) => item.chain === "TON")}
+          {#if userLinkWalletData?.find((item) => item.chain === "TON")}
             <ConnectedBtn
               logo={TonLogo}
-              address={userLinkWalletData.find((item) => item.chain === "TON")
+              address={userLinkWalletData?.find((item) => item.chain === "TON")
                 ?.uid}
             />
           {:else}
@@ -423,10 +423,10 @@
             />
           {/if}
 
-          {#if userLinkWalletData.find((item) => item.chain === "MOVE")}
+          {#if userLinkWalletData?.find((item) => item.chain === "MOVE")}
             <ConnectedBtn
               logo={SUILogo}
-              address={userLinkWalletData.find((item) => item.chain === "MOVE")
+              address={userLinkWalletData?.find((item) => item.chain === "MOVE")
                 ?.uid}
             />
           {:else}
@@ -440,10 +440,10 @@
         {#if chain === "EVM"}
           <ConnectedBtn logo={EvmLogo} address={$userPublicAddress} />
 
-          {#if userLinkWalletData.find((item) => item.chain === "SOL")}
+          {#if userLinkWalletData?.find((item) => item.chain === "SOL")}
             <ConnectedBtn
               logo={SolanaLogo}
-              address={userLinkWalletData.find((item) => item.chain === "SOL")
+              address={userLinkWalletData?.find((item) => item.chain === "SOL")
                 ?.uid}
             />
           {:else}
@@ -453,10 +453,10 @@
             />
           {/if}
 
-          {#if userLinkWalletData.find((item) => item.chain === "TON")}
+          {#if userLinkWalletData?.find((item) => item.chain === "TON")}
             <ConnectedBtn
               logo={TonLogo}
-              address={userLinkWalletData.find((item) => item.chain === "TON")
+              address={userLinkWalletData?.find((item) => item.chain === "TON")
                 ?.uid}
             />
           {:else}
@@ -466,10 +466,10 @@
             />
           {/if}
 
-          {#if userLinkWalletData.find((item) => item.chain === "MOVE")}
+          {#if userLinkWalletData?.find((item) => item.chain === "MOVE")}
             <ConnectedBtn
               logo={SUILogo}
-              address={userLinkWalletData.find((item) => item.chain === "MOVE")
+              address={userLinkWalletData?.find((item) => item.chain === "MOVE")
                 ?.uid}
             />
           {:else}
@@ -483,10 +483,10 @@
         {#if chain === "SOL"}
           <ConnectedBtn logo={SolanaLogo} address={$userPublicAddress} />
 
-          {#if userLinkWalletData.find((item) => item.chain === "EVM")}
+          {#if userLinkWalletData?.find((item) => item.chain === "EVM")}
             <ConnectedBtn
               logo={EvmLogo}
-              address={userLinkWalletData.find((item) => item.chain === "EVM")
+              address={userLinkWalletData?.find((item) => item.chain === "EVM")
                 ?.uid}
             />
           {:else}
@@ -496,10 +496,10 @@
             />
           {/if}
 
-          {#if userLinkWalletData.find((item) => item.chain === "TON")}
+          {#if userLinkWalletData?.find((item) => item.chain === "TON")}
             <ConnectedBtn
               logo={TonLogo}
-              address={userLinkWalletData.find((item) => item.chain === "TON")
+              address={userLinkWalletData?.find((item) => item.chain === "TON")
                 ?.uid}
             />
           {:else}
@@ -509,10 +509,10 @@
             />
           {/if}
 
-          {#if userLinkWalletData.find((item) => item.chain === "MOVE")}
+          {#if userLinkWalletData?.find((item) => item.chain === "MOVE")}
             <ConnectedBtn
               logo={SUILogo}
-              address={userLinkWalletData.find((item) => item.chain === "MOVE")
+              address={userLinkWalletData?.find((item) => item.chain === "MOVE")
                 ?.uid}
             />
           {:else}
@@ -526,10 +526,10 @@
         {#if chain === "MOVE"}
           <ConnectedBtn logo={SUILogo} address={$userPublicAddress} />
 
-          {#if userLinkWalletData.find((item) => item.chain === "EVM")}
+          {#if userLinkWalletData?.find((item) => item.chain === "EVM")}
             <ConnectedBtn
               logo={EvmLogo}
-              address={userLinkWalletData.find((item) => item.chain === "EVM")
+              address={userLinkWalletData?.find((item) => item.chain === "EVM")
                 ?.uid}
             />
           {:else}
@@ -539,10 +539,10 @@
             />
           {/if}
 
-          {#if userLinkWalletData.find((item) => item.chain === "SOL")}
+          {#if userLinkWalletData?.find((item) => item.chain === "SOL")}
             <ConnectedBtn
               logo={SolanaLogo}
-              address={userLinkWalletData.find((item) => item.chain === "SOL")
+              address={userLinkWalletData?.find((item) => item.chain === "SOL")
                 ?.uid}
             />
           {:else}
@@ -552,10 +552,10 @@
             />
           {/if}
 
-          {#if userLinkWalletData.find((item) => item.chain === "TON")}
+          {#if userLinkWalletData?.find((item) => item.chain === "TON")}
             <ConnectedBtn
               logo={TonLogo}
-              address={userLinkWalletData.find((item) => item.chain === "TON")
+              address={userLinkWalletData?.find((item) => item.chain === "TON")
                 ?.uid}
             />
           {:else}
@@ -569,10 +569,10 @@
         {#if chain === "TON"}
           <ConnectedBtn logo={TonLogo} address={$userPublicAddress} />
 
-          {#if userLinkWalletData.find((item) => item.chain === "EVM")}
+          {#if userLinkWalletData?.find((item) => item.chain === "EVM")}
             <ConnectedBtn
               logo={EvmLogo}
-              address={userLinkWalletData.find((item) => item.chain === "EVM")
+              address={userLinkWalletData?.find((item) => item.chain === "EVM")
                 ?.uid}
             />
           {:else}
@@ -582,10 +582,10 @@
             />
           {/if}
 
-          {#if userLinkWalletData.find((item) => item.chain === "SOL")}
+          {#if userLinkWalletData?.find((item) => item.chain === "SOL")}
             <ConnectedBtn
               logo={SolanaLogo}
-              address={userLinkWalletData.find((item) => item.chain === "SOL")
+              address={userLinkWalletData?.find((item) => item.chain === "SOL")
                 ?.uid}
             />
           {:else}
@@ -595,10 +595,10 @@
             />
           {/if}
 
-          {#if userLinkWalletData.find((item) => item.chain === "MOVE")}
+          {#if userLinkWalletData?.find((item) => item.chain === "MOVE")}
             <ConnectedBtn
               logo={SUILogo}
-              address={userLinkWalletData.find((item) => item.chain === "MOVE")
+              address={userLinkWalletData?.find((item) => item.chain === "MOVE")
                 ?.uid}
             />
           {:else}

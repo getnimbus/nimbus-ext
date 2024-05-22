@@ -419,7 +419,7 @@
             </div>
 
             <div class="grid lg:grid-cols-2 grid-cols-1 gap-10">
-              {#each $queryReward?.data?.ownRewards.filter((item) => item?.campaignName !== "sui-unlock") || [] as item}
+              {#each $queryReward?.data?.ownRewards?.filter((item) => item?.campaignName !== "sui-unlock") || [] as item}
                 <RedeemCard
                   redeemData={item}
                   handleRedeem={() => {}}

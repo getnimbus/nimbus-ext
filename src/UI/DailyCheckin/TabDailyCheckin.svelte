@@ -147,7 +147,14 @@
   const queryClient = useQueryClient();
 
   const nameTypeCheckin = (
-    type: "QUEST" | "CHECK_IN" | "REDEEM" | "BONUS 5%" | "SWAP" | "REFERRAL"
+    type:
+      | "QUEST"
+      | "CHECK_IN"
+      | "REDEEM"
+      | "BONUS 5%"
+      | "SWAP"
+      | "REFERRAL"
+      | "GM_POINTS"
   ) => {
     switch (type) {
       case "QUEST":
@@ -156,6 +163,8 @@
         return "Check in";
       case "REDEEM":
         return "Redeem";
+      case "GM_POINTS":
+        return "GM Points";
       case "BONUS 5%":
         return "Bonus 5%";
       case "SWAP":
@@ -248,10 +257,10 @@
         ?.filter((item) => item.status === "ACTIVE")
         ?.map((item) => {
           const selectedLogs = dataCheckinHistory
-            .filter(
+            ?.filter(
               (log) => log?.type === "QUEST" && log.note !== "id-generate"
             )
-            .find((log) => log.note === item.id);
+            ?.find((log) => log.note === item.id);
 
           return {
             ...item,
@@ -274,8 +283,8 @@
   }
 
   $: defaultDataCheckinHistory = dataCheckinHistory
-    .filter((item) => item?.type !== "QUEST_VERIFIED")
-    .map((item) => {
+    ?.filter((item) => item?.type !== "QUEST_VERIFIED")
+    ?.map((item) => {
       return {
         ...item,
         type: nameTypeCheckin(item?.type),
@@ -720,7 +729,7 @@
                 >
                   {#each [10, 10, 10, 20, 20, 30, 50] as item, index}
                     <div
-                      class={`flex flex-col gap-2 items-center filter rounded-lg py-8 transform scale-95 transition-all ${
+                      class={`flex flex-col gap-2 items-center rounded-lg py-8 transform scale-95 transition-all ${
                         $isDarkMode ? "bg-gray-700" : "bg-gray-100"
                       }`}
                     >
@@ -743,7 +752,7 @@
                 >
                   {#each $queryDailyCheckin?.data?.pointStreak || [] as item, index}
                     <div
-                      class={`flex flex-col gap-2 items-center filter rounded-lg py-8 transform scale-95 transition-all ${
+                      class={`flex flex-col gap-2 items-center rounded-lg py-8 transform scale-95 transition-all ${
                         selectedCheckinIndex > index && $isDarkMode
                           ? "grayscale bg-gray-700"
                           : selectedCheckinIndex > index && !$isDarkMode

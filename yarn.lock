@@ -8253,10 +8253,10 @@ date-fns@^2.29.3:
   dependencies:
     "@babel/runtime" "^7.21.0"
 
-date-picker-svelte@^2.6.0:
-  version "2.10.1"
-  resolved "https://registry.yarnpkg.com/date-picker-svelte/-/date-picker-svelte-2.10.1.tgz#21cb431ad2a53fd799536fa3ddceed4dfe71a039"
-  integrity sha512-z4cJ33hngSCPlxc1ERVOgRBJHQXwghJMNtQBT0Q2d3Z9IHGmoIYpViS5s9oRbivs4+TDHkIBmqd/8Ldu9xEYhw==
+date-picker-svelte@^2.12.0:
+  version "2.12.0"
+  resolved "https://registry.yarnpkg.com/date-picker-svelte/-/date-picker-svelte-2.12.0.tgz#cb326ae3b6e17075dd64b870f764412a5807fa3e"
+  integrity sha512-RsnTC6DR5qY+pGgRkdaoO0qWQfF8ho+5VacQjNh3PXOjSZrRaXUGrOGUbTZZBT6nzyZR0yRkEncFI+/1GMcxfw==
 
 dayjs@^1.11.4:
   version "1.11.10"

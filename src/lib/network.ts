@@ -133,8 +133,14 @@ export const defillama = createAxiosInterface({
 });
 
 export const coinmarketcap = createAxiosInterface({
-  baseURL: "https://s3.coinmarketcap.com",
-  getHeaderAuthorize: () => { },
+  baseURL: "https://pro-api.coinmarketcap.com",
+  getHeaderAuthorize: () => {
+    return {
+      header: {
+        "X-CMC_PRO_API_KEY": "455fad56-1a89-4ab4-843a-36fbe1f366f4",
+      },
+    }
+  },
 });
 
 export const mixpanel = createAxiosInterface({

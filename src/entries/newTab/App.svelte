@@ -36,8 +36,7 @@
   import Compare from "~/layouts/Compare.svelte";
   import Profile from "~/layouts/Profile.svelte";
   import DailyCheckin from "~/layouts/DailyCheckin.svelte";
-  // import CustomVirtualPortfolio from "~/layouts/CustomVirtualPortfolio.svelte";
-  // import VirtualPortfolio from "~/layouts/VirtualPortfolio.svelte";
+  import VirtualPortfolio from "~/layouts/VirtualPortfolio.svelte";
 
   const queryClient = new QueryClient({
     defaultOptions: {
@@ -170,14 +169,10 @@
       name: "/daily-checkin",
       layout: DailyCheckin,
     },
-    // {
-    //   name: "/custom-virtual-portfolio",
-    //   layout: CustomVirtualPortfolio,
-    // },
-    // {
-    //   name: "/virtual-portfolio",
-    //   layout: VirtualPortfolio,
-    // },
+    {
+      name: "/virtual-portfolio",
+      layout: VirtualPortfolio,
+    },
   ];
 
   const recapRoutes = [

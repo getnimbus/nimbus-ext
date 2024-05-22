@@ -118,7 +118,7 @@
         isSuccessToast = false;
         trigger();
       } else {
-        const quest = dataCheckinHistory.find(
+        const quest = dataCheckinHistory?.find(
           (item) => item.type === "QUEST" && item.note === "link-x"
         );
         if (!quest) {
