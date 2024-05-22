@@ -1,33 +1,14 @@
 <script lang="ts">
-  import { Toast } from "flowbite-svelte";
-  import { nimbus } from "~/lib/network";
   import "flowbite/dist/flowbite.css";
   import { isDarkMode } from "~/store";
-  import { blur } from "svelte/transition";
+  import { nimbus } from "~/lib/network";
+  import { triggerToast } from "~/utils";
 
   import Button from "~/components/Button.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
 
   let email = "";
   let isLoadingSendMail = false;
-
-  let toastMsg = "";
-  let isSuccessToast = false;
-  let counter = 5;
-  let showToast = false;
-
-  const trigger = () => {
-    showToast = true;
-    counter = 5;
-    timeout();
-  };
-
-  const timeout = () => {
-    if (--counter > 0) return setTimeout(timeout, 1000);
-    showToast = false;
-    toastMsg = "";
-    isSuccessToast = false;
-  };
 
   const onSubmitGetEmail = async (e) => {
     isLoadingSendMail = true;
@@ -43,15 +24,16 @@
       });
       email = "";
       isLoadingSendMail = false;
-      toastMsg =
-        "We have received you email. Let's us check you payment and email to you soon!";
-      isSuccessToast = true;
-      trigger();
+      triggerToast(
+        "We have received you email. Let's us check you payment and email to you soon!",
+        "success"
+      );
     } catch (e) {
       isLoadingSendMail = false;
-      toastMsg = "Something wrong when sending email. Please try again!";
-      isSuccessToast = false;
-      trigger();
+      triggerToast(
+        "Something wrong when sending email. Please try again!",
+        "fail"
+      );
     }
   };
 </script>
@@ -104,51 +86,6 @@
     </div>
   </div>
 </ErrorBoundary>
-
-{#if showToast}
-  <div class="fixed top-3 right-3 w-full" style="z-index: 2147483648;">
-    <Toast
-      transition={blur}
-      params={{ amount: 10 }}
-      position="top-right"
-      color={isSuccessToast ? "green" : "red"}
-      bind:open={showToast}
-    >
-      <svelte:fragment slot="icon">
-        {#if isSuccessToast}
-          <svg
-            aria-hidden="true"
-            class="w-5 h-5"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-            xmlns="http://www.w3.org/2000/svg"
-            ><path
-              fill-rule="evenodd"
-              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-              clip-rule="evenodd"
-            /></svg
-          >
-          <span class="sr-only">Check icon</span>
-        {:else}
-          <svg
-            aria-hidden="true"
-            class="w-5 h-5"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-            xmlns="http://www.w3.org/2000/svg"
-            ><path
-              fill-rule="evenodd"
-              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-              clip-rule="evenodd"
-            /></svg
-          >
-          <span class="sr-only">Error icon</span>
-        {/if}
-      </svelte:fragment>
-      {toastMsg}
-    </Toast>
-  </div>
-{/if}
 
 <style windi:preflights:global windi:safelist:global>
   :global(body) .bg_fafafbff {

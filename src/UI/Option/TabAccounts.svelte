@@ -8,8 +8,7 @@
     listLogoCEX,
     detectedGeneration,
   } from "~/lib/chains";
-  import { Toast } from "flowbite-svelte";
-  import { blur } from "svelte/transition";
+  import { triggerToast } from "~/utils";
   import {
     wallet,
     chain,
@@ -145,11 +144,6 @@
   let isLoadingDeleteBundles = false;
   let isOpenConfirmDeleteBundles = false;
 
-  let show = false;
-  let counter = 5;
-  let toastMsg = "";
-  let isSuccess = false;
-
   let isOpenModal = false;
   let isLoadingSendMail = false;
   let email = "";
@@ -182,19 +176,6 @@
   let timerDebounceSort;
 
   const queryClient = useQueryClient();
-
-  const trigger = () => {
-    show = true;
-    counter = 5;
-    timeout();
-  };
-
-  const timeout = () => {
-    if (--counter > 0) return setTimeout(timeout, 1000);
-    show = false;
-    toastMsg = "";
-    isSuccess = false;
-  };
 
   const isRequiredFieldValid = (value) => {
     return value != null && value !== "";
@@ -353,7 +334,7 @@
           queryClient.invalidateQueries(["list-bundle"]);
         }
 
-        const response = await nimbus.post("/accounts", {
+        const response: any = await nimbus.post("/accounts", {
           type: "DEX",
           publicAddress: validateAccount?.address,
           accountId: validateAccount?.address,
@@ -361,8 +342,7 @@
         });
 
         if (response?.error) {
-          toastMsg = "Can't add new wallet address at this time!";
-          isSuccess = false;
+          triggerToast("Can't add new wallet address at this time!", "fail");
           return;
         }
 
@@ -383,9 +363,7 @@
         typeWallet.update((n) => (n = validateAccount?.type));
         wallet.update((n) => (n = validateAccount?.address));
 
-        toastMsg = "Successfully add On-chain account!";
-        isSuccess = true;
-        trigger();
+        triggerToast("Successfully add On-chain account!", "success");
         mixpanel.track("user_add_address");
 
         errors["address"] = {
@@ -404,9 +382,10 @@
     } catch (e) {
       console.error(e);
       isLoadingAddDEX = false;
-      toastMsg = "Something wrong when add DEX account. Please try again!";
-      isSuccess = false;
-      trigger();
+      triggerToast(
+        "Something wrong when add DEX account. Please try again!",
+        "fail"
+      );
     }
   };
 
@@ -446,9 +425,7 @@
             isLoadingConnectCEX = false;
             isOpenAddModal = false;
 
-            toastMsg = "Successfully add CEX account!";
-            isSuccess = true;
-            trigger();
+            triggerToast("Successfully add CEX account!", "success");
             mixpanel.track("user_add_address");
           })
           .onError(function (error) {
@@ -458,10 +435,10 @@
             isLoadingConnectCEX = false;
             isOpenAddModal = false;
 
-            toastMsg =
-              "Something wrong when add CEX account. Please try again!";
-            isSuccess = false;
-            trigger();
+            triggerToast(
+              "Something wrong when add CEX account. Please try again!",
+              "fail"
+            );
           });
       }
     }
@@ -489,9 +466,7 @@
         e.target.reset();
         isOpenEditModal = false;
         isLoadingEditDEX = false;
-        toastMsg = "Successfully edit your wallet!";
-        isSuccess = true;
-        trigger();
+        triggerToast("Successfully edit your wallet!", "success");
         mixpanel.track("user_edit_address");
       } else {
         await validateFormEdit(data);
@@ -511,9 +486,7 @@
           e.target.reset();
           isOpenEditModal = false;
           isLoadingEditDEX = false;
-          toastMsg = "Successfully edit your wallet!";
-          isSuccess = true;
-          trigger();
+          triggerToast("Successfully edit your wallet!", "success");
           mixpanel.track("user_edit_address");
         } else {
           console.error("Invalid Form");
@@ -522,10 +495,11 @@
       }
     } catch (e) {
       console.error(e);
-      toastMsg = "Something wrong when edit your wallet. Please try again!";
-      isSuccess = false;
       isLoadingEditDEX = false;
-      trigger();
+      triggerToast(
+        "Something wrong when edit your wallet. Please try again!",
+        "fail"
+      );
     }
   };
 
@@ -537,16 +511,15 @@
       queryClient.refetchQueries(["list-address"]);
       isLoadingDelete = false;
       isOpenConfirmDelete = false;
-      toastMsg = "Successfully delete your account!";
-      isSuccess = true;
-      trigger();
+      triggerToast("Successfully delete your account!", "success");
     } catch (e) {
       console.error("e: ", e);
       isLoadingDelete = false;
       isOpenConfirmDelete = false;
-      toastMsg = "Something wrong when delete your account. Please try again!";
-      isSuccess = false;
-      trigger();
+      triggerToast(
+        "Something wrong when delete your account. Please try again!",
+        "fail"
+      );
     }
   };
 
@@ -640,15 +613,14 @@
       });
       isLoadingSendMail = false;
       localStorage.setItem("isGetUserEmailYet", "true");
-      toastMsg = "Ready to receive exclusive benefits soon!";
-      isSuccess = true;
-      trigger();
+      triggerToast("Ready to receive exclusive benefits soon!", "success");
       email = "";
     } catch (e) {
       isLoadingSendMail = false;
-      toastMsg = "Something wrong when sending email. Please try again!";
-      isSuccess = false;
-      trigger();
+      triggerToast(
+        "Something wrong when sending email. Please try again!",
+        "fail"
+      );
     } finally {
       isOpenModal = false;
     }
@@ -766,18 +738,16 @@
   // handle submit (create and edit) bundle
   const onSubmitBundle = async () => {
     if (selectedAddresses && selectedAddresses?.length > 100) {
-      toastMsg =
-        "You can create your bundle with maximum is 100 addresses. Please try again!";
-      isSuccess = false;
-      trigger();
+      triggerToast(
+        "You can create your bundle with maximum is 100 addresses. Please try again!",
+        "fail"
+      );
       isLoadingBundle = false;
       return;
     }
 
     if (selectedAddresses && selectedAddresses?.length === 0) {
-      toastMsg = "Please select addresses to bundle!";
-      isSuccess = false;
-      trigger();
+      triggerToast("Please select addresses to bundle!", "fail");
       isLoadingBundle = false;
       return;
     }
@@ -787,9 +757,7 @@
       selectedBundle &&
       Object.keys(selectedBundle)?.length === 0
     ) {
-      toastMsg = "Bundle already existed!";
-      isSuccess = false;
-      trigger();
+      triggerToast("Bundle already existed!", "fail");
       isLoadingBundle = false;
       return;
     }
@@ -810,7 +778,7 @@
         queryClient.invalidateQueries(["list-bundle"]);
         queryClient.invalidateQueries(["list-address"]);
 
-        toastMsg = "Successfully edit your bundle!";
+        triggerToast("Successfully edit your bundle!", "success");
       } else {
         const response = await nimbus.post(
           "/address/personalize/bundle",
@@ -833,24 +801,22 @@
         selectedAddresses = listBundle[listBundle?.length - 1].addresses;
         nameBundle = listBundle[listBundle?.length - 1].name;
 
-        toastMsg = "Successfully create your bundle!";
+        triggerToast("Successfully create your bundle!", "success");
       }
 
       triggerUpdateBundle.update((n) => (n = true));
-
-      isSuccess = true;
-      trigger();
       isLoadingBundle = false;
     } catch (e) {
-      toastMsg = `Something wrong when ${
-        selectedBundle && Object.keys(selectedBundle)?.length !== 0
-          ? "edit"
-          : "create"
-      } your bundle. Please try again!`;
-      isSuccess = false;
-      trigger();
-      isLoadingBundle = false;
       console.error("e: ", e);
+      triggerToast(
+        `Something wrong when ${
+          selectedBundle && Object.keys(selectedBundle)?.length !== 0
+            ? "edit"
+            : "create"
+        } your bundle. Please try again!`,
+        "fail"
+      );
+      isLoadingBundle = false;
     }
   };
 
@@ -862,9 +828,7 @@
         `/address/personalize/bundle?name=${selectedBundle?.name}`,
         selectedBundle
       );
-      toastMsg = "Successfully delete your bundle!";
-      isSuccess = true;
-      trigger();
+      triggerToast("Successfully delete your bundle!", "success");
       listBundle = listBundle.filter(
         (item) => item.name !== selectedBundle?.name
       );
@@ -876,9 +840,10 @@
       isLoadingDeleteBundles = false;
       isOpenConfirmDeleteBundles = false;
     } catch (e) {
-      toastMsg = "Something wrong when delete your bundle. Please try again!";
-      isSuccess = false;
-      trigger();
+      triggerToast(
+        "Something wrong when delete your bundle. Please try again!",
+        "fail"
+      );
       isLoadingDeleteBundles = false;
       isOpenConfirmDeleteBundles = false;
       console.error("e: ", e);
@@ -2542,51 +2507,6 @@
     </form>
   </div>
 </AppOverlay>
-
-{#if show}
-  <div class="fixed z-50 w-full top-3 right-3" style="z-index: 2147483648;">
-    <Toast
-      transition={blur}
-      params={{ amount: 10 }}
-      position="top-right"
-      color={isSuccess ? "green" : "red"}
-      bind:open={show}
-    >
-      <svelte:fragment slot="icon">
-        {#if isSuccess}
-          <svg
-            aria-hidden="true"
-            class="w-5 h-5"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-            xmlns="http://www.w3.org/2000/svg"
-            ><path
-              fill-rule="evenodd"
-              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-              clip-rule="evenodd"
-            /></svg
-          >
-          <span class="sr-only">Check icon</span>
-        {:else}
-          <svg
-            aria-hidden="true"
-            class="w-5 h-5"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-            xmlns="http://www.w3.org/2000/svg"
-            ><path
-              fill-rule="evenodd"
-              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-              clip-rule="evenodd"
-            /></svg
-          >
-          <span class="sr-only">Error icon</span>
-        {/if}
-      </svelte:fragment>
-      {toastMsg}
-    </Toast>
-  </div>
-{/if}
 
 <style windi:preflights:global windi:safelist:global>
   :global(body) .bg_fafafbff {

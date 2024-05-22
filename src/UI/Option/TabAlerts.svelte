@@ -1,8 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { nimbus } from "~/lib/network";
-  import { Toast } from "flowbite-svelte";
-  import { blur } from "svelte/transition";
+  import { triggerToast } from "~/utils";
   import CopyToClipboard from "svelte-copy-to-clipboard";
   import dayjs from "dayjs";
   import { wait } from "~/entries/background/utils";
@@ -88,11 +87,6 @@
     },
   ];
 
-  let show = false;
-  let counter = 5;
-  let toastMsg = "";
-  let isSuccess = false;
-
   let userConfigs;
 
   let percent = false;
@@ -121,19 +115,6 @@
   let checkAll = false;
   let listAddress = [];
   let blacklistAddress = [];
-
-  const trigger = () => {
-    show = true;
-    counter = 5;
-    timeout();
-  };
-
-  const timeout = () => {
-    if (--counter > 0) return setTimeout(timeout, 1000);
-    show = false;
-    toastMsg = "";
-    isSuccess = false;
-  };
 
   $: query = createQuery({
     queryKey: ["list-address"],
@@ -211,26 +192,26 @@
 
   const onSubmitSettingAlert = async () => {
     if (percent && selectedPercent === 0) {
-      toastMsg =
-        "Please select at least one price percent to receive notification";
-      isSuccess = false;
-      trigger();
+      triggerToast(
+        "Please select at least one price percent to receive notification",
+        "fail"
+      );
       return;
     }
 
     if (summary && selectedSummary?.length === 0) {
-      toastMsg =
-        "Please select at least one frequency of portfolio summary to receive notification";
-      isSuccess = false;
-      trigger();
+      triggerToast(
+        "Please select at least one frequency of portfolio summary to receive notification",
+        "fail"
+      );
       return;
     }
 
     if (ignoreTokenValue && selectedTokenValueIgnore === 0) {
-      toastMsg =
-        "Please select at least one value of portfolio summary to ignore";
-      isSuccess = false;
-      trigger();
+      triggerToast(
+        "Please select at least one value of portfolio summary to ignore",
+        "fail"
+      );
       return;
     }
 
@@ -262,17 +243,16 @@
       const res = await nimbus.put("/users/configs/alert-settings", payload);
       if (res && res?.data) {
         handleSetState(res?.data);
-        toastMsg = "Your settings have been successfully saved!";
-        isSuccess = true;
+        triggerToast("Your settings have been successfully saved!", "success");
       }
     } catch (e) {
       console.error(e);
-      toastMsg =
-        "There are some problem when save you settings. Please try again!";
-      isSuccess = false;
+      triggerToast(
+        "There are some problem when save you settings. Please try again!",
+        "fail"
+      );
     } finally {
       isLoadingSave = false;
-      trigger();
     }
   };
 
@@ -782,51 +762,6 @@
     </div>
   </form>
 </div>
-
-{#if show}
-  <div class="fixed z-50 w-full top-3 right-3" style="z-index: 2147483648;">
-    <Toast
-      transition={blur}
-      params={{ amount: 10 }}
-      position="top-right"
-      color={isSuccess ? "green" : "red"}
-      bind:open={show}
-    >
-      <svelte:fragment slot="icon">
-        {#if isSuccess}
-          <svg
-            aria-hidden="true"
-            class="w-5 h-5"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-            xmlns="http://www.w3.org/2000/svg"
-            ><path
-              fill-rule="evenodd"
-              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-              clip-rule="evenodd"
-            /></svg
-          >
-          <span class="sr-only">Check icon</span>
-        {:else}
-          <svg
-            aria-hidden="true"
-            class="w-5 h-5"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-            xmlns="http://www.w3.org/2000/svg"
-            ><path
-              fill-rule="evenodd"
-              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-              clip-rule="evenodd"
-            /></svg
-          >
-          <span class="sr-only">Error icon</span>
-        {/if}
-      </svelte:fragment>
-      {toastMsg}
-    </Toast>
-  </div>
-{/if}
 
 <AppOverlay
   clickOutSideToClose
