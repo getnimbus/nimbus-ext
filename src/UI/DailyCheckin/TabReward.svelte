@@ -84,7 +84,7 @@
 
   let rewardBox = [
     {
-      cost: 1000,
+      cost: 800,
       description: "FlowX on SUI loot boxes",
       title: "FlowX Box",
       body: "FLOWX_BOX",
@@ -93,7 +93,7 @@
       sold: 0,
     },
     {
-      cost: 800,
+      cost: 1000,
       description: "Nimbus on SUI loot boxes",
       title: "Paper Box",
       body: "PAPER_BOX",
