@@ -73,7 +73,6 @@
     onConnectError,
   };
 
-  let showDisabled = false;
   let isLoadingClaim = false;
   let isClickClaim = false;
 
@@ -289,37 +288,26 @@
                 {/if}
               </div>
             {:else}
-              <div
-                class="relative w-full"
-                on:mouseenter={() => (showDisabled = true)}
-                on:mouseleave={() => (showDisabled = false)}
+              <Button
+                variant="tertiary"
+                on:click={() => {
+                  if (totalPoint < data.cost) {
+                    toastMsg = "   You are not enough GM Points to Redeem";
+                  } else {
+                    toastMsg = "There are not available now";
+                  }
+                  isSuccessToast = false;
+                  trigger();
+                }}
               >
-                <Button disabled>
-                  <div class="flex items-center gap-1">
-                    <img src={goldImg} alt="" class="w-[28px] h-[28px]" />
-                    <div class="text-white sm:text-lg text-smxs font-medium">
-                      {data?.cost}
-                    </div>
+                <div class="flex items-center gap-1">
+                  <img src={goldImg} alt="" class="w-[28px] h-[28px]" />
+                  <div class="text-white sm:text-lg text-smxs font-medium">
+                    {data?.cost}
                   </div>
-                  <div class="text-white text-smxs">Redeem</div>
-                </Button>
-                {#if showDisabled}
-                  <div
-                    class="absolute transform left-1/2 -translate-x-1/2 -top-8"
-                    style="z-index: 2147483648;"
-                  >
-                    <div
-                      class="max-w-[360px] text-white bg-black py-1 px-2 text-xs rounded relative w-max normal-case"
-                    >
-                      {#if totalPoint < data.cost}
-                        You are not enough GM Points to Redeem
-                      {:else}
-                        There are not available now
-                      {/if}
-                    </div>
-                  </div>
-                {/if}
-              </div>
+                </div>
+                <div class="text-white text-smxs">Redeem</div>
+              </Button>
             {/if}
           </div>
         {/if}
