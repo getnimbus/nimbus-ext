@@ -382,8 +382,6 @@
   const handleCancel = () => {
     type = "";
   };
-
-  $: console.log("HELLO WORLD: ", dataVirtualPortfolio);
 </script>
 
 <ErrorBoundary>
@@ -660,7 +658,10 @@
         >
           <FormVirtualPortfolio
             {listVirtualPortfolio}
-            defaultData={dataVirtualPortfolio[virtualPortfolioId]}
+            defaultData={{
+              ...dataVirtualPortfolio[virtualPortfolioId],
+              networth: selectedVirtualPortfolio?.networth || 0,
+            }}
             {handleSubmit}
             {handleCancel}
             {isLoading}

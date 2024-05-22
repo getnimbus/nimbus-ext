@@ -93,7 +93,7 @@
 
           virtualPortfolioName = defaultData.portfolioName;
 
-          virtualPortfolioNetworth = defaultData?.netWorth;
+          virtualPortfolioNetworth = defaultData?.networth;
 
           time = dayjs(defaultData.updatedTime).toDate();
 
