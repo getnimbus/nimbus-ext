@@ -56,8 +56,8 @@
 </script>
 
 <div class="flex flex-col gap-5">
-  <div class="flex justify-between items-center">
-    <div class="text-2xl font-medium">Historical Activities</div>
+  <div class="flex justify-start xl:px-0 px-2">
+    <div class="font-medium xl:text-2xl text-3xl">Historical Activities</div>
     <!-- <DateRangePicker onChange={handleGetDateRange} /> -->
   </div>
   <div class="flex flex-col gap-6">

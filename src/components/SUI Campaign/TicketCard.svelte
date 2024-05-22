@@ -7,7 +7,6 @@
   dayjs.extend(isBetween);
   dayjs.extend(duration);
 
-  import Copy from "~/components/Copy.svelte";
   import Button from "~/components/Button.svelte";
 
   import goldImg from "~/assets/Gold4.svg";
@@ -65,13 +64,16 @@
     $isDarkMode ? "bg-[#212121]" : "bg-white"
   }`}
 >
-  <div class="px-[16px] flex items-center h-full gap-[47px] gap-320-sx">
+  <div class="px-[16px] flex items-center h-full gap-[27px]">
     <div
-      class={`flex-[0.6] relative rounded-2xl p-2 flex items-center h-full justify-center ${
+      class={`w-[135px] relative rounded-2xl p-2 flex items-center h-full justify-center ${
         $isDarkMode ? "" : "bg-white"
       }`}
     >
-      <img src={data?.logo} alt="" class="w-20 h-20 object-contain" />
+      <div class="w-20 h-20">
+        <img src={data?.logo} alt="" class="w-full h-full object-contain" />
+      </div>
+
       {#if isRedeem}
         <div
           class="absolute -bottom-2 w-full text-center whitespace-nowrap left-timee italic text-sm"
@@ -81,14 +83,14 @@
       {/if}
     </div>
 
-    <div class="flex-1 flex flex-col gap-2">
+    <div class="flex flex-col gap-2">
       <div class="flex items-center gap-2">
         <img src={Crown} alt="" class="w-[26px] h-[26px]" />
         <div class="text-[#FFB800] text-lg font-medium uppercase">
           NIMBUS ON SUI
         </div>
       </div>
-      <div class="lg:text-4xl text-3xl font-normal">
+      <div class="text-3xl font-normal">
         {data?.title}
       </div>
       <div class="text-sm font-normal">
@@ -116,13 +118,14 @@
         <div
           class="flex items-center md:justify-start justify-between md:gap-[100px] gap-[40px]"
         >
-          <div class="w-[150px] text-base font-normal text-right">
+          <div class="w-[220px] text-base font-normal text-left">
             {#if checkTicketValidate()}
               Unlimited
             {:else}
               Out of stock
             {/if}
           </div>
+
           {#if checkTicketValidate() && totalPoint >= 1000}
             <Button
               variant="tertiary"
@@ -143,7 +146,7 @@
             </Button>
           {:else}
             <div
-              class="relative"
+              class="relative w-full"
               on:mouseenter={() => (showDisabled = true)}
               on:mouseleave={() => (showDisabled = false)}
             >
@@ -179,18 +182,7 @@
         <div
           class="flex items-center justify-between p-[12px] bg-[#EEEEEE] rounded-[12px]"
         >
-          <div class="text-[#131313] text-sm">Your gift code</div>
-          {#if data?.id}
-            <Copy
-              address={data?.id || "N/A"}
-              iconColor="#000"
-              iconSize={20}
-              color="#000"
-              isShorten
-            />
-          {:else}
-            <div class="text-black">N/A</div>
-          {/if}
+          <div class="text-[#131313] text-sm">Owned</div>
         </div>
       {/if}
     </div>

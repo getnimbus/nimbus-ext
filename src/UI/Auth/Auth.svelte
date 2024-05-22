@@ -31,6 +31,7 @@
   import { handleGetDataDailyCheckin } from "~/lib/queryAPI";
 
   import Tooltip from "~/components/Tooltip.svelte";
+  import Copy from "~/components/Copy.svelte";
   import DarkMode from "~/components/DarkMode.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
   import Loading from "~/components/Loading.svelte";
@@ -752,20 +753,28 @@
 
         {#if showPopover}
           <div
-            class="select_content absolute top-15 right-0 z-50 flex flex-col gap-1 px-3 xl:py-2 py-3 text-sm transform rounded-lg w-max"
-            style="box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15); z-index: 2147483647;"
+            class="select_content absolute top-15 right-0 z-50 flex flex-col gap-1 px-3 xl:py-2 py-3 text-sm transform rounded-lg w-[240px]"
+            style="box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);"
             use:clickOutside
             on:click_outside={() => (showPopover = false)}
           >
             <div
               class="flex flex-col gap-3 mx-2 pt-1 pb-2 border-b-[1px] border_0000001a"
             >
-              <div class="text-2xl xl:text-base">
-                GM 👋, {displayName
-                  ? displayName
-                  : shorterAddress(
-                      localStorage.getItem("public_address") || publicAddress
-                    )}
+              <div class="text-2xl xl:text-base flex items-center gap-1">
+                GM 👋,
+                {#if displayName}
+                  {displayName}
+                {:else}
+                  <Copy
+                    address={localStorage.getItem("public_address") ||
+                      publicAddress}
+                    iconColor="#000"
+                    color="#000"
+                    isShorten
+                    textTooltip="Copy"
+                  />
+                {/if}
               </div>
               <DarkMode />
             </div>

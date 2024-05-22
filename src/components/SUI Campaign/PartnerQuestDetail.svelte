@@ -50,7 +50,9 @@
     queryKey: ["position-list", selectedPartnersData],
     queryFn: () => getPositionList(queryPositionAddress),
     staleTime: Infinity,
-    enabled: Boolean(selectedPartnersData),
+    enabled: Boolean(
+      selectedPartnersData && selectedPartnersData?.tags?.includes("DeFi")
+    ),
   });
 
   $: {
@@ -70,7 +72,9 @@
           queryKey: ["positions", selectedPartnersData, item],
           queryFn: () => getPositions(queryPositionAddress, item),
           staleTime: Infinity,
-          enabled: Boolean(selectedPartnersData),
+          enabled: Boolean(
+            selectedPartnersData && selectedPartnersData?.tags?.includes("DeFi")
+          ),
         };
       })
   );
@@ -292,7 +296,7 @@
       <PartnerQuestTable {dataQuestsBoard} {id} />
     </div>
 
-    {#if selectedPartnersData && selectedPartnersData?.id !== "sui-unlock-walless"}
+    {#if selectedPartnersData && selectedPartnersData?.tags?.includes("DeFi")}
       <div class="flex flex-col gap-4">
         <div class="border-b-[1.5px] border_0000000d pb-2">
           <div class="xl:title-3 title-2">DeFi</div>

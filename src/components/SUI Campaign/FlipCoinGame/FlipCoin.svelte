@@ -98,8 +98,7 @@
   const getRound = async () => {
     const round = await client
       .getObject({
-        // id: "0xb440cf576ccf24b5c9b81a80a146eeaae9c7f09a87983769ec2d34212a434815", // devnet
-        id: "0xfc94a9e689692098ad6c81cfe12b6ece40f3b8a354dd79a1a4ba47110408efcd", // mainnet
+        id: "0xfc94a9e689692098ad6c81cfe12b6ece40f3b8a354dd79a1a4ba47110408efcd",
         options: {
           showContent: true,
         },

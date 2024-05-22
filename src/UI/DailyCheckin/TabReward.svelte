@@ -4,6 +4,7 @@
   import { nimbus } from "~/lib/network";
   import { user, userPublicAddress } from "~/store";
   import {
+    getLootBoxStatus,
     getLinkData,
     handleGetDataDailyCheckin,
     handleGetDataRewards,
@@ -19,8 +20,12 @@
   import TicketCard from "~/components/SUI Campaign/TicketCard.svelte";
   import BoxCard from "~/components/SUI Campaign/BoxCard.svelte";
   import Image from "~/components/Image.svelte";
+  import AppOverlay from "~/components/Overlay.svelte";
+  import Button from "~/components/Button.svelte";
 
   import goldImg from "~/assets/Gold4.svg";
+
+  export let handleSelectTabFlip = () => {};
 
   const dailyCheckinRewardsTypePortfolio = [
     {
@@ -44,24 +49,26 @@
   let counter = 5;
   let showToast = false;
   let openScreenTicketCardSuccess = false;
+  let openScreenBoxSuccess = false;
 
-  let isLoadingRedeem = false;
-  let selectedTicketReward = {};
-
-  const rewardBox = [
+  let rewardBox = [
     // {
     //   cost: 1200,
     //   description: "Nimbus on SUI loot boxes",
     //   title: "Paper Box",
     //   body: "PAPER_BOX",
     //   logo: "https://nimbus-zodiac.s3.ap-southeast-1.amazonaws.com/sui-unlock/closed-box.png",
+    //   cap: 0,
+    //   sold: 0,
     // },
     // {
     //   cost: 1200,
     //   description: "FlowX on SUI loot boxes",
     //   title: "FlowX Box",
     //   body: "FLOWX_BOX",
-    //   logo: "https://nimbus-zodiac.s3.ap-southeast-1.amazonaws.com/sui-unlock/closed-box.png",
+    //   logo: "https://nimbus-zodiac.s3.ap-southeast-1.amazonaws.com/sui-unlock/closed_flowx.png",
+    //   cap: 0,
+    //   sold: 0,
     // },
   ];
 
@@ -115,6 +122,40 @@
     openScreenTicketCardSuccess = false;
   };
 
+  const triggerRedeemBoxSuccess = async () => {
+    openScreenBoxSuccess = true;
+    triggerFirework();
+    await wait(2000);
+    openScreenBoxSuccess = false;
+  };
+
+  $: queryLootboxStatus = createQuery({
+    queryKey: ["lootbox-status"],
+    queryFn: () => getLootBoxStatus(),
+    staleTime: Infinity,
+    retry: false,
+  });
+
+  $: {
+    if (
+      !$queryLootboxStatus.isError &&
+      $queryLootboxStatus.data !== undefined &&
+      $queryLootboxStatus?.data?.data.length !== 0
+    ) {
+      rewardBox = rewardBox.map((item) => {
+        const seletedData = $queryLootboxStatus?.data?.data.find(
+          (eachItem) => eachItem.type === item.body
+        );
+
+        return {
+          ...item,
+          cap: seletedData?.cap || 0,
+          sold: seletedData?.sold || 0,
+        };
+      });
+    }
+  }
+
   let socialData = [];
 
   $: queryLinkSocial = createQuery({
@@ -156,6 +197,10 @@
       $userPublicAddress.length !== 0,
   });
 
+  let isLoadingRedeem = false;
+  let selectedReward = {};
+  let resRedeem = {};
+
   const handleRedeem = async (data) => {
     const validateAddress = await handleValidateAddress($userPublicAddress);
     if (
@@ -181,11 +226,12 @@
 
         queryClient?.invalidateQueries([$userPublicAddress, "daily-checkin"]);
         queryClient?.invalidateQueries([$userPublicAddress, "rewards"]);
-        selectedTicketReward = data;
+
+        selectedReward = data;
         triggerRedeemSuccess();
       } catch (e) {
         console.error(e);
-        toastMsg = "Something went wrong while redeeming the ticket";
+        toastMsg = "Something went wrong while redeeming. Please try again!";
         isSuccessToast = false;
         trigger();
       } finally {
@@ -206,7 +252,7 @@
     }
   };
 
-  const handleRedeemTicket = async (data) => {
+  const handleRedeemCampaign = async (data) => {
     try {
       isLoadingRedeem = true;
       const response: any = await nimbus.post(
@@ -219,15 +265,23 @@
         toastMsg = response?.error;
         isSuccessToast = false;
         trigger();
+        return;
       }
 
       queryClient?.invalidateQueries([$userPublicAddress, "daily-checkin"]);
       queryClient?.invalidateQueries([$userPublicAddress, "rewards"]);
-      selectedTicketReward = data;
-      response?.error === undefined && triggerRedeemSuccess();
+      queryClient?.invalidateQueries(["lootbox-status"]);
+
+      if (data.body === "PAPER_BOX" || data.body === "FLOWX_BOX") {
+        resRedeem = response?.data;
+        triggerRedeemBoxSuccess();
+      } else {
+        selectedReward = data;
+        triggerRedeemSuccess();
+      }
     } catch (error) {
       console.error(error);
-      toastMsg = "Something went wrong while redeeming the ticket";
+      toastMsg = "Something went wrong while redeeming. Please try again!";
       isSuccessToast = false;
       trigger();
     } finally {
@@ -235,7 +289,13 @@
     }
   };
 
-  const handleRedeemBox = async (data) => {};
+  let openScreenClaimSuccess = false;
+  let resClaim: any = {};
+
+  const triggerClaimSuccess = (data) => {
+    resClaim = data;
+    openScreenClaimSuccess = true;
+  };
 </script>
 
 <div class="flex flex-col gap-4">
@@ -324,7 +384,7 @@
                   <TicketCard
                     isRedeem
                     data={item}
-                    {handleRedeemTicket}
+                    handleRedeemTicket={handleRedeemCampaign}
                     {isLoadingRedeem}
                     {totalPoint}
                   />
@@ -332,10 +392,12 @@
 
                 {#each rewardBox || [] as item}
                   <BoxCard
+                    isRedeem
                     data={item}
-                    {handleRedeemBox}
+                    handleRedeemBox={handleRedeemCampaign}
                     {isLoadingRedeem}
                     {totalPoint}
+                    {triggerClaimSuccess}
                   />
                 {/each}
               {/if}
@@ -365,12 +427,23 @@
                 />
               {/each}
 
-              {#each $queryReward?.data?.ownRewards?.filter((item) => item?.campaignName === "sui-unlock") || [] as item}
+              {#each $queryReward?.data?.ownRewards.filter((item) => item?.campaignName === "sui-unlock" && item.title !== "FLOWX_BOX" && item.title !== "PAPER_BOX") || [] as item}
                 <TicketCard
                   data={item}
                   handleRedeemTicket={() => {}}
                   {isLoadingRedeem}
                   {totalPoint}
+                />
+              {/each}
+
+              {#each $queryReward?.data?.ownRewards.filter((item) => item?.campaignName === "sui-unlock" && (item.title === "FLOWX_BOX" || item.title === "PAPER_BOX")) || [] as item}
+                <BoxCard
+                  isClaimable={item.isClaimable}
+                  data={item}
+                  handleRedeemBox={() => {}}
+                  {isLoadingRedeem}
+                  {totalPoint}
+                  {triggerClaimSuccess}
                 />
               {/each}
             </div>
@@ -442,14 +515,93 @@
         Redeem successfully
       </div>
       <div class="w-40 h-40">
-        <Image logo={selectedTicketReward?.logo} defaultLogo="" />
+        <Image logo={selectedReward?.logo} defaultLogo="" />
       </div>
       <div class="xl:text-2xl text-4xl text-white font-medium">
-        You have redeemed the {selectedTicketReward?.title?.toLowerCase() || ""}
+        You have redeemed the {selectedReward?.title?.toLowerCase() || ""}
       </div>
     </div>
   </div>
 {/if}
+
+{#if openScreenBoxSuccess}
+  <div
+    class="fixed h-screen w-screen top-0 left-0 z-10 flex items-center justify-center bg-[#000000cc]"
+    on:click={() => {
+      setTimeout(() => {
+        openScreenBoxSuccess = false;
+      }, 500);
+    }}
+  >
+    <div class="flex flex-col items-center justify-center gap-10">
+      <div class="xl:text-2xl text-4xl text-white font-medium">
+        Congratulations!
+      </div>
+
+      {#if resRedeem?.code === "GM_POINTS"}
+        <img src={goldImg} alt="" class="w-40 h-40" />
+        <div class="xl:text-2xl text-4xl text-white font-medium">
+          You have received {Number(resRedeem?.value || 0)} GM Points
+        </div>
+      {:else if resRedeem?.code === "PREMIUM_CODE"}
+        <div class="xl:text-2xl text-4xl text-white font-medium">
+          You have received Nimbus Premium Code {resRedeem?.value}
+        </div>
+      {:else}
+        <div class="w-40 h-40">
+          <Image logo={resRedeem?.logo} defaultLogo="" />
+        </div>
+        <div class="xl:text-2xl text-4xl text-white font-medium">
+          You have received {Number(resRedeem?.value || 0) +
+            " " +
+            resRedeem?.code}
+        </div>
+      {/if}
+    </div>
+  </div>
+{/if}
+
+<AppOverlay
+  clickOutSideToClose
+  isOpen={openScreenClaimSuccess}
+  on:close={() => (openScreenClaimSuccess = false)}
+>
+  <div class="flex flex-col gap-4 xl:mt-0 mt-4">
+    <div class="flex flex-col items-center gap-1">
+      <div class="font-semibold title-3">
+        You have claimed {resClaim?.amount + " " + resClaim?.token} successfully!
+      </div>
+    </div>
+    <div class="flex justify-center">
+      <div class="min-w-[120px]">
+        {#if resClaim?.partner === "FlowX"}
+          <a href={resClaim?.link} target="_blank">
+            <Button
+              variant="tertiary"
+              on:click={() => {
+                openScreenClaimSuccess = false;
+                resClaim = {};
+              }}
+            >
+              Stake it with FlowX for more GM and APY %
+            </Button>
+          </a>
+        {/if}
+
+        {#if resClaim?.partner === "Nimbus"}
+          <Button
+            variant="tertiary"
+            on:click={() => {
+              handleSelectTabFlip();
+              openScreenClaimSuccess = false;
+              resClaim = {};
+            }}>FLIP IT</Button
+          >
+        {/if}
+      </div>
+    </div>
+  </div>
+</AppOverlay>
 
 <style windi:preflights:global windi:safelist:global>
 </style>

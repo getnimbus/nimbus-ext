@@ -2,11 +2,6 @@
 # yarn lockfile v1
 
 
-"@0no-co/graphql.web@^1.0.4":
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/@0no-co/graphql.web/-/graphql.web-1.0.4.tgz#9606eb651955499525d068ce0ad8bea596286ce2"
-  integrity sha512-W3ezhHGfO0MS1PtGloaTpg0PbaT8aZSmmaerL7idtU5F7oCI+uu25k+MsMS31BVFlp4aMkHSrNRxiD72IlK8TA==
-
 "@0no-co/graphql.web@^1.0.5":
   version "1.0.7"
   resolved "https://registry.yarnpkg.com/@0no-co/graphql.web/-/graphql.web-1.0.7.tgz#c7a762c887b3482a79ffa68f63de5e96059a62e4"
@@ -3047,10 +3042,29 @@
     graphql "^15.5.0 || ^16.0.0 || ^17.0.0"
     svelte2tsx "^0.7.6"
 
+"@gql.tada/cli-utils@1.3.9":
+  version "1.3.9"
+  resolved "https://registry.yarnpkg.com/@gql.tada/cli-utils/-/cli-utils-1.3.9.tgz#3563cf18d25bca4e4a04f69c7b41623ba0821ed0"
+  integrity sha512-oRb7SG/+csx9CiypSJTI21KaLfulOUnhX1vxg4FXi2snub9XShkGR2XnnlJVTAOZXY9Vcxti1NutAElxdDkycA==
+  dependencies:
+    "@0no-co/graphqlsp" "^1.12.1"
+    "@gql.tada/internal" "1.0.0"
+    "@vue/compiler-dom" "^3.4.23"
+    "@vue/language-core" "^2.0.17"
+    graphql "^15.5.0 || ^16.0.0 || ^17.0.0"
+    svelte2tsx "^0.7.6"
+
 "@gql.tada/internal@0.4.0":
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/@gql.tada/internal/-/internal-0.4.0.tgz#7c70d4bb1e7da5722a1d49dc4a65e4844293e11d"
   integrity sha512-VPJkuGcFu6dd6WPjhDK/FKcrCWtmSfb6KIFStSJc8yENLJeDkRBXm/H41lETPACHoP9N3WDh+VWgwuUAubcAVQ==
+  dependencies:
+    "@0no-co/graphql.web" "^1.0.5"
+
+"@gql.tada/internal@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@gql.tada/internal/-/internal-1.0.0.tgz#90d84a0ffcfa700dd769033b880422d28fa6c8e2"
+  integrity sha512-B55aIYyZn5ewdgMqoJciPAwF5DKYX6HBabTU+ap/dpNH3EgJrLomc8Y8w+MCxCyOx+dXL9OduT6eWnVr7J7Eyg==
   dependencies:
     "@0no-co/graphql.web" "^1.0.5"
 
@@ -3714,29 +3728,6 @@
   dependencies:
     bs58 "^5.0.0"
 
-"@mysten/bcs@0.8.1":
-  version "0.8.1"
-  resolved "https://registry.yarnpkg.com/@mysten/bcs/-/bcs-0.8.1.tgz#30d3256a728a4a934ae608d118347289fe0ba1e7"
-  integrity sha512-wSEdP7QEfGQdb34g+7R0f3OdRqrv88iIABfJVDVJ6IsGLYVILreh8dZfNpZNUUyzctiyhX7zB9e/lR5qkddFPA==
-  dependencies:
-    bs58 "^5.0.0"
-
-"@mysten/sui.js@0.45.1":
-  version "0.45.1"
-  resolved "https://registry.yarnpkg.com/@mysten/sui.js/-/sui.js-0.45.1.tgz#df609856e067060f8fc71d6c8fd8858f8055b329"
-  integrity sha512-B6RKfBAR1yr3EvHyQzXgkyOGOXE7jUbgblyitK/25CGp4Uba4VHEZ/N5DCbiuTJdt2k1H42sSXqIGfYqHN+6Cw==
-  dependencies:
-    "@mysten/bcs" "0.8.1"
-    "@noble/curves" "^1.1.0"
-    "@noble/hashes" "^1.3.1"
-    "@open-rpc/client-js" "^1.8.1"
-    "@scure/bip32" "^1.3.1"
-    "@scure/bip39" "^1.2.1"
-    "@suchipi/femver" "^1.0.0"
-    events "^3.3.0"
-    superstruct "^1.0.3"
-    tweetnacl "^1.0.3"
-
 "@mysten/sui.js@0.51.2":
   version "0.51.2"
   resolved "https://registry.yarnpkg.com/@mysten/sui.js/-/sui.js-0.51.2.tgz#40c54bf1df57fdeaf27ad11efddeaa20ff5e6a7b"
@@ -3751,24 +3742,6 @@
     "@suchipi/femver" "^1.0.0"
     bech32 "^2.0.0"
     gql.tada "^1.4.1"
-    graphql "^16.8.1"
-    superstruct "^1.0.3"
-    tweetnacl "^1.0.3"
-
-"@mysten/sui.js@^0.50.1":
-  version "0.50.1"
-  resolved "https://registry.yarnpkg.com/@mysten/sui.js/-/sui.js-0.50.1.tgz#f201d7cad343321f93297d9b14319b2e155d6876"
-  integrity sha512-AY0wb4n6PMTRsDGygzrrTHUK/m5KwKZ4aQcN9cayiwsq2iIhfjGo7uuqMA7Y5UiqvLCoF+z7Ig14Q5qejQ/S/w==
-  dependencies:
-    "@graphql-typed-document-node/core" "^3.2.0"
-    "@mysten/bcs" "0.11.1"
-    "@noble/curves" "^1.1.0"
-    "@noble/hashes" "^1.3.1"
-    "@scure/bip32" "^1.3.1"
-    "@scure/bip39" "^1.2.1"
-    "@suchipi/femver" "^1.0.0"
-    bech32 "^2.0.0"
-    gql.tada "^1.2.0"
     graphql "^16.8.1"
     superstruct "^1.0.3"
     tweetnacl "^1.0.3"
@@ -3790,20 +3763,30 @@
     superstruct "^1.0.3"
     tweetnacl "^1.0.3"
 
+"@mysten/sui.js@^0.54.1":
+  version "0.54.1"
+  resolved "https://registry.yarnpkg.com/@mysten/sui.js/-/sui.js-0.54.1.tgz#27b6724dd30e0e81d50b47437cb206d0cec25f8b"
+  integrity sha512-TSmGIX7U9O/uS9EKIQdv7/S69KTbBhMJVelXCafJE6IJw8iB9cN9uLu0+uklkBSDrbRmLSEY70jMr3uRFjReIg==
+  dependencies:
+    "@graphql-typed-document-node/core" "^3.2.0"
+    "@mysten/bcs" "0.11.1"
+    "@noble/curves" "^1.1.0"
+    "@noble/hashes" "^1.3.1"
+    "@scure/bip32" "^1.3.1"
+    "@scure/bip39" "^1.2.1"
+    "@suchipi/femver" "^1.0.0"
+    bech32 "^2.0.0"
+    gql.tada "^1.7.0"
+    graphql "^16.8.1"
+    superstruct "^1.0.3"
+    tweetnacl "^1.0.3"
+
 "@mysten/wallet-standard@0.11.2":
   version "0.11.2"
   resolved "https://registry.yarnpkg.com/@mysten/wallet-standard/-/wallet-standard-0.11.2.tgz#39e71ce3baffe7f4e5c0b8e74f3766119047f22f"
   integrity sha512-wDuXHwmdYS+9ewH6w4Fg67QwDpYN6JTKPWC/fuEWRuHy4uS77DfrIG6KHtU0tReMGapevXovKpw6WoSHJHDDHg==
   dependencies:
     "@mysten/sui.js" "0.51.2"
-    "@wallet-standard/core" "1.0.3"
-
-"@mysten/wallet-standard@0.8.7":
-  version "0.8.7"
-  resolved "https://registry.yarnpkg.com/@mysten/wallet-standard/-/wallet-standard-0.8.7.tgz#998ab0a28f98653ec8316676f2e2b7ef8a6d0c2a"
-  integrity sha512-kY/gc8WHeqcWPgnQ69l9jbyXSsnVJqddspX1rvLF5bZV1Ud7ZrVO1V+pL4LNTxeQq02EHz4n5DLOWGHDd3mrTg==
-  dependencies:
-    "@mysten/sui.js" "0.45.1"
     "@wallet-standard/core" "1.0.3"
 
 "@ngraveio/bc-ur@^1.0.0", "@ngraveio/bc-ur@^1.1.5":
@@ -3868,16 +3851,6 @@
   dependencies:
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
-
-"@open-rpc/client-js@^1.8.1":
-  version "1.8.1"
-  resolved "https://registry.yarnpkg.com/@open-rpc/client-js/-/client-js-1.8.1.tgz#73b5a5bf237f24b14c3c89205b1fca3aea213213"
-  integrity sha512-vV+Hetl688nY/oWI9IFY0iKDrWuLdYhf7OIKI6U1DcnJV7r4gAgwRJjEr1QVYszUc0gjkHoQJzqevmXMGLyA0g==
-  dependencies:
-    isomorphic-fetch "^3.0.0"
-    isomorphic-ws "^5.0.0"
-    strict-event-emitter-types "^2.0.0"
-    ws "^7.0.0"
 
 "@parcel/watcher-android-arm64@2.4.1":
   version "2.4.1"
@@ -5154,23 +5127,6 @@
   resolved "https://registry.yarnpkg.com/@suchipi/femver/-/femver-1.0.0.tgz#4909dcc069695e07bd23a64c4bfe411d11d9692f"
   integrity sha512-bprE8+K5V+DPX7q2e2K57ImqNBdfGHDIWaGI5xHxZoxbKOuQZn4wzPiUxOAHnsUr3w3xHrWXwN7gnG/iIuEMIg==
 
-"@suiet/wallet-kit@^0.2.22":
-  version "0.2.22"
-  resolved "https://registry.yarnpkg.com/@suiet/wallet-kit/-/wallet-kit-0.2.22.tgz#f2128b55dbde5eaf1ee47128cdfaebb6f7a4d884"
-  integrity sha512-vJ+t3l95SwZ0VU8xwDCbccgSQzgtY/srON4IEKI2K4UUV/Epy+EhqXIo5XceH1gJGy4O3kM5kvIZj0SJsp+Owg==
-  dependencies:
-    "@mysten/sui.js" "0.45.1"
-    "@mysten/wallet-standard" "0.8.7"
-    "@radix-ui/react-dialog" "^1.0.2"
-    "@suiet/wallet-sdk" "0.2.19"
-    "@svgr/rollup" "^6.5.1"
-    "@wallet-standard/core" "1.0.3"
-    buffer "^6.0.3"
-    classnames "^2.3.2"
-    lodash-es "^4.17.21"
-    mitt "^3.0.0"
-    react-query "^3.39.2"
-
 "@suiet/wallet-kit@^0.2.24":
   version "0.2.24"
   resolved "https://registry.yarnpkg.com/@suiet/wallet-kit/-/wallet-kit-0.2.24.tgz#24d3ebd6dd10cbbd14131b0b9c786a27a91b9cdc"
@@ -5187,18 +5143,6 @@
     lodash-es "^4.17.21"
     mitt "^3.0.0"
     react-query "^3.39.2"
-
-"@suiet/wallet-sdk@0.2.19":
-  version "0.2.19"
-  resolved "https://registry.yarnpkg.com/@suiet/wallet-sdk/-/wallet-sdk-0.2.19.tgz#c7b93db9063fac6cb00ad9159b8cc3f115489d7e"
-  integrity sha512-i4iGdDkEuO5/TLDfWDj1fhJ3yttaGsEY6hQ/FwLwxrsuuTbjqlVDXqScURz/aGHbWlVfW5x+kcOiE44mGDSMsg==
-  dependencies:
-    "@mysten/sui.js" "0.45.1"
-    "@mysten/wallet-standard" "0.8.7"
-    "@noble/hashes" "^1.3.0"
-    buffer "^6.0.3"
-    superstruct "^1.0.3"
-    tweetnacl "^1.0.3"
 
 "@suiet/wallet-sdk@0.2.21":
   version "0.2.21"
@@ -6028,10 +5972,24 @@
   dependencies:
     "@volar/source-map" "2.2.1"
 
+"@volar/language-core@~2.2.4":
+  version "2.2.4"
+  resolved "https://registry.yarnpkg.com/@volar/language-core/-/language-core-2.2.4.tgz#50a9194732988610d6b0d8d8732a07235e6464c8"
+  integrity sha512-7As47GndxGxsqqYnbreLrfB5NDUeQioPM2LJKUuB4/34c0NpEJ2byVl3c9KYdjIdiEstWZ9JLtLKNTaPWb5jtA==
+  dependencies:
+    "@volar/source-map" "2.2.4"
+
 "@volar/source-map@2.2.1":
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/@volar/source-map/-/source-map-2.2.1.tgz#d75b0c38659d3ea7e780d4251ac2b9436845ab97"
   integrity sha512-w1Bgpguhbp7YTr7VUFu6gb4iAZjeEPsOX4zpgiuvlldbzvIWDWy4t0jVifsIsxZ99HAu+c3swiME7wt+GeNqhA==
+  dependencies:
+    muggle-string "^0.4.0"
+
+"@volar/source-map@2.2.4":
+  version "2.2.4"
+  resolved "https://registry.yarnpkg.com/@volar/source-map/-/source-map-2.2.4.tgz#15e50e2fc98e76e61711b6cc5d45872814a3e482"
+  integrity sha512-m92FLpR9vB1YEZfiZ+bfgpLrToL/DNkOrorWVep3pffHrwwI4Tx2oIQN+sqHJfKkiT5N3J1owC+8crhAEinfjg==
   dependencies:
     muggle-string "^0.4.0"
 
@@ -6060,6 +6018,19 @@
   integrity sha512-Bc2sexRH99pznOph8mLw2BlRZ9edm7tW51kcBXgx8adAoOcZUWJj3UNSsdQ6H9Y8meGz7BoazVrVo/jUukIsPw==
   dependencies:
     "@volar/language-core" "~2.2.0"
+    "@vue/compiler-dom" "^3.4.0"
+    "@vue/shared" "^3.4.0"
+    computeds "^0.0.1"
+    minimatch "^9.0.3"
+    path-browserify "^1.0.1"
+    vue-template-compiler "^2.7.14"
+
+"@vue/language-core@^2.0.17":
+  version "2.0.19"
+  resolved "https://registry.yarnpkg.com/@vue/language-core/-/language-core-2.0.19.tgz#d55f9c1e92690c77ffd599688ba36c2b50c4303b"
+  integrity sha512-A9EGOnvb51jOvnCYoRLnMP+CcoPlbZVxI9gZXE/y2GksRWM6j/PrLEIC++pnosWTN08tFpJgxhSS//E9v/Sg+Q==
+  dependencies:
+    "@volar/language-core" "~2.2.4"
     "@vue/compiler-dom" "^3.4.0"
     "@vue/shared" "^3.4.0"
     computeds "^0.0.1"
@@ -10254,13 +10225,6 @@ got@^9.6.0:
     to-readable-stream "^1.0.0"
     url-parse-lax "^3.0.0"
 
-gql.tada@^1.2.0:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/gql.tada/-/gql.tada-1.2.1.tgz#ca2ec06d403c3b68fdfd1d337309ad3ccb0204ff"
-  integrity sha512-Nx8x3g9WLT23eu9aL/4TTFDBwm7CBGVd4F2Jp2H5oOjDpuWv12i1mTLKReQwn2V1ZP+jG8V0ATXzFQZt1pxSgw==
-  dependencies:
-    "@0no-co/graphql.web" "^1.0.4"
-
 gql.tada@^1.4.1:
   version "1.7.0"
   resolved "https://registry.yarnpkg.com/gql.tada/-/gql.tada-1.7.0.tgz#d8d276b6dbe64234d8bb469e44a5d89d0b26a938"
@@ -10269,6 +10233,15 @@ gql.tada@^1.4.1:
     "@0no-co/graphql.web" "^1.0.5"
     "@gql.tada/cli-utils" "1.3.4"
     "@gql.tada/internal" "0.4.0"
+
+gql.tada@^1.7.0:
+  version "1.7.5"
+  resolved "https://registry.yarnpkg.com/gql.tada/-/gql.tada-1.7.5.tgz#b03e7ccabf99458d828d82373a96e94cd19d6f28"
+  integrity sha512-GepPTee+FWSVVZQ7GiJHzsGNo7gOb59kcn4mUPYLlkbpeJfOUwpuoB05ZNaXG0W4qZVPd1I7R2UgMHBjY1lGlQ==
+  dependencies:
+    "@0no-co/graphql.web" "^1.0.5"
+    "@gql.tada/cli-utils" "1.3.9"
+    "@gql.tada/internal" "1.0.0"
 
 graceful-fs@^4.1.2, graceful-fs@^4.1.3, graceful-fs@^4.1.6, graceful-fs@^4.2.0:
   version "4.2.11"
@@ -11004,14 +10977,6 @@ isexe@^2.0.0:
   resolved "https://registry.yarnpkg.com/isexe/-/isexe-2.0.0.tgz#e8fbf374dc556ff8947a10dcb0572d633f2cfa10"
   integrity sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw==
 
-isomorphic-fetch@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/isomorphic-fetch/-/isomorphic-fetch-3.0.0.tgz#0267b005049046d2421207215d45d6a262b8b8b4"
-  integrity sha512-qvUtwJ3j6qwsF3jLxkZ72qCgjMysPzDfeV240JHiGZsANBYd+EEuu35v7dfrJ9Up0Ak07D7GGSkGhCHTqg/5wA==
-  dependencies:
-    node-fetch "^2.6.1"
-    whatwg-fetch "^3.4.1"
-
 isomorphic-unfetch@3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/isomorphic-unfetch/-/isomorphic-unfetch-3.1.0.tgz#87341d5f4f7b63843d468438128cb087b7c3e98f"
@@ -11024,11 +10989,6 @@ isomorphic-ws@^4.0.1:
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/isomorphic-ws/-/isomorphic-ws-4.0.1.tgz#55fd4cd6c5e6491e76dc125938dd863f5cd4f2dc"
   integrity sha512-BhBvN2MBpWTaSHdWRb/bwdZJ1WaehQ2L1KngkCkfLUGF0mAWAT1sQUQacEmQ0jXkFw/czDXPNQSL5u2/Krsz1w==
-
-isomorphic-ws@^5.0.0:
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/isomorphic-ws/-/isomorphic-ws-5.0.0.tgz#e5529148912ecb9b451b46ed44d53dae1ce04bbf"
-  integrity sha512-muId7Zzn9ywDsyXgTIafTry2sV3nySZeUDe6YedVd1Hvuuep5AsIlqK+XefWpYTyJG5e503F2xIuT2lcU6rCSw==
 
 isows@1.0.3:
   version "1.0.3"
@@ -12124,13 +12084,13 @@ next-tick@1, next-tick@^1.1.0:
   resolved "https://registry.yarnpkg.com/next-tick/-/next-tick-1.1.0.tgz#1836ee30ad56d67ef281b22bd199f709449b35eb"
   integrity sha512-CXdUiJembsNjuToQvxayPZF9Vqht7hewsvy2sOWafLvi2awflj9mOC6bHIg50orX8IJvWKY9wYQ/zB2kogPslQ==
 
-nimbus-sui-kit@^0.0.2:
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/nimbus-sui-kit/-/nimbus-sui-kit-0.0.2.tgz#bd98b406be242c81522a997d3b160e61fad7b66b"
-  integrity sha512-MVqxhWvRjCI0UEOthKbEAw1/k9Cvxhxzzq1Ylfh1t9Mv2YBYNqWByTv3+Yd/bT/cUGSN/OFrjfcCoUaKwuS+Ew==
+nimbus-sui-kit@^0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/nimbus-sui-kit/-/nimbus-sui-kit-0.0.3.tgz#e2f5cd5af67357101a935c07096818f1ff634641"
+  integrity sha512-tCk1EwPvQ5Cw4yFP1985dJ05rJ3eeUd6/IeytMGZADAaJMX9mRoH+TvJYLIAnxVpC3g4FMRUhgvFk8PRr2vGaA==
   dependencies:
-    "@mysten/sui.js" "^0.50.1"
-    "@suiet/wallet-kit" "^0.2.22"
+    "@mysten/sui.js" "^0.54.1"
+    "@suiet/wallet-kit" "^0.2.24"
     "@types/react" "^18.2.58"
     "@types/react-dom" "^18.2.19"
     axios "^1.6.7"
@@ -14211,11 +14171,6 @@ stream-to-promise@3.0.0:
     end-of-stream "~1.4.1"
     stream-to-array "~2.3.0"
 
-strict-event-emitter-types@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/strict-event-emitter-types/-/strict-event-emitter-types-2.0.0.tgz#05e15549cb4da1694478a53543e4e2f4abcf277f"
-  integrity sha512-Nk/brWYpD85WlOgzw5h173aci0Teyv8YdIAEtV+N88nDB0dLlazZyJMIsN6eo1/AR61l+p6CJTG1JIyFaoNEEA==
-
 strict-uri-encode@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/strict-uri-encode/-/strict-uri-encode-2.0.0.tgz#b9c7330c7042862f6b142dc274bbcc5866ce3546"
@@ -15679,11 +15634,6 @@ websocket-extensions@>=0.1.1:
   resolved "https://registry.yarnpkg.com/websocket-extensions/-/websocket-extensions-0.1.4.tgz#7f8473bc839dfd87608adb95d7eb075211578a42"
   integrity sha512-OqedPIGOfsDlo31UNwYbCFMSaO9m9G/0faIHj5/dZFDMFqPTcx6UwqyOy3COEaEOg/9VsGIpdqn62W5KhoKSpg==
 
-whatwg-fetch@^3.4.1:
-  version "3.6.20"
-  resolved "https://registry.yarnpkg.com/whatwg-fetch/-/whatwg-fetch-3.6.20.tgz#580ce6d791facec91d37c72890995a0b48d31c70"
-  integrity sha512-EqhiFU6daOA8kpjOWTL0olhVOF3i7OrFzSYiGsEMB8GcXS+RrzauAERX65xMeNWVqxA6HXH2m69Z9LaKKdisfg==
-
 whatwg-url@^5.0.0:
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/whatwg-url/-/whatwg-url-5.0.0.tgz#966454e8765462e37644d3626f6742ce8b70965d"
@@ -16016,7 +15966,7 @@ ws@8.5.0:
   resolved "https://registry.yarnpkg.com/ws/-/ws-8.5.0.tgz#bfb4be96600757fe5382de12c670dab984a1ed4f"
   integrity sha512-BWX0SWVgLPzYwF8lTzEy1egjhS4S4OEAHfsO8o65WOVsrnSRGaSiUaa9e0ggGlkMTtBlmOpEXiie9RUcBO86qg==
 
-ws@^7.0.0, ws@^7.2.0, ws@^7.4.5, ws@^7.5.1:
+ws@^7.2.0, ws@^7.4.5, ws@^7.5.1:
   version "7.5.9"
   resolved "https://registry.yarnpkg.com/ws/-/ws-7.5.9.tgz#54fa7db29f4c7cec68b1ddd3a89de099942bb591"
   integrity sha512-F+P9Jil7UiSKSkppIiD94dN07AwvFixvLIj1Og1Rl9GGMuNipJnV9JzjD6XuqmAeiswGvUmNLjr5cFuXwNS77Q==

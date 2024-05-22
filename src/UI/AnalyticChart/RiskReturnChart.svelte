@@ -462,7 +462,9 @@
 
 <AnalyticSection>
   <span slot="title">
-    <div class="flex justify-start font-medium text-2xl">
+    <div
+      class="flex justify-start font-medium xl:text-2xl text-3xl xl:px-0 px-2"
+    >
       Volatility & Returns
     </div>
   </span>
@@ -529,7 +531,7 @@
                     >
                     It has expected yield only
                     <span class="font-medium"
-                      >{data?.base?.sharpeRatio?.toFixed(2)}</span
+                      >{data?.base?.sharpeRatio?.toFixed(2) || 0}</span
                     >
                     units of profit per <span class="font-medium">1</span> unit of
                     risk.

@@ -6,6 +6,33 @@ import { driver } from "driver.js";
 import "driver.js/dist/driver.css";
 import dayjs from "dayjs";
 
+export const colorPairs = [
+  { textColor: "#49A37B", backgroundColor: "#CBFDE1" },
+  { textColor: "#FF5733", backgroundColor: "#FFD3B6" },
+  { textColor: "#3498DB", backgroundColor: "#D6EAF8" },
+  { textColor: "#9B59B6", backgroundColor: "#EBDEF0" },
+  { textColor: "#E74C3C", backgroundColor: "#FADBD8" },
+  { textColor: "#2ECC71", backgroundColor: "#D5F5E3" },
+  { textColor: "#1ABC9C", backgroundColor: "#D1F2EB" },
+  { textColor: "#F39C12", backgroundColor: "#FDEBD0" },
+  { textColor: "#D35400", backgroundColor: "#F6DDCC" },
+  { textColor: "#7D3C98", backgroundColor: "#E8DAEF" },
+  { textColor: "#2980B9", backgroundColor: "#D6EAF8" },
+  { textColor: "#C0392B", backgroundColor: "#FADBD8" },
+  { textColor: "#8E44AD", backgroundColor: "#E8DAEF" },
+  { textColor: "#27AE60", backgroundColor: "#D5F5E3" },
+  { textColor: "#16A085", backgroundColor: "#D1F2EB" },
+  { textColor: "#F1C40F", backgroundColor: "#FCF3CF" },
+  { textColor: "#E67E22", backgroundColor: "#FAE5D3" },
+  { textColor: "#A93226", backgroundColor: "#F5B7B1" },
+  { textColor: "#5D6D7E", backgroundColor: "#D6DBDF" },
+  { textColor: "#34495E", backgroundColor: "#D5D8DC" },
+  { textColor: "#F4D03F", backgroundColor: "#FCF3CF" },
+  { textColor: "#C70039", backgroundColor: "#FADBD8" },
+  { textColor: "#8E44AD", backgroundColor: "#EBDEF0" },
+  { textColor: "#2980B9", backgroundColor: "#D6EAF8" },
+];
+
 export const netWorthFilter = [
   {
     label: "1k - 50K",

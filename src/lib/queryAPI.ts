@@ -25,6 +25,11 @@ export const getLinkData = async () => {
   return response;
 };
 
+export const getLootBoxStatus = async () => {
+  const response: any = await nimbus.get("/v2/rewards/lootbox/status");
+  return response;
+}
+
 export const handleValidateAddress = async (address: string) => {
   const response: any = await nimbus.get(`/v2/address/${address}/validate`).catch((e) => {
     console.error(e)
