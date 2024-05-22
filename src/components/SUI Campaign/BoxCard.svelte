@@ -222,7 +222,7 @@
       >
         {#if !isClaimable && isRedeem}
           <div class="w-[220px] text-base font-normal text-left">
-            {data.cap} boxs <br />/per-week
+            {data.cap} Box
           </div>
         {/if}
 

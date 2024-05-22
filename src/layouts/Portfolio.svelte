@@ -42,6 +42,7 @@
     getVaults,
     getHoldingNFT,
   } from "~/lib/queryAPI";
+  import { navigateTo } from "svelte-router-spa";
 
   import AddressManagement from "~/components/AddressManagement.svelte";
   import Overview from "~/UI/Portfolio/Overview.svelte";
@@ -845,7 +846,7 @@
 
   $: {
     if (!localStorage.getItem("view-portfolio-tour") && isPortfolioReady) {
-      drivePortfolio().drive();
+      drivePortfolio()?.drive();
       localStorage.setItem("view-portfolio-tour", "true");
     }
   }
