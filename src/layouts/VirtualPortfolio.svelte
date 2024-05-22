@@ -48,6 +48,7 @@
   let selectedVirtualPortfolio: any = {};
   let virtualPortfolioId = "";
   let dataVirtualPortfolio = {};
+  let listTokenHolding = [];
 
   const initialUpdateStateFromParams = () => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -226,6 +227,8 @@
       },
       {}
     );
+
+    listTokenHolding = dataVirtualPortfolio[virtualPortfolioId]?.coins;
   };
 
   $: queryVirtualPortfolio = createQuery({
@@ -382,6 +385,8 @@
   const handleCancel = () => {
     type = "";
   };
+
+  $: console.log("HELLO WORLD: ", listTokenHolding);
 </script>
 
 <ErrorBoundary>

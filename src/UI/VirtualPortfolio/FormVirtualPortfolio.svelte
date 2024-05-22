@@ -423,7 +423,7 @@
         <div class="flex flex-col gap-1">
           <div class="xl:text-xl text-2xl font-medium">2. Coin Allocation</div>
           <div class="text-base font-normal text-gray-500">
-            Remaining: <span
+            Result: <span
               class={`${remaining === 100 ? "text-gray-500" : "text-red-500"}`}
               >{remaining}%</span
             >/100%
