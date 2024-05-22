@@ -222,7 +222,11 @@
       >
         {#if !isClaimable && isRedeem}
           <div class="w-[220px] text-base font-normal text-left">
-            {data.cap} Box
+            {#if Number(data.cap) - Number(data.sold) > 0}
+              {data.cap} Box
+            {:else}
+              Out of stock
+            {/if}
           </div>
         {/if}
 
@@ -243,7 +247,7 @@
               </Button>
             </div>
           </div>
-        {:else if !isClaimable && totalPoint >= 1000 && isRedeem && Number(data.cap) - Number(data.sold) > 0}
+        {:else if !isClaimable && totalPoint >= data.cost && isRedeem && Number(data.cap) - Number(data.sold) > 0}
           <Button
             variant="tertiary"
             on:click={() => {
@@ -315,7 +319,7 @@
                     <div
                       class="max-w-[360px] text-white bg-black py-1 px-2 text-xs rounded relative w-max normal-case"
                     >
-                      {#if totalPoint < 1000}
+                      {#if totalPoint < data.cost}
                         You are not enough GM Points to Redeem
                       {:else}
                         There are not available now
