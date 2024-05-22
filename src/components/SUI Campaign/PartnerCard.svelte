@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { onDestroy, onMount } from "svelte";
   import { isDarkMode } from "~/store";
   import dayjs from "dayjs";
   import isBetween from "dayjs/plugin/isBetween";
@@ -16,7 +15,7 @@
 
   export let isRedeem = false;
   export let data;
-  export let handleRedeemTicket = (value) => {};
+  export let handleRedeemPartnerCard = (value) => {};
   export let isLoadingRedeem;
   export let totalPoint;
 
@@ -37,45 +36,6 @@
     toastMsg = "";
     isSuccessToast = false;
   };
-
-  let timeCountDown = "";
-  let intervalId = null;
-  let interval: ReturnType<typeof setInterval>;
-
-  const checkTicketValidate = () => {
-    const today = dayjs().format("YYYY-MM-DD");
-    return dayjs(today).isBetween(data?.fromDate, data?.toDate, "day", "[)");
-  };
-
-  const updateCountdown = () => {
-    const now = dayjs();
-    const targetDate = dayjs(data?.toDate);
-    let days = 0;
-    let hours = 0;
-    let minutes = 0;
-    let seconds = 0;
-    if (now.isAfter(targetDate)) {
-      clearInterval(interval);
-    } else {
-      const duration = dayjs.duration(targetDate.diff(now));
-      days = duration.days();
-      hours = duration.hours();
-      minutes = duration.minutes();
-      seconds = duration.seconds();
-      timeCountDown =
-        days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
-    }
-  };
-
-  onMount(() => {
-    updateCountdown(); // Initial update
-    interval = setInterval(updateCountdown, 1000);
-  });
-
-  onDestroy(() => {
-    clearInterval(intervalId);
-    clearInterval(interval);
-  });
 </script>
 
 <div
@@ -85,21 +45,17 @@
 >
   <div class="px-[16px] flex items-center h-full gap-[27px]">
     <div
-      class={`w-[135px] relative rounded-2xl p-2 flex items-center h-full justify-center ${
+      class={`w-[135px] rounded-2xl p-2 flex items-center h-full justify-center ${
         $isDarkMode ? "" : "bg-white"
       }`}
     >
-      <div class="w-20 h-20">
-        <img src={data?.logo} alt="" class="w-full h-full object-contain" />
+      <div class="w-20 h-20 rounded-[10px]">
+        <img
+          src={data?.logo}
+          alt=""
+          class="w-full h-full object-contain rounded-[10px]"
+        />
       </div>
-
-      {#if isRedeem}
-        <div
-          class="absolute -bottom-2 w-full text-center whitespace-nowrap left-timee italic text-sm"
-        >
-          {timeCountDown}
-        </div>
-      {/if}
     </div>
 
     <div class="flex-1 flex flex-col gap-2">
@@ -138,19 +94,19 @@
           class="flex items-center md:justify-start justify-between gap-[40px]"
         >
           <div class="w-[220px] text-base font-normal text-center">
-            {#if checkTicketValidate()}
-              Unlimited
+            {#if Number(data.cap) - Number(data.sold) > 0 && isRedeem}
+              {Number(data.cap) - Number(data.sold)} lefts
             {:else}
               Out of stock
             {/if}
           </div>
 
-          {#if checkTicketValidate() && totalPoint >= data.cost}
+          {#if Number(data.cap) - Number(data.sold) > 0 && isRedeem && totalPoint >= data?.cost}
             <Button
               variant="tertiary"
               on:click={() => {
                 if (!isLoadingRedeem) {
-                  handleRedeemTicket(data);
+                  handleRedeemPartnerCard(data);
                 }
               }}
               disabled={isLoadingRedeem}
