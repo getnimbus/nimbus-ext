@@ -20,16 +20,22 @@
     $isDarkMode ? "bg-[#212121]" : "bg-white"
   }`}
 >
-  <div class="px-[16px] flex items-center h-full gap-[47px] gap-320-sx">
+  <div class="px-[16px] flex items-center h-full gap-[27px]">
     <div
-      class={`flex-[0.6] rounded-2xl p-2 flex items-center h-full justify-center ${
+      class={`w-[135px] rounded-2xl p-2 flex items-center h-full justify-center ${
         $isDarkMode ? "" : "bg-white"
       }`}
     >
-      <img src={redeemData?.logo} alt="" class="w-20 h-20 object-contain" />
+      <div class="w-20 h-20">
+        <img
+          src={redeemData?.logo}
+          alt=""
+          class="w-full h-full object-contain"
+        />
+      </div>
     </div>
 
-    <div class="flex-1 flex flex-col gap-2">
+    <div class="flex flex-col gap-2">
       <div class="flex items-center gap-2">
         <img src={Crown} alt="" class="w-[26px] h-[26px]" />
         <div class="text-[#FFB800] text-lg font-medium uppercase">Premium</div>
@@ -60,12 +66,13 @@
     <div class="px-[16px]">
       {#if isRedeem}
         <div class="flex items-center gap-[40px]">
-          <div class="w-[150px] text-base font-normal text-right">
+          <div class="w-[220px] text-base font-normal text-left">
             {redeemData?.remains} left
           </div>
+
           {#if redeemData?.remains === 0}
             <div
-              class="relative"
+              class="relative w-full"
               on:mouseenter={() => (showDisabled = true)}
               on:mouseleave={() => (showDisabled = false)}
             >

@@ -383,7 +383,9 @@
 
 <AnalyticSection {address} {isShowSoon}>
   <span slot="title">
-    <div class="flex justify-start text-3xl font-medium xl:text-2xl">
+    <div
+      class="flex justify-start font-medium xl:text-2xl text-3xl xl:px-0 px-2"
+    >
       Money flow
     </div>
   </span>
