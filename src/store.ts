@@ -31,6 +31,10 @@ export const pastProfit = writable(0);
 export const suiWalletInstance = writable(null);
 export const tonConnector = writable(null);
 
+export let showToast = writable(false);
+export let isSuccessToast = writable(false);
+export let toastMsg = writable("");
+
 // let isFirstTime = true;
 // isOpenReport.subscribe((value) => {
 //   if (!isFirstTime && APP_TYPE.TYPE === 'WEB') {

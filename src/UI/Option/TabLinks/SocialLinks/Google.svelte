@@ -3,10 +3,8 @@
   import { userPublicAddress, user, isDarkMode } from "~/store";
   import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
   import { auth } from "~/lib/firebase";
-  import { Toast } from "flowbite-svelte";
-  import { blur } from "svelte/transition";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
-  import { triggerFirework } from "~/utils";
+  import { triggerFirework, triggerToast } from "~/utils";
   import { wait } from "~/entries/background/utils";
   import { handleGetDataDailyCheckin } from "~/lib/queryAPI";
 
@@ -22,25 +20,7 @@
   const queryClient = useQueryClient();
   const googleProvider = new GoogleAuthProvider();
 
-  let toastMsg = "";
-  let isSuccessToast = false;
-  let counter = 5;
-  let showToast = false;
-
   let checked = false;
-
-  const trigger = () => {
-    showToast = true;
-    counter = 5;
-    timeout();
-  };
-
-  const timeout = () => {
-    if (--counter > 0) return setTimeout(timeout, 1000);
-    showToast = false;
-    toastMsg = "";
-    isSuccessToast = false;
-  };
 
   let dataCheckinHistory = [];
   let openScreenBonusScore: boolean = false;
@@ -117,9 +97,7 @@
 
       const response: any = await nimbus.post("/accounts/link", params);
       if (response && response?.error) {
-        toastMsg = response?.error;
-        isSuccessToast = false;
-        trigger();
+        triggerToast(response?.error, "fail");
       } else {
         const quest = dataCheckinHistory?.find(
           (item) => item.type === "QUEST" && item.note === "link-google"
@@ -130,16 +108,14 @@
 
         queryClient.invalidateQueries(["link-socials"]);
 
-        toastMsg = "Successfully link Google account!";
-        isSuccessToast = true;
-        trigger();
+        triggerToast("Successfully link Google account!", "success");
       }
     } catch (e) {
       console.log(e);
-      toastMsg =
-        "There are some problem when link Google account. Please try again!";
-      isSuccessToast = false;
-      trigger();
+      triggerToast(
+        "There are some problem when link Google account. Please try again!",
+        "fail"
+      );
     }
   };
 
@@ -147,8 +123,7 @@
     try {
       const res: any = await nimbus.post(`/v2/checkin/quest/link-google`, {});
       if (res && res?.data === null) {
-        toastMsg = "You are already finished this quest";
-        isSuccessToast = false;
+        triggerToast("You are already finished this quest", "fail");
       }
       if (res?.data?.bonus !== undefined) {
         triggerBonusScore();
@@ -170,17 +145,16 @@
         {}
       );
       queryClient.invalidateQueries(["users-me"]);
-      toastMsg = `Successfully ${
-        checked ? "set" : "unset"
-      } display Google account!`;
-      isSuccessToast = true;
-      trigger();
+      triggerToast(
+        `Successfully ${checked ? "set" : "unset"} display Google account!`,
+        "success"
+      );
     } catch (e) {
       console.log(e);
-      toastMsg =
-        "There are some problem when set display Google account. Please try again!";
-      isSuccessToast = true;
-      trigger();
+      triggerToast(
+        "There are some problem when set display Google account. Please try again!",
+        "fail"
+      );
     }
   };
 </script>
@@ -244,51 +218,6 @@
         You have received {bonusScore} Bonus GM Points
       </div>
     </div>
-  </div>
-{/if}
-
-{#if showToast}
-  <div class="fixed top-3 right-3 w-full" style="z-index: 2147483648;">
-    <Toast
-      transition={blur}
-      params={{ amount: 10 }}
-      position="top-right"
-      color={isSuccessToast ? "green" : "red"}
-      bind:open={showToast}
-    >
-      <svelte:fragment slot="icon">
-        {#if isSuccessToast}
-          <svg
-            aria-hidden="true"
-            class="w-5 h-5"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-            xmlns="http://www.w3.org/2000/svg"
-            ><path
-              fill-rule="evenodd"
-              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-              clip-rule="evenodd"
-            /></svg
-          >
-          <span class="sr-only">Check icon</span>
-        {:else}
-          <svg
-            aria-hidden="true"
-            class="w-5 h-5"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-            xmlns="http://www.w3.org/2000/svg"
-            ><path
-              fill-rule="evenodd"
-              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-              clip-rule="evenodd"
-            /></svg
-          >
-          <span class="sr-only">Error icon</span>
-        {/if}
-      </svelte:fragment>
-      {toastMsg}
-    </Toast>
   </div>
 {/if}
 

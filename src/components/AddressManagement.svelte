@@ -26,7 +26,7 @@
   import "dayjs/locale/vi";
   import relativeTime from "dayjs/plugin/relativeTime";
   dayjs.extend(relativeTime);
-  import { clickOutside } from "~/utils";
+  import { clickOutside, triggerToast } from "~/utils";
   import {
     chainList,
     chainMoveList,
@@ -41,10 +41,8 @@
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import CopyToClipboard from "svelte-copy-to-clipboard";
   import { API_URL, nimbus } from "~/lib/network";
-  import { Toast, Avatar } from "flowbite-svelte";
-  import { blur } from "svelte/transition";
+  import { Avatar } from "flowbite-svelte";
   import Vezgo from "vezgo-sdk-js/dist/vezgo.es5.js";
-  import tooltip from "~/entries/contentScript/views/tooltip";
   import { wait } from "~/entries/background/utils";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
   import { getListAddress, handleValidateAddress } from "~/lib/queryAPI";
@@ -52,6 +50,7 @@
   export let type: "portfolio" | "order" = "portfolio";
   export let title;
 
+  import tooltip from "~/entries/contentScript/views/tooltip";
   import Tooltip from "~/components/Tooltip.svelte";
   import Loading from "./Loading.svelte";
   import Button from "~/components/Button.svelte";
@@ -123,24 +122,6 @@
   };
 
   const queryClient = useQueryClient();
-
-  let toastMsg = "";
-  let isSuccessToast = false;
-  let counter = 5;
-  let showToast = false;
-
-  const trigger = () => {
-    showToast = true;
-    counter = 5;
-    timeout();
-  };
-
-  const timeout = () => {
-    if (--counter > 0) return setTimeout(timeout, 1000);
-    showToast = false;
-    toastMsg = "";
-    isSuccessToast = false;
-  };
 
   const handleScroll = () => {
     const { scrollLeft, scrollWidth, clientWidth } = scrollContainer;
@@ -535,7 +516,7 @@
           queryClient.invalidateQueries(["list-bundle"]);
         }
 
-        const response = await nimbus.post("/accounts", {
+        const response: any = await nimbus.post("/accounts", {
           type: "DEX",
           publicAddress: validateAccount?.address,
           accountId: validateAccount?.address,
@@ -543,8 +524,7 @@
         });
 
         if (response?.error) {
-          toastMsg = "Can't add new wallet address at this time!";
-          isSuccessToast = false;
+          triggerToast("Can't add new wallet address at this time!", "fail");
           return;
         }
 
@@ -586,9 +566,8 @@
         triggerModalAddAddress.update((n) => (n = false));
         isLoadingAddDEX = false;
 
-        toastMsg = "Successfully add On-Chain account!";
-        isSuccessToast = true;
-        trigger();
+        triggerToast("Successfully add On-Chain account!", "success");
+
         mixpanel.track("user_add_address");
 
         errors["address"] = {
@@ -603,10 +582,11 @@
       }
     } catch (e) {
       console.error(e);
-      toastMsg = "Something wrong when add DEX account. Please try again!";
-      isSuccessToast = false;
       isLoadingAddDEX = false;
-      trigger();
+      triggerToast(
+        "Something wrong when add DEX account. Please try again!",
+        "fail"
+      );
     }
   };
 
@@ -669,9 +649,8 @@
             isLoadingConnectCEX = false;
             triggerModalAddAddress.update((n) => (n = false));
 
-            toastMsg = "Successfully add CEX account!";
-            isSuccessToast = true;
-            trigger();
+            triggerToast("Successfully add CEX account!", "success");
+
             mixpanel.track("user_add_address");
           })
           .onError(function (error) {
@@ -679,10 +658,11 @@
             queryClient.invalidateQueries(["list-address"]);
             isLoadingConnectCEX = false;
             triggerModalAddAddress.update((n) => (n = false));
-            toastMsg =
-              "Something wrong when add CEX account. Please try again!";
-            isSuccessToast = false;
-            trigger();
+
+            triggerToast(
+              "Something wrong when add CEX account. Please try again!",
+              "fail"
+            );
           });
       }
     }
@@ -705,14 +685,13 @@
       email = "";
       isLoadingSendMail = false;
       localStorage.setItem("isGetUserEmailYet", "true");
-      toastMsg = "Ready to receive exclusive benefits soon!";
-      isSuccessToast = true;
-      trigger();
+      triggerToast("Ready to receive exclusive benefits soon!", "success");
     } catch (e) {
       isLoadingSendMail = false;
-      toastMsg = "Something wrong when sending email. Please try again!";
-      isSuccessToast = false;
-      trigger();
+      triggerToast(
+        "Something wrong when sending email. Please try again!",
+        "fail"
+      );
     } finally {
       isOpenModal = false;
     }
@@ -2271,51 +2250,6 @@
     </div>
   </div>
 </AppOverlay> -->
-
-{#if showToast}
-  <div class="fixed top-3 right-3 w-full" style="z-index: 2147483648;">
-    <Toast
-      transition={blur}
-      params={{ amount: 10 }}
-      position="top-right"
-      color={isSuccessToast ? "green" : "red"}
-      bind:open={showToast}
-    >
-      <svelte:fragment slot="icon">
-        {#if isSuccessToast}
-          <svg
-            aria-hidden="true"
-            class="w-5 h-5"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-            xmlns="http://www.w3.org/2000/svg"
-            ><path
-              fill-rule="evenodd"
-              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-              clip-rule="evenodd"
-            /></svg
-          >
-          <span class="sr-only">Check icon</span>
-        {:else}
-          <svg
-            aria-hidden="true"
-            class="w-5 h-5"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-            xmlns="http://www.w3.org/2000/svg"
-            ><path
-              fill-rule="evenodd"
-              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-              clip-rule="evenodd"
-            /></svg
-          >
-          <span class="sr-only">Error icon</span>
-        {/if}
-      </svelte:fragment>
-      {toastMsg}
-    </Toast>
-  </div>
-{/if}
 
 <style windi:preflights:global windi:safelist:global>
   .header {
