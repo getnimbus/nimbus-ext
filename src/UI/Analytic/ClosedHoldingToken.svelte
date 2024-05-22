@@ -434,7 +434,7 @@
               {/if}
             </div>
           {:else}
-            <div class="flex flex-col gap-4 xl:px-6 pb-6">
+            <div class="flex flex-col gap-4 pb-6">
               <div class="grid grid-cols-2">
                 <div class="col-span-1">
                   <div class="flex justify-start text-base">

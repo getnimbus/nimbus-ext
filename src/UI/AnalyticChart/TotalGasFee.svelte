@@ -232,7 +232,7 @@
 </script>
 
 <div
-  class={`rounded-[20px] py-4 px-3 relative ${
+  class={`rounded-[20px] py-4 xl:px-0 px-3 relative ${
     darkMode ? "bg-[#222222]" : "bg-[#fff] xl:border border_0000001a"
   }`}
 >
