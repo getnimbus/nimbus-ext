@@ -753,7 +753,7 @@
 
         {#if showPopover}
           <div
-            class="select_content absolute top-15 right-0 z-50 flex flex-col gap-1 px-3 xl:py-2 py-3 text-sm transform rounded-lg w-[230px]"
+            class="select_content absolute top-15 right-0 z-50 flex flex-col gap-1 px-3 xl:py-2 py-3 text-sm transform rounded-lg w-[240px]"
             style="box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);"
             use:clickOutside
             on:click_outside={() => (showPopover = false)}
@@ -772,6 +772,7 @@
                     iconColor="#000"
                     color="#000"
                     isShorten
+                    textTooltip="Copy"
                   />
                 {/if}
               </div>
