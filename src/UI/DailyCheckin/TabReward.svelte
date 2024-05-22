@@ -84,7 +84,7 @@
 
   let rewardBox = [
     {
-      cost: 1000,
+      cost: 800,
       description: "FlowX on SUI loot boxes",
       title: "FlowX Box",
       body: "FLOWX_BOX",
@@ -93,7 +93,7 @@
       sold: 0,
     },
     {
-      cost: 800,
+      cost: 1000,
       description: "Nimbus on SUI loot boxes",
       title: "Paper Box",
       body: "PAPER_BOX",
@@ -435,15 +435,17 @@
                   />
                 {/each}
 
-                {#each rewardPartner || [] as item}
-                  <PartnerCard
-                    isRedeem
-                    data={item}
-                    handleRedeemPartnerCard={handleRedeemCampaign}
-                    {isLoadingRedeem}
-                    {totalPoint}
-                  />
-                {/each}
+                {#if socialData.find((item) => item.chain === "MOVE")}
+                  {#each rewardPartner || [] as item}
+                    <PartnerCard
+                      isRedeem
+                      data={item}
+                      handleRedeemPartnerCard={handleRedeemCampaign}
+                      {isLoadingRedeem}
+                      {totalPoint}
+                    />
+                  {/each}
+                {/if}
 
                 {#each rewardTicket || [] as item}
                   <TicketCard
@@ -501,14 +503,16 @@
                 />
               {/each}
 
-              {#each $queryReward?.data?.ownRewards.filter((item) => item?.campaignName === "sui-unlock" && (item.title === "PANDORA_IDO_WHITELIST" || item.title === "ATLANSUI_NFT_WHITELIST")) || [] as item}
-                <PartnerCard
-                  data={item}
-                  handleRedeemPartnerCard={() => {}}
-                  {isLoadingRedeem}
-                  {totalPoint}
-                />
-              {/each}
+              {#if socialData.find((item) => item.chain === "MOVE")}
+                {#each $queryReward?.data?.ownRewards.filter((item) => item?.campaignName === "sui-unlock" && (item.title === "PANDORA_IDO_WHITELIST" || item.title === "ATLANSUI_NFT_WHITELIST")) || [] as item}
+                  <PartnerCard
+                    data={item}
+                    handleRedeemPartnerCard={() => {}}
+                    {isLoadingRedeem}
+                    {totalPoint}
+                  />
+                {/each}
+              {/if}
             </div>
           </div>
         {/if}
