@@ -52,6 +52,7 @@
 
   import tooltip from "~/entries/contentScript/views/tooltip";
   import Auth from "~/UI/Auth/Auth.svelte";
+  import Copy from "~/components/Copy.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
   import Button from "~/components/Button.svelte";
   import DarkModeFooter from "../Footer/DarkModeFooter.svelte";
@@ -806,13 +807,21 @@
     <div class="flex flex-col gap-4 justify-between h-full">
       <div class="flex flex-col gap-4">
         {#if $user && Object.keys($user).length !== 0}
-          <div class="flex justify-between items-center px-4 text-white">
-            <div class="text-xl">
-              GM 👋, {displayName
-                ? displayName
-                : shorterAddress(
-                    localStorage.getItem("public_address") || publicAddress
-                  )}
+          <div class="flex justify-between items-center px-4">
+            <div class="text-xl flex items-center gap-1 text-white">
+              GM 👋,
+              {#if displayName}
+                {displayName}
+              {:else}
+                <Copy
+                  address={localStorage.getItem("public_address") ||
+                    publicAddress}
+                  iconColor="#fff"
+                  color="#fff"
+                  isShorten
+                  textTooltip="Copy"
+                />
+              {/if}
             </div>
           </div>
         {/if}
