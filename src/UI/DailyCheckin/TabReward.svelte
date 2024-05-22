@@ -72,7 +72,7 @@
       sold: 0,
     },
     {
-      cost: 5000,
+      cost: 500,
       description: "Get a free pizza at GM VietNam this June",
       title: "Happy Bitcoin Pizza Day",
       body: "HAPPY_BITCOIN_PIZZA_DAY",
