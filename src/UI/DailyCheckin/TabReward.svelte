@@ -52,36 +52,27 @@
   let openScreenBoxSuccess = false;
 
   let rewardBox = [
-    // {
-    //   cost: 1200,
-    //   description: "Nimbus on SUI loot boxes",
-    //   title: "Paper Box",
-    //   body: "PAPER_BOX",
-    //   logo: "https://nimbus-zodiac.s3.ap-southeast-1.amazonaws.com/sui-unlock/closed-box.png",
-    //   cap: 0,
-    //   sold: 0,
-    // },
-    // {
-    //   cost: 1200,
-    //   description: "FlowX on SUI loot boxes",
-    //   title: "FlowX Box",
-    //   body: "FLOWX_BOX",
-    //   logo: "https://nimbus-zodiac.s3.ap-southeast-1.amazonaws.com/sui-unlock/closed_flowx.png",
-    //   cap: 0,
-    //   sold: 0,
-    // },
+    {
+      cost: 1200,
+      description: "FlowX on SUI loot boxes",
+      title: "FlowX Box",
+      body: "FLOWX_BOX",
+      logo: "https://nimbus-zodiac.s3.ap-southeast-1.amazonaws.com/sui-unlock/closed_flowx.png",
+      cap: 0,
+      sold: 0,
+    },
+    {
+      cost: 1200,
+      description: "Nimbus on SUI loot boxes",
+      title: "Paper Box",
+      body: "PAPER_BOX",
+      logo: "https://nimbus-zodiac.s3.ap-southeast-1.amazonaws.com/sui-unlock/closed-box.png",
+      cap: 0,
+      sold: 0,
+    },
   ];
 
   const rewardTicket = [
-    {
-      cost: 1000,
-      description: "GOLD TICKET - Nimbus On Sui Ticket",
-      title: "GOLD TICKET",
-      body: "GOLD_TICKET",
-      logo: "https://nimbus-zodiac.s3.ap-southeast-1.amazonaws.com/sui-unlock/gold.png",
-      fromDate: "2024-05-14",
-      toDate: "2024-05-21",
-    },
     {
       cost: 1000,
       description: "SILVER TICKET - Nimbus On Sui Ticket",
@@ -99,6 +90,15 @@
       logo: "https://nimbus-zodiac.s3.ap-southeast-1.amazonaws.com/sui-unlock/bronze.png",
       fromDate: "2024-05-14",
       toDate: "2024-05-31",
+    },
+    {
+      cost: 1000,
+      description: "GOLD TICKET - Nimbus On Sui Ticket",
+      title: "GOLD TICKET",
+      body: "GOLD_TICKET",
+      logo: "https://nimbus-zodiac.s3.ap-southeast-1.amazonaws.com/sui-unlock/gold.png",
+      fromDate: "2024-05-14",
+      toDate: "2024-05-21",
     },
   ];
 
@@ -380,16 +380,6 @@
               {/each}
 
               {#if $queryReward?.data !== undefined}
-                {#each rewardTicket || [] as item}
-                  <TicketCard
-                    isRedeem
-                    data={item}
-                    handleRedeemTicket={handleRedeemCampaign}
-                    {isLoadingRedeem}
-                    {totalPoint}
-                  />
-                {/each}
-
                 {#each rewardBox || [] as item}
                   <BoxCard
                     isRedeem
@@ -398,6 +388,16 @@
                     {isLoadingRedeem}
                     {totalPoint}
                     {triggerClaimSuccess}
+                  />
+                {/each}
+
+                {#each rewardTicket || [] as item}
+                  <TicketCard
+                    isRedeem
+                    data={item}
+                    handleRedeemTicket={handleRedeemCampaign}
+                    {isLoadingRedeem}
+                    {totalPoint}
                   />
                 {/each}
               {/if}
