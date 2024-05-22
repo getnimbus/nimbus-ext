@@ -2,9 +2,8 @@
   import { i18n } from "~/lib/i18n";
   import { isDarkMode, user } from "~/store";
   import { nimbus } from "~/lib/network";
-  import { Toast } from "flowbite-svelte";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
-  import { shorterName } from "~/utils";
+  import { shorterName, triggerToast } from "~/utils";
 
   import Image from "~/components/Image.svelte";
   import Button from "~/components/Button.svelte";
@@ -56,29 +55,11 @@
   let isOpenConfirmDelete = false;
   let isLoadingDelete = false;
 
-  let show = false;
-  let counter = 5;
-  let toastMsg = "";
-  let isSuccess = false;
-
   let selectedItemIndex = -1;
   let isShowTooltipName = false;
   let isShowTooltipSymbol = false;
 
   const queryClient = useQueryClient();
-
-  const trigger = () => {
-    show = true;
-    counter = 5;
-    timeout();
-  };
-
-  const timeout = () => {
-    if (--counter > 0) return setTimeout(timeout, 1000);
-    show = false;
-    toastMsg = "";
-    isSuccess = false;
-  };
 
   const handleDataReportToken = async () => {
     const response: any = await nimbus.get("/holding/trash?type=token");
@@ -100,16 +81,15 @@
       queryClient.refetchQueries(["token-report"]);
       isLoadingDelete = false;
       isOpenConfirmDelete = false;
-      toastMsg = "Successfully delete your token report!";
-      isSuccess = true;
-      trigger();
+      triggerToast("Successfully delete your token report!", "success");
     } catch (e) {
       console.error("e: ", e);
       isLoadingDelete = false;
       isOpenConfirmDelete = false;
-      toastMsg = "Something wrong when delete your token. Please try again!";
-      isSuccess = false;
-      trigger();
+      triggerToast(
+        "Something wrong when delete your token. Please try again!",
+        "fail"
+      );
     }
   };
 </script>
@@ -476,50 +456,5 @@
     </div>
   </div>
 </AppOverlay>
-
-{#if show}
-  <div class="fixed z-50 w-full top-3 right-3" style="z-index: 2147483648;">
-    <Toast
-      transition={blur}
-      params={{ amount: 10 }}
-      position="top-right"
-      color={isSuccess ? "green" : "red"}
-      bind:open={show}
-    >
-      <svelte:fragment slot="icon">
-        {#if isSuccess}
-          <svg
-            aria-hidden="true"
-            class="w-5 h-5"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-            xmlns="http://www.w3.org/2000/svg"
-            ><path
-              fill-rule="evenodd"
-              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-              clip-rule="evenodd"
-            /></svg
-          >
-          <span class="sr-only">Check icon</span>
-        {:else}
-          <svg
-            aria-hidden="true"
-            class="w-5 h-5"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-            xmlns="http://www.w3.org/2000/svg"
-            ><path
-              fill-rule="evenodd"
-              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-              clip-rule="evenodd"
-            /></svg
-          >
-          <span class="sr-only">Error icon</span>
-        {/if}
-      </svelte:fragment>
-      {toastMsg}
-    </Toast>
-  </div>
-{/if}
 
 <style></style>

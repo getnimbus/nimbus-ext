@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { shorterAddress, clickOutside } from "~/utils";
+  import { shorterAddress, clickOutside, triggerToast } from "~/utils";
   import { nimbus } from "~/lib/network";
   import { createQuery } from "@tanstack/svelte-query";
   import {
@@ -11,8 +11,6 @@
     userPublicAddress,
     chain,
   } from "~/store";
-  import { Toast } from "flowbite-svelte";
-  import { blur } from "svelte/transition";
   import { flatMap } from "lodash";
   import { detectedGeneration } from "~/lib/chains";
   import {
@@ -36,25 +34,7 @@
   import User from "~/assets/user.png";
   import UpArrow from "~/assets/up-arrow.svg";
 
-  let toastMsg = "";
-  let isSuccessToast = false;
-  let counter = 5;
-  let showToast = false;
-
-  const trigger = () => {
-    showToast = true;
-    counter = 5;
-    timeout();
-  };
-
-  const timeout = () => {
-    if (--counter > 0) return setTimeout(timeout, 1000);
-    showToast = false;
-    toastMsg = "";
-    isSuccessToast = false;
-  };
-
-  let userProfile = {};
+  let userProfile: any = {};
   let dataNftHighlight = {};
   let dataNftHolding = [];
   let listAddress = [];
@@ -66,7 +46,7 @@
   let userIdParams = "";
   let selectedAddress = "";
   let description = "What's on your mind?";
-  let selectProfileNFT = {};
+  let selectProfileNFT: any = {};
   let socialDataTwitter = {
     label: "Twitter",
     username: "",
@@ -124,17 +104,16 @@
       };
 
       await nimbus.put(`/users/${userIdParams}/profile`, payload);
-      toastMsg = "Your profile updated successfully!";
-      isSuccessToast = true;
+      triggerToast("Your profile updated successfully!", "success");
     } catch (e) {
       console.error(e);
-      toastMsg =
-        "Something wrong when updating your profile. Please try again!";
-      isSuccessToast = false;
+      triggerToast(
+        "Something wrong when updating your profile. Please try again!",
+        "fail"
+      );
     } finally {
       isLoadingSaveProfile = false;
       isEdit = false;
-      trigger();
     }
   };
 
@@ -589,53 +568,6 @@
     {/if}
   </div>
 </AppOverlay>
-
-{#if showToast}
-  <div class="fixed top-3 right-3 w-full" style="z-index: 2147483648;">
-    <Toast
-      transition={blur}
-      params={{ amount: 10 }}
-      position="top-right"
-      color={isSuccessToast ? "green" : "red"}
-      bind:open={showToast}
-    >
-      <svelte:fragment slot="icon">
-        {#if isSuccessToast}
-          <svg
-            aria-hidden="true"
-            class="w-5 h-5"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-              clip-rule="evenodd"
-            />
-          </svg>
-          <span class="sr-only">Check icon</span>
-        {:else}
-          <svg
-            aria-hidden="true"
-            class="w-5 h-5"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-              clip-rule="evenodd"
-            />
-          </svg>
-          <span class="sr-only">Error icon</span>
-        {/if}
-      </svelte:fragment>
-      {toastMsg}
-    </Toast>
-  </div>
-{/if}
 
 <style windi:preflights:global windi:safelist:global>
   .button {

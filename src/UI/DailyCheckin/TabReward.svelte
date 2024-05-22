@@ -10,9 +10,7 @@
     handleGetDataRewards,
     handleValidateAddress,
   } from "~/lib/queryAPI";
-  import { Toast } from "flowbite-svelte";
-  import { blur } from "svelte/transition";
-  import { triggerFirework } from "~/utils";
+  import { triggerFirework, triggerToast } from "~/utils";
   import { wait } from "~/entries/background/utils";
 
   import Loading from "~/components/Loading.svelte";
@@ -45,10 +43,6 @@
 
   let selectedType: "redeemGift" | "yourGift" = "redeemGift";
 
-  let toastMsg = "";
-  let isSuccessToast = false;
-  let counter = 5;
-  let showToast = false;
   let openScreenTicketCardSuccess = false;
   let openScreenBoxSuccess = false;
 
@@ -72,7 +66,7 @@
       sold: 0,
     },
     {
-      cost: 500,
+      cost: 5000,
       description: "Get a free pizza at GM VietNam this June",
       title: "Happy Bitcoin Pizza Day",
       body: "HAPPY_BITCOIN_PIZZA_DAY",
@@ -84,7 +78,7 @@
 
   let rewardBox = [
     {
-      cost: 1000,
+      cost: 800,
       description: "FlowX on SUI loot boxes",
       title: "FlowX Box",
       body: "FLOWX_BOX",
@@ -93,7 +87,7 @@
       sold: 0,
     },
     {
-      cost: 800,
+      cost: 1000,
       description: "Nimbus on SUI loot boxes",
       title: "Paper Box",
       body: "PAPER_BOX",
@@ -132,19 +126,6 @@
       toDate: "2024-05-21",
     },
   ];
-
-  const trigger = () => {
-    showToast = true;
-    counter = 5;
-    timeout();
-  };
-
-  const timeout = () => {
-    if (--counter > 0) return setTimeout(timeout, 1000);
-    showToast = false;
-    toastMsg = "";
-    isSuccessToast = false;
-  };
 
   const triggerRedeemSuccess = async () => {
     openScreenTicketCardSuccess = true;
@@ -262,9 +243,7 @@
           campaignName: data?.campaignName,
         });
         if (response?.error) {
-          toastMsg = response?.error;
-          isSuccessToast = false;
-          trigger();
+          triggerToast(response?.error, "fail");
         }
 
         queryClient?.invalidateQueries([$userPublicAddress, "daily-checkin"]);
@@ -274,9 +253,10 @@
         triggerRedeemSuccess();
       } catch (e) {
         console.error(e);
-        toastMsg = "Something went wrong while redeeming. Please try again!";
-        isSuccessToast = false;
-        trigger();
+        triggerToast(
+          "Something went wrong while redeeming. Please try again!",
+          "fail"
+        );
       } finally {
         isLoadingRedeem = false;
       }
@@ -285,13 +265,13 @@
         validateAddress?.type === "MOVE" ||
         socialData.find((item) => item.chain === "MOVE")
       ) {
-        toastMsg = "Something went wrong while redeeming the ticket";
+        triggerToast("Something went wrong while redeeming the ticket", "fail");
       } else {
-        toastMsg =
-          "Please connect your SUI wallet or link you SUI wallet to redeem!";
+        triggerToast(
+          "Please connect your SUI wallet or link you SUI wallet to redeem!",
+          "fail"
+        );
       }
-      isSuccessToast = false;
-      trigger();
     }
   };
 
@@ -305,9 +285,7 @@
         }
       );
       if (response?.error) {
-        toastMsg = response?.error;
-        isSuccessToast = false;
-        trigger();
+        triggerToast(response?.error, "fail");
         return;
       }
 
@@ -324,9 +302,10 @@
       }
     } catch (error) {
       console.error(error);
-      toastMsg = "Something went wrong while redeeming. Please try again!";
-      isSuccessToast = false;
-      trigger();
+      triggerToast(
+        "Something went wrong while redeeming. Please try again!",
+        "fail"
+      );
     } finally {
       isLoadingRedeem = false;
     }
@@ -434,15 +413,17 @@
                   />
                 {/each}
 
-                {#each rewardPartner || [] as item}
-                  <PartnerCard
-                    isRedeem
-                    data={item}
-                    handleRedeemPartnerCard={handleRedeemCampaign}
-                    {isLoadingRedeem}
-                    {totalPoint}
-                  />
-                {/each}
+                {#if socialData.find((item) => item.chain === "MOVE")}
+                  {#each rewardPartner || [] as item}
+                    <PartnerCard
+                      isRedeem
+                      data={item}
+                      handleRedeemPartnerCard={handleRedeemCampaign}
+                      {isLoadingRedeem}
+                      {totalPoint}
+                    />
+                  {/each}
+                {/if}
 
                 {#each rewardTicket || [] as item}
                   <TicketCard
@@ -500,14 +481,16 @@
                 />
               {/each}
 
-              {#each $queryReward?.data?.ownRewards.filter((item) => item?.campaignName === "sui-unlock" && (item.title === "PANDORA_IDO_WHITELIST" || item.title === "ATLANSUI_NFT_WHITELIST")) || [] as item}
-                <PartnerCard
-                  data={item}
-                  handleRedeemPartnerCard={() => {}}
-                  {isLoadingRedeem}
-                  {totalPoint}
-                />
-              {/each}
+              {#if socialData.find((item) => item.chain === "MOVE")}
+                {#each $queryReward?.data?.ownRewards.filter((item) => item?.campaignName === "sui-unlock" && (item.title === "PANDORA_IDO_WHITELIST" || item.title === "ATLANSUI_NFT_WHITELIST")) || [] as item}
+                  <PartnerCard
+                    data={item}
+                    handleRedeemPartnerCard={() => {}}
+                    {isLoadingRedeem}
+                    {totalPoint}
+                  />
+                {/each}
+              {/if}
             </div>
           </div>
         {/if}
@@ -515,53 +498,6 @@
     {/if}
   </div>
 </div>
-
-{#if showToast}
-  <div class="fixed top-3 right-3 w-full" style="z-index: 2147483648;">
-    <Toast
-      transition={blur}
-      params={{ amount: 10 }}
-      position="top-right"
-      color={isSuccessToast ? "green" : "red"}
-      bind:open={showToast}
-    >
-      <svelte:fragment slot="icon">
-        {#if isSuccessToast}
-          <svg
-            aria-hidden="true"
-            class="w-5 h-5"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-              clip-rule="evenodd"
-            />
-          </svg>
-          <span class="sr-only">Check icon</span>
-        {:else}
-          <svg
-            aria-hidden="true"
-            class="w-5 h-5"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-              clip-rule="evenodd"
-            />
-          </svg>
-          <span class="sr-only">Error icon</span>
-        {/if}
-      </svelte:fragment>
-      {toastMsg}
-    </Toast>
-  </div>
-{/if}
 
 {#if openScreenTicketCardSuccess}
   <div

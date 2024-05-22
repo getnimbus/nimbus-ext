@@ -2,13 +2,12 @@
   import { onMount } from "svelte";
   import { navigateTo } from "svelte-router-spa";
   import { i18n } from "~/lib/i18n";
-  import { shorterName, chunkArray } from "~/utils";
+  import { shorterName, chunkArray, triggerToast } from "~/utils";
   import { detectedChain } from "~/lib/chains";
   import { nimbus } from "~/lib/network";
   import { groupBy, flatten, omit } from "lodash";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
-  import { Toast, Progressbar } from "flowbite-svelte";
-  import { blur } from "svelte/transition";
+  import { Progressbar } from "flowbite-svelte";
   import {
     isDarkMode,
     typeWallet,
@@ -59,10 +58,6 @@
   let isShowTooltipName = false;
   let isShowTooltipSymbol = false;
   let selectedHover = "";
-  let toastMsg = "";
-  let isSuccessToast = false;
-  let counter = 5;
-  let showToast = false;
 
   let scrollContainer;
   let isScrollStart = true;
@@ -76,19 +71,6 @@
     const { scrollLeft, scrollWidth, clientWidth } = scrollContainer;
     isScrollStart = scrollLeft === 0;
     isScrollEnd = scrollLeft + clientWidth >= scrollWidth - 1;
-  };
-
-  const trigger = () => {
-    showToast = true;
-    counter = 5;
-    timeout();
-  };
-
-  const timeout = () => {
-    if (--counter > 0) return setTimeout(timeout, 1000);
-    showToast = false;
-    toastMsg = "";
-    isSuccessToast = false;
   };
 
   let formData = {
@@ -240,16 +222,17 @@
         isAddCustom = false;
         queryClient.invalidateQueries(["personalize-tag"]);
 
-        toastMsg = "Successfully add tag to your custom category!";
-        isSuccessToast = true;
-        trigger();
+        triggerToast(
+          "Successfully add tag to your custom category!",
+          "success"
+        );
       }
     } catch (e) {
       console.error("e: ", e);
-      toastMsg =
-        "Something wrong when add tag to your custom category. Please try again!";
-      isSuccessToast = false;
-      trigger();
+      triggerToast(
+        "Something wrong when add tag to your custom category. Please try again!",
+        "fail"
+      );
     }
   };
 
@@ -285,17 +268,18 @@
         };
       }
 
-      toastMsg = `Successfully edit your ${
-        body.hasOwnProperty("tagName") ? "tag name" : "category name"
-      }!`;
-      isSuccessToast = true;
-      trigger();
+      triggerToast(
+        `Successfully edit your ${
+          body.hasOwnProperty("tagName") ? "tag name" : "category name"
+        }!`,
+        "success"
+      );
     } catch (e) {
       console.error("e: ", e);
-      toastMsg =
-        "Something wrong when edit your custom category. Please try again!";
-      isSuccessToast = false;
-      trigger();
+      triggerToast(
+        "Something wrong when edit your custom category. Please try again!",
+        "fail"
+      );
     }
   };
 
@@ -351,15 +335,13 @@
       handleResetState();
       queryClient.invalidateQueries(["personalize-tag"]);
 
-      toastMsg = "Successfully delete your custom category!";
-      isSuccessToast = true;
-      trigger();
+      triggerToast("Successfully delete your custom category!", "success");
     } catch (e) {
       console.error("e:", e);
-      toastMsg =
-        "Something wrong when delete your custom category. Please try again!";
-      isSuccessToast = false;
-      trigger();
+      triggerToast(
+        "Something wrong when delete your custom category. Please try again!",
+        "fail"
+      );
       isLoadingDelete = false;
       isOpenConfirmDelete = false;
     }
@@ -1764,52 +1746,6 @@
     </div>
   </div>
 </AppOverlay>
-
-{#if showToast}
-  <div class="fixed top-3 right-3 w-full" style="z-index: 2147483648;">
-    <Toast
-      transition={blur}
-      params={{ amount: 10 }}
-      position="top-right"
-      color={isSuccessToast ? "green" : "red"}
-      bind:open={showToast}
-    >
-      <svelte:fragment slot="icon">
-        {#if isSuccessToast}
-          <svg
-            aria-hidden="true"
-            class="w-5 h-5"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-            xmlns="http://www.w3.org/2000/svg"
-            ><path
-              fill-rule="evenodd"
-              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-              clip-rule="evenodd"
-            /></svg
-          >
-          <span class="sr-only">Check icon</span>
-        {:else}
-          <svg
-            aria-hidden="true"
-            class="w-5 h-5"
-            fill="currentColor"
-            s
-            viewBox="0 0 20 20"
-            xmlns="http://www.w3.org/2000/svg"
-            ><path
-              fill-rule="evenodd"
-              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-              clip-rule="evenodd"
-            /></svg
-          >
-          <span class="sr-only">Error icon</span>
-        {/if}
-      </svelte:fragment>
-      {toastMsg}
-    </Toast>
-  </div>
-{/if}
 
 <style windi:preflights:global windi:safelist:global>
   .header {
