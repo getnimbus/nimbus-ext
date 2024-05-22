@@ -201,7 +201,7 @@
     >
       <div class="xl:text-base text-2xl font-medium">Portfolio networth</div>
       <div
-        class={`py-1 px-[6px] rounded-[3px] xl:text-base text-lg font-normal ${
+        class={`py-1 px-[6px] rounded-[3px] xl:text-base text-lg font-normal flex items-center gap-1 ${
           virtualPortfolioNetworth && !$isDarkMode
             ? "bg-[#F0F2F7]"
             : "bg-transparent"
@@ -217,7 +217,7 @@
           step="0.01"
           placeholder="0"
           disabled={type === "edit"}
-          class={`p-0 border-none focus:outline-none focus:ring-0 ${
+          class={`p-0 border-none focus:outline-none focus:ring-0 flex-1 ${
             virtualPortfolioNetworth && !$isDarkMode
               ? "bg-[#F0F2F7]"
               : "bg-transparent"
