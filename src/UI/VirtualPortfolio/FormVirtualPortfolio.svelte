@@ -98,7 +98,7 @@
           time = dayjs(defaultData.updatedTime).toDate();
 
           listToken = listToken.map((item) => {
-            const selectedToken = defaultData.coins.find(
+            const selectedToken = defaultData?.coins?.find(
               (data) => data.coinId === item.id
             );
             return {
@@ -108,7 +108,7 @@
           });
 
           selectedTokenList = listToken.filter((item) => {
-            return defaultData.coins.some((data) => data.coinId === item.id);
+            return defaultData?.coins?.some((data) => data.coinId === item.id);
           });
         }
       }
@@ -168,6 +168,7 @@
     <span class="slider" />
   </label>
 </div>
+
 <div class="flex flex-col gap-6">
   <div class="flex xl:flex-row flex-col gap-6">
     <div
@@ -637,6 +638,9 @@
                   return {
                     coin: item.id.toString(),
                     percent: item.percent,
+                    logo: item.logo,
+                    name: item.name,
+                    symbol: item.symbol,
                   };
                 }),
                 status: checkedStatus ? "PUBLIC" : "PRIVATE",

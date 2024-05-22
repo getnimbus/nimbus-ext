@@ -259,8 +259,6 @@
     }
   }
 
-  let showDisable = false;
-
   let container;
   let scrollContainer;
   let isScrollStart = true;
@@ -271,6 +269,11 @@
     isScrollStart = scrollLeft === 0;
     isScrollEnd = scrollLeft + clientWidth >= scrollWidth - 1;
   };
+
+  let showDisable = false;
+
+  let isOpenConfirmDelete = false;
+  let isLoadingDelete = false;
 
   let type = "";
   let isLoading = false;
@@ -283,7 +286,7 @@
     try {
       isLoading = true;
       if (type === "add") {
-        const responseAdd = await nimbus.post(
+        const responseAdd: any = await nimbus.post(
           `/address/${$wallet}/personalize/virtual-portfolio`,
           {
             ...data,
@@ -303,21 +306,24 @@
       }
 
       if (type === "edit") {
-        const responseEdit = await nimbus.put(
-          `/address/${$wallet}/personalize/virtual-portfolio?portfolioName=${data?.portfolioName}&portfolioProfileId=${virtualPortfolioId}`,
+        const responseEdit: any = await nimbus.put(
+          `/address/${$wallet}/personalize/virtual-portfolio?portfolioName=${dataVirtualPortfolio[virtualPortfolioId]?.portfolioName}&portfolioProfileId=${virtualPortfolioId}`,
           data
         );
         if (responseEdit && responseEdit?.error) {
-          toastMsg = `Something wrong when edit ${data?.portfolioName} virtual portfolio. Please try again!`;
+          toastMsg = `Something wrong when edit ${dataVirtualPortfolio[virtualPortfolioId]?.portfolioName} virtual portfolio. Please try again!`;
           isSuccessToast = false;
           trigger();
           return;
         }
 
-        toastMsg = `Successfully edit ${data?.portfolioName} virtual portfolio`;
+        toastMsg = `Successfully edit ${dataVirtualPortfolio[virtualPortfolioId]?.portfolioName} virtual portfolio`;
         isSuccessToast = true;
         trigger();
       }
+
+      isLoading = false;
+      type = "";
 
       queryClient.invalidateQueries(["virtual-portfolio-profile"]);
       queryClient.invalidateQueries(["virtual-portfolio"]);
@@ -331,14 +337,11 @@
       }
       isSuccessToast = false;
       trigger();
-    } finally {
+
       isLoading = false;
       type = "";
     }
   };
-
-  let isOpenConfirmDelete = false;
-  let isLoadingDelete = false;
 
   const handleDeleteVirtualPortfolio = async () => {
     isLoadingDelete = true;
@@ -385,8 +388,6 @@
   const handleCancel = () => {
     type = "";
   };
-
-  $: console.log("HELLO WORLD: ", listTokenHolding);
 </script>
 
 <ErrorBoundary>
@@ -399,41 +400,46 @@
       <div class="flex flex-col max-w-[2000px] m-auto xl:w-[82%] w-[90%]">
         <div class="flex flex-col mb-5 gap-7">
           <div class="flex items-center justify-between">
-            {#if type === ""}
-              <div
-                class="flex items-center gap-1 text-white cursor-pointer"
-                on:click={() => {
+            <div
+              class="flex items-center gap-1 text-white cursor-pointer"
+              on:click={() => {
+                if (type.length === 0) {
                   navigateTo("/");
-                }}
-              >
-                <img src={LeftArrow} alt="" class="xl:w-5 xl:h-5 w-7 h-7" />
-                <div class="xl:text-sm text-2xl font-medium">Portfolio</div>
-              </div>
-            {:else}
-              <div
-                class="flex items-center gap-1 text-white cursor-pointer"
-                on:click={() => {
+                } else {
                   handleCancel();
-                }}
-              >
-                <img src={LeftArrow} alt="" class="xl:w-5 xl:h-5 w-7 h-7" />
-                <div class="xl:text-sm text-2xl font-medium">Back</div>
+                }
+              }}
+            >
+              <img src={LeftArrow} alt="" class="xl:w-5 xl:h-5 w-7 h-7" />
+              <div class="xl:text-sm text-2xl font-medium">
+                {#if type.length === 0}
+                  Portfolio
+                {:else}
+                  Back
+                {/if}
               </div>
-            {/if}
+            </div>
           </div>
 
           <div class="flex flex-col gap-3">
             <div class="flex items-center gap-2 text-white">
-              <div class="xl:text-5xl text-7xl font-medium">
-                Virtual Portfolio
-              </div>
+              <div class="text-4xl font-semibold">Virtual Portfolio</div>
             </div>
-            <div class="text-base">
+            <div class="hidden text-2xl xl:text-base xl:block">
               <Copy address={$wallet} iconColor="#fff" color="#fff" />
+            </div>
+            <div class="block text-2xl xl:text-base xl:hidden">
+              <Copy
+                address={$wallet}
+                iconColor="#fff"
+                color="#fff"
+                isShorten
+                iconSize={24}
+              />
             </div>
           </div>
 
-          {#if type === ""}
+          {#if type.length === 0}
             <div
               class="flex lg:flex-row flex-col lg:items-center items-start justify-between gap-6"
             >
@@ -657,28 +663,16 @@
     <div
       class="xl:min-h-screen max-w-[2000px] m-auto xl:w-[90%] w-[90%] xl:-mt-26 -mt-34"
     >
-      {#if type}
-        <div
-          class="virtual_portfolio_container rounded-[20px] xl:p-8 p-4 xl:shadow-md"
-        >
-          <FormVirtualPortfolio
-            {listVirtualPortfolio}
-            defaultData={{
-              ...dataVirtualPortfolio[virtualPortfolioId],
-              networth: selectedVirtualPortfolio?.networth || 0,
-            }}
-            {handleSubmit}
-            {handleCancel}
-            {isLoading}
-            {type}
-          />
-        </div>
-      {:else}
+      {#if type.length === 0}
         <div
           class="virtual_portfolio_container rounded-[20px] xl:p-8 p-4 xl:shadow-md"
         >
           {#if selectedVirtualPortfolio && Object.keys(selectedVirtualPortfolio).length !== 0 && selectedVirtualPortfolio?.status === "PUBLIC"}
-            <VirtualPortfolio {selectedVirtualPortfolio} />
+            <VirtualPortfolio
+              {listTokenHolding}
+              isLoading={$queryVirtualPortfolio.isFetching &&
+                $queryVirtualPortfolioProfile.isFetching}
+            />
           {:else}
             <div
               class="border border_0000001a rounded-[20px] px-6 py-12 flex items-center gap-2 justify-center"
@@ -696,6 +690,22 @@
               {/if}
             </div>
           {/if}
+        </div>
+      {:else}
+        <div
+          class="virtual_portfolio_container rounded-[20px] xl:p-8 p-4 xl:shadow-md"
+        >
+          <FormVirtualPortfolio
+            {listVirtualPortfolio}
+            defaultData={{
+              ...dataVirtualPortfolio[virtualPortfolioId],
+              networth: selectedVirtualPortfolio?.networth || 0,
+            }}
+            {handleSubmit}
+            {handleCancel}
+            {isLoading}
+            {type}
+          />
         </div>
       {/if}
     </div>

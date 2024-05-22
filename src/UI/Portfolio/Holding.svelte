@@ -714,5 +714,4 @@
   </div>
 {/if}
 
-<style>
-</style>
+<style windi:preflights:global windi:safelist:global></style>
