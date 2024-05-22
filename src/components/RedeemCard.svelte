@@ -1,5 +1,7 @@
 <script lang="ts">
   import { isDarkMode } from "~/store";
+  import { Toast } from "flowbite-svelte";
+  import { blur } from "svelte/transition";
 
   export let isRedeem = false;
   export let redeemData;
@@ -12,7 +14,23 @@
   import goldImg from "~/assets/Gold4.svg";
   import Crown from "~/assets/crown.svg";
 
-  let showDisabled = false;
+  let toastMsg = "";
+  let isSuccessToast = false;
+  let counter = 5;
+  let showToast = false;
+
+  const trigger = () => {
+    showToast = true;
+    counter = 5;
+    timeout();
+  };
+
+  const timeout = () => {
+    if (--counter > 0) return setTimeout(timeout, 1000);
+    showToast = false;
+    toastMsg = "";
+    isSuccessToast = false;
+  };
 </script>
 
 <div
@@ -35,7 +53,7 @@
       </div>
     </div>
 
-    <div class="flex flex-col gap-2">
+    <div class="flex-1 flex flex-col gap-2">
       <div class="flex items-center gap-2">
         <img src={Crown} alt="" class="w-[26px] h-[26px]" />
         <div class="text-[#FFB800] text-lg font-medium uppercase">Premium</div>
@@ -65,18 +83,27 @@
 
     <div class="px-[16px]">
       {#if isRedeem}
-        <div class="flex items-center gap-[40px]">
-          <div class="w-[220px] text-base font-normal text-left">
-            {redeemData?.remains} left
+        <div
+          class="flex items-center md:justify-start justify-between gap-[40px]"
+        >
+          <div class="w-[220px] text-base font-normal text-center">
+            {#if redeemData?.remains === 0}
+              Out of stock
+            {:else}
+              {redeemData?.remains} left
+            {/if}
           </div>
 
           {#if redeemData?.remains === 0}
-            <div
-              class="relative w-full"
-              on:mouseenter={() => (showDisabled = true)}
-              on:mouseleave={() => (showDisabled = false)}
-            >
-              <Button disabled>
+            <div class="relative w-full">
+              <Button
+                variant="tertiary"
+                on:click={() => {
+                  toastMsg = "There are not available now";
+                  isSuccessToast = false;
+                  trigger();
+                }}
+              >
                 <div class="flex items-center gap-1">
                   <img src={goldImg} alt="" class="w-[28px] h-[28px]" />
                   <div class="text-white sm:text-lg text-smxs font-medium">
@@ -85,18 +112,6 @@
                 </div>
                 <div class="text-white text-smxs">Redeem</div>
               </Button>
-              {#if showDisabled}
-                <div
-                  class="absolute transform left-1/2 -translate-x-1/2 -top-8"
-                  style="z-index: 2147483648;"
-                >
-                  <div
-                    class="max-w-[360px] text-white bg-black py-1 px-2 text-xs rounded relative w-max normal-case"
-                  >
-                    There are not available now
-                  </div>
-                </div>
-              {/if}
             </div>
           {:else}
             <Button
@@ -139,6 +154,53 @@
     </div>
   </div>
 </div>
+
+{#if showToast}
+  <div class="fixed top-3 right-3 w-full" style="z-index: 2147483648;">
+    <Toast
+      transition={blur}
+      params={{ amount: 10 }}
+      position="top-right"
+      color={isSuccessToast ? "green" : "red"}
+      bind:open={showToast}
+    >
+      <svelte:fragment slot="icon">
+        {#if isSuccessToast}
+          <svg
+            aria-hidden="true"
+            class="w-5 h-5"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+              clip-rule="evenodd"
+            />
+          </svg>
+          <span class="sr-only">Check icon</span>
+        {:else}
+          <svg
+            aria-hidden="true"
+            class="w-5 h-5"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+              clip-rule="evenodd"
+            />
+          </svg>
+          <span class="sr-only">Error icon</span>
+        {/if}
+      </svelte:fragment>
+      {toastMsg}
+    </Toast>
+  </div>
+{/if}
 
 <style windi:preflights:global windi:safelist:global>
   @media (max-width: 320) {
