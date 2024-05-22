@@ -35,7 +35,7 @@
       </div>
     </div>
 
-    <div class="flex flex-col gap-2">
+    <div class="flex-1 flex flex-col gap-2">
       <div class="flex items-center gap-2">
         <img src={Crown} alt="" class="w-[26px] h-[26px]" />
         <div class="text-[#FFB800] text-lg font-medium uppercase">Premium</div>
@@ -65,8 +65,10 @@
 
     <div class="px-[16px]">
       {#if isRedeem}
-        <div class="flex items-center gap-[40px]">
-          <div class="w-[220px] text-base font-normal text-left">
+        <div
+          class="flex items-center md:justify-start justify-between gap-[40px]"
+        >
+          <div class="w-[220px] text-base font-normal text-center">
             {#if redeemData?.remains === 0}
               Out of stock
             {:else}

@@ -27,7 +27,7 @@
 >
   <div class="px-[16px] flex items-center h-full gap-[27px]">
     <div
-      class={`w-[135px] relative rounded-2xl p-2 flex items-center h-full justify-center ${
+      class={`w-[135px] rounded-2xl p-2 flex items-center h-full justify-center ${
         $isDarkMode ? "" : "bg-white"
       }`}
     >
@@ -38,17 +38,9 @@
           class="w-full h-full object-contain rounded-[10px]"
         />
       </div>
-
-      {#if isRedeem}
-        <div
-          class="absolute -bottom-2 w-full text-center whitespace-nowrap left-timee italic text-sm"
-        >
-          {Number(data.cap) - Number(data.sold)} lefts
-        </div>
-      {/if}
     </div>
 
-    <div class="flex flex-col gap-2">
+    <div class="flex-1 flex flex-col gap-2">
       <div class="flex items-center gap-2">
         <img src={Crown} alt="" class="w-[26px] h-[26px]" />
         <div class="text-[#FFB800] text-lg font-medium uppercase">
@@ -81,11 +73,11 @@
     <div class="px-[16px]">
       {#if isRedeem}
         <div
-          class="flex items-center md:justify-start justify-between md:gap-[100px] gap-[40px]"
+          class="flex items-center md:justify-start justify-between gap-[40px]"
         >
-          <div class="w-[220px] text-base font-normal text-left">
+          <div class="w-[220px] text-base font-normal text-center">
             {#if Number(data.cap) - Number(data.sold) > 0 && isRedeem}
-              {Number(data.cap)} Card
+              {Number(data.cap) - Number(data.sold)} lefts
             {:else}
               Out of stock
             {/if}
