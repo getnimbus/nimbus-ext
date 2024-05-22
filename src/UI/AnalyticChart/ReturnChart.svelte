@@ -236,7 +236,9 @@
 
 <AnalyticSection {address} {isShowSoon}>
   <span slot="title">
-    <div class="flex justify-start font-medium text-2xl">
+    <div
+      class="flex justify-start font-medium xl:text-2xl text-3xl xl:px-0 px-2"
+    >
       <TooltipTitle
         tooltipText={"Approximate daily profit & loss based on current token holdings"}
         isBigIcon
@@ -277,9 +279,9 @@
                   <div class="flex justify-start text-base">Return 1D</div>
                 </div>
                 <div class="flex items-center justify-end col-span-1">
-                  <div class="text-base">
+                  <div class="text-base flex items-center gap-1">
                     <span
-                      class={`${
+                      class={`flex items-center ${
                         data?.base?.netWorthChange?.networth1D < 0
                           ? "text-red-500"
                           : "text-[#00A878]"
@@ -287,11 +289,15 @@
                     >
                       <TooltipNumber
                         number={Math.abs(data?.base?.netWorthChange.networth1D)}
-                        type="percent"
+                        type={Math.abs(
+                          Number(data?.base?.netWorthChange.networth1D)
+                        ) > 100
+                          ? "balance"
+                          : "percent"}
                       />%</span
                     > <span class="text-gray-400">/</span>
                     <span
-                      class={`${
+                      class={`flex items-center ${
                         data?.btc?.netWorthChange?.networth1D < 0
                           ? "text-red-500"
                           : "text-[#00A878]"
@@ -299,7 +305,11 @@
                     >
                       <TooltipNumber
                         number={Math.abs(data?.btc?.netWorthChange.networth1D)}
-                        type="percent"
+                        type={Math.abs(
+                          Number(data?.btc?.netWorthChange.networth1D)
+                        ) > 100
+                          ? "balance"
+                          : "percent"}
                       />%</span
                     >
                   </div>
@@ -311,9 +321,9 @@
                   <div class="flex justify-start text-base">Return 7D</div>
                 </div>
                 <div class="flex items-center justify-end col-span-1">
-                  <div class="text-base">
+                  <div class="text-base flex items-center gap-1">
                     <span
-                      class={`${
+                      class={`flex items-center ${
                         data?.base?.netWorthChange?.networth7D < 0
                           ? "text-red-500"
                           : "text-[#00A878]"
@@ -321,11 +331,15 @@
                     >
                       <TooltipNumber
                         number={Math.abs(data?.base?.netWorthChange.networth7D)}
-                        type="percent"
+                        type={Math.abs(
+                          Number(data?.base?.netWorthChange.networth7D)
+                        ) > 100
+                          ? "balance"
+                          : "percent"}
                       />%</span
                     > <span class="text-gray-400">/</span>
                     <span
-                      class={`${
+                      class={`flex items-center ${
                         data?.btc?.netWorthChange?.networth7D < 0
                           ? "text-red-500"
                           : "text-[#00A878]"
@@ -333,7 +347,11 @@
                     >
                       <TooltipNumber
                         number={Math.abs(data?.btc?.netWorthChange.networth7D)}
-                        type="percent"
+                        type={Math.abs(
+                          Number(data?.btc?.netWorthChange.networth7D)
+                        ) > 100
+                          ? "balance"
+                          : "percent"}
                       />%</span
                     >
                   </div>
@@ -345,9 +363,9 @@
                   <div class="flex justify-start text-base">Return 30D</div>
                 </div>
                 <div class="flex items-center justify-end col-span-1">
-                  <div class="text-base">
+                  <div class="text-base flex items-center gap-1">
                     <span
-                      class={`${
+                      class={`flex items-center ${
                         data?.base?.netWorthChange?.networth30D < 0
                           ? "text-red-500"
                           : "text-[#00A878]"
@@ -357,11 +375,15 @@
                         number={Math.abs(
                           data?.base?.netWorthChange.networth30D
                         )}
-                        type="percent"
+                        type={Math.abs(
+                          Number(data?.base?.netWorthChange.networth30D)
+                        ) > 100
+                          ? "balance"
+                          : "percent"}
                       />%</span
                     > <span class="text-gray-400">/</span>
                     <span
-                      class={`${
+                      class={`flex items-center ${
                         data?.btc?.netWorthChange?.networth30D < 0
                           ? "text-red-500"
                           : "text-[#00A878]"
@@ -369,7 +391,11 @@
                     >
                       <TooltipNumber
                         number={Math.abs(data?.btc?.netWorthChange.networth30D)}
-                        type="percent"
+                        type={Math.abs(
+                          Number(data?.btc?.netWorthChange.networth30D)
+                        ) > 100
+                          ? "balance"
+                          : "percent"}
                       />%</span
                     >
                   </div>
@@ -381,9 +407,9 @@
                   <div class="flex justify-start text-base">Return 1Y</div>
                 </div>
                 <div class="flex items-center justify-end col-span-1">
-                  <div class="text-base">
+                  <div class="text-base flex items-center gap-1">
                     <span
-                      class={`${
+                      class={`flex items-center ${
                         data?.base?.netWorthChange?.networth1Y < 0
                           ? "text-red-500"
                           : "text-[#00A878]"
@@ -391,11 +417,15 @@
                     >
                       <TooltipNumber
                         number={Math.abs(data?.base?.netWorthChange.networth1Y)}
-                        type="percent"
+                        type={Math.abs(
+                          Number(data?.base?.netWorthChange.networth1Y)
+                        ) > 100
+                          ? "balance"
+                          : "percent"}
                       />%</span
                     > <span class="text-gray-400">/</span>
                     <span
-                      class={`${
+                      class={`flex items-center ${
                         data?.btc?.netWorthChange?.networth1Y < 0
                           ? "text-red-500"
                           : "text-[#00A878]"
@@ -403,7 +433,11 @@
                     >
                       <TooltipNumber
                         number={Math.abs(data?.btc?.netWorthChange.networth1Y)}
-                        type="percent"
+                        type={Math.abs(
+                          Number(data?.btc?.netWorthChange.networth1Y)
+                        ) > 100
+                          ? "balance"
+                          : "percent"}
                       />%</span
                     >
                   </div>
@@ -446,18 +480,26 @@
                 </div>
               </div> -->
             </div>
-            <div class="space-y-3">
-              <div class="text-base">
-                <CtaIcon isGood={isReturn30Higher} />
-                30D return is {isReturn30Higher ? "higher" : "lower"} than Bitcoin
-                by
-                <span class="font-medium"
-                  >{Math.abs(
+            <div class="text-base">
+              <CtaIcon isGood={isReturn30Higher} />
+              30D return is {isReturn30Higher ? "higher" : "lower"} than Bitcoin
+              by
+              <span class="font-medium flex items-center">
+                <TooltipNumber
+                  number={Math.abs(
                     data?.base?.netWorthChange?.networth30D -
                       data?.btc?.netWorthChange?.networth30D || 0
-                  ).toFixed(2)}%</span
-                >
-              </div>
+                  )}
+                  type={Math.abs(
+                    Number(
+                      data?.base?.netWorthChange?.networth30D -
+                        data?.btc?.netWorthChange?.networth30D || 0
+                    )
+                  ) > 100
+                    ? "balance"
+                    : "percent"}
+                />%
+              </span>
             </div>
           </div>
         {/if}
