@@ -1022,21 +1022,6 @@
         </div>
       {/if}
     </div>
-
-    <div
-      class="cursor-pointer w-max"
-      on:click={() => {
-        if ($wallet) {
-          navigateTo(
-            `/virtual-portfolio?type=${$typeWallet}&chain=${$chain}&address=${$wallet}`
-          );
-        } else {
-          navigateTo("/");
-        }
-      }}
-    >
-      Virtual Portfolio
-    </div>
   </span>
 </AddressManagement>
 
