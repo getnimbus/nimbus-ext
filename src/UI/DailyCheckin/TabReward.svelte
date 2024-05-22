@@ -52,24 +52,24 @@
   let openScreenBoxSuccess = false;
 
   let rewardBox = [
-    {
-      cost: 1200,
-      description: "Nimbus on SUI loot boxes",
-      title: "Paper Box",
-      body: "PAPER_BOX",
-      logo: "https://nimbus-zodiac.s3.ap-southeast-1.amazonaws.com/sui-unlock/closed-box.png",
-      cap: 0,
-      sold: 0,
-    },
-    {
-      cost: 1200,
-      description: "FlowX on SUI loot boxes",
-      title: "FlowX Box",
-      body: "FLOWX_BOX",
-      logo: "https://nimbus-zodiac.s3.ap-southeast-1.amazonaws.com/sui-unlock/closed_flowx.png",
-      cap: 0,
-      sold: 0,
-    },
+    // {
+    //   cost: 1200,
+    //   description: "Nimbus on SUI loot boxes",
+    //   title: "Paper Box",
+    //   body: "PAPER_BOX",
+    //   logo: "https://nimbus-zodiac.s3.ap-southeast-1.amazonaws.com/sui-unlock/closed-box.png",
+    //   cap: 0,
+    //   sold: 0,
+    // },
+    // {
+    //   cost: 1200,
+    //   description: "FlowX on SUI loot boxes",
+    //   title: "FlowX Box",
+    //   body: "FLOWX_BOX",
+    //   logo: "https://nimbus-zodiac.s3.ap-southeast-1.amazonaws.com/sui-unlock/closed_flowx.png",
+    //   cap: 0,
+    //   sold: 0,
+    // },
   ];
 
   const rewardTicket = [
