@@ -153,7 +153,6 @@
           return item?.eligibility;
         })
       );
-
       eligibilityData = formatEligibilityData
         .filter((item: any) => item?.eligible)
         .map((item: any) => {
