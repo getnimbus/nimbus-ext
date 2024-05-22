@@ -18,6 +18,7 @@
   import Loading from "~/components/Loading.svelte";
   import RedeemCard from "~/components/RedeemCard.svelte";
   import TicketCard from "~/components/SUI Campaign/TicketCard.svelte";
+  import PartnerCard from "~/components/SUI Campaign/PartnerCard.svelte";
   import BoxCard from "~/components/SUI Campaign/BoxCard.svelte";
   import Image from "~/components/Image.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
@@ -51,37 +52,58 @@
   let openScreenTicketCardSuccess = false;
   let openScreenBoxSuccess = false;
 
+  let rewardPartner = [
+    {
+      cost: 800,
+      description: "WLs to participate in Pandora Finance IDO",
+      title: "Pandora IDO Whitelist",
+      body: "PANDORA_IDO_WHITELIST",
+      logo: "https://pbs.twimg.com/profile_images/1744278117622120448/D8yZJhLS_400x400.jpg",
+      cap: 0,
+      sold: 0,
+    },
+    {
+      cost: 500,
+      description: "WLs to participate in AtlanSUI NFT Mint",
+      title: "AtlanSUI NFT Whitelist",
+      body: "ATLANSUI_NFT_WHITELIST",
+      logo: "https://pbs.twimg.com/profile_images/1747235711940718592/CbXDeMgn_400x400.jpg",
+      cap: 0,
+      sold: 0,
+    },
+    {
+      cost: 5000,
+      description: "Get a free pizza at GM VietNam this June",
+      title: "Happy Bitcoin Pizza Day",
+      body: "HAPPY_BITCOIN_PIZZA_DAY",
+      logo: "https://nimbus-zodiac.s3.ap-southeast-1.amazonaws.com/sui-unlock/pizza.png",
+      cap: 0,
+      sold: 0,
+    },
+  ];
+
   let rewardBox = [
-    // {
-    //   cost: 1200,
-    //   description: "Nimbus on SUI loot boxes",
-    //   title: "Paper Box",
-    //   body: "PAPER_BOX",
-    //   logo: "https://nimbus-zodiac.s3.ap-southeast-1.amazonaws.com/sui-unlock/closed-box.png",
-    //   cap: 0,
-    //   sold: 0,
-    // },
-    // {
-    //   cost: 1200,
-    //   description: "FlowX on SUI loot boxes",
-    //   title: "FlowX Box",
-    //   body: "FLOWX_BOX",
-    //   logo: "https://nimbus-zodiac.s3.ap-southeast-1.amazonaws.com/sui-unlock/closed_flowx.png",
-    //   cap: 0,
-    //   sold: 0,
-    // },
+    {
+      cost: 1000,
+      description: "FlowX on SUI loot boxes",
+      title: "FlowX Box",
+      body: "FLOWX_BOX",
+      logo: "https://nimbus-zodiac.s3.ap-southeast-1.amazonaws.com/sui-unlock/closed_flowx.png",
+      cap: 0,
+      sold: 0,
+    },
+    {
+      cost: 800,
+      description: "Nimbus on SUI loot boxes",
+      title: "Paper Box",
+      body: "PAPER_BOX",
+      logo: "https://nimbus-zodiac.s3.ap-southeast-1.amazonaws.com/sui-unlock/closed-box.png",
+      cap: 0,
+      sold: 0,
+    },
   ];
 
   const rewardTicket = [
-    {
-      cost: 1000,
-      description: "GOLD TICKET - Nimbus On Sui Ticket",
-      title: "GOLD TICKET",
-      body: "GOLD_TICKET",
-      logo: "https://nimbus-zodiac.s3.ap-southeast-1.amazonaws.com/sui-unlock/gold.png",
-      fromDate: "2024-05-14",
-      toDate: "2024-05-21",
-    },
     {
       cost: 1000,
       description: "SILVER TICKET - Nimbus On Sui Ticket",
@@ -99,6 +121,15 @@
       logo: "https://nimbus-zodiac.s3.ap-southeast-1.amazonaws.com/sui-unlock/bronze.png",
       fromDate: "2024-05-14",
       toDate: "2024-05-31",
+    },
+    {
+      cost: 1000,
+      description: "GOLD TICKET - Nimbus On Sui Ticket",
+      title: "GOLD TICKET",
+      body: "GOLD_TICKET",
+      logo: "https://nimbus-zodiac.s3.ap-southeast-1.amazonaws.com/sui-unlock/gold.png",
+      fromDate: "2024-05-14",
+      toDate: "2024-05-21",
     },
   ];
 
@@ -142,6 +173,18 @@
       $queryLootboxStatus.data !== undefined &&
       $queryLootboxStatus?.data?.data.length !== 0
     ) {
+      rewardPartner = rewardPartner.map((item) => {
+        const seletedData = $queryLootboxStatus?.data?.data.find(
+          (eachItem) => eachItem.type === item.body
+        );
+
+        return {
+          ...item,
+          cap: seletedData?.cap || 0,
+          sold: seletedData?.sold || 0,
+        };
+      });
+
       rewardBox = rewardBox.map((item) => {
         const seletedData = $queryLootboxStatus?.data?.data.find(
           (eachItem) => eachItem.type === item.body
@@ -364,12 +407,13 @@
               <!-- {#if $queryReward?.data?.redeemable.length === 0}
                 There are no redeems
               {/if} -->
+
               {#if $queryReward?.data === undefined}
                 Please connect wallet
               {/if}
             </div>
 
-            <div class="grid lg:grid-cols-2 grid-cols-1 gap-10">
+            <div class="grid 2xl:grid-cols-3 lg:grid-cols-2 grid-cols-1 gap-6">
               {#each $queryReward?.data?.redeemable || [] as item}
                 <RedeemCard
                   isRedeem
@@ -380,16 +424,6 @@
               {/each}
 
               {#if $queryReward?.data !== undefined}
-                {#each rewardTicket || [] as item}
-                  <TicketCard
-                    isRedeem
-                    data={item}
-                    handleRedeemTicket={handleRedeemCampaign}
-                    {isLoadingRedeem}
-                    {totalPoint}
-                  />
-                {/each}
-
                 {#each rewardBox || [] as item}
                   <BoxCard
                     isRedeem
@@ -398,6 +432,26 @@
                     {isLoadingRedeem}
                     {totalPoint}
                     {triggerClaimSuccess}
+                  />
+                {/each}
+
+                {#each rewardPartner || [] as item}
+                  <PartnerCard
+                    isRedeem
+                    data={item}
+                    handleRedeemPartnerCard={handleRedeemCampaign}
+                    {isLoadingRedeem}
+                    {totalPoint}
+                  />
+                {/each}
+
+                {#each rewardTicket || [] as item}
+                  <TicketCard
+                    isRedeem
+                    data={item}
+                    handleRedeemTicket={handleRedeemCampaign}
+                    {isLoadingRedeem}
+                    {totalPoint}
                   />
                 {/each}
               {/if}
@@ -418,7 +472,7 @@
               {/if}
             </div>
 
-            <div class="grid lg:grid-cols-2 grid-cols-1 gap-10">
+            <div class="grid 2xl:grid-cols-3 lg:grid-cols-2 grid-cols-1 gap-6">
               {#each $queryReward?.data?.ownRewards?.filter((item) => item?.campaignName !== "sui-unlock") || [] as item}
                 <RedeemCard
                   redeemData={item}
@@ -427,7 +481,7 @@
                 />
               {/each}
 
-              {#each $queryReward?.data?.ownRewards.filter((item) => item?.campaignName === "sui-unlock" && item.title !== "FLOWX_BOX" && item.title !== "PAPER_BOX") || [] as item}
+              {#each $queryReward?.data?.ownRewards.filter((item) => item?.campaignName === "sui-unlock" && item.title !== "FLOWX_BOX" && item.title !== "PAPER_BOX" && item.title !== "PANDORA_IDO_WHITELIST" && item.title !== "ATLANSUI_NFT_WHITELIST") || [] as item}
                 <TicketCard
                   data={item}
                   handleRedeemTicket={() => {}}
@@ -444,6 +498,15 @@
                   {isLoadingRedeem}
                   {totalPoint}
                   {triggerClaimSuccess}
+                />
+              {/each}
+
+              {#each $queryReward?.data?.ownRewards.filter((item) => item?.campaignName === "sui-unlock" && (item.title === "PANDORA_IDO_WHITELIST" || item.title === "ATLANSUI_NFT_WHITELIST")) || [] as item}
+                <PartnerCard
+                  data={item}
+                  handleRedeemPartnerCard={() => {}}
+                  {isLoadingRedeem}
+                  {totalPoint}
                 />
               {/each}
             </div>
