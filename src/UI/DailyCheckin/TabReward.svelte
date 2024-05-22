@@ -76,7 +76,7 @@
       description: "Get a free pizza at GM VietNam this June",
       title: "Happy Bitcoin Pizza Day",
       body: "HAPPY_BITCOIN_PIZZA_DAY",
-      logo: "https://nimbus-zodiac.s3.ap-southeast-1.amazonaws.com/sui-unlock/pizza.jpg",
+      logo: "https://nimbus-zodiac.s3.ap-southeast-1.amazonaws.com/sui-unlock/pizza.png",
       cap: 0,
       sold: 0,
     },
