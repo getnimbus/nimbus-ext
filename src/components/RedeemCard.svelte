@@ -67,7 +67,11 @@
       {#if isRedeem}
         <div class="flex items-center gap-[40px]">
           <div class="w-[220px] text-base font-normal text-left">
-            {redeemData?.remains} left
+            {#if redeemData?.remains === 0}
+              Out of stock
+            {:else}
+              {redeemData?.remains} left
+            {/if}
           </div>
 
           {#if redeemData?.remains === 0}
