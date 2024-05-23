@@ -75,6 +75,31 @@
       website: "https://www.suilend.fi/",
       logo: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y+mAAAA1VBMVEUCChkBCRYABhIAAAAAABwAADkzWapvk+WPsv+cvv+Qtv96pP9Rf+UbSaoADjgAAA4+ZsGiwv/J3f/Y5f/b5//F2P+xzP9Ri/8WTsIACUfh6//l7v/o8P9flP8lcP8hZfbe6f/r8v/t8/81YMAAKXEFFTTw9f9sj9sAACZQcbry9/9Ye8jj7f89Y7dWfdMAGVJJZ6UAGVxPeNSAnuIeQo5ZdrVsl/c/W5kONHq91f8AADQAABYsSYUYPId0k9iQr/JkiuEAIl4DIlM+X6kkTqgfXuUAFUYAxKikAAABfUlEQVR4AY2SBY5rMQxFX3LL3DgPU0jy+8tMwwz7X9JMUUVpLLSO2df5uzF2BXAAsRgAfp6DeCKZSmeyuXwBJ/nFYqksSJJwvYwfOEcUYZYiVVGRFF6mWqvjMC/M6IqxtqLIzfxr/D+ciyGlK7bZtCYSrTbAD6uiQ5Vmt9u1FeqBOzicmBe8vu2uYJQEY2gMhoMRdoljMt2VGXdSZJh6gkQ5saWYRevEZmUGByVX91VfevMNRXpXdQFeSMuKtUbRcg1ZrLyBhm6A2zv16zSNTt/zFXzIaNNczSrmwKMw6yp9L1xPjCWp1QW0N+IY603/vvfA1vDJk32ltBjCwbNqbvq/7MZNlAXR3WuM87i33Uou9pu+DV6H89Vxhtuq6u69uL88ADgMH6JiV8zIFo6+zYGeq41t/rIoXeAHDHz0mb2jfsWu5i6/4ZB91fyUJ2SkKpU+ZRpHRXks8DOeK0hK8qb3ONXedz6XSpfT2cEE/JI0i/H4A47R4cScOX+1H/ovLHjBsaBsAAAAAElFTkSuQmCC",
     },
+    SOL: {
+      name: "solana",
+      website: "https://solana.com",
+      logo: "https://s2.coinmarketcap.com/static/img/coins/64x64/5426.png",
+    },
+    ZETA: {
+      name: "Zeta",
+      website: "https://dex.zeta.markets/",
+      logo: "https://moralis.io/wp-content/uploads/web3wiki/343-zeta-markets/637add4d81763793ad1c4e30_cPTtgWTpPraW-GTW3WbScNVkRHoBUwe2v4XPTsYY3FA.jpeg",
+    },
+    DegenSeason1: {
+      name: "Degen Season 1",
+      website: "https://www.degen.tips/",
+      logo: "https://s2.coinmarketcap.com/static/img/coins/64x64/30096.png",
+    },
+    DegenSeason2: {
+      name: "Degen Season 2",
+      website: "https://www.degen.tips/",
+      logo: "https://s2.coinmarketcap.com/static/img/coins/64x64/30096.png",
+    },
+    DegenSeason3: {
+      name: "Degen Season 3",
+      website: "https://www.degen.tips/",
+      logo: "https://s2.coinmarketcap.com/static/img/coins/64x64/30096.png",
+    },
   };
 
   const getPointsAirdrop = async () => {
