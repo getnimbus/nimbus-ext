@@ -2,7 +2,7 @@
   import { createEventDispatcher, onDestroy, onMount } from "svelte";
   import { createMutation } from "@tanstack/svelte-query";
   import { nimbus } from "~/lib/network";
-  import { triggerFirework, triggerToast } from "~/utils";
+  import { triggerToast, triggerFirework } from "~/utils/functions";
   import { wait } from "~/entries/background/utils";
   import { walletStore } from "@aztemi/svelte-on-solana-wallet-adapter-core";
   import { Buffer as BufferPolyfill } from "buffer";

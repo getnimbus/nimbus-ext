@@ -4,7 +4,7 @@
   import dayjs from "dayjs";
   import { wait } from "~/entries/background/utils";
   import tooltip from "~/entries/contentScript/views/tooltip";
-  import { triggerToast } from "~/utils";
+  import { triggerToast } from "~/utils/functions";
 
   import Button from "~/components/Button.svelte";
 

@@ -26,10 +26,10 @@
     tonConnector,
     suiWalletInstance,
   } from "~/store";
-  import { shorterAddress } from "~/utils";
+  import { shorterAddress } from "~/utils/index";
   import mixpanel from "mixpanel-browser";
   import { Motion } from "svelte-motion";
-  import { showChangeLogAnimationVariants } from "~/utils";
+  import { showChangeLogAnimationVariants } from "~/utils/constants";
   import { nimbus } from "~/lib/network";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
   import * as browser from "webextension-polyfill";

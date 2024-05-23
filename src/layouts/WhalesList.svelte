@@ -7,7 +7,7 @@
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { isDarkMode, selectedPackage, wallet, user } from "~/store";
-  import { filterDuplicates } from "~/utils";
+  import { filterDuplicates } from "~/utils/index";
   import * as browser from "webextension-polyfill";
   import { detectedGeneration } from "~/lib/chains";
   import { getListAddress } from "~/lib/queryAPI";

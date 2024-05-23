@@ -5,7 +5,7 @@
   import { auth } from "~/lib/firebase";
   import { useQueryClient } from "@tanstack/svelte-query";
   import mixpanel from "mixpanel-browser";
-  import { triggerToast } from "~/utils";
+  import { triggerToast } from "~/utils/functions";
 
   import User from "~/assets/user.png";
 

@@ -2,13 +2,8 @@
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { i18n } from "~/lib/i18n";
   import { chain, typeWallet, isDarkMode, selectedBundle } from "~/store";
-  import {
-    performanceTypeChartPortfolio,
-    typePieChart,
-    formatPercent,
-    formatValue,
-    autoFontSize,
-  } from "~/utils";
+  import { formatPercent, formatValue, autoFontSize } from "~/utils/index";
+  import { performanceTypeChartPortfolio } from "~/utils/constants";
   import {
     listSupported,
     listNotSupportHistoricalBalances,

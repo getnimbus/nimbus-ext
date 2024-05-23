@@ -11,13 +11,9 @@
   import { i18n } from "~/lib/i18n";
   import { nimbus } from "~/lib/network";
   import dayjs from "dayjs";
-  import {
-    autoFontSize,
-    formatCurrency,
-    formatPercent,
-    typeList,
-    clickOutside,
-  } from "~/utils";
+  import { autoFontSize, formatCurrency, formatPercent } from "~/utils/index";
+  import { typeList } from "~/utils/constants";
+  import { triggerClickOutside } from "~/utils/functions";
   import { groupBy } from "lodash";
   import { getChangePercent } from "~/chart-utils";
   import { createQuery } from "@tanstack/svelte-query";
@@ -878,7 +874,7 @@
             <div
               class="select_content absolute left-0 z-50 flex flex-col xl:gap-3 gap-6 px-3 xl:py-2 py-3 text-sm transform rounded-lg top-12 w-max xl:max-h-[300px] xl:max-h-[310px] max-h-[380px]"
               style="box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15); overflow-y: overlay;"
-              use:clickOutside
+              use:triggerClickOutside
               on:click_outside={() => (showPopover = false)}
             >
               {#each $selectedBundle?.accounts as item}

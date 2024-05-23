@@ -13,7 +13,7 @@
     user,
     triggerModalAddAddress,
   } from "~/store";
-  import { drivePortfolio } from "~/utils";
+  import { triggerDrivePortfolio } from "~/utils/functions";
   import { bigGeneration, otherGeneration } from "~/lib/chains";
   import { i18n } from "~/lib/i18n";
   import { handleValidateAddress } from "~/lib/queryAPI";
@@ -180,7 +180,7 @@
               navigateTo(
                 `/?type=EVM&chain=ALL&address=0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0`
               );
-              drivePortfolio?.destroy();
+              triggerDrivePortfolio?.destroy();
             }}
           >
             or try Demo account
@@ -192,7 +192,7 @@
             <Button
               on:click={() => {
                 triggerConnectWallet.update((n) => (n = true));
-                drivePortfolio?.destroy();
+                triggerDrivePortfolio?.destroy();
               }}
             >
               Connect Wallet
@@ -202,7 +202,7 @@
             <Button
               on:click={() => {
                 triggerSync.update((n) => (n = true));
-                drivePortfolio?.destroy();
+                triggerDrivePortfolio?.destroy();
               }}
               variant="secondary"
             >

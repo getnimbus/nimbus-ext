@@ -10,7 +10,7 @@
   } from "~/store";
   import { nimbus } from "~/lib/network";
   import { v4 as uuidv4 } from "uuid";
-  import { triggerToast } from "~/utils";
+  import { triggerToast } from "~/utils/functions";
 
   import User from "~/assets/user.png";
   import Ton from "~/assets/chains/ton.png";

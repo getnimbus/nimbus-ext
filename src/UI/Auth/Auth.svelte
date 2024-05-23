@@ -14,7 +14,11 @@
   } from "~/store";
   import { nimbus } from "~/lib/network";
   import mixpanel from "mixpanel-browser";
-  import { clickOutside, triggerFirework, triggerToast } from "~/utils";
+  import {
+    triggerToast,
+    triggerClickOutside,
+    triggerBonusScore,
+  } from "~/utils/functions";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
   import QRCode from "qrcode-generator";
   import CopyToClipboard from "svelte-copy-to-clipboard";
@@ -98,16 +102,6 @@
   let dataCheckinHistory = [];
 
   let teleUserData: any = {};
-
-  let openScreenBonusScore: boolean = false;
-  let bonusScore: number = 0;
-
-  const triggerBonusScore = async () => {
-    openScreenBonusScore = true;
-    triggerFirework();
-    await wait(2000);
-    openScreenBonusScore = false;
-  };
 
   $: {
     if (teleUserData && Object.keys(teleUserData).length !== 0) {
@@ -246,8 +240,7 @@
         triggerToast("You are already finished this quest", "fail");
       }
       if (res?.data?.bonus !== undefined) {
-        triggerBonusScore();
-        bonusScore = res?.data?.bonus;
+        triggerBonusScore(res?.data?.bonus, 2000);
         queryClient?.invalidateQueries([$userPublicAddress, "daily-checkin"]);
         queryClient?.invalidateQueries(["users-me"]);
       }
@@ -730,7 +723,7 @@
           <div
             class="select_content absolute top-15 right-0 z-50 flex flex-col gap-1 px-3 xl:py-2 py-3 text-sm transform rounded-lg w-max"
             style="box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);"
-            use:clickOutside
+            use:triggerClickOutside
             on:click_outside={() => (showPopover = false)}
           >
             <div
@@ -744,8 +737,8 @@
                   <Copy
                     address={localStorage.getItem("public_address") ||
                       publicAddress}
-                    iconColor="#000"
-                    color="#000"
+                    iconColor={`${$isDarkMode ? "#fff" : "#000"}`}
+                    color={`${$isDarkMode ? "#fff" : "#000"}`}
                     isShorten
                     textTooltip="Copy"
                   />
@@ -1133,28 +1126,6 @@
     </div>
   </div>
 </AppOverlay>
-
-{#if openScreenBonusScore}
-  <div
-    class="fixed h-screen w-screen top-0 left-0 flex items-center justify-center bg-[#000000cc]"
-    style="z-index: 2147483648;"
-    on:click={() => {
-      setTimeout(() => {
-        openScreenBonusScore = false;
-      }, 500);
-    }}
-  >
-    <div class="flex flex-col items-center justify-center gap-10">
-      <div class="xl:text-2xl text-4xl text-white font-medium">
-        Congratulation!!!
-      </div>
-      <img src={goldImg} alt="" class="w-40 h-40" />
-      <div class="xl:text-2xl text-4xl text-white font-medium">
-        You have received {bonusScore} Bonus GM Points
-      </div>
-    </div>
-  </div>
-{/if}
 
 <style windi:preflights:global windi:safelist:global>
   :global(body) .select_content {

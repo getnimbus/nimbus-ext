@@ -22,6 +22,7 @@
   import MobileHeaderTab from "~/UI/Header/MobileHeaderTab.svelte";
   import Footer from "~/UI/Footer/Footer.svelte";
   import ToastWrapped from "~/components/ToastWrapped.svelte";
+  import TriggerBonus from "~/components/TriggerBonus.svelte";
 
   import Portfolio from "~/layouts/Portfolio.svelte";
   import Analytic from "~/layouts/Analytic.svelte";
@@ -236,41 +237,43 @@
 
 <ErrorBoundary>
   <ToastWrapped>
-    <QueryClientProvider client={queryClient}>
-      <UpdateParams />
-      {#if $detectParams && $detectParams === "/recap"}
-        <Router routes={recapRoutes} options={{ gaPageviews: true }} />
-      {:else}
-        <div
-          class={`flex flex-col xl:pb-14 ${
-            (
-              localStorage.getItem("auth_token") ||
-              localStorage.getItem("solana_token") ||
-              localStorage.getItem("evm_token") ||
-              localStorage.getItem("sui_token") ||
-              localStorage.getItem("ton_token")
-            )?.length !== 0
-              ? "pb-34"
-              : "pb-64"
-          }`}
-        >
-          <Header {navActive} {handleUpdateNavActive} />
-          <Router {routes} options={{ gaPageviews: true }} />
-        </div>
+    <TriggerBonus>
+      <QueryClientProvider client={queryClient}>
+        <UpdateParams />
+        {#if $detectParams && $detectParams === "/recap"}
+          <Router routes={recapRoutes} options={{ gaPageviews: true }} />
+        {:else}
+          <div
+            class={`flex flex-col xl:pb-14 ${
+              (
+                localStorage.getItem("auth_token") ||
+                localStorage.getItem("solana_token") ||
+                localStorage.getItem("evm_token") ||
+                localStorage.getItem("sui_token") ||
+                localStorage.getItem("ton_token")
+              )?.length !== 0
+                ? "pb-34"
+                : "pb-64"
+            }`}
+          >
+            <Header {navActive} {handleUpdateNavActive} />
+            <Router {routes} options={{ gaPageviews: true }} />
+          </div>
 
-        <div class="footer fixed bottom-0 left-0 z-10 w-full xl:relative">
-          <div class="hidden xl:block">
-            <Footer />
+          <div class="footer fixed bottom-0 left-0 z-10 w-full xl:relative">
+            <div class="hidden xl:block">
+              <Footer />
+            </div>
+            <div class="block xl:hidden">
+              <MobileHeaderTab {navActive} {handleUpdateNavActive} />
+            </div>
           </div>
-          <div class="block xl:hidden">
-            <MobileHeaderTab {navActive} {handleUpdateNavActive} />
-          </div>
-        </div>
-        <!-- {#if isTouchDevice}
+          <!-- {#if isTouchDevice}
         <MobileIntroModalPWA />
       {/if} -->
-      {/if}
-    </QueryClientProvider>
+        {/if}
+      </QueryClientProvider>
+    </TriggerBonus>
   </ToastWrapped>
 </ErrorBoundary>
 

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { clickOutside } from "~/utils";
+  import { triggerClickOutside } from "~/utils/functions";
   import { handleSearchToken } from "~/lib/queryAPI";
   import { createQuery } from "@tanstack/svelte-query";
   import { isDarkMode } from "~/store";
@@ -52,7 +52,11 @@
   }
 </script>
 
-<div class="wrapper" use:clickOutside on:click_outside={() => (open = false)}>
+<div
+  class="wrapper"
+  use:triggerClickOutside
+  on:click_outside={() => (open = false)}
+>
   <div
     class={`button xl:text-sm text-lg bg-[#1E96FC]`}
     class:active={open}

@@ -2,12 +2,11 @@
 
 <script lang="ts">
   import { onMount } from "svelte";
-  import { shorterAddress } from "../../../utils";
   import { isEmpty } from "lodash";
   import { sendMessage } from "webext-bridge";
   import tooltip from "~/entries/contentScript/views/tooltip";
   import { track } from "~/lib/data-tracking";
-  import { formatCurrency } from "../../../utils";
+  import { formatCurrency, shorterAddress } from "~/utils/index";
   import dayjs from "dayjs";
   import relativeTime from "dayjs/plugin/relativeTime";
   dayjs.extend(relativeTime);

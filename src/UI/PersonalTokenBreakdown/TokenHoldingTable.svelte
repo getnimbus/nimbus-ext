@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { shorterName } from "~/utils";
+  import { shorterName } from "~/utils/index";
   import { detectedChain } from "~/lib/chains";
   import { i18n } from "~/lib/i18n";
   import { isDarkMode, typeWallet } from "~/store";

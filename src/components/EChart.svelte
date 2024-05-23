@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
   import * as echarts from "echarts";
-  import { autoFontSize } from "~/utils";
+  import { autoFontSize } from "~/utils/index";
 
   export let id;
   export let theme;

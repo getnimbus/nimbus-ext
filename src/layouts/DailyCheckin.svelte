@@ -8,7 +8,7 @@
   import mixpanel from "mixpanel-browser";
   import { getListAddress, getUserInfo } from "~/lib/queryAPI";
   import { detectedGeneration } from "~/lib/chains";
-  import { triggerToast } from "~/utils";
+  import { triggerToast } from "~/utils/functions";
 
   import Icon from "~/UI/Option/Icon.svelte";
   import TabLeaderBoard from "~/UI/DailyCheckin/TabLeaderBoard.svelte";

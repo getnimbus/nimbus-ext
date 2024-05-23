@@ -2,7 +2,7 @@
   import { wallet, chain, typeWallet, selectedPackage } from "~/store";
   import { groupBy, intersection, flatten } from "lodash";
   import dayjs from "dayjs";
-  import { autoFontSize, formatCurrency } from "~/utils";
+  import { autoFontSize, formatCurrency } from "~/utils/index";
   import { listSupported } from "~/lib/chains";
   import { createQuery } from "@tanstack/svelte-query";
   import { nimbus } from "~/lib/network";

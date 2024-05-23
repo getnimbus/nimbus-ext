@@ -15,8 +15,8 @@
     getLocalImg,
     shorterAddress,
     shorterName,
-    typePieChart,
-  } from "~/utils";
+  } from "~/utils/index";
+  import { typePieChart } from "~/utils/constants";
   import { getAddressContext } from "~/lib/chains";
   import { track } from "~/lib/data-tracking";
   import { isSaveAddressLabel } from "../../../store";

@@ -1,7 +1,7 @@
 <svelte:options immutable />
 
 <script>
-  import { handleImgError } from "~/utils";
+  import { handleImgError } from "~/utils/index";
 
   export let logo;
   export let defaultLogo;

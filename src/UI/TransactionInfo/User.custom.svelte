@@ -1,7 +1,7 @@
 <svelte:options tag="user-info" />
 
 <script>
-  import { shorterAddress, getLocalImg, add3Dots } from "~/utils";
+  import { shorterAddress, getLocalImg, add3Dots } from "~/utils/index";
   import CoinDefaultIcon from "~/entries/contentScript/assets/coin-default.svg";
   import tooltip from "~/entries/contentScript/views/tooltip";
 

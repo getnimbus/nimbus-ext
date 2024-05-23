@@ -1,6 +1,6 @@
 <script lang="ts">
   import dayjs from "dayjs";
-  import { autoFontSize, formatCurrency } from "~/utils";
+  import { autoFontSize, formatCurrency } from "~/utils/index";
 
   import EChart from "~/components/EChart.svelte";
 

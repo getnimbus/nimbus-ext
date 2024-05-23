@@ -2,7 +2,6 @@
   import { onMount } from "svelte";
   import { useQueryClient } from "@tanstack/svelte-query";
   import mixpanel from "mixpanel-browser";
-  import { SuiConnector } from "nimbus-sui-kit";
   import type { WalletState } from "nimbus-sui-kit";
   import {
     isDarkMode,
@@ -11,43 +10,14 @@
     triggerConnectWallet,
   } from "~/store";
   import { nimbus } from "~/lib/network";
-  import { triggerToast } from "~/utils";
+  import { triggerToast } from "~/utils/functions";
 
-  import ReactAdapter from "~/components/ReactAdapter.svelte";
+  import SuiAdapterWrapped from "~/components/SUIAdapterWrapped.svelte";
 
   import User from "~/assets/user.png";
   import SUI from "~/assets/chains/sui.png";
 
   const queryClient = useQueryClient();
-  const chains = [
-    {
-      id: "sui:mainnet",
-      name: "Mainnet",
-      rpcUrl: "https://fullnode.mainnet.sui.io",
-    },
-  ];
-
-  const onConnectSuccess = (msg) => {
-    console.log("Success connect: ", msg);
-    if ($suiWalletInstance) {
-      ($suiWalletInstance as WalletState).toggleSelect();
-    }
-  };
-
-  const onConnectError = (msg) => {
-    console.error("Error connect", msg);
-    if ($suiWalletInstance) {
-      ($suiWalletInstance as WalletState).toggleSelect();
-    }
-  };
-
-  const widgetConfig = {
-    walletFn: (wallet) => {
-      suiWalletInstance.update((n) => (n = wallet));
-    },
-    onConnectSuccess,
-    onConnectError,
-  };
 
   let invitation = "";
 
@@ -145,22 +115,18 @@
   };
 </script>
 
-<div
-  class={`flex items-center justify-center gap-3 text-white border cursor-pointer rounded-[12px] w-[219px] h-[42px] ${
-    $isDarkMode ? "border-white text-white" : "border-[#27326f] text-[#27326f]"
-  }`}
-  on:click={handleSUIAuth}
->
-  <img src={SUI} class="h-[24px] w-[24px]" />
-  <div class="font-normal text-[15px]">Log in with Sui</div>
-</div>
-
-<ReactAdapter
-  element={SuiConnector}
-  config={widgetConfig}
-  autoConnect={false}
-  {chains}
-  integrator="svelte-example"
-/>
+<SuiAdapterWrapped>
+  <div
+    class={`flex items-center justify-center gap-3 text-white border cursor-pointer rounded-[12px] w-[219px] h-[42px] ${
+      $isDarkMode
+        ? "border-white text-white"
+        : "border-[#27326f] text-[#27326f]"
+    }`}
+    on:click={handleSUIAuth}
+  >
+    <img src={SUI} class="h-[24px] w-[24px]" />
+    <div class="font-normal text-[15px]">Log in with Sui</div>
+  </div>
+</SuiAdapterWrapped>
 
 <style windi:preflights:global windi:safelist:global></style>

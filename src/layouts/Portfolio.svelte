@@ -7,7 +7,8 @@
   import { flatten } from "lodash";
   import { onMount } from "svelte";
   import { i18n } from "~/lib/i18n";
-  import { drivePortfolio, typePortfolioPage } from "~/utils";
+  import { triggerDrivePortfolio } from "~/utils/functions";
+  import { typePortfolioPage } from "~/utils/constants";
   import { chainList, chainMoveList } from "~/lib/chains";
   import { wait } from "../entries/background/utils";
   import {
@@ -846,7 +847,7 @@
 
   $: {
     if (!localStorage.getItem("view-portfolio-tour") && isPortfolioReady) {
-      drivePortfolio()?.drive();
+      triggerDrivePortfolio()?.drive();
       localStorage.setItem("view-portfolio-tour", "true");
     }
   }

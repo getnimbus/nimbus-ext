@@ -1,7 +1,7 @@
 <script lang="ts">
   import { createQuery } from "@tanstack/svelte-query";
   import { isDarkMode, user, userPublicAddress } from "~/store";
-  import { shorterAddress } from "~/utils";
+  import { shorterAddress } from "~/utils/index";
   import {
     handleGetDataDailyCheckin,
     handleGetDataLeaderboard,

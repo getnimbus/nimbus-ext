@@ -7,7 +7,7 @@
     selectedPackage,
     isDarkMode,
   } from "~/store";
-  import { autoFontSize, formatPercent } from "~/utils";
+  import { autoFontSize, formatPercent } from "~/utils/index";
   import { listSupported } from "~/lib/chains";
   import dayjs from "dayjs";
   import { getChangePercent } from "~/chart-utils";

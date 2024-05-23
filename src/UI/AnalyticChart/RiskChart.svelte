@@ -14,7 +14,7 @@
     formatValue,
     getTooltipContent,
     volatilityColorChart,
-  } from "~/utils";
+  } from "~/utils/index";
   import { listSupported } from "~/lib/chains";
   import groupBy from "lodash/groupBy";
   import sumBy from "lodash/sumBy";

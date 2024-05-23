@@ -1,7 +1,11 @@
 <script lang="ts">
   import dayjs from "dayjs";
   import numeral from "numeral";
-  import { autoFontSize, formatBigBalance, formatCurrency } from "~/utils";
+  import {
+    autoFontSize,
+    formatBigBalance,
+    formatCurrency,
+  } from "~/utils/index";
 
   import EChart from "~/components/EChart.svelte";
   import LoadingPremium from "~/components/LoadingPremium.svelte";

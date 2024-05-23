@@ -10,7 +10,7 @@
     realizedProfit,
     pastProfit,
   } from "~/store";
-  import { clickOutside } from "~/utils";
+  import { triggerClickOutside } from "~/utils/functions";
 
   import UpArrow from "~/assets/up-arrow.svg";
   import All from "~/assets/all.svg";
@@ -42,7 +42,11 @@
   const disabledChains = [];
 </script>
 
-<div class="wrapper" use:clickOutside on:click_outside={() => (open = false)}>
+<div
+  class="wrapper"
+  use:triggerClickOutside
+  on:click_outside={() => (open = false)}
+>
   <div
     class={`button ${
       type === "lang" || type === "filter" ? "bg-[#1E96FC]" : ""

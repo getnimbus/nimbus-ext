@@ -13,13 +13,12 @@
     totalNfts,
     tab,
   } from "~/store";
-  import { filterTokenValueType, chunkArray, triggerFirework } from "~/utils";
+  import { chunkArray } from "~/utils/index";
+  import { filterTokenValueType } from "~/utils/constants";
+  import { triggerBonusScore } from "~/utils/functions";
   import { groupBy } from "lodash";
   import { priceMobulaSubscribe } from "~/lib/price-mobulaWs";
   import { priceSubscribe } from "~/lib/price-ws";
-  import { wait } from "~/entries/background/utils";
-
-  import goldImg from "~/assets/Gold4.svg";
 
   export let isLoadingNFT;
   export let isLoadingToken;
@@ -530,16 +529,10 @@
     }
   }
 
-  let openScreenBonusScore: boolean = false;
-  let bonusScore: number = 0;
   let selectedTokenHoldingPercent: number = 0;
 
-  const triggerFireworkBonus = async (score: number) => {
-    bonusScore = score;
-    openScreenBonusScore = true;
-    triggerFirework();
-    await wait(2000);
-    openScreenBonusScore = false;
+  const triggerFireworkBonus = (score: number) => {
+    triggerBonusScore(score, 2000);
   };
 
   $: {
@@ -694,25 +687,5 @@
   </ErrorBoundary>
 </div>
 
-{#if openScreenBonusScore}
-  <div
-    class="fixed h-screen w-screen top-0 left-0 flex items-center justify-center bg-[#000000cc]"
-    style="z-index: 2147483648;"
-    on:click={() => {
-      setTimeout(() => {
-        openScreenBonusScore = false;
-      }, 500);
-    }}
-  >
-    <div class="flex flex-col items-center justify-center gap-10">
-      <div class="text-2xl text-white font-medium">Congratulation!!!</div>
-      <img src={goldImg} alt="" class="w-40 h-40" />
-      <div class="text-2xl text-white font-medium">
-        You have received {bonusScore} GM Points
-      </div>
-    </div>
-  </div>
-{/if}
-
-<style>
+<style windi:preflights:global windi:safelist:global>
 </style>

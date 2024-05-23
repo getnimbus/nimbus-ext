@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { nimbus } from "~/lib/network";
-  import { triggerToast } from "~/utils";
+  import { triggerToast } from "~/utils/functions";
   import CopyToClipboard from "svelte-copy-to-clipboard";
   import dayjs from "dayjs";
   import { wait } from "~/entries/background/utils";

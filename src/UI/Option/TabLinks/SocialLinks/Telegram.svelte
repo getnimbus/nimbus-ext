@@ -1,7 +1,7 @@
 <script lang="ts">
   import { nimbus } from "~/lib/network";
   import { isDarkMode } from "~/store";
-  import { triggerToast } from "~/utils";
+  import { triggerToast } from "~/utils/functions";
   import { useQueryClient } from "@tanstack/svelte-query";
 
   import Button from "~/components/Button.svelte";

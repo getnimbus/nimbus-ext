@@ -14,8 +14,8 @@
     shorterName,
     shorterAddress,
     handleFormatIdBlockChain,
-    triggerToast,
-  } from "~/utils";
+  } from "~/utils/index";
+  import { triggerToast } from "~/utils/functions";
   import { listSupported, detectedChain } from "~/lib/chains";
   import numeral from "numeral";
   import { Progressbar } from "flowbite-svelte";

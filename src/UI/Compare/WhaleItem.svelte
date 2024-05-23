@@ -1,6 +1,6 @@
 <script>
   import { isDarkMode } from "~/store";
-  import { shorterAddress } from "~/utils";
+  import { shorterAddress } from "~/utils/index";
   import dayjs from "dayjs";
   import relativeTime from "dayjs/plugin/relativeTime";
   dayjs.extend(relativeTime);

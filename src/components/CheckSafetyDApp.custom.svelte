@@ -4,7 +4,7 @@
   import { onMount } from "svelte";
   import { sendMessage } from "webext-bridge";
   import { isEmpty } from "lodash";
-  import { getLocalImg } from "~/utils";
+  import { getLocalImg } from "~/utils/index";
   import { i18n } from "~/lib/i18n";
 
   import Success from "~/assets/shield-done.svg";

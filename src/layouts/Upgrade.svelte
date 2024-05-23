@@ -5,7 +5,7 @@
   import { navigateTo } from "svelte-router-spa";
   import mixpanel from "mixpanel-browser";
   import { wait } from "~/entries/background/utils";
-  import { triggerToast } from "~/utils";
+  import { triggerToast } from "~/utils/functions";
 
   import PricePackage from "~/UI/PricePackage/PricePackage.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
