@@ -5,12 +5,8 @@
   import { createQuery } from "@tanstack/svelte-query";
   import { defillama, nimbus } from "~/lib/network";
   import { isDarkMode, typeWallet } from "~/store";
-  import {
-    autoFontSize,
-    formatBalance,
-    formatCurrency,
-    timeFrame,
-  } from "~/utils";
+  import { autoFontSize, formatBalance, formatCurrency } from "~/utils";
+  import { timeFrame } from "~/utils/constants";
   import numeral from "numeral";
   import { groupBy } from "lodash";
   import { AnimateSharedLayout, Motion } from "svelte-motion";

@@ -8,7 +8,7 @@
     listLogoCEX,
     detectedGeneration,
   } from "~/lib/chains";
-  import { triggerToast } from "~/utils";
+  import { triggerToast } from "~/utils/functions";
   import {
     wallet,
     chain,

@@ -3,7 +3,7 @@
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { nimbus } from "~/lib/network";
   import { isDarkMode, user, userPublicAddress } from "~/store";
-  import { triggerFirework, triggerToast } from "~/utils";
+  import { triggerToast, triggerFirework } from "~/utils/functions";
   import dayjs from "dayjs";
   import { wait } from "~/entries/background/utils";
   import { driver } from "driver.js";

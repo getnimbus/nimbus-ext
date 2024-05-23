@@ -2,7 +2,7 @@
   import { isDarkMode } from "~/store";
   import { getCampaignPartnerDetail } from "~/lib/queryAPI";
   import { createQuery } from "@tanstack/svelte-query";
-  import { colorPairs } from "~/utils";
+  import { colorPairs } from "~/utils/constants";
 
   import SUILogo from "~/assets/chains/sui.png";
   import gmPoint from "~/assets/Gold4.svg";

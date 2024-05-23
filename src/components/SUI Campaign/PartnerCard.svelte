@@ -5,7 +5,7 @@
   import duration from "dayjs/plugin/duration";
   dayjs.extend(isBetween);
   dayjs.extend(duration);
-  import { triggerToast } from "~/utils";
+  import { triggerToast } from "~/utils/functions";
 
   import Button from "~/components/Button.svelte";
 

@@ -16,7 +16,7 @@
   import { walletStore } from "@aztemi/svelte-on-solana-wallet-adapter-core";
   import onboard from "~/lib/web3-onboard";
   import type { WalletState } from "nimbus-sui-kit";
-  import { triggerToast } from "~/utils";
+  import { triggerToast } from "~/utils/functions";
 
   import Button from "~/components/Button.svelte";
 

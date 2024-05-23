@@ -1,6 +1,6 @@
 <script lang="ts">
   import { isDarkMode } from "~/store";
-  import { triggerToast } from "~/utils";
+  import { triggerToast } from "~/utils/functions";
 
   export let isRedeem = false;
   export let redeemData;

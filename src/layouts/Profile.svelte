@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { shorterAddress, clickOutside, triggerToast } from "~/utils";
+  import { shorterAddress } from "~/utils";
+  import { triggerToast, triggerClickOutside } from "~/utils/functions";
   import { nimbus } from "~/lib/network";
   import { createQuery } from "@tanstack/svelte-query";
   import {
@@ -335,7 +336,7 @@
                 <div
                   class="select_content mt-2 absolute left-1/2 transform -translate-x-1/2 z-8 flex flex-col xl:gap-3 gap-6 px-3 xl:py-2 py-3 text-sm transform rounded-lg top-8 w-max xl:max-h-[310px] max-h-[380px]"
                   style="box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15); overflow-y: overlay;"
-                  use:clickOutside
+                  use:triggerClickOutside
                   on:click_outside={() => (showPopover = false)}
                 >
                   {#each listAddress as item}

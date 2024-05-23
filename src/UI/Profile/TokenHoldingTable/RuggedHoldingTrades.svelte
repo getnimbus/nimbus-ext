@@ -1,6 +1,6 @@
 <script lang="ts">
   import { AnimateSharedLayout, Motion } from "svelte-motion";
-  import { timeFrame } from "~/utils";
+  import { timeFrame } from "~/utils/constants";
   import VirtualList from "svelte-tiny-virtual-list";
   import { typeWallet, isDarkMode } from "~/store";
   import { detectedChain } from "~/lib/chains";

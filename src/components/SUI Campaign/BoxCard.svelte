@@ -3,7 +3,7 @@
   import { useQueryClient } from "@tanstack/svelte-query";
   import { nimbus } from "~/lib/network";
   import type { WalletState } from "nimbus-sui-kit";
-  import { triggerFirework, triggerToast } from "~/utils";
+  import { triggerToast, triggerFirework } from "~/utils/functions";
 
   export let isClaimable = false;
   export let isRedeem = false;

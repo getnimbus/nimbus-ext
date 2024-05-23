@@ -2,7 +2,7 @@
   import "flowbite/dist/flowbite.css";
   import { isDarkMode } from "~/store";
   import { nimbus } from "~/lib/network";
-  import { triggerToast } from "~/utils";
+  import { triggerToast } from "~/utils/functions";
 
   import Button from "~/components/Button.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";

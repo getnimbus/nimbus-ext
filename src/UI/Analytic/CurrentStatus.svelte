@@ -4,13 +4,12 @@
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import {
     formatCurrency,
-    typeList,
     handleFormatDataPieChart,
     formatPercent,
-    performanceTypeChartPortfolio,
     formatValue,
     autoFontSize,
   } from "~/utils";
+  import { typeList, performanceTypeChartPortfolio } from "~/utils/constants";
   import { listSupported } from "~/lib/chains";
   import { i18n } from "~/lib/i18n";
   import { navigateTo } from "svelte-router-spa";

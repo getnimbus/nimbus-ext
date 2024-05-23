@@ -13,8 +13,8 @@
     formatPercent,
     formatValue,
     shorterName,
-    typeClosedHoldingTokenChart,
   } from "~/utils";
+  import { typeClosedHoldingTokenChart } from "~/utils/constants";
   import dayjs from "dayjs";
 
   import LoadingPremium from "~/components/LoadingPremium.svelte";

@@ -14,7 +14,11 @@
   } from "~/store";
   import { nimbus } from "~/lib/network";
   import mixpanel from "mixpanel-browser";
-  import { clickOutside, triggerFirework, triggerToast } from "~/utils";
+  import {
+    triggerToast,
+    triggerClickOutside,
+    triggerBonusScore,
+  } from "~/utils/functions";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
   import QRCode from "qrcode-generator";
   import CopyToClipboard from "svelte-copy-to-clipboard";
@@ -28,6 +32,7 @@
   import { walletStore } from "@aztemi/svelte-on-solana-wallet-adapter-core";
   import { handleGetDataDailyCheckin } from "~/lib/queryAPI";
 
+  import TriggerBonus from "~/components/TriggerBonus.svelte";
   import Tooltip from "~/components/Tooltip.svelte";
   import Copy from "~/components/Copy.svelte";
   import DarkMode from "~/components/DarkMode.svelte";
@@ -98,16 +103,6 @@
   let dataCheckinHistory = [];
 
   let teleUserData: any = {};
-
-  let openScreenBonusScore: boolean = false;
-  let bonusScore: number = 0;
-
-  const triggerBonusScore = async () => {
-    openScreenBonusScore = true;
-    triggerFirework();
-    await wait(2000);
-    openScreenBonusScore = false;
-  };
 
   $: {
     if (teleUserData && Object.keys(teleUserData).length !== 0) {
@@ -246,8 +241,7 @@
         triggerToast("You are already finished this quest", "fail");
       }
       if (res?.data?.bonus !== undefined) {
-        triggerBonusScore();
-        bonusScore = res?.data?.bonus;
+        triggerBonusScore(res?.data?.bonus, 2000);
         queryClient?.invalidateQueries([$userPublicAddress, "daily-checkin"]);
         queryClient?.invalidateQueries(["users-me"]);
       }
@@ -666,495 +660,475 @@
   }
 </script>
 
-{#if !isShowSyncSession}
-  <div class="xl:block hidden">
-    {#if $user && Object.keys($user).length !== 0}
-      <div class="relative">
-        <div
-          class="xl:flex hidden flex-col gap-1 items-center py-1 relative xl:h-[50px] w-[50px]"
-        >
+<TriggerBonus>
+  {#if !isShowSyncSession}
+    <div class="xl:block hidden">
+      {#if $user && Object.keys($user).length !== 0}
+        <div class="relative">
           <div
-            class="xl:w-[40px] xl:h-[40px] w-16 h-16 rounded-full overflow-hidden cursor-pointer mx-auto"
-            on:click={() => (showPopover = !showPopover)}
+            class="xl:flex hidden flex-col gap-1 items-center py-1 relative xl:h-[50px] w-[50px]"
           >
-            <img
-              src={$user?.picture}
-              alt=""
-              class="object-cover w-full h-full"
-            />
-          </div>
-          {#if buyPackage !== "Free"}
             <div
-              class="cursor-pointer flex items-center gap-1 absolute -bottom-1 left-1/2 transform -translate-x-1/2 z-9 rounded px-1 bg-[#ffb800]"
+              class="xl:w-[40px] xl:h-[40px] w-16 h-16 rounded-full overflow-hidden cursor-pointer mx-auto"
+              on:click={() => (showPopover = !showPopover)}
             >
-              <div class="text-white text-xs">
-                {#if buyPackage === "Explorer"}
-                  Explorer
-                {/if}
-                {#if buyPackage === "Professional"}
-                  Alpha
-                {/if}
-              </div>
-              <svg
-                width="12"
-                height="12"
-                viewBox="0 0 16 16"
-                fill="#fff"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fill-rule="evenodd"
-                  clip-rule="evenodd"
-                  d="M14.6629 3.5843C14.7217 3.57771 14.7811 3.58901 14.8339 3.61685C14.8867 3.64495 14.9305 3.68852 14.9599 3.74223C14.9893 3.79594 15.0031 3.85745 14.9994 3.91919L14.4836 12.7921H1.51642L1.00059 3.91919C0.996892 3.85745 1.01055 3.79592 1.0399 3.74216C1.06924 3.68841 1.11299 3.64476 1.16578 3.6166C1.21856 3.58843 1.27808 3.57697 1.33702 3.58362C1.39596 3.59026 1.45175 3.61473 1.49755 3.65401L4.60499 6.30708L7.76082 2.11502C7.79036 2.07895 7.82704 2.04999 7.86833 2.03014C7.90962 2.01028 7.95455 2 8.00001 2C8.04548 2 8.0904 2.01028 8.1317 2.03014C8.17299 2.04999 8.20967 2.07895 8.23921 2.11502L11.395 6.30708L14.5025 3.65401C14.5484 3.61511 14.6041 3.5909 14.6629 3.5843ZM1.55334 13.4273L1.55781 13.5041C1.577 13.827 1.71333 14.1301 1.93906 14.3518C2.1648 14.5735 2.46298 14.6971 2.77297 14.6976H13.2271C13.537 14.6971 13.8352 14.5735 14.061 14.3518C14.2867 14.1301 14.423 13.827 14.4422 13.5041L14.4467 13.4273H1.55334Z"
-                  fill="#fff"
-                />
-              </svg>
+              <img
+                src={$user?.picture}
+                alt=""
+                class="object-cover w-full h-full"
+              />
             </div>
-          {/if}
-        </div>
-
-        <div class="xl:hidden block">
-          <div
-            class="text-2xl font-medium text-white"
-            on:click={() => {
-              handleSignOut();
-              showPopover = false;
-              isShowHeaderMobile.update((n) => (n = false));
-            }}
-          >
-            Log out
-          </div>
-        </div>
-
-        {#if showPopover}
-          <div
-            class="select_content absolute top-15 right-0 z-50 flex flex-col gap-1 px-3 xl:py-2 py-3 text-sm transform rounded-lg w-max"
-            style="box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);"
-            use:clickOutside
-            on:click_outside={() => (showPopover = false)}
-          >
-            <div
-              class="flex flex-col gap-3 mx-2 pt-1 pb-2 border-b-[1px] border_0000001a"
-            >
-              <div class="text-base flex items-center gap-1">
-                GM 👋,
-                {#if displayName}
-                  {displayName}
-                {:else}
-                  <Copy
-                    address={localStorage.getItem("public_address") ||
-                      publicAddress}
-                    iconColor={`${$isDarkMode ? "#fff" : "#000"}`}
-                    color={`${$isDarkMode ? "#fff" : "#000"}`}
-                    isShorten
-                    textTooltip="Copy"
-                  />
-                {/if}
-              </div>
-              <DarkMode />
-            </div>
-
-            <div
-              on:click={() => {
-                showPopover = false;
-              }}
-            >
+            {#if buyPackage !== "Free"}
               <div
-                class={`flex items-center gap-1 font-medium text-yellow-400 cursor-pointer text-base rounded-md transition-all px-2 py-1 ${
-                  $isDarkMode
-                    ? navActive === "/upgrade"
-                      ? "bg-[#222222]"
-                      : "hover:bg-[#222222]"
-                    : navActive === "/upgrade"
-                      ? "bg-[#eff0f4]"
-                      : "hover:bg-[#eff0f4]"
-                }`}
-                on:click={() => {
-                  navigateTo("/upgrade");
-                  handleUpdateNavActive("/upgrade");
-                }}
+                class="cursor-pointer flex items-center gap-1 absolute -bottom-1 left-1/2 transform -translate-x-1/2 z-9 rounded px-1 bg-[#ffb800]"
               >
-                Upgrade
+                <div class="text-white text-xs">
+                  {#if buyPackage === "Explorer"}
+                    Explorer
+                  {/if}
+                  {#if buyPackage === "Professional"}
+                    Alpha
+                  {/if}
+                </div>
                 <svg
-                  width="16"
-                  height="16"
+                  width="12"
+                  height="12"
                   viewBox="0 0 16 16"
-                  fill="#ffb800"
+                  fill="#fff"
                   xmlns="http://www.w3.org/2000/svg"
                 >
                   <path
                     fill-rule="evenodd"
                     clip-rule="evenodd"
                     d="M14.6629 3.5843C14.7217 3.57771 14.7811 3.58901 14.8339 3.61685C14.8867 3.64495 14.9305 3.68852 14.9599 3.74223C14.9893 3.79594 15.0031 3.85745 14.9994 3.91919L14.4836 12.7921H1.51642L1.00059 3.91919C0.996892 3.85745 1.01055 3.79592 1.0399 3.74216C1.06924 3.68841 1.11299 3.64476 1.16578 3.6166C1.21856 3.58843 1.27808 3.57697 1.33702 3.58362C1.39596 3.59026 1.45175 3.61473 1.49755 3.65401L4.60499 6.30708L7.76082 2.11502C7.79036 2.07895 7.82704 2.04999 7.86833 2.03014C7.90962 2.01028 7.95455 2 8.00001 2C8.04548 2 8.0904 2.01028 8.1317 2.03014C8.17299 2.04999 8.20967 2.07895 8.23921 2.11502L11.395 6.30708L14.5025 3.65401C14.5484 3.61511 14.6041 3.5909 14.6629 3.5843ZM1.55334 13.4273L1.55781 13.5041C1.577 13.827 1.71333 14.1301 1.93906 14.3518C2.1648 14.5735 2.46298 14.6971 2.77297 14.6976H13.2271C13.537 14.6971 13.8352 14.5735 14.061 14.3518C14.2867 14.1301 14.423 13.827 14.4422 13.5041L14.4467 13.4273H1.55334Z"
-                    fill="#ffb800"
+                    fill="#fff"
                   />
                 </svg>
               </div>
-            </div>
+            {/if}
+          </div>
 
-            <div on:click={() => (showPopover = false)}>
-              <div
-                class={`text_00000066 cursor-pointer text-base rounded-md transition-all px-2 py-1 ${
-                  $isDarkMode
-                    ? navActive === "/profile"
-                      ? "bg-[#222222]"
-                      : "hover:bg-[#222222]"
-                    : navActive === "/profile"
-                      ? "bg-[#eff0f4]"
-                      : "hover:bg-[#eff0f4]"
-                }`}
-                on:click={() => {
-                  navigateTo(`/profile?id=${$userId}`);
-                  handleUpdateNavActive("/profile");
-                }}
-              >
-                My Profile
-              </div>
-            </div>
-
-            <div on:click={() => (showPopover = false)}>
-              <div
-                class={`text_00000066 cursor-pointer text-base rounded-md transition-all px-2 py-1 ${
-                  $isDarkMode ? "hover:bg-[#222222]" : "hover:bg-[#eff0f4]"
-                }`}
-                on:click={() => {
-                  isOpenModalSync = true;
-                  handleGetCodeSyncMobile();
-                }}
-              >
-                Sync session
-              </div>
-            </div>
-
-            <div on:click={() => (showPopover = false)}>
-              <div
-                class={`text_00000066 cursor-pointer text-base rounded-md transition-all px-2 py-1 ${
-                  $isDarkMode
-                    ? navActive === "/invitation"
-                      ? "bg-[#222222]"
-                      : "hover:bg-[#222222]"
-                    : navActive === "/invitation"
-                      ? "bg-[#eff0f4]"
-                      : "hover:bg-[#eff0f4]"
-                }`}
-                on:click={() => {
-                  navigateTo("/invitation");
-                  handleUpdateNavActive("/invitation");
-                }}
-              >
-                Invite
-              </div>
-            </div>
-
-            <div on:click={() => (showPopover = false)}>
-              <div
-                class={`text_00000066 cursor-pointer text-base rounded-md transition-all px-2 py-1 ${
-                  $isDarkMode
-                    ? navActive === "/settings"
-                      ? "bg-[#222222]"
-                      : "hover:bg-[#222222]"
-                    : navActive === "/settings"
-                      ? "bg-[#eff0f4]"
-                      : "hover:bg-[#eff0f4]"
-                }`}
-                on:click={() => {
-                  navigateTo("/settings");
-                  handleUpdateNavActive("/settings");
-                }}
-              >
-                Settings
-              </div>
-            </div>
-
+          <div class="xl:hidden block">
             <div
-              class={`font-medium text-red-500 cursor-pointer text-base rounded-md transition-all px-2 py-1 ${
-                $isDarkMode ? "hover:bg-[#222222]" : "hover:bg-[#eff0f4]"
-              }`}
+              class="text-2xl font-medium text-white"
               on:click={() => {
                 handleSignOut();
                 showPopover = false;
+                isShowHeaderMobile.update((n) => (n = false));
               }}
             >
               Log out
             </div>
           </div>
-        {/if}
-      </div>
-    {:else}
-      <Button
-        on:click={() => {
-          triggerConnectWallet.update((n) => (n = true));
-          mixpanel.track("user_connect_wallet");
-          isShowHeaderMobile.update((n) => (n = false));
-        }}
-        variant="tertiary"
-      >
-        <div class="text-sm font-semibold text-white cursor-pointer w-full">
-          Connect Wallet
-        </div>
-      </Button>
-    {/if}
-  </div>
-{/if}
 
-{#if isShowSyncSession}
-  <div class="xl:hidden block">
-    <div
-      class="text-xl font-semibold text-gray-300 cursor-pointer"
-      on:click={() => {
-        isOpenModalSync = true;
-        handleGetCodeSyncMobile();
-      }}
-    >
-      Sync session
-    </div>
-  </div>
-{/if}
+          {#if showPopover}
+            <div
+              class="select_content absolute top-15 right-0 z-50 flex flex-col gap-1 px-3 xl:py-2 py-3 text-sm transform rounded-lg w-max"
+              style="box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);"
+              use:triggerClickOutside
+              on:click_outside={() => (showPopover = false)}
+            >
+              <div
+                class="flex flex-col gap-3 mx-2 pt-1 pb-2 border-b-[1px] border_0000001a"
+              >
+                <div class="text-base flex items-center gap-1">
+                  GM 👋,
+                  {#if displayName}
+                    {displayName}
+                  {:else}
+                    <Copy
+                      address={localStorage.getItem("public_address") ||
+                        publicAddress}
+                      iconColor={`${$isDarkMode ? "#fff" : "#000"}`}
+                      color={`${$isDarkMode ? "#fff" : "#000"}`}
+                      isShorten
+                      textTooltip="Copy"
+                    />
+                  {/if}
+                </div>
+                <DarkMode />
+              </div>
 
-<WalletProvider localStorageKey="walletAdapter" {wallets} autoConnect />
-
-<!-- Modal sync user to mobile -->
-<AppOverlay
-  clickOutSideToClose
-  isOpen={isOpenModalSync}
-  on:close={() => {
-    isOpenModalSync = false;
-    timeCountdown = 59;
-    clearTimeout(timer);
-    clearInterval(timerCountdown);
-  }}
->
-  <div class="flex flex-col gap-4 xl:py-0 py-6">
-    <div class="flex flex-col gap-1 items-start">
-      <div class="title-3 font-semibold">Sync session</div>
-      <div class="text-sm text-gray-500">
-        More convenience in managing your portfolio on mobile devices
-      </div>
-    </div>
-    <div class="flex flex-col gap-1 justify-center items-center">
-      <div class="text-sm">
-        The code is expired in {timeCountdown}s
-      </div>
-      <div class="flex items-center gap-2">
-        <div
-          class="cursor-pointer"
-          class:loading
-          on:click={() => {
-            syncMobileCode = undefined;
-            timeCountdown = 59;
-            clearTimeout(timer);
-            clearInterval(timerCountdown);
-            handleGetCodeSyncMobile();
-          }}
-        >
-          <img
-            src={$isDarkMode ? ReloadWhite : Reload}
-            alt=""
-            class="w-4 h-4 xl:w-3 xl:h-3"
-          />
-        </div>
-        <div class="text-sm">Generate new code</div>
-      </div>
-    </div>
-    <div class="flex justify-center items-center -mt-2">
-      <div
-        class="border rounded-xl overflow-hidden bg-white md:w-[57%] w-[77%]"
-      >
-        <div class="bg-[#f3f4f6] py-2 px-4">
-          <img
-            src={Logo}
-            alt="Logo"
-            loading="lazy"
-            decoding="async"
-            class="h-12 w-auto -ml-3"
-          />
-        </div>
-        {#if loading}
-          <div class="flex justify-center items-center h-60">
-            <Loading />
-          </div>
-        {:else}
-          <div class="flex justify-center">
-            {#if qrImageDataUrl !== undefined}
-              <img src={qrImageDataUrl} alt="QR Code" />
-            {:else}
-              <div class="flex flex-col items-center gap-1 text-sm py-30">
-                <div>Something wrong when generate QR code.</div>
+              <div
+                on:click={() => {
+                  showPopover = false;
+                }}
+              >
                 <div
-                  class="text-blue-500 cursor-pointer"
+                  class={`flex items-center gap-1 font-medium text-yellow-400 cursor-pointer text-base rounded-md transition-all px-2 py-1 ${
+                    $isDarkMode
+                      ? navActive === "/upgrade"
+                        ? "bg-[#222222]"
+                        : "hover:bg-[#222222]"
+                      : navActive === "/upgrade"
+                        ? "bg-[#eff0f4]"
+                        : "hover:bg-[#eff0f4]"
+                  }`}
                   on:click={() => {
+                    navigateTo("/upgrade");
+                    handleUpdateNavActive("/upgrade");
+                  }}
+                >
+                  Upgrade
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 16 16"
+                    fill="#ffb800"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      clip-rule="evenodd"
+                      d="M14.6629 3.5843C14.7217 3.57771 14.7811 3.58901 14.8339 3.61685C14.8867 3.64495 14.9305 3.68852 14.9599 3.74223C14.9893 3.79594 15.0031 3.85745 14.9994 3.91919L14.4836 12.7921H1.51642L1.00059 3.91919C0.996892 3.85745 1.01055 3.79592 1.0399 3.74216C1.06924 3.68841 1.11299 3.64476 1.16578 3.6166C1.21856 3.58843 1.27808 3.57697 1.33702 3.58362C1.39596 3.59026 1.45175 3.61473 1.49755 3.65401L4.60499 6.30708L7.76082 2.11502C7.79036 2.07895 7.82704 2.04999 7.86833 2.03014C7.90962 2.01028 7.95455 2 8.00001 2C8.04548 2 8.0904 2.01028 8.1317 2.03014C8.17299 2.04999 8.20967 2.07895 8.23921 2.11502L11.395 6.30708L14.5025 3.65401C14.5484 3.61511 14.6041 3.5909 14.6629 3.5843ZM1.55334 13.4273L1.55781 13.5041C1.577 13.827 1.71333 14.1301 1.93906 14.3518C2.1648 14.5735 2.46298 14.6971 2.77297 14.6976H13.2271C13.537 14.6971 13.8352 14.5735 14.061 14.3518C14.2867 14.1301 14.423 13.827 14.4422 13.5041L14.4467 13.4273H1.55334Z"
+                      fill="#ffb800"
+                    />
+                  </svg>
+                </div>
+              </div>
+
+              <div on:click={() => (showPopover = false)}>
+                <div
+                  class={`text_00000066 cursor-pointer text-base rounded-md transition-all px-2 py-1 ${
+                    $isDarkMode
+                      ? navActive === "/profile"
+                        ? "bg-[#222222]"
+                        : "hover:bg-[#222222]"
+                      : navActive === "/profile"
+                        ? "bg-[#eff0f4]"
+                        : "hover:bg-[#eff0f4]"
+                  }`}
+                  on:click={() => {
+                    navigateTo(`/profile?id=${$userId}`);
+                    handleUpdateNavActive("/profile");
+                  }}
+                >
+                  My Profile
+                </div>
+              </div>
+
+              <div on:click={() => (showPopover = false)}>
+                <div
+                  class={`text_00000066 cursor-pointer text-base rounded-md transition-all px-2 py-1 ${
+                    $isDarkMode ? "hover:bg-[#222222]" : "hover:bg-[#eff0f4]"
+                  }`}
+                  on:click={() => {
+                    isOpenModalSync = true;
                     handleGetCodeSyncMobile();
                   }}
                 >
-                  Try again
+                  Sync session
                 </div>
               </div>
-            {/if}
-          </div>
-        {/if}
 
-        <div class="text-xs text-center font-medium text-[#9ca3af] px-4 pb-3">
-          Investment in crypto more convenience with Nimbus
+              <div on:click={() => (showPopover = false)}>
+                <div
+                  class={`text_00000066 cursor-pointer text-base rounded-md transition-all px-2 py-1 ${
+                    $isDarkMode
+                      ? navActive === "/invitation"
+                        ? "bg-[#222222]"
+                        : "hover:bg-[#222222]"
+                      : navActive === "/invitation"
+                        ? "bg-[#eff0f4]"
+                        : "hover:bg-[#eff0f4]"
+                  }`}
+                  on:click={() => {
+                    navigateTo("/invitation");
+                    handleUpdateNavActive("/invitation");
+                  }}
+                >
+                  Invite
+                </div>
+              </div>
+
+              <div on:click={() => (showPopover = false)}>
+                <div
+                  class={`text_00000066 cursor-pointer text-base rounded-md transition-all px-2 py-1 ${
+                    $isDarkMode
+                      ? navActive === "/settings"
+                        ? "bg-[#222222]"
+                        : "hover:bg-[#222222]"
+                      : navActive === "/settings"
+                        ? "bg-[#eff0f4]"
+                        : "hover:bg-[#eff0f4]"
+                  }`}
+                  on:click={() => {
+                    navigateTo("/settings");
+                    handleUpdateNavActive("/settings");
+                  }}
+                >
+                  Settings
+                </div>
+              </div>
+
+              <div
+                class={`font-medium text-red-500 cursor-pointer text-base rounded-md transition-all px-2 py-1 ${
+                  $isDarkMode ? "hover:bg-[#222222]" : "hover:bg-[#eff0f4]"
+                }`}
+                on:click={() => {
+                  handleSignOut();
+                  showPopover = false;
+                }}
+              >
+                Log out
+              </div>
+            </div>
+          {/if}
         </div>
+      {:else}
+        <Button
+          on:click={() => {
+            triggerConnectWallet.update((n) => (n = true));
+            mixpanel.track("user_connect_wallet");
+            isShowHeaderMobile.update((n) => (n = false));
+          }}
+          variant="tertiary"
+        >
+          <div class="text-sm font-semibold text-white cursor-pointer w-full">
+            Connect Wallet
+          </div>
+        </Button>
+      {/if}
+    </div>
+  {/if}
+
+  {#if isShowSyncSession}
+    <div class="xl:hidden block">
+      <div
+        class="text-xl font-semibold text-gray-300 cursor-pointer"
+        on:click={() => {
+          isOpenModalSync = true;
+          handleGetCodeSyncMobile();
+        }}
+      >
+        Sync session
       </div>
     </div>
-    <div class="flex flex-col items-center mt-2 gap-4">
-      <div class="md:w-[57%] w-[77%]">
-        <CopyToClipboard
-          text={syncMobileCode}
-          let:copy
-          on:copy={async () => {
-            isCopied = true;
-            await wait(1000);
-            isCopied = false;
-          }}
+  {/if}
+
+  <WalletProvider localStorageKey="walletAdapter" {wallets} autoConnect />
+
+  <!-- Modal sync user to mobile -->
+  <AppOverlay
+    clickOutSideToClose
+    isOpen={isOpenModalSync}
+    on:close={() => {
+      isOpenModalSync = false;
+      timeCountdown = 59;
+      clearTimeout(timer);
+      clearInterval(timerCountdown);
+    }}
+  >
+    <div class="flex flex-col gap-4 xl:py-0 py-6">
+      <div class="flex flex-col gap-1 items-start">
+        <div class="title-3 font-semibold">Sync session</div>
+        <div class="text-sm text-gray-500">
+          More convenience in managing your portfolio on mobile devices
+        </div>
+      </div>
+      <div class="flex flex-col gap-1 justify-center items-center">
+        <div class="text-sm">
+          The code is expired in {timeCountdown}s
+        </div>
+        <div class="flex items-center gap-2">
+          <div
+            class="cursor-pointer"
+            class:loading
+            on:click={() => {
+              syncMobileCode = undefined;
+              timeCountdown = 59;
+              clearTimeout(timer);
+              clearInterval(timerCountdown);
+              handleGetCodeSyncMobile();
+            }}
+          >
+            <img
+              src={$isDarkMode ? ReloadWhite : Reload}
+              alt=""
+              class="w-4 h-4 xl:w-3 xl:h-3"
+            />
+          </div>
+          <div class="text-sm">Generate new code</div>
+        </div>
+      </div>
+      <div class="flex justify-center items-center -mt-2">
+        <div
+          class="border rounded-xl overflow-hidden bg-white md:w-[57%] w-[77%]"
         >
-          <div class="flex items-center gap-2">
-            <div class="flex-1 border rounded-lg py-2 px-3 text-base">
-              {#if loading}
-                -
-              {:else}
-                {syncMobileCode}
-              {/if}
+          <div class="bg-[#f3f4f6] py-2 px-4">
+            <img
+              src={Logo}
+              alt="Logo"
+              loading="lazy"
+              decoding="async"
+              class="h-12 w-auto -ml-3"
+            />
+          </div>
+          {#if loading}
+            <div class="flex justify-center items-center h-60">
+              <Loading />
             </div>
-            <div
-              class="cursor-pointer border w-max p-2 rounded-lg relative"
-              on:click={copy}
-              on:mouseover={() => {
-                isShowTooltipCopy = true;
-              }}
-              on:mouseleave={() => (isShowTooltipCopy = false)}
-            >
-              {#if isCopied}
-                <svg
-                  width={21}
-                  height={21}
-                  id="Layer_1"
-                  data-name="Layer 1"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 122.88 74.46"
-                  fill={$isDarkMode ? "#fff" : "#000"}
-                  ><path
-                    fill-rule="evenodd"
-                    d="M1.87,47.2a6.33,6.33,0,1,1,8.92-9c8.88,8.85,17.53,17.66,26.53,26.45l-3.76,4.45-.35.37a6.33,6.33,0,0,1-8.95,0L1.87,47.2ZM30,43.55a6.33,6.33,0,1,1,8.82-9.07l25,24.38L111.64,2.29c5.37-6.35,15,1.84,9.66,8.18L69.07,72.22l-.3.33a6.33,6.33,0,0,1-8.95.12L30,43.55Zm28.76-4.21-.31.33-9.07-8.85L71.67,4.42c5.37-6.35,15,1.83,9.67,8.18L58.74,39.34Z"
-                  /></svg
-                >
+          {:else}
+            <div class="flex justify-center">
+              {#if qrImageDataUrl !== undefined}
+                <img src={qrImageDataUrl} alt="QR Code" />
               {:else}
-                <svg
-                  width={21}
-                  height={21}
-                  viewBox="0 0 12 11"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M8.1875 3.3125H10.6875V10.1875H3.8125V7.6875"
-                    stroke={$isDarkMode ? "#fff" : "#000"}
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                  <path
-                    d="M8.1875 0.8125H1.3125V7.6875H8.1875V0.8125Z"
-                    stroke={$isDarkMode ? "#fff" : "#000"}
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
-              {/if}
-              {#if isShowTooltipCopy}
-                <div
-                  class="absolute left-1/2 transform -translate-x-1/2 -top-8"
-                  style="z-index: 2147483648;"
-                >
-                  <Tooltip text="Copy code" />
+                <div class="flex flex-col items-center gap-1 text-sm py-30">
+                  <div>Something wrong when generate QR code.</div>
+                  <div
+                    class="text-blue-500 cursor-pointer"
+                    on:click={() => {
+                      handleGetCodeSyncMobile();
+                    }}
+                  >
+                    Try again
+                  </div>
                 </div>
               {/if}
             </div>
+          {/if}
+
+          <div class="text-xs text-center font-medium text-[#9ca3af] px-4 pb-3">
+            Investment in crypto more convenience with Nimbus
           </div>
-        </CopyToClipboard>
-      </div>
-    </div>
-    <div class="flex flex-col items-center mt-2 gap-4">
-      <div class="border-t-[1px] relative md:w-[57%] w-[77%]">
-        <div
-          class={`absolute top-[-10px] left-1/2 transform -translate-x-1/2 text-gray-400 text-xs px-2 ${
-            $isDarkMode ? "bg-[#0f0f0f]" : "bg-white"
-          }`}
-        >
-          Or open Telegram
         </div>
       </div>
-      <div class="md:w-[57%] w-[77%]">
-        <a
-          href={`https://t.me/GetNimbusBot?start=${syncMobileCode}`}
-          target="_blank"
-        >
-          <Button variant="primary">Sync to Telegram</Button>
-        </a>
+      <div class="flex flex-col items-center mt-2 gap-4">
+        <div class="md:w-[57%] w-[77%]">
+          <CopyToClipboard
+            text={syncMobileCode}
+            let:copy
+            on:copy={async () => {
+              isCopied = true;
+              await wait(1000);
+              isCopied = false;
+            }}
+          >
+            <div class="flex items-center gap-2">
+              <div class="flex-1 border rounded-lg py-2 px-3 text-base">
+                {#if loading}
+                  -
+                {:else}
+                  {syncMobileCode}
+                {/if}
+              </div>
+              <div
+                class="cursor-pointer border w-max p-2 rounded-lg relative"
+                on:click={copy}
+                on:mouseover={() => {
+                  isShowTooltipCopy = true;
+                }}
+                on:mouseleave={() => (isShowTooltipCopy = false)}
+              >
+                {#if isCopied}
+                  <svg
+                    width={21}
+                    height={21}
+                    id="Layer_1"
+                    data-name="Layer 1"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 122.88 74.46"
+                    fill={$isDarkMode ? "#fff" : "#000"}
+                    ><path
+                      fill-rule="evenodd"
+                      d="M1.87,47.2a6.33,6.33,0,1,1,8.92-9c8.88,8.85,17.53,17.66,26.53,26.45l-3.76,4.45-.35.37a6.33,6.33,0,0,1-8.95,0L1.87,47.2ZM30,43.55a6.33,6.33,0,1,1,8.82-9.07l25,24.38L111.64,2.29c5.37-6.35,15,1.84,9.66,8.18L69.07,72.22l-.3.33a6.33,6.33,0,0,1-8.95.12L30,43.55Zm28.76-4.21-.31.33-9.07-8.85L71.67,4.42c5.37-6.35,15,1.83,9.67,8.18L58.74,39.34Z"
+                    /></svg
+                  >
+                {:else}
+                  <svg
+                    width={21}
+                    height={21}
+                    viewBox="0 0 12 11"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M8.1875 3.3125H10.6875V10.1875H3.8125V7.6875"
+                      stroke={$isDarkMode ? "#fff" : "#000"}
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      d="M8.1875 0.8125H1.3125V7.6875H8.1875V0.8125Z"
+                      stroke={$isDarkMode ? "#fff" : "#000"}
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                {/if}
+                {#if isShowTooltipCopy}
+                  <div
+                    class="absolute left-1/2 transform -translate-x-1/2 -top-8"
+                    style="z-index: 2147483648;"
+                  >
+                    <Tooltip text="Copy code" />
+                  </div>
+                {/if}
+              </div>
+            </div>
+          </CopyToClipboard>
+        </div>
+      </div>
+      <div class="flex flex-col items-center mt-2 gap-4">
+        <div class="border-t-[1px] relative md:w-[57%] w-[77%]">
+          <div
+            class={`absolute top-[-10px] left-1/2 transform -translate-x-1/2 text-gray-400 text-xs px-2 ${
+              $isDarkMode ? "bg-[#0f0f0f]" : "bg-white"
+            }`}
+          >
+            Or open Telegram
+          </div>
+        </div>
+        <div class="md:w-[57%] w-[77%]">
+          <a
+            href={`https://t.me/GetNimbusBot?start=${syncMobileCode}`}
+            target="_blank"
+          >
+            <Button variant="primary">Sync to Telegram</Button>
+          </a>
+        </div>
       </div>
     </div>
-  </div>
-</AppOverlay>
+  </AppOverlay>
 
-<!-- Modal connect wallet -->
-<AppOverlay
-  clickOutSideToClose
-  isOpen={$triggerConnectWallet}
-  on:close={() => {
-    triggerConnectWallet.update((n) => (n = false));
-  }}
->
-  <div class="flex flex-col gap-4 mt-10">
-    <div class="title-3 font-medium text-center">
-      Connect wallet to enjoy more features
-    </div>
-    <div class="flex flex-col items-center justify-center gap-4">
-      <div
-        class={`flex items-center justify-center gap-3 text-white border cursor-pointer rounded-[12px] w-[219px] h-[42px] ${
-          $isDarkMode
-            ? "border-white text-white"
-            : "border-[#27326f] text-[#27326f]"
-        }`}
-        on:click={() => {
-          connect();
-          mixpanel.track("user_login_evm");
-        }}
-      >
-        <img src={Evm} alt="" width="24" height="24" />
-        <div class="font-normal text-[15px]">Log in with EVM</div>
-      </div>
-      <SolanaAuth text="Log in with Solana" />
-      <TonAuth />
-      <SuiAuth />
-      <GoogleAuth />
-      <TwitterAuth />
-      <DiscordAuth />
-      <TelegramAuth />
-    </div>
-  </div>
-</AppOverlay>
-
-{#if openScreenBonusScore}
-  <div
-    class="fixed h-screen w-screen top-0 left-0 flex items-center justify-center bg-[#000000cc]"
-    style="z-index: 2147483648;"
-    on:click={() => {
-      setTimeout(() => {
-        openScreenBonusScore = false;
-      }, 500);
+  <!-- Modal connect wallet -->
+  <AppOverlay
+    clickOutSideToClose
+    isOpen={$triggerConnectWallet}
+    on:close={() => {
+      triggerConnectWallet.update((n) => (n = false));
     }}
   >
-    <div class="flex flex-col items-center justify-center gap-10">
-      <div class="xl:text-2xl text-4xl text-white font-medium">
-        Congratulation!!!
+    <div class="flex flex-col gap-4 mt-10">
+      <div class="title-3 font-medium text-center">
+        Connect wallet to enjoy more features
       </div>
-      <img src={goldImg} alt="" class="w-40 h-40" />
-      <div class="xl:text-2xl text-4xl text-white font-medium">
-        You have received {bonusScore} Bonus GM Points
+      <div class="flex flex-col items-center justify-center gap-4">
+        <div
+          class={`flex items-center justify-center gap-3 text-white border cursor-pointer rounded-[12px] w-[219px] h-[42px] ${
+            $isDarkMode
+              ? "border-white text-white"
+              : "border-[#27326f] text-[#27326f]"
+          }`}
+          on:click={() => {
+            connect();
+            mixpanel.track("user_login_evm");
+          }}
+        >
+          <img src={Evm} alt="" width="24" height="24" />
+          <div class="font-normal text-[15px]">Log in with EVM</div>
+        </div>
+        <SolanaAuth text="Log in with Solana" />
+        <TonAuth />
+        <SuiAuth />
+        <GoogleAuth />
+        <TwitterAuth />
+        <DiscordAuth />
+        <TelegramAuth />
       </div>
     </div>
-  </div>
-{/if}
+  </AppOverlay>
+</TriggerBonus>
 
 <style windi:preflights:global windi:safelist:global>
   :global(body) .select_content {

@@ -7,12 +7,18 @@
   import type { WalletState } from "nimbus-sui-kit";
   import { suiWalletInstance, userPublicAddress } from "~/store";
   import { isDarkMode } from "~/store";
-  import { shorterAddress, triggerFirework, triggerToast } from "~/utils";
+  import { shorterAddress } from "~/utils";
+  import {
+    triggerToast,
+    triggerFirework,
+    triggerBonusScore,
+  } from "~/utils/functions";
   import { nimbus } from "~/lib/network";
   import { getLinkData } from "~/lib/queryAPI";
   import { wait } from "~/entries/background/utils";
   import tooltip from "~/entries/contentScript/views/tooltip";
 
+  import TriggerBonus from "~/components/TriggerBonus.svelte";
   import SuiAdapterWrapped from "~/components/SUIAdapterWrapped.svelte";
   import Button from "~/components/Button.svelte";
   import Loading from "~/components/Loading.svelte";
@@ -160,15 +166,6 @@
   };
 
   let selectedDataSUILink: any = {};
-  let openScreenBonusScore = false;
-  let bonusScore = 0;
-
-  const triggerBonusScore = async () => {
-    openScreenBonusScore = true;
-    triggerFirework();
-    await wait(2000);
-    openScreenBonusScore = false;
-  };
 
   $: {
     if (!$queryLinkSocial.isError && $queryLinkSocial.data !== undefined) {
@@ -282,9 +279,7 @@
       queryClient?.invalidateQueries(["link-socials"]);
       queryClient?.invalidateQueries([$userPublicAddress, "daily-checkin"]);
 
-      triggerBonusScore();
-      bonusScore = 1000;
-
+      triggerBonusScore(1000, 2000);
       triggerToast("Your are successfully connect your Sui wallet!", "success");
 
       startFlip = true;
@@ -298,119 +293,123 @@
   };
 </script>
 
-<SuiAdapterWrapped>
-  <div
-    class={`flex flex-col items-center gap-10 relative rounded-[10px] py-10 px-8 overflow-hidden ${$isDarkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"}`}
-  >
-    <img
-      src={suiBackground}
-      alt=""
-      class="absolute right-[-21px] top-[50%] -translate-y-1/2 object-contain h-full z-1"
-    />
-
-    <div class="font-semibold sm:text-5xl text-3xl uppercase">Flip The GM</div>
-
-    <div class="relative z-2 h-[110px]">
-      <img src={flipCoin2} alt="" class="h-full h-full object-contain" />
-    </div>
-
-    <div class="text-amber-400 font-medium text-center relative z-2">
-      No Loss: Pay Gas > Flip GM Points > Get Rewards
-    </div>
-
+<TriggerBonus>
+  <SuiAdapterWrapped>
     <div
-      class="bg-[#424C81] text-white rounded-md flex flex-col items-center justify-center py-2 px-20 relative z-2"
+      class={`flex flex-col items-center gap-10 relative rounded-[10px] py-10 px-8 overflow-hidden ${$isDarkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"}`}
     >
-      <div class="text-2xl">Rewards</div>
-      <div class="flex items-center gap-2 py-2">
-        <div class="p-2 rounded-[10px] bg-[#27326F]">
-          <img src={gmPoints} alt="" class="h-7 w-7" />
-        </div>
-        <div class="sm:text-[44px] text-2xl font-medium">1000</div>
-      </div>
-    </div>
+      <img
+        src={suiBackground}
+        alt=""
+        class="absolute right-[-21px] top-[50%] -translate-y-1/2 object-contain h-full z-1"
+      />
 
-    <div class="relative z-2 w-full">
-      {#if selectedDataSUILink && Object.keys(selectedDataSUILink).length === 0}
-        <div
-          class="flex justify-center items-center gap-3 text-white bg-[#1e96fc] py-1 px-2 rounded-[10px] cursor-pointer xl:w-[280px] w-max mx-auto"
-          on:click={handleSUIAuth}
-        >
-          Connect SUI Wallet
-          <div
-            class="flex items-center gap-1 text-sm font-medium bg-[#27326F] py-1 px-2 text-white rounded-[10px]"
-          >
-            1000
-            <img src={gmPoints} alt="" class="w-6 h-6" />
+      <div class="font-semibold sm:text-5xl text-3xl uppercase">
+        Flip The GM
+      </div>
+
+      <div class="relative z-2 h-[110px]">
+        <img src={flipCoin2} alt="" class="h-full h-full object-contain" />
+      </div>
+
+      <div class="text-amber-400 font-medium text-center relative z-2">
+        No Loss: Pay Gas > Flip GM Points > Get Rewards
+      </div>
+
+      <div
+        class="bg-[#424C81] text-white rounded-md flex flex-col items-center justify-center py-2 px-20 relative z-2"
+      >
+        <div class="text-2xl">Rewards</div>
+        <div class="flex items-center gap-2 py-2">
+          <div class="p-2 rounded-[10px] bg-[#27326F]">
+            <img src={gmPoints} alt="" class="h-7 w-7" />
           </div>
+          <div class="sm:text-[44px] text-2xl font-medium">1000</div>
         </div>
-      {:else}
-        <div>
-          {#if startFlip && dataFlipCheck?.canPlay && linkedSuiWallet}
-            <div class="flex justify-center items-center gap-4">
-              <button
-                class="rounded-[12px] text-white bg-[#FFB800] w-full py-4 px-5 font-medium sm:text-2xl text-lg max-w-[140px] flex items-center justify-center"
-                on:click={() => {
-                  if (!isLoadingFlip) {
-                    triggerFlipResult(1);
-                  }
-                }}
-                disabled={isLoadingFlip}
-              >
-                {#if isLoadingFlip}
-                  <Loading size={20} />
-                {:else}
-                  Head
-                {/if}
-              </button>
-              <button
-                class="rounded-[12px] text-white bg-[#FFB800] w-full py-4 px-5 font-medium sm:text-2xl text-lg max-w-[140px] flex items-center justify-center"
-                on:click={() => {
-                  if (!isLoadingFlip) {
-                    triggerFlipResult(0);
-                  }
-                }}
-                disabled={isLoadingFlip}
-              >
-                {#if isLoadingFlip}
-                  <Loading size={20} />
-                {:else}
-                  Tail
-                {/if}
-              </button>
+      </div>
+
+      <div class="relative z-2 w-full">
+        {#if selectedDataSUILink && Object.keys(selectedDataSUILink).length === 0}
+          <div
+            class="flex justify-center items-center gap-3 text-white bg-[#1e96fc] py-1 px-2 rounded-[10px] cursor-pointer xl:w-[280px] w-max mx-auto"
+            on:click={handleSUIAuth}
+          >
+            Connect SUI Wallet
+            <div
+              class="flex items-center gap-1 text-sm font-medium bg-[#27326F] py-1 px-2 text-white rounded-[10px]"
+            >
+              1000
+              <img src={gmPoints} alt="" class="w-6 h-6" />
             </div>
-          {:else}
-            <div class="w-max mx-auto">
-              {#if dataFlipCheck.canPlay}
-                <Button variant="tertiary" on:click={handleStartFlip}>
-                  <div class="font-medium sm:text-2xl text-lg py-4 px-5">
-                    Flip Now 👑
-                  </div>
-                </Button>
-              {:else}
-                <div
-                  use:tooltip={{
-                    content: `<tooltip-detail text="Your flipping capacity has reached its limit! You can only flip 5 times a day." />`,
-                    allowHTML: true,
-                    placement: "top",
+          </div>
+        {:else}
+          <div>
+            {#if startFlip && dataFlipCheck?.canPlay && linkedSuiWallet}
+              <div class="flex justify-center items-center gap-4">
+                <button
+                  class="rounded-[12px] text-white bg-[#FFB800] w-full py-4 px-5 font-medium sm:text-2xl text-lg max-w-[140px] flex items-center justify-center"
+                  on:click={() => {
+                    if (!isLoadingFlip) {
+                      triggerFlipResult(1);
+                    }
                   }}
+                  disabled={isLoadingFlip}
                 >
-                  <Button disabled>
+                  {#if isLoadingFlip}
+                    <Loading size={20} />
+                  {:else}
+                    Head
+                  {/if}
+                </button>
+                <button
+                  class="rounded-[12px] text-white bg-[#FFB800] w-full py-4 px-5 font-medium sm:text-2xl text-lg max-w-[140px] flex items-center justify-center"
+                  on:click={() => {
+                    if (!isLoadingFlip) {
+                      triggerFlipResult(0);
+                    }
+                  }}
+                  disabled={isLoadingFlip}
+                >
+                  {#if isLoadingFlip}
+                    <Loading size={20} />
+                  {:else}
+                    Tail
+                  {/if}
+                </button>
+              </div>
+            {:else}
+              <div class="w-max mx-auto">
+                {#if dataFlipCheck.canPlay}
+                  <Button variant="tertiary" on:click={handleStartFlip}>
                     <div class="font-medium sm:text-2xl text-lg py-4 px-5">
                       Flip Now 👑
                     </div>
                   </Button>
-                </div>
-              {/if}
-            </div>
-          {/if}
-        </div>
-      {/if}
-    </div>
+                {:else}
+                  <div
+                    use:tooltip={{
+                      content: `<tooltip-detail text="Your flipping capacity has reached its limit! You can only flip 5 times a day." />`,
+                      allowHTML: true,
+                      placement: "top",
+                    }}
+                  >
+                    <Button disabled>
+                      <div class="font-medium sm:text-2xl text-lg py-4 px-5">
+                        Flip Now 👑
+                      </div>
+                    </Button>
+                  </div>
+                {/if}
+              </div>
+            {/if}
+          </div>
+        {/if}
+      </div>
 
-    <div class="text-sm font-medium italic">Max 5 Flips/day</div>
-  </div>
-</SuiAdapterWrapped>
+      <div class="text-sm font-medium italic">Max 5 Flips/day</div>
+    </div>
+  </SuiAdapterWrapped>
+</TriggerBonus>
 
 {#if openScreenResult}
   <div
@@ -433,28 +432,6 @@
         <img src={betterLuck} alt="" class="w-40 h-40 object-contain" />
         <div class="text-[34px] text-white font-medium">Try again...</div>
       {/if}
-    </div>
-  </div>
-{/if}
-
-{#if openScreenBonusScore}
-  <div
-    class="fixed h-screen w-screen top-0 left-0 flex items-center justify-center bg-[#000000cc]"
-    style="z-index: 2147483648;"
-    on:click={() => {
-      setTimeout(() => {
-        openScreenBonusScore = false;
-      }, 500);
-    }}
-  >
-    <div class="flex flex-col items-center justify-center gap-10">
-      <div class="xl:text-2xl text-4xl text-white font-medium">
-        Congratulation!!!
-      </div>
-      <img src={gmPoints} alt="" class="w-40 h-40" />
-      <div class="xl:text-2xl text-4xl text-white font-medium">
-        You have received {bonusScore} Bonus GM Points
-      </div>
     </div>
   </div>
 {/if}

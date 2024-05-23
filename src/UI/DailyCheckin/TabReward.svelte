@@ -10,7 +10,7 @@
     handleGetDataRewards,
     handleValidateAddress,
   } from "~/lib/queryAPI";
-  import { triggerFirework, triggerToast } from "~/utils";
+  import { triggerToast, triggerFirework } from "~/utils/functions";
   import { wait } from "~/entries/background/utils";
 
   import Loading from "~/components/Loading.svelte";

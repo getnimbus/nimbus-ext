@@ -6,7 +6,7 @@
   import { selectedPackage } from "~/store";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
   import { getUserInfo } from "~/lib/queryAPI";
-  import { triggerToast } from "~/utils";
+  import { triggerToast } from "~/utils/functions";
 
   import Button from "~/components/Button.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";

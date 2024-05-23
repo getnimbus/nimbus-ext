@@ -1,7 +1,8 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { isDarkMode, user } from "~/store";
-  import { shorterAddress, triggerToast } from "~/utils";
+  import { shorterAddress } from "~/utils";
+  import { triggerToast } from "~/utils/functions";
   import mixpanel from "mixpanel-browser";
   import html2canvas from "html2canvas";
 
