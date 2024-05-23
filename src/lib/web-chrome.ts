@@ -1,4 +1,4 @@
-import { tryCatch } from "~/utils";
+import { tryCatch } from "~/utils/index";
 
 const storageChangeListener = [];
 

@@ -1,6 +1,6 @@
 import { totalPositions } from "~/store";
 import { groupBy, flatten } from "lodash";
-import { filterDuplicates } from "~/utils";
+import { filterDuplicates } from "~/utils/index";
 
 export const formatDataProtocol = (data, isPositionTab) => {
   const formatData = data?.filter((item) => !item.error)?.map((item) => {
