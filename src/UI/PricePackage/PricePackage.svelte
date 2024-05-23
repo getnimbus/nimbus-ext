@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { getTooltipContent } from "~/utils";
+  import { getTooltipContent } from "~/utils/index";
   import { createQuery } from "@tanstack/svelte-query";
   import { isDarkMode, user } from "~/store";
   import { getUserInfo } from "~/lib/queryAPI";

@@ -1,11 +1,11 @@
 <script lang="ts">
   import dayjs from "dayjs";
   import relativeTime from "dayjs/plugin/relativeTime";
+  import { isDarkMode } from "~/store";
+  import { formatAHT, formatActiveTime, handleImgError } from "~/utils/index";
+  dayjs.extend(relativeTime);
 
   import Tooltip from "~/components/Tooltip.svelte";
-  import { isDarkMode } from "~/store";
-  import { formatAHT, formatActiveTime, handleImgError } from "~/utils";
-  dayjs.extend(relativeTime);
 
   export let data;
   export let whalePosition;

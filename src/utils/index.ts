@@ -1,5 +1,5 @@
 import numeral from "numeral";
-import { detectedChain } from "./lib/chains";
+import { detectedChain } from "~/lib/chains";
 import { groupBy } from "lodash";
 import dayjs from "dayjs";
 
@@ -228,19 +228,19 @@ export const handleFormatDataPieChart = (data, type) => {
       value: 0,
       name_value: "Value",
       value_value: groupData[item].reduce(
-        (prev, item) => prev + Number(item.value),
+        (prev: any, item: any) => prev + Number(item.value),
         0
       ),
       name_balance: "Balance",
       value_balance: groupData[item].reduce(
-        (prev, item) => prev + Number(item.amount),
+        (prev: any, item: any) => prev + Number(item.amount),
         0
       ),
     };
   });
 
   const sumData = formatGroupData.reduce(
-    (prev, item) => prev + Number(item.value_value),
+    (prev: any, item: any) => prev + Number(item.value_value),
     0
   );
 

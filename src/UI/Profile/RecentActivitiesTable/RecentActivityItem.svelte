@@ -6,7 +6,7 @@
   import relativeTime from "dayjs/plugin/relativeTime";
   dayjs.extend(relativeTime);
   import { chainList, linkExplorer } from "~/lib/chains";
-  import { shorterName } from "~/utils";
+  import { shorterName } from "~/utils/index";
 
   import "~/components/Tooltip.custom.svelte";
   import Copy from "~/components/Copy.svelte";

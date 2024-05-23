@@ -1,5 +1,5 @@
 <script>
-  import { autoFontSize, formatValue } from "~/utils";
+  import { autoFontSize, formatValue } from "~/utils/index";
   import numeral from "numeral";
 
   import EChart from "~/components/EChart.svelte";

@@ -8,7 +8,7 @@
     formatPercent,
     formatValue,
     autoFontSize,
-  } from "~/utils";
+  } from "~/utils/index";
   import { typeList, performanceTypeChartPortfolio } from "~/utils/constants";
   import { listSupported } from "~/lib/chains";
   import { i18n } from "~/lib/i18n";

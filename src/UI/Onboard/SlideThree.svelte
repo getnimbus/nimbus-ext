@@ -1,6 +1,6 @@
 <script>
   import System from "svelte-system-info";
-  import { getLocalImg } from "~/utils";
+  import { getLocalImg } from "~/utils/index";
   export let skip = () => {};
   import Button from "~/components/Button.svelte";
   import SearchFeat from "~/assets/GIFSidebar.gif";

@@ -1,6 +1,6 @@
 <script>
   import { i18n } from "~/lib/i18n";
-  import { formatCurrency, formatPercent, formatValue } from "~/utils";
+  import { formatCurrency, formatPercent, formatValue } from "~/utils/index";
 
   import EChart from "~/components/EChart.svelte";
   import Loading from "~/components/Loading.svelte";

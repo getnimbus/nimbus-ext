@@ -1,6 +1,6 @@
 <script lang="ts">
   import { selectedPackage, user } from "~/store";
-  import { formatHeaderTokenHistoryCSV } from "~/utils";
+  import { formatHeaderTokenHistoryCSV } from "~/utils/index";
   import tooltip from "~/entries/contentScript/views/tooltip";
 
   import Button from "~/components/Button.svelte";

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import dayjs from "dayjs";
-  import { autoFontSize, formatCurrency } from "~/utils";
+  import { autoFontSize, formatCurrency } from "~/utils/index";
   import { sendMessage } from "webext-bridge";
   import { chain, wallet } from "~/store";
   import type { EChartsOption } from "echarts";

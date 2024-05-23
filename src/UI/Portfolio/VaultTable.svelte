@@ -1,7 +1,7 @@
 <script lang="ts">
   import { navigateTo } from "svelte-router-spa";
   import { selectedPackage, isDarkMode } from "~/store";
-  import { shorterName } from "~/utils";
+  import { shorterName } from "~/utils/index";
 
   import Tooltip from "~/components/Tooltip.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";

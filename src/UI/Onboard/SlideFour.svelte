@@ -1,5 +1,5 @@
 <script>
-  import { getLocalImg } from "~/utils";
+  import { getLocalImg } from "~/utils/index";
   import Button from "~/components/Button.svelte";
   export let skip = () => {};
   import TrxAddressDetailFeat from "~/assets/GIFDetect.gif";

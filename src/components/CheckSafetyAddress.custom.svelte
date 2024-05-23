@@ -2,7 +2,7 @@
 
 <script lang="ts">
   import { sendMessage } from "webext-bridge";
-  import { getLocalImg } from "~/utils";
+  import { getLocalImg } from "~/utils/index";
   import { i18n } from "~/lib/i18n";
 
   import "~/components/Collapsible.custom.svelte";

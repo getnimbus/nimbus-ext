@@ -5,9 +5,6 @@
   import { nimbus } from "~/lib/network";
   import { triggerToast, triggerBonusScore } from "~/utils/functions";
 
-  import TriggerBonus from "~/components/TriggerBonus.svelte";
-  import SuiAdapterWrapped from "~/components/SUIAdapterWrapped.svelte";
-
   import SUI from "~/assets/chains/sui.png";
   import goldImg from "~/assets/Gold4.svg";
 
@@ -105,28 +102,22 @@
   };
 </script>
 
-<TriggerBonus>
-  <SuiAdapterWrapped>
-    <div
-      class={`flex items-center justify-center gap-2 text-white border cursor-pointer py-3 px-6 rounded-[12px] md:w-[310px] w-full ${
-        $isDarkMode
-          ? "border-white text-white"
-          : "border-[#27326f] text-[#27326f]"
-      }`}
-      on:click={handleSUIAuth}
-    >
-      <img src={SUI} class="h-[24px] w-auto" />
-      <div class="font-semibold text-[15px]">Connect Sui Wallet</div>
+<div
+  class={`flex items-center justify-center gap-2 text-white border cursor-pointer py-3 px-6 rounded-[12px] md:w-[310px] w-full ${
+    $isDarkMode ? "border-white text-white" : "border-[#27326f] text-[#27326f]"
+  }`}
+  on:click={handleSUIAuth}
+>
+  <img src={SUI} class="h-[24px] w-auto" />
+  <div class="font-semibold text-[15px]">Connect Sui Wallet</div>
 
-      <div
-        class="flex items-center gap-1 text-sm font-medium bg-[#27326F] py-1 px-2 text-white rounded-[10px]"
-      >
-        1000
-        <img src={goldImg} alt="" class="w-6 h-6" />
-      </div>
-    </div>
-  </SuiAdapterWrapped>
-</TriggerBonus>
+  <div
+    class="flex items-center gap-1 text-sm font-medium bg-[#27326F] py-1 px-2 text-white rounded-[10px]"
+  >
+    1000
+    <img src={goldImg} alt="" class="w-6 h-6" />
+  </div>
+</div>
 
 <style windi:preflights:global windi:safelist:global>
 </style>

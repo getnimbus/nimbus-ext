@@ -11,7 +11,7 @@
   import { i18n } from "~/lib/i18n";
   import { nimbus } from "~/lib/network";
   import dayjs from "dayjs";
-  import { autoFontSize, formatCurrency, formatPercent } from "~/utils";
+  import { autoFontSize, formatCurrency, formatPercent } from "~/utils/index";
   import { typeList } from "~/utils/constants";
   import { triggerClickOutside } from "~/utils/functions";
   import { groupBy } from "lodash";

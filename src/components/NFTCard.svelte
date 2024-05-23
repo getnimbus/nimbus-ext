@@ -1,6 +1,6 @@
 <script lang="ts">
   import { isDarkMode } from "~/store";
-  import { shorterName } from "~/utils";
+  import { shorterName } from "~/utils/index";
 
   import Tooltip from "~/components/Tooltip.svelte";
   import TooltipNumber from "./TooltipNumber.svelte";

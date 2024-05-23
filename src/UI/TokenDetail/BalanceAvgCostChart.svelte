@@ -2,7 +2,7 @@
   import { nimbus } from "~/lib/network";
   import { createQuery } from "@tanstack/svelte-query";
   import { wallet, isDarkMode, typeWallet, selectedPackage } from "~/store";
-  import { autoFontSize } from "~/utils";
+  import { autoFontSize } from "~/utils/index";
   import numeral from "numeral";
 
   import LoadingPremium from "~/components/LoadingPremium.svelte";

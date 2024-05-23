@@ -1,5 +1,5 @@
 <script>
-  import { getLocalImg } from "~/utils";
+  import { getLocalImg } from "~/utils/index";
   export let skip = () => {};
   import Button from "~/components/Button.svelte";
   import PinEx from "~/assets/GIFPin.gif";

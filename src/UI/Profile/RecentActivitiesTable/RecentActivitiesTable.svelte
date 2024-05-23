@@ -2,7 +2,7 @@
   import { chain, isDarkMode } from "~/store";
   import { nimbus } from "~/lib/network";
   import { onMount } from "svelte";
-  import { filterDuplicates } from "~/utils";
+  import { filterDuplicates } from "~/utils/index";
 
   import Loading from "~/components/Loading.svelte";
   import Button from "~/components/Button.svelte";

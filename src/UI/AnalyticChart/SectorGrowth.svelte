@@ -4,7 +4,7 @@
   import dayjs from "dayjs";
   import { groupBy, intersection, flatten } from "lodash";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
-  import { autoFontSize, formatCurrency } from "~/utils";
+  import { autoFontSize, formatCurrency } from "~/utils/index";
   import { typeList } from "~/utils/constants";
   import { nimbus } from "~/lib/network";
 

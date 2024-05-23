@@ -4,7 +4,7 @@
   import QRCode from "qrcode-generator";
   import CopyToClipboard from "svelte-copy-to-clipboard";
   import html2canvas from "html2canvas";
-  import { shorterAddress } from "~/utils";
+  import { shorterAddress } from "~/utils/index";
   import { triggerToast } from "~/utils/functions";
   import { createQuery } from "@tanstack/svelte-query";
   import { isDarkMode, userId } from "~/store";

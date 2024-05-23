@@ -4,7 +4,7 @@
   import VirtualList from "svelte-tiny-virtual-list";
   import { typeWallet, isDarkMode } from "~/store";
   import { detectedChain } from "~/lib/chains";
-  import { shorterAddress, shorterName } from "~/utils";
+  import { shorterAddress, shorterName } from "~/utils/index";
   import dayjs from "dayjs";
   import "dayjs/locale/en";
   import "dayjs/locale/vi";

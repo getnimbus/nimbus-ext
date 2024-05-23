@@ -3,7 +3,12 @@
 <script lang="ts">
   import { onDestroy, onMount } from "svelte";
   import { fly } from "svelte/transition";
-  import { escapeRegex, getLocalImg, flattenArray } from "~/utils";
+  import {
+    escapeRegex,
+    getLocalImg,
+    flattenArray,
+    shorterAddress,
+  } from "~/utils/index";
   import UrlPattern from "url-pattern";
   import { sendMessage } from "webext-bridge";
   import * as browser from "webextension-polyfill";
@@ -13,7 +18,6 @@
   import System from "svelte-system-info";
   import { i18n } from "~/lib/i18n";
   import { track } from "~/lib/data-tracking";
-  import { shorterAddress } from "~/utils";
   import mixpanel from "mixpanel-browser";
 
   import "./AddressInfo.custom.svelte";

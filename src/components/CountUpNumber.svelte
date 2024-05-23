@@ -5,7 +5,7 @@
     formatPercent,
     formatCurrency,
     formatValue,
-  } from "~/utils";
+  } from "~/utils/index";
   import { isHidePortfolio } from "~/store";
   import { tweened } from "svelte/motion";
   import { quintOut } from "svelte/easing";

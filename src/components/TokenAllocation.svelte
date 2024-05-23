@@ -9,7 +9,7 @@
     handleFormatDataTableBundle,
     formatPercent,
     formatValue,
-  } from "~/utils";
+  } from "~/utils/index";
   import { typeList } from "~/utils/constants";
   import { flatten, groupBy } from "lodash";
   import {
