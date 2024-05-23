@@ -5,7 +5,7 @@
     sharpeRatioFilter,
     volatilityFilter,
     returnsFilter,
-  } from "~/utils";
+  } from "~/utils/constants";
   import { isDarkMode } from "~/store";
 
   import Button from "~/components/Button.svelte";

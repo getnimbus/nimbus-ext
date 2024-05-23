@@ -3,9 +3,9 @@
   import type { WalletState } from "nimbus-sui-kit";
   import { isDarkMode, suiWalletInstance, userPublicAddress } from "~/store";
   import { nimbus } from "~/lib/network";
-  import { wait } from "~/entries/background/utils";
-  import { triggerFirework, triggerToast } from "~/utils";
+  import { triggerToast, triggerBonusScore } from "~/utils/functions";
 
+  import TriggerBonus from "~/components/TriggerBonus.svelte";
   import SuiAdapterWrapped from "~/components/SUIAdapterWrapped.svelte";
 
   import SUI from "~/assets/chains/sui.png";
@@ -13,16 +13,6 @@
 
   export let data;
   export let isPrimaryLogin;
-
-  let openScreenBonusScore = false;
-  let bonusScore = 0;
-
-  const triggerBonusScore = async () => {
-    openScreenBonusScore = true;
-    triggerFirework();
-    await wait(2000);
-    openScreenBonusScore = false;
-  };
 
   const queryClient = useQueryClient();
 
@@ -95,8 +85,7 @@
       }
 
       triggerToast("Your are successfully connect your SUI wallet!", "success");
-      triggerBonusScore();
-      bonusScore = 1000;
+      triggerBonusScore(1000, 2000);
       queryClient?.invalidateQueries(["link-socials"]);
       queryClient?.invalidateQueries([$userPublicAddress, "daily-checkin"]);
     } catch (e) {
@@ -116,48 +105,28 @@
   };
 </script>
 
-<SuiAdapterWrapped>
-  <div
-    class={`flex items-center justify-center gap-2 text-white border cursor-pointer py-3 px-6 rounded-[12px] md:w-[310px] w-full ${
-      $isDarkMode
-        ? "border-white text-white"
-        : "border-[#27326f] text-[#27326f]"
-    }`}
-    on:click={handleSUIAuth}
-  >
-    <img src={SUI} class="h-[24px] w-auto" />
-    <div class="font-semibold text-[15px]">Connect Sui Wallet</div>
-
+<TriggerBonus>
+  <SuiAdapterWrapped>
     <div
-      class="flex items-center gap-1 text-sm font-medium bg-[#27326F] py-1 px-2 text-white rounded-[10px]"
+      class={`flex items-center justify-center gap-2 text-white border cursor-pointer py-3 px-6 rounded-[12px] md:w-[310px] w-full ${
+        $isDarkMode
+          ? "border-white text-white"
+          : "border-[#27326f] text-[#27326f]"
+      }`}
+      on:click={handleSUIAuth}
     >
-      1000
-      <img src={goldImg} alt="" class="w-6 h-6" />
-    </div>
-  </div>
-</SuiAdapterWrapped>
+      <img src={SUI} class="h-[24px] w-auto" />
+      <div class="font-semibold text-[15px]">Connect Sui Wallet</div>
 
-{#if openScreenBonusScore}
-  <div
-    class="fixed h-screen w-screen top-0 left-0 flex items-center justify-center bg-[#000000cc]"
-    style="z-index: 2147483648;"
-    on:click={() => {
-      setTimeout(() => {
-        openScreenBonusScore = false;
-      }, 500);
-    }}
-  >
-    <div class="flex flex-col items-center justify-center gap-10">
-      <div class="xl:text-2xl text-4xl text-white font-medium">
-        Congratulation!!!
-      </div>
-      <img src={goldImg} alt="" class="w-40 h-40" />
-      <div class="xl:text-2xl text-4xl text-white font-medium">
-        You have received {bonusScore} Bonus GM Points
+      <div
+        class="flex items-center gap-1 text-sm font-medium bg-[#27326F] py-1 px-2 text-white rounded-[10px]"
+      >
+        1000
+        <img src={goldImg} alt="" class="w-6 h-6" />
       </div>
     </div>
-  </div>
-{/if}
+  </SuiAdapterWrapped>
+</TriggerBonus>
 
 <style windi:preflights:global windi:safelist:global>
 </style>

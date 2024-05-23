@@ -4,7 +4,7 @@
   import { isDarkMode, userPublicAddress } from "~/store";
   import { nimbus } from "~/lib/network";
   import { useQueryClient } from "@tanstack/svelte-query";
-  import { triggerToast } from "~/utils";
+  import { triggerToast } from "~/utils/functions";
 
   import Evm from "~/assets/chains/evm.png";
 

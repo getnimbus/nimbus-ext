@@ -2,14 +2,13 @@
   import { i18n } from "~/lib/i18n";
   import { isDarkMode, user } from "~/store";
   import { nimbus } from "~/lib/network";
-  import { triggerToast } from "~/utils";
+  import { triggerToast } from "~/utils/functions";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
 
   import Button from "~/components/Button.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
   import Loading from "~/components/Loading.svelte";
   import Copy from "~/components/Copy.svelte";
-  import TooltipNumber from "~/components/TooltipNumber.svelte";
 
   const MultipleLang = {
     content: {

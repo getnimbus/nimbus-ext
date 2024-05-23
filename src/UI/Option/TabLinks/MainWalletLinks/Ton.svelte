@@ -2,7 +2,7 @@
   import { isDarkMode, tonConnector, userPublicAddress } from "~/store";
   import { nimbus } from "~/lib/network";
   import { useQueryClient } from "@tanstack/svelte-query";
-  import { triggerToast } from "~/utils";
+  import { triggerToast } from "~/utils/functions";
   import { v4 as uuidv4 } from "uuid";
 
   import Ton from "~/assets/chains/ton.png";

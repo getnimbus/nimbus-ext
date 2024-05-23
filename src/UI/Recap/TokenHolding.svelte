@@ -1,6 +1,6 @@
 <script>
   import html2canvas from "html2canvas";
-  import { triggerToast } from "~/utils";
+  import { triggerToast } from "~/utils/functions";
   import mixpanel from "mixpanel-browser";
 
   import Logo from "~/assets/logo-1.svg";

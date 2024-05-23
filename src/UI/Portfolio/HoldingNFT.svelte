@@ -1,6 +1,7 @@
 <script lang="ts">
   import VirtualList from "svelte-tiny-virtual-list";
-  import { shorterName, triggerToast } from "~/utils";
+  import { shorterName } from "~/utils";
+  import { triggerToast } from "~/utils/functions";
   import { detectedChain } from "~/lib/chains";
   import { wallet, typeWallet, isDarkMode, user } from "~/store";
   import mixpanel from "mixpanel-browser";

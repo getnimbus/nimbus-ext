@@ -35,6 +35,9 @@ export let showToast = writable(false);
 export let isSuccessToast = writable(false);
 export let toastMsg = writable("");
 
+export let bonusScore = writable(0);
+export let openScreenBonusScore = writable(false);
+
 // let isFirstTime = true;
 // isOpenReport.subscribe((value) => {
 //   if (!isFirstTime && APP_TYPE.TYPE === 'WEB') {

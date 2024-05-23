@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { timeFrame } from "~/utils";
+  import { timeFrame } from "~/utils/constants";
   import {
     user,
     wallet,

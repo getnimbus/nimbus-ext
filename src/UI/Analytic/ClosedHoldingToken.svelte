@@ -14,8 +14,8 @@
     formatPercent,
     formatValue,
     shorterName,
-    typeClosedHoldingTokenChart,
   } from "~/utils";
+  import { typeClosedHoldingTokenChart } from "~/utils/constants";
   import { listSupported } from "~/lib/chains";
   import { handleValidateAddress, getHoldingToken } from "~/lib/queryAPI";
 

@@ -2,7 +2,7 @@
   import { onMount, createEventDispatcher } from "svelte";
   import { Motion } from "svelte-motion";
   import { isDarkMode } from "~/store";
-  import { showOverlayAnimationVariants } from "~/utils";
+  import { showOverlayAnimationVariants } from "~/utils/constants";
   const dispatch = createEventDispatcher();
 
   export let isOpen;

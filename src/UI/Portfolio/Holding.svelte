@@ -13,13 +13,12 @@
     totalNfts,
     tab,
   } from "~/store";
-  import { filterTokenValueType, chunkArray, triggerFirework } from "~/utils";
+  import { chunkArray } from "~/utils";
+  import { filterTokenValueType } from "~/utils/constants";
+  import { triggerBonusScore } from "~/utils/functions";
   import { groupBy } from "lodash";
   import { priceMobulaSubscribe } from "~/lib/price-mobulaWs";
   import { priceSubscribe } from "~/lib/price-ws";
-  import { wait } from "~/entries/background/utils";
-
-  import goldImg from "~/assets/Gold4.svg";
 
   export let isLoadingNFT;
   export let isLoadingToken;
@@ -34,6 +33,7 @@
   import HoldingNFT from "~/UI/Portfolio/HoldingNFT.svelte";
   import HoldingToken from "~/UI/Portfolio/HoldingToken.svelte";
   import Select from "~/components/Select.svelte";
+  import TriggerBonus from "~/components/TriggerBonus.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
 
@@ -530,16 +530,10 @@
     }
   }
 
-  let openScreenBonusScore: boolean = false;
-  let bonusScore: number = 0;
   let selectedTokenHoldingPercent: number = 0;
 
-  const triggerFireworkBonus = async (score: number) => {
-    bonusScore = score;
-    openScreenBonusScore = true;
-    triggerFirework();
-    await wait(2000);
-    openScreenBonusScore = false;
+  const triggerFireworkBonus = (score: number) => {
+    triggerBonusScore(score, 2000);
   };
 
   $: {
@@ -560,80 +554,120 @@
   }
 </script>
 
-<div
-  class={`flex flex-col gap-6 rounded-[20px] xl:p-6 py-4 px-3 ${
-    $isDarkMode ? "bg-[#222222]" : "bg-[#fff] xl:border border_0000001a"
-  }`}
->
-  <ErrorBoundary>
-    <div class="flex flex-col gap-2">
-      <div class="flex xl:flex-row flex-col gap-2 justify-between">
-        <div class="flex items-end gap-3">
-          <div class="text-2xl font-medium">
-            {MultipleLang.holding}
-          </div>
-          <!-- <a
+<TriggerBonus>
+  <div
+    class={`flex flex-col gap-6 rounded-[20px] xl:p-6 py-4 px-3 ${
+      $isDarkMode ? "bg-[#222222]" : "bg-[#fff] xl:border border_0000001a"
+    }`}
+  >
+    <ErrorBoundary>
+      <div class="flex flex-col gap-2">
+        <div class="flex xl:flex-row flex-col gap-2 justify-between">
+          <div class="flex items-end gap-3">
+            <div class="text-2xl font-medium">
+              {MultipleLang.holding}
+            </div>
+            <!-- <a
             href="https://forms.gle/HfmvSTzd5frPPYDz8"
             target="_blank"
             class="text-sm font-normal text-blue-500 mb-[2px] hover:text-blue-700 transition-all"
           >
             Get investment opportunities notification
           </a> -->
+          </div>
+          <div class="text-3xl font-medium">
+            {#if selectedType === "token"}
+              <TooltipNumber number={sumTokens} type="value" personalValue />
+            {/if}
+            {#if selectedType === "nft"}
+              <TooltipNumber number={sumNFT} type="value" />
+            {/if}
+          </div>
         </div>
-        <div class="text-3xl font-medium">
-          {#if selectedType === "token"}
-            <TooltipNumber number={sumTokens} type="value" personalValue />
-          {/if}
-          {#if selectedType === "nft"}
-            <TooltipNumber number={sumNFT} type="value" />
-          {/if}
-        </div>
-      </div>
 
-      <!-- token holding table -->
-      {#if selectedType === "token"}
-        <div class="flex flex-col gap-2">
-          {#if selectedTokenHolding && Object.keys(selectedTokenHolding).length !== 0 && selectedTokenHolding?.select.length !== 0}
-            <div
-              class="xl:text-xl text-2xl font-medium text-gray-400 xl:text-right text-left"
-            >
-              <TooltipNumber
-                number={selectedTokenHoldingPercent}
-                type="percent"
-              />%
-            </div>
-          {/if}
-
-          <div class="flex flex-col gap-4">
-            <div
-              class={`flex items-center gap-3 ${
-                selectedTokenHolding &&
-                Object.keys(selectedTokenHolding).length !== 0 &&
-                selectedTokenHolding?.select.length !== 0
-                  ? "justify-between"
-                  : "justify-end"
-              }`}
-            >
-              {#if selectedTokenHolding && Object.keys(selectedTokenHolding).length !== 0 && selectedTokenHolding?.select.length !== 0}
-                <Select
-                  type="lang"
-                  positionSelectList="left-0"
-                  listSelect={selectedTokenHolding?.select || []}
-                  bind:selected={selectedTypeTable}
-                />
-              {/if}
+        <!-- token holding table -->
+        {#if selectedType === "token"}
+          <div class="flex flex-col gap-2">
+            {#if selectedTokenHolding && Object.keys(selectedTokenHolding).length !== 0 && selectedTokenHolding?.select.length !== 0}
               <div
-                class="flex items-center xl:justify-end justify-start w-full gap-2"
+                class="xl:text-xl text-2xl font-medium text-gray-400 xl:text-right text-left"
               >
+                <TooltipNumber
+                  number={selectedTokenHoldingPercent}
+                  type="percent"
+                />%
+              </div>
+            {/if}
+
+            <div class="flex flex-col gap-4">
+              <div
+                class={`flex items-center gap-3 ${
+                  selectedTokenHolding &&
+                  Object.keys(selectedTokenHolding).length !== 0 &&
+                  selectedTokenHolding?.select.length !== 0
+                    ? "justify-between"
+                    : "justify-end"
+                }`}
+              >
+                {#if selectedTokenHolding && Object.keys(selectedTokenHolding).length !== 0 && selectedTokenHolding?.select.length !== 0}
+                  <Select
+                    type="lang"
+                    positionSelectList="left-0"
+                    listSelect={selectedTokenHolding?.select || []}
+                    bind:selected={selectedTypeTable}
+                  />
+                {/if}
+                <div
+                  class="flex items-center xl:justify-end justify-start w-full gap-2"
+                >
+                  <div
+                    class="xl:block hidden text-sm font-regular text-gray-400"
+                  >
+                    Hide tokens less than
+                  </div>
+                  <div class="xl:block hidden">
+                    <Select
+                      type="filter"
+                      positionSelectList="right-0"
+                      listSelect={filterTokenValueType}
+                      bind:selected={filterTokenType}
+                    />
+                  </div>
+                  <div class="xl:hidden block">
+                    <Select
+                      type="filter"
+                      positionSelectList="left-0"
+                      listSelect={filterTokenValueType}
+                      bind:selected={filterTokenType}
+                    />
+                  </div>
+                </div>
+              </div>
+              <HoldingToken
+                {sumTokens}
+                defaultData={holdingTokenData}
+                data={filteredHoldingDataToken}
+                isLoading={isLoadingToken}
+                {triggerFireworkBonus}
+              />
+            </div>
+          </div>
+        {/if}
+
+        <!-- nft holding table -->
+        {#if selectedType === "nft"}
+          {#if $typeWallet !== "CEX"}
+            <div class="flex flex-col gap-4">
+              <div class="flex items-center xl:justify-end justify-start gap-2">
                 <div class="xl:block hidden text-sm font-regular text-gray-400">
-                  Hide tokens less than
+                  Hide NFT Collections less than
                 </div>
                 <div class="xl:block hidden">
                   <Select
                     type="filter"
                     positionSelectList="right-0"
                     listSelect={filterTokenValueType}
-                    bind:selected={filterTokenType}
+                    bind:selected={filterNFTType}
                   />
                 </div>
                 <div class="xl:hidden block">
@@ -641,77 +675,22 @@
                     type="filter"
                     positionSelectList="left-0"
                     listSelect={filterTokenValueType}
-                    bind:selected={filterTokenType}
+                    bind:selected={filterNFTType}
                   />
                 </div>
               </div>
+              <HoldingNFT
+                defaultData={holdingNFTData}
+                data={filteredHoldingDataNFT}
+                isLoading={isLoadingNFT}
+              />
             </div>
-            <HoldingToken
-              {sumTokens}
-              defaultData={holdingTokenData}
-              data={filteredHoldingDataToken}
-              isLoading={isLoadingToken}
-              {triggerFireworkBonus}
-            />
-          </div>
-        </div>
-      {/if}
-
-      <!-- nft holding table -->
-      {#if selectedType === "nft"}
-        {#if $typeWallet !== "CEX"}
-          <div class="flex flex-col gap-4">
-            <div class="flex items-center xl:justify-end justify-start gap-2">
-              <div class="xl:block hidden text-sm font-regular text-gray-400">
-                Hide NFT Collections less than
-              </div>
-              <div class="xl:block hidden">
-                <Select
-                  type="filter"
-                  positionSelectList="right-0"
-                  listSelect={filterTokenValueType}
-                  bind:selected={filterNFTType}
-                />
-              </div>
-              <div class="xl:hidden block">
-                <Select
-                  type="filter"
-                  positionSelectList="left-0"
-                  listSelect={filterTokenValueType}
-                  bind:selected={filterNFTType}
-                />
-              </div>
-            </div>
-            <HoldingNFT
-              defaultData={holdingNFTData}
-              data={filteredHoldingDataNFT}
-              isLoading={isLoadingNFT}
-            />
-          </div>
+          {/if}
         {/if}
-      {/if}
-    </div>
-  </ErrorBoundary>
-</div>
-
-{#if openScreenBonusScore}
-  <div
-    class="fixed h-screen w-screen top-0 left-0 flex items-center justify-center bg-[#000000cc]"
-    style="z-index: 2147483648;"
-    on:click={() => {
-      setTimeout(() => {
-        openScreenBonusScore = false;
-      }, 500);
-    }}
-  >
-    <div class="flex flex-col items-center justify-center gap-10">
-      <div class="text-2xl text-white font-medium">Congratulation!!!</div>
-      <img src={goldImg} alt="" class="w-40 h-40" />
-      <div class="text-2xl text-white font-medium">
-        You have received {bonusScore} GM Points
       </div>
-    </div>
+    </ErrorBoundary>
   </div>
-{/if}
+</TriggerBonus>
 
-<style windi:preflights:global windi:safelist:global></style>
+<style windi:preflights:global windi:safelist:global>
+</style>

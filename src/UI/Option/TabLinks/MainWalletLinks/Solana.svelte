@@ -9,7 +9,7 @@
   import { nimbus } from "~/lib/network";
   import { isDarkMode, userPublicAddress } from "~/store";
   import bs58 from "bs58";
-  import { triggerToast } from "~/utils";
+  import { triggerToast } from "~/utils/functions";
 
   import WalletModal from "~/UI/SolanaCustomWalletBtn/WalletModal.svelte";
 
