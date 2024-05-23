@@ -128,14 +128,7 @@
   };
 
   const formatTokenBreakdown = (data) => {
-    const formatData = data
-      .map((item) => {
-        return {
-          ...item,
-          value: Number(item?.amount || 0) * Number(item?.price || 0),
-        };
-      })
-      .filter((item) => Number(item.value) > 0);
+    const formatData = data.filter((item) => Number(item.value) > 0);
 
     const sumToken = (formatData || []).reduce(
       (prev, item) => prev + Number(item?.value),

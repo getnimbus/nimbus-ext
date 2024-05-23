@@ -78,8 +78,15 @@
 
           time = dayjs(defaultData.updatedTime).toDate();
 
+          const formatDefaultDataCoins = defaultData?.coins.map((item) => {
+            return {
+              ...item,
+              percent: item.percent.toFixed(2),
+            };
+          });
+
           listToken = listToken.map((item) => {
-            const selectedToken = defaultData?.coins?.find(
+            const selectedToken = formatDefaultDataCoins?.find(
               (data) => data.coinId === item.id
             );
             return {
@@ -89,7 +96,9 @@
           });
 
           selectedTokenList = listToken.filter((item) => {
-            return defaultData?.coins?.some((data) => data.coinId === item.id);
+            return formatDefaultDataCoins?.some(
+              (data) => data.coinId === item.id
+            );
           });
         }
       }

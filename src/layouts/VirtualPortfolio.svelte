@@ -173,6 +173,14 @@
     );
   };
 
+  const handleCalculateValueChange = (
+    percentPriceChange: number,
+    initialValue: number
+  ) => {
+    const valueChange = initialValue * percentPriceChange;
+    return initialValue + valueChange;
+  };
+
   const formatDataVirtualPortfolio = (data: any) => {
     const selectedPortfolioProfile = listVirtualPortfolio.find(
       (item) => item?.id === virtualPortfolioId
@@ -209,7 +217,31 @@
       {}
     );
 
-    listTokenHolding = dataVirtualPortfolio[virtualPortfolioId]?.coins;
+    const formatDataTokenHolding = dataVirtualPortfolio[
+      virtualPortfolioId
+    ]?.coins?.map((item) => {
+      const formatValue =
+        item.percentPriceChange !== 0
+          ? handleCalculateValueChange(item.percentPriceChange, item.value)
+          : item.value;
+
+      return {
+        ...item,
+        value: formatValue,
+      };
+    });
+
+    const totalValues = formatDataTokenHolding?.reduce(
+      (prev, item) => prev + Number(item?.value),
+      0
+    );
+
+    listTokenHolding = formatDataTokenHolding?.map((item) => {
+      return {
+        ...item,
+        percent: (Number(item.value) / Number(totalValues)) * 100,
+      };
+    });
   };
 
   $: queryVirtualPortfolio = createQuery({
@@ -691,6 +723,7 @@
             defaultData={{
               ...dataVirtualPortfolio[virtualPortfolioId],
               networth: selectedVirtualPortfolio?.networth || 0,
+              coins: listTokenHolding,
             }}
             {handleSubmit}
             {handleCancel}

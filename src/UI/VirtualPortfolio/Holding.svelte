@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { isDarkMode, selectedBundle, realtimePrice } from "~/store";
+  import { isDarkMode, selectedBundle } from "~/store";
   import { shorterAddress, shorterName } from "~/utils";
   import { filterTokenValueType } from "~/utils/constants";
   import { i18n } from "~/lib/i18n";
@@ -39,6 +39,12 @@
   let formatData = [];
   let sumTokens = 0;
 
+  let isShowCMC = false;
+  let isShowCoingecko = false;
+
+  let isShowTooltipName = false;
+  let isShowTooltipSymbol = false;
+
   let filterTokenType = {
     label: "$1",
     value: 1,
@@ -48,12 +54,7 @@
 
   $: {
     if (listTokenHolding && listTokenHolding.length !== 0) {
-      formatData = listTokenHolding.map((item) => {
-        return {
-          ...item,
-          market_price: item?.price || 0,
-        };
-      });
+      formatData = listTokenHolding;
       filteredHoldingDataToken = formatData.filter((item) => item.value > 1);
       sumTokens = filteredHoldingDataToken.reduce(
         (prev, item) => prev + Number(item?.value),
@@ -68,7 +69,7 @@
         filteredHoldingDataToken = formatData;
       } else {
         filteredHoldingDataToken = formatData?.filter(
-          (item) => item?.amount * item.market_price > filterTokenType.value
+          (item) => item?.value > filterTokenType.value
         );
       }
     }
@@ -91,21 +92,6 @@
       })
       .filter((item) => Number(item?.amount) !== 0)
       .sort((a, b) => b.amount - a.amount);
-  };
-
-  let isShowCMC = false;
-  let isShowCoingecko = false;
-
-  let isShowTooltipName = false;
-  let isShowTooltipSymbol = false;
-
-  const handleCalculateValue = (data, price) => {
-    return Number(data?.amount) * Number(price);
-  };
-
-  const handleCalculateRatio = (data, price) => {
-    const value = Number(data?.amount) * Number(price);
-    return (value / sumTokens) * 100;
   };
 </script>
 
@@ -159,7 +145,7 @@
           }`}
         >
           {#if filteredHoldingDataToken && filteredHoldingDataToken.length === 0 && !isLoading}
-            <div class="bg_f4f5f8 grid grid-cols-5">
+            <div class="bg_f4f5f8 grid grid-cols-6">
               <div class="col-spans-2 pl-3 py-3 rounded-tl-[10px]">
                 <div class="text-left text-xs uppercase font-medium">
                   {MultipleLang.assets}
@@ -169,6 +155,12 @@
               <div class="py-3">
                 <div class="text-right text-xs uppercase font-medium">
                   {MultipleLang.price}
+                </div>
+              </div>
+
+              <div class="py-3">
+                <div class="text-right text-xs uppercase font-medium">
+                  % Price Change
                 </div>
               </div>
 
@@ -184,7 +176,8 @@
                 </div>
               </div>
             </div>
-            <div class="grid grid-cols-5">
+
+            <div class="grid grid-cols-6">
               <div
                 class="col-span-full flex justify-center items-center h-[465px] py-3 px-3 text-base text-gray-400"
               >
@@ -220,7 +213,7 @@
               stickyIndices={[0]}
             >
               <div
-                class={`grid grid-cols-5 group transition-all ${index > 0 ? "cursor-pointer" : ""}`}
+                class={`grid grid-cols-6 group transition-all ${index > 0 ? "cursor-pointer" : ""}`}
                 slot="item"
                 let:index
                 let:style
@@ -262,6 +255,12 @@
                   <div class="bg_f4f5f8 py-3">
                     <div class="text-right text-xs uppercase font-medium">
                       {MultipleLang.price}
+                    </div>
+                  </div>
+
+                  <div class="py-3">
+                    <div class="text-right text-xs uppercase font-medium">
+                      % Price Change
                     </div>
                   </div>
 
@@ -670,28 +669,49 @@
                       class="h-[50px] flex items-center justify-end text-2xl font-medium xl:text-sm text_00000099"
                     >
                       $<TooltipNumber
-                        number={$realtimePrice[
-                          filteredHoldingDataToken[index - 1]?.cmc_id ||
-                            filteredHoldingDataToken[index - 1]
-                              ?.contractAddress ||
-                            filteredHoldingDataToken[index - 1]?.symbol ||
-                            filteredHoldingDataToken[index - 1]?.price?.symbol
-                        ]
-                          ? Number(
-                              $realtimePrice[
-                                filteredHoldingDataToken[index - 1]?.cmc_id ||
-                                  filteredHoldingDataToken[index - 1]
-                                    ?.contractAddress ||
-                                  filteredHoldingDataToken[index - 1]?.symbol ||
-                                  filteredHoldingDataToken[index - 1]?.price
-                                    ?.symbol
-                              ]?.price
-                            )
-                          : Number(
-                              filteredHoldingDataToken[index - 1].market_price
-                            )}
+                        number={filteredHoldingDataToken[index - 1]?.price}
                         type="balance"
                       />
+                    </div>
+                  </div>
+
+                  <div
+                    class={`py-3 ${
+                      listSelectedIndex.includes(index - 1)
+                        ? $isDarkMode
+                          ? "bg-[#000]"
+                          : "bg-gray-100"
+                        : $isDarkMode
+                          ? "bg-[#131313] group-hover:bg-[#000]"
+                          : "bg-white group-hover:bg-gray-100"
+                    }`}
+                  >
+                    <div
+                      class={`h-[50px] flex items-center justify-end gap-1 text-2xl font-medium xl:text-sm ${
+                        filteredHoldingDataToken[index - 1]
+                          ?.percentPriceChange !== 0
+                          ? filteredHoldingDataToken[index - 1]
+                              ?.percentPriceChange >= 0
+                            ? "text-[#00A878]"
+                            : "text-red-500"
+                          : "text_00000099"
+                      }`}
+                    >
+                      <TooltipNumber
+                        number={Math.abs(
+                          filteredHoldingDataToken[index - 1]
+                            ?.percentPriceChange
+                        ) * 100}
+                        type={Math.abs(
+                          filteredHoldingDataToken[index - 1]
+                            ?.percentPriceChange
+                        ) *
+                          100 >
+                        999999
+                          ? "balance"
+                          : "percent"}
+                      />
+                      <span>%</span>
                     </div>
                   </div>
 
@@ -733,33 +753,7 @@
                         class="flex justify-end text-2xl font-medium xl:text-sm text_00000099"
                       >
                         <TooltipNumber
-                          number={handleCalculateValue(
-                            filteredHoldingDataToken[index - 1],
-                            $realtimePrice[
-                              filteredHoldingDataToken[index - 1]?.cmc_id ||
-                                filteredHoldingDataToken[index - 1]
-                                  ?.contractAddress ||
-                                filteredHoldingDataToken[index - 1]?.symbol ||
-                                filteredHoldingDataToken[index - 1]?.price
-                                  ?.symbol
-                            ]
-                              ? Number(
-                                  $realtimePrice[
-                                    filteredHoldingDataToken[index - 1]
-                                      ?.cmc_id ||
-                                      filteredHoldingDataToken[index - 1]
-                                        ?.contractAddress ||
-                                      filteredHoldingDataToken[index - 1]
-                                        ?.symbol ||
-                                      filteredHoldingDataToken[index - 1]?.price
-                                        ?.symbol
-                                  ]?.price
-                                )
-                              : Number(
-                                  filteredHoldingDataToken[index - 1]
-                                    .market_price
-                                )
-                          )}
+                          number={filteredHoldingDataToken[index - 1]?.value}
                           type="value"
                           personalValue
                         />
@@ -769,66 +763,15 @@
                           class="flex justify-end text-2xl text-gray-400 xl:text-sm"
                         >
                           <TooltipNumber
-                            number={handleCalculateRatio(
-                              filteredHoldingDataToken[index - 1],
-                              $realtimePrice[
-                                filteredHoldingDataToken[index - 1]?.cmc_id ||
-                                  filteredHoldingDataToken[index - 1]
-                                    ?.contractAddress ||
-                                  filteredHoldingDataToken[index - 1]?.symbol ||
-                                  filteredHoldingDataToken[index - 1]?.price
-                                    ?.symbol
-                              ]
-                                ? Number(
-                                    $realtimePrice[
-                                      filteredHoldingDataToken[index - 1]
-                                        ?.cmc_id ||
-                                        filteredHoldingDataToken[index - 1]
-                                          ?.contractAddress ||
-                                        filteredHoldingDataToken[index - 1]
-                                          ?.symbol ||
-                                        filteredHoldingDataToken[index - 1]
-                                          ?.price?.symbol
-                                    ]?.price
-                                  )
-                                : Number(
-                                    filteredHoldingDataToken[index - 1]
-                                      .market_price
-                                  )
-                            )}
+                            number={filteredHoldingDataToken[index - 1].percent}
                             type="percent"
                           />%
                         </div>
 
                         <div class="w-3/4 max-w-20">
                           <Progressbar
-                            progress={handleCalculateRatio(
-                              filteredHoldingDataToken[index - 1],
-                              $realtimePrice[
-                                filteredHoldingDataToken[index - 1]?.cmc_id ||
-                                  filteredHoldingDataToken[index - 1]
-                                    ?.contractAddress ||
-                                  filteredHoldingDataToken[index - 1]?.symbol ||
-                                  filteredHoldingDataToken[index - 1]?.price
-                                    ?.symbol
-                              ]
-                                ? Number(
-                                    $realtimePrice[
-                                      filteredHoldingDataToken[index - 1]
-                                        ?.cmc_id ||
-                                        filteredHoldingDataToken[index - 1]
-                                          ?.contractAddress ||
-                                        filteredHoldingDataToken[index - 1]
-                                          ?.symbol ||
-                                        filteredHoldingDataToken[index - 1]
-                                          ?.price?.symbol
-                                    ]?.price
-                                  )
-                                : Number(
-                                    filteredHoldingDataToken[index - 1]
-                                      .market_price
-                                  )
-                            )}
+                            progress={filteredHoldingDataToken[index - 1]
+                              .percent}
                             animate
                             size="h-1"
                           />
@@ -971,35 +914,7 @@
                               $<TooltipNumber
                                 number={Number(item?.amount) *
                                   Number(
-                                    $realtimePrice[
-                                      filteredHoldingDataToken[index - 1]
-                                        ?.cmc_id ||
-                                        filteredHoldingDataToken[index - 1]
-                                          ?.contractAddress ||
-                                        filteredHoldingDataToken[index - 1]
-                                          ?.symbol ||
-                                        filteredHoldingDataToken[index - 1]
-                                          ?.price?.symbol
-                                    ]
-                                      ? Number(
-                                          $realtimePrice[
-                                            filteredHoldingDataToken[index - 1]
-                                              ?.cmc_id ||
-                                              filteredHoldingDataToken[
-                                                index - 1
-                                              ]?.contractAddress ||
-                                              filteredHoldingDataToken[
-                                                index - 1
-                                              ]?.symbol ||
-                                              filteredHoldingDataToken[
-                                                index - 1
-                                              ]?.price?.symbol
-                                          ]?.price
-                                        )
-                                      : Number(
-                                          filteredHoldingDataToken[index - 1]
-                                            .market_price
-                                        )
+                                    filteredHoldingDataToken[index - 1].price
                                   )}
                                 type="balance"
                               />
@@ -1015,7 +930,7 @@
           {/if}
 
           {#if isLoading}
-            <div class="w-full h-full grid grid-cols-5">
+            <div class="w-full h-full grid grid-cols-6">
               <div
                 class="col-span-full flex justify-center items-center h-full py-3 px-3"
               >
@@ -1426,24 +1341,39 @@
                     class="flex items-center justify-end font-medium text-sm text_00000099"
                   >
                     $<TooltipNumber
-                      number={$realtimePrice[
-                        filteredHoldingDataToken[index]?.cmc_id ||
-                          filteredHoldingDataToken[index]?.contractAddress ||
-                          filteredHoldingDataToken[index]?.symbol ||
-                          filteredHoldingDataToken[index]?.price?.symbol
-                      ]
-                        ? Number(
-                            $realtimePrice[
-                              filteredHoldingDataToken[index]?.cmc_id ||
-                                filteredHoldingDataToken[index]
-                                  ?.contractAddress ||
-                                filteredHoldingDataToken[index]?.symbol ||
-                                filteredHoldingDataToken[index]?.price?.symbol
-                            ]?.price
-                          )
-                        : Number(filteredHoldingDataToken[index].market_price)}
+                      number={Number(filteredHoldingDataToken[index].price)}
                       type="balance"
                     />
+                  </div>
+                </div>
+
+                <div class="flex justify-between items-start">
+                  <div class="text-right text-sm uppercase font-medium">
+                    % Price Change
+                  </div>
+                  <div
+                    class={`flex items-center justify-end gap-1 text-2xl font-medium text-sm ${
+                      filteredHoldingDataToken[index]?.percentPriceChange !== 0
+                        ? filteredHoldingDataToken[index]?.percentPriceChange >=
+                          0
+                          ? "text-[#00A878]"
+                          : "text-red-500"
+                        : "text_00000099"
+                    }`}
+                  >
+                    <TooltipNumber
+                      number={Math.abs(
+                        filteredHoldingDataToken[index]?.percentPriceChange
+                      ) * 100}
+                      type={Math.abs(
+                        filteredHoldingDataToken[index]?.percentPriceChange
+                      ) *
+                        100 >
+                      999999
+                        ? "balance"
+                        : "percent"}
+                    />
+                    <span>%</span>
                   </div>
                 </div>
 
@@ -1471,29 +1401,7 @@
                       class="flex justify-end font-medium text-sm text_00000099"
                     >
                       <TooltipNumber
-                        number={handleCalculateValue(
-                          filteredHoldingDataToken[index],
-                          $realtimePrice[
-                            filteredHoldingDataToken[index]?.cmc_id ||
-                              filteredHoldingDataToken[index]
-                                ?.contractAddress ||
-                              filteredHoldingDataToken[index]?.symbol ||
-                              filteredHoldingDataToken[index]?.price?.symbol
-                          ]
-                            ? Number(
-                                $realtimePrice[
-                                  filteredHoldingDataToken[index]?.cmc_id ||
-                                    filteredHoldingDataToken[index]
-                                      ?.contractAddress ||
-                                    filteredHoldingDataToken[index]?.symbol ||
-                                    filteredHoldingDataToken[index]?.price
-                                      ?.symbol
-                                ]?.price
-                              )
-                            : Number(
-                                filteredHoldingDataToken[index].market_price
-                              )
-                        )}
+                        number={filteredHoldingDataToken[index]?.value}
                         type="value"
                         personalValue
                       />
@@ -1501,58 +1409,14 @@
                     <div class="flex flex-col items-end justify-end gap-1">
                       <div class="flex justify-end text-gray-400 text-sm">
                         <TooltipNumber
-                          number={handleCalculateRatio(
-                            filteredHoldingDataToken[index],
-                            $realtimePrice[
-                              filteredHoldingDataToken[index]?.cmc_id ||
-                                filteredHoldingDataToken[index]
-                                  ?.contractAddress ||
-                                filteredHoldingDataToken[index]?.symbol ||
-                                filteredHoldingDataToken[index]?.price?.symbol
-                            ]
-                              ? Number(
-                                  $realtimePrice[
-                                    filteredHoldingDataToken[index]?.cmc_id ||
-                                      filteredHoldingDataToken[index]
-                                        ?.contractAddress ||
-                                      filteredHoldingDataToken[index]?.symbol ||
-                                      filteredHoldingDataToken[index]?.price
-                                        ?.symbol
-                                  ]?.price
-                                )
-                              : Number(
-                                  filteredHoldingDataToken[index].market_price
-                                )
-                          )}
+                          number={filteredHoldingDataToken[index].percent}
                           type="percent"
                         />%
                       </div>
 
                       <div class="w-3/4 max-w-20">
                         <Progressbar
-                          progress={handleCalculateRatio(
-                            filteredHoldingDataToken[index],
-                            $realtimePrice[
-                              filteredHoldingDataToken[index]?.cmc_id ||
-                                filteredHoldingDataToken[index]
-                                  ?.contractAddress ||
-                                filteredHoldingDataToken[index]?.symbol ||
-                                filteredHoldingDataToken[index]?.price?.symbol
-                            ]
-                              ? Number(
-                                  $realtimePrice[
-                                    filteredHoldingDataToken[index]?.cmc_id ||
-                                      filteredHoldingDataToken[index]
-                                        ?.contractAddress ||
-                                      filteredHoldingDataToken[index]?.symbol ||
-                                      filteredHoldingDataToken[index]?.price
-                                        ?.symbol
-                                  ]?.price
-                                )
-                              : Number(
-                                  filteredHoldingDataToken[index].market_price
-                                )
-                          )}
+                          progress={filteredHoldingDataToken[index].percent}
                           animate
                           size="h-1"
                         />
