@@ -3,7 +3,7 @@
   import CopyToClipboard from "svelte-copy-to-clipboard";
   import dayjs from "dayjs";
   import { isDarkMode, typeWallet, chain } from "~/store";
-  import { shorterAddress, shorterName } from "~/utils";
+  import { shorterAddress, shorterName } from "~/utils/index";
   import { detectedChain } from "~/lib/chains";
   import { wait } from "~/entries/background/utils";
   import {

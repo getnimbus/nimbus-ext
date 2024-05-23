@@ -13,7 +13,7 @@
     totalNfts,
     tab,
   } from "~/store";
-  import { chunkArray } from "~/utils";
+  import { chunkArray } from "~/utils/index";
   import { filterTokenValueType } from "~/utils/constants";
   import { triggerBonusScore } from "~/utils/functions";
   import { groupBy } from "lodash";

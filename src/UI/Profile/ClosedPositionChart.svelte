@@ -13,7 +13,7 @@
     formatPercent,
     formatValue,
     shorterName,
-  } from "~/utils";
+  } from "~/utils/index";
   import { typeClosedHoldingTokenChart } from "~/utils/constants";
   import dayjs from "dayjs";
 

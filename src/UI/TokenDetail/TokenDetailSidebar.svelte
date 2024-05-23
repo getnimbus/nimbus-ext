@@ -10,7 +10,7 @@
     selectedPackage,
   } from "~/store";
   import { linkExplorer, listSupported } from "~/lib/chains";
-  import { shorterAddress } from "~/utils";
+  import { shorterAddress } from "~/utils/index";
   import { filterAvgCostType } from "~/utils/constants";
   import dayjs from "dayjs";
 

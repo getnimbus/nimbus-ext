@@ -3,7 +3,7 @@
 <script>
   import { onMount } from "svelte";
   import { track } from "~/lib/data-tracking";
-  import { formatCurrency } from "../utils";
+  import { formatCurrency } from "~/utils/index";
 
   export let symbol;
   export let price;

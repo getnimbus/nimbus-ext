@@ -1,6 +1,6 @@
 <script lang="ts">
   import { createQuery } from "@tanstack/svelte-query";
-  import { formatBalance } from "~/utils";
+  import { formatBalance } from "~/utils/index";
   import { user, chain } from "~/store";
   import { getHoldingToken, handleValidateAddress } from "~/lib/queryAPI";
 

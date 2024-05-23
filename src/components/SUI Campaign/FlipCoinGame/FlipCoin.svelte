@@ -7,7 +7,7 @@
   import type { WalletState } from "nimbus-sui-kit";
   import { suiWalletInstance, userPublicAddress } from "~/store";
   import { isDarkMode } from "~/store";
-  import { shorterAddress } from "~/utils";
+  import { shorterAddress } from "~/utils/index";
   import {
     triggerToast,
     triggerFirework,

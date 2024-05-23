@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { shorterAddress } from "~/utils";
+  import { shorterAddress } from "~/utils/index";
   import { triggerToast, triggerClickOutside } from "~/utils/functions";
   import { nimbus } from "~/lib/network";
   import { createQuery } from "@tanstack/svelte-query";

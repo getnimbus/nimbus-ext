@@ -1,7 +1,11 @@
 <svelte:options tag="money-move" />
 
 <script>
-  import { formatCurrency, formatBalance, formatSmallBalance } from "~/utils";
+  import {
+    formatCurrency,
+    formatBalance,
+    formatSmallBalance,
+  } from "~/utils/index";
   import tooltip from "~/entries/contentScript/views/tooltip";
 
   import "~/components/Arrow.custom.svelte";
@@ -24,8 +28,8 @@
         data.from.toLowerCase() === from.toLowerCase()
           ? "Sender"
           : data?.from.toLowerCase() === to.toLowerCase()
-          ? "Receiver"
-          : data?.from}
+            ? "Receiver"
+            : data?.from}
         avatar={data.from_logo}
         address={data.from}
         {id}
@@ -77,8 +81,8 @@
         data.to.toLowerCase() === from.toLowerCase()
           ? "Sender"
           : data?.to.toLowerCase() === to.toLowerCase()
-          ? "Receiver"
-          : data?.to}
+            ? "Receiver"
+            : data?.to}
         avatar={data.to_logo}
         address={data.to}
         {id}

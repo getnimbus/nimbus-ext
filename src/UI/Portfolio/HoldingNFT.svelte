@@ -1,6 +1,6 @@
 <script lang="ts">
   import VirtualList from "svelte-tiny-virtual-list";
-  import { shorterName } from "~/utils";
+  import { shorterName } from "~/utils/index";
   import { triggerToast } from "~/utils/functions";
   import { detectedChain } from "~/lib/chains";
   import { wallet, typeWallet, isDarkMode, user } from "~/store";

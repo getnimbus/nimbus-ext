@@ -3,7 +3,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { sendMessage } from "webext-bridge";
-  import { add3Dots } from "~/utils";
+  import { add3Dots } from "~/utils/index";
 
   import "~/components/Loading.custom.svelte";
   import "~/components/ResetStyle.custom.svelte";

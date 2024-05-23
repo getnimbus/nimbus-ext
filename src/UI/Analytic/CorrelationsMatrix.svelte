@@ -12,7 +12,7 @@
     correlationsMatrixColor,
     equalizeArrayLengths,
     formatPercent,
-  } from "~/utils";
+  } from "~/utils/index";
   import { listSupported } from "~/lib/chains";
   import { defillama } from "~/lib/network";
   import dayjs from "dayjs";

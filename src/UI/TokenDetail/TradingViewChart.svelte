@@ -9,7 +9,7 @@
   import { isDarkMode, typeWallet } from "~/store";
   import { handleFormatBlockChainId } from "~/lib/price-mobulaWs";
   import { nimbus } from "~/lib/network";
-  import { formatBalance } from "~/utils";
+  import { formatBalance } from "~/utils/index";
   import { groupBy } from "lodash";
 
   import Loading from "~/components/Loading.svelte";

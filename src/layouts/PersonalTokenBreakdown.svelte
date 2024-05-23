@@ -2,7 +2,7 @@
   import { onMount } from "svelte";
   import { navigateTo } from "svelte-router-spa";
   import { i18n } from "~/lib/i18n";
-  import { shorterName, chunkArray } from "~/utils";
+  import { shorterName, chunkArray } from "~/utils/index";
   import { triggerToast } from "~/utils/functions";
   import { detectedChain } from "~/lib/chains";
   import { nimbus } from "~/lib/network";

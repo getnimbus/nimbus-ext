@@ -1,7 +1,7 @@
 <script lang="ts">
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import { typeWallet, isDarkMode } from "~/store";
-  import { shorterName } from "~/utils";
+  import { shorterName } from "~/utils/index";
   import { detectedChain } from "~/lib/chains";
   import tooltip from "~/entries/contentScript/views/tooltip";
 

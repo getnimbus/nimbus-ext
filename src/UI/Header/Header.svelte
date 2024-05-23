@@ -26,7 +26,7 @@
     tonConnector,
     suiWalletInstance,
   } from "~/store";
-  import { shorterAddress } from "~/utils";
+  import { shorterAddress } from "~/utils/index";
   import mixpanel from "mixpanel-browser";
   import { Motion } from "svelte-motion";
   import { showChangeLogAnimationVariants } from "~/utils/constants";

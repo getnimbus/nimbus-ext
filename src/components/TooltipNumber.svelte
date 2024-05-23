@@ -4,7 +4,7 @@
     formatPercent,
     formatCurrency,
     formatValue,
-  } from "~/utils";
+  } from "~/utils/index";
   import numeral from "numeral";
   import tooltip from "~/entries/contentScript/views/tooltip";
   import { isHidePortfolio } from "~/store";

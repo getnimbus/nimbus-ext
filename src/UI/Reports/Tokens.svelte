@@ -3,7 +3,7 @@
   import { isDarkMode, user } from "~/store";
   import { nimbus } from "~/lib/network";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
-  import { shorterName } from "~/utils";
+  import { shorterName } from "~/utils/index";
   import { triggerToast } from "~/utils/functions";
 
   import Image from "~/components/Image.svelte";
