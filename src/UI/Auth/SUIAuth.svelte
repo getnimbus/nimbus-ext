@@ -12,6 +12,8 @@
   import { nimbus } from "~/lib/network";
   import { triggerToast } from "~/utils/functions";
 
+  import SuiAdapterWrapped from "~/components/SUIAdapterWrapped.svelte";
+
   import User from "~/assets/user.png";
   import SUI from "~/assets/chains/sui.png";
 
@@ -113,14 +115,18 @@
   };
 </script>
 
-<div
-  class={`flex items-center justify-center gap-3 text-white border cursor-pointer rounded-[12px] w-[219px] h-[42px] ${
-    $isDarkMode ? "border-white text-white" : "border-[#27326f] text-[#27326f]"
-  }`}
-  on:click={handleSUIAuth}
->
-  <img src={SUI} class="h-[24px] w-[24px]" />
-  <div class="font-normal text-[15px]">Log in with Sui</div>
-</div>
+<SuiAdapterWrapped>
+  <div
+    class={`flex items-center justify-center gap-3 text-white border cursor-pointer rounded-[12px] w-[219px] h-[42px] ${
+      $isDarkMode
+        ? "border-white text-white"
+        : "border-[#27326f] text-[#27326f]"
+    }`}
+    on:click={handleSUIAuth}
+  >
+    <img src={SUI} class="h-[24px] w-[24px]" />
+    <div class="font-normal text-[15px]">Log in with Sui</div>
+  </div>
+</SuiAdapterWrapped>
 
 <style windi:preflights:global windi:safelist:global></style>
