@@ -7,8 +7,6 @@
   import { getLinkData, handleValidateAddress } from "~/lib/queryAPI";
   import { onMount } from "svelte";
 
-  import TriggerBonus from "~/components/TriggerBonus.svelte";
-  import SuiAdapterWrapped from "~/components/SUIAdapterWrapped.svelte";
   import Copy from "~/components/Copy.svelte";
 
   import goldImg from "~/assets/Gold4.svg";
@@ -135,36 +133,32 @@
   };
 </script>
 
-<TriggerBonus>
-  <SuiAdapterWrapped>
-    {#if selectedDataSUILink && Object.keys(selectedDataSUILink).length !== 0}
-      <div
-        class="flex justify-center items-center gap-3 text-white bg-[#1e96fc] py-3 px-2 rounded-[10px] cursor-pointer xl:w-[280px] w-max"
-      >
-        <img src={SUI} alt="" width="24" height="24" />
-        <Copy
-          address={selectedDataSUILink?.uid}
-          iconColor={"#fff"}
-          color={"#fff"}
-          isShorten
-        />
-      </div>
-    {:else}
-      <div
-        class="flex justify-center items-center gap-3 text-white bg-[#1e96fc] py-1 px-2 rounded-[10px] cursor-pointer xl:w-[280px] w-max"
-        on:click={handleSUIAuth}
-      >
-        Connect SUI Wallet
-        <div
-          class="flex items-center gap-1 text-sm font-medium bg-[#27326F] py-1 px-2 text-white rounded-[10px]"
-        >
-          1000
-          <img src={goldImg} alt="" class="w-6 h-6" />
-        </div>
-      </div>
-    {/if}
-  </SuiAdapterWrapped>
-</TriggerBonus>
+{#if selectedDataSUILink && Object.keys(selectedDataSUILink).length !== 0}
+  <div
+    class="flex justify-center items-center gap-3 text-white bg-[#1e96fc] py-3 px-2 rounded-[10px] cursor-pointer xl:w-[280px] w-max"
+  >
+    <img src={SUI} alt="" width="24" height="24" />
+    <Copy
+      address={selectedDataSUILink?.uid}
+      iconColor={"#fff"}
+      color={"#fff"}
+      isShorten
+    />
+  </div>
+{:else}
+  <div
+    class="flex justify-center items-center gap-3 text-white bg-[#1e96fc] py-1 px-2 rounded-[10px] cursor-pointer xl:w-[280px] w-max"
+    on:click={handleSUIAuth}
+  >
+    Connect SUI Wallet
+    <div
+      class="flex items-center gap-1 text-sm font-medium bg-[#27326F] py-1 px-2 text-white rounded-[10px]"
+    >
+      1000
+      <img src={goldImg} alt="" class="w-6 h-6" />
+    </div>
+  </div>
+{/if}
 
 <style windi:preflights:global windi:safelist:global>
 </style>
