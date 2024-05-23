@@ -74,13 +74,15 @@
         <div
           class="flex items-center md:justify-start justify-between gap-[40px]"
         >
-          <div class="w-[220px] text-base font-normal text-center">
-            {#if Number(data.cap) - Number(data.sold) > 0 && isRedeem}
-              {Number(data.cap) - Number(data.sold)} lefts
-            {:else}
-              Out of stock
-            {/if}
-          </div>
+          {#if isRedeem}
+            <div class="w-[220px] text-base font-normal text-center">
+              {#if Number(data.cap) - Number(data.sold) > 0}
+                {Number(data.cap) - Number(data.sold)} lefts
+              {:else}
+                Out of stock
+              {/if}
+            </div>
+          {/if}
 
           {#if Number(data.cap) - Number(data.sold) > 0 && isRedeem && totalPoint >= data?.cost}
             <Button
