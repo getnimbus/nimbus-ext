@@ -744,8 +744,8 @@
                   <Copy
                     address={localStorage.getItem("public_address") ||
                       publicAddress}
-                    iconColor="#000"
-                    color="#000"
+                    iconColor={`${$isDarkMode ? "#fff" : "#000"}`}
+                    color={`${$isDarkMode ? "#fff" : "#000"}`}
                     isShorten
                     textTooltip="Copy"
                   />
