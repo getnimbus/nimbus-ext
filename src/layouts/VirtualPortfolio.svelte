@@ -9,7 +9,7 @@
     getVirtualPortfolio,
     getVirtualPortfolioProfile,
   } from "~/lib/queryAPI";
-  import { triggerToast } from "~/utils";
+  import { triggerToast } from "~/utils/functions";
   import * as browser from "webextension-polyfill";
 
   import AppOverlay from "~/components/Overlay.svelte";

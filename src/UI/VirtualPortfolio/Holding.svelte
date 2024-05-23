@@ -1,6 +1,7 @@
 <script lang="ts">
   import { isDarkMode, selectedBundle, realtimePrice } from "~/store";
-  import { filterTokenValueType, shorterAddress, shorterName } from "~/utils";
+  import { shorterAddress, shorterName } from "~/utils";
+  import { filterTokenValueType } from "~/utils/constants";
   import { i18n } from "~/lib/i18n";
   import VirtualList from "svelte-tiny-virtual-list";
   import { Progressbar } from "flowbite-svelte";

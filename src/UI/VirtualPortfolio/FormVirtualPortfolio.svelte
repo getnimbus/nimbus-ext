@@ -6,7 +6,7 @@
   import { handleMarketTokens } from "~/lib/queryAPI";
   import { createQuery } from "@tanstack/svelte-query";
   import { isNaN } from "lodash";
-  import { triggerToast } from "~/utils";
+  import { triggerToast } from "~/utils/functions";
 
   import Button from "~/components/Button.svelte";
   import Loading from "~/components/Loading.svelte";

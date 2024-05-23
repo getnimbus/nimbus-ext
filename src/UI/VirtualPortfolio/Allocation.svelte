@@ -1,6 +1,6 @@
 <script lang="ts">
   import { isDarkMode } from "~/store";
-  import { formatPercent, formatValue, formatCurrency } from "~/utils";
+  import { formatPercent, formatValue, formatCurrency } from "~/utils/index";
   import { i18n } from "~/lib/i18n";
 
   import EChart from "~/components/EChart.svelte";
