@@ -1,12 +1,12 @@
 <script lang="ts">
   import { useQueryClient } from "@tanstack/svelte-query";
-  import { SuiConnector, WalletState } from "nimbus-sui-kit";
+  import type { WalletState } from "nimbus-sui-kit";
   import { isDarkMode, suiWalletInstance, userPublicAddress } from "~/store";
   import { nimbus } from "~/lib/network";
   import { wait } from "~/entries/background/utils";
   import { triggerFirework, triggerToast } from "~/utils";
 
-  import ReactAdapter from "~/components/ReactAdapter.svelte";
+  import SuiAdapterWrapped from "~/components/SUIAdapterWrapped.svelte";
 
   import SUI from "~/assets/chains/sui.png";
   import goldImg from "~/assets/Gold4.svg";
@@ -25,35 +25,6 @@
   };
 
   const queryClient = useQueryClient();
-  const chains = [
-    {
-      id: "sui:mainnet",
-      name: "Mainnet",
-      rpcUrl: "https://fullnode.mainnet.sui.io",
-    },
-  ];
-
-  const onConnectSuccess = (msg) => {
-    console.log("Success connect: ", msg);
-    if ($suiWalletInstance) {
-      ($suiWalletInstance as WalletState).toggleSelect();
-    }
-  };
-
-  const onConnectError = (msg) => {
-    console.error("Error connect", msg);
-    if ($suiWalletInstance) {
-      ($suiWalletInstance as WalletState).toggleSelect();
-    }
-  };
-
-  const widgetConfig = {
-    walletFn: (wallet) => {
-      suiWalletInstance.update((n) => (n = wallet));
-    },
-    onConnectSuccess,
-    onConnectError,
-  };
 
   const handleSUIAuth = async () => {
     try {
@@ -145,30 +116,26 @@
   };
 </script>
 
-<div
-  class={`flex items-center justify-center gap-2 text-white border cursor-pointer py-3 px-6 rounded-[12px] md:w-[310px] w-full ${
-    $isDarkMode ? "border-white text-white" : "border-[#27326f] text-[#27326f]"
-  }`}
-  on:click={handleSUIAuth}
->
-  <img src={SUI} class="h-[24px] w-auto" />
-  <div class="font-semibold text-[15px]">Connect Sui Wallet</div>
-
+<SuiAdapterWrapped>
   <div
-    class="flex items-center gap-1 text-sm font-medium bg-[#27326F] py-1 px-2 text-white rounded-[10px]"
+    class={`flex items-center justify-center gap-2 text-white border cursor-pointer py-3 px-6 rounded-[12px] md:w-[310px] w-full ${
+      $isDarkMode
+        ? "border-white text-white"
+        : "border-[#27326f] text-[#27326f]"
+    }`}
+    on:click={handleSUIAuth}
   >
-    1000
-    <img src={goldImg} alt="" class="w-6 h-6" />
-  </div>
-</div>
+    <img src={SUI} class="h-[24px] w-auto" />
+    <div class="font-semibold text-[15px]">Connect Sui Wallet</div>
 
-<ReactAdapter
-  element={SuiConnector}
-  config={widgetConfig}
-  autoConnect={false}
-  {chains}
-  integrator="svelte-example"
-/>
+    <div
+      class="flex items-center gap-1 text-sm font-medium bg-[#27326F] py-1 px-2 text-white rounded-[10px]"
+    >
+      1000
+      <img src={goldImg} alt="" class="w-6 h-6" />
+    </div>
+  </div>
+</SuiAdapterWrapped>
 
 {#if openScreenBonusScore}
   <div
