@@ -48,7 +48,7 @@
 
   let rewardPartner = [
     {
-      cost: 800,
+      cost: 1200,
       description: "WLs to participate in Pandora Finance IDO",
       title: "Pandora IDO Whitelist",
       body: "PANDORA_IDO_WHITELIST",
@@ -57,11 +57,20 @@
       sold: 0,
     },
     {
-      cost: 500,
+      cost: 700,
       description: "WLs to participate in AtlanSUI NFT Mint",
       title: "AtlanSUI NFT Whitelist",
       body: "ATLANSUI_NFT_WHITELIST",
       logo: "https://pbs.twimg.com/profile_images/1747235711940718592/CbXDeMgn_400x400.jpg",
+      cap: 0,
+      sold: 0,
+    },
+    {
+      cost: 1000,
+      description: "WLs to participate in AtlanSUI NFTs Free Mint",
+      title: "AtlanSUI NFTs Free Mint WLs",
+      body: "ATLANSUI_NFT_FREE_MINT_WL",
+      logo: "https://nimbus-zodiac.s3.ap-southeast-1.amazonaws.com/sui-unlock/atlansui-nft.jpeg",
       cap: 0,
       sold: 0,
     },
