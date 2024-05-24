@@ -306,18 +306,20 @@
                 </tr>
               </tbody>
             {:else if eligibilityData?.length === 0}
-              <tr>
-                <td colspan="4">
-                  <div
-                    class="flex justify-center items-center h-full py-4 px-3 text-lg text-gray-400"
-                  >
-                    Empty
-                  </div>
-                </td>
-              </tr>
+              <tbody>
+                <tr>
+                  <td colspan="4">
+                    <div
+                      class="flex justify-center items-center h-full py-4 px-3 text-lg text-gray-400"
+                    >
+                      Empty
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
             {:else}
-              {#each eligibilityData || [] as item}
-                <tbody>
+              <tbody>
+                {#each eligibilityData || [] as item}
                   <tr class="group transition-all relative">
                     <td
                       class={`pl-3 py-3 ${
@@ -401,8 +403,8 @@
                       </div>
                     </td>
                   </tr>
-                </tbody>
-              {/each}
+                {/each}
+              </tbody>
             {/if}
           </table>
         </div>
