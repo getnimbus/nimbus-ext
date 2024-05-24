@@ -2,7 +2,14 @@
   import { onMount } from "svelte";
   import { navigateTo } from "svelte-router-spa";
   import { nimbus } from "~/lib/network";
-  import { wallet, typeWallet, chain, user, isDarkMode } from "~/store";
+  import {
+    wallet,
+    typeWallet,
+    chain,
+    user,
+    isDarkMode,
+    userPublicAddress,
+  } from "~/store";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
   import {
@@ -345,9 +352,6 @@
         );
       }
 
-      isLoading = false;
-      type = "";
-
       queryClient.invalidateQueries(["virtual-portfolio-profile"]);
       queryClient.invalidateQueries(["virtual-portfolio"]);
     } catch (e) {
@@ -364,6 +368,7 @@
           "fail"
         );
       }
+    } finally {
       isLoading = false;
       type = "";
     }
@@ -420,55 +425,55 @@
 </script>
 
 <ErrorBoundary>
-  {#if $queryVirtualPortfolio.isFetching && $queryVirtualPortfolioProfile.isFetching}
-    <div class="flex items-center justify-center h-screen">
-      <Loading />
-    </div>
-  {:else}
-    <div class="header-container">
-      <div class="flex flex-col max-w-[2000px] m-auto xl:w-[82%] w-[90%]">
-        <div class="flex flex-col mb-5 gap-7">
-          <div class="flex items-center justify-between">
-            <div
-              class="flex items-center gap-1 text-white cursor-pointer"
-              on:click={() => {
-                if (type.length === 0) {
-                  navigateTo("/");
-                } else {
-                  handleCancel();
-                }
-              }}
-            >
-              <img src={LeftArrow} alt="" class="xl:w-5 xl:h-5 w-7 h-7" />
-              <div class="xl:text-sm text-2xl font-medium">
-                {#if type.length === 0}
-                  Portfolio
-                {:else}
-                  Back
-                {/if}
-              </div>
+  <div class="header-container">
+    <div class="flex flex-col max-w-[2000px] m-auto xl:w-[82%] w-[90%]">
+      <div class="flex flex-col mb-5 gap-7">
+        <div class="flex items-center justify-between">
+          <div
+            class="flex items-center gap-1 text-white cursor-pointer"
+            on:click={() => {
+              if (type.length === 0) {
+                navigateTo("/");
+              } else {
+                handleCancel();
+              }
+            }}
+          >
+            <img src={LeftArrow} alt="" class="xl:w-5 xl:h-5 w-7 h-7" />
+            <div class="xl:text-sm text-2xl font-medium">
+              {#if type.length === 0}
+                Portfolio
+              {:else}
+                Back
+              {/if}
             </div>
           </div>
+        </div>
 
-          <div class="flex flex-col gap-3">
-            <div class="flex items-center gap-2 text-white">
-              <div class="text-4xl font-semibold">Virtual Portfolio</div>
-            </div>
-            <div class="hidden text-2xl xl:text-base xl:block">
-              <Copy address={$wallet} iconColor="#fff" color="#fff" />
-            </div>
-            <div class="block text-2xl xl:text-base xl:hidden">
-              <Copy
-                address={$wallet}
-                iconColor="#fff"
-                color="#fff"
-                isShorten
-                iconSize={24}
-              />
-            </div>
+        <div class="flex flex-col gap-3">
+          <div class="flex items-center gap-2 text-white">
+            <div class="text-4xl font-semibold">Virtual Portfolio</div>
           </div>
+          <div class="hidden text-2xl xl:text-base xl:block">
+            <Copy address={$wallet} iconColor="#fff" color="#fff" />
+          </div>
+          <div class="block text-2xl xl:text-base xl:hidden">
+            <Copy
+              address={$wallet}
+              iconColor="#fff"
+              color="#fff"
+              isShorten
+              iconSize={24}
+            />
+          </div>
+        </div>
 
-          {#if type.length === 0}
+        {#if type.length === 0}
+          {#if $queryVirtualPortfolioProfile.isFetching}
+            <div class="flex items-center justify-center">
+              <Loading />
+            </div>
+          {:else}
             <div
               class="flex lg:flex-row flex-col lg:items-center items-start justify-between gap-6"
             >
@@ -685,61 +690,61 @@
               </div>
             </div>
           {/if}
-        </div>
+        {/if}
       </div>
     </div>
+  </div>
 
-    <div
-      class="xl:min-h-screen max-w-[2000px] m-auto xl:w-[90%] w-[90%] xl:-mt-26 -mt-34"
-    >
-      {#if type.length === 0}
-        <div
-          class="virtual_portfolio_container rounded-[20px] xl:p-8 p-4 xl:shadow-md"
-        >
-          {#if selectedVirtualPortfolio && Object.keys(selectedVirtualPortfolio).length !== 0 && selectedVirtualPortfolio?.status === "PUBLIC"}
-            <VirtualPortfolio
-              {listTokenHolding}
-              isLoading={$queryVirtualPortfolio.isFetching &&
-                $queryVirtualPortfolioProfile.isFetching}
-            />
-          {:else}
-            <div
-              class="border border_0000001a rounded-[20px] px-6 py-12 flex items-center gap-2 justify-center"
-            >
-              {#if virtualPortfolioId && selectedVirtualPortfolio && Object.keys(selectedVirtualPortfolio).length !== 0}
-                You can not access this private virtual portfolio from user <Copy
-                  address={$wallet}
-                  iconColor={$isDarkMode ? "#fff" : "#000"}
-                  color={$isDarkMode ? "#fff" : "#000"}
-                  isShorten
-                  iconSize={20}
-                />
-              {:else}
-                Empty
-              {/if}
-            </div>
-          {/if}
-        </div>
-      {:else}
-        <div
-          class="virtual_portfolio_container rounded-[20px] xl:p-8 p-4 xl:shadow-md"
-        >
-          <FormVirtualPortfolio
-            {listVirtualPortfolio}
-            defaultData={{
-              ...dataVirtualPortfolio[virtualPortfolioId],
-              networth: selectedVirtualPortfolio?.networth || 0,
-              coins: listTokenHolding,
-            }}
-            {handleSubmit}
-            {handleCancel}
-            {isLoading}
-            {type}
+  <div
+    class="xl:min-h-screen max-w-[2000px] m-auto xl:w-[90%] w-[90%] xl:-mt-26 -mt-34"
+  >
+    {#if type.length === 0}
+      <div
+        class="virtual_portfolio_container rounded-[20px] xl:p-8 p-4 xl:shadow-md"
+      >
+        {#if selectedVirtualPortfolio && Object.keys(selectedVirtualPortfolio).length !== 0 && (selectedVirtualPortfolio?.status === "PUBLIC" || (selectedVirtualPortfolio && selectedVirtualPortfolio.owner.toLowerCase() !== $userPublicAddress.toLowerCase()))}
+          <VirtualPortfolio
+            {listTokenHolding}
+            isLoading={$queryVirtualPortfolio.isFetching ||
+              $queryVirtualPortfolioProfile.isFetching}
           />
-        </div>
-      {/if}
-    </div>
-  {/if}
+        {:else}
+          <div
+            class="border border_0000001a rounded-[20px] px-6 py-12 flex items-center gap-2 justify-center"
+          >
+            {#if !virtualPortfolioId || (selectedVirtualPortfolio && Object.keys(selectedVirtualPortfolio).length === 0)}
+              Empty
+            {:else}
+              You can not access this private virtual portfolio from user <Copy
+                address={$wallet}
+                iconColor={$isDarkMode ? "#fff" : "#000"}
+                color={$isDarkMode ? "#fff" : "#000"}
+                isShorten
+                iconSize={20}
+              />
+            {/if}
+          </div>
+        {/if}
+      </div>
+    {:else}
+      <div
+        class="virtual_portfolio_container rounded-[20px] xl:p-8 p-4 xl:shadow-md"
+      >
+        <FormVirtualPortfolio
+          {listVirtualPortfolio}
+          defaultData={{
+            ...dataVirtualPortfolio[virtualPortfolioId],
+            networth: selectedVirtualPortfolio?.networth || 0,
+            coins: listTokenHolding,
+          }}
+          {handleSubmit}
+          {handleCancel}
+          {isLoading}
+          {type}
+        />
+      </div>
+    {/if}
+  </div>
 </ErrorBoundary>
 
 <!-- Modal confirm delete virtual portfolio -->

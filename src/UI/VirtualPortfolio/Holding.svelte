@@ -258,7 +258,7 @@
                     </div>
                   </div>
 
-                  <div class="py-3">
+                  <div class="bg_f4f5f8 py-3">
                     <div class="text-right text-xs uppercase font-medium">
                       % Price Change
                     </div>
