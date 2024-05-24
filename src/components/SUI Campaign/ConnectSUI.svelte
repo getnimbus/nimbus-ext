@@ -148,7 +148,8 @@
       const res: any = await nimbus.post("/accounts/link", params);
       if (res && res?.error) {
         triggerToast(
-          "Something wrong when connect your Sui wallet. Please try again!",
+          res?.error ||
+            "Something wrong when connect your Sui wallet. Please try again!",
           "fail"
         );
         return;
@@ -166,6 +167,12 @@
         "fail"
       );
     } finally {
+      if (
+        ($suiWalletInstance as WalletState) &&
+        ($suiWalletInstance as WalletState).connected
+      ) {
+        ($suiWalletInstance as WalletState).disconnect();
+      }
       isTrigger = false;
     }
   };
