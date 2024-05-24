@@ -148,6 +148,12 @@
       );
     } finally {
       isTrigger = false;
+      if (
+        ($suiWalletInstance as WalletState) &&
+        ($suiWalletInstance as WalletState).connected
+      ) {
+        ($suiWalletInstance as WalletState).disconnect();
+      }
     }
   };
 </script>
