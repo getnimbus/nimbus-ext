@@ -89,7 +89,6 @@
 
       triggerToast("You can claim your GMs nows!", "success");
 
-      queryClient?.invalidateQueries(["partners-detail-campaign"]);
       queryClient?.invalidateQueries(["quests-campaign"]);
     } catch (e) {
       console.error(e);
@@ -121,7 +120,6 @@
       triggerBonusScore(data?.point, 2000);
       queryClient?.invalidateQueries(["users-me"]);
       queryClient?.invalidateQueries([$userPublicAddress, "daily-checkin"]);
-      queryClient?.invalidateQueries(["partners-detail-campaign"]);
       queryClient?.invalidateQueries(["quests-campaign"]);
     } catch (e) {
       console.error(e);
