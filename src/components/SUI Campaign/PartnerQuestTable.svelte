@@ -114,7 +114,6 @@
         return;
       }
       queryClient?.invalidateQueries(["partners-detail-campaign"]);
-      queryClient?.invalidateQueries(["quests-campaign"]);
     } catch (e) {
       console.error(e);
       triggerToast(
@@ -143,7 +142,6 @@
       queryClient?.invalidateQueries(["users-me"]);
       queryClient?.invalidateQueries([$userPublicAddress, "daily-checkin"]);
       queryClient?.invalidateQueries(["partners-detail-campaign"]);
-      queryClient?.invalidateQueries(["quests-campaign"]);
     } catch (e) {
       console.error(e);
       triggerToast(
