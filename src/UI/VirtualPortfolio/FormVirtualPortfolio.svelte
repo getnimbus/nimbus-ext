@@ -630,7 +630,7 @@
                 coins: selectedTokenList.map((item) => {
                   return {
                     coin: item.id.toString(),
-                    percent: item.percent,
+                    percent: Number(item.percent),
                     logo: item.logo,
                     name: item.name,
                     symbol: item.symbol,

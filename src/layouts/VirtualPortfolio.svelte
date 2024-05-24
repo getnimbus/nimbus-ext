@@ -30,6 +30,7 @@
   let virtualPortfolioId = "";
   let dataVirtualPortfolio = {};
   let listTokenHolding = [];
+  let totalNetworth = 0;
 
   const initialUpdateStateFromParams = () => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -242,6 +243,11 @@
         percent: (Number(item.value) / Number(totalValues)) * 100,
       };
     });
+
+    totalNetworth = listTokenHolding.reduce(
+      (prev, item) => prev + Number(item?.value),
+      0
+    );
   };
 
   $: queryVirtualPortfolio = createQuery({
@@ -322,8 +328,8 @@
 
       if (type === "edit") {
         const responseEdit: any = await nimbus.put(
-          `/address/${$wallet}/personalize/virtual-portfolio?portfolioName=${dataVirtualPortfolio[virtualPortfolioId]?.portfolioName}&portfolioProfileId=${virtualPortfolioId}`,
-          data
+          `/address/${$wallet}/personalize/virtual-portfolio?portfolioName=${dataVirtualPortfolio[virtualPortfolioId]?.portfolioName}&portfolioProfileId=${virtualPortfolioId}&networth=${totalNetworth}`,
+          { ...data, virtualPortfolioNetworth }
         );
         if (responseEdit && responseEdit?.error) {
           triggerToast(
