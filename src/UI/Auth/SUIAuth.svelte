@@ -11,15 +11,47 @@
   } from "~/store";
   import { nimbus } from "~/lib/network";
   import { triggerToast } from "~/utils/functions";
+  import { SuiConnector } from "nimbus-sui-kit";
 
-  import SuiAdapterWrapped from "~/components/SUIAdapterWrapped.svelte";
+  import ReactAdapter from "~/components/ReactAdapter.svelte";
 
   import User from "~/assets/user.png";
   import SUI from "~/assets/chains/sui.png";
 
+  const chains = [
+    {
+      id: "sui:mainnet",
+      name: "Mainnet",
+      rpcUrl: "https://fullnode.mainnet.sui.io",
+    },
+  ];
+
+  const onConnectSuccess = (msg) => {
+    console.log("Success connect: ", msg);
+    if ($suiWalletInstance) {
+      ($suiWalletInstance as WalletState).toggleSelect();
+    }
+  };
+
+  const onConnectError = (msg) => {
+    console.error("Error connect", msg);
+    if ($suiWalletInstance) {
+      ($suiWalletInstance as WalletState).toggleSelect();
+    }
+  };
+
+  const widgetConfig = {
+    walletFn: (wallet) => {
+      suiWalletInstance.update((n) => (n = wallet));
+    },
+    onConnectSuccess,
+    onConnectError,
+  };
+
   const queryClient = useQueryClient();
 
   let invitation = "";
+  let isTrigger = false;
 
   onMount(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -32,6 +64,7 @@
   const handleSUIAuth = async () => {
     mixpanel.track("user_login_sui");
     try {
+      isTrigger = true;
       ($suiWalletInstance as WalletState).toggleSelect();
     } catch (e) {
       console.log("error: ", e);
@@ -41,7 +74,8 @@
   $: {
     if (
       ($suiWalletInstance as WalletState) &&
-      ($suiWalletInstance as WalletState).connected
+      ($suiWalletInstance as WalletState).connected &&
+      isTrigger
     ) {
       handleGetNonce(($suiWalletInstance as WalletState)?.account?.address);
     }
@@ -73,6 +107,7 @@
       ) {
         ($suiWalletInstance as WalletState).disconnect();
       }
+      isTrigger = false;
     }
   };
 
@@ -111,22 +146,28 @@
         "There are some problem when login Sui account. Please try again!",
         "fail"
       );
+    } finally {
+      isTrigger = false;
     }
   };
 </script>
 
-<SuiAdapterWrapped>
-  <div
-    class={`flex items-center justify-center gap-3 text-white border cursor-pointer rounded-[12px] w-[219px] h-[42px] ${
-      $isDarkMode
-        ? "border-white text-white"
-        : "border-[#27326f] text-[#27326f]"
-    }`}
-    on:click={handleSUIAuth}
-  >
-    <img src={SUI} class="h-[24px] w-[24px]" />
-    <div class="font-normal text-[15px]">Log in with Sui</div>
-  </div>
-</SuiAdapterWrapped>
+<div
+  class={`flex items-center justify-center gap-3 text-white border cursor-pointer rounded-[12px] w-[219px] h-[42px] ${
+    $isDarkMode ? "border-white text-white" : "border-[#27326f] text-[#27326f]"
+  }`}
+  on:click={handleSUIAuth}
+>
+  <img src={SUI} class="h-[24px] w-[24px]" />
+  <div class="font-normal text-[15px]">Log in with Sui</div>
+</div>
+
+<ReactAdapter
+  element={SuiConnector}
+  config={widgetConfig}
+  autoConnect={false}
+  {chains}
+  integrator="svelte-example"
+/>
 
 <style windi:preflights:global windi:safelist:global></style>

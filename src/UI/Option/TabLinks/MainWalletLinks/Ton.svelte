@@ -14,7 +14,7 @@
 
   const handleTonAuth = async () => {
     const uuid = uuidv4();
-    if ($tonConnector.connected) {
+    if ($tonConnector?.connected) {
       $tonConnector.disconnect();
     }
     handleGetNonce(uuid);

@@ -6,14 +6,46 @@
   import { nimbus } from "~/lib/network";
   import { getLinkData, handleValidateAddress } from "~/lib/queryAPI";
   import { onMount } from "svelte";
+  import { SuiConnector } from "nimbus-sui-kit";
 
-  import SuiAdapterWrapped from "~/components/SUIAdapterWrapped.svelte";
+  import ReactAdapter from "~/components/ReactAdapter.svelte";
   import Copy from "~/components/Copy.svelte";
 
   import goldImg from "~/assets/Gold4.svg";
   import SUI from "~/assets/chains/sui.png";
 
+  const chains = [
+    {
+      id: "sui:mainnet",
+      name: "Mainnet",
+      rpcUrl: "https://fullnode.mainnet.sui.io",
+    },
+  ];
+
+  const onConnectSuccess = (msg) => {
+    console.log("Success connect: ", msg);
+    if ($suiWalletInstance) {
+      ($suiWalletInstance as WalletState).toggleSelect();
+    }
+  };
+
+  const onConnectError = (msg) => {
+    console.error("Error connect", msg);
+    if ($suiWalletInstance) {
+      ($suiWalletInstance as WalletState).toggleSelect();
+    }
+  };
+
+  const widgetConfig = {
+    walletFn: (wallet) => {
+      suiWalletInstance.update((n) => (n = wallet));
+    },
+    onConnectSuccess,
+    onConnectError,
+  };
+
   let selectedDataSUILink: any = {};
+  let isTrigger = false;
 
   $: queryLinkSocial = createQuery({
     queryKey: ["link-socials"],
@@ -49,6 +81,7 @@
 
   const handleSUIAuth = async () => {
     try {
+      isTrigger = true;
       ($suiWalletInstance as WalletState).toggleSelect();
     } catch (e) {
       console.log("error: ", e);
@@ -58,7 +91,8 @@
   $: {
     if (
       ($suiWalletInstance as WalletState) &&
-      ($suiWalletInstance as WalletState).connected
+      ($suiWalletInstance as WalletState).connected &&
+      isTrigger
     ) {
       handleGetNonce(($suiWalletInstance as WalletState)?.account?.address);
     }
@@ -89,6 +123,7 @@
       ) {
         ($suiWalletInstance as WalletState).disconnect();
       }
+      isTrigger = false;
     }
   };
 
@@ -130,38 +165,46 @@
         "Something wrong when connect your Sui wallet. Please try again!",
         "fail"
       );
+    } finally {
+      isTrigger = false;
     }
   };
 </script>
 
-<SuiAdapterWrapped>
-  {#if selectedDataSUILink && Object.keys(selectedDataSUILink).length !== 0}
+{#if selectedDataSUILink && Object.keys(selectedDataSUILink).length !== 0}
+  <div
+    class="flex justify-center items-center gap-3 text-white bg-[#1e96fc] py-3 px-2 rounded-[10px] cursor-pointer xl:w-[280px] w-max"
+  >
+    <img src={SUI} alt="" width="24" height="24" />
+    <Copy
+      address={selectedDataSUILink?.uid}
+      iconColor={"#fff"}
+      color={"#fff"}
+      isShorten
+    />
+  </div>
+{:else}
+  <div
+    class="flex justify-center items-center gap-3 text-white bg-[#1e96fc] py-1 px-2 rounded-[10px] cursor-pointer xl:w-[280px] w-max"
+    on:click={handleSUIAuth}
+  >
+    Connect SUI Wallet
     <div
-      class="flex justify-center items-center gap-3 text-white bg-[#1e96fc] py-3 px-2 rounded-[10px] cursor-pointer xl:w-[280px] w-max"
+      class="flex items-center gap-1 text-sm font-medium bg-[#27326F] py-1 px-2 text-white rounded-[10px]"
     >
-      <img src={SUI} alt="" width="24" height="24" />
-      <Copy
-        address={selectedDataSUILink?.uid}
-        iconColor={"#fff"}
-        color={"#fff"}
-        isShorten
-      />
+      1000
+      <img src={goldImg} alt="" class="w-6 h-6" />
     </div>
-  {:else}
-    <div
-      class="flex justify-center items-center gap-3 text-white bg-[#1e96fc] py-1 px-2 rounded-[10px] cursor-pointer xl:w-[280px] w-max"
-      on:click={handleSUIAuth}
-    >
-      Connect SUI Wallet
-      <div
-        class="flex items-center gap-1 text-sm font-medium bg-[#27326F] py-1 px-2 text-white rounded-[10px]"
-      >
-        1000
-        <img src={goldImg} alt="" class="w-6 h-6" />
-      </div>
-    </div>
-  {/if}
-</SuiAdapterWrapped>
+  </div>
+{/if}
+
+<ReactAdapter
+  element={SuiConnector}
+  config={widgetConfig}
+  autoConnect={false}
+  {chains}
+  integrator="svelte-example"
+/>
 
 <style windi:preflights:global windi:safelist:global>
 </style>
