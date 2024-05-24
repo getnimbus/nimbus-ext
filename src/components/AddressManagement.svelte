@@ -467,7 +467,12 @@
           addresses: [$userPublicAddress],
         }),
       ]);
-      if (resAddAccount && !resAddAccount?.error && resAddBundle) {
+      if (
+        resAddAccount &&
+        !resAddAccount?.error &&
+        resAddBundle &&
+        !resAddBundle?.error
+      ) {
         wallet.update((n) => (n = $userPublicAddress));
         queryClient.invalidateQueries(["list-bundle"]);
         queryClient.invalidateQueries(["list-address"]);
