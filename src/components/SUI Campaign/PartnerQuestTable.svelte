@@ -108,8 +108,12 @@
       const response: any = await nimbus.get(
         `/v2/quest/${selectedQuestId}/verify`
       );
-      if (response && !response?.data?.success) {
-        triggerToast(response?.data?.message, "fail");
+      if (response && response?.error) {
+        triggerToast(
+          response?.error ||
+            "Something wrong when claim quest reward. Please try again!",
+          "fail"
+        );
         selectedQuestId = "";
         return;
       }
