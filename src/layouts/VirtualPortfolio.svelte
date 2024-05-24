@@ -32,6 +32,17 @@
 
   const queryClient = useQueryClient();
 
+  let container;
+  let scrollContainer;
+  let isScrollStart = true;
+  let isScrollEnd = false;
+
+  const handleScroll = () => {
+    const { scrollLeft, scrollWidth, clientWidth } = scrollContainer;
+    isScrollStart = scrollLeft === 0;
+    isScrollEnd = scrollLeft + clientWidth >= scrollWidth - 1;
+  };
+
   let listVirtualPortfolio = [];
   let selectedVirtualPortfolio: any = {};
   let virtualPortfolioId = "";
@@ -69,8 +80,8 @@
   });
 
   $: queryVirtualPortfolioProfile = createQuery({
-    queryKey: ["virtual-portfolio-profile", $wallet],
-    queryFn: () => getVirtualPortfolioProfile($wallet),
+    queryKey: ["virtual-portfolio-profile", $wallet, $userPublicAddress],
+    queryFn: () => getVirtualPortfolioProfile($wallet, $userPublicAddress),
     staleTime: Infinity,
     retry: false,
     enabled: Boolean($wallet && $wallet.length !== 0),
@@ -84,6 +95,34 @@
       handleFormatListVirtualPortfolio(
         $queryVirtualPortfolioProfile?.data?.data || []
       );
+    }
+  }
+
+  $: queryVirtualPortfolio = createQuery({
+    queryKey: ["virtual-portfolio", virtualPortfolioId, $wallet],
+    queryFn: () => getVirtualPortfolio($wallet, virtualPortfolioId),
+    staleTime: Infinity,
+    retry: false,
+    enabled: Boolean(
+      $wallet &&
+        $wallet.length !== 0 &&
+        virtualPortfolioId &&
+        virtualPortfolioId?.length !== 0 &&
+        !$queryVirtualPortfolioProfile.isError &&
+        $queryVirtualPortfolioProfile.data !== undefined &&
+        $queryVirtualPortfolioProfile?.data?.data.length !== 0
+    ),
+  });
+
+  $: {
+    if (
+      !$queryVirtualPortfolio.isError &&
+      $queryVirtualPortfolio.data !== undefined &&
+      !$queryVirtualPortfolioProfile.isError &&
+      $queryVirtualPortfolioProfile.data !== undefined &&
+      $queryVirtualPortfolioProfile?.data?.data.length !== 0
+    ) {
+      formatDataVirtualPortfolio($queryVirtualPortfolio?.data?.data);
     }
   }
 
@@ -257,45 +296,6 @@
     );
   };
 
-  $: queryVirtualPortfolio = createQuery({
-    queryKey: ["virtual-portfolio", $wallet, virtualPortfolioId],
-    queryFn: () => getVirtualPortfolio($wallet, virtualPortfolioId),
-    staleTime: Infinity,
-    retry: false,
-    enabled: Boolean(
-      $wallet &&
-        $wallet.length !== 0 &&
-        virtualPortfolioId &&
-        virtualPortfolioId?.length !== 0 &&
-        !$queryVirtualPortfolioProfile.isError &&
-        $queryVirtualPortfolioProfile.data !== undefined &&
-        $queryVirtualPortfolioProfile?.data?.data.length !== 0
-    ),
-  });
-
-  $: {
-    if (
-      !$queryVirtualPortfolio.isError &&
-      $queryVirtualPortfolio.data !== undefined &&
-      !$queryVirtualPortfolioProfile.isError &&
-      $queryVirtualPortfolioProfile.data !== undefined &&
-      $queryVirtualPortfolioProfile?.data?.data.length !== 0
-    ) {
-      formatDataVirtualPortfolio($queryVirtualPortfolio?.data?.data);
-    }
-  }
-
-  let container;
-  let scrollContainer;
-  let isScrollStart = true;
-  let isScrollEnd = false;
-
-  const handleScroll = () => {
-    const { scrollLeft, scrollWidth, clientWidth } = scrollContainer;
-    isScrollStart = scrollLeft === 0;
-    isScrollEnd = scrollLeft + clientWidth >= scrollWidth - 1;
-  };
-
   let showDisable = false;
 
   let isOpenConfirmDelete = false;
@@ -317,6 +317,7 @@
           {
             ...data,
             virtualPortfolioNetworth,
+            createdOwner: $userPublicAddress,
           }
         );
         if (responseAdd && responseAdd?.error) {
@@ -336,7 +337,11 @@
       if (type === "edit") {
         const responseEdit: any = await nimbus.put(
           `/address/${$wallet}/personalize/virtual-portfolio?portfolioName=${dataVirtualPortfolio[virtualPortfolioId]?.portfolioName}&portfolioProfileId=${virtualPortfolioId}&networth=${totalNetworth}`,
-          { ...data, virtualPortfolioNetworth }
+          {
+            ...data,
+            virtualPortfolioNetworth,
+            createdOwner: $userPublicAddress,
+          }
         );
         if (responseEdit && responseEdit?.error) {
           triggerToast(
@@ -490,6 +495,7 @@
                             selectedVirtualPortfolio?.name}
                           on:click={() => {
                             selectedVirtualPortfolio = item;
+                            virtualPortfolioId = item.id;
                           }}
                         >
                           {item.name}
@@ -562,6 +568,7 @@
                           selectedVirtualPortfolio?.name}
                         on:click={() => {
                           selectedVirtualPortfolio = item;
+                          virtualPortfolioId = item.id;
                         }}
                       >
                         {item.name}
@@ -702,18 +709,16 @@
       <div
         class="virtual_portfolio_container rounded-[20px] xl:p-8 p-4 xl:shadow-md"
       >
-        {#if selectedVirtualPortfolio && Object.keys(selectedVirtualPortfolio).length !== 0 && (selectedVirtualPortfolio?.status === "PUBLIC" || (selectedVirtualPortfolio && selectedVirtualPortfolio.owner.toLowerCase() !== $userPublicAddress.toLowerCase()))}
-          <VirtualPortfolio
-            {listTokenHolding}
-            isLoading={$queryVirtualPortfolio.isFetching ||
-              $queryVirtualPortfolioProfile.isFetching}
-          />
-        {:else}
+        {#if selectedVirtualPortfolio && Object.keys(selectedVirtualPortfolio).length !== 0 && selectedVirtualPortfolio?.status === "PRIVATE" && selectedVirtualPortfolio?.createdOwner?.toLowerCase() !== $userPublicAddress?.toLowerCase()}
           <div
             class="border border_0000001a rounded-[20px] px-6 py-12 flex items-center gap-2 justify-center"
           >
             {#if !virtualPortfolioId || (selectedVirtualPortfolio && Object.keys(selectedVirtualPortfolio).length === 0)}
-              Empty
+              {#if $queryVirtualPortfolio.isFetching || $queryVirtualPortfolioProfile.isFetching}
+                <Loading />
+              {:else}
+                Empty
+              {/if}
             {:else}
               You can not access this private virtual portfolio from user <Copy
                 address={$wallet}
@@ -724,6 +729,12 @@
               />
             {/if}
           </div>
+        {:else}
+          <VirtualPortfolio
+            {listTokenHolding}
+            isLoading={$queryVirtualPortfolio.isFetching ||
+              $queryVirtualPortfolioProfile.isFetching}
+          />
         {/if}
       </div>
     {:else}
