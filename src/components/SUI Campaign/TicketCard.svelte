@@ -66,7 +66,7 @@
 >
   <div class="px-[16px] flex items-center h-full gap-[27px]">
     <div
-      class={`w-[135px] relative rounded-2xl p-2 flex items-center h-full justify-center ${
+      class={`relative w-[135px] relative rounded-2xl p-2 flex items-center h-full justify-center ${
         $isDarkMode ? "" : "bg-white"
       }`}
     >

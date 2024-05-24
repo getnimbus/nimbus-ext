@@ -423,17 +423,18 @@
                   />
                 {/each}
 
-                {#if socialData.find((item) => item.chain === "MOVE")}
-                  {#each rewardPartner || [] as item}
-                    <PartnerCard
-                      isRedeem
-                      data={item}
-                      handleRedeemPartnerCard={handleRedeemCampaign}
-                      {isLoadingRedeem}
-                      {totalPoint}
-                    />
-                  {/each}
-                {/if}
+                {#each rewardPartner || [] as item}
+                  <PartnerCard
+                    isRedeem
+                    data={item}
+                    handleRedeemPartnerCard={handleRedeemCampaign}
+                    {isLoadingRedeem}
+                    {totalPoint}
+                    isConnectSUI={socialData.find(
+                      (item) => item.chain === "MOVE"
+                    )}
+                  />
+                {/each}
 
                 {#each rewardTicket || [] as item}
                   <TicketCard
@@ -491,16 +492,17 @@
                 />
               {/each}
 
-              {#if socialData.find((item) => item.chain === "MOVE")}
-                {#each $queryReward?.data?.ownRewards.filter((item) => item?.campaignName === "sui-unlock" && (item.title === "PANDORA_IDO_WHITELIST" || item.title === "ATLANSUI_NFT_WHITELIST")) || [] as item}
-                  <PartnerCard
-                    data={item}
-                    handleRedeemPartnerCard={() => {}}
-                    {isLoadingRedeem}
-                    {totalPoint}
-                  />
-                {/each}
-              {/if}
+              {#each $queryReward?.data?.ownRewards.filter((item) => item?.campaignName === "sui-unlock" && (item.title === "PANDORA_IDO_WHITELIST" || item.title === "ATLANSUI_NFT_WHITELIST")) || [] as item}
+                <PartnerCard
+                  data={item}
+                  handleRedeemPartnerCard={() => {}}
+                  {isLoadingRedeem}
+                  {totalPoint}
+                  isConnectSUI={socialData.find(
+                    (item) => item.chain === "MOVE"
+                  )}
+                />
+              {/each}
             </div>
           </div>
         {/if}
