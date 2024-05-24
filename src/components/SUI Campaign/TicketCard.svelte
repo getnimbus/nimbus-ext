@@ -60,7 +60,7 @@
 </script>
 
 <div
-  class={`py-4 sm:w-[438px] w-full min-h-[280px] rounded-[16px] border border_0000000d flex flex-col justify-between gap-4 mx-auto ${
+  class={`py-4 max-w-[438px] w-full min-h-[280px] rounded-[16px] border border_0000000d flex flex-col justify-between gap-4 mx-auto ${
     $isDarkMode ? "bg-[#212121]" : "bg-white"
   }`}
 >

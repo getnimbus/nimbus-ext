@@ -170,7 +170,7 @@
           {/if}
         {/each}
 
-        {#if data && data?.length === 0}
+        {#if dataSocials && dataSocials?.length === 0}
           <Google
             data={{}}
             {selectedDisplayName}
