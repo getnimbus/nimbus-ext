@@ -209,9 +209,16 @@
               }`}
             >
               <div
-                class={`text-left text-base font-medium ${data.type === "ONCHAIN" ? "text-[#ffb800]" : $isDarkMode ? "text-white" : "text-black"}`}
+                class={`flex items-center gap-2 text-left text-base font-medium ${data.type === "ONCHAIN" ? "text-[#ffb800]" : $isDarkMode ? "text-white" : "text-black"}`}
               >
                 {data?.title}
+                {#if data?.type === "ONCHAIN"}
+                  <div
+                    class="text-xs rounded-full px-1 py-[2px] bg-[#ffb8004d]"
+                  >
+                    On-chain
+                  </div>
+                {/if}
               </div>
               <div class="text-left text-sm w-[400px]">
                 {data?.description}

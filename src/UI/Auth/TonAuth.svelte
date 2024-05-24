@@ -30,7 +30,7 @@
   const handleTonAuth = async () => {
     mixpanel.track("user_login_ton");
     const uuid = uuidv4();
-    if ($tonConnector.connected) {
+    if ($tonConnector?.connected) {
       $tonConnector.disconnect();
     }
     handleGetNonce(uuid);

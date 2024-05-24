@@ -210,18 +210,6 @@
     staleTime: Infinity,
     retry: false,
     enabled: $user && Object.keys($user).length !== 0,
-    onSuccess(data) {
-      if (
-        data &&
-        data?.length === 0 &&
-        (localStorage.getItem("solana_token") ||
-          localStorage.getItem("evm_token") ||
-          localStorage.getItem("sui_token") ||
-          localStorage.getItem("ton_token"))
-      ) {
-        handleCreateUser();
-      }
-    },
   });
 
   $: {
@@ -450,32 +438,6 @@
     }
 
     initialUpdateStateFromParams();
-  };
-
-  const handleCreateUser = async () => {
-    await wait(200);
-    try {
-      const [resAddAccount, resAddBundle]: any = await Promise.all([
-        await nimbus.post("/accounts", {
-          type: "DEX",
-          publicAddress: $userPublicAddress,
-          accountId: $userPublicAddress,
-          label: "My address",
-        }),
-        await nimbus.post("/address/personalize/bundle", {
-          name: "Your wallets",
-          addresses: [$userPublicAddress],
-        }),
-      ]);
-      if (resAddAccount && !resAddAccount?.error && resAddBundle) {
-        wallet.update((n) => (n = $userPublicAddress));
-        queryClient.invalidateQueries(["list-bundle"]);
-        queryClient.invalidateQueries(["list-address"]);
-        mixpanel.track("user_add_address");
-      }
-    } catch (e) {
-      console.error(e);
-    }
   };
 
   // Add DEX address account

@@ -17,10 +17,11 @@
   export let handleRedeemPartnerCard = (value) => {};
   export let isLoadingRedeem;
   export let totalPoint;
+  export let isConnectSUI;
 </script>
 
 <div
-  class={`py-4 sm:w-[438px] w-full min-h-[280px] rounded-[16px] border border_0000000d flex flex-col justify-between gap-4 mx-auto ${
+  class={`py-4 max-w-[438px] w-full min-h-[280px] rounded-[16px] border border_0000000d flex flex-col justify-between gap-4 mx-auto ${
     $isDarkMode ? "bg-[#212121]" : "bg-white"
   }`}
 >
@@ -84,7 +85,7 @@
             </div>
           {/if}
 
-          {#if Number(data.cap) - Number(data.sold) > 0 && isRedeem && totalPoint >= data?.cost}
+          {#if Number(data.cap) - Number(data.sold) > 0 && isRedeem && totalPoint >= data?.cost && isConnectSUI}
             <Button
               variant="tertiary"
               on:click={() => {
@@ -111,6 +112,8 @@
                     "You are not enough GM Points to Redeem",
                     "fail"
                   );
+                } else if (!isConnectSUI) {
+                  triggerToast("Connect SUI wallet to Redeem", "fail");
                 } else {
                   triggerToast("There are not available now", "fail");
                 }
