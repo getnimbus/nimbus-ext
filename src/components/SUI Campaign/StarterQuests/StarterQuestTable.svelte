@@ -105,9 +105,9 @@
     try {
       isLoading = true;
       const response: any = await nimbus.get(`/v2/quest/${data?.id}/claim`);
-      if (response && !response?.data?.success) {
+      if (response && response?.error) {
         triggerToast(
-          response?.data?.message ||
+          response?.error ||
             "Something wrong when claim quest reward. Please try again!",
           "fail"
         );
