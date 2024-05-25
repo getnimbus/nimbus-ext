@@ -126,34 +126,6 @@
 
   const queryClient = useQueryClient();
 
-  const nameTypeCheckin = (
-    type:
-      | "QUEST"
-      | "CHECK_IN"
-      | "REDEEM"
-      | "BONUS 5%"
-      | "SWAP"
-      | "REFERRAL"
-      | "GM_POINTS"
-  ) => {
-    switch (type) {
-      case "QUEST":
-        return "Quest";
-      case "CHECK_IN":
-        return "Check in";
-      case "REDEEM":
-        return "Redeem";
-      case "GM_POINTS":
-        return "GM Points";
-      case "BONUS 5%":
-        return "Bonus 5%";
-      case "SWAP":
-        return "Swap";
-      case "REFERRAL":
-        return "Referral";
-    }
-  };
-
   const triggerCheckinSuccess = async () => {
     openScreenSuccess = true;
     triggerFirework();
@@ -267,7 +239,7 @@
     ?.map((item) => {
       return {
         ...item,
-        type: nameTypeCheckin(item?.type),
+        type: item.type,
         point: item.point,
       };
     });
@@ -313,7 +285,7 @@
       defaultDataCheckinHistory = dataCheckinHistory.map((item) => {
         return {
           ...item,
-          type: nameTypeCheckin(item?.type),
+          type: item.type,
         };
       });
     }
@@ -360,7 +332,7 @@
       defaultDataCheckinHistory = dataCheckinHistory.map((item) => {
         return {
           ...item,
-          type: nameTypeCheckin(item?.type),
+          type: item.type,
           point: item.point,
         };
       });

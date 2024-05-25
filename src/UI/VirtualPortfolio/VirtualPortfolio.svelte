@@ -1,22 +1,53 @@
 <script lang="ts">
-  export let selectedVirtualPortfolio;
+  import { wallet } from "~/store";
+  import { createQuery } from "@tanstack/svelte-query";
+  import { getVirtualPortfolioPerformance } from "~/lib/queryAPI";
+
+  export let listTokenHolding;
+  export let isLoading;
+  export let isQuery;
+  export let virtualPortfolioId;
+
+  import Allocation from "./Allocation.svelte";
+  import Performance from "./Performance.svelte";
+  import Holding from "./Holding.svelte";
+
+  $: queryVirtualPortfolioPerformance = createQuery({
+    queryKey: ["virtual-portfolio-performance", $wallet, virtualPortfolioId],
+    queryFn: () => getVirtualPortfolioPerformance($wallet, virtualPortfolioId),
+    staleTime: Infinity,
+    retry: false,
+    enabled: Boolean(
+      $wallet &&
+        $wallet?.length !== 0 &&
+        isQuery &&
+        virtualPortfolioId &&
+        virtualPortfolioId?.length !== 0
+    ),
+  });
+
+  let dataVirtualPortfolioPerformance = {};
+
+  $: {
+    if (
+      !$queryVirtualPortfolioPerformance.isError &&
+      $queryVirtualPortfolioPerformance.data !== undefined
+    ) {
+      dataVirtualPortfolioPerformance =
+        $queryVirtualPortfolioPerformance.data?.data;
+    }
+  }
 </script>
 
 <div class="flex flex-col gap-6">
-  {selectedVirtualPortfolio?.name}
   <div class="grid xl:grid-cols-2 grid-cols-1 gap-6">
-    <div class="border border_0000001a rounded-[20px] p-6 flex flex-col gap-4">
-      Allocation
-    </div>
-
-    <div class="border border_0000001a rounded-[20px] p-6 flex flex-col gap-4">
-      Performance
-    </div>
+    <Allocation {isLoading} {listTokenHolding} />
+    <Performance
+      isLoading={isLoading || $queryVirtualPortfolioPerformance.isFetching}
+      {dataVirtualPortfolioPerformance}
+    />
   </div>
-
-  <div class="border border_0000001a rounded-[20px] p-6 flex flex-col gap-4">
-    Holding
-  </div>
+  <Holding {isLoading} {listTokenHolding} />
 </div>
 
 <style windi:preflights:global windi:safelist:global></style>

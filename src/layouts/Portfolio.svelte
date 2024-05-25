@@ -43,7 +43,6 @@
     getVaults,
     getHoldingNFT,
   } from "~/lib/queryAPI";
-  import { navigateTo } from "svelte-router-spa";
 
   import AddressManagement from "~/components/AddressManagement.svelte";
   import Overview from "~/UI/Portfolio/Overview.svelte";
