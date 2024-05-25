@@ -9,6 +9,7 @@
     user,
     isDarkMode,
     userPublicAddress,
+    selectedPackage,
   } from "~/store";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
@@ -19,6 +20,7 @@
   import { triggerToast } from "~/utils/functions";
   import * as browser from "webextension-polyfill";
 
+  import Select from "~/components/Select.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import Button from "~/components/Button.svelte";
@@ -41,6 +43,52 @@
     const { scrollLeft, scrollWidth, clientWidth } = scrollContainer;
     isScrollStart = scrollLeft === 0;
     isScrollEnd = scrollLeft + clientWidth >= scrollWidth - 1;
+  };
+
+  let isDisabled = false;
+  let tooltipDisableAddBtn = "";
+  let showDisabledSelectWallet = false;
+
+  $: {
+    if ($selectedPackage === "FREE" && listVirtualPortfolio?.length > 2) {
+      isDisabled = true;
+    } else if (
+      $selectedPackage === "EXPLORER" &&
+      listVirtualPortfolio?.length > 6
+    ) {
+      isDisabled = true;
+    } else {
+      isDisabled = false;
+    }
+  }
+
+  $: {
+    if (isDisabled) {
+      if ($selectedPackage === "FREE") {
+        tooltipDisableAddBtn =
+          "You've reached the maximum number of accounts. Upgrade to the EXPLORER Plan to add more";
+      }
+      if ($selectedPackage === "EXPLORER") {
+        tooltipDisableAddBtn =
+          "You've reached the maximum number of accounts. Upgrade to the ALPHA Plan to add more";
+      }
+    }
+  }
+
+  let indexSelectedVirtual = 0;
+
+  const handleSelectNextVirtual = () => {
+    if (indexSelectedVirtual < listVirtualPortfolio.length - 1) {
+      indexSelectedVirtual = indexSelectedVirtual + 1;
+      selectedVirtualPortfolio = listVirtualPortfolio[indexSelectedVirtual];
+    }
+  };
+
+  const handleSelectPrevVirtual = () => {
+    if (indexSelectedVirtual > 0) {
+      indexSelectedVirtual = indexSelectedVirtual - 1;
+      selectedVirtualPortfolio = listVirtualPortfolio[indexSelectedVirtual];
+    }
   };
 
   let listVirtualPortfolio = [];
@@ -203,6 +251,7 @@
       selectedVirtualPortfolio &&
       Object.keys(selectedVirtualPortfolio).length !== 0
     ) {
+      virtualPortfolioId = selectedVirtualPortfolio.id;
       browser.storage.sync.set({
         selectedVirtualPortfolioId: selectedVirtualPortfolio.id,
       });
@@ -486,37 +535,194 @@
               <div class="hidden xl:block">
                 {#if listVirtualPortfolio && listVirtualPortfolio?.length !== 0}
                   <div class="flex items-center gap-5">
-                    <AnimateSharedLayout>
-                      {#each listVirtualPortfolio as item}
+                    {#if listVirtualPortfolio.length > 5}
+                      <AnimateSharedLayout>
+                        {#each listVirtualPortfolio.slice(0, 5) as item, index}
+                          <div
+                            id={item.value}
+                            class={`relative xl:text-base text-2xl text-white py-1 px-2 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline ${($selectedPackage === "FREE" ? index > 2 : index > 6) ? "opacity-50" : "opacity-100"}`}
+                            class:hover:no-underline={item.name ===
+                              selectedVirtualPortfolio?.name}
+                            on:click={() => {
+                              if (
+                                $selectedPackage === "FREE"
+                                  ? index > 2
+                                  : index > 6
+                              ) {
+                                return;
+                              }
+                              selectedVirtualPortfolio = item;
+                            }}
+                          >
+                            {item.name}
+                            {#if item.name === selectedVirtualPortfolio?.name}
+                              <Motion
+                                let:motion
+                                layoutId="active-pill"
+                                transition={{
+                                  type: "spring",
+                                  duration: 0.6,
+                                }}
+                              >
+                                <div
+                                  class="absolute inset-0 rounded-full bg-[#ffffff1c]"
+                                  use:motion
+                                />
+                              </Motion>
+                            {/if}
+                          </div>
+                        {/each}
+                      </AnimateSharedLayout>
+                      <div class="relative">
                         <div
-                          id={item.name}
-                          class="relative xl:text-base text-2xl text-white py-1 xl:pl-2 xl:pr-3 px-3 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline"
-                          class:hover:no-underline={item.name ===
-                            selectedVirtualPortfolio?.name}
-                          on:click={() => {
-                            selectedVirtualPortfolio = item;
-                            virtualPortfolioId = item.id;
+                          class={`relative z-2 ${isDisabled ? "opacity-50" : "opacity-100"}`}
+                          on:mouseenter={() => {
+                            if (
+                              isDisabled ||
+                              ($user && Object.keys($user).length === 0)
+                            ) {
+                              showDisabledSelectWallet = true;
+                            }
+                          }}
+                          on:mouseleave={() => {
+                            if (
+                              isDisabled ||
+                              ($user && Object.keys($user).length === 0)
+                            ) {
+                              showDisabledSelectWallet = false;
+                            }
                           }}
                         >
-                          {item.name}
-                          {#if item.name === selectedVirtualPortfolio?.name}
-                            <Motion
-                              let:motion
-                              layoutId="active-pill"
-                              transition={{
-                                type: "spring",
-                                duration: 0.6,
-                              }}
-                            >
-                              <div
-                                class="absolute inset-0 rounded-full bg-[#ffffff1c]"
-                                use:motion
-                              />
-                            </Motion>
-                          {/if}
+                          <Select
+                            type="lang"
+                            positionSelectList="right-0"
+                            listSelect={listVirtualPortfolio.slice(
+                              5,
+                              listVirtualPortfolio.length
+                            )}
+                            bind:selected={selectedVirtualPortfolio}
+                            disabled={isDisabled}
+                          />
                         </div>
-                      {/each}
-                    </AnimateSharedLayout>
+                        {#if listVirtualPortfolio.slice(5, listVirtualPortfolio.length)}
+                          <div
+                            class="absolute inset-0 rounded-full bg-[#ffffff1c] z-1"
+                          />
+                        {/if}
+                        {#if showDisabledSelectWallet}
+                          <div
+                            class={`absolute transform left-1/2 -translate-x-1/2 ${
+                              Object.keys($user).length === 0
+                                ? "-top-8"
+                                : "-top-12"
+                            }`}
+                            style="z-index: 2147483648;"
+                          >
+                            <div
+                              class="max-w-[360px] text-white bg-black py-1 px-2 text-xs rounded relative w-max normal-case"
+                            >
+                              {tooltipDisableAddBtn}
+                            </div>
+                          </div>
+                        {/if}
+                      </div>
+                      {#if listVirtualPortfolio.length > 10}
+                        <div
+                          class={`flex items-center gap-3 ${isDisabled ? "opacity-50" : "opacity-100"}`}
+                        >
+                          <div
+                            class={`cursor-pointer overflow-hidden border border-white rounded-full ${
+                              indexSelectedVirtual === 0 && !isDisabled
+                                ? "opacity-50"
+                                : ""
+                            }`}
+                            on:click={() => {
+                              if (isDisabled) {
+                                return;
+                              }
+                              handleSelectPrevVirtual();
+                            }}
+                          >
+                            <div class="transform -translate-x-[1px]">
+                              <svg
+                                width="24"
+                                height="24"
+                                viewBox="0 0 20 20"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  fill="#fff"
+                                  fill-rule="evenodd"
+                                  d="M12.79 5.23a.75.75 0 0 1-.02 1.06L8.832 10l3.938 3.71a.75.75 0 1 1-1.04 1.08l-4.5-4.25a.75.75 0 0 1 0-1.08l4.5-4.25a.75.75 0 0 1 1.06.02Z"
+                                  clip-rule="evenodd"
+                                />
+                              </svg>
+                            </div>
+                          </div>
+                          <div
+                            class={`cursor-pointer overflow-hidden border border-white rounded-full ${
+                              indexSelectedVirtual ===
+                                listVirtualPortfolio.length - 1 && !isDisabled
+                                ? "opacity-50"
+                                : ""
+                            }`}
+                            on:click={() => {
+                              if (isDisabled) {
+                                return;
+                              }
+                              handleSelectNextVirtual();
+                            }}
+                          >
+                            <div class="transform translate-x-[1px]">
+                              <svg
+                                width="24"
+                                height="24"
+                                viewBox="0 0 20 20"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  fill="#fff"
+                                  fill-rule="evenodd"
+                                  d="M7.21 14.77a.75.75 0 0 1 .02-1.06L11.168 10L7.23 6.29a.75.75 0 1 1 1.04-1.08l4.5 4.25a.75.75 0 0 1 0 1.08l-4.5 4.25a.75.75 0 0 1-1.06-.02Z"
+                                  clip-rule="evenodd"
+                                />
+                              </svg>
+                            </div>
+                          </div>
+                        </div>
+                      {/if}
+                    {:else}
+                      <AnimateSharedLayout>
+                        {#each listVirtualPortfolio as item}
+                          <div
+                            id={item.name}
+                            class="relative xl:text-base text-2xl text-white py-1 xl:pl-2 xl:pr-3 px-3 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline"
+                            class:hover:no-underline={item.name ===
+                              selectedVirtualPortfolio?.name}
+                            on:click={() => {
+                              selectedVirtualPortfolio = item;
+                            }}
+                          >
+                            {item.name}
+                            {#if item.name === selectedVirtualPortfolio?.name}
+                              <Motion
+                                let:motion
+                                layoutId="active-pill"
+                                transition={{
+                                  type: "spring",
+                                  duration: 0.6,
+                                }}
+                              >
+                                <div
+                                  class="absolute inset-0 rounded-full bg-[#ffffff1c]"
+                                  use:motion
+                                />
+                              </Motion>
+                            {/if}
+                          </div>
+                        {/each}
+                      </AnimateSharedLayout>
+                    {/if}
                   </div>
                 {:else}
                   <div class="text-2xl font-medium text-white xl:text-base">
@@ -568,7 +774,6 @@
                           selectedVirtualPortfolio?.name}
                         on:click={() => {
                           selectedVirtualPortfolio = item;
-                          virtualPortfolioId = item.id;
                         }}
                       >
                         {item.name}
