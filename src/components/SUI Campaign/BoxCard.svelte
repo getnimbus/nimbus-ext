@@ -202,7 +202,7 @@
           </div>
         {/if}
 
-        {#if isClaimable && (data.code === "wUSDC" || data.code === "FLX")}
+        {#if isClaimable && ["wUSDC", "FLX", "SUI"].includes(data.code)}
           <div class="w-full flex justify-end">
             <div class="w-[238.7px] h-[45px]">
               <Button
