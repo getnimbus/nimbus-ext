@@ -27,6 +27,7 @@
   import { wait } from "~/entries/background/utils";
   import * as browser from "webextension-polyfill";
   import { getListAddress, handleValidateAddress } from "~/lib/queryAPI";
+  import { navigateTo } from "svelte-router-spa";
 
   import Tooltip from "~/components/Tooltip.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
@@ -597,35 +598,6 @@
     }
   }
 
-  // Handle get user email
-  const onSubmitGetEmail = async (e) => {
-    isLoadingSendMail = true;
-    const formData = new FormData(e.target);
-    const data: any = {};
-    for (let field of formData) {
-      const [key, value] = field;
-      data[key] = value;
-    }
-    try {
-      await nimbus.post("/subscription/analysis", {
-        email: data.email,
-        address: selectedWallet,
-      });
-      isLoadingSendMail = false;
-      localStorage.setItem("isGetUserEmailYet", "true");
-      triggerToast("Ready to receive exclusive benefits soon!", "success");
-      email = "";
-    } catch (e) {
-      isLoadingSendMail = false;
-      triggerToast(
-        "Something wrong when sending email. Please try again!",
-        "fail"
-      );
-    } finally {
-      isOpenModal = false;
-    }
-  };
-
   $: {
     if (
       $selectedPackage === "FREE" &&
@@ -636,24 +608,9 @@
       $selectedPackage === "EXPLORER" &&
       listAddress.filter((item) => item.type !== "BUNDLE")?.length > 6
     ) {
-      if (
-        localStorage.getItem("isGetUserEmailYet") !== null &&
-        localStorage.getItem("isGetUserEmailYet") === "false"
-      ) {
-        localStorage.setItem("isGetUserEmailYet", "true");
-      }
       isDisabled = true;
     } else {
       isDisabled = false;
-    }
-
-    if ($selectedPackage === "PROFESSIONAL") {
-      if (
-        localStorage.getItem("isGetUserEmailYet") !== null &&
-        localStorage.getItem("isGetUserEmailYet") === "false"
-      ) {
-        localStorage.setItem("isGetUserEmailYet", "true");
-      }
     }
   }
 
@@ -687,13 +644,6 @@
           })
       );
     }
-    if (
-      localStorage.getItem("isGetUserEmailYet") !== null &&
-      localStorage.getItem("isGetUserEmailYet") === "true"
-    ) {
-      return;
-    }
-    localStorage.setItem("isGetUserEmailYet", "false");
   });
 
   const getListBundle = async () => {
@@ -1048,27 +998,14 @@
 
             <div class="flex items-center gap-4">
               <!-- add bundle -->
-              <div
-                class="relative w-max"
-                on:mouseenter={() => {
-                  if (
-                    isDisabled ||
-                    ($user && Object.keys($user)?.length === 0)
-                  ) {
-                    showDisableAddBundle = true;
-                  }
-                }}
-                on:mouseleave={() => {
-                  if (
-                    isDisabled ||
-                    ($user && Object.keys($user)?.length === 0)
-                  ) {
-                    showDisableAddBundle = false;
-                  }
-                }}
-              >
+              <div class="w-max">
                 {#if isDisabled || ($user && Object.keys($user)?.length === 0)}
-                  <Button variant="disabled" disabled>
+                  <Button
+                    variant="tertiary"
+                    on:click={() => {
+                      isOpenModal = true;
+                    }}
+                  >
                     <img
                       src={$isDarkMode ? PlusBlack : Plus}
                       alt=""
@@ -1093,73 +1030,20 @@
                     <div class="text-white">Add bundle</div>
                   </Button>
                 {/if}
-
-                {#if showDisableAddBundle}
-                  <div
-                    class="xl:block hidden absolute left-0 -translate-x-1/2 transform -top-12"
-                    style="z-index: 2147483648;"
-                  >
-                    <Tooltip text={tooltipDisableAddBtn} />
-                  </div>
-                {/if}
               </div>
 
               <!-- add account -->
-              <div
-                class="relative w-max"
-                on:mouseenter={() => {
-                  if (
-                    isDisabled ||
-                    ($user && Object.keys($user)?.length === 0)
-                  ) {
-                    showDisableAddWallet = true;
-                  }
-                }}
-                on:mouseleave={() => {
-                  if (
-                    isDisabled ||
-                    ($user && Object.keys($user)?.length === 0)
-                  ) {
-                    showDisableAddWallet = false;
-                  }
-                }}
-              >
+              <div class="w-max">
                 {#if isDisabled || ($user && Object.keys($user)?.length === 0)}
-                  <div>
-                    {#if localStorage.getItem("isGetUserEmailYet") !== null && localStorage.getItem("isGetUserEmailYet") === "false"}
-                      <Button
-                        variant="tertiary"
-                        on:click={() => {
-                          if (
-                            localStorage.getItem("isGetUserEmailYet") !==
-                              null &&
-                            localStorage.getItem("isGetUserEmailYet") ===
-                              "false"
-                          ) {
-                            isOpenModal = true;
-                          }
-                        }}
-                      >
-                        <img src={Plus} alt="" class="w-3 h-3" />
-                        <div class="text-white">Add account</div>
-                      </Button>
-                    {:else}
-                      <Button variant="disabled" disabled>
-                        <img
-                          src={$isDarkMode ? PlusBlack : Plus}
-                          alt=""
-                          class="w-3 h-3"
-                        />
-                        <div
-                          class={`${
-                            $isDarkMode ? "text-gray-400" : "text-white"
-                          }`}
-                        >
-                          Add account
-                        </div>
-                      </Button>
-                    {/if}
-                  </div>
+                  <Button
+                    variant="tertiary"
+                    on:click={() => {
+                      isOpenModal = true;
+                    }}
+                  >
+                    <img src={Plus} alt="" class="w-3 h-3" />
+                    <div class="text-white">Add account</div>
+                  </Button>
                 {:else}
                   <Button
                     variant="tertiary"
@@ -1170,14 +1054,6 @@
                     <img src={Plus} alt="" class="w-3 h-3" />
                     <div class="text-white">Add account</div>
                   </Button>
-                {/if}
-                {#if showDisableAddWallet}
-                  <div
-                    class="xl:block hidden absolute right-0 transform -top-12"
-                    style="z-index: 2147483648;"
-                  >
-                    <Tooltip text={tooltipDisableAddBtn} />
-                  </div>
                 {/if}
               </div>
             </div>
@@ -2436,7 +2312,7 @@
   </div>
 </AppOverlay>
 
-<!-- Modal get user email -->
+<!-- Modal navigate to Upgrade page -->
 <AppOverlay
   clickOutSideToClose
   isOpen={isOpenModal}
@@ -2445,66 +2321,26 @@
   }}
 >
   <div class="flex flex-col gap-4 xl:mt-0 mt-4">
-    <div class="flex flex-col items-start gap-1">
-      <div class="font-semibold title-3">Let's us know your email</div>
-      <div class="text-gray-500 text-sm">
-        Add your email to get updates from us and receive exclusive benefits
-        soon.
+    <div class="flex flex-col gap-1 items-start">
+      <div class="title-3 font-semibold">Let's upgrade your Plan!</div>
+      <div class="text-sm text-gray-500">
+        {tooltipDisableAddBtn}
       </div>
     </div>
-    <form
-      on:submit|preventDefault={onSubmitGetEmail}
-      class="flex flex-col gap-6 xl:gap-3"
-    >
-      <div
-        class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
-          email && !$isDarkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
-        }`}
-      >
-        <div
-          class={`xl:text-base text-lg font-medium ${
-            $isDarkMode ? "text-gray-400" : "text-[#666666]"
-          }`}
-        >
-          Email
-        </div>
-        <input
-          type="email"
-          id="email"
-          name="email"
-          required
-          placeholder="Your email"
-          bind:value={email}
-          class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-base font-normal ${
-            email && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
-          } ${
-            $isDarkMode ? "text-white" : "text-[#5E656B] placeholder-[#5E656B]"
-          }`}
-          on:change={(event) => {
-            email = event?.target.value;
+    <div class="flex justify-start">
+      <div class="w-max">
+        <Button
+          variant="premium"
+          on:click={() => {
+            navigateTo("/upgrade");
           }}
-        />
+        >
+          <div class={`${$isDarkMode ? "text-gray-400" : "text-white"}`}>
+            Upgrade Plan
+          </div>
+        </Button>
       </div>
-      <div class="flex justify-end gap-2">
-        <div class="w-[120px]">
-          <Button
-            variant="secondary"
-            on:click={() => {
-              isOpenModal = false;
-            }}
-          >
-            {MultipleLang.content.modal_cancel}</Button
-          >
-        </div>
-        <div class="w-[120px]">
-          <Button
-            type="submit"
-            isLoading={isLoadingSendMail}
-            disabled={isLoadingSendMail}>Submit</Button
-          >
-        </div>
-      </div>
-    </form>
+    </div>
   </div>
 </AppOverlay>
 
