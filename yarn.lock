@@ -6238,13 +6238,12 @@
     "@types/scheduler" "*"
     csstype "^3.0.2"
 
-"@types/react@^17.0.11":
-  version "17.0.75"
-  resolved "https://registry.yarnpkg.com/@types/react/-/react-17.0.75.tgz#cffbc76840a12fcadaf5a3cf14878bb06efcf73d"
-  integrity sha512-MSA+NzEzXnQKrqpO63CYqNstFjsESgvJAdAyyJ1n6ZQq/GLgf6nOfIKwk+Twuz0L1N6xPe+qz5xRCJrbhMaLsw==
+"@types/react@^18.2.42":
+  version "18.3.3"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-18.3.3.tgz#9679020895318b0915d7a3ab004d92d33375c45f"
+  integrity sha512-hti/R0pS0q1/xx+TsI73XIqk26eBsISZ2R0wUijXIngRK9R/e7Xw/cXVxQK7R5JjW+SV4zGcn5hXjudkN/pLIw==
   dependencies:
     "@types/prop-types" "*"
-    "@types/scheduler" "*"
     csstype "^3.0.2"
 
 "@types/resolve@1.17.1":
@@ -7423,12 +7422,12 @@ apexcharts@^3.48.0:
     svg.resize.js "^1.4.3"
     svg.select.js "^3.0.1"
 
-apisauce@^2.1.1:
-  version "2.1.6"
-  resolved "https://registry.yarnpkg.com/apisauce/-/apisauce-2.1.6.tgz#94887f335bf3d735305fc895c8a191c9c2608a7f"
-  integrity sha512-MdxR391op/FucS2YQRfB/NMRyCnHEPDd4h17LRIuVYi0BpGmMhpxc0shbOpfs5ahABuBEffNCGal5EcsydbBWg==
+apisauce@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/apisauce/-/apisauce-3.0.1.tgz#ecee5276f6c3528f28cd635834fc6b8be0519c61"
+  integrity sha512-4HEmETv0skPW+bFS4TzB5nQ5y2TdafbUpnAjp83MW8Re9lHwngao2hpnk7aIaxExJqSTxkpWl+ThgZbqjx2bpQ==
   dependencies:
-    axios "^0.21.4"
+    axios "^1.4.0"
 
 arg@^5.0.2:
   version "5.0.2"
@@ -7587,12 +7586,14 @@ axios@0.26.1:
   dependencies:
     follow-redirects "^1.14.8"
 
-axios@^0.21.4:
-  version "0.21.4"
-  resolved "https://registry.yarnpkg.com/axios/-/axios-0.21.4.tgz#c67b90dc0568e5c1cf2b0b858c43ba28e2eda575"
-  integrity sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==
+axios@^1.4.0, axios@^1.7.2:
+  version "1.7.2"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-1.7.2.tgz#b625db8a7051fbea61c35a3cbb3a1daa7b9c7621"
+  integrity sha512-2A8QhOMrbomlDuiLeK9XibIBzuHeRcqqNOHp0Cyp5EoJ1IFDh+XZH3A6BkXtv0K4gFGCI0Y4BM7B1wOEi0Rmgw==
   dependencies:
-    follow-redirects "^1.14.0"
+    follow-redirects "^1.15.6"
+    form-data "^4.0.0"
+    proxy-from-env "^1.1.0"
 
 axios@^1.6.7:
   version "1.6.7"
@@ -7600,15 +7601,6 @@ axios@^1.6.7:
   integrity sha512-/hDJGff6/c7u0hDkvkGxR/oy6CbCs8ziCsC7SqmhjfozqiJGc8Z11wrv9z9lYfY4K8l+H9TpjcMDX0xOZmx+RA==
   dependencies:
     follow-redirects "^1.15.4"
-    form-data "^4.0.0"
-    proxy-from-env "^1.1.0"
-
-axios@^1.7.2:
-  version "1.7.2"
-  resolved "https://registry.yarnpkg.com/axios/-/axios-1.7.2.tgz#b625db8a7051fbea61c35a3cbb3a1daa7b9c7621"
-  integrity sha512-2A8QhOMrbomlDuiLeK9XibIBzuHeRcqqNOHp0Cyp5EoJ1IFDh+XZH3A6BkXtv0K4gFGCI0Y4BM7B1wOEi0Rmgw==
-  dependencies:
-    follow-redirects "^1.15.6"
     form-data "^4.0.0"
     proxy-from-env "^1.1.0"
 
@@ -8237,7 +8229,7 @@ citty@^0.1.5, citty@^0.1.6:
   dependencies:
     consola "^3.2.3"
 
-classnames@^2.3.2:
+classnames@^2.3.2, classnames@^2.5.1:
   version "2.5.1"
   resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.5.1.tgz#ba774c614be0f016da105c858e7159eae8e7687b"
   integrity sha512-saHYOzhIQs6wy2sVxTM6bUDsQO4F50V9RQ22qBpEdCW+I+/Wmke2HOl6lS6dTpdxVhb88/I6+Hs+438c3lfUow==
@@ -8736,10 +8728,10 @@ date-picker-svelte@^2.12.0:
   resolved "https://registry.yarnpkg.com/date-picker-svelte/-/date-picker-svelte-2.12.0.tgz#cb326ae3b6e17075dd64b870f764412a5807fa3e"
   integrity sha512-RsnTC6DR5qY+pGgRkdaoO0qWQfF8ho+5VacQjNh3PXOjSZrRaXUGrOGUbTZZBT6nzyZR0yRkEncFI+/1GMcxfw==
 
-dayjs@^1.11.4:
-  version "1.11.10"
-  resolved "https://registry.yarnpkg.com/dayjs/-/dayjs-1.11.10.tgz#68acea85317a6e164457d6d6947564029a6a16a0"
-  integrity sha512-vjAczensTgRcqDERK0SR2XMwsF/tSvnvlv6VcF2GIhg6Sx4yOIt/irsr1RDJsKiIyBzJDpCoXiWWq28MqH2cnQ==
+dayjs@^1.11.11:
+  version "1.11.11"
+  resolved "https://registry.yarnpkg.com/dayjs/-/dayjs-1.11.11.tgz#dfe0e9d54c5f8b68ccf8ca5f72ac603e7e5ed59e"
+  integrity sha512-okzr3f11N6WuqYtZSvm+F776mB41wRZMhKP+hc34YdW+KmtYYK9iqvHSwo2k9FEH3fhGXvOPV6yz2IcSrfRUDg==
 
 de-indent@^1.0.2:
   version "1.0.2"
@@ -10162,7 +10154,7 @@ flowbite-svelte@^0.46.1:
     flowbite "^2.3.0"
     tailwind-merge "^2.3.0"
 
-flowbite-windicss-plugin@^0.1.2:
+flowbite-windicss-plugin@^0.1.3:
   version "0.1.3"
   resolved "https://registry.yarnpkg.com/flowbite-windicss-plugin/-/flowbite-windicss-plugin-0.1.3.tgz#9e612602d912c7fc517391c0dd758709651241eb"
   integrity sha512-RUmzLY+6ei2776ogzxVK+IDa8D8FUvzhvp2PVw+IhROVh5Nq4Iq3zxmSKAoR6ma/0t51lZ3n50XApHpgzpfTmA==
@@ -10191,7 +10183,7 @@ fluent-syntax@0.13.0:
   resolved "https://registry.yarnpkg.com/fluent-syntax/-/fluent-syntax-0.13.0.tgz#417144d99cba94ff474c422b3e6623d5a842855a"
   integrity sha512-0Bk1AsliuYB550zr4JV9AYhsETsD3ELXUQzdXGJfIc1Ni/ukAfBdQInDhVMYJUaT2QxoamNslwkYF7MlOrPUwg==
 
-follow-redirects@^1.14.0, follow-redirects@^1.14.8, follow-redirects@^1.15.4:
+follow-redirects@^1.14.8, follow-redirects@^1.15.4:
   version "1.15.5"
   resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.15.5.tgz#54d4d6d062c0fa7d9d17feb008461550e3ba8020"
   integrity sha512-vSFWUON1B+yAw1VN4xMfxgn5fTUiaOzAJCKBwIIgT/+7CuGy9+r+5gITvP62j3RmaD5Ph65UaERdOSRGUzZtgw==
@@ -14881,16 +14873,16 @@ svelte-loading-spinners@^0.3.6:
   resolved "https://registry.yarnpkg.com/svelte-loading-spinners/-/svelte-loading-spinners-0.3.6.tgz#75c301b6322dc61cdcce8a0600c03dea9c1c3890"
   integrity sha512-mthHQ2TwiwzTWzbFry3CBnVEfzqPOD9WkVw84OfSYzHRq6N9wgQ+yv37u81uPeuLU/ZOIPqhujpXquB1aol5ZQ==
 
-svelte-motion@^0.11.5:
-  version "0.11.5"
-  resolved "https://registry.yarnpkg.com/svelte-motion/-/svelte-motion-0.11.5.tgz#4dde7dd189ff7d1dcc007aa4b9b99636f235acea"
-  integrity sha512-xTfh7xHL2E8CsqbjU88PpiXPzexQs8s12eb2KEmW2pX9b5tD4REZiaA4hcmF/NwttbrGD7C0h3ZoRUTI5hA50A==
+svelte-motion@^0.12.2:
+  version "0.12.2"
+  resolved "https://registry.yarnpkg.com/svelte-motion/-/svelte-motion-0.12.2.tgz#507dd546761d1ecc7371750e53f1427cf82b814b"
+  integrity sha512-7RrdRz9iVP55B9HT/C0hYW3pyrKlF61kAby/AkDtOAP0uHFQDrfd0qQetDC81cEsK9b40jt+jfcqSAXcA7LPEw==
   dependencies:
-    "@types/react" "^17.0.11"
+    "@types/react" "^18.2.42"
     framesync "^6.1.2"
     popmotion "^11.0.5"
     style-value-types "5.1.2"
-    tslib "^2.2.0"
+    tslib "^2.6.2"
 
 svelte-preprocess@^5.1.3, svelte-preprocess@^5.1.4:
   version "5.1.4"
@@ -14915,10 +14907,10 @@ svelte-spark@^1.0.4:
   resolved "https://registry.yarnpkg.com/svelte-spark/-/svelte-spark-1.0.4.tgz#11cbf720941ca8645fd13e7f02467341926e29cb"
   integrity sha512-zLkRwNYzxrLIi7iTLJGCdOP00uuCvrY1jrycHKquR53JQNx/Mq9PhO6l19FzCJLFDXNQwI5CXU5elb1dbmipMg==
 
-svelte-system-info@^1.0.0:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/svelte-system-info/-/svelte-system-info-1.0.1.tgz#08bcbc4ba79d4d9449211b5a4104e32dd98c9347"
-  integrity sha512-b6EbVPGEXwTXQ5tD+6aOOHzjLOyhYmihK2cN+BH4XNfMx8Va84XqpIEt0PouSZ1xYe+aHiaOe524K4VoPiLceQ==
+svelte-system-info@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/svelte-system-info/-/svelte-system-info-1.0.2.tgz#0dd2678f5564443bfc48268427d0d423d703c857"
+  integrity sha512-X6kspnmqRYQBhefk5tMcEH5hyI41halHB8+hFAlVOdnvci+PEbxpbgsq3YL+Lo+7NAhvCVV6G0gLt0sdi8s+1A==
   dependencies:
     tslib "^2.6.2"
 
@@ -14927,7 +14919,7 @@ svelte-tiny-virtual-list@^2.1.0:
   resolved "https://registry.yarnpkg.com/svelte-tiny-virtual-list/-/svelte-tiny-virtual-list-2.1.0.tgz#878dd1f9224cd4a0b37106cdd2a3a379e8f9d3bf"
   integrity sha512-+zREgm9JM65eQGlrFHUWFjekfsaX0H/Vd0aJgVvZZ6zbTua2ofxXt/c8pCEvji/deF/UKdQ1lNw5gix+tq01ZA==
 
-svelte-typewriter@^3.1.6:
+svelte-typewriter@^3.2.3:
   version "3.2.3"
   resolved "https://registry.yarnpkg.com/svelte-typewriter/-/svelte-typewriter-3.2.3.tgz#bd32ad499b72664598b62dcca44c0b1196bca7d4"
   integrity sha512-762k01kIU+IyXfe5f2MEYQ1yIfJZfueAEmJNbO36cxJG56/vciHiWacPQLnSECK/4cvlH/Ll1Mv6B45InMJ1zg==
@@ -15881,12 +15873,12 @@ verror@1.10.0:
     core-util-is "1.0.2"
     extsprintf "^1.2.0"
 
-vezgo-sdk-js@^1.1.2:
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/vezgo-sdk-js/-/vezgo-sdk-js-1.1.2.tgz#23c42eaf53236bdc4bae76d88072e87d2d2cf4a3"
-  integrity sha512-zeyxhalHiobnA1AaPxYYwX8kEJbSG/uZA/XbwFPwATxM0xK+woaAbY+e7qpWJvV0kNbgm0FM7j9jLEVsnbmLFg==
+vezgo-sdk-js@^1.1.6:
+  version "1.1.6"
+  resolved "https://registry.yarnpkg.com/vezgo-sdk-js/-/vezgo-sdk-js-1.1.6.tgz#03fb89397b74c26bffd3bf41ad08da46e9db2749"
+  integrity sha512-xUKTlw54oyJxSmyJSZsY1D8J8kK3J9hqU8Mke4nyz/3K80bkM6RfpdPgxRXQXx5nkVypZfzmWNW4slGm7q68kQ==
   dependencies:
-    apisauce "^2.1.1"
+    apisauce "^3.0.1"
     core-js "^3.17.3"
     jsonwebtoken "^8.5.1"
     regenerator-runtime "^0.13.9"
@@ -16077,6 +16069,11 @@ webextension-polyfill-ts@^0.25.0:
   version "0.10.0"
   resolved "https://registry.yarnpkg.com/webextension-polyfill/-/webextension-polyfill-0.10.0.tgz#ccb28101c910ba8cf955f7e6a263e662d744dbb8"
   integrity sha512-c5s35LgVa5tFaHhrZDnr3FpQpjj1BB+RXhLTYUxGqBVN460HkbM8TBtEqdXWbpTKfzwCcjAZVF7zXCYSKtcp9g==
+
+webextension-polyfill@^0.12.0:
+  version "0.12.0"
+  resolved "https://registry.yarnpkg.com/webextension-polyfill/-/webextension-polyfill-0.12.0.tgz#f62c57d2cd42524e9fbdcee494c034cae34a3d69"
+  integrity sha512-97TBmpoWJEE+3nFBQ4VocyCdLKfw54rFaJ6EVQYLBCXqCIpLSZkwGgASpv4oPt9gdKCJ80RJlcmNzNn008Ag6Q==
 
 webextension-polyfill@^0.7.0:
   version "0.7.0"
