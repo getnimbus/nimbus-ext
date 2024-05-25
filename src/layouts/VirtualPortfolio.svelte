@@ -408,6 +408,7 @@
 
       queryClient.invalidateQueries(["virtual-portfolio-profile"]);
       queryClient.invalidateQueries(["virtual-portfolio"]);
+      queryClient.invalidateQueries(["virtual-portfolio-performance"]);
     } catch (e) {
       console.error(e);
       if (type === "edit") {
@@ -939,6 +940,10 @@
             {listTokenHolding}
             isLoading={$queryVirtualPortfolio.isFetching ||
               $queryVirtualPortfolioProfile.isFetching}
+            isQuery={!$queryVirtualPortfolioProfile.isError &&
+              $queryVirtualPortfolioProfile.data !== undefined &&
+              $queryVirtualPortfolioProfile?.data?.data.length !== 0}
+            {virtualPortfolioId}
           />
         {/if}
       </div>

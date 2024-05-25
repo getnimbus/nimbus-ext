@@ -43,7 +43,6 @@
     getVaults,
     getHoldingNFT,
   } from "~/lib/queryAPI";
-  import { navigateTo } from "svelte-router-spa";
 
   import AddressManagement from "~/components/AddressManagement.svelte";
   import Overview from "~/UI/Portfolio/Overview.svelte";
@@ -1020,21 +1019,6 @@
               {/if}
             </div>
           {/if}
-
-          <div
-            class="cursor-pointer w-max"
-            on:click={() => {
-              if ($wallet) {
-                navigateTo(
-                  `/virtual-portfolio?type=${$typeWallet}&chain=${$chain}&address=${$wallet}`
-                );
-              } else {
-                navigateTo("/");
-              }
-            }}
-          >
-            Virtual Portfolio
-          </div>
         </div>
       {/if}
     </div>
