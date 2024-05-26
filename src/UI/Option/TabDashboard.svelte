@@ -95,7 +95,7 @@
   {/if}
 </div>
 
-<style windi:preflights:global windi:safelist:global>
+<style>
   .switch {
     position: relative;
     display: inline-block;

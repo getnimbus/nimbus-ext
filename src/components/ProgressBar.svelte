@@ -61,7 +61,7 @@
   </div>
 </div>
 
-<style windi:preflights:global windi:safelist:global>
+<style>
   .tooltip-arrow {
     position: absolute;
     left: 50%;

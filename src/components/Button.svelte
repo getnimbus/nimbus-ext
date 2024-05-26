@@ -92,7 +92,7 @@
   {/if}
 </button>
 
-<style windi:preflights:global windi:safelist:global>
+<style>
   .button {
     width: 100%;
     height: 100%;

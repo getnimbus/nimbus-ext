@@ -2069,7 +2069,7 @@
   </div>
 </AppOverlay> -->
 
-<style windi:preflights:global windi:safelist:global>
+<style>
   .header {
     background-repeat: no-repeat;
     background-size: auto;

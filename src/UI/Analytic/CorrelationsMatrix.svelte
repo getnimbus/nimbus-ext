@@ -675,7 +675,7 @@
   </div>
 </AppOverlay>
 
-<style global windi:preflights:global windi:safelist:global>
+<style>
   :global(body) .active:hover {
     background: #dbeafe;
   }

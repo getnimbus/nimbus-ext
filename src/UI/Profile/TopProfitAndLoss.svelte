@@ -439,4 +439,4 @@
   <TokenDetailSidebar data={selectedTokenDetail} {showSideTokenDetail} />
 </OverlaySidebar>
 
-<style windi:preflights:global windi:safelist:global></style>
+<style></style>

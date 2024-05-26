@@ -210,7 +210,7 @@
   </span>
 </AddressManagement>
 
-<style windi:preflights:global windi:safelist:global>
+<style>
   :global(body) .analytic_container {
     background: #fff;
     box-shadow: 0px 0px 40px 0px rgba(0, 0, 0, 0.1);

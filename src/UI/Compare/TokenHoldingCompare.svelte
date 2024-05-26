@@ -196,4 +196,4 @@
   </td>
 </tr>
 
-<style windi:preflights:global windi:safelist:global></style>
+<style></style>

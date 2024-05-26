@@ -196,5 +196,5 @@
   </div>
 </reset-style>
 
-<style windi:preflights:global windi:safelist:global>
+<style>
 </style>

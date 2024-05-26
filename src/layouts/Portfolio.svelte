@@ -1026,7 +1026,7 @@
   </span>
 </AddressManagement>
 
-<style windi:preflights:global windi:safelist:global>
+<style>
   .loading {
     animation-name: loading;
     animation-duration: 1.4s;

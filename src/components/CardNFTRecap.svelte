@@ -90,7 +90,7 @@
   </div>
 </div>
 
-<style windi:preflights:global windi:safelist:global>
+<style>
   .card-container {
     display: flex;
     flex-direction: column;

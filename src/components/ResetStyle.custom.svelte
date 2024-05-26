@@ -7,7 +7,7 @@
   <slot />
 </div>
 
-<style windi:preflights:global windi:safelist:global>
+<style>
   .nimbus-reset-style {
     font-family:
       ui-sans-serif,

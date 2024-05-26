@@ -344,7 +344,7 @@
   </div>
 </reset-style>
 
-<style windi:preflights:global windi:safelist:global>
+<style>
   .spin {
     animation-name: loading;
     animation-duration: 3.4s;

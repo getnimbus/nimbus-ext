@@ -265,7 +265,7 @@
   </div>
 </div>
 
-<style windi:preflights:global windi:safelist:global>
+<style>
   .rotate-131_26 {
     transform: rotate(-131.26deg);
   }

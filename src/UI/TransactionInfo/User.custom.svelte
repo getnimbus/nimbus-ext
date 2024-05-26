@@ -58,7 +58,7 @@
   </div>
 </div>
 
-<style windi:preflights:global windi:safelist:global>
+<style>
   .border {
     border: 2px solid white;
   }

@@ -5,7 +5,7 @@
   <circle class="loader-svg animate" cx="50" cy="50" r="45" />
 </svg>
 
-<style windi:preflights:global windi:safelist:global>
+<style>
   .loader-svg {
     position: absolute;
     left: 0;

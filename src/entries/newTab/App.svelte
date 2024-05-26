@@ -277,7 +277,7 @@
   </ToastWrapped>
 </ErrorBoundary>
 
-<style global windi:preflights:global windi:safelist:global>
+<style global>
   :root {
     --onboard-modal-z-index: 2147483648;
   }

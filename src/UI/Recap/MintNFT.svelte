@@ -352,7 +352,7 @@
   </div>
 </AppOverlay>
 
-<style windi:preflights:global windi:safelist:global>
+<style>
   .zindex {
     z-index: 99999;
   }

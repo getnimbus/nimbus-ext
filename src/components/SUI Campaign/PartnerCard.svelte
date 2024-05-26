@@ -126,7 +126,7 @@
   </div>
 </div>
 
-<style windi:preflights:global windi:safelist:global>
+<style>
   @media (max-width: 320) {
     .text-smxs {
       font-size: 14px;
