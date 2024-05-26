@@ -269,19 +269,7 @@
                 {/if}
               </div>
             {:else}
-              <Button
-                variant="tertiary"
-                on:click={() => {
-                  if (totalPoint < data.cost) {
-                    triggerToast(
-                      "You are not enough GM Points to Redeem",
-                      "fail"
-                    );
-                  } else {
-                    triggerToast("There are not available now", "fail");
-                  }
-                }}
-              >
+              <Button disabled>
                 <div class="flex items-center gap-1">
                   <img src={goldImg} alt="" class="w-[28px] h-[28px]" />
                   <div class="text-white sm:text-lg text-smxs font-medium">
