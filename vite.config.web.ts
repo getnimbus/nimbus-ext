@@ -133,13 +133,13 @@ export default defineConfig(({ mode }) => {
         ],
         input: {
           app: path.resolve(__dirname, "./src/index.html"),
-          options: path.resolve(__dirname, "./src/entries/options/index.html"),
+          // options: path.resolve(__dirname, "./src/entries/options/index.html"),
         },
-        output: {
-          entryFileNames: `assets/[name].js`,
-          chunkFileNames: `assets/[name].js`,
-          assetFileNames: `assets/[name].[hash].[ext]`,
-        },
+        // output: {
+        //   entryFileNames: `assets/[name].js`,
+        //   chunkFileNames: `assets/[name].js`,
+        //   assetFileNames: `assets/[name].[hash].[ext]`,
+        // },
       },
       outDir: path.resolve(__dirname, "web-build"),
       sourcemap: env.WATCH === "true" ? "inline" : false,
