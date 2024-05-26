@@ -145,7 +145,7 @@
   {/if}
 </div>
 
-<style>
+<style windi:preflights:global windi:safelist:global>
   .wrapper {
     position: relative;
     width: max-content;

@@ -16,7 +16,7 @@
   import All from "~/assets/all.svg";
 
   export let listSelect;
-  export let selected;
+  export let selected: any;
   export let type: "chain" | "wallet" | "lang" | "filter";
   export let positionSelectList = "left-0";
   export let disabled = false;
@@ -36,10 +36,10 @@
     (type === "chain" &&
       listSelect &&
       selected &&
-      listSelect.filter((item) => item.value === selected)) ||
+      listSelect.filter((item: any) => item.value === selected)) ||
     [];
 
-  const disabledChains = [];
+  const disabledChains: any = [];
 </script>
 
 <div
@@ -150,7 +150,7 @@
   {/if}
 </div>
 
-<style>
+<style windi:preflights:global windi:safelist:global>
   .wrapper {
     position: relative;
     width: max-content;

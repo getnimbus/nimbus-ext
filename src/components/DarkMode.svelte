@@ -1,19 +1,6 @@
 <script lang="ts">
-  import { AnimateSharedLayout, Motion } from "svelte-motion";
-  import { Icon } from "flowbite-svelte-icons";
+  import { MoonSolid, SunSolid } from "flowbite-svelte-icons";
   import { isDarkMode, isAutoDarkMode } from "~/store";
-  import dayjs from "dayjs";
-
-  const typeMode = [
-    {
-      value: "dark",
-      icon: "moon-solid",
-    },
-    {
-      value: "light",
-      icon: "sun-solid",
-    },
-  ];
 
   let selectedTypeMode: "dark" | "light" = "light";
   let darkMode = false;
@@ -69,7 +56,7 @@
   };
 </script>
 
-<div class="w-max flex items-center gap-2">
+<div class="w-max flex items-center gap-1">
   <input
     checked={darkMode}
     on:click={handleSwitchDarkMode}
@@ -78,36 +65,32 @@
     class="hidden"
   />
   <div
-    class={`cursor-pointer font-medium xl:text-lg text-2xl ${auto ? "text-[#3b82f6]" : "text-gray-300"}`}
+    class={`cursor-pointer font-medium text-base ${auto ? "text-[#3b82f6]" : "text-gray-300"}`}
     on:click={handleToggleAuto}
   >
     Auto
   </div>
-  <div class="text-gray-300 mb-1 xl:text-lg text-2xl">/</div>
+  <div class="text-gray-300 mb-1 text-base">/</div>
   <label
     for="theme-toggle"
     class={`cursor-pointer ${auto ? "opacity-40" : "opacity-100"}`}
   >
-    <div class="flex items-center justify-between gap-2">
+    <div class="flex items-center justify-between gap-1">
       <div
         class={`${
           selectedTypeMode === "light" ? "text-[#3b82f6]" : "text-gray-300"
         }`}
       >
         <div class="xl:block hidden">
-          <Icon
-            name="sun-solid"
-            role="img"
-            class="select-none border-none focus:outline-none focus:ring-0"
+          <SunSolid
             size="lg"
+            class="select-none border-none focus:outline-none focus:ring-0"
           />
         </div>
         <div class="xl:hidden block">
-          <Icon
-            name="sun-solid"
-            role="img"
-            class="select-none border-none focus:outline-none focus:ring-0"
+          <SunSolid
             size="xl"
+            class="select-none border-none focus:outline-none focus:ring-0"
           />
         </div>
       </div>
@@ -118,18 +101,14 @@
         }`}
       >
         <div class="xl:block hidden">
-          <Icon
-            name="moon-solid"
-            role="img"
+          <MoonSolid
             class="select-none border-none focus:outline-none focus:ring-0"
           />
         </div>
         <div class="xl:hidden block">
-          <Icon
-            name="moon-solid"
-            role="img"
-            class="select-none border-none focus:outline-none focus:ring-0"
+          <MoonSolid
             size="xl"
+            class="select-none border-none focus:outline-none focus:ring-0"
           />
         </div>
       </div>
