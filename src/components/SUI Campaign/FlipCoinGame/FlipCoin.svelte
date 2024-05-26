@@ -72,6 +72,7 @@
   let openScreenResult = false;
   let startFlip = false;
   let linkedSuiWallet = false;
+  let onSelectCoin: "head" | "tail" | null = null;
 
   $: queryLinkSocial = createQuery({
     queryKey: ["link-socials"],
@@ -85,6 +86,7 @@
   const getRound = async () => {
     const round = await client
       .getObject({
+        // id: "0xb440cf576ccf24b5c9b81a80a146eeaae9c7f09a87983769ec2d34212a434815", // devnet for test if got bug
         id: "0xfc94a9e689692098ad6c81cfe12b6ece40f3b8a354dd79a1a4ba47110408efcd",
         options: {
           showContent: true,
@@ -176,6 +178,7 @@
         console.log("err: ", error);
         isLoadingFlip = false;
       }
+      onSelectCoin = null;
     }
   };
 
@@ -356,7 +359,7 @@
   </div>
 
   <div
-    class="bg-[#424C81] text-white rounded-md flex flex-col items-center justify-center py-2 px-20 relative z-2"
+    class="bg-[#424C81] text-white rounded-xl flex flex-col items-center justify-center py-2 px-20 relative z-2"
   >
     <div class="text-2xl">Rewards</div>
     <div class="flex items-center gap-2 py-2">
@@ -386,31 +389,33 @@
         {#if startFlip && dataFlipCheck?.canPlay && linkedSuiWallet}
           <div class="flex justify-center items-center gap-4">
             <button
-              class="rounded-[12px] text-white bg-[#FFB800] w-full py-4 px-5 font-medium sm:text-2xl text-lg max-w-[140px] flex items-center justify-center"
+              class={`rounded-xl text-white w-full py-4 px-5 font-medium sm:text-2xl text-lg max-w-[140px] flex items-center justify-center ${onSelectCoin === "tail" ? "bg-gray-300" : "bg-[#FFB800]"}`}
               on:click={() => {
                 if (!isLoadingFlip) {
                   triggerFlipResult(1);
+                  onSelectCoin = "head";
                 }
               }}
-              disabled={isLoadingFlip}
+              disabled={onSelectCoin === "tail"}
             >
-              {#if isLoadingFlip}
-                <Loading size={20} />
+              {#if isLoadingFlip && onSelectCoin === "head"}
+                <Loading size={32} />
               {:else}
                 Head
               {/if}
             </button>
             <button
-              class="rounded-[12px] text-white bg-[#FFB800] w-full py-4 px-5 font-medium sm:text-2xl text-lg max-w-[140px] flex items-center justify-center"
+              class={`rounded-xl text-white w-full py-4 px-5 font-medium sm:text-2xl text-lg max-w-[138px] flex items-center justify-center  ${onSelectCoin === "head" ? "bg-gray-300" : "bg-[#FFB800]"}`}
               on:click={() => {
                 if (!isLoadingFlip) {
                   triggerFlipResult(0);
+                  onSelectCoin = "tail";
                 }
               }}
-              disabled={isLoadingFlip}
+              disabled={onSelectCoin === "head"}
             >
-              {#if isLoadingFlip}
-                <Loading size={20} />
+              {#if isLoadingFlip && onSelectCoin === "tail"}
+                <Loading size={32} />
               {:else}
                 Tail
               {/if}
