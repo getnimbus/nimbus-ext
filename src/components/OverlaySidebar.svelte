@@ -30,7 +30,7 @@
   </div>
 </div>
 
-<style windi:preflights:global windi:safelist:global>
+<style>
   .sidebar {
     z-index: 9;
     backdrop-filter: blur(12px);

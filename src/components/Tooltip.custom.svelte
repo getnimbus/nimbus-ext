@@ -27,5 +27,4 @@
   {/if}
 </div>
 
-<style>
-</style>
+<style></style>

@@ -2344,7 +2344,7 @@
   </div>
 </AppOverlay>
 
-<style windi:preflights:global windi:safelist:global>
+<style>
   :global(body) .bg_fafafbff {
     background: #fafafbff;
   }
