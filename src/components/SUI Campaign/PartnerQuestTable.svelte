@@ -1,10 +1,18 @@
 <script lang="ts">
+  import { onMount } from "svelte";
   import { nimbus } from "~/lib/network";
-  import { isDarkMode, userPublicAddress } from "~/store";
+  import { SuiConnector } from "nimbus-sui-kit";
+  import { isDarkMode, userPublicAddress, suiWalletInstance } from "~/store";
+  import type { WalletState } from "nimbus-sui-kit";
   import { triggerToast, triggerBonusScore } from "~/utils/functions";
-  import { getLinkData, getCampaignPartnerDetail } from "~/lib/queryAPI";
+  import {
+    getLinkData,
+    getCampaignPartnerDetail,
+    handleValidateAddress,
+  } from "~/lib/queryAPI";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
 
+  import ReactAdapter from "~/components/ReactAdapter.svelte";
   import Button from "~/components/Button.svelte";
   import Loading from "~/components/Loading.svelte";
 
@@ -26,6 +34,22 @@
   let countdownInterval;
 
   let userLinkData = [];
+  let selectedDataSUILink: any = {};
+
+  onMount(() => {
+    if ($userPublicAddress) {
+      handleCheckPublicAddress($userPublicAddress);
+    }
+  });
+
+  const handleCheckPublicAddress = async (address) => {
+    const addressValidate = await handleValidateAddress(address);
+    if (addressValidate && addressValidate.type === "MOVE") {
+      selectedDataSUILink = {
+        uid: address,
+      };
+    }
+  };
 
   $: queryLinkSocial = createQuery({
     queryKey: ["link-socials"],
@@ -41,6 +65,9 @@
       queryLinkSocial?.data?.data?.length !== 0
     ) {
       userLinkData = $queryLinkSocial?.data?.data;
+      selectedDataSUILink = $queryLinkSocial?.data?.data?.find(
+        (item) => item.kind === "wallet" && item.chain === "MOVE"
+      );
     }
   }
 
@@ -154,6 +181,150 @@
       );
     } finally {
       isLoading = false;
+    }
+  };
+
+  let selectedQuest = {};
+
+  const handlePlay = (data: any) => {
+    selectedQuestId = data?.id;
+    window.open(data?.url, "_blank");
+    if (data?.type !== "ONCHAIN") {
+      startPlay = true;
+      clearInterval(countdownInterval);
+      startCountdown();
+    }
+  };
+
+  let isTrigger = false;
+
+  const chains = [
+    {
+      id: "sui:mainnet",
+      name: "Mainnet",
+      rpcUrl: "https://fullnode.mainnet.sui.io",
+    },
+  ];
+
+  const onConnectSuccess = (msg) => {
+    console.log("Success connect: ", msg);
+    if ($suiWalletInstance) {
+      ($suiWalletInstance as WalletState).toggleSelect();
+    }
+  };
+
+  const onConnectError = (msg) => {
+    console.error("Error connect", msg);
+    if ($suiWalletInstance) {
+      ($suiWalletInstance as WalletState).toggleSelect();
+    }
+  };
+
+  const widgetConfig = {
+    walletFn: (wallet) => {
+      suiWalletInstance.update((n) => (n = wallet));
+    },
+    onConnectSuccess,
+    onConnectError,
+  };
+
+  const handleSUIAuth = async () => {
+    try {
+      isTrigger = true;
+      ($suiWalletInstance as WalletState).toggleSelect();
+    } catch (e) {
+      console.log("error: ", e);
+    }
+  };
+
+  $: {
+    if (
+      ($suiWalletInstance as WalletState) &&
+      ($suiWalletInstance as WalletState).connected &&
+      isTrigger
+    ) {
+      handleGetNonce(($suiWalletInstance as WalletState)?.account?.address);
+    }
+  }
+
+  const handleGetNonce = async (address: string) => {
+    try {
+      const res: any = await nimbus.post("/users/nonce?verified=true", {
+        publicAddress: address,
+        referrer: undefined,
+      });
+
+      if (res && res.data) {
+        const signature = await handleSignAddressMessage(res?.data?.nonce);
+        if (signature) {
+          const payload = {
+            signature: signature.signature,
+            publicAddress: address?.toLowerCase(),
+          };
+          handleUpdatePublicAddress(payload);
+        }
+      }
+    } catch (e) {
+      console.error("error: ", e);
+      if (
+        ($suiWalletInstance as WalletState) &&
+        ($suiWalletInstance as WalletState).connected
+      ) {
+        ($suiWalletInstance as WalletState).disconnect();
+      }
+      isTrigger = false;
+    }
+  };
+
+  const handleSignAddressMessage = async (nonce: string) => {
+    const msg = await ($suiWalletInstance as WalletState).signPersonalMessage({
+      message: new TextEncoder().encode(
+        `I am signing my one-time nonce: ${nonce}`
+      ),
+    });
+    return msg;
+  };
+
+  const handleUpdatePublicAddress = async (payload) => {
+    try {
+      const params: any = {
+        id: $userPublicAddress,
+        kind: "wallet",
+        type: null,
+        userPublicAddress: payload?.publicAddress,
+        signature: payload?.signature,
+      };
+      const res: any = await nimbus.post("/accounts/link", params);
+      if (res && res?.error) {
+        triggerToast(
+          res?.error ||
+            "Something wrong when connect your Sui wallet. Please try again!",
+          "fail"
+        );
+        return;
+      }
+
+      queryClient?.invalidateQueries(["link-socials"]);
+      queryClient?.invalidateQueries([$userPublicAddress, "daily-checkin"]);
+
+      triggerBonusScore(1000, 2000);
+      triggerToast("Your are successfully connect your Sui wallet!", "success");
+
+      handlePlay(selectedQuest);
+    } catch (e) {
+      console.log(e);
+      triggerToast(
+        "Something wrong when connect your Sui wallet. Please try again!",
+        "fail"
+      );
+    } finally {
+      if (
+        ($suiWalletInstance as WalletState) &&
+        ($suiWalletInstance as WalletState).connected
+      ) {
+        ($suiWalletInstance as WalletState).disconnect();
+      }
+      isTrigger = false;
     }
   };
 </script>
@@ -284,12 +455,14 @@
                             "https://discord.com/oauth2/authorize?client_id=1236967408204517396&response_type=code&redirect_uri=https%3A%2F%2Fapp.getnimbus.io&scope=identify+guilds+guilds.members.read"
                           );
                         } else {
-                          window.open(data?.url, "_blank");
-                          selectedQuestId = data?.id;
-                          if (data?.type !== "ONCHAIN") {
-                            startPlay = true;
-                            clearInterval(countdownInterval);
-                            startCountdown();
+                          if (
+                            selectedDataSUILink &&
+                            Object.keys(selectedDataSUILink).length === 0
+                          ) {
+                            selectedQuest = data;
+                            handleSUIAuth();
+                          } else {
+                            handlePlay(data);
                           }
                         }
                       }}
@@ -416,12 +589,14 @@
                         "https://discord.com/oauth2/authorize?client_id=1236967408204517396&response_type=code&redirect_uri=https%3A%2F%2Fapp.getnimbus.io&scope=identify+guilds+guilds.members.read"
                       );
                     } else {
-                      window.open(data?.url, "_blank");
-                      selectedQuestId = data?.id;
-                      if (data?.type !== "ONCHAIN") {
-                        startPlay = true;
-                        clearInterval(countdownInterval);
-                        startCountdown();
+                      if (
+                        selectedDataSUILink &&
+                        Object.keys(selectedDataSUILink).length === 0
+                      ) {
+                        selectedQuest = data;
+                        handleSUIAuth();
+                      } else {
+                        handlePlay(data);
                       }
                     }
                   }}
@@ -477,6 +652,14 @@
   Note: On-chain task might take 1 - 2 minutes to verify, if you get failed to
   verify, please try again in 2 minutes
 </div>
+
+<ReactAdapter
+  element={SuiConnector}
+  config={widgetConfig}
+  autoConnect={false}
+  {chains}
+  integrator="svelte-example"
+/>
 
 <style windi:preflights:global windi:safelist:global>
 </style>

@@ -143,7 +143,7 @@
         <img src={data.logo} alt="" class="w-full h-full object-contain" />
       </div>
 
-      {#if data?.code === "wUSDC" || data?.code === "FLX"}
+      {#if ["FLX", "SUI"].includes(data?.code)}
         <div
           class="absolute -bottom-2 w-full text-center whitespace-nowrap left-timee italic text-sm"
         >
@@ -202,7 +202,7 @@
           </div>
         {/if}
 
-        {#if isClaimable && (data.code === "wUSDC" || data.code === "FLX")}
+        {#if isClaimable && ["FLX", "SUI"].includes(data.code)}
           <div class="w-full flex justify-end">
             <div class="w-[238.7px] h-[45px]">
               <Button
@@ -239,11 +239,11 @@
           </Button>
         {:else}
           <div class="w-full">
-            {#if !isClaimable && (data?.code === "wUSDC" || data?.code === "FLX" || data?.code === "PREMIUM_CODE")}
+            {#if !isClaimable && (data?.code === "SUI" || data?.code === "FLX" || data?.code === "PREMIUM_CODE")}
               <div
                 class="flex items-center justify-between p-[12px] bg-[#EEEEEE] rounded-[12px] w-full"
               >
-                {#if data?.code === "wUSDC" || data?.code === "FLX"}
+                {#if ["FLX", "SUI"].includes(data?.code)}
                   <div class="text-[#131313] text-sm">Your Trx hash</div>
                   <Copy
                     address={data?.tx}
@@ -269,19 +269,7 @@
                 {/if}
               </div>
             {:else}
-              <Button
-                variant="tertiary"
-                on:click={() => {
-                  if (totalPoint < data.cost) {
-                    triggerToast(
-                      "You are not enough GM Points to Redeem",
-                      "fail"
-                    );
-                  } else {
-                    triggerToast("There are not available now", "fail");
-                  }
-                }}
-              >
+              <Button disabled>
                 <div class="flex items-center gap-1">
                   <img src={goldImg} alt="" class="w-[28px] h-[28px]" />
                   <div class="text-white sm:text-lg text-smxs font-medium">

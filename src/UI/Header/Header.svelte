@@ -445,6 +445,13 @@
       $queryUserInfo?.data !== undefined
     ) {
       handleSetUserData($queryUserInfo?.data);
+    } else {
+      if (
+        $queryUserInfo?.error &&
+        $queryUserInfo?.error?.message.includes("Token expired")
+      ) {
+        handleSignOut();
+      }
     }
   }
 
