@@ -133,7 +133,7 @@
             <img
               src={profitAndLossPercent >= 0 ? TrendUp : TrendDown}
               alt="trend"
-              class="mb-1"
+              class="mb-1 block"
             />
           {/if}
         </div>

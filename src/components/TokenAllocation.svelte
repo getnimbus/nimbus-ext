@@ -665,4 +665,4 @@
   <EChart {id} {theme} notMerge={true} option={optionPie} height={465} />
 </div>
 
-<style windi:preflights:global windi:safelist:global></style>
+<style></style>

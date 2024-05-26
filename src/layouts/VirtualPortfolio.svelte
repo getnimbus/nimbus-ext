@@ -1009,7 +1009,7 @@
   </div>
 </AppOverlay>
 
-<style windi:preflights:global windi:safelist:global>
+<style>
   .header-container {
     background-repeat: no-repeat;
     background-size: auto;

@@ -287,7 +287,7 @@
               <img
                 src={realizedProfit >= 0 ? TrendUp : TrendDown}
                 alt="trend"
-                class="mb-1"
+                class="mb-1 block"
               />
             {/if}
           </div>
@@ -331,7 +331,7 @@
               <img
                 src={unrealizedProfit >= 0 ? TrendUp : TrendDown}
                 alt="trend"
-                class="mb-1"
+                class="mb-1 block"
               />
             {/if}
           </div>
@@ -544,5 +544,5 @@
   </div>
 </ErrorBoundary>
 
-<style windi:preflights:global windi:safelist:global>
+<style>
 </style>

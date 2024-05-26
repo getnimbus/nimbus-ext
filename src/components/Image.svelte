@@ -10,8 +10,6 @@
 <img
   src={logo || defaultLogo}
   alt=""
-  class="w-full h-full object-contain"
-  on:error={(e) => {
-    handleImgError(e, defaultLogo);
-  }}
+  class="w-full h-full object-contain block"
+  on:error={(e) => handleImgError(e, defaultLogo)}
 />

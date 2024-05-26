@@ -1437,7 +1437,7 @@
   </AppOverlay>
 </ErrorBoundary>
 
-<style windi:preflights:global windi:safelist:global>
+<style>
   :global(body) .select_content {
     background: #ffffff;
     border: 0.5px solid transparent;

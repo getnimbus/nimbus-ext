@@ -52,7 +52,7 @@
   $: selectedTypeMode = darkMode ? "dark" : "light";
 </script>
 
-<div class="w-max flex items-center gap-2">
+<div class="w-max flex items-center xl:gap-1 gap-2">
   <input
     checked={darkMode}
     on:click={handleSwitchDarkMode}
@@ -61,17 +61,17 @@
     class="hidden"
   />
   <div
-    class={`cursor-pointer font-medium xl:text-lg text-xl ${auto ? "text-[#3b82f6]" : "text-gray-300"}`}
+    class={`cursor-pointer font-medium xl:text-base text-xl ${auto ? "text-[#3b82f6]" : "text-gray-300"}`}
     on:click={handleToggleAuto}
   >
     Auto
   </div>
-  <div class="text-gray-300 mb-1 xl:text-lg text-xl">/</div>
+  <div class="text-gray-300 mb-1 xl:text-base text-xl">/</div>
   <label
     for="theme-toggle"
     class={`cursor-pointer ${auto ? "opacity-40" : "opacity-100"}`}
   >
-    <div class="flex items-center justify-between gap-2">
+    <div class="flex items-center justify-between xl:gap-1 gap-2">
       <div
         class={`${
           selectedTypeMode === "light" ? "text-[#3b82f6]" : "text-gray-300"
@@ -79,18 +79,18 @@
       >
         <div class="xl:block hidden">
           <Icon
+            size="lg"
             name="sun-solid"
             role="img"
             class="select-none border-none focus:outline-none focus:ring-0"
-            size="lg"
           />
         </div>
         <div class="xl:hidden block">
           <Icon
+            size="xl"
             name="sun-solid"
             role="img"
             class="select-none border-none focus:outline-none focus:ring-0"
-            size="lg"
           />
         </div>
       </div>
@@ -102,18 +102,18 @@
       >
         <div class="xl:block hidden">
           <Icon
+            size="md"
             name="moon-solid"
             role="img"
             class="select-none border-none focus:outline-none focus:ring-0"
-            size="lg"
           />
         </div>
         <div class="xl:hidden block">
           <Icon
+            size="lg"
             name="moon-solid"
             role="img"
             class="select-none border-none focus:outline-none focus:ring-0"
-            size="lg"
           />
         </div>
       </div>
