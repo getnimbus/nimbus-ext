@@ -269,8 +269,8 @@
             </div>
           </div>
           <!-- {#if isTouchDevice}
-        <MobileIntroModalPWA />
-      {/if} -->
+            <MobileIntroModalPWA />
+          {/if} -->
         {/if}
       </QueryClientProvider>
     </TriggerBonus>

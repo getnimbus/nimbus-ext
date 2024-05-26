@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { MoonSolid, SunSolid } from "flowbite-svelte-icons";
+  import { Icon } from "flowbite-svelte-icons";
   import { isDarkMode, isAutoDarkMode } from "~/store";
 
   let darkMode = false;
@@ -78,14 +78,18 @@
         }`}
       >
         <div class="xl:block hidden">
-          <SunSolid
+          <Icon
             size="lg"
+            name="sun-solid"
+            role="img"
             class="select-none border-none focus:outline-none focus:ring-0"
           />
         </div>
         <div class="xl:hidden block">
-          <SunSolid
+          <Icon
             size="xl"
+            name="sun-solid"
+            role="img"
             class="select-none border-none focus:outline-none focus:ring-0"
           />
         </div>
@@ -97,14 +101,18 @@
         }`}
       >
         <div class="xl:block hidden">
-          <MoonSolid
+          <Icon
             size="md"
+            name="moon-solid"
+            role="img"
             class="select-none border-none focus:outline-none focus:ring-0"
           />
         </div>
         <div class="xl:hidden block">
-          <MoonSolid
+          <Icon
             size="lg"
+            name="moon-solid"
+            role="img"
             class="select-none border-none focus:outline-none focus:ring-0"
           />
         </div>

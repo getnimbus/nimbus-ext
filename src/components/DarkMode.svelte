@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { MoonSolid, SunSolid } from "flowbite-svelte-icons";
+  import { Icon } from "flowbite-svelte-icons";
   import { isDarkMode, isAutoDarkMode } from "~/store";
 
   let selectedTypeMode: "dark" | "light" = "light";
@@ -81,18 +81,12 @@
           selectedTypeMode === "light" ? "text-[#3b82f6]" : "text-gray-300"
         }`}
       >
-        <div class="xl:block hidden">
-          <SunSolid
-            size="lg"
-            class="select-none border-none focus:outline-none focus:ring-0"
-          />
-        </div>
-        <div class="xl:hidden block">
-          <SunSolid
-            size="xl"
-            class="select-none border-none focus:outline-none focus:ring-0"
-          />
-        </div>
+        <Icon
+          size="lg"
+          name="sun-solid"
+          role="img"
+          class="select-none border-none focus:outline-none focus:ring-0"
+        />
       </div>
       <div class="text-gray-300 mb-1 xl:text-lg text-2xl">/</div>
       <div
@@ -100,17 +94,12 @@
           selectedTypeMode === "dark" ? "text-[#3b82f6]" : "text-gray-300"
         }`}
       >
-        <div class="xl:block hidden">
-          <MoonSolid
-            class="select-none border-none focus:outline-none focus:ring-0"
-          />
-        </div>
-        <div class="xl:hidden block">
-          <MoonSolid
-            size="xl"
-            class="select-none border-none focus:outline-none focus:ring-0"
-          />
-        </div>
+        <Icon
+          size="md"
+          name="moon-solid"
+          role="img"
+          class="select-none border-none focus:outline-none focus:ring-0"
+        />
       </div>
     </div>
   </label>
