@@ -943,7 +943,7 @@
   </div>
 </reset-style>
 
-<style>
+<style windi:preflights:global windi:safelist:global>
   .shadow {
     box-shadow: 0px 0px 40px 0px #0000001a;
   }

@@ -224,7 +224,7 @@
   {/if}
 </reset-style>
 
-<style>
+<style windi:preflights:global windi:safelist:global>
   @keyframes skeleton-loading {
     0% {
       background-color: hsl(200, 20%, 80%);

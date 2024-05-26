@@ -9,7 +9,7 @@
   />
 </div>
 
-<style>
+<style windi:preflights:global windi:safelist:global>
   .line-arrow {
     border-bottom: 1px solid #27326f66;
     padding-bottom: 2px;

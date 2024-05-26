@@ -31,7 +31,7 @@
   </div>
 </reset-style>
 
-<style>
+<style windi:preflights:global windi:safelist:global>
   .address-wrapper {
     display: inline-flex;
     /* gap: 8px; */

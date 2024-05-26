@@ -56,4 +56,4 @@
   </div>
 </reset-style>
 
-<style></style>
+<style windi:preflights:global windi:safelist:global></style>

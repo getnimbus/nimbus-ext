@@ -550,7 +550,7 @@ z"
   </div>
 </reset-style>
 
-<style>
+<style windi:preflights:global windi:safelist:global>
   .btn-border {
     border: 1px solid #0ea5e9;
   }

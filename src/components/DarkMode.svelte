@@ -116,7 +116,7 @@
   </label>
 </div>
 
-<style>
+<style windi:preflights:global windi:safelist:global>
   .switch {
     position: relative;
     display: inline-block;

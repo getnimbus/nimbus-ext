@@ -980,7 +980,7 @@
   }}
 />
 
-<style>
+<style windi:preflights:global windi:safelist:global>
   .input-border-focus {
     border: 0.5px solid white;
   }

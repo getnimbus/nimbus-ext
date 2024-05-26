@@ -237,7 +237,7 @@
   </div>
 </ErrorBoundary>
 
-<style>
+<style windi:preflights:global windi:safelist:global>
   .card {
     border: 2px solid black;
     border-radius: 12px;

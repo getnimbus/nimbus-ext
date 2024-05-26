@@ -101,7 +101,7 @@
   {/if}
 </reset-style>
 
-<style>
+<style windi:preflights:global windi:safelist:global>
   .input-border {
     border: 1px solid #00000014;
   }
