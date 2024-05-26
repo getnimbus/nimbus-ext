@@ -15,84 +15,35 @@ export default defineConfig(({ mode }) => {
     plugins: [
       svelte({
         preprocess: [sveltePreprocess()],
-        experimental: {
-          dynamicCompileOptions({ filename, compileOptions }) {
-            return {
-              ...compileOptions,
-              customElement: filename.endsWith(".custom.svelte"),
-            };
-          },
-        },
-      }),
-      viteStaticCopy({
-        targets: [
-          {
-            src: "src/_locales",
-            dest: "",
-          },
-          // {
-          //   src: path.resolve(__dirname, "./public"),
-          //   dest: "",
-          // },
-          // {
-          //   src: path.resolve(__dirname, "./public/robots.txt"),
-          //   dest: "",
-          // },
-          {
-            src: path.resolve(__dirname, "./src/assets/logo/"),
-            dest: "assets",
-          },
-        ],
-      }),
-      VitePWA({
-        selfDestroying: true,
-        // workbox: {
-        //   globPatterns: ["**/*.{css,html,svelte,ts,gif,svg,png,woff2}"],
-        // },
-        // devOptions: {
-        //   enabled: false,
-        // },
-        // registerType: "autoUpdate",
-        // manifest: {
-        //   name: "Nimbus",
-        //   short_name: "Nimbus",
-        //   start_url: "/",
-        //   display: "standalone",
-        //   description: "https://getnimbus.io",
-        //   icons: [
-        //     {
-        //       src: "assets/logo/512.png",
-        //       type: "image/png",
-        //       sizes: "512x512",
-        //       purpose: "any",
-        //     },
-        //     {
-        //       src: "assets/logo/256.png",
-        //       type: "image/png",
-        //       sizes: "256x256",
-        //       purpose: "any",
-        //     },
-        //     {
-        //       src: "assets/logo/144.png",
-        //       type: "image/png",
-        //       sizes: "144x144",
-        //       purpose: "any",
-        //     },
-        //     {
-        //       src: "assets/logo/128.png",
-        //       type: "image/png",
-        //       sizes: "128x128",
-        //       purpose: "any",
-        //     },
-        //     {
-        //       src: "assets/logo/48.png",
-        //       type: "image/png",
-        //       sizes: "48x48",
-        //       purpose: "any",
-        //     },
-        //   ],
+        // experimental: {
+        //   dynamicCompileOptions({ filename, compileOptions }) {
+        //     return {
+        //       ...compileOptions,
+        //       customElement: filename.endsWith(".custom.svelte"),
+        //     };
+        //   },
         // },
       }),
+      // viteStaticCopy({
+      //   targets: [
+      //     {
+      //       src: "src/_locales",
+      //       dest: "",
+      //     },
+      //     // {
+      //     //   src: path.resolve(__dirname, "./public"),
+      //     //   dest: "",
+      //     // },
+      //     // {
+      //     //   src: path.resolve(__dirname, "./public/robots.txt"),
+      //     //   dest: "",
+      //     // },
+      //     {
+      //       src: path.resolve(__dirname, "./src/assets/logo/"),
+      //       dest: "assets",
+      //     },
+      //   ],
+      // }),
     ],
     resolve: {
       alias: {
@@ -123,7 +74,7 @@ export default defineConfig(({ mode }) => {
       target: ["es2020"],
       rollupOptions: {
         plugins: [
-          // inject({ Buffer: ["buffer/", "Buffer"] }),
+          inject({ Buffer: ["buffer/", "Buffer"] }),
           // json(),
           // globals(),
           // builtins(),
@@ -139,7 +90,7 @@ export default defineConfig(({ mode }) => {
         // },
       },
       outDir: path.resolve(__dirname, "web-build"),
-      sourcemap: env.WATCH === "true" ? "inline" : false,
+      // sourcemap: env.WATCH === "true" ? "inline" : false,
     },
   };
 });
