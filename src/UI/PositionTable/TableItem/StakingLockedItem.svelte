@@ -32,7 +32,7 @@
           alt="token"
           width="30"
           height="30"
-          class="rounded-full"
+          class="rounded-full block"
         />
         <div class="flex flex-col gap-1">
           <div class="xl:text-sm text-2xl font-medium">
@@ -138,7 +138,7 @@
           <img
             src={profit >= 0 ? TrendUp : TrendDown}
             alt="trend"
-            class="mb-1"
+            class="mb-1 block"
           />
         </div>
       </div>

@@ -115,5 +115,5 @@
   <div class="font-semibold text-[15px]">Connect EVM Wallet</div>
 </div>
 
-<style windi:preflights:global windi:safelist:global>
+<style>
 </style>

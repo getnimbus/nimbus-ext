@@ -10,7 +10,7 @@
   </blockquote>
   <figcaption class="flex items-center gap-x-6">
     <img
-      class="h-12 w-12 rounded-full bg-gray-50"
+      class="h-12 w-12 rounded-full bg-gray-50 block"
       src={Avatar}
       alt="Thanh Le"
     />

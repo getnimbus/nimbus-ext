@@ -72,6 +72,7 @@
   let openScreenResult = false;
   let startFlip = false;
   let linkedSuiWallet = false;
+  let onSelectCoin: "head" | "tail" | null = null;
 
   $: queryLinkSocial = createQuery({
     queryKey: ["link-socials"],
@@ -85,6 +86,7 @@
   const getRound = async () => {
     const round = await client
       .getObject({
+        // id: "0xb440cf576ccf24b5c9b81a80a146eeaae9c7f09a87983769ec2d34212a434815", // devnet for test if got bug
         id: "0xfc94a9e689692098ad6c81cfe12b6ece40f3b8a354dd79a1a4ba47110408efcd",
         options: {
           showContent: true,
@@ -176,6 +178,7 @@
         console.log("err: ", error);
         isLoadingFlip = false;
       }
+      onSelectCoin = null;
     }
   };
 
@@ -342,13 +345,13 @@
   <img
     src={suiBackground}
     alt=""
-    class="absolute right-[-21px] top-[50%] -translate-y-1/2 object-contain h-full z-1"
+    class="absolute right-[-21px] top-[50%] -translate-y-1/2 object-contain h-full z-1 block"
   />
 
   <div class="font-semibold sm:text-5xl text-3xl uppercase">Flip The GM</div>
 
   <div class="relative z-2 h-[110px]">
-    <img src={flipCoin2} alt="" class="h-full h-full object-contain" />
+    <img src={flipCoin2} alt="" class="h-full h-full object-contain block" />
   </div>
 
   <div class="text-amber-400 font-medium text-center relative z-2">
@@ -356,12 +359,12 @@
   </div>
 
   <div
-    class="bg-[#424C81] text-white rounded-md flex flex-col items-center justify-center py-2 px-20 relative z-2"
+    class="bg-[#424C81] text-white rounded-xl flex flex-col items-center justify-center py-2 px-20 relative z-2"
   >
     <div class="text-2xl">Rewards</div>
     <div class="flex items-center gap-2 py-2">
       <div class="p-2 rounded-[10px] bg-[#27326F]">
-        <img src={gmPoints} alt="" class="h-7 w-7" />
+        <img src={gmPoints} alt="" class="h-7 w-7 block" />
       </div>
       <div class="sm:text-[44px] text-2xl font-medium">1000</div>
     </div>
@@ -378,7 +381,7 @@
           class="flex items-center gap-1 text-sm font-medium bg-[#27326F] py-1 px-2 text-white rounded-[10px]"
         >
           1000
-          <img src={gmPoints} alt="" class="w-6 h-6" />
+          <img src={gmPoints} alt="" class="w-6 h-6 block" />
         </div>
       </div>
     {:else}
@@ -386,31 +389,33 @@
         {#if startFlip && dataFlipCheck?.canPlay && linkedSuiWallet}
           <div class="flex justify-center items-center gap-4">
             <button
-              class="rounded-[12px] text-white bg-[#FFB800] w-full py-4 px-5 font-medium sm:text-2xl text-lg max-w-[140px] flex items-center justify-center"
+              class={`rounded-xl text-white w-full py-4 px-5 font-medium sm:text-2xl text-lg max-w-[140px] flex items-center justify-center ${onSelectCoin === "tail" ? "bg-gray-300" : "bg-[#FFB800]"}`}
               on:click={() => {
                 if (!isLoadingFlip) {
                   triggerFlipResult(1);
+                  onSelectCoin = "head";
                 }
               }}
-              disabled={isLoadingFlip}
+              disabled={onSelectCoin === "tail"}
             >
-              {#if isLoadingFlip}
-                <Loading size={20} />
+              {#if isLoadingFlip && onSelectCoin === "head"}
+                <Loading size={32} />
               {:else}
                 Head
               {/if}
             </button>
             <button
-              class="rounded-[12px] text-white bg-[#FFB800] w-full py-4 px-5 font-medium sm:text-2xl text-lg max-w-[140px] flex items-center justify-center"
+              class={`rounded-xl text-white w-full py-4 px-5 font-medium sm:text-2xl text-lg max-w-[138px] flex items-center justify-center  ${onSelectCoin === "head" ? "bg-gray-300" : "bg-[#FFB800]"}`}
               on:click={() => {
                 if (!isLoadingFlip) {
                   triggerFlipResult(0);
+                  onSelectCoin = "tail";
                 }
               }}
-              disabled={isLoadingFlip}
+              disabled={onSelectCoin === "head"}
             >
-              {#if isLoadingFlip}
-                <Loading size={20} />
+              {#if isLoadingFlip && onSelectCoin === "tail"}
+                <Loading size={32} />
               {:else}
                 Tail
               {/if}
@@ -467,18 +472,18 @@
     <div class="flex flex-col items-center justify-center gap-10">
       {#if isUserWin}
         <div class="text-4xl text-[#FFD569] font-medium">Stonk Stonk</div>
-        <img src={gmPoints} alt="" class="w-40 h-40" />
+        <img src={gmPoints} alt="" class="w-40 h-40 block" />
         <div class="text-[34px] text-white font-medium">+1000 GMs</div>
       {:else}
         <div class="text-4xl text-[#FFD569] font-medium">
           ohh... it's stink stink
         </div>
-        <img src={betterLuck} alt="" class="w-40 h-40 object-contain" />
+        <img src={betterLuck} alt="" class="w-40 h-40 object-contain block" />
         <div class="text-[34px] text-white font-medium">Try again...</div>
       {/if}
     </div>
   </div>
 {/if}
 
-<style windi:preflights:global windi:safelist:global>
+<style>
 </style>
