@@ -137,7 +137,7 @@
   </QueryClientProvider>
 </ErrorBoundary>
 
-<style global windi:preflights:global windi:safelist:global>
+<style global>
   :global(body) {
     background: #fff;
     color: black;

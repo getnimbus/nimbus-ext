@@ -390,4 +390,4 @@
   </div>
 </ErrorBoundary>
 
-<style windi:preflights:global windi:safelist:global></style>
+<style></style>

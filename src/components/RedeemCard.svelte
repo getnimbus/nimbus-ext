@@ -29,14 +29,14 @@
         <img
           src={redeemData?.logo}
           alt=""
-          class="w-full h-full object-contain"
+          class="w-full h-full object-contain block"
         />
       </div>
     </div>
 
     <div class="flex-1 flex flex-col gap-2">
       <div class="flex items-center gap-2">
-        <img src={Crown} alt="" class="w-[26px] h-[26px]" />
+        <img src={Crown} alt="" class="w-[26px] h-[26px] block" />
         <div class="text-[#FFB800] text-lg font-medium uppercase">Premium</div>
       </div>
       <div class="lg:text-4xl text-3xl font-normal">
@@ -84,7 +84,7 @@
                 }}
               >
                 <div class="flex items-center gap-1">
-                  <img src={goldImg} alt="" class="w-[28px] h-[28px]" />
+                  <img src={goldImg} alt="" class="w-[28px] h-[28px] block" />
                   <div class="text-white sm:text-lg text-smxs font-medium">
                     {redeemData?.cost}
                   </div>
@@ -103,7 +103,7 @@
               disabled={isLoadingRedeem}
             >
               <div class="flex items-center gap-1">
-                <img src={goldImg} alt="" class="w-[28px] h-[28px]" />
+                <img src={goldImg} alt="" class="w-[28px] h-[28px] block" />
                 <div class="text-white sm:text-lg text-smxs font-medium">
                   {redeemData?.cost}
                 </div>
@@ -134,7 +134,7 @@
   </div>
 </div>
 
-<style windi:preflights:global windi:safelist:global>
+<style>
   @media (max-width: 320) {
     .text-smxs {
       font-size: 14px;

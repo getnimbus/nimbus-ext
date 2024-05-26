@@ -408,7 +408,7 @@
               <div
                 class="text-left text-sm uppercase font-medium flex justify-start items-center gap-1"
               >
-                <img src={goldImg} alt="" class="w-4 h-4" />
+                <img src={goldImg} alt="" class="w-4 h-4 block" />
                 {data?.point}
               </div>
             </td>
@@ -467,7 +467,7 @@
                         }
                       }}
                     >
-                      <img src={playIcon} alt="" class="w-4 h-4" />
+                      <img src={playIcon} alt="" class="w-4 h-4 block" />
                     </Button>
                   </div>
                   <div class="w-[90px] xl:h-[33px] h-[43px]">
@@ -552,7 +552,7 @@
           <div
             class="flex items-center justify-end gap-1 font-medium text-sm text_00000099"
           >
-            <img src={goldImg} alt="" class="w-4 h-4" />
+            <img src={goldImg} alt="" class="w-4 h-4 block" />
             {data?.point}
           </div>
         </div>
@@ -601,7 +601,7 @@
                     }
                   }}
                 >
-                  <img src={playIcon} alt="" class="w-4 h-4" />
+                  <img src={playIcon} alt="" class="w-4 h-4 block" />
                 </Button>
               </div>
               <div class="w-[90px] h-[44px]">
@@ -661,5 +661,5 @@
   integrator="svelte-example"
 />
 
-<style windi:preflights:global windi:safelist:global>
+<style>
 </style>

@@ -200,7 +200,7 @@
       class="flex items-center gap-1 text-sm font-medium bg-[#27326F] py-1 px-2 text-white rounded-[10px]"
     >
       1000
-      <img src={goldImg} alt="" class="w-6 h-6" />
+      <img src={goldImg} alt="" class="w-6 h-6 block" />
     </div>
   </div>
 {/if}
@@ -213,5 +213,5 @@
   integrator="svelte-example"
 />
 
-<style windi:preflights:global windi:safelist:global>
+<style>
 </style>

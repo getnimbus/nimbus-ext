@@ -16,7 +16,7 @@
   import All from "~/assets/all.svg";
 
   export let listSelect;
-  export let selected;
+  export let selected: any;
   export let type: "chain" | "wallet" | "lang" | "filter";
   export let positionSelectList = "left-0";
   export let disabled = false;
@@ -36,10 +36,10 @@
     (type === "chain" &&
       listSelect &&
       selected &&
-      listSelect.filter((item) => item.value === selected)) ||
+      listSelect.filter((item: any) => item.value === selected)) ||
     [];
 
-  const disabledChains = [];
+  const disabledChains: any = [];
 </script>
 
 <div
@@ -66,7 +66,7 @@
               ? All
               : selected?.logo || selectedChain[0]?.logo}
             alt=""
-            class="xl:w-5 xl:h-5 w-7 h-7 rounded-full"
+            class="xl:w-5 xl:h-5 w-7 h-7 rounded-full block"
           />
         {/if}
         <div class="text-white xl:text-sm text-lg">
@@ -81,7 +81,7 @@
     <img
       src={UpArrow}
       alt=""
-      class="transform rotate-180 w-3 h-3"
+      class="transform rotate-180 w-3 h-3 block"
       class:rotate-0={open}
     />
   </div>
@@ -126,7 +126,7 @@
             <img
               src={item.value === "ALL" ? All : item.logo}
               alt=""
-              class="w-5 h-5 rounded-full"
+              class="w-5 h-5 rounded-full block"
             />
           {/if}
           <div
