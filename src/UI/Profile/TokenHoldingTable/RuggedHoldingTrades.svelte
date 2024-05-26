@@ -382,7 +382,7 @@
                         alt=""
                         width="15"
                         height="15"
-                        class="rounded-full"
+                        class="rounded-full block"
                       />
                     </div>
                   {/if}
@@ -528,7 +528,7 @@
                             ? TrendUp
                             : TrendDown}
                           alt="trend"
-                          class="mb-1"
+                          class="mb-1 block"
                         />
                       {/if}
                     </div>
@@ -610,7 +610,7 @@
                     alt=""
                     width="15"
                     height="15"
-                    class="rounded-full"
+                    class="rounded-full block"
                   />
                 </div>
               {/if}
@@ -749,7 +749,7 @@
                           ? TrendUp
                           : TrendDown}
                         alt="trend"
-                        class="mb-1"
+                        class="mb-1 block"
                       />
                     {/if}
                   </div>
@@ -811,7 +811,7 @@
                   alt=""
                   width="26"
                   height="26"
-                  class="rounded-full"
+                  class="rounded-full block"
                 />
               </div>
             {/if}

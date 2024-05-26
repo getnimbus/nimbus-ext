@@ -822,7 +822,7 @@
                             <img
                               src={item.logo}
                               alt=""
-                              class={`w-5 h-5 xl:w-4 xl:h-4 ${
+                              class={`w-5 h-5 xl:w-4 xl:h-4 block ${
                                 item.type !== "BUNDLE" ? "rounded-full" : ""
                               }`}
                             />
@@ -989,7 +989,7 @@
                             <img
                               src={item.logo}
                               alt=""
-                              class={`w-5 h-5 xl:w-4 xl:h-4 ${
+                              class={`w-5 h-5 xl:w-4 xl:h-4 block ${
                                 item.type !== "BUNDLE" ? "rounded-full" : ""
                               }`}
                             />
@@ -1079,7 +1079,7 @@
                           }
                         }}
                       >
-                        <img src={item.logo} alt="" class="w-5 h-5" />
+                        <img src={item.logo} alt="" class="w-5 h-5 block" />
                         {item.label}
                         {#if item.value === $wallet}
                           <Motion
@@ -1140,7 +1140,7 @@
                       isOpenModal = true;
                     }}
                   >
-                    <img src={Plus} alt="" class="w-3 h-3" />
+                    <img src={Plus} alt="" class="w-3 h-3 block" />
                     <div class="text-white">Add account</div>
                   </Button>
                 {:else}
@@ -1150,7 +1150,7 @@
                       triggerModalAddAddress.update((n) => (n = true));
                     }}
                   >
-                    <img src={Plus} alt="" class="w-3 h-3" />
+                    <img src={Plus} alt="" class="w-3 h-3 block" />
                     <div class="text-white">Add account</div>
                   </Button>
                 {/if}
@@ -1575,7 +1575,7 @@
                 alt="logo"
                 loading="lazy"
                 decoding="async"
-                class="w-8 h-8 rounded-full"
+                class="w-8 h-8 rounded-full block"
               />
             {/each}
             <a
@@ -1697,7 +1697,7 @@
                 loading="lazy"
                 decoding="async"
                 alt="logo"
-                class="w-8 h-8 overflow-hidden rounded-full"
+                class="w-8 h-8 overflow-hidden rounded-full block"
               />
             {/each}
             <a
@@ -1754,7 +1754,7 @@
           alt=""
           loading="lazy"
           decoding="async"
-          class="-ml-6 w-[170px] h-[80px]"
+          class="-ml-6 w-[170px] h-[80px] block"
         />
         <div
           class="-mr-1 text-5xl"
@@ -1801,7 +1801,7 @@
                   alt="logo"
                   loading="lazy"
                   decoding="async"
-                  class="w-8 h-8 rounded-full"
+                  class="w-8 h-8 rounded-full block"
                 />
               {/each}
               <a
@@ -1930,7 +1930,7 @@
                   loading="lazy"
                   decoding="async"
                   alt="logo"
-                  class="w-8 h-8 overflow-hidden rounded-full"
+                  class="w-8 h-8 overflow-hidden rounded-full block"
                 />
               {/each}
               <a
@@ -2024,7 +2024,7 @@
       <div class="text-base">Use the command as follow video</div>
     </div>
     <div class="xl:h-[350px] h-[650px]">
-      <img src={FollowWhale} alt="" loading="lazy" decoding="async" class="object-contain w-full h-full" />
+      <img src={FollowWhale} alt="" loading="lazy" decoding="async" class="object-contain w-full h-full block" />
     </div>
     <div class="flex justify-end w-full">
       <CopyToClipboard

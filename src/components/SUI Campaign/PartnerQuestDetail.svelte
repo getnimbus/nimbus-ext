@@ -129,7 +129,7 @@
             {selectedPartnersData?.sponsor?.title ||
               selectedPartnersData?.title}
           </div>
-          <img src={GreenTick} alt="" class="w-[18px] h-[18px]" />
+          <img src={GreenTick} alt="" class="w-[18px] h-[18px] block" />
         </div>
 
         <div class="text-[#7A7A7A]">
@@ -278,7 +278,7 @@
           <img
             src={selectedPartnersData?.sponsor?.logo}
             alt=""
-            class="object-contain w-[140px] m-auto rounded-[10px] overflow-hidden"
+            class="object-contain w-[140px] m-auto rounded-[10px] overflow-hidden block"
           />
         </div>
         <div class="uppercase text-3xl font-medium">

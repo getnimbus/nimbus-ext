@@ -367,7 +367,7 @@
                         ? TrendUp
                         : TrendDown}
                       alt="trend"
-                      class="mb-1"
+                      class="mb-1 block"
                     />
                     <div
                       class={`${
@@ -425,7 +425,7 @@
                         ? TrendUp
                         : TrendDown}
                       alt="trend"
-                      class="mb-1"
+                      class="mb-1 block"
                     />
                     <div
                       class={`${

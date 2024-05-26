@@ -342,13 +342,13 @@
   <img
     src={suiBackground}
     alt=""
-    class="absolute right-[-21px] top-[50%] -translate-y-1/2 object-contain h-full z-1"
+    class="absolute right-[-21px] top-[50%] -translate-y-1/2 object-contain h-full z-1 block"
   />
 
   <div class="font-semibold sm:text-5xl text-3xl uppercase">Flip The GM</div>
 
   <div class="relative z-2 h-[110px]">
-    <img src={flipCoin2} alt="" class="h-full h-full object-contain" />
+    <img src={flipCoin2} alt="" class="h-full h-full object-contain block" />
   </div>
 
   <div class="text-amber-400 font-medium text-center relative z-2">
@@ -361,7 +361,7 @@
     <div class="text-2xl">Rewards</div>
     <div class="flex items-center gap-2 py-2">
       <div class="p-2 rounded-[10px] bg-[#27326F]">
-        <img src={gmPoints} alt="" class="h-7 w-7" />
+        <img src={gmPoints} alt="" class="h-7 w-7 block" />
       </div>
       <div class="sm:text-[44px] text-2xl font-medium">1000</div>
     </div>
@@ -378,7 +378,7 @@
           class="flex items-center gap-1 text-sm font-medium bg-[#27326F] py-1 px-2 text-white rounded-[10px]"
         >
           1000
-          <img src={gmPoints} alt="" class="w-6 h-6" />
+          <img src={gmPoints} alt="" class="w-6 h-6 block" />
         </div>
       </div>
     {:else}
@@ -467,13 +467,13 @@
     <div class="flex flex-col items-center justify-center gap-10">
       {#if isUserWin}
         <div class="text-4xl text-[#FFD569] font-medium">Stonk Stonk</div>
-        <img src={gmPoints} alt="" class="w-40 h-40" />
+        <img src={gmPoints} alt="" class="w-40 h-40 block" />
         <div class="text-[34px] text-white font-medium">+1000 GMs</div>
       {:else}
         <div class="text-4xl text-[#FFD569] font-medium">
           ohh... it's stink stink
         </div>
-        <img src={betterLuck} alt="" class="w-40 h-40 object-contain" />
+        <img src={betterLuck} alt="" class="w-40 h-40 object-contain block" />
         <div class="text-[34px] text-white font-medium">Try again...</div>
       {/if}
     </div>
