@@ -1,11 +1,8 @@
 import { defineConfig, loadEnv } from "vite";
 import { svelte } from "@sveltejs/vite-plugin-svelte";
-import webExtension from "@samrum/vite-plugin-web-extension";
 import path from "path";
-import { getManifest } from "./src/manifest";
 import { windi } from "svelte-windicss-preprocess";
 import sveltePreprocess from "svelte-preprocess";
-import AutoImport from "unplugin-auto-import/vite";
 import { viteStaticCopy } from "vite-plugin-static-copy";
 import { VitePWA } from "vite-plugin-pwa";
 import inject from "@rollup/plugin-inject";
@@ -17,7 +14,7 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [
       svelte({
-        preprocess: [sveltePreprocess(), windi({})],
+        preprocess: [sveltePreprocess()],
         experimental: {
           dynamicCompileOptions({ filename, compileOptions }) {
             return {
@@ -126,7 +123,7 @@ export default defineConfig(({ mode }) => {
       target: ["es2020"],
       rollupOptions: {
         plugins: [
-          inject({ Buffer: ["buffer/", "Buffer"] }),
+          // inject({ Buffer: ["buffer/", "Buffer"] }),
           // json(),
           // globals(),
           // builtins(),
