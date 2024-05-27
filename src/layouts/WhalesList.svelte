@@ -3,9 +3,9 @@
   import { nimbus } from "~/lib/network";
   import { i18n } from "~/lib/i18n";
   import mixpanel from "mixpanel-browser";
-  import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { navigateTo } from "svelte-router-spa";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
+  import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { isDarkMode, selectedPackage, wallet, user } from "~/store";
   import { filterDuplicates } from "~/utils/index";
   import * as browser from "webextension-polyfill";

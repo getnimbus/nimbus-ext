@@ -2,17 +2,25 @@
   import { onMount } from "svelte";
   import { navigateTo } from "svelte-router-spa";
   import { nimbus } from "~/lib/network";
-  import { wallet, typeWallet, chain, user, isDarkMode } from "~/store";
+  import {
+    wallet,
+    typeWallet,
+    chain,
+    user,
+    isDarkMode,
+    userPublicAddress,
+    selectedPackage,
+  } from "~/store";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
   import {
     getVirtualPortfolio,
     getVirtualPortfolioProfile,
   } from "~/lib/queryAPI";
-  import { Toast } from "flowbite-svelte";
-  import { blur } from "svelte/transition";
+  import { triggerToast } from "~/utils/functions";
   import * as browser from "webextension-polyfill";
 
+  import Select from "~/components/Select.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import Button from "~/components/Button.svelte";
@@ -26,28 +34,69 @@
 
   const queryClient = useQueryClient();
 
-  let toastMsg = "";
-  let isSuccessToast = false;
-  let counter = 5;
-  let showToast = false;
+  let container;
+  let scrollContainer;
+  let isScrollStart = true;
+  let isScrollEnd = false;
 
-  const trigger = () => {
-    showToast = true;
-    counter = 5;
-    timeout();
+  const handleScroll = () => {
+    const { scrollLeft, scrollWidth, clientWidth } = scrollContainer;
+    isScrollStart = scrollLeft === 0;
+    isScrollEnd = scrollLeft + clientWidth >= scrollWidth - 1;
   };
 
-  const timeout = () => {
-    if (--counter > 0) return setTimeout(timeout, 1000);
-    showToast = false;
-    toastMsg = "";
-    isSuccessToast = false;
+  let isDisabled = false;
+  let tooltipDisableAddBtn = "";
+  let showDisabledSelectWallet = false;
+
+  $: {
+    if ($selectedPackage === "FREE" && listVirtualPortfolio?.length > 2) {
+      isDisabled = true;
+    } else if (
+      $selectedPackage === "EXPLORER" &&
+      listVirtualPortfolio?.length > 6
+    ) {
+      isDisabled = true;
+    } else {
+      isDisabled = false;
+    }
+  }
+
+  $: {
+    if (isDisabled) {
+      if ($selectedPackage === "FREE") {
+        tooltipDisableAddBtn =
+          "You've reached the maximum number of accounts. Upgrade to the EXPLORER Plan to add more";
+      }
+      if ($selectedPackage === "EXPLORER") {
+        tooltipDisableAddBtn =
+          "You've reached the maximum number of accounts. Upgrade to the ALPHA Plan to add more";
+      }
+    }
+  }
+
+  let indexSelectedVirtual = 0;
+
+  const handleSelectNextVirtual = () => {
+    if (indexSelectedVirtual < listVirtualPortfolio.length - 1) {
+      indexSelectedVirtual = indexSelectedVirtual + 1;
+      selectedVirtualPortfolio = listVirtualPortfolio[indexSelectedVirtual];
+    }
+  };
+
+  const handleSelectPrevVirtual = () => {
+    if (indexSelectedVirtual > 0) {
+      indexSelectedVirtual = indexSelectedVirtual - 1;
+      selectedVirtualPortfolio = listVirtualPortfolio[indexSelectedVirtual];
+    }
   };
 
   let listVirtualPortfolio = [];
   let selectedVirtualPortfolio: any = {};
   let virtualPortfolioId = "";
   let dataVirtualPortfolio = {};
+  let listTokenHolding = [];
+  let totalNetworth = 0;
 
   const initialUpdateStateFromParams = () => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -79,8 +128,8 @@
   });
 
   $: queryVirtualPortfolioProfile = createQuery({
-    queryKey: ["virtual-portfolio-profile", $wallet],
-    queryFn: () => getVirtualPortfolioProfile($wallet),
+    queryKey: ["virtual-portfolio-profile", $wallet, $userPublicAddress],
+    queryFn: () => getVirtualPortfolioProfile($wallet, $userPublicAddress),
     staleTime: Infinity,
     retry: false,
     enabled: Boolean($wallet && $wallet.length !== 0),
@@ -94,6 +143,34 @@
       handleFormatListVirtualPortfolio(
         $queryVirtualPortfolioProfile?.data?.data || []
       );
+    }
+  }
+
+  $: queryVirtualPortfolio = createQuery({
+    queryKey: ["virtual-portfolio", virtualPortfolioId, $wallet],
+    queryFn: () => getVirtualPortfolio($wallet, virtualPortfolioId),
+    staleTime: Infinity,
+    retry: false,
+    enabled: Boolean(
+      $wallet &&
+        $wallet.length !== 0 &&
+        virtualPortfolioId &&
+        virtualPortfolioId?.length !== 0 &&
+        !$queryVirtualPortfolioProfile.isError &&
+        $queryVirtualPortfolioProfile.data !== undefined &&
+        $queryVirtualPortfolioProfile?.data?.data.length !== 0
+    ),
+  });
+
+  $: {
+    if (
+      !$queryVirtualPortfolio.isError &&
+      $queryVirtualPortfolio.data !== undefined &&
+      !$queryVirtualPortfolioProfile.isError &&
+      $queryVirtualPortfolioProfile.data !== undefined &&
+      $queryVirtualPortfolioProfile?.data?.data.length !== 0
+    ) {
+      formatDataVirtualPortfolio($queryVirtualPortfolio?.data?.data);
     }
   }
 
@@ -174,6 +251,7 @@
       selectedVirtualPortfolio &&
       Object.keys(selectedVirtualPortfolio).length !== 0
     ) {
+      virtualPortfolioId = selectedVirtualPortfolio.id;
       browser.storage.sync.set({
         selectedVirtualPortfolioId: selectedVirtualPortfolio.id,
       });
@@ -189,6 +267,14 @@
       window.location.pathname +
         `?type=${$typeWallet}&chain=${$chain}&address=${$wallet}&virtualPortfolioId=${virtualPortfolioId}`
     );
+  };
+
+  const handleCalculateValueChange = (
+    percentPriceChange: number,
+    initialValue: number
+  ) => {
+    const valueChange = initialValue * percentPriceChange;
+    return initialValue + valueChange;
   };
 
   const formatDataVirtualPortfolio = (data: any) => {
@@ -226,48 +312,43 @@
       },
       {}
     );
+
+    const formatDataTokenHolding = dataVirtualPortfolio[
+      virtualPortfolioId
+    ]?.coins?.map((item) => {
+      const formatValue =
+        item.percentPriceChange !== 0
+          ? handleCalculateValueChange(item.percentPriceChange, item.value)
+          : item.value;
+
+      return {
+        ...item,
+        value: formatValue,
+      };
+    });
+
+    const totalValues = formatDataTokenHolding?.reduce(
+      (prev, item) => prev + Number(item?.value),
+      0
+    );
+
+    listTokenHolding = formatDataTokenHolding?.map((item) => {
+      return {
+        ...item,
+        percent: (Number(item.value) / Number(totalValues)) * 100,
+      };
+    });
+
+    totalNetworth = listTokenHolding.reduce(
+      (prev, item) => prev + Number(item?.value),
+      0
+    );
   };
-
-  $: queryVirtualPortfolio = createQuery({
-    queryKey: ["virtual-portfolio", $wallet, virtualPortfolioId],
-    queryFn: () => getVirtualPortfolio($wallet, virtualPortfolioId),
-    staleTime: Infinity,
-    retry: false,
-    enabled: Boolean(
-      $wallet &&
-        $wallet.length !== 0 &&
-        virtualPortfolioId &&
-        virtualPortfolioId?.length !== 0 &&
-        !$queryVirtualPortfolioProfile.isError &&
-        $queryVirtualPortfolioProfile.data !== undefined &&
-        $queryVirtualPortfolioProfile?.data?.data.length !== 0
-    ),
-  });
-
-  $: {
-    if (
-      !$queryVirtualPortfolio.isError &&
-      $queryVirtualPortfolio.data !== undefined &&
-      !$queryVirtualPortfolioProfile.isError &&
-      $queryVirtualPortfolioProfile.data !== undefined &&
-      $queryVirtualPortfolioProfile?.data?.data.length !== 0
-    ) {
-      formatDataVirtualPortfolio($queryVirtualPortfolio?.data?.data);
-    }
-  }
 
   let showDisable = false;
 
-  let container;
-  let scrollContainer;
-  let isScrollStart = true;
-  let isScrollEnd = false;
-
-  const handleScroll = () => {
-    const { scrollLeft, scrollWidth, clientWidth } = scrollContainer;
-    isScrollStart = scrollLeft === 0;
-    isScrollEnd = scrollLeft + clientWidth >= scrollWidth - 1;
-  };
+  let isOpenConfirmDelete = false;
+  let isLoadingDelete = false;
 
   let type = "";
   let isLoading = false;
@@ -280,62 +361,73 @@
     try {
       isLoading = true;
       if (type === "add") {
-        const responseAdd = await nimbus.post(
+        const responseAdd: any = await nimbus.post(
           `/address/${$wallet}/personalize/virtual-portfolio`,
           {
             ...data,
             virtualPortfolioNetworth,
+            createdOwner: $userPublicAddress,
           }
         );
         if (responseAdd && responseAdd?.error) {
-          toastMsg = `Something wrong when add ${data?.portfolioName} virtual portfolio. Please try again!`;
-          isSuccessToast = false;
-          trigger();
+          triggerToast(
+            `Something wrong when add ${data?.portfolioName} virtual portfolio. Please try again!`,
+            "fail"
+          );
           return;
         }
 
-        toastMsg = `Successfully add ${data?.portfolioName} virtual portfolio`;
-        isSuccessToast = true;
-        trigger();
+        triggerToast(
+          `Successfully add ${data?.portfolioName} virtual portfolio`,
+          "success"
+        );
       }
 
       if (type === "edit") {
-        const responseEdit = await nimbus.put(
-          `/address/${$wallet}/personalize/virtual-portfolio?portfolioName=${data?.portfolioName}&portfolioProfileId=${virtualPortfolioId}`,
-          data
+        const responseEdit: any = await nimbus.put(
+          `/address/${$wallet}/personalize/virtual-portfolio?portfolioName=${dataVirtualPortfolio[virtualPortfolioId]?.portfolioName}&portfolioProfileId=${virtualPortfolioId}&networth=${totalNetworth}`,
+          {
+            ...data,
+            virtualPortfolioNetworth,
+            createdOwner: $userPublicAddress,
+          }
         );
         if (responseEdit && responseEdit?.error) {
-          toastMsg = `Something wrong when edit ${data?.portfolioName} virtual portfolio. Please try again!`;
-          isSuccessToast = false;
-          trigger();
+          triggerToast(
+            `Something wrong when edit ${dataVirtualPortfolio[virtualPortfolioId]?.portfolioName} virtual portfolio. Please try again!`,
+            "fail"
+          );
           return;
         }
 
-        toastMsg = `Successfully edit ${data?.portfolioName} virtual portfolio`;
-        isSuccessToast = true;
-        trigger();
+        triggerToast(
+          `Successfully edit ${dataVirtualPortfolio[virtualPortfolioId]?.portfolioName} virtual portfolio`,
+          "success"
+        );
       }
 
       queryClient.invalidateQueries(["virtual-portfolio-profile"]);
       queryClient.invalidateQueries(["virtual-portfolio"]);
+      queryClient.invalidateQueries(["virtual-portfolio-performance"]);
     } catch (e) {
       console.error(e);
       if (type === "edit") {
-        toastMsg = `Something wrong when edit ${data?.portfolioName} virtual portfolio. Please try again!`;
+        triggerToast(
+          `Something wrong when edit ${data?.portfolioName} virtual portfolio. Please try again!`,
+          "fail"
+        );
       }
       if (type === "add") {
-        toastMsg = `Something wrong when add ${data?.portfolioName} virtual portfolio. Please try again!`;
+        triggerToast(
+          `Something wrong when add ${data?.portfolioName} virtual portfolio. Please try again!`,
+          "fail"
+        );
       }
-      isSuccessToast = false;
-      trigger();
     } finally {
       isLoading = false;
       type = "";
     }
   };
-
-  let isOpenConfirmDelete = false;
-  let isLoadingDelete = false;
 
   const handleDeleteVirtualPortfolio = async () => {
     isLoadingDelete = true;
@@ -345,15 +437,17 @@
         {}
       );
       if (response && response?.error) {
-        toastMsg = `Something wrong when delete ${selectedVirtualPortfolio?.name} virtual portfolio. Please try again!`;
-        isSuccessToast = false;
-        trigger();
+        triggerToast(
+          `Something wrong when delete ${selectedVirtualPortfolio?.name} virtual portfolio. Please try again!`,
+          "fail"
+        );
         return;
       }
 
-      toastMsg = `Successfully delete ${selectedVirtualPortfolio?.name} virtual portfolio`;
-      isSuccessToast = true;
-      trigger();
+      triggerToast(
+        `Successfully delete ${selectedVirtualPortfolio?.name} virtual portfolio`,
+        "success"
+      );
       queryClient.invalidateQueries(["virtual-portfolio-profile"]);
       queryClient.invalidateQueries(["virtual-portfolio"]);
 
@@ -370,9 +464,10 @@
       );
     } catch (e) {
       console.error(e);
-      toastMsg = `Something wrong when delete ${selectedVirtualPortfolio?.name} virtual portfolio. Please try again!`;
-      isSuccessToast = false;
-      trigger();
+      triggerToast(
+        `Something wrong when delete ${selectedVirtualPortfolio?.name} virtual portfolio. Please try again!`,
+        "fail"
+      );
     } finally {
       isLoadingDelete = false;
       isOpenConfirmDelete = false;
@@ -382,55 +477,58 @@
   const handleCancel = () => {
     type = "";
   };
-
-  $: console.log("HELLO WORLD: ", dataVirtualPortfolio);
 </script>
 
 <ErrorBoundary>
-  {#if $queryVirtualPortfolio.isFetching && $queryVirtualPortfolioProfile.isFetching}
-    <div class="flex items-center justify-center h-screen">
-      <Loading />
-    </div>
-  {:else}
-    <div class="header-container">
-      <div class="flex flex-col max-w-[2000px] m-auto xl:w-[82%] w-[90%]">
-        <div class="flex flex-col mb-5 gap-7">
-          <div class="flex items-center justify-between">
-            {#if type === ""}
-              <div
-                class="flex items-center gap-1 text-white cursor-pointer"
-                on:click={() => {
-                  navigateTo("/");
-                }}
-              >
-                <img src={LeftArrow} alt="" class="xl:w-5 xl:h-5 w-7 h-7" />
-                <div class="xl:text-sm text-2xl font-medium">Portfolio</div>
-              </div>
-            {:else}
-              <div
-                class="flex items-center gap-1 text-white cursor-pointer"
-                on:click={() => {
-                  handleCancel();
-                }}
-              >
-                <img src={LeftArrow} alt="" class="xl:w-5 xl:h-5 w-7 h-7" />
-                <div class="xl:text-sm text-2xl font-medium">Back</div>
-              </div>
-            {/if}
-          </div>
-
-          <div class="flex flex-col gap-3">
-            <div class="flex items-center gap-2 text-white">
-              <div class="xl:text-5xl text-7xl font-medium">
-                Virtual Portfolio
-              </div>
-            </div>
-            <div class="text-base">
-              <Copy address={$wallet} iconColor="#fff" color="#fff" />
+  <div class="header-container">
+    <div class="flex flex-col max-w-[2000px] m-auto xl:w-[82%] w-[90%]">
+      <div class="flex flex-col mb-5 gap-7">
+        <div class="flex items-center justify-between">
+          <div
+            class="flex items-center gap-1 text-white cursor-pointer"
+            on:click={() => {
+              if (type.length === 0) {
+                navigateTo("/");
+              } else {
+                handleCancel();
+              }
+            }}
+          >
+            <img src={LeftArrow} alt="" class="xl:w-5 xl:h-5 w-7 h-7" />
+            <div class="xl:text-sm text-2xl font-medium">
+              {#if type.length === 0}
+                Portfolio
+              {:else}
+                Back
+              {/if}
             </div>
           </div>
+        </div>
 
-          {#if type === ""}
+        <div class="flex flex-col gap-3">
+          <div class="flex items-center gap-2 text-white">
+            <div class="text-4xl font-semibold">Virtual Portfolio</div>
+          </div>
+          <div class="hidden text-2xl xl:text-base xl:block">
+            <Copy address={$wallet} iconColor="#fff" color="#fff" />
+          </div>
+          <div class="block text-2xl xl:text-base xl:hidden">
+            <Copy
+              address={$wallet}
+              iconColor="#fff"
+              color="#fff"
+              isShorten
+              iconSize={24}
+            />
+          </div>
+        </div>
+
+        {#if type.length === 0}
+          {#if $queryVirtualPortfolioProfile.isFetching}
+            <div class="flex items-center justify-center">
+              <Loading />
+            </div>
+          {:else}
             <div
               class="flex lg:flex-row flex-col lg:items-center items-start justify-between gap-6"
             >
@@ -438,36 +536,194 @@
               <div class="hidden xl:block">
                 {#if listVirtualPortfolio && listVirtualPortfolio?.length !== 0}
                   <div class="flex items-center gap-5">
-                    <AnimateSharedLayout>
-                      {#each listVirtualPortfolio as item}
+                    {#if listVirtualPortfolio.length > 5}
+                      <AnimateSharedLayout>
+                        {#each listVirtualPortfolio.slice(0, 5) as item, index}
+                          <div
+                            id={item.value}
+                            class={`relative xl:text-base text-2xl text-white py-1 px-2 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline ${($selectedPackage === "FREE" ? index > 2 : index > 6) ? "opacity-50" : "opacity-100"}`}
+                            class:hover:no-underline={item.name ===
+                              selectedVirtualPortfolio?.name}
+                            on:click={() => {
+                              if (
+                                $selectedPackage === "FREE"
+                                  ? index > 2
+                                  : index > 6
+                              ) {
+                                return;
+                              }
+                              selectedVirtualPortfolio = item;
+                            }}
+                          >
+                            {item.name}
+                            {#if item.name === selectedVirtualPortfolio?.name}
+                              <Motion
+                                let:motion
+                                layoutId="active-pill"
+                                transition={{
+                                  type: "spring",
+                                  duration: 0.6,
+                                }}
+                              >
+                                <div
+                                  class="absolute inset-0 rounded-full bg-[#ffffff1c]"
+                                  use:motion
+                                />
+                              </Motion>
+                            {/if}
+                          </div>
+                        {/each}
+                      </AnimateSharedLayout>
+                      <div class="relative">
                         <div
-                          id={item.name}
-                          class="relative xl:text-base text-2xl text-white py-1 xl:pl-2 xl:pr-3 px-3 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline"
-                          class:hover:no-underline={item.name ===
-                            selectedVirtualPortfolio?.name}
-                          on:click={() => {
-                            selectedVirtualPortfolio = item;
+                          class={`relative z-2 ${isDisabled ? "opacity-50" : "opacity-100"}`}
+                          on:mouseenter={() => {
+                            if (
+                              isDisabled ||
+                              ($user && Object.keys($user).length === 0)
+                            ) {
+                              showDisabledSelectWallet = true;
+                            }
+                          }}
+                          on:mouseleave={() => {
+                            if (
+                              isDisabled ||
+                              ($user && Object.keys($user).length === 0)
+                            ) {
+                              showDisabledSelectWallet = false;
+                            }
                           }}
                         >
-                          {item.name}
-                          {#if item.name === selectedVirtualPortfolio?.name}
-                            <Motion
-                              let:motion
-                              layoutId="active-pill"
-                              transition={{
-                                type: "spring",
-                                duration: 0.6,
-                              }}
-                            >
-                              <div
-                                class="absolute inset-0 rounded-full bg-[#ffffff1c]"
-                                use:motion
-                              />
-                            </Motion>
-                          {/if}
+                          <Select
+                            type="lang"
+                            positionSelectList="right-0"
+                            listSelect={listVirtualPortfolio.slice(
+                              5,
+                              listVirtualPortfolio.length
+                            )}
+                            bind:selected={selectedVirtualPortfolio}
+                            disabled={isDisabled}
+                          />
                         </div>
-                      {/each}
-                    </AnimateSharedLayout>
+                        {#if listVirtualPortfolio.slice(5, listVirtualPortfolio.length)}
+                          <div
+                            class="absolute inset-0 rounded-full bg-[#ffffff1c] z-1"
+                          />
+                        {/if}
+                        {#if showDisabledSelectWallet}
+                          <div
+                            class={`absolute transform left-1/2 -translate-x-1/2 ${
+                              Object.keys($user).length === 0
+                                ? "-top-8"
+                                : "-top-12"
+                            }`}
+                            style="z-index: 2147483648;"
+                          >
+                            <div
+                              class="max-w-[360px] text-white bg-black py-1 px-2 text-xs rounded relative w-max normal-case"
+                            >
+                              {tooltipDisableAddBtn}
+                            </div>
+                          </div>
+                        {/if}
+                      </div>
+                      {#if listVirtualPortfolio.length > 10}
+                        <div
+                          class={`flex items-center gap-3 ${isDisabled ? "opacity-50" : "opacity-100"}`}
+                        >
+                          <div
+                            class={`cursor-pointer overflow-hidden border border-white rounded-full ${
+                              indexSelectedVirtual === 0 && !isDisabled
+                                ? "opacity-50"
+                                : ""
+                            }`}
+                            on:click={() => {
+                              if (isDisabled) {
+                                return;
+                              }
+                              handleSelectPrevVirtual();
+                            }}
+                          >
+                            <div class="transform -translate-x-[1px]">
+                              <svg
+                                width="24"
+                                height="24"
+                                viewBox="0 0 20 20"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  fill="#fff"
+                                  fill-rule="evenodd"
+                                  d="M12.79 5.23a.75.75 0 0 1-.02 1.06L8.832 10l3.938 3.71a.75.75 0 1 1-1.04 1.08l-4.5-4.25a.75.75 0 0 1 0-1.08l4.5-4.25a.75.75 0 0 1 1.06.02Z"
+                                  clip-rule="evenodd"
+                                />
+                              </svg>
+                            </div>
+                          </div>
+                          <div
+                            class={`cursor-pointer overflow-hidden border border-white rounded-full ${
+                              indexSelectedVirtual ===
+                                listVirtualPortfolio.length - 1 && !isDisabled
+                                ? "opacity-50"
+                                : ""
+                            }`}
+                            on:click={() => {
+                              if (isDisabled) {
+                                return;
+                              }
+                              handleSelectNextVirtual();
+                            }}
+                          >
+                            <div class="transform translate-x-[1px]">
+                              <svg
+                                width="24"
+                                height="24"
+                                viewBox="0 0 20 20"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  fill="#fff"
+                                  fill-rule="evenodd"
+                                  d="M7.21 14.77a.75.75 0 0 1 .02-1.06L11.168 10L7.23 6.29a.75.75 0 1 1 1.04-1.08l4.5 4.25a.75.75 0 0 1 0 1.08l-4.5 4.25a.75.75 0 0 1-1.06-.02Z"
+                                  clip-rule="evenodd"
+                                />
+                              </svg>
+                            </div>
+                          </div>
+                        </div>
+                      {/if}
+                    {:else}
+                      <AnimateSharedLayout>
+                        {#each listVirtualPortfolio as item}
+                          <div
+                            id={item.name}
+                            class="relative xl:text-base text-2xl text-white py-1 xl:pl-2 xl:pr-3 px-3 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline"
+                            class:hover:no-underline={item.name ===
+                              selectedVirtualPortfolio?.name}
+                            on:click={() => {
+                              selectedVirtualPortfolio = item;
+                            }}
+                          >
+                            {item.name}
+                            {#if item.name === selectedVirtualPortfolio?.name}
+                              <Motion
+                                let:motion
+                                layoutId="active-pill"
+                                transition={{
+                                  type: "spring",
+                                  duration: 0.6,
+                                }}
+                              >
+                                <div
+                                  class="absolute inset-0 rounded-full bg-[#ffffff1c]"
+                                  use:motion
+                                />
+                              </Motion>
+                            {/if}
+                          </div>
+                        {/each}
+                      </AnimateSharedLayout>
+                    {/if}
                   </div>
                 {:else}
                   <div class="text-2xl font-medium text-white xl:text-base">
@@ -647,99 +903,70 @@
               </div>
             </div>
           {/if}
-        </div>
+        {/if}
       </div>
     </div>
+  </div>
 
-    <div
-      class="xl:min-h-screen max-w-[2000px] m-auto xl:w-[90%] w-[90%] xl:-mt-26 -mt-34"
-    >
-      {#if type}
-        <div
-          class="virtual_portfolio_container rounded-[20px] xl:p-8 p-4 xl:shadow-md"
-        >
-          <FormVirtualPortfolio
-            {listVirtualPortfolio}
-            defaultData={dataVirtualPortfolio[virtualPortfolioId]}
-            {handleSubmit}
-            {handleCancel}
-            {isLoading}
-            {type}
-          />
-        </div>
-      {:else}
-        <div
-          class="virtual_portfolio_container rounded-[20px] xl:p-8 p-4 xl:shadow-md"
-        >
-          {#if selectedVirtualPortfolio && Object.keys(selectedVirtualPortfolio).length !== 0 && selectedVirtualPortfolio?.status === "PUBLIC"}
-            <VirtualPortfolio {selectedVirtualPortfolio} />
-          {:else}
-            <div
-              class="border border_0000001a rounded-[20px] px-6 py-12 flex items-center gap-2 justify-center"
-            >
-              {#if virtualPortfolioId && selectedVirtualPortfolio && Object.keys(selectedVirtualPortfolio).length !== 0}
-                You can not access this private virtual portfolio from user <Copy
-                  address={$wallet}
-                  iconColor={$isDarkMode ? "#fff" : "#000"}
-                  color={$isDarkMode ? "#fff" : "#000"}
-                  isShorten
-                  iconSize={20}
-                />
+  <div
+    class="xl:min-h-screen max-w-[2000px] m-auto xl:w-[90%] w-[90%] xl:-mt-26 -mt-34"
+  >
+    {#if type.length === 0}
+      <div
+        class="virtual_portfolio_container rounded-[20px] xl:p-8 p-4 xl:shadow-md"
+      >
+        {#if selectedVirtualPortfolio && Object.keys(selectedVirtualPortfolio).length !== 0 && selectedVirtualPortfolio?.status === "PRIVATE" && selectedVirtualPortfolio?.createdOwner?.toLowerCase() !== $userPublicAddress?.toLowerCase()}
+          <div
+            class="border border_0000001a rounded-[20px] px-6 py-12 flex items-center gap-2 justify-center"
+          >
+            {#if !virtualPortfolioId || (selectedVirtualPortfolio && Object.keys(selectedVirtualPortfolio).length === 0)}
+              {#if $queryVirtualPortfolio.isFetching || $queryVirtualPortfolioProfile.isFetching}
+                <Loading />
               {:else}
                 Empty
               {/if}
-            </div>
-          {/if}
-        </div>
-      {/if}
-    </div>
-  {/if}
-</ErrorBoundary>
-
-{#if showToast}
-  <div class="fixed top-3 right-3 w-full" style="z-index: 2147483648;">
-    <Toast
-      transition={blur}
-      params={{ amount: 10 }}
-      position="top-right"
-      color={isSuccessToast ? "green" : "red"}
-      bind:open={showToast}
-    >
-      <svelte:fragment slot="icon">
-        {#if isSuccessToast}
-          <svg
-            aria-hidden="true"
-            class="w-5 h-5"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-            xmlns="http://www.w3.org/2000/svg"
-            ><path
-              fill-rule="evenodd"
-              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-              clip-rule="evenodd"
-            /></svg
-          >
-          <span class="sr-only">Check icon</span>
+            {:else}
+              You can not access this private virtual portfolio from user <Copy
+                address={$wallet}
+                iconColor={$isDarkMode ? "#fff" : "#000"}
+                color={$isDarkMode ? "#fff" : "#000"}
+                isShorten
+                iconSize={20}
+              />
+            {/if}
+          </div>
         {:else}
-          <svg
-            aria-hidden="true"
-            class="w-5 h-5"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-            xmlns="http://www.w3.org/2000/svg"
-            ><path
-              fill-rule="evenodd"
-              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-              clip-rule="evenodd"
-            /></svg
-          >
-          <span class="sr-only">Error icon</span>
+          <VirtualPortfolio
+            {listTokenHolding}
+            isLoading={$queryVirtualPortfolio.isFetching ||
+              $queryVirtualPortfolioProfile.isFetching}
+            isQuery={!$queryVirtualPortfolioProfile.isError &&
+              $queryVirtualPortfolioProfile.data !== undefined &&
+              $queryVirtualPortfolioProfile?.data?.data.length !== 0}
+            {virtualPortfolioId}
+          />
         {/if}
-      </svelte:fragment>
-      {toastMsg}
-    </Toast>
+      </div>
+    {:else}
+      <div
+        class="virtual_portfolio_container rounded-[20px] xl:p-8 p-4 xl:shadow-md"
+      >
+        <FormVirtualPortfolio
+          {listVirtualPortfolio}
+          defaultData={{
+            ...dataVirtualPortfolio[virtualPortfolioId],
+            networth: selectedVirtualPortfolio?.networth || 0,
+            coins: listTokenHolding,
+          }}
+          {handleSubmit}
+          {handleCancel}
+          {isLoading}
+          {type}
+        />
+      </div>
+    {/if}
   </div>
-{/if}
+</ErrorBoundary>
 
 <!-- Modal confirm delete virtual portfolio -->
 <AppOverlay

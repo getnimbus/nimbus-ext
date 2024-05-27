@@ -153,7 +153,6 @@
           return item?.eligibility;
         })
       );
-
       eligibilityData = formatEligibilityData
         .filter((item: any) => item?.eligible)
         .map((item: any) => {
@@ -224,7 +223,6 @@
         (prev, item) => prev + Number(item?.listing_value),
         0
       );
-
       totalEstimateValuePoints = pointsData.reduce(
         (prev, item) => prev + Number(item?.value),
         0

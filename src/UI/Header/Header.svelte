@@ -220,6 +220,31 @@
       }
 
       handleSaveSuggest(validateAccount?.address);
+      if (validateAccount?.type === "EVM" || validateAccount?.type === "MOVE") {
+        window.history.replaceState(
+          null,
+          "",
+          window.location.pathname +
+            `?type=${validateAccount?.type}&chain=ALL&address=${validateAccount?.address}`
+        );
+      }
+      if (
+        validateAccount?.type === "BTC" ||
+        validateAccount?.type === "SOL" ||
+        validateAccount?.type === "NEAR" ||
+        validateAccount?.type === "TON" ||
+        validateAccount?.type === "AURA" ||
+        validateAccount?.type === "ALGO" ||
+        validateAccount?.type === "CEX"
+      ) {
+        window.history.replaceState(
+          null,
+          "",
+          window.location.pathname +
+            `?type=${validateAccount?.type}&address=${validateAccount?.address}`
+        );
+      }
+      handleSaveSuggest(validateAccount?.address);
 
       search = "";
     }
@@ -460,10 +485,12 @@
     userPublicAddress.update((n) => (n = data?.publicAddress));
     userId.update((n) => (n = data?.id));
     userID = data?.id;
-    selectedPackage.update((n) => (n = data?.plan?.tier.toUpperCase()));
-    buyPackage = data.plan?.tier;
     displayName = data?.displayName;
     publicAddress = data?.publicAddress;
+    selectedPackage.update(
+      (n) => (n = data?.plan?.tier.toUpperCase() || "FREE")
+    );
+    buyPackage = data.plan?.tier;
     mixpanel.identify(data.publicAddress);
   };
 

@@ -88,6 +88,7 @@
   };
 
   const formatData = (data) => {
+    console.log(data);
     if (data.length !== 0) {
       optionBar = {
         ...optionBar,

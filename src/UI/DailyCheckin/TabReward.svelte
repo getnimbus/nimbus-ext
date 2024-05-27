@@ -386,7 +386,6 @@
             {/each}
           </AnimateSharedLayout>
         </div>
-
         {#if selectedType === "redeemGift"}
           <div class="flex flex-col gap-4">
             <div

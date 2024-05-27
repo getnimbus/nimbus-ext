@@ -1297,8 +1297,8 @@
                     {/if}
                   </div> -->
 
-                  <!-- <div class="hidden xl:block">
-                    {#if $typeWallet === "BTC"}
+                  <div class="hidden xl:block">
+                    <!-- {#if $typeWallet === "BTC"}
                       <div
                         use:tooltip={{
                           content: `<tooltip-detail text="Coming soon!" />`,
@@ -1352,8 +1352,21 @@
                           </Button>
                         {/if}
                       </div>
+                    {/if} -->
+
+                    {#if $wallet && $wallet.length !== 0}
+                      <Button
+                        variant="premium"
+                        on:click={() => {
+                          navigateTo(
+                            `/virtual-portfolio?type=${$typeWallet}&chain=${$chain}&address=${$wallet}`
+                          );
+                        }}
+                      >
+                        Virtual Portfolio
+                      </Button>
                     {/if}
-                  </div> -->
+                  </div>
                 </div>
               </div>
 
@@ -1381,8 +1394,8 @@
                   {/if}
                 {/if}
 
-                <!-- <div class="xl:hidden block">
-                  {#if $typeWallet === "BTC"}
+                <div class="xl:hidden block">
+                  <!-- {#if $typeWallet === "BTC"}
                     <div
                       use:tooltip={{
                         content: `<tooltip-detail text="Coming soon!" />`,
@@ -1432,8 +1445,21 @@
                         </Button>
                       {/if}
                     </div>
+                  {/if} -->
+
+                  {#if $wallet && $wallet.length !== 0}
+                    <Button
+                      variant="premium"
+                      on:click={() => {
+                        navigateTo(
+                          `/virtual-portfolio?type=${$typeWallet}&chain=${$chain}&address=${$wallet}`
+                        );
+                      }}
+                    >
+                      Virtual Portfolio
+                    </Button>
                   {/if}
-                </div> -->
+                </div>
               </div>
             </div>
 
@@ -1489,6 +1515,19 @@
                   {/if}
                 </div>
               {/if} -->
+
+              {#if $wallet && $wallet.length !== 0}
+                <Button
+                  variant="premium"
+                  on:click={() => {
+                    navigateTo(
+                      `/virtual-portfolio?type=${$typeWallet}&chain=${$chain}&address=${$wallet}`
+                    );
+                  }}
+                >
+                  Virtual Portfolio
+                </Button>
+              {/if}
 
               {#if $typeWallet === "EVM" || $typeWallet === "MOVE"}
                 {#if $typeWallet === "EVM"}

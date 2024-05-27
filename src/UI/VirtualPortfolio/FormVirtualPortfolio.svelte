@@ -6,8 +6,7 @@
   import { handleMarketTokens } from "~/lib/queryAPI";
   import { createQuery } from "@tanstack/svelte-query";
   import { isNaN } from "lodash";
-  import { Toast } from "flowbite-svelte";
-  import { blur } from "svelte/transition";
+  import { triggerToast } from "~/utils/functions";
 
   import Button from "~/components/Button.svelte";
   import Loading from "~/components/Loading.svelte";
@@ -22,24 +21,6 @@
   const MultipleLang = {
     assets: i18n("newtabPage.assets", "Assets"),
     empty: i18n("newtabPage.empty", "Empty"),
-  };
-
-  let toastMsg = "";
-  let isSuccessToast = false;
-  let counter = 5;
-  let showToast = false;
-
-  const trigger = () => {
-    showToast = true;
-    counter = 5;
-    timeout();
-  };
-
-  const timeout = () => {
-    if (--counter > 0) return setTimeout(timeout, 1000);
-    showToast = false;
-    toastMsg = "";
-    isSuccessToast = false;
   };
 
   let searchValue = "";
@@ -93,12 +74,19 @@
 
           virtualPortfolioName = defaultData.portfolioName;
 
-          virtualPortfolioNetworth = defaultData?.netWorth;
+          virtualPortfolioNetworth = defaultData?.networth;
 
           time = dayjs(defaultData.updatedTime).toDate();
 
+          const formatDefaultDataCoins = defaultData?.coins.map((item) => {
+            return {
+              ...item,
+              percent: item.percent.toFixed(2),
+            };
+          });
+
           listToken = listToken.map((item) => {
-            const selectedToken = defaultData.coins.find(
+            const selectedToken = formatDefaultDataCoins?.find(
               (data) => data.coinId === item.id
             );
             return {
@@ -108,7 +96,9 @@
           });
 
           selectedTokenList = listToken.filter((item) => {
-            return defaultData.coins.some((data) => data.coinId === item.id);
+            return formatDefaultDataCoins?.some(
+              (data) => data.coinId === item.id
+            );
           });
         }
       }
@@ -168,6 +158,7 @@
     <span class="slider" />
   </label>
 </div>
+
 <div class="flex flex-col gap-6">
   <div class="flex xl:flex-row flex-col gap-6">
     <div
@@ -201,7 +192,7 @@
     >
       <div class="xl:text-base text-2xl font-medium">Portfolio networth</div>
       <div
-        class={`py-1 px-[6px] rounded-[3px] xl:text-base text-lg font-normal ${
+        class={`py-1 px-[6px] rounded-[3px] xl:text-base text-lg font-normal flex items-center gap-1 ${
           virtualPortfolioNetworth && !$isDarkMode
             ? "bg-[#F0F2F7]"
             : "bg-transparent"
@@ -217,7 +208,7 @@
           step="0.01"
           placeholder="0"
           disabled={type === "edit"}
-          class={`p-0 border-none focus:outline-none focus:ring-0 ${
+          class={`p-0 border-none focus:outline-none focus:ring-0 flex-1 ${
             virtualPortfolioNetworth && !$isDarkMode
               ? "bg-[#F0F2F7]"
               : "bg-transparent"
@@ -423,7 +414,7 @@
         <div class="flex flex-col gap-1">
           <div class="xl:text-xl text-2xl font-medium">2. Coin Allocation</div>
           <div class="text-base font-normal text-gray-500">
-            Remaining: <span
+            Result: <span
               class={`${remaining === 100 ? "text-gray-500" : "text-red-500"}`}
               >{remaining}%</span
             >/100%
@@ -609,23 +600,26 @@
           disabled={isLoading}
           on:click={() => {
             if (Number(virtualPortfolioNetworth) < 100) {
-              toastMsg = `Your virtual portfolio networth is lower than $100. Please try again!`;
-              isSuccessToast = false;
-              trigger();
+              triggerToast(
+                "Your virtual portfolio networth is lower than $100. Please try again!",
+                "fail"
+              );
               return;
             }
 
             if (virtualPortfolioName.length === 0) {
-              toastMsg = `Missing virtual portfolio name. Please try again!`;
-              isSuccessToast = false;
-              trigger();
+              triggerToast(
+                "Missing virtual portfolio name. Please try again!",
+                "fail"
+              );
               return;
             }
 
             if (selectedTokenList.find((item) => item.percent === 0)) {
-              toastMsg = `One of all token you have been selected and percent input is not valid. Please try again!`;
-              isSuccessToast = false;
-              trigger();
+              triggerToast(
+                "One of all token you have been selected and percent input is not valid. Please try again!",
+                "fail"
+              );
               return;
             }
 
@@ -636,7 +630,10 @@
                 coins: selectedTokenList.map((item) => {
                   return {
                     coin: item.id.toString(),
-                    percent: item.percent,
+                    percent: Number(item.percent),
+                    logo: item.logo,
+                    name: item.name,
+                    symbol: item.symbol,
                   };
                 }),
                 status: checkedStatus ? "PUBLIC" : "PRIVATE",
@@ -652,51 +649,6 @@
     </div>
   </div>
 </div>
-
-{#if showToast}
-  <div class="fixed top-3 right-3 w-full" style="z-index: 2147483648;">
-    <Toast
-      transition={blur}
-      params={{ amount: 10 }}
-      position="top-right"
-      color={isSuccessToast ? "green" : "red"}
-      bind:open={showToast}
-    >
-      <svelte:fragment slot="icon">
-        {#if isSuccessToast}
-          <svg
-            aria-hidden="true"
-            class="w-5 h-5"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-            xmlns="http://www.w3.org/2000/svg"
-            ><path
-              fill-rule="evenodd"
-              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-              clip-rule="evenodd"
-            /></svg
-          >
-          <span class="sr-only">Check icon</span>
-        {:else}
-          <svg
-            aria-hidden="true"
-            class="w-5 h-5"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-            xmlns="http://www.w3.org/2000/svg"
-            ><path
-              fill-rule="evenodd"
-              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-              clip-rule="evenodd"
-            /></svg
-          >
-          <span class="sr-only">Error icon</span>
-        {/if}
-      </svelte:fragment>
-      {toastMsg}
-    </Toast>
-  </div>
-{/if}
 
 <style>
   :global(body) .bg_fafafbff {

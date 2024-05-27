@@ -43,7 +43,6 @@
     getVaults,
     getHoldingNFT,
   } from "~/lib/queryAPI";
-  import { navigateTo } from "svelte-router-spa";
 
   import AddressManagement from "~/components/AddressManagement.svelte";
   import Overview from "~/UI/Portfolio/Overview.svelte";
@@ -525,6 +524,7 @@
         return {
           ...item,
           value: Number(item?.amount) * Number(item?.price?.price),
+          logo: `https://logo.getnimbus.io/api/v1/logo?address=${item.contractAddress}&chain=${item.chain}`,
         };
       })
       .sort((a, b) => {
