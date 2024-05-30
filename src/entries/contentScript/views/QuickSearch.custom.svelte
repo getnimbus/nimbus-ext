@@ -28,7 +28,7 @@
   import "~/components/TermInfo.custom.svelte";
   import Mixpanel from "~/components/Mixpanel.svelte";
 
-  import Logo from "~/assets/logo-white.svg";
+  import Logo from "../../../assets/logo-white.svg";
   import Close from "../../../assets/close.svg";
   import Line from "../../../assets/line.svg";
   import Coin from "../../../assets/coin.svg";
@@ -731,7 +731,7 @@
                       </div>
                     {:else}
                       <div
-                        class="mt-10 font-medium leading-6 text-center text-4 text-black"
+                        class="mt-10 font-medium leading-6 text-center text-black text-4"
                       >
                         {MultipleLang.empty}
                       </div>
@@ -740,7 +740,7 @@
                 {:else if search === ""}
                   {#if dataTokenDetectResult.length !== 0}
                     <div class="mb-2">
-                      <div class="title-2 text-black">
+                      <div class="text-black title-2">
                         {MultipleLang.second_title}
                       </div>
                     </div>
@@ -846,7 +846,7 @@
                         </div>
                       {:else}
                         <div
-                          class="mt-10 font-medium leading-6 text-center text-4 text-black"
+                          class="mt-10 font-medium leading-6 text-center text-black text-4"
                         >
                           No terms
                         </div>

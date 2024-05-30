@@ -67,7 +67,7 @@
     "@web3-onboard/core": "^2.21.2",
     "@web3-onboard/injected-wallets": "^2.10.11",
     "@web3-onboard/ledger": "^2.5.2",
-    "@webcomponents/webcomponentsjs": "^2.6.0",
+    "@webcomponents/webcomponentsjs": "^2.8.0",
     "axios": "^0.27.2",
     "bind-mousetrap-global": "^1.0.1",
     "bs58": "^5.0.0",
@@ -126,7 +126,7 @@
     "vite-imagetools": "^4.0.4",
     "vite-plugin-pwa": "^0.16.5",
     "webext-bridge": "https://github.com/getnimbus/webext-bridge.git",
-    "webextension-polyfill": "^0.9.0",
+    "webextension-polyfill": "^0.12.0",
     "windicss": "^3.5.6"
   },
   "type": "module"
