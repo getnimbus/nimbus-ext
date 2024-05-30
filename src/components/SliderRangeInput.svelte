@@ -1,7 +1,7 @@
 <script>
   import numeral from "numeral";
 
-  import tooltip from "../../lib/tooltip.ts";
+  import tooltip from "../../../lib/tooltip.ts";
   import TooltipNumber from "./TooltipNumber.svelte";
 
   export let currentPrice;

@@ -4,7 +4,7 @@
   import { onMount } from "svelte";
   import { isEmpty } from "lodash";
   import { sendMessage } from "webext-bridge";
-  import tooltip from "../../lib/tooltip.ts";
+  import tooltip from "../../../lib/tooltip.ts";
   import { track } from "~/lib/data-tracking";
   import { formatCurrency, shorterAddress } from "~/utils/index";
   import dayjs from "dayjs";

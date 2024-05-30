@@ -1,7 +1,7 @@
 <svelte:options tag="entity-info" />
 
 <script>
-  import tooltip from "../../lib/tooltip.ts";
+  import tooltip from "../../../lib/tooltip.ts";
   import { shorterAddress } from "~/utils/index";
 
   export let name;

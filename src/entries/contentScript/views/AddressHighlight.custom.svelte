@@ -4,11 +4,11 @@
   import { onMount } from "svelte";
   import * as browser from "webextension-polyfill";
   import { isEmpty } from "lodash";
-  import { isSaveAddressLabel } from "../../store.ts";
+  import { isSaveAddressLabel } from "~/store";
   import mixpanel from "mixpanel-browser";
 
   import Mixpanel from "~/components/Mixpanel.svelte";
-  import tooltip from "../../lib/tooltip.ts";
+  import tooltip from "../../../lib/tooltip.ts";
   import "./AddressInfo.custom.svelte";
 
   export let address;

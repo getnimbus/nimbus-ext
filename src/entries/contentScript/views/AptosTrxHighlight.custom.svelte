@@ -3,7 +3,7 @@
 <script lang="ts">
   import mixpanel from "mixpanel-browser";
 
-  import tooltip from "../../lib/tooltip.ts";
+  import tooltip from "../../../lib/tooltip.ts";
   import "./AptosTrxInfo.custom.svelte";
   import Mixpanel from "~/components/Mixpanel.svelte";
 

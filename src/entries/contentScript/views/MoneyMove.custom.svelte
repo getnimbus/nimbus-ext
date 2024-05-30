@@ -6,7 +6,7 @@
     formatBalance,
     formatSmallBalance,
   } from "~/utils/index";
-  import tooltip from "../../lib/tooltip.ts";
+  import tooltip from "../../../lib/tooltip.ts";
 
   import "./Arrow.custom.svelte";
   import "./Entity.custom.svelte";

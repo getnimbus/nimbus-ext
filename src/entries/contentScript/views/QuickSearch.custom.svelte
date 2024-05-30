@@ -28,10 +28,10 @@
   import "./TermInfo.custom.svelte";
   import Mixpanel from "~/components/Mixpanel.svelte";
 
-  import Logo from "../../assets/logo-white.svg";
-  import Close from "../../assets/close.svg";
-  import Line from "../../assets/line.svg";
-  import Coin from "../../assets/coin.svg";
+  import Logo from "~/assets/logo-white.svg";
+  import Close from "~/assets/close.svg";
+  import Line from "~/assets/line.svg";
+  import Coin from "~/assets/coin.svg";
 
   const MultipleLang = {
     title: i18n(

@@ -1,7 +1,7 @@
 <script>
   import { getLocalImg } from "~/utils/index";
   import Button from "~/components/Button.svelte";
-  import Logo from "../../assets/logo-2.png";
+  import Logo from "~/assets/logo-2.png";
 </script>
 
 <div class="h-[95vh] flex justify-center items-center">

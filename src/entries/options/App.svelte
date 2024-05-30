@@ -12,8 +12,8 @@
   import TabHighlight from "~/UI/Option/TabHighlight.svelte";
   import TabSettings from "~/UI/Option/TabSettings.svelte";
 
-  import Logo from "../../assets/logo-1.svg";
-  import LogoWhite from "../../assets/logo-white.svg";
+  import Logo from "~/assets/logo-1.svg";
+  import LogoWhite from "~/assets/logo-white.svg";
 
   const listSideBar = [
     {

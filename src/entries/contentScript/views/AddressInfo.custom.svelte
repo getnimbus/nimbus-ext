@@ -19,7 +19,7 @@
   import { typePieChart } from "~/utils/constants";
   import { getAddressContext } from "~/lib/chains";
   import { track } from "~/lib/data-tracking";
-  import { isSaveAddressLabel } from "../../store";
+  import { isSaveAddressLabel } from "~/store";
 
   import "./Loading.custom.svelte";
   import "./CoinChart.custom.svelte";
@@ -29,14 +29,14 @@
   import Copy from "~/components/Copy.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import Image from "~/components/Image.svelte";
-  import tooltip from "../../lib/tooltip.ts";
+  import tooltip from "../../../lib/tooltip.ts";
 
-  import Edit from "../../assets/edit.svg";
-  import defaultToken from "../../assets/defaultToken.png";
-  import SmartContractIcon from "../../assets/smart-contract.png";
-  import CoinDefaultIcon from "../../assets/coin-default.svg";
-  // import MetaMaskIcon from "../../assets/metamask-icon.png";
-  // import CoinMarketCapIcon from "../../assets/CoinMarketCap_logo.png";
+  import Edit from "~/assets/edit.svg";
+  import defaultToken from "~/assets/defaultToken.png";
+  import SmartContractIcon from "~/assets/smart-contract.png";
+  import CoinDefaultIcon from "~/assets/coin-default.svg";
+  // import MetaMaskIcon from "~/assets/metamask-icon.png";
+  // import CoinMarketCapIcon from "~/assets/CoinMarketCap_logo.png";
 
   export let address;
   export let popup: boolean = true;

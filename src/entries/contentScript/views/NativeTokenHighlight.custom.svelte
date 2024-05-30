@@ -1,7 +1,7 @@
 <svelte:options tag="native-token-highlight" />
 
 <script>
-  import tooltip from "../../lib/tooltip.ts";
+  import tooltip from "../../../lib/tooltip.ts";
   import "./NativeTokenInfo.custom.svelte";
   export let name;
   export let id;
