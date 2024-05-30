@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <title>Nimbus - Your Personalized Portfolio</title>
+    <script type="module" src="./main-web.ts"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="https://getnimbus.io/favicon.svg"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      html,
+      body {
+        padding: 0;
+        margin: 0;
+        scroll-behavior: smooth;
+        font-family: "Golos Text", sans-serif;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="app"></div>
+    <script src="https://do.featurebase.app/js/widget.js"></script>
+    <script>
+      FeaturebaseWidget.init({
+        organization: "nimbus",
+        initialPage: "CreatePost",
+        placement: "right",
+        fullScreen: false,
+      });
+    </script>
+    <script
+      async
+      src="https://analytics.umami.is/script.js"
+      data-website-id="2ecfa1ca-7bea-46ba-87a3-8f4f9bf12eae"
+    ></script>
+  </body>
+</html>

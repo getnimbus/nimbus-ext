@@ -2,20 +2,17 @@
 import Mark from "mark.js";
 import "@webcomponents/webcomponentsjs/webcomponents-bundle.js";
 import _ from "lodash";
-
-import "./views/AddressHighlight.custom.svelte";
-import "./views/AddressInfo.custom.svelte";
-import "./views/AddressSpreadText.custom.svelte";
-import "./views/TrxHighlight.custom.svelte";
-import "./views/TrxInfo.custom.svelte";
-import "./views/AptosTrxHighlight.custom.svelte";
-import "./views/AptosTrxInfo.custom.svelte";
-import "./views/QuickSearch.custom.svelte";
-import { sendMessage } from "webext-bridge";
-import { track } from "~/lib/data-tracking";
-import * as dg from "~/lib/debug";
 import * as browser from "webextension-polyfill";
 import { regexList } from "../../lib/chains";
+
+import "~/components/custom/AddressSpreadText.custom.svelte";
+import "~/components/custom/AptosTrxHighlight.custom.svelte";
+import "~/components/custom/AptosTrxInfo.custom.svelte";
+import "~/components/custom/QuickSearch.custom.svelte";
+import "~/components/custom/AddressHighlight.custom.svelte"
+import "~/components/custom/AddressInfo.custom.svelte";
+import "~/components/custom/TrxHighlight.custom.svelte";
+import "~/components/custom/TrxInfo.custom.svelte";
 
 // Firefox `browser.tabs.executeScript()` requires scripts return a primitive value
 (async () => {
