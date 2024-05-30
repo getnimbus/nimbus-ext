@@ -485,4 +485,4 @@
   {/if}
 </div>
 
-<style></style>
+<style global windi:preflights:global windi:safelist:global></style>

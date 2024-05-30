@@ -83,14 +83,14 @@
       <img
         src={data?.sponsor?.logo}
         alt=""
-        class="object-contain w-[140px] m-auto rounded-[10px] overflow-hidden block"
+        class="object-contain w-[140px] m-auto rounded-[10px] overflow-hidden"
       />
     </div>
   </div>
 
   <div class="flex flex-col gap-2">
     <div class="flex items-center gap-2">
-      <img src={SUILogo} alt="" class="w-6 h-6 rounded-full block" />
+      <img src={SUILogo} alt="" class="w-6 h-6 rounded-full" />
       <div class="font-medium text-lg">
         {data?.sponsor?.title || data?.title}
       </div>
@@ -108,4 +108,4 @@
   </div>
 </div>
 
-<style></style>
+<style windi:preflights:global windi:safelist:global></style>

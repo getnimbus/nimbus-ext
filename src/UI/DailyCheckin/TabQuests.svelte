@@ -228,7 +228,7 @@
   </div>
 {/if}
 
-<style>
+<style windi:preflights:global windi:safelist:global>
   @media (min-width: 1900px) {
     .grid-cols-4-1900px {
       grid-template-columns: repeat(4, minmax(0, 1fr));

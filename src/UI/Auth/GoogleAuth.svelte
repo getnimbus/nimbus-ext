@@ -88,4 +88,4 @@
   <div class="font-normal text-[15px]">Log in with Google</div>
 </div>
 
-<style></style>
+<style windi:preflights:global windi:safelist:global></style>

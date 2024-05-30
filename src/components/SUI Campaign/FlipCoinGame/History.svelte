@@ -35,7 +35,7 @@
         <thead>
           <tr>
             <th
-              class={`py-2 pl-3 text-xs uppercase font-medium text-left sticky top-0 ${$isDarkMode ? "bg-black" : "bg-white"}`}
+              class={`py-2 text-xs uppercase font-medium text-left sticky top-0 ${$isDarkMode ? "bg-black" : "bg-white"}`}
               >Time</th
             >
             <th
@@ -49,10 +49,9 @@
               Reward
             </th>
             <th
-              class={`py-2 pr-3 text-xs uppercase font-medium text-right sticky top-0 ${$isDarkMode ? "bg-black" : "bg-white"}`}
+              class={`py-2 text-xs uppercase font-medium text-center sticky top-0 ${$isDarkMode ? "bg-black" : "bg-white"}`}
+              >Trx</th
             >
-              Trx
-            </th>
           </tr>
         </thead>
 
@@ -70,7 +69,7 @@
           {:else}
             {#each flipHistoryData as item}
               <tr>
-                <td class="text-left py-2 pl-3 text-sm uppercase">
+                <td class="text-left py-2 text-sm uppercase">
                   {dayjs(item?.createdAt).utc().format("YYYY-MM-DD hh:mm:ss A")}
                 </td>
 
@@ -91,7 +90,7 @@
                   </div>
                 </td>
 
-                <td class="flex justify-end py-2 pr-3 text-sm uppercase">
+                <td class="flex justify-center py-2 text-sm uppercase">
                   <div class="w-max">
                     <Copy
                       address={item?.description}
@@ -186,5 +185,5 @@
   </div>
 </div>
 
-<style>
+<style windi:preflights:global windi:safelist:global>
 </style>

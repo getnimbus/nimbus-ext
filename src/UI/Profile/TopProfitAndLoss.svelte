@@ -302,7 +302,7 @@
                   alt=""
                   width="26"
                   height="26"
-                  class="rounded-full block"
+                  class="rounded-full"
                 />
               </div>
             {/if}
@@ -439,4 +439,4 @@
   <TokenDetailSidebar data={selectedTokenDetail} {showSideTokenDetail} />
 </OverlaySidebar>
 
-<style></style>
+<style windi:preflights:global windi:safelist:global></style>

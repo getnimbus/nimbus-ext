@@ -21,7 +21,7 @@
   export let size: "supper-small" | "small" | "medium" | "large" = "small";
   export let type: "button" | "submit" | "reset" = "button";
 
-  $: buttonClassName = classNames(className, "button", "btn-container", {
+  const buttonClassName = classNames(className, "button", "btn-container", {
     ["disabled"]: disabled || variant === "disabled",
     ["underlined"]: variant === "underlined",
     ["secondary"]: variant === "secondary",
@@ -92,7 +92,7 @@
   {/if}
 </button>
 
-<style>
+<style global>
   .button {
     width: 100%;
     height: 100%;

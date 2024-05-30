@@ -121,5 +121,5 @@
   <div class="font-semibold text-[15px]">Connect Ton Wallet</div>
 </div>
 
-<style>
+<style windi:preflights:global windi:safelist:global>
 </style>

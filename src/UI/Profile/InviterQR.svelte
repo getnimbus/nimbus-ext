@@ -36,12 +36,8 @@
     Track your portfolio and make wise decision at Nimbus
   </div>
   <div class="w-32 h-32">
-    <img
-      src={qrImageDataUrl}
-      alt="Invite QR Code"
-      class="w-full h-full block"
-    />
+    <img src={qrImageDataUrl} alt="Invite QR Code" class="w-full h-full" />
   </div>
 </div>
 
-<style></style>
+<style windi:preflights:global windi:safelist:global></style>

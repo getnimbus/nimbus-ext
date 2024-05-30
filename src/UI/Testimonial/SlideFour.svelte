@@ -13,7 +13,7 @@
   </blockquote>
   <figcaption class="flex items-center gap-x-6">
     <img
-      class="h-12 w-12 rounded-full bg-gray-50 block"
+      class="h-12 w-12 rounded-full bg-gray-50"
       src={Avatar}
       alt="Thanh Le"
     />

@@ -365,7 +365,7 @@
   />
 {/if}
 
-<style>
+<style windi:preflights:global windi:safelist:global>
   @media (min-width: 1024px) {
     @media not all and (min-width: 1280px) {
       .text_title_lg_view {

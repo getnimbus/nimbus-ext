@@ -139,7 +139,7 @@
             alt=""
             width="22"
             height="22"
-            class="rounded-full block"
+            class="rounded-full"
           />
         </a>
       </div>

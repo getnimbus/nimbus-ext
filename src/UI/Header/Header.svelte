@@ -1567,7 +1567,7 @@
   </div>
 </div>
 
-<style>
+<style windi:preflights:global windi:safelist:global>
   .customScrollDiv::-webkit-scrollbar {
     width: 3px;
     background: #27326f;

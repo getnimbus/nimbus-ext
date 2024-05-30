@@ -1,8 +1,11 @@
 import { defineConfig, loadEnv } from "vite";
 import { svelte } from "@sveltejs/vite-plugin-svelte";
+import webExtension from "@samrum/vite-plugin-web-extension";
 import path from "path";
+import { getManifest } from "./src/manifest";
 import { windi } from "svelte-windicss-preprocess";
 import sveltePreprocess from "svelte-preprocess";
+import AutoImport from "unplugin-auto-import/vite";
 import { viteStaticCopy } from "vite-plugin-static-copy";
 import { VitePWA } from "vite-plugin-pwa";
 import inject from "@rollup/plugin-inject";
@@ -14,7 +17,7 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [
       svelte({
-        preprocess: [sveltePreprocess()],
+        preprocess: [sveltePreprocess(), windi({})],
         experimental: {
           dynamicCompileOptions({ filename, compileOptions }) {
             return {
@@ -123,20 +126,20 @@ export default defineConfig(({ mode }) => {
       target: ["es2020"],
       rollupOptions: {
         plugins: [
-          // inject({ Buffer: ["buffer/", "Buffer"] }),
+          inject({ Buffer: ["buffer/", "Buffer"] }),
           // json(),
           // globals(),
           // builtins(),
         ],
         input: {
           app: path.resolve(__dirname, "./src/index.html"),
-          // options: path.resolve(__dirname, "./src/entries/options/index.html"),
+          options: path.resolve(__dirname, "./src/entries/options/index.html"),
         },
-        // output: {
-        //   entryFileNames: `assets/[name].js`,
-        //   chunkFileNames: `assets/[name].js`,
-        //   assetFileNames: `assets/[name].[hash].[ext]`,
-        // },
+        output: {
+          entryFileNames: `assets/[name].js`,
+          chunkFileNames: `assets/[name].js`,
+          assetFileNames: `assets/[name].[hash].[ext]`,
+        },
       },
       outDir: path.resolve(__dirname, "web-build"),
       sourcemap: env.WATCH === "true" ? "inline" : false,

@@ -12,7 +12,7 @@
     </p>
   </blockquote>
   <figcaption class="flex items-center gap-x-6">
-    <img class="h-12 w-12 rounded-full bg-gray-50 block" src={Avatar} alt="" />
+    <img class="h-12 w-12 rounded-full bg-gray-50" src={Avatar} alt="" />
     <div class="text-sm">
       <div class="font-semibold">Stacy Muur</div>
       <div class="text-gray-500">

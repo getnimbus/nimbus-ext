@@ -14,7 +14,7 @@
   </blockquote>
   <figcaption class="flex items-center gap-x-6">
     <img
-      class="h-12 w-12 rounded-full bg-gray-50 block"
+      class="h-12 w-12 rounded-full bg-gray-50"
       src="https://assets.devfolio.co/users/fdb9bde4af29435fa55a308030113292/avatar-e2e5466f-548d-479b-b6e5-a653775fd9e3.jpeg"
       alt="Thanh Le"
     />

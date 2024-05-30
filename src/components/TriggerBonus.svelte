@@ -19,7 +19,7 @@
       <div class="xl:text-2xl text-4xl text-white font-medium">
         Congratulation!!!
       </div>
-      <img src={goldImg} alt="" class="w-40 h-40 block" />
+      <img src={goldImg} alt="" class="w-40 h-40" />
       <div class="xl:text-2xl text-4xl text-white font-medium">
         You have received {$bonusScore} Bonus GM Points
       </div>

@@ -228,11 +228,11 @@ export const timeFrame = [
 
 export const showChangeLogAnimationVariants = {
   visible: { opacity: 1, y: 0, display: "flex" },
-  hidden: { opacity: 0, y: -10, display: "none" },
+  hidden: { opacity: 0, y: -20, display: "none" },
 };
 
 export const showOverlayAnimationVariants = {
   visible: { opacity: 1, y: 0, display: "block" },
-  hidden: { opacity: 0, y: -10, display: "none" },
+  hidden: { opacity: 0, y: -50, display: "none" },
 };
 

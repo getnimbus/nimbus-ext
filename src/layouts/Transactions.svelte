@@ -187,7 +187,7 @@
   </AddressManagement>
 </ErrorBoundary>
 
-<style>
+<style windi:preflights:global windi:safelist:global>
   :global(body) .trx_container {
     background: #fff;
     box-shadow: 0px 0px 40px 0px rgba(0, 0, 0, 0.1);

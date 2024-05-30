@@ -570,7 +570,7 @@
   </div>
 </AppOverlay>
 
-<style>
+<style windi:preflights:global windi:safelist:global>
   .button {
     width: max-content;
     border-radius: 1000px;

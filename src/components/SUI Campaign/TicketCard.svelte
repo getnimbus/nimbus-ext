@@ -71,11 +71,7 @@
       }`}
     >
       <div class="w-20 h-20">
-        <img
-          src={data?.logo}
-          alt=""
-          class="w-full h-full object-contain block"
-        />
+        <img src={data?.logo} alt="" class="w-full h-full object-contain" />
       </div>
 
       {#if isRedeem}
@@ -89,7 +85,7 @@
 
     <div class="flex-1 flex flex-col gap-2">
       <div class="flex items-center gap-2">
-        <img src={Crown} alt="" class="w-[26px] h-[26px] block" />
+        <img src={Crown} alt="" class="w-[26px] h-[26px]" />
         <div class="text-[#FFB800] text-lg font-medium uppercase">
           NIMBUS ON SUI
         </div>
@@ -141,7 +137,7 @@
               disabled={isLoadingRedeem}
             >
               <div class="flex items-center gap-1">
-                <img src={goldImg} alt="" class="w-[28px] h-[28px] block" />
+                <img src={goldImg} alt="" class="w-[28px] h-[28px]" />
                 <div class="text-white sm:text-lg text-smxs font-medium">
                   {data?.cost}
                 </div>
@@ -163,7 +159,7 @@
               }}
             >
               <div class="flex items-center gap-1">
-                <img src={goldImg} alt="" class="w-[28px] h-[28px] block" />
+                <img src={goldImg} alt="" class="w-[28px] h-[28px]" />
                 <div class="text-white sm:text-lg text-smxs font-medium">
                   {data?.cost}
                 </div>
@@ -183,7 +179,7 @@
   </div>
 </div>
 
-<style>
+<style windi:preflights:global windi:safelist:global>
   @media (max-width: 320) {
     .text-smxs {
       font-size: 14px;

@@ -25,8 +25,6 @@ Sentry.init({
   sampleRate: 0.25,
 });
 
-const app = new App({
+new App({
   target: document.getElementById("app"),
 });
-
-export default app

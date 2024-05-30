@@ -107,7 +107,7 @@
                               (chain) => chain.value === item?.chain
                             )?.logo || defaultToken}
                         alt=""
-                        class="object-contain w-5 h-5 rounded-full block"
+                        class="object-contain w-5 h-5 rounded-full"
                       />
                     {/if}
                     {#if $typeWallet === "EVM" || $typeWallet === "MOVE"}
@@ -242,7 +242,7 @@
                     <img
                       src={change?.logo || defaultToken}
                       alt=""
-                      class="object-contain overflow-hidden rounded-full w-7 h-7 block"
+                      class="object-contain overflow-hidden rounded-full w-7 h-7"
                     />
                     <div
                       class={`flex gap-1 ${
@@ -316,7 +316,7 @@
                               (chain) => chain.value === item?.chain
                             )?.logo || defaultToken}
                         alt=""
-                        class="object-contain w-5 h-5 rounded-full block"
+                        class="object-contain w-5 h-5 rounded-full"
                       />
                     {/if}
                     {#if $typeWallet === "EVM" || $typeWallet === "MOVE"}
@@ -432,7 +432,7 @@
                       <img
                         src={change?.logo || defaultToken}
                         alt=""
-                        class="object-contain overflow-hidden rounded-full w-6 h-6 block"
+                        class="object-contain overflow-hidden rounded-full w-6 h-6"
                       />
                       <div
                         class={`flex gap-1 ${
@@ -497,12 +497,12 @@
       <img
         src={mobulaLogo}
         alt=""
-        class="xl:w-6 xl:h-6 w-10 h-10 rounded-full cursor-pointer block"
+        class="xl:w-6 xl:h-6 w-10 h-10 rounded-full cursor-pointer"
       />
     </a>
     <span class="xl:text-sm text-xl">Data by Mobula</span>
   </div>
 {/if}
 
-<style>
+<style windi:preflights:global windi:safelist:global>
 </style>

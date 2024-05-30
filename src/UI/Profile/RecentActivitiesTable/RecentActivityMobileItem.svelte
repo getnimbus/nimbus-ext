@@ -113,7 +113,7 @@
                 : chainList.find((chain) => chain.value === item?.chain)
                     ?.logo || defaultToken}
               alt=""
-              class="object-contain w-5 h-5 rounded-full block"
+              class="object-contain w-5 h-5 rounded-full"
             />
           {/if}
           {#if $typeWallet === "EVM" || $typeWallet === "MOVE"}
@@ -144,5 +144,5 @@
   </div>
 </div>
 
-<style>
+<style windi:preflights:global windi:safelist:global>
 </style>

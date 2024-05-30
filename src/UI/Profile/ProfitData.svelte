@@ -367,7 +367,7 @@
                         ? TrendUp
                         : TrendDown}
                       alt="trend"
-                      class="mb-1 block"
+                      class="mb-1"
                     />
                     <div
                       class={`${
@@ -425,7 +425,7 @@
                         ? TrendUp
                         : TrendDown}
                       alt="trend"
-                      class="mb-1 block"
+                      class="mb-1"
                     />
                     <div
                       class={`${
@@ -457,4 +457,4 @@
   {/if}
 </div>
 
-<style></style>
+<style windi:preflights:global windi:safelist:global></style>

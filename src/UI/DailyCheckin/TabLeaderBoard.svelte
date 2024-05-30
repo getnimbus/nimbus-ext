@@ -529,7 +529,7 @@
   </div>
 {/if}
 
-<style>
+<style windi:preflights:global windi:safelist:global>
   @media (min-height: 320px) {
     .h-300 {
       height: 300px;

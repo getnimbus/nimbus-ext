@@ -157,7 +157,7 @@
   </SyncData>
 </div>
 
-<style>
+<style windi:preflights:global windi:safelist:global>
   :global(img) {
     display: inline-block;
   }

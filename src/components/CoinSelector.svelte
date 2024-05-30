@@ -67,7 +67,7 @@
         <img
           src={selected.name === "All" ? AllWhite : selected.logo}
           alt=""
-          class="xl:w-5 xl:h-5 w-7 h-7 block"
+          class="xl:w-5 xl:h-5 w-7 h-7"
         />
         <div class="xl:text-sm text-lg name">
           {selected.name}
@@ -79,7 +79,7 @@
         <img
           src={UpArrow}
           alt=""
-          class="transform rotate-180 xl:w-3 xl:h-3 w-5 h-5 block"
+          class="transform rotate-180 xl:w-3 xl:h-3 w-5 h-5"
           class:rotate-0={open}
         />
       </div>
@@ -87,7 +87,7 @@
     <img
       src={UpArrow}
       alt=""
-      class="transform rotate-180 xl:w-3 xl:h-3 w-5 h-5 block"
+      class="transform rotate-180 xl:w-3 xl:h-3 w-5 h-5"
       class:rotate-0={open}
     />
   </div>
@@ -104,7 +104,7 @@
         <img
           src={$isDarkMode ? Search : SearchBlack}
           alt=""
-          class="xl:w-5 xl:h-5 w-9 h-9 block"
+          class="xl:w-5 xl:h-5 w-9 h-9"
         />
         <input
           class={`flex-1 xl:py-2 py-3 xl:text-sm text-lg max-w-[100px] border-none focus:outline-none focus:ring-0 ${
@@ -133,7 +133,7 @@
             }}
           >
             {#if item.logo}
-              <img src={item.logo} alt="" class="xl:w-5 xl:h-5 w-7 h-7 block" />
+              <img src={item.logo} alt="" class="xl:w-5 xl:h-5 w-7 h-7" />
             {/if}
             <div class="xl:text-sm text-lg name">
               {item.name}

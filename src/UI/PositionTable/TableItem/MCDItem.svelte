@@ -31,7 +31,7 @@
         alt="token"
         width="30"
         height="30"
-        class="rounded-full block"
+        class="rounded-full"
       />
       <div class="flex flex-col gap-1">
         <div class=" xl:text-sm text-2xl font-medium">
@@ -81,7 +81,7 @@
         alt="token"
         width="20"
         height="20"
-        class="rounded-full block"
+        class="rounded-full"
       />
       <div class="flex flex-col gap-1">
         <div class="xl:text-sm text-2xl font-medium">DAI</div>

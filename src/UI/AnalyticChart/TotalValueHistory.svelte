@@ -212,4 +212,4 @@
   </div>
 </div>
 
-<style></style>
+<style windi:preflights:global windi:safelist:global></style>

@@ -87,7 +87,7 @@
           sizes="(max-width: 320px) 280px, 
                 (max-width: 640px) 640px, 
                 960px"
-          class="object-cover w-full h-full block"
+          class="object-cover w-full h-full"
         />
       </div>
     </div>
@@ -122,13 +122,13 @@
   </div>
 
   <div class="absolute top-[-100px] right-[-100px] z-10">
-    <img src={SvgOne} alt="" class="w-full h-full object-contain block" />
+    <img src={SvgOne} alt="" class="w-full h-full object-contain" />
   </div>
 
   <div class="absolute bottom-[-90px] left-[-120px] z-10">
-    <img src={SvgTwo} alt="" class="w-full h-full object-contain block" />
+    <img src={SvgTwo} alt="" class="w-full h-full object-contain" />
   </div>
 </div>
 
-<style>
+<style windi:preflights:global windi:safelist:global>
 </style>
