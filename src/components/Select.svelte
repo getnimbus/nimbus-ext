@@ -1,15 +1,4 @@
 <script lang="ts">
-  import {
-    wallet,
-    chain,
-    totalTokens,
-    totalNfts,
-    totalAirdrops,
-    totalPositions,
-    unrealizedProfit,
-    realizedProfit,
-    pastProfit,
-  } from "~/store";
   import { triggerClickOutside } from "~/utils/functions";
 
   import UpArrow from "~/assets/up-arrow.svg";
@@ -17,7 +6,7 @@
 
   export let listSelect;
   export let selected;
-  export let type: "chain" | "wallet" | "lang" | "filter";
+  export let type: "lang";
   export let positionSelectList = "left-0";
   export let disabled = false;
 
@@ -27,19 +16,9 @@
     if (listSelect && type === "lang") {
       selected = listSelect[0];
     }
-    if (listSelect && type === "filter") {
-      selected = listSelect[1];
-    }
   }
 
-  $: selectedChain =
-    (type === "chain" &&
-      listSelect &&
-      selected &&
-      listSelect.filter((item) => item.value === selected)) ||
-    [];
-
-  const disabledChains = [];
+  let selectedChain = [];
 </script>
 
 <div
@@ -48,9 +27,7 @@
   on:click_outside={() => (open = false)}
 >
   <div
-    class={`button ${
-      type === "lang" || type === "filter" ? "bg-[#1E96FC]" : ""
-    }`}
+    class={`button ${type === "lang" ? "bg-[#1E96FC]" : ""}`}
     class:active={open}
     on:click={() => {
       if (!disabled) {
@@ -59,7 +36,7 @@
     }}
   >
     <div class="flex items-center gap-2">
-      {#if type === "chain" || type === "lang" || type === "filter"}
+      {#if type === "lang"}
         {#if selected?.logo || selectedChain[0]?.logo}
           <img
             src={selected?.value === "ALL" || selectedChain[0]?.value === "ALL"
@@ -93,30 +70,10 @@
       {#each listSelect as item}
         <div
           class="content_item"
-          class:active={type !== "lang" || type !== "filter"
-            ? item.value === selected
-            : item.value === selected?.value}
+          class:active={item.value === selected}
           id={item.value}
           on:click={() => {
-            if (type === "wallet" && $wallet !== item.value) {
-              wallet.update((n) => (n = item.value));
-              chain.update((n) => (n = "ALL"));
-              selected = item.value;
-              open = false;
-              totalTokens.update((n) => (n = 0));
-              totalAirdrops.update((n) => (n = 0));
-              totalNfts.update((n) => (n = 0));
-              totalPositions.update((n) => (n = 0));
-              unrealizedProfit.update((n) => (n = 0));
-              realizedProfit.update((n) => (n = 0));
-              pastProfit.update((n) => (n = 0));
-            }
-            if (type === "chain" && $chain !== item.value) {
-              chain.update((n) => (n = item.value));
-              selected = item.value;
-              open = false;
-            }
-            if (type === "lang" || type === "filter") {
+            if (type === "lang") {
               selected = item;
               open = false;
             }
@@ -129,20 +86,8 @@
               class="w-5 h-5 rounded-full"
             />
           {/if}
-          <div
-            class={`xl:text-sm text-lg name ${
-              type === "chain" && disabledChains.includes(item.value)
-                ? "text-gray-400"
-                : ""
-            }`}
-          >
+          <div class="xl:text-sm text-lg name">
             {item.label}
-            {#if type === "chain" && disabledChains.includes(item.value)}
-              (Soon)
-            {/if}
-            {#if type === "chain" && item.value === "MANTA"}
-              (Testnet)
-            {/if}
           </div>
         </div>
       {/each}

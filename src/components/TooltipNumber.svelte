@@ -6,7 +6,7 @@
     formatValue,
   } from "~/utils/index";
   import numeral from "numeral";
-  import tooltip from "../lib/tooltip.ts";
+  import tooltip from "../lib/tooltip";
   import { isHidePortfolio } from "~/store";
 
   export let number;

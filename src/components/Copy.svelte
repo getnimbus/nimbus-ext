@@ -1,7 +1,7 @@
 <script lang="ts">
   import CopyToClipboard from "svelte-copy-to-clipboard";
   import { wait } from "../entries/background/utils";
-  import tooltip from "../lib/tooltip.ts";
+  import tooltip from "../lib/tooltip";
   import { shorterAddress } from "~/utils/index";
 
   export let iconSize = 16;
