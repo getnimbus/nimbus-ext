@@ -6,9 +6,9 @@
   import { isEmpty } from "lodash";
   import { isSaveAddressLabel } from "~/store";
   import mixpanel from "mixpanel-browser";
+  import tooltip from "../../../lib/tooltip";
 
   import Mixpanel from "~/components/Mixpanel.svelte";
-  import tooltip from "../../../lib/tooltip.ts";
   import "./AddressInfo.custom.svelte";
 
   export let address;

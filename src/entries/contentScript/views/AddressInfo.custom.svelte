@@ -20,6 +20,7 @@
   import { getAddressContext } from "~/lib/chains";
   import { track } from "~/lib/data-tracking";
   import { isSaveAddressLabel } from "~/store";
+  import tooltip from "../../../lib/tooltip";
 
   import "./Loading.custom.svelte";
   import "./CoinChart.custom.svelte";
@@ -29,7 +30,6 @@
   import Copy from "~/components/Copy.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import Image from "~/components/Image.svelte";
-  import tooltip from "../../../lib/tooltip.ts";
 
   import Edit from "~/assets/edit.svg";
   import defaultToken from "~/assets/defaultToken.png";

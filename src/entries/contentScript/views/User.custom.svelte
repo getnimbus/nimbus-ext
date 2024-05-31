@@ -2,7 +2,8 @@
 
 <script>
   import { shorterAddress, getLocalImg, add3Dots } from "~/utils/index";
-  import tooltip from "../../../lib/tooltip.ts";
+  import tooltip from "../../../lib/tooltip";
+
   import CoinDefaultIcon from "~/assets/coin-default.svg";
   import Arrow from "~/assets/arrow-right.svg";
 

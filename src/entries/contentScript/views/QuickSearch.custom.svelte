@@ -544,12 +544,12 @@
               />
             </svg>
             <input
-              on:keyup={(e) => {
-                debounceSearchInput(e.target?.value || "");
-              }}
               on:keydown={(e) => {
                 e.stopImmediatePropagation();
                 e.stopPropagation();
+              }}
+              on:change={(e) => {
+                debounceSearchInput(e.target?.value || "");
               }}
               on:focus={() => (isFocused = true)}
               on:blur={() => (isFocused = false)}
