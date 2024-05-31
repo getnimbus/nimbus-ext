@@ -148,8 +148,8 @@
 
 <div class="flex flex-col gap-4">
   <div class="flex flex-col gap-1 border-b-[1.5px] border_0000000d pb-4">
-    <div class="xl:title-3 title-1 mb-2">{MultipleLang.title}</div>
-    <div class="xl:text-base text-xl text-gray-500">
+    <div class="xl:title-3 title-1">Highlight Settings</div>
+    <div class="xl:text-base text-lg text-gray-500">
       Management your highlight address wallet
     </div>
   </div>
@@ -163,17 +163,17 @@
       <thead>
         <tr class="bg_f4f5f8">
           <th class="pl-3 py-3">
-            <div class="text-left xl:text-sm text-2xl uppercase font-semibold">
+            <div class="text-left text-xs uppercase font-semibold">
               {MultipleLang.content.label_header_table}
             </div>
           </th>
           <th class="py-3">
-            <div class="text-left xl:text-sm text-2xl uppercase font-semibold">
+            <div class="text-left text-xs uppercase font-semibold">
               {MultipleLang.content.address_header_table}
             </div>
           </th>
           <th class="pr-3 py-3">
-            <div class="text-right xl:text-sm text-2xl uppercase font-semibold">
+            <div class="text-right text-xs uppercase font-semibold">
               {MultipleLang.content.action_header_table}
             </div>
           </th>
@@ -195,7 +195,7 @@
             <tr>
               <td colspan="3">
                 <div
-                  class="flex justify-center items-center h-full py-4 px-3 xl:text-base text-2xl"
+                  class="flex justify-center items-center h-full py-4 px-3 text-base"
                 >
                   No highlight
                 </div>
@@ -206,16 +206,14 @@
               <tr class="hover:bg-gray-100 transition-all">
                 <td class="pl-3 py-4">
                   <div
-                    class="bg-[#6AC7F533] text_27326F xl:text-base text-2xl w-max px-3 py-1 rounded-[5px]"
+                    class="bg-[#6AC7F533] text_27326F text-base w-max px-3 py-1 rounded-[5px]"
                   >
                     {item.label}
                   </div>
                 </td>
 
                 <td class="py-4">
-                  <div
-                    class="text-left xl:text-base text-2xl flex items-start gap-2"
-                  >
+                  <div class="text-left text-base flex items-start gap-2">
                     <Copy
                       address={item.address}
                       iconColor={`${$isDarkMode ? "#fff" : "#000"}`}
@@ -227,7 +225,7 @@
                 <td class="pr-3 py-4">
                   <div class="flex justify-end gap-6">
                     <div
-                      class="text-red-600 xl:text-base text-2xl hover:underline transition-all cursor-pointer font-semibold"
+                      class="text-red-600 text-base hover:underline transition-all cursor-pointer font-semibold"
                       on:click={() => {
                         isOpenConfirmDelete = true;
                         selectedHighlight = item;
@@ -236,7 +234,7 @@
                       {MultipleLang.content.modal_delete}
                     </div>
                     <div
-                      class="text-blue-600 xl:text-base text-2xl hover:underline transition-all cursor-pointer font-semibold"
+                      class="text-blue-600 text-base hover:underline transition-all cursor-pointer font-semibold"
                       on:click={() => handleEdit(item)}
                     >
                       {MultipleLang.content.modal_edit}

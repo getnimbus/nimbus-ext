@@ -9,6 +9,8 @@
   import SlideFour from "~/UI/Onboard/SlideFour.svelte";
   import SlideFive from "~/UI/Onboard/SlideFive.svelte";
 
+  import wheelIcon from "~/assets/wheel-icon.svg";
+
   import "swiper/swiper.scss";
   import "swiper/components/pagination/pagination.scss";
 
@@ -21,38 +23,46 @@
   };
 </script>
 
-<div class="max-w-[2000px] m-auto w-[90%] h-full">
-  <Swiper
-    cssMode={true}
-    slidesPerView={1}
-    speed={2000}
-    on:swiper={(e) => (mySwiper = e.detail[0])}
-    navigation={{
-      nextEl: ".next",
-    }}
-    pagination={{ clickable: false, dynamicBullets: true }}
-    on:activeIndexChange={(e) => (activeSlide = e.detail[0][0].activeIndex)}
+<div class="max-w-[2000px] m-auto w-[90%] h-full relative">
+  <div class="w-full h-full relative z-9">
+    <Swiper
+      cssMode={true}
+      slidesPerView={1}
+      speed={2000}
+      on:swiper={(e) => (mySwiper = e.detail[0])}
+      navigation={{
+        nextEl: ".next",
+      }}
+      pagination={{ clickable: false, dynamicBullets: true }}
+      on:activeIndexChange={(e) => (activeSlide = e.detail[0][0].activeIndex)}
+    >
+      <SwiperSlide>
+        <SlideOne />
+      </SwiperSlide>
+
+      <SwiperSlide>
+        <SlideTwo skip={slideToLast} />
+      </SwiperSlide>
+
+      <SwiperSlide>
+        <SlideThree skip={slideToLast} />
+      </SwiperSlide>
+
+      <SwiperSlide>
+        <SlideFour skip={slideToLast} />
+      </SwiperSlide>
+
+      <SwiperSlide>
+        <SlideFive />
+      </SwiperSlide>
+    </Swiper>
+  </div>
+
+  <div
+    class="absolute xl:bottom-[-60px] bottom-[-40px] lg:left-[-120px] left-0 z-1"
   >
-    <SwiperSlide>
-      <SlideOne />
-    </SwiperSlide>
-
-    <SwiperSlide>
-      <SlideTwo skip={slideToLast} />
-    </SwiperSlide>
-
-    <SwiperSlide>
-      <SlideThree skip={slideToLast} />
-    </SwiperSlide>
-
-    <SwiperSlide>
-      <SlideFour skip={slideToLast} />
-    </SwiperSlide>
-
-    <SwiperSlide>
-      <SlideFive />
-    </SwiperSlide>
-  </Swiper>
+    <img src={wheelIcon} alt="" class="w-[70%] h-[70%] object-contain" />
+  </div>
 </div>
 
 <style global windi:preflights:global windi:safelist:global>
