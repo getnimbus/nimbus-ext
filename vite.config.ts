@@ -48,11 +48,6 @@ export default defineConfig(({ mode }) => {
         "~": path.resolve(__dirname, "./src"),
       },
     },
-    define: {
-      APP_TYPE: {
-        TYPE: "EXT",
-      },
-    },
     build: {
       rollupOptions: {
         output: {

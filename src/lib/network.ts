@@ -112,17 +112,15 @@ export const API_URL = import.meta.env.VITE_API_URL || "https://api-staging.getn
 export const nimbus = createAxiosInterface({
   baseURL: API_URL,
   getHeaderAuthorize: () => {
-    if (APP_TYPE.TYPE === "WEB") {
-      const authToken = localStorage.getItem("auth_token");
-      const solanaToken = localStorage.getItem("solana_token");
-      const suiToken = localStorage.getItem("sui_token");
-      const tonToken = localStorage.getItem("ton_token");
-      const evmToken = localStorage.getItem("evm_token");
-      if (evmToken || solanaToken || suiToken || tonToken || authToken) {
-        return {
-          Authorization: `${evmToken || solanaToken || suiToken || tonToken || authToken}`,
-        };
-      }
+    const authToken = localStorage.getItem("auth_token");
+    const solanaToken = localStorage.getItem("solana_token");
+    const suiToken = localStorage.getItem("sui_token");
+    const tonToken = localStorage.getItem("ton_token");
+    const evmToken = localStorage.getItem("evm_token");
+    if (evmToken || solanaToken || suiToken || tonToken || authToken) {
+      return {
+        Authorization: `${evmToken || solanaToken || suiToken || tonToken || authToken}`,
+      };
     }
   },
 });

@@ -25,8 +25,7 @@ const ManifestV3: Partial<chrome.runtime.ManifestV3> = {
       matches: ["*://*/*"],
     },
   ],
-  // permissions: ["identity", "storage", "unlimitedStorage", "activeTab"],
-  permissions: ["storage", "unlimitedStorage", "activeTab"],
+  permissions: ["identity", "storage", "unlimitedStorage", "activeTab"],
   commands: {
     "open-quick-search": {
       suggested_key: {

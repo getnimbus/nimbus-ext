@@ -51,7 +51,6 @@ browser.runtime.onInstalled.addListener((details) => {
   const reason = details.reason
   if (reason === 'install') {
     browser.tabs.create({ url: 'src/entries/onboard/index.html' });
-    browser.storage.sync.set({ defaultnewtab: true });
   }
 })
 
